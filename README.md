@@ -3,6 +3,7 @@
 A full-featured Telegram Bot API client
 
 [![CI](https://img.shields.io/github/workflow/status/tg-rs/tgbot/CI?style=flat-square)](https://github.com/tg-rs/tgbot/actions/)
+[![Coverage](https://img.shields.io/codecov/c/github/tg-rs/tgbot.svg?style=flat-square)](https://codecov.io/gh/tg-rs/tgbot)
 [![Version](https://img.shields.io/crates/v/tgbot.svg?style=flat-square)](https://crates.io/crates/tgbot)
 [![Downloads](https://img.shields.io/crates/d/tgbot.svg?style=flat-square)](https://crates.io/crates/tgbot)
 [![Release Documentation](https://img.shields.io/badge/docs-release-brightgreen.svg?style=flat-square)](https://docs.rs/tgbot)

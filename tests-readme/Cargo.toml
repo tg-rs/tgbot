@@ -1,0 +1,13 @@
+[package]
+name = "tests-readme"
+description = "Tests for README.md"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+regex = "1.3"
+tgbot = { path = ".." }
+tokio = { version = "0.2", features = ["macros"] }
+toml = "0.5"
+
+[workspace]

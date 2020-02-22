@@ -1,4 +1,5 @@
 .env
 /Cargo.lock
 /target/
-
+/tests-readme/target/
+/tests-readme/Cargo.lock

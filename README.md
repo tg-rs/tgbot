@@ -14,7 +14,7 @@ A full-featured Telegram Bot API client
 
 ```toml
 [dependencies]
-tgbot = "0.6"
+tgbot = "0.6.0"
 ```
 
 ## Example

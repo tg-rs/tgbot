@@ -1,4 +1,6 @@
 //! A Telegram Bot API client library
+#![cfg_attr(nightly, feature(doc_cfg, external_doc))]
+#![cfg_attr(nightly, doc(include = "../README.md"))]
 #![recursion_limit = "256"]
 #![warn(missing_docs)]
 

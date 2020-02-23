@@ -13,7 +13,7 @@ fn read_file(path: &str) -> Result<String, IoError> {
 }
 
 fn get_crate_version() -> String {
-    let manifest = read_file("../Cargo.toml").expect("Failed to get Cargo.toml data");
+    let manifest = read_file("./Cargo.toml").expect("Failed to get Cargo.toml data");
     let value: Value = manifest.parse().expect("Failed to parse Cargo.toml");
     let version = value["package"]["version"]
         .as_str()
@@ -24,7 +24,7 @@ fn get_crate_version() -> String {
 #[test]
 fn readme_versions() {
     let version = get_crate_version();
-    let readme = read_file("../README.md").expect("Failed to get README.md data");
+    let readme = read_file("./README.md").expect("Failed to get README.md data");
     for pattern in &[
         r#"https://github\.com/tg-rs/tgbot/tree/([\d\.]+)"#,
         r#"tgbot\s?=\s?"([\d\.]+)""#,

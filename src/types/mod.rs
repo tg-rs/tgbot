@@ -12,6 +12,7 @@ mod location;
 mod login_url;
 mod media_group;
 mod message;
+mod parse_mode;
 mod passport;
 mod payments;
 mod photo_size;
@@ -29,7 +30,7 @@ mod voice;
 
 pub use self::{
     animation::*, audio::*, callback_query::*, chat::*, contact::*, document::*, file::*, game::*, inline_mode::*,
-    input_media::*, location::*, login_url::*, media_group::*, message::*, passport::*, payments::*, photo_size::*,
-    poll::*, primitive::*, reply_markup::*, response::*, stickers::*, update::*, user::*, venue::*, video::*,
-    video_note::*, voice::*,
+    input_media::*, location::*, login_url::*, media_group::*, message::*, parse_mode::*, passport::*, payments::*,
+    photo_size::*, poll::*, primitive::*, reply_markup::*, response::*, stickers::*, update::*, user::*, venue::*,
+    video::*, video_note::*, voice::*,
 };

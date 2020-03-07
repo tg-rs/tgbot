@@ -1,4 +1,7 @@
-use crate::types::primitive::{Float, Integer, ParseMode};
+use crate::types::{
+    parse_mode::ParseMode,
+    primitive::{Float, Integer},
+};
 use serde::Serialize;
 
 /// Content of a message to be sent as a result of an inline query

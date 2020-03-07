@@ -1,6 +1,5 @@
 use crate::types::{
-    inline_mode::message_content::InputMessageContent,
-    primitive::{Integer, ParseMode},
+    inline_mode::message_content::InputMessageContent, parse_mode::ParseMode, primitive::Integer,
     reply_markup::InlineKeyboardMarkup,
 };
 use serde::Serialize;

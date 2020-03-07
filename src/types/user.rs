@@ -1,7 +1,4 @@
-use crate::types::{
-    photo_size::PhotoSize,
-    primitive::{Integer, ParseMode},
-};
+use crate::types::{parse_mode::ParseMode, photo_size::PhotoSize, primitive::Integer};
 use serde::Deserialize;
 use std::{error::Error, fmt};
 

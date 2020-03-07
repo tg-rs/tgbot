@@ -2,7 +2,7 @@ use crate::{
     api::{Api, ExecuteError},
     handler::UpdateHandler,
     methods::GetUpdates,
-    types::{AllowedUpdate, Integer, ResponseError, ResponseParameters},
+    types::{AllowedUpdate, Integer},
 };
 use async_stream::stream;
 use futures_util::{pin_mut, stream::StreamExt};
@@ -119,15 +119,10 @@ impl LongPollHandle {
 }
 
 fn get_error_timeout(err: ExecuteError, default_timeout: Duration) -> Duration {
-    if let ExecuteError::Response(ResponseError {
-        parameters: Some(ResponseParameters {
-            retry_after: Some(retry_after),
-            ..
-        }),
-        ..
-    }) = err
-    {
-        Duration::from_secs(retry_after as u64)
+    if let ExecuteError::Response(err) = err {
+        err.retry_after()
+            .map(|x| Duration::from_secs(x as u64))
+            .unwrap_or(default_timeout)
     } else {
         default_timeout
     }

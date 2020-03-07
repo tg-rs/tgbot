@@ -34,7 +34,8 @@ where
             Response::Error(ResponseError {
                 description: required!(description),
                 error_code: raw.error_code,
-                parameters: raw.parameters,
+                migrate_to_chat_id: raw.parameters.and_then(|x| x.migrate_to_chat_id),
+                retry_after: raw.parameters.and_then(|x| x.retry_after),
             })
         })
     }
@@ -43,18 +44,36 @@ where
 /// Response error
 #[derive(Clone, Debug)]
 pub struct ResponseError {
-    /// Human-readable description
-    pub description: String,
-    /// Error code
-    pub error_code: Option<Integer>,
-    /// Parameters
-    pub parameters: Option<ResponseParameters>,
+    description: String,
+    error_code: Option<Integer>,
+    migrate_to_chat_id: Option<Integer>,
+    retry_after: Option<Integer>,
 }
 
 impl ResponseError {
+    /// Human-readable description of the error
+    pub fn description(&self) -> &str {
+        &self.description
+    }
+
+    /// Error code
+    pub fn error_code(&self) -> Option<Integer> {
+        self.error_code
+    }
+
     /// Whether request can be repeated
     pub fn can_retry(&self) -> bool {
-        self.parameters.map(|x| x.retry_after.is_some()).unwrap_or(false)
+        self.retry_after.is_some()
+    }
+
+    /// Number of seconds left to wait before the request can be repeated
+    pub fn retry_after(&self) -> Option<Integer> {
+        self.retry_after
+    }
+
+    /// The group has been migrated to a supergroup with the specified identifier
+    pub fn migrate_to_chat_id(&self) -> Option<Integer> {
+        self.migrate_to_chat_id
     }
 }
 
@@ -66,27 +85,14 @@ impl fmt::Display for ResponseError {
         if let Some(code) = self.error_code {
             write!(out, "; error_code={}", code)?;
         }
-        if let Some(parameters) = self.parameters {
-            if let Some(chat_id) = parameters.migrate_to_chat_id {
-                write!(out, "; migrate_to_chat_id={}", chat_id)?;
-            }
-            if let Some(retry_after) = parameters.retry_after {
-                write!(out, "; retry_after={}", retry_after)?;
-            }
+        if let Some(chat_id) = self.migrate_to_chat_id {
+            write!(out, "; migrate_to_chat_id={}", chat_id)?;
+        }
+        if let Some(retry_after) = self.retry_after {
+            write!(out, "; retry_after={}", retry_after)?;
         }
         Ok(())
     }
-}
-
-/// Contains information about why a request was unsuccessful
-#[derive(Clone, Copy, Debug, Deserialize)]
-pub struct ResponseParameters {
-    /// The group has been migrated to a supergroup with the specified identifier
-    pub migrate_to_chat_id: Option<Integer>,
-    /// In case of exceeding flood control,
-    /// the number of seconds left to wait
-    /// before the request can be repeated
-    pub retry_after: Option<Integer>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -95,7 +101,13 @@ struct RawResponse<T> {
     description: Option<String>,
     error_code: Option<Integer>,
     result: Option<T>,
-    parameters: Option<ResponseParameters>,
+    parameters: Option<RawResponseParameters>,
+}
+
+#[derive(Clone, Copy, Debug, Deserialize)]
+struct RawResponseParameters {
+    migrate_to_chat_id: Option<Integer>,
+    retry_after: Option<Integer>,
 }
 
 #[cfg(test)]
@@ -133,12 +145,11 @@ mod tests {
         }))
         .unwrap();
         if let Response::Error(err) = error {
-            assert_eq!(err.description, String::from("test err"));
-            assert_eq!(err.error_code.unwrap(), 1);
+            assert_eq!(err.description(), "test err");
+            assert_eq!(err.error_code(), Some(1));
             assert!(err.can_retry());
-            let params = err.parameters.unwrap();
-            assert_eq!(params.migrate_to_chat_id.unwrap(), 2);
-            assert_eq!(params.retry_after.unwrap(), 3);
+            assert_eq!(err.retry_after(), Some(3));
+            assert_eq!(err.migrate_to_chat_id(), Some(2));
         } else {
             panic!("Unexpected response: {:?}", success);
         }
@@ -149,10 +160,11 @@ mod tests {
         }))
         .unwrap();
         if let Response::Error(err) = error {
-            assert_eq!(err.description, String::from("test err"));
+            assert_eq!(err.description(), "test err");
             assert!(!err.can_retry());
-            assert!(err.error_code.is_none());
-            assert!(err.parameters.is_none());
+            assert!(err.retry_after().is_none());
+            assert!(err.error_code().is_none());
+            assert!(err.migrate_to_chat_id().is_none());
         } else {
             panic!("Unexpected response: {:?}", success);
         }

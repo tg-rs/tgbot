@@ -4,6 +4,7 @@ use crate::types::{
     primitive::Integer,
 };
 use serde::{de::Error, Deserialize, Deserializer, Serialize, Serializer};
+use std::fmt;
 
 mod member;
 mod permissions;
@@ -211,11 +212,11 @@ pub enum ChatId {
     Id(Integer),
 }
 
-impl ToString for ChatId {
-    fn to_string(&self) -> String {
+impl fmt::Display for ChatId {
+    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ChatId::Username(username) => username.clone(),
-            ChatId::Id(chat_id) => chat_id.to_string(),
+            ChatId::Username(username) => write!(out, "{}", username),
+            ChatId::Id(chat_id) => write!(out, "{}", chat_id),
         }
     }
 }

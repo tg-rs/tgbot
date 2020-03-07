@@ -1,5 +1,5 @@
 use crate::types::{parse_mode::ParseMode, photo_size::PhotoSize, primitive::Integer};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize, Serializer};
 use std::{error::Error, fmt};
 
 /// A Bot info returned in getMe
@@ -125,6 +125,27 @@ impl From<String> for UserId {
 impl From<Integer> for UserId {
     fn from(id: Integer) -> UserId {
         UserId::Id(id)
+    }
+}
+
+impl fmt::Display for UserId {
+    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            UserId::Username(username) => write!(out, "{}", username),
+            UserId::Id(chat_id) => write!(out, "{}", chat_id),
+        }
+    }
+}
+
+impl Serialize for UserId {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self {
+            UserId::Username(username) => serializer.serialize_str(username),
+            UserId::Id(id) => serializer.serialize_i64(*id),
+        }
     }
 }
 
@@ -301,11 +322,13 @@ mod tests {
         }
 
         let username = UserId::from(String::from("username"));
-        if let UserId::Username(username) = username {
+        if let UserId::Username(ref username) = username {
             assert_eq!(username, "username");
         } else {
             panic!("Unexpected username: {:?}", username);
         }
+        assert_eq!(serde_json::to_string(&username).unwrap(), r#""username""#);
+        assert_eq!(username.to_string(), "username");
 
         let user_id = UserId::from(1);
         if let UserId::Id(user_id) = user_id {
@@ -313,5 +336,7 @@ mod tests {
         } else {
             panic!("Unexpected user_id: {:?}", user_id);
         }
+        assert_eq!(serde_json::to_string(&user_id).unwrap(), r#"1"#);
+        assert_eq!(user_id.to_string(), "1");
     }
 }

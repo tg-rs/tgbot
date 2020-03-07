@@ -70,10 +70,10 @@ impl InputMedia {
 }
 
 #[derive(Debug, Serialize)]
-#[serde(tag = "type")]
 #[doc(hidden)]
+#[serde(tag = "type")]
+#[serde(rename_all = "lowercase")]
 pub enum InputMediaKind {
-    #[serde(rename = "animation")]
     Animation {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -81,7 +81,6 @@ pub enum InputMediaKind {
         #[serde(flatten)]
         info: InputMediaAnimation,
     },
-    #[serde(rename = "audio")]
     Audio {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -89,7 +88,6 @@ pub enum InputMediaKind {
         #[serde(flatten)]
         info: InputMediaAudio,
     },
-    #[serde(rename = "document")]
     Document {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -97,13 +95,11 @@ pub enum InputMediaKind {
         #[serde(flatten)]
         info: InputMediaDocument,
     },
-    #[serde(rename = "photo")]
     Photo {
         media: String,
         #[serde(flatten)]
         info: InputMediaPhoto,
     },
-    #[serde(rename = "video")]
     Video {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]

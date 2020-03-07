@@ -7,24 +7,21 @@ use serde_json::Error as JsonError;
 use std::{error::Error as StdError, fmt};
 
 /// The part of the face relative to which the mask should be placed
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum MaskPositionPoint {
     /// “forehead”
-    #[serde(rename = "forehead")]
     Forehead,
     /// “eyes”
-    #[serde(rename = "eyes")]
     Eyes,
     /// “mouth”
-    #[serde(rename = "mouth")]
     Mouth,
     /// “chin”
-    #[serde(rename = "chin")]
     Chin,
 }
 
 /// Position on faces where a mask should be placed by default
-#[derive(Copy, Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
 pub struct MaskPosition {
     /// The part of the face relative
     /// to which the mask should be placed

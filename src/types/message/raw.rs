@@ -84,35 +84,21 @@ pub(crate) struct RawMessageEntity {
 }
 
 #[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub(crate) enum RawMessageEntityKind {
-    #[serde(rename = "bold")]
     Bold,
-    #[serde(rename = "bot_command")]
     BotCommand,
-    #[serde(rename = "cashtag")]
     Cashtag,
-    #[serde(rename = "code")]
     Code,
-    #[serde(rename = "email")]
     Email,
-    #[serde(rename = "hashtag")]
     Hashtag,
-    #[serde(rename = "italic")]
     Italic,
-    #[serde(rename = "mention")]
     Mention,
-    #[serde(rename = "phone_number")]
     PhoneNumber,
-    #[serde(rename = "pre")]
     Pre,
-    #[serde(rename = "strikethrough")]
     Strikethrough,
-    #[serde(rename = "text_link")]
     TextLink,
-    #[serde(rename = "text_mention")]
     TextMention,
-    #[serde(rename = "underline")]
     Underline,
-    #[serde(rename = "url")]
     Url,
 }

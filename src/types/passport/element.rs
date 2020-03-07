@@ -403,44 +403,32 @@ struct RawEncryptedPassportElement {
 
 /// Type of encrypted passport element
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum EncryptedPassportElementKind {
     /// Address
-    #[serde(rename = "address")]
     Address,
     /// Bank statement
-    #[serde(rename = "bank_statement")]
     BankStatement,
     /// Driver license
-    #[serde(rename = "driver_license")]
     DriverLicense,
     /// E-Mail
-    #[serde(rename = "email")]
     Email,
     /// Identity card
-    #[serde(rename = "identity_card")]
     IdentityCard,
     /// Internal passport
-    #[serde(rename = "internal_passport")]
     InternalPassport,
     /// Passport
-    #[serde(rename = "passport")]
     Passport,
     /// Passport registration
-    #[serde(rename = "passport_registration")]
     PassportRegistration,
     /// Personal details
-    #[serde(rename = "personal_details")]
     PersonalDetails,
     /// Phone number
-    #[serde(rename = "phone_number")]
     PhoneNumber,
     /// Rental agreement
-    #[serde(rename = "rental_agreement")]
     RentalAgreement,
     /// Temporary registration
-    #[serde(rename = "temporary_registration")]
     TemporaryRegistration,
     /// Utility bill
-    #[serde(rename = "utility_bill")]
     UtilityBill,
 }

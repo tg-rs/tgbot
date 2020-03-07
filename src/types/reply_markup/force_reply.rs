@@ -5,7 +5,7 @@ use serde::Serialize;
 /// (act as if the user has selected the bot‘s message and tapped ’Reply')
 /// This can be extremely useful if you want to create
 /// user-friendly step-by-step interfaces without having to sacrifice privacy mode
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Serialize)]
 pub struct ForceReply {
     force_reply: bool,
     #[serde(skip_serializing_if = "Option::is_none")]

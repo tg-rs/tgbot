@@ -161,7 +161,7 @@ pub struct WebhookInfo {
 }
 
 /// Type of update to receive
-#[derive(Debug, Deserialize, Eq, Clone, Copy, Hash, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum AllowedUpdate {
     /// Message

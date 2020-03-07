@@ -27,14 +27,11 @@ pub struct RawChat {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum RawChatKind {
-    #[serde(rename = "private")]
     Private,
-    #[serde(rename = "group")]
     Group,
-    #[serde(rename = "supergroup")]
     Supergroup,
-    #[serde(rename = "channel")]
     Channel,
 }
 
@@ -62,17 +59,12 @@ pub struct RawChatMember {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum RawChatMemberStatus {
-    #[serde(rename = "administrator")]
     Administrator,
-    #[serde(rename = "creator")]
     Creator,
-    #[serde(rename = "kicked")]
     Kicked,
-    #[serde(rename = "left")]
     Left,
-    #[serde(rename = "member")]
     Member,
-    #[serde(rename = "restricted")]
     Restricted,
 }

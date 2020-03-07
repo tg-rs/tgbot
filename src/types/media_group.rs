@@ -73,16 +73,15 @@ impl MediaGroup {
 }
 
 #[derive(Debug, Serialize)]
-#[serde(tag = "type")]
 #[doc(hidden)]
+#[serde(tag = "type")]
+#[serde(rename_all = "lowercase")]
 pub enum MediaGroupItem {
-    #[serde(rename = "photo")]
     Photo {
         media: String,
         #[serde(flatten)]
         info: InputMediaPhoto,
     },
-    #[serde(rename = "video")]
     Video {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]

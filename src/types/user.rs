@@ -102,7 +102,7 @@ pub struct UserProfilePhotos {
 }
 
 /// User ID
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Hash, PartialEq, PartialOrd)]
 pub enum UserId {
     /// @username of a user
     Username(String),

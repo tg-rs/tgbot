@@ -2,7 +2,7 @@ use crate::types::primitive::Float;
 use serde::Deserialize;
 
 /// Point on the map
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Copy, Debug, Deserialize)]
 pub struct Location {
     /// Longitude as defined by sender
     pub longitude: Float,

@@ -204,7 +204,7 @@ pub struct SupergroupChat {
 }
 
 /// Chat ID or username
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Hash, PartialEq, PartialOrd)]
 pub enum ChatId {
     /// @username of a chat
     Username(String),
@@ -252,37 +252,28 @@ impl From<Integer> for ChatId {
 }
 
 /// Type of action to tell the user that some is happening on the bot's side
-#[derive(Clone, Copy, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Hash, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ChatAction {
     /// For location data
-    #[serde(rename = "find_location")]
     FindLocation,
     /// For audio files
-    #[serde(rename = "record_audio")]
     RecordAudio,
     /// For videos
-    #[serde(rename = "record_video")]
     RecordVideo,
     /// For video notes
-    #[serde(rename = "record_video_note")]
     RecordVideoNote,
     /// For text messages
-    #[serde(rename = "typing")]
     Typing,
     /// For audio files
-    #[serde(rename = "upload_audio")]
     UploadAudio,
     /// For general files
-    #[serde(rename = "upload_document")]
     UploadDocument,
     /// For photos
-    #[serde(rename = "upload_photo")]
     UploadPhoto,
     /// For videos
-    #[serde(rename = "upload_video")]
     UploadVideo,
     /// For video notes
-    #[serde(rename = "upload_video_note")]
     UploadVideoNote,
 }
 

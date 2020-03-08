@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.0 (08.03.2020)
+
+- `ChatId` type implements `Display` trait instead of `ToString`.
+-  Added `Display` and `Serialize` trait implementations for `UserId` type.
+- `ResponseError` fields are private now and `ResponseParameters` struct was removed,
+   use corresponding methods instead.
+- Added `Copy`, `Hash`, `PartialEq` and `PartialOrd` trait implementations for several types.
+- Reduced memory usage when sending files.
+  `InputFileReader` now takes `tokio::io::AsyncRead` instead of `std::io::Read`.
+  `InputFile::path` is async and returns a `tokio::io::Result`.
+- `download_file` method now returns a stream of bytes.
+- Added `Command` type.
+
 ## 0.6.0 (27.01.2020)
 
 - Added Bot API 4.6 support.

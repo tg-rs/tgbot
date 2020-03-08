@@ -4,6 +4,7 @@ use crate::{
     types::{Response, ResponseError},
 };
 use bytes::Bytes;
+use futures_util::stream::Stream;
 use log::debug;
 use reqwest::{Client, ClientBuilder, Error as ReqwestError, Proxy};
 use serde::de::DeserializeOwned;
@@ -78,7 +79,7 @@ pub struct Api {
 }
 
 impl Api {
-    /// Creates a API instance with a given configuration.
+    /// Creates a new API instance with given configuration
     pub fn new<C: Into<Config>>(config: C) -> Result<Self, ApiError> {
         let config = config.into();
 
@@ -99,8 +100,29 @@ impl Api {
 
     /// Downloads a file
     ///
-    /// Use getFile method in order to get value for file_path argument
-    pub async fn download_file<P: AsRef<str>>(&self, file_path: P) -> Result<Bytes, DownloadFileError> {
+    /// Use `getFile` method in order to get a value for `file_path` argument
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # async fn download_file() {
+    /// use tgbot::Api;
+    /// use futures_util::stream::StreamExt;
+    /// let api = Api::new("token").unwrap();
+    /// let mut stream = api.download_file("path").await.unwrap();
+    /// while let Some(chunk) = stream.next().await {
+    ///     let chunk = chunk.unwrap();
+    ///     // write chunk to something...
+    /// }
+    /// # }
+    /// ```
+    pub async fn download_file<P>(
+        &self,
+        file_path: P,
+    ) -> Result<impl Stream<Item = Result<Bytes, ReqwestError>>, DownloadFileError>
+    where
+        P: AsRef<str>,
+    {
         let req = Request::empty(file_path.as_ref());
         let url = req.build_url(&format!("{}/file", &self.host), &self.token);
         debug!("Downloading file from {}", url);
@@ -112,7 +134,7 @@ impl Api {
                 text: rep.text().await?,
             })
         } else {
-            Ok(rep.bytes().await?)
+            Ok(rep.bytes_stream())
         }
     }
 

@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use dotenv::dotenv;
 use env_logger;
+use futures_util::stream::StreamExt;
 use log;
 use std::{env, path::Path};
 use tempfile::{tempdir, TempDir};
@@ -22,13 +23,15 @@ async fn handle_document(api: &Api, tmpdir: &Path, document: Document) {
     let path = tmpdir.join(document.file_name.clone().unwrap_or_else(|| String::from("unknown")));
     let file = api.execute(GetFile::new(document.file_id.as_str())).await.unwrap();
     let file_path = file.file_path.unwrap();
-    let data = api.download_file(file_path).await.unwrap();
+    let mut stream = api.download_file(file_path).await.unwrap();
     println!("Name: {:?}", document.file_name);
     println!("Mime-Type: {:?}", document.mime_type);
     println!("Document size: {:?}", document.file_size);
-    println!("Downloaded size: {:?}", data.len());
     let mut file = File::create(path).await.unwrap();
-    file.write_all(&data).await.unwrap();
+    while let Some(chunk) = stream.next().await {
+        let chunk = chunk.unwrap();
+        file.write_all(&chunk).await.unwrap();
+    }
 }
 
 #[async_trait]

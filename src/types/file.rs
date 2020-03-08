@@ -1,7 +1,13 @@
 use crate::types::primitive::Integer;
-use mime::Mime;
+use mime::{Mime, APPLICATION_OCTET_STREAM};
+use mime_guess;
 use serde::Deserialize;
-use std::{fmt, io::Read, path::PathBuf};
+use std::{fmt, path::Path};
+use tokio::{
+    fs,
+    io::{AsyncRead, Result as IoResult},
+};
+use tokio_util::codec::{BytesCodec, FramedRead};
 
 /// File ready to be downloaded
 ///
@@ -74,8 +80,8 @@ impl From<(String, Mime)> for InputFileInfo {
 
 /// File reader to upload
 pub struct InputFileReader {
-    pub(crate) reader: Box<dyn Read + Send>,
     pub(crate) info: Option<InputFileInfo>,
+    pub(crate) reader: FramedRead<Box<dyn AsyncRead + Send + Sync + Unpin>, BytesCodec>,
 }
 
 impl fmt::Debug for InputFileReader {
@@ -88,10 +94,10 @@ impl InputFileReader {
     /// Creates a new file reader
     pub fn new<R>(reader: R) -> Self
     where
-        R: Read + Send + 'static,
+        R: AsyncRead + Send + Sync + Unpin + 'static,
     {
         InputFileReader {
-            reader: Box::new(reader),
+            reader: FramedRead::new(Box::new(reader), BytesCodec::new()),
             info: None,
         }
     }
@@ -105,7 +111,7 @@ impl InputFileReader {
 
 impl<R> From<R> for InputFileReader
 where
-    R: Read + Send + 'static,
+    R: AsyncRead + Send + Sync + Unpin + 'static,
 {
     fn from(reader: R) -> Self {
         InputFileReader::new(reader)
@@ -136,10 +142,21 @@ impl InputFile {
     }
 
     /// Path to file in FS (will be uploaded using multipart/form-data)
-    pub fn path<P: Into<PathBuf>>(path: P) -> Self {
-        Self {
-            kind: InputFileKind::Path(path.into()),
+    pub async fn path(path: impl AsRef<Path>) -> IoResult<Self> {
+        let path = path.as_ref();
+        let file = fs::File::open(path).await?;
+        let mut reader = InputFileReader::new(file);
+        if let Some(file_name) = path.file_name().and_then(|x| x.to_str()) {
+            let mime_type = path
+                .extension()
+                .and_then(|x| x.to_str())
+                .and_then(|x| mime_guess::from_ext(x).first())
+                .unwrap_or(APPLICATION_OCTET_STREAM);
+            reader = reader.info(InputFileInfo::new(file_name).mime_type(mime_type));
         }
+        Ok(Self {
+            kind: InputFileKind::Reader(reader),
+        })
     }
 
     /// A reader (file will be uploaded using multipart/form-data)
@@ -153,7 +170,6 @@ impl InputFile {
 pub(crate) enum InputFileKind {
     Id(String),
     Url(String),
-    Path(PathBuf),
     Reader(InputFileReader),
 }
 
@@ -162,7 +178,6 @@ impl fmt::Debug for InputFileKind {
         match self {
             InputFileKind::Id(ref s) => write!(out, "InputFileKind::Id({:?})", s),
             InputFileKind::Url(ref s) => write!(out, "InputFileKind::Url({:?})", s),
-            InputFileKind::Path(ref s) => write!(out, "InputFileKind::Path({:?})", s),
             InputFileKind::Reader(ref r) => write!(out, "InputFileKind::Reader({:?})", r),
         }
     }
@@ -176,7 +191,7 @@ impl From<InputFileReader> for InputFile {
 
 impl<R> From<R> for InputFile
 where
-    R: Read + Send + 'static,
+    R: AsyncRead + Send + Sync + Unpin + 'static,
 {
     fn from(reader: R) -> Self {
         InputFile::reader(InputFileReader::new(reader))
@@ -216,8 +231,8 @@ mod tests {
         assert!(data.file_path.is_none());
     }
 
-    #[test]
-    fn input_file() {
+    #[tokio::test]
+    async fn input_file() {
         let id = InputFile::file_id("file-id");
         assert_eq!(format!("{:?}", id.kind), r#"InputFileKind::Id("file-id")"#);
         let url = InputFile::url("http://example.com/archive.zip");
@@ -225,11 +240,10 @@ mod tests {
             format!("{:?}", url.kind),
             r#"InputFileKind::Url("http://example.com/archive.zip")"#
         );
-        let path = InputFile::path("/home/user/data/archive.zip");
-        assert_eq!(
-            format!("{:?}", path.kind),
-            r#"InputFileKind::Path("/home/user/data/archive.zip")"#
-        );
+        // NOTE: you must be sure that file exists in current working directory (usually it exists)
+        // otherwise test will fail
+        let path = InputFile::path("LICENSE").await.unwrap();
+        assert!(format!("{:?}", path.kind).starts_with("InputFileKind::Reader("),);
 
         let reader = InputFileReader::from(Cursor::new(b"data")).info(("name", mime::TEXT_PLAIN));
         let reader = InputFile::from(reader);

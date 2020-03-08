@@ -28,11 +28,11 @@ impl UpdateHandler for Handler {
                     InputMediaPhoto::default().caption("Photo 01"),
                 )
                 .add_item(
-                    InputFile::path(self.photo_path.clone()),
+                    InputFile::path(self.photo_path.clone()).await.unwrap(),
                     InputMediaPhoto::default().caption("Photo 02"),
                 )
                 .add_item(
-                    InputFile::path(self.video_path.clone()),
+                    InputFile::path(self.video_path.clone()).await.unwrap(),
                     InputMediaVideo::default().caption("Video 01"),
                 );
             let method = SendMediaGroup::new(chat_id, media).unwrap();

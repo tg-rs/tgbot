@@ -1,17 +1,9 @@
 use crate::types::{InputFile, InputFileInfo, InputFileKind, InputFileReader};
-use mime::APPLICATION_OCTET_STREAM;
-use mime_guess;
 use reqwest::{
     multipart::{Form as MultipartForm, Part},
-    Error as ReqwestError,
+    Body, Error as ReqwestError,
 };
-use std::{
-    collections::HashMap,
-    error::Error as StdError,
-    fmt,
-    io::{Error as IoError, Read},
-};
-use tokio::fs;
+use std::{collections::HashMap, error::Error as StdError, fmt, io::Error as IoError};
 
 #[derive(Debug)]
 pub(crate) enum FormValue {
@@ -40,41 +32,25 @@ impl FormValue {
         Ok(match self {
             FormValue::Text(text) => Part::text(text),
             FormValue::File(file) => match file.kind {
-                InputFileKind::Path(path) => {
-                    let file_name = path.file_name().and_then(|x| x.to_str()).map(String::from);
-                    let mime_type = path
-                        .extension()
-                        .and_then(|x| x.to_str())
-                        .and_then(|x| mime_guess::from_ext(x).first())
-                        .unwrap_or(APPLICATION_OCTET_STREAM);
-                    let buf = fs::read(path).await?;
-                    let part = Part::stream(buf)
-                        .mime_str(mime_type.as_ref())
-                        .map_err(FormError::Mime)?;
-                    match file_name {
-                        Some(file_name) => part.file_name(file_name),
-                        None => part,
-                    }
-                }
                 InputFileKind::Reader(InputFileReader {
-                    mut reader,
+                    reader,
                     info: file_info,
                 }) => {
-                    let mut buf = Vec::new();
-                    reader.read_to_end(&mut buf)?;
+                    let body = Body::wrap_stream(reader);
+                    let part = Part::stream(body);
                     match file_info {
                         Some(InputFileInfo {
                             name: file_name,
                             mime_type: Some(mime_type),
-                        }) => Part::stream(buf)
+                        }) => part
                             .file_name(file_name)
                             .mime_str(mime_type.as_ref())
                             .map_err(FormError::Mime)?,
                         Some(InputFileInfo {
                             name: file_name,
                             mime_type: None,
-                        }) => Part::stream(buf).file_name(file_name),
-                        None => Part::stream(buf),
+                        }) => part.file_name(file_name),
+                        None => part,
                     }
                 }
                 InputFileKind::Id(file_id) => Part::text(file_id),
@@ -180,10 +156,9 @@ mod tests {
     async fn form() {
         let mut form = Form::new();
         form.insert_field("id", 1);
-        form.insert_field("id", InputFile::file_id("file-id"));
-        form.insert_field("id", InputFile::url("url"));
-        form.insert_field("id", InputFile::path("file-path"));
-        form.insert_field("id", InputFile::from(Cursor::new(b"test")));
+        form.insert_field("file-id", InputFile::file_id("file-id"));
+        form.insert_field("file-url", InputFile::url("url"));
+        form.insert_field("file-reader", InputFile::from(Cursor::new(b"test")));
         form.into_multipart().await.unwrap();
     }
 }

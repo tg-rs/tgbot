@@ -34,7 +34,7 @@ impl UpdateHandler for Handler {
                     MessageData::Animation(_) => {
                         let input_media = InputMedia::with_thumb(
                             InputFileReader::new(Cursor::new(b"Hello World!")).info(("hello.txt", mime::TEXT_PLAIN)),
-                            InputFile::path(self.document_thumb_path.clone()),
+                            InputFile::path(self.document_thumb_path.clone()).await.unwrap(),
                             InputMediaAnimation::default().caption("test"),
                         )
                         .unwrap();
@@ -60,9 +60,11 @@ impl UpdateHandler for Handler {
                     }
                     // Change photo to video
                     MessageData::Photo { .. } => {
-                        let input_media =
-                            InputMedia::new(InputFile::path(self.video_path.clone()), InputMediaVideo::default())
-                                .unwrap();
+                        let input_media = InputMedia::new(
+                            InputFile::path(self.video_path.clone()).await.unwrap(),
+                            InputMediaVideo::default(),
+                        )
+                        .unwrap();
                         self.api
                             .execute(EditMessageMedia::new(chat_id, reply_to.id, input_media))
                             .await
@@ -70,9 +72,11 @@ impl UpdateHandler for Handler {
                     }
                     // Change video to photo
                     MessageData::Video { .. } => {
-                        let input_media =
-                            InputMedia::new(InputFile::path(self.photo_path.clone()), InputMediaPhoto::default())
-                                .unwrap();
+                        let input_media = InputMedia::new(
+                            InputFile::path(self.photo_path.clone()).await.unwrap(),
+                            InputMediaPhoto::default(),
+                        )
+                        .unwrap();
                         self.api
                             .execute(EditMessageMedia::new(chat_id, reply_to.id, input_media))
                             .await
@@ -95,7 +99,7 @@ impl UpdateHandler for Handler {
                     }
                     "/photo" => {
                         let markup = vec![vec![InlineKeyboardButton::with_callback_data("test", "cb-data")]];
-                        let method = SendPhoto::new(chat_id, InputFile::path(self.photo_path.clone()))
+                        let method = SendPhoto::new(chat_id, InputFile::path(self.photo_path.clone()).await.unwrap())
                             .reply_markup(markup)
                             .unwrap();
                         self.api.execute(method).await.unwrap();
@@ -103,12 +107,12 @@ impl UpdateHandler for Handler {
                     "/text" => {
                         let document = Cursor::new(b"Hello World!");
                         let reader = InputFileReader::new(document).info(("hello.txt", mime::TEXT_PLAIN));
-                        let method =
-                            SendDocument::new(chat_id, reader).thumb(InputFile::path(self.document_thumb_path.clone()));
+                        let method = SendDocument::new(chat_id, reader)
+                            .thumb(InputFile::path(self.document_thumb_path.clone()).await.unwrap());
                         self.api.execute(method).await.unwrap();
                     }
                     "/video" => {
-                        let method = SendVideo::new(chat_id, InputFile::path(self.video_path.clone()));
+                        let method = SendVideo::new(chat_id, InputFile::path(self.video_path.clone()).await.unwrap());
                         self.api.execute(method).await.unwrap();
                     }
                     // The same way for other file types...

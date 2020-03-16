@@ -204,7 +204,7 @@ pub struct SupergroupChat {
 }
 
 /// Chat ID or username
-#[derive(Clone, Debug, Hash, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd)]
 pub enum ChatId {
     /// @username of a chat
     Username(String),
@@ -280,6 +280,7 @@ pub enum ChatAction {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashMap;
 
     #[test]
     fn deserialize_channel() {
@@ -574,6 +575,14 @@ mod tests {
         }
         assert_eq!(serde_json::to_string(&chat_id).unwrap(), r#""username""#);
         assert_eq!(chat_id.to_string(), "username");
+
+        let mut map = HashMap::new();
+        let chat_id_1 = ChatId::from(1);
+        let chat_id_2 = ChatId::from("username");
+        map.insert(chat_id_1.clone(), "1".to_string());
+        map.insert(chat_id_2.clone(), "2".to_string());
+        assert_eq!(map.get(&chat_id_1).unwrap(), "1");
+        assert_eq!(map.get(&chat_id_2).unwrap(), "2");
     }
 
     #[test]

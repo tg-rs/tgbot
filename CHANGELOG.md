@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1 (16.03.2020)
+
+- Impl `Eq` for `ChatId` and `UserId`.
+
 ## 0.7.0 (08.03.2020)
 
 - `ChatId` type implements `Display` trait instead of `ToString`.

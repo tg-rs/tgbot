@@ -58,7 +58,7 @@ pub enum TextEntity {
     /// Bold text
     Bold(TextEntityData),
     /// Bot command
-    BotCommand(BotCommand),
+    BotCommand(TextEntityBotCommand),
     /// Cashtag
     Cashtag(TextEntityData),
     /// Monowidth string
@@ -83,9 +83,9 @@ pub enum TextEntity {
     /// Strikethrough text
     Strikethrough(TextEntityData),
     /// Clickable text URLs
-    TextLink(TextLink),
+    TextLink(TextEntityLink),
     /// Mention user without username
-    TextMention(TextMention),
+    TextMention(TextEntityMention),
     /// Underlined text
     Underline(TextEntityData),
     /// URL
@@ -100,7 +100,7 @@ impl TextEntity {
                 let parts = data.data.as_str().splitn(2, '@').collect::<Vec<&str>>();
                 let len = parts.len();
                 assert!(len >= 1);
-                TextEntity::BotCommand(BotCommand {
+                TextEntity::BotCommand(TextEntityBotCommand {
                     command: parts[0].to_string(),
                     bot_name: if len == 2 { Some(parts[1].to_string()) } else { None },
                     data,
@@ -119,11 +119,11 @@ impl TextEntity {
             },
             RawMessageEntityKind::Strikethrough => TextEntity::Strikethrough(data),
             RawMessageEntityKind::TextLink => match entity.url {
-                Some(url) => TextEntity::TextLink(TextLink { data, url }),
+                Some(url) => TextEntity::TextLink(TextEntityLink { data, url }),
                 None => return Err(ParseTextError::NoUrl),
             },
             RawMessageEntityKind::TextMention => match entity.user {
-                Some(user) => TextEntity::TextMention(TextMention { data, user }),
+                Some(user) => TextEntity::TextMention(TextEntityMention { data, user }),
                 None => return Err(ParseTextError::NoUser),
             },
             RawMessageEntityKind::Underline => TextEntity::Underline(data),
@@ -134,7 +134,7 @@ impl TextEntity {
 
 /// Bot command
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
-pub struct BotCommand {
+pub struct TextEntityBotCommand {
     /// Actual command
     pub command: String,
     /// Bot's username
@@ -145,7 +145,7 @@ pub struct BotCommand {
 
 /// Clickable text URLs
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
-pub struct TextLink {
+pub struct TextEntityLink {
     /// Actual data of entity
     pub data: TextEntityData,
     /// URL that will be opened after user taps on the text
@@ -154,7 +154,7 @@ pub struct TextLink {
 
 /// Mention user without username
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
-pub struct TextMention {
+pub struct TextEntityMention {
     /// Actual data of text entity
     pub data: TextEntityData,
     /// Mentioned user
@@ -261,7 +261,7 @@ mod tests {
                         offset: 0,
                         length: 4
                     }),
-                    TextEntity::BotCommand(BotCommand {
+                    TextEntity::BotCommand(TextEntityBotCommand {
                         command: String::from("/botcommand"),
                         bot_name: None,
                         data: TextEntityData {
@@ -313,7 +313,7 @@ mod tests {
                         },
                         language: None
                     },
-                    TextEntity::TextLink(TextLink {
+                    TextEntity::TextLink(TextEntityLink {
                         data: TextEntityData {
                             data: String::from("textlink"),
                             offset: 72,
@@ -321,7 +321,7 @@ mod tests {
                         },
                         url: String::from("https://example.com")
                     }),
-                    TextEntity::TextMention(TextMention {
+                    TextEntity::TextMention(TextEntityMention {
                         data: TextEntityData {
                             data: String::from("textmention"),
                             offset: 81,

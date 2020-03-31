@@ -35,7 +35,7 @@ pub struct Message {
     /// Contains message data
     pub data: MessageData,
     /// Contains command data
-    pub commands: Option<Vec<BotCommand>>,
+    pub commands: Option<Vec<TextEntityBotCommand>>,
     /// Inline keyboard attached to the message
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
@@ -303,7 +303,7 @@ impl fmt::Display for ParseError {
     }
 }
 
-fn get_commands(text: &Text) -> Option<Vec<BotCommand>> {
+fn get_commands(text: &Text) -> Option<Vec<TextEntityBotCommand>> {
     if let Text {
         entities: Some(ref entities),
         ..
@@ -318,7 +318,7 @@ fn get_commands(text: &Text) -> Option<Vec<BotCommand>> {
                     None
                 }
             })
-            .collect::<Vec<BotCommand>>();
+            .collect::<Vec<TextEntityBotCommand>>();
 
         if !commands.is_empty() {
             return Some(commands);

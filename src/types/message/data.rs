@@ -2,6 +2,7 @@ use crate::types::{
     animation::Animation,
     audio::Audio,
     contact::Contact,
+    dice::Dice,
     document::Document,
     game::Game,
     location::Location,
@@ -43,6 +44,8 @@ pub enum MessageData {
     Contact(Contact),
     /// Service message: the chat photo was deleted
     DeleteChatPhoto,
+    /// Message is a dice with random value from 1 to 6
+    Dice(Dice),
     /// Document message
     Document {
         /// Document caption
@@ -256,6 +259,25 @@ mod tests {
         .unwrap();
         if let MessageData::DeleteChatPhoto = msg.data {
             assert_eq!(msg.id, 1);
+        } else {
+            panic!("Unexpected message data: {:?}", msg.data);
+        }
+    }
+
+    #[test]
+    fn deserialize_dice() {
+        let msg: Message = serde_json::from_value(serde_json::json!({
+            "message_id": 1, "date": 1,
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "dice": {
+                "value": 1,
+            }
+        }))
+        .unwrap();
+        if let MessageData::Dice(data) = msg.data {
+            assert_eq!(msg.id, 1);
+            assert_eq!(data.value, 1);
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }

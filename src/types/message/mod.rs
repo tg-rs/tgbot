@@ -219,6 +219,7 @@ impl Message {
         message!(ConnectedWebsite(connected_website));
         message!(Contact(contact));
         message!(DeleteChatPhoto(delete_chat_photo, flag));
+        message!(Dice(dice));
         message!(Document(document, caption));
         message!(Game(game));
         message!(GroupChatCreated(group_chat_created, flag));

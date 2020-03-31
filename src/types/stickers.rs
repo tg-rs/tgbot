@@ -1,4 +1,5 @@
 use crate::types::{
+    file::InputFile,
     photo_size::PhotoSize,
     primitive::{Float, Integer},
 };
@@ -114,6 +115,46 @@ pub struct StickerSet {
     pub stickers: Vec<Sticker>,
     /// True, if the sticker set contains animated stickers
     pub is_animated: bool,
+}
+
+/// A new sticker to upload
+#[derive(Debug)]
+pub struct NewSticker {
+    pub(crate) kind: NewStickerKind,
+}
+
+#[derive(Debug)]
+pub(crate) enum NewStickerKind {
+    Png(InputFile),
+    Tgs(InputFile),
+}
+
+impl NewSticker {
+    /// PNG image
+    ///
+    /// Must be up to 512 kilobytes in size, dimensions must not exceed 512px,
+    /// and either width or height must be exactly 512px
+    pub fn png<I>(file: I) -> Self
+    where
+        I: Into<InputFile>,
+    {
+        Self {
+            kind: NewStickerKind::Png(file.into()),
+        }
+    }
+
+    /// TGS animation
+    ///
+    /// See https://core.telegram.org/animated_stickers#technical-requirements
+    /// for technical requirements
+    pub fn tgs<I>(file: I) -> Self
+    where
+        I: Into<InputFile>,
+    {
+        Self {
+            kind: NewStickerKind::Tgs(file.into()),
+        }
+    }
 }
 
 #[cfg(test)]

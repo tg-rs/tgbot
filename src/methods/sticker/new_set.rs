@@ -1,7 +1,7 @@
 use crate::{
     methods::Method,
     request::{Form, Request},
-    types::{InputFile, Integer, MaskPosition, MaskPositionError},
+    types::{Integer, MaskPosition, MaskPositionError, NewSticker, NewStickerKind},
 };
 
 /// Create new sticker set owned by a user
@@ -25,22 +25,26 @@ impl CreateNewStickerSet {
     ///          <bot_username> is case insensitive
     ///          1-64 characters
     /// * title - Sticker set title, 1-64 characters
-    /// * png_sticker - Png image with the sticker,
-    ///                 must be up to 512 kilobytes in size, dimensions must not exceed 512px,
-    ///                 and either width or height must be exactly 512px
+    /// * sticker - PNG image or TGS animation
     /// * emojis - One or more emoji corresponding to the sticker
-    pub fn new<N, T, P, E>(user_id: Integer, name: N, title: T, png_sticker: P, emojis: E) -> Self
+    pub fn new<N, T, E>(user_id: Integer, name: N, title: T, sticker: NewSticker, emojis: E) -> Self
     where
         N: Into<String>,
         T: Into<String>,
-        P: Into<InputFile>,
         E: Into<String>,
     {
         let mut form = Form::new();
         form.insert_field("user_id", user_id);
         form.insert_field("name", name.into());
         form.insert_field("title", title.into());
-        form.insert_field("png_sticker", png_sticker.into());
+        match sticker.kind {
+            NewStickerKind::Png(file) => {
+                form.insert_field("png_sticker", file);
+            }
+            NewStickerKind::Tgs(file) => {
+                form.insert_field("tgs_sticker", file);
+            }
+        };
         form.insert_field("emojis", emojis.into());
         CreateNewStickerSet { form }
     }
@@ -71,21 +75,27 @@ mod tests {
     use super::*;
     use crate::{
         request::{RequestBody, RequestMethod},
-        types::{MaskPosition, MaskPositionPoint},
+        types::{InputFile, MaskPosition, MaskPositionPoint},
     };
 
     #[test]
-    fn create_new_sticker_set() {
-        let request = CreateNewStickerSet::new(1, "name", "title", InputFile::file_id("sticker-id"), "^_^")
-            .contains_masks(true)
-            .mask_position(MaskPosition {
-                point: MaskPositionPoint::Forehead,
-                x_shift: 1.0,
-                y_shift: 2.0,
-                scale: 3.0,
-            })
-            .unwrap()
-            .into_request();
+    fn create_new_sticker_set_with_png() {
+        let request = CreateNewStickerSet::new(
+            1,
+            "name",
+            "title",
+            NewSticker::png(InputFile::file_id("sticker-id")),
+            "^_^",
+        )
+        .contains_masks(true)
+        .mask_position(MaskPosition {
+            point: MaskPositionPoint::Forehead,
+            x_shift: 1.0,
+            y_shift: 2.0,
+            scale: 3.0,
+        })
+        .unwrap()
+        .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
             request.build_url("base-url", "token"),
@@ -99,6 +109,32 @@ mod tests {
             assert_eq!(form.fields["emojis"].get_text().unwrap(), "^_^");
             assert!(form.fields["mask_position"].get_text().is_some());
             assert_eq!(form.fields["contains_masks"].get_text().unwrap(), "true");
+        } else {
+            panic!("Unexpected request body");
+        }
+    }
+
+    #[test]
+    fn create_new_sticker_set_with_tgs() {
+        let request = CreateNewStickerSet::new(
+            1,
+            "name",
+            "title",
+            NewSticker::tgs(InputFile::file_id("sticker-id")),
+            "^_^",
+        )
+        .into_request();
+        assert_eq!(request.get_method(), RequestMethod::Post);
+        assert_eq!(
+            request.build_url("base-url", "token"),
+            "base-url/bottoken/createNewStickerSet"
+        );
+        if let RequestBody::Form(form) = request.into_body() {
+            assert_eq!(form.fields["user_id"].get_text().unwrap(), "1");
+            assert_eq!(form.fields["name"].get_text().unwrap(), "name");
+            assert_eq!(form.fields["title"].get_text().unwrap(), "title");
+            assert!(form.fields["tgs_sticker"].get_file().is_some());
+            assert_eq!(form.fields["emojis"].get_text().unwrap(), "^_^");
         } else {
             panic!("Unexpected request body");
         }

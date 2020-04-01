@@ -115,6 +115,8 @@ pub struct StickerSet {
     pub stickers: Vec<Sticker>,
     /// True, if the sticker set contains animated stickers
     pub is_animated: bool,
+    /// Sticker set thumbnail in the .WEBP or .TGS format
+    pub thumb: Option<PhotoSize>,
 }
 
 /// A new sticker to upload
@@ -271,7 +273,14 @@ mod tests {
             "title": "test",
             "contains_masks": false,
             "stickers": [],
-            "is_animated": false
+            "is_animated": false,
+            "thumb": {
+                "file_id": "thumb-file-id",
+                "file_unique_id": "thumb-file-unique-id",
+                "width": 512,
+                "height": 512,
+                "file_size": 2048,
+            }
         }))
         .unwrap();
         assert_eq!(data.name, "test");
@@ -279,5 +288,12 @@ mod tests {
         assert!(!data.is_animated);
         assert!(!data.contains_masks);
         assert!(data.stickers.is_empty());
+
+        let thumb = data.thumb.unwrap();
+        assert_eq!(thumb.file_id, "thumb-file-id");
+        assert_eq!(thumb.file_unique_id, "thumb-file-unique-id");
+        assert_eq!(thumb.width, 512);
+        assert_eq!(thumb.height, 512);
+        assert_eq!(thumb.file_size.unwrap(), 2048);
     }
 }

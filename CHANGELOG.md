@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.8.0 (01.04.2020)
+
+- Added Bot API 4.7 support
+  * Added `SendDice` method.
+  * Added `MessageData::Dice` variant with `Dice` type.
+  * Added `BotCommand` type.
+  * Added `SetMyCommands` and `GetMyCommands` methods.
+  * Added TGS stickers support.
+  * Added `thumb` field to `StickerSet` struct.
+  * Added `SetStickerSetThumb` method.
+- Renamed some message entity structs
+  * `BotCommand` -> `TextEntityBotCommand`
+  * `TextLink` -> `TextEntityLink`
+  * `TextMention` -> `TextEntityMention`
+- Added some missing trait derives
+
 ## 0.7.1 (16.03.2020)
 
 - Impl `Eq` for `ChatId` and `UserId`.

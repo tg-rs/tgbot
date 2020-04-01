@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Describes actions that a non-administrator user is allowed to take in a chat
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize)]
 pub struct ChatPermissions {
     /// True, if the user is allowed to send text messages, contacts, locations and venues
     #[serde(skip_serializing_if = "Option::is_none")]

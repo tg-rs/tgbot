@@ -10,7 +10,7 @@ const ESCAPE_MARKDOWNV2: [char; 18] = [
 /// if you want Telegram apps to show
 /// bold, italic, fixed-width text or
 /// inline URLs in the media caption.
-#[derive(Clone, Copy, Debug, Hash, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ParseMode {
     /// HTML
     #[serde(rename = "HTML")]

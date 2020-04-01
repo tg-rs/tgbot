@@ -8,7 +8,7 @@ use serde_json::Error as JsonError;
 use std::{error::Error as StdError, fmt};
 
 /// The part of the face relative to which the mask should be placed
-#[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum MaskPositionPoint {
     /// “forehead”

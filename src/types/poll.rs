@@ -39,7 +39,7 @@ pub struct PollOption {
 }
 
 /// Kind of a native poll
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum PollKind {
     /// Quiz Mode

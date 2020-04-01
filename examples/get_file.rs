@@ -19,7 +19,6 @@ struct Handler {
 }
 
 async fn handle_document(api: &Api, tmpdir: &Path, document: Document) {
-    let api = api.clone();
     let path = tmpdir.join(document.file_name.clone().unwrap_or_else(|| String::from("unknown")));
     let file = api.execute(GetFile::new(document.file_id.as_str())).await.unwrap();
     let file_path = file.file_path.unwrap();

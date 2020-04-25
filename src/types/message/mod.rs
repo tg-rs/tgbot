@@ -1,5 +1,10 @@
 use crate::types::{
-    chat::Chat, message::raw::RawMessage, primitive::Integer, reply_markup::InlineKeyboardMarkup, user::User,
+    chat::Chat,
+    message::raw::RawMessage,
+    primitive::Integer,
+    reply_markup::InlineKeyboardMarkup,
+    text::{ParseTextError, Text, TextEntity, TextEntityBotCommand},
+    user::User,
 };
 use serde::{de::Error, Deserialize, Deserializer};
 use std::{error::Error as StdError, fmt};
@@ -8,10 +13,8 @@ mod data;
 mod forward;
 mod kind;
 mod raw;
-mod text;
 
-pub(crate) use self::raw::RawMessageEntity;
-pub use self::{data::*, forward::*, kind::*, text::*};
+pub use self::{data::*, forward::*, kind::*};
 
 /// This object represents a message
 #[derive(Clone, Debug)]

@@ -1,8 +1,5 @@
-use crate::types::{
-    message::raw::{RawMessageEntity, RawMessageEntityKind},
-    primitive::Integer,
-    user::User,
-};
+use crate::types::{primitive::Integer, user::User};
+use serde::Deserialize;
 use std::{error::Error as StdError, fmt, string::FromUtf16Error};
 
 /// Text with entities
@@ -17,7 +14,7 @@ pub struct Text {
 impl Text {
     pub(crate) fn parse<S: Into<String>>(
         data: S,
-        entities: Option<Vec<RawMessageEntity>>,
+        entities: Option<Vec<RawTextEntity>>,
     ) -> Result<Text, ParseTextError> {
         let data = data.into();
         let entities = if let Some(entities) = entities {
@@ -93,10 +90,10 @@ pub enum TextEntity {
 }
 
 impl TextEntity {
-    fn from_raw(entity: RawMessageEntity, data: TextEntityData) -> Result<TextEntity, ParseTextError> {
+    fn from_raw(entity: RawTextEntity, data: TextEntityData) -> Result<TextEntity, ParseTextError> {
         Ok(match entity.kind {
-            RawMessageEntityKind::Bold => TextEntity::Bold(data),
-            RawMessageEntityKind::BotCommand => {
+            RawTextEntityKind::Bold => TextEntity::Bold(data),
+            RawTextEntityKind::BotCommand => {
                 let parts = data.data.as_str().splitn(2, '@').collect::<Vec<&str>>();
                 let len = parts.len();
                 assert!(len >= 1);
@@ -106,28 +103,28 @@ impl TextEntity {
                     data,
                 })
             }
-            RawMessageEntityKind::Cashtag => TextEntity::Cashtag(data),
-            RawMessageEntityKind::Code => TextEntity::Code(data),
-            RawMessageEntityKind::Email => TextEntity::Email(data),
-            RawMessageEntityKind::Hashtag => TextEntity::Hashtag(data),
-            RawMessageEntityKind::Italic => TextEntity::Italic(data),
-            RawMessageEntityKind::Mention => TextEntity::Mention(data),
-            RawMessageEntityKind::PhoneNumber => TextEntity::PhoneNumber(data),
-            RawMessageEntityKind::Pre => TextEntity::Pre {
+            RawTextEntityKind::Cashtag => TextEntity::Cashtag(data),
+            RawTextEntityKind::Code => TextEntity::Code(data),
+            RawTextEntityKind::Email => TextEntity::Email(data),
+            RawTextEntityKind::Hashtag => TextEntity::Hashtag(data),
+            RawTextEntityKind::Italic => TextEntity::Italic(data),
+            RawTextEntityKind::Mention => TextEntity::Mention(data),
+            RawTextEntityKind::PhoneNumber => TextEntity::PhoneNumber(data),
+            RawTextEntityKind::Pre => TextEntity::Pre {
                 data,
                 language: entity.language,
             },
-            RawMessageEntityKind::Strikethrough => TextEntity::Strikethrough(data),
-            RawMessageEntityKind::TextLink => match entity.url {
+            RawTextEntityKind::Strikethrough => TextEntity::Strikethrough(data),
+            RawTextEntityKind::TextLink => match entity.url {
                 Some(url) => TextEntity::TextLink(TextEntityLink { data, url }),
                 None => return Err(ParseTextError::NoUrl),
             },
-            RawMessageEntityKind::TextMention => match entity.user {
+            RawTextEntityKind::TextMention => match entity.user {
                 Some(user) => TextEntity::TextMention(TextEntityMention { data, user }),
                 None => return Err(ParseTextError::NoUser),
             },
-            RawMessageEntityKind::Underline => TextEntity::Underline(data),
-            RawMessageEntityKind::Url => TextEntity::Url(data),
+            RawTextEntityKind::Underline => TextEntity::Underline(data),
+            RawTextEntityKind::Url => TextEntity::Url(data),
         })
     }
 }
@@ -207,6 +204,37 @@ impl fmt::Display for ParseTextError {
             FromUtf16(err) => write!(out, "can not get UTF-16 text data: {}", err),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub(crate) struct RawTextEntity {
+    #[serde(rename = "type")]
+    kind: RawTextEntityKind,
+    offset: Integer,
+    length: Integer,
+    url: Option<String>,
+    user: Option<User>,
+    language: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum RawTextEntityKind {
+    Bold,
+    BotCommand,
+    Cashtag,
+    Code,
+    Email,
+    Hashtag,
+    Italic,
+    Mention,
+    PhoneNumber,
+    Pre,
+    Strikethrough,
+    TextLink,
+    TextMention,
+    Underline,
+    Url,
 }
 
 #[cfg(test)]

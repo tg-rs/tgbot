@@ -541,7 +541,11 @@ mod tests {
         } = update
         {
             assert_eq!(id, 1);
-            assert_eq!(data.id, "poll-id");
+            if let Poll::Regular(data) = data {
+                assert_eq!(data.id, "poll-id");
+            } else {
+                panic!("Unexpected poll kind");
+            }
         } else {
             panic!("Unexpected update {:?}", update);
         }

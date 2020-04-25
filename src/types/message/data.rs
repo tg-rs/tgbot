@@ -127,6 +127,7 @@ pub enum MessageData {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::types::dice::DiceKind;
 
     #[test]
     fn deserialize_animation() {
@@ -272,12 +273,14 @@ mod tests {
             "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
             "dice": {
                 "value": 1,
+                "emoji": "🎯"
             }
         }))
         .unwrap();
         if let MessageData::Dice(data) = msg.data {
             assert_eq!(msg.id, 1);
-            assert_eq!(data.value, 1);
+            assert_eq!(data.value(), 1);
+            assert_eq!(data.kind(), DiceKind::Darts);
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }
@@ -638,7 +641,11 @@ mod tests {
         .unwrap();
         if let MessageData::Poll(data) = msg.data {
             assert_eq!(msg.id, 1);
-            assert_eq!(data.id, "poll-id");
+            if let Poll::Regular(data) = data {
+                assert_eq!(data.id, "poll-id");
+            } else {
+                panic!("Unexpected poll kind")
+            }
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }

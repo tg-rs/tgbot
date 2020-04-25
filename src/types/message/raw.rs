@@ -14,6 +14,7 @@ use crate::types::{
     primitive::Integer,
     reply_markup::InlineKeyboardMarkup,
     stickers::Sticker,
+    text::RawTextEntity,
     user::User,
     venue::Venue,
     video::Video,
@@ -39,8 +40,8 @@ pub(super) struct RawMessage {
     pub media_group_id: Option<String>,
     pub author_signature: Option<String>,
     pub text: Option<String>,
-    pub entities: Option<Vec<RawMessageEntity>>,
-    pub caption_entities: Option<Vec<RawMessageEntity>>,
+    pub entities: Option<Vec<RawTextEntity>>,
+    pub caption_entities: Option<Vec<RawTextEntity>>,
     pub audio: Option<Audio>,
     pub animation: Option<Animation>,
     pub dice: Option<Dice>,
@@ -72,35 +73,4 @@ pub(super) struct RawMessage {
     pub connected_website: Option<String>,
     pub passport_data: Option<PassportData>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
-}
-
-#[derive(Clone, Debug, Deserialize)]
-pub(crate) struct RawMessageEntity {
-    #[serde(rename = "type")]
-    pub kind: RawMessageEntityKind,
-    pub offset: Integer,
-    pub length: Integer,
-    pub url: Option<String>,
-    pub user: Option<User>,
-    pub language: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub(crate) enum RawMessageEntityKind {
-    Bold,
-    BotCommand,
-    Cashtag,
-    Code,
-    Email,
-    Hashtag,
-    Italic,
-    Mention,
-    PhoneNumber,
-    Pre,
-    Strikethrough,
-    TextLink,
-    TextMention,
-    Underline,
-    Url,
 }

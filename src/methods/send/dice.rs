@@ -1,7 +1,7 @@
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, Integer, Message, ReplyMarkup},
+    types::{ChatId, DiceKind, Integer, Message, ReplyMarkup},
 };
 use serde::Serialize;
 
@@ -11,6 +11,8 @@ use serde::Serialize;
 #[derive(Clone, Debug, Serialize)]
 pub struct SendDice {
     chat_id: ChatId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    emoji: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25,12 +27,14 @@ impl SendDice {
     /// # Arguments
     ///
     /// * chat_id - Unique identifier for the target chat
-    pub fn new<C>(chat_id: C) -> Self
+    /// * kind - Kind of dice
+    pub fn new<C>(chat_id: C, kind: DiceKind) -> Self
     where
         C: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
+            emoji: Some(String::from(kind.into_raw())),
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -77,7 +81,7 @@ mod tests {
 
     #[test]
     fn send_dice() {
-        let request = SendDice::new(1)
+        let request = SendDice::new(1, DiceKind::Bones)
             .disable_notification(true)
             .reply_to_message_id(1)
             .reply_markup(ForceReply::new(true))
@@ -87,6 +91,7 @@ mod tests {
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["chat_id"], 1);
+            assert_eq!(data["emoji"], "🎲");
             assert_eq!(data["disable_notification"], true);
             assert_eq!(data["reply_to_message_id"], 1);
             assert_eq!(data["reply_markup"]["force_reply"], true);

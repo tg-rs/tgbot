@@ -1,7 +1,7 @@
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, InlineKeyboardMarkup, Integer, Message, Poll, PollKind, ReplyMarkup},
+    types::{ChatId, InlineKeyboardMarkup, Integer, Message, ParseMode, Poll, PollKind, ReplyMarkup},
 };
 use serde::Serialize;
 
@@ -19,6 +19,14 @@ struct PollParameters {
     allows_multiple_answers: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     correct_option_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    explanation: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    explanation_parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    open_period: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    close_date: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_closed: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,6 +47,10 @@ impl PollParameters {
             kind: Some(kind),
             allows_multiple_answers: None,
             correct_option_id: None,
+            explanation: None,
+            explanation_parse_mode: None,
+            open_period: None,
+            close_date: None,
             is_closed: None,
             disable_notification: None,
             reply_to_message_id: None,
@@ -92,6 +104,39 @@ impl SendQuiz {
     /// 0-based identifier of the correct answer option, required for polls in quiz mode
     pub fn correct_option_id(mut self, correct_option_id: Integer) -> Self {
         self.inner.correct_option_id = Some(correct_option_id);
+        self
+    }
+
+    /// Text that is shown when a user chooses an incorrect answer or taps on the lamp icon
+    ///
+    /// 0-200 characters with at most 2 line feeds after entities parsing
+    pub fn explanation<E: Into<String>>(mut self, explanation: E) -> Self {
+        self.inner.explanation = Some(explanation.into());
+        self
+    }
+
+    /// Mode for parsing entities in the explanation
+    pub fn explanation_parse_mode(mut self, parse_mode: ParseMode) -> Self {
+        self.inner.explanation_parse_mode = Some(parse_mode);
+        self
+    }
+
+    /// Amount of time in seconds the poll will be active after creation, 5-600
+    ///
+    /// Can't be used together with close_date (close_date will be set to None)
+    pub fn open_period(mut self, period: Integer) -> Self {
+        self.inner.open_period = Some(period);
+        self.inner.close_date = None;
+        self
+    }
+
+    /// Point in time (Unix timestamp) when the poll will be automatically closed
+    ///
+    /// Must be at least 5 and no more than 600 seconds in the future.
+    /// Can't be used together with open_period (open_perido will be set to None)
+    pub fn close_date(mut self, close_date: Integer) -> Self {
+        self.inner.close_date = Some(close_date);
+        self.inner.open_period = None;
         self
     }
 
@@ -179,6 +224,25 @@ impl SendPoll {
     /// True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False
     pub fn allows_multiple_answers(mut self, allows_multiple_answers: bool) -> Self {
         self.inner.allows_multiple_answers = Some(allows_multiple_answers);
+        self
+    }
+
+    /// Amount of time in seconds the poll will be active after creation, 5-600
+    ///
+    /// Can't be used together with close_date (close_date will be set to None)
+    pub fn open_period(mut self, period: Integer) -> Self {
+        self.inner.open_period = Some(period);
+        self.inner.close_date = None;
+        self
+    }
+
+    /// Point in time (Unix timestamp) when the poll will be automatically closed
+    ///
+    /// Must be at least 5 and no more than 600 seconds in the future.
+    /// Can't be used together with open_period (open_perido will be set to None)
+    pub fn close_date(mut self, close_date: Integer) -> Self {
+        self.inner.close_date = Some(close_date);
+        self.inner.open_period = None;
         self
     }
 

@@ -1,8 +1,8 @@
 use crate::types::{
     animation::Animation,
-    message::{RawMessageEntity, Text},
     photo_size::PhotoSize,
     primitive::Integer,
+    text::{RawTextEntity, Text},
     user::User,
 };
 use serde::{de::Error, Deserialize, Deserializer};
@@ -54,7 +54,7 @@ struct RawGame {
     description: String,
     photo: Vec<PhotoSize>,
     text: Option<String>,
-    text_entities: Option<Vec<RawMessageEntity>>,
+    text_entities: Option<Vec<RawTextEntity>>,
     animation: Option<Animation>,
 }
 

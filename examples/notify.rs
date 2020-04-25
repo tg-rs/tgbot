@@ -1,5 +1,4 @@
 use dotenv::dotenv;
-use env_logger;
 use std::{env, time::Duration};
 use tgbot::{
     methods::SendMessage,

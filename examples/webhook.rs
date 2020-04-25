@@ -1,7 +1,5 @@
 use async_trait::async_trait;
 use dotenv::dotenv;
-use env_logger;
-use log::info;
 use tgbot::{types::Update, webhook, UpdateHandler};
 
 struct Handler;
@@ -9,7 +7,7 @@ struct Handler;
 #[async_trait]
 impl UpdateHandler for Handler {
     async fn handle(&mut self, update: Update) {
-        info!("got an update: {:?}\n", update);
+        log::info!("got an update: {:?}\n", update);
     }
 }
 

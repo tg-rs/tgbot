@@ -1,7 +1,6 @@
 use async_trait::async_trait;
 use bytes::Buf;
 use dotenv::dotenv;
-use env_logger;
 use hyper::{body, header::HeaderValue, Body, Client, Method, Request, Server, StatusCode};
 use std::sync::Arc;
 use tgbot::{types::Update, webhook::WebhookServiceFactory, UpdateHandler};

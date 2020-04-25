@@ -1,7 +1,5 @@
 use async_trait::async_trait;
 use dotenv::dotenv;
-use env_logger;
-use log;
 use serde::{Deserialize, Serialize};
 use std::env;
 use tgbot::{

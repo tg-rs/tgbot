@@ -1,6 +1,5 @@
 use crate::types::primitive::Integer;
 use mime::{Mime, APPLICATION_OCTET_STREAM};
-use mime_guess;
 use serde::Deserialize;
 use std::{fmt, path::Path};
 use tokio::{

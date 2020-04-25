@@ -1,8 +1,6 @@
 use async_trait::async_trait;
 use dotenv::dotenv;
-use env_logger;
 use futures_util::stream::StreamExt;
-use log;
 use std::{env, path::Path};
 use tempfile::{tempdir, TempDir};
 use tgbot::{

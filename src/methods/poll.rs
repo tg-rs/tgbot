@@ -133,7 +133,7 @@ impl SendQuiz {
     /// Point in time (Unix timestamp) when the poll will be automatically closed
     ///
     /// Must be at least 5 and no more than 600 seconds in the future.
-    /// Can't be used together with open_period (open_perido will be set to None)
+    /// Can't be used together with open_period (open_period will be set to None)
     pub fn close_date(mut self, close_date: Integer) -> Self {
         self.inner.close_date = Some(close_date);
         self.inner.open_period = None;
@@ -239,7 +239,7 @@ impl SendPoll {
     /// Point in time (Unix timestamp) when the poll will be automatically closed
     ///
     /// Must be at least 5 and no more than 600 seconds in the future.
-    /// Can't be used together with open_period (open_perido will be set to None)
+    /// Can't be used together with open_period (open_period will be set to None)
     pub fn close_date(mut self, close_date: Integer) -> Self {
         self.inner.close_date = Some(close_date);
         self.inner.open_period = None;

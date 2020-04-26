@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.0 (26.04.2020)
+
+- Added Bot API 4.8 support
+  * `Poll` converted to enum.
+  * Added support for quiz explanation.
+  * Added `open_period` and `close_date` to poll/quiz.
+  * `Dice.value` field is private now, use `value()` method instead.
+  * Added DiceKind enum and `kind()` method to `Dice`.
+- Public access to InlineKeyboard data.
+
 ## 0.8.0 (01.04.2020)
 
 - Added Bot API 4.7 support

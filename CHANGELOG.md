@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 (20.06.2020)
+
+- Added Bot API 4.9 support.
+  * Added `via_bot` field to `Message` struct.
+  * Added `thumb_mime_type` to `InlineQueryResultGif` and `InlineQueryResultMpeg4Gif` structs.
+  * Added basketball dice. `DiceKind` is non-exhaustive now.
+- Fixed a bug with proxy without username/password.
+
 ## 0.9.0 (26.04.2020)
 
 - Added Bot API 4.8 support

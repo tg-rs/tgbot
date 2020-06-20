@@ -49,11 +49,13 @@ impl Config {
     pub fn proxy<U: AsRef<str>>(mut self, url: U) -> Result<Self, ParseProxyError> {
         let raw_url = url.as_ref();
         let url = Url::parse(raw_url)?;
-        if url.has_authority() {
-            let mut base_url = url.clone();
-            base_url.set_username("").expect("Failed to remove username");
-            base_url.set_password(None).expect("Failed to remove password");
-            self.proxy = Some(Proxy::all(base_url.as_str())?.basic_auth(url.username(), url.password().unwrap_or("")));
+        let username = url.username();
+        if !username.is_empty() {
+            let mut base_url = format!("{}://{}", url.scheme(), url.host_str().expect("Can not get host"));
+            if let Some(port) = url.port() {
+                base_url = format!("{}:{}", base_url, port);
+            }
+            self.proxy = Some(Proxy::all(base_url.as_str())?.basic_auth(username, url.password().unwrap_or("")));
         } else {
             self.proxy = Some(Proxy::all(raw_url)?);
         }

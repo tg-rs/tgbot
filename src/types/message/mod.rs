@@ -31,6 +31,8 @@ pub struct Message {
     /// Note that the Message object in this field will not contain further
     /// reply_to fields even if it itself is a reply
     pub reply_to: Option<Box<Message>>,
+    /// Bot through which the message was sent
+    pub via_bot: Option<User>,
     /// Date the message was last edited in Unix time
     pub edit_date: Option<Integer>,
     /// The unique identifier of a media message group this message belongs to
@@ -207,6 +209,7 @@ impl Message {
                     kind: message_kind,
                     forward: forward_info,
                     reply_to: reply_to_message,
+                    via_bot: raw.via_bot,
                     edit_date: raw.edit_date,
                     media_group_id: raw.media_group_id,
                     data: $data,
@@ -373,6 +376,28 @@ mod tests {
         }))
         .unwrap();
         assert!(data.reply_to.is_some());
+    }
+
+    #[test]
+    fn via_bot() {
+        let data: Message = serde_json::from_value(serde_json::json!({
+            "message_id": 2, "date": 1,
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "text": "test",
+            "via_bot": {
+                "id": 3, "is_bot": true,
+                "first_name": "example",
+                "last_name": "bot",
+                "username": "examplebot"
+            }
+        }))
+        .unwrap();
+        let bot = data.via_bot.expect("via_bot is empty");
+        assert_eq!(bot.id, 3);
+        assert_eq!(bot.first_name, "example");
+        assert_eq!(bot.last_name.unwrap(), "bot");
+        assert_eq!(bot.username.unwrap(), "examplebot");
     }
 
     #[test]

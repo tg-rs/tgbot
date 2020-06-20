@@ -36,6 +36,7 @@ pub(super) struct RawMessage {
     pub forward_sender_name: Option<String>,
     pub forward_date: Option<Integer>,
     pub reply_to_message: Option<Box<RawMessage>>,
+    pub via_bot: Option<User>,
     pub edit_date: Option<Integer>,
     pub media_group_id: Option<String>,
     pub author_signature: Option<String>,

@@ -593,6 +593,7 @@ mod tests {
         assert_eq!(
             serde_json::to_value(InlineQueryResult::from(
                 InlineQueryResultGif::new("id", "url", "thumb-url")
+                    .thumb_mime_type("video/mp4")
                     .gif_width(200)
                     .gif_height(300)
                     .gif_duration(400)
@@ -608,6 +609,7 @@ mod tests {
                 "id": "id",
                 "gif_url": "url",
                 "thumb_url": "thumb-url",
+                "thumb_mime_type": "video/mp4",
                 "gif_width": 200,
                 "gif_height": 300,
                 "gif_duration": 400,
@@ -683,6 +685,7 @@ mod tests {
         assert_eq!(
             serde_json::to_value(InlineQueryResult::from(
                 InlineQueryResultMpeg4Gif::new("id", "url", "thumb-url")
+                    .thumb_mime_type("video/mp4")
                     .mpeg4_width(200)
                     .mpeg4_height(300)
                     .mpeg4_duration(400)
@@ -698,6 +701,7 @@ mod tests {
                 "id": "id",
                 "mpeg4_url": "url",
                 "thumb_url": "thumb-url",
+                "thumb_mime_type": "video/mp4",
                 "mpeg4_width": 200,
                 "mpeg4_height": 300,
                 "mpeg4_duration": 400,

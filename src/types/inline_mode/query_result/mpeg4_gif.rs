@@ -15,6 +15,8 @@ pub struct InlineQueryResultMpeg4Gif {
     mpeg4_url: String,
     thumb_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    thumb_mime_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     mpeg4_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mpeg4_height: Option<Integer>,
@@ -53,12 +55,23 @@ impl InlineQueryResultMpeg4Gif {
             mpeg4_height: None,
             mpeg4_duration: None,
             thumb_url: thumb_url.into(),
+            thumb_mime_type: None,
             title: None,
             caption: None,
             parse_mode: None,
             reply_markup: None,
             input_message_content: None,
         }
+    }
+
+    /// MIME type of the thumbnail
+    ///
+    /// Must be one of “image/jpeg”, “image/gif”, or “video/mp4”
+    ///
+    /// Defaults to “image/jpeg”
+    pub fn thumb_mime_type<S: Into<String>>(mut self, mime_type: S) -> Self {
+        self.thumb_mime_type = Some(mime_type.into());
+        self
     }
 
     /// Video width

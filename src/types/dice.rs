@@ -33,11 +33,14 @@ impl Dice {
 
 /// Kind of the dice
 #[derive(Debug, Copy, Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[non_exhaustive]
 pub enum DiceKind {
     /// Bones
     Bones,
     /// Darts
     Darts,
+    /// Basketball
+    Basketball,
 }
 
 impl DiceKind {
@@ -45,6 +48,7 @@ impl DiceKind {
         Ok(match raw.as_str() {
             "🎲" => Self::Bones,
             "🎯" => Self::Darts,
+            "🏀" => Self::Basketball,
             _ => return Err(DiceError::UnexpectedEmoji(raw)),
         })
     }
@@ -53,6 +57,7 @@ impl DiceKind {
         match self {
             Self::Bones => "🎲",
             Self::Darts => "🎯",
+            Self::Basketball => "🏀",
         }
     }
 }
@@ -108,5 +113,13 @@ mod tests {
         .unwrap();
         assert_eq!(dice.value(), 5);
         assert_eq!(dice.kind(), DiceKind::Bones);
+
+        let dice: Dice = serde_json::from_value(serde_json::json!({
+            "emoji": "🏀",
+            "value": 3
+        }))
+        .unwrap();
+        assert_eq!(dice.value(), 3);
+        assert_eq!(dice.kind(), DiceKind::Basketball);
     }
 }

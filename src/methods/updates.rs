@@ -250,7 +250,7 @@ mod tests {
                     .iter()
                     .map(|x| x.as_str().unwrap())
                     .collect();
-                updates.sort();
+                updates.sort_unstable();
                 assert_eq!(
                     updates,
                     vec![
@@ -314,7 +314,7 @@ mod tests {
                     .iter()
                     .map(|x| x.as_str().unwrap())
                     .collect();
-                updates.sort();
+                updates.sort_unstable();
                 assert_eq!(
                     updates,
                     vec![

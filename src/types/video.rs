@@ -19,6 +19,8 @@ pub struct Video {
     pub duration: Integer,
     /// Video thumbnail
     pub thumb: Option<PhotoSize>,
+    /// Original filename as defined by sender
+    pub file_name: Option<String>,
     /// Mime type of a file as defined by sender
     pub mime_type: Option<String>,
     /// File size
@@ -44,6 +46,7 @@ mod tests {
                 "height": 24,
                 "file_size": 12324
             },
+            "file_name": "Filename",
             "mime_type": "video/mpeg",
             "file_size": 4
         }))
@@ -62,6 +65,7 @@ mod tests {
         assert_eq!(thumb.height, 24);
         assert_eq!(thumb.file_size.unwrap(), 12324);
 
+        assert_eq!(data.file_name.unwrap(), "Filename");
         assert_eq!(data.mime_type.unwrap(), "video/mpeg");
         assert_eq!(data.file_size.unwrap(), 4);
     }
@@ -83,6 +87,7 @@ mod tests {
         assert_eq!(data.height, 2);
         assert_eq!(data.duration, 3);
         assert!(data.thumb.is_none());
+        assert!(data.file_name.is_none());
         assert!(data.mime_type.is_none());
         assert!(data.file_size.is_none());
     }

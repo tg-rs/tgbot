@@ -17,6 +17,8 @@ pub struct Audio {
     pub performer: Option<String>,
     /// Title of the audio as defined by sender or by audio tags
     pub title: Option<String>,
+    /// Original filename as defined by sender
+    pub file_name: Option<String>,
     /// MIME type of the file as defined by sender
     pub mime_type: Option<String>,
     /// File size
@@ -37,6 +39,7 @@ mod tests {
             "duration": 243,
             "performer": "Performer",
             "title": "Title",
+            "file_name": "Filename",
             "mime_type": "audio/mpeg",
             "file_size": 1234,
             "thumb": {
@@ -54,6 +57,7 @@ mod tests {
         assert_eq!(data.duration, 243);
         assert_eq!(data.performer.unwrap(), "Performer");
         assert_eq!(data.title.unwrap(), "Title");
+        assert_eq!(data.file_name.unwrap(), "Filename");
         assert_eq!(data.mime_type.unwrap(), "audio/mpeg");
         assert_eq!(data.file_size.unwrap(), 1234);
 
@@ -78,6 +82,7 @@ mod tests {
         assert_eq!(data.duration, 243);
         assert!(data.performer.is_none());
         assert!(data.title.is_none());
+        assert!(data.file_name.is_none());
         assert!(data.mime_type.is_none());
         assert!(data.file_size.is_none());
         assert!(data.thumb.is_none());

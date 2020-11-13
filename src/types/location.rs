@@ -13,6 +13,10 @@ pub struct Location {
     ///
     /// For active live locations only
     pub live_period: Option<Integer>,
+    /// The direction in which user is moving, in degrees; 1-360
+    ///
+    /// For active live locations only
+    pub heading: Option<Integer>,
 }
 
 #[cfg(test)]
@@ -25,12 +29,14 @@ mod tests {
         let data: Location = serde_json::from_value(serde_json::json!({
             "longitude": 2.5,
             "latitude": 2.6,
-            "live_period": 1
+            "live_period": 1,
+            "heading": 45
         }))
         .unwrap();
         assert_eq!(data.longitude, 2.5);
         assert_eq!(data.latitude, 2.6);
         assert_eq!(data.live_period.unwrap(), 1);
+        assert_eq!(data.heading.unwrap(), 45);
     }
 
     #[test]
@@ -42,5 +48,7 @@ mod tests {
         .unwrap();
         assert_eq!(data.longitude, 2.5);
         assert_eq!(data.latitude, 2.6);
+        assert!(data.live_period.is_none());
+        assert!(data.heading.is_none());
     }
 }

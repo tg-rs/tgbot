@@ -19,6 +19,8 @@ pub struct InlineQueryResultLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    heading: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
@@ -50,6 +52,7 @@ impl InlineQueryResultLocation {
             longitude,
             title: title.into(),
             live_period: None,
+            heading: None,
             reply_markup: None,
             input_message_content: None,
             thumb_url: None,
@@ -61,6 +64,14 @@ impl InlineQueryResultLocation {
     /// Period in seconds for which the location can be updated, should be between 60 and 86400
     pub fn live_period(mut self, live_period: Integer) -> Self {
         self.live_period = Some(live_period);
+        self
+    }
+
+    /// For live locations, a direction in which the user is moving, in degrees
+    ///
+    /// Must be between 1 and 360 if specified
+    pub fn heading(mut self, heading: Integer) -> Self {
+        self.heading = Some(heading);
         self
     }
 

@@ -14,6 +14,8 @@ pub struct SendLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    heading: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<Integer>,
@@ -35,6 +37,7 @@ impl SendLocation {
             latitude,
             longitude,
             live_period: None,
+            heading: None,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -46,6 +49,14 @@ impl SendLocation {
     /// Should be between 60 and 86400
     pub fn live_period(mut self, live_period: Integer) -> Self {
         self.live_period = Some(live_period);
+        self
+    }
+
+    /// For live locations, a direction in which the user is moving, in degrees
+    ///
+    /// Must be between 1 and 360 if specified
+    pub fn heading(mut self, heading: Integer) -> Self {
+        self.heading = Some(heading);
         self
     }
 
@@ -89,9 +100,10 @@ mod tests {
 
     #[allow(clippy::float_cmp)]
     #[test]
-    fn send_location() {
+    fn send_location_full() {
         let request = SendLocation::new(1, 2.0, 3.0)
             .live_period(100)
+            .heading(120)
             .disable_notification(true)
             .reply_to_message_id(1)
             .reply_markup(ForceReply::new(true))
@@ -104,9 +116,31 @@ mod tests {
             assert_eq!(data["latitude"], 2.0);
             assert_eq!(data["longitude"], 3.0);
             assert_eq!(data["live_period"], 100);
+            assert_eq!(data["heading"], 120);
             assert_eq!(data["disable_notification"], true);
             assert_eq!(data["reply_to_message_id"], 1);
             assert_eq!(data["reply_markup"]["force_reply"], true);
+        } else {
+            panic!("Unexpected request body");
+        }
+    }
+
+    #[allow(clippy::float_cmp)]
+    #[test]
+    fn send_location_partial() {
+        let request = SendLocation::new(1, 2.0, 3.0).into_request();
+        assert_eq!(request.get_method(), RequestMethod::Post);
+        assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/sendLocation");
+        if let RequestBody::Json(data) = request.into_body() {
+            let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "chat_id": 1,
+                    "latitude": 2.0,
+                    "longitude": 3.0
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }

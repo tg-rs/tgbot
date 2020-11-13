@@ -65,6 +65,8 @@ pub struct InputMessageContentLocation {
     longitude: Float,
     #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    heading: Option<Integer>,
 }
 
 impl InputMessageContentLocation {
@@ -79,12 +81,21 @@ impl InputMessageContentLocation {
             latitude,
             longitude,
             live_period: None,
+            heading: None,
         }
     }
 
     /// Period in seconds for which the location can be updated, should be between 60 and 86400
     pub fn live_period(mut self, live_period: Integer) -> Self {
         self.live_period = Some(live_period);
+        self
+    }
+
+    /// For live locations, a direction in which the user is moving, in degrees
+    ///
+    /// Must be between 1 and 360 if specified
+    pub fn heading(mut self, heading: Integer) -> Self {
+        self.heading = Some(heading);
         self
     }
 }
@@ -213,16 +224,19 @@ mod tests {
     #[test]
     fn serialize_location() {
         let val = serde_json::to_value(InputMessageContent::from(
-            InputMessageContentLocation::new(1.1, 2.1).live_period(100),
+            InputMessageContentLocation::new(1.1, 2.1).live_period(100).heading(90),
         ))
         .unwrap();
         assert_eq!(val.get("latitude").unwrap().as_f64().unwrap().round(), 1.0);
         assert_eq!(val.get("longitude").unwrap().as_f64().unwrap().round(), 2.0);
         assert_eq!(val.get("live_period").unwrap().as_i64().unwrap(), 100);
+        assert_eq!(val.get("heading").unwrap().as_i64().unwrap(), 90);
 
         let val = serde_json::to_value(InputMessageContent::from(InputMessageContentLocation::new(1.1, 2.1))).unwrap();
         assert_eq!(val.get("latitude").unwrap().as_f64().unwrap().round(), 1.0);
         assert_eq!(val.get("longitude").unwrap().as_f64().unwrap().round(), 2.0);
+        assert!(val.get("live_period").is_none());
+        assert!(val.get("heading").is_none());
     }
 
     #[test]

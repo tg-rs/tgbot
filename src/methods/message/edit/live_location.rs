@@ -20,6 +20,8 @@ pub struct EditMessageLiveLocation {
     latitude: Float,
     longitude: Float,
     #[serde(skip_serializing_if = "Option::is_none")]
+    heading: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
@@ -39,6 +41,7 @@ impl EditMessageLiveLocation {
             inline_message_id: None,
             latitude,
             longitude,
+            heading: None,
             reply_markup: None,
         }
     }
@@ -57,8 +60,17 @@ impl EditMessageLiveLocation {
             inline_message_id: Some(inline_message_id.into()),
             latitude,
             longitude,
+            heading: None,
             reply_markup: None,
         }
+    }
+
+    /// Direction in which the user is moving, in degrees
+    ///
+    /// Must be between 1 and 360 if specified
+    pub fn heading(mut self, heading: Integer) -> Self {
+        self.heading = Some(heading);
+        self
     }
 
     /// New inline keyboard
@@ -145,6 +157,7 @@ mod tests {
     #[test]
     fn edit_message_live_location() {
         let request = EditMessageLiveLocation::new(1, 2, 3.0, 4.0)
+            .heading(100)
             .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
@@ -158,6 +171,7 @@ mod tests {
             assert_eq!(data["message_id"], 2);
             assert_eq!(data["latitude"], 3.0);
             assert_eq!(data["longitude"], 4.0);
+            assert_eq!(data["heading"], 100);
             assert_eq!(data["reply_markup"]["inline_keyboard"][0][0]["text"], "text");
         } else {
             panic!("Unexpected request body");
@@ -171,9 +185,14 @@ mod tests {
         );
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["inline_message_id"], "msg-id");
-            assert_eq!(data["latitude"], 3.0);
-            assert_eq!(data["longitude"], 4.0);
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "inline_message_id": "msg-id",
+                    "latitude": 3.0,
+                    "longitude": 4.0
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }

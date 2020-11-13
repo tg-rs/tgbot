@@ -1,6 +1,6 @@
 use crate::{
     request::FormValue,
-    types::{InputFile, InputFileKind, InputMediaPhoto, InputMediaVideo},
+    types::{InputFile, InputFileKind, InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo},
 };
 use serde::Serialize;
 use serde_json::Error as JsonError;
@@ -77,6 +77,20 @@ impl MediaGroup {
 #[serde(tag = "type")]
 #[serde(rename_all = "lowercase")]
 pub enum MediaGroupItem {
+    Audio {
+        media: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        thumb: Option<String>,
+        #[serde(flatten)]
+        info: InputMediaAudio,
+    },
+    Document {
+        media: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        thumb: Option<String>,
+        #[serde(flatten)]
+        info: InputMediaDocument,
+    },
     Photo {
         media: String,
         #[serde(flatten)]
@@ -89,6 +103,46 @@ pub enum MediaGroupItem {
         #[serde(flatten)]
         info: InputMediaVideo,
     },
+}
+
+impl From<(String, InputMediaAudio)> for MediaGroupItem {
+    fn from((media, info): (String, InputMediaAudio)) -> Self {
+        MediaGroupItem::Audio {
+            media,
+            info,
+            thumb: None,
+        }
+    }
+}
+
+impl From<(String, String, InputMediaAudio)> for MediaGroupItem {
+    fn from((media, thumb, info): (String, String, InputMediaAudio)) -> Self {
+        MediaGroupItem::Audio {
+            media,
+            info,
+            thumb: Some(thumb),
+        }
+    }
+}
+
+impl From<(String, InputMediaDocument)> for MediaGroupItem {
+    fn from((media, info): (String, InputMediaDocument)) -> Self {
+        MediaGroupItem::Document {
+            media,
+            info,
+            thumb: None,
+        }
+    }
+}
+
+impl From<(String, String, InputMediaDocument)> for MediaGroupItem {
+    fn from((media, thumb, info): (String, String, InputMediaDocument)) -> Self {
+        MediaGroupItem::Document {
+            media,
+            info,
+            thumb: Some(thumb),
+        }
+    }
 }
 
 impl From<(String, InputMediaPhoto)> for MediaGroupItem {
@@ -160,8 +214,23 @@ mod tests {
     #[test]
     fn media_group() {
         let group = MediaGroup::default()
+            .add_item(InputFileReader::from(Cursor::new("test")), InputMediaAudio::default())
+            .add_item(
+                InputFileReader::from(Cursor::new("test")),
+                InputMediaDocument::default(),
+            )
             .add_item(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default())
             .add_item(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default())
+            .add_item_with_thumb(
+                InputFile::file_id("file-id"),
+                InputFile::url("thumb-url"),
+                InputMediaAudio::default(),
+            )
+            .add_item_with_thumb(
+                InputFile::file_id("file-id"),
+                InputFile::url("thumb-url"),
+                InputMediaDocument::default(),
+            )
             .add_item_with_thumb(
                 InputFile::file_id("file-id"),
                 InputFile::url("thumb-url"),
@@ -169,9 +238,47 @@ mod tests {
             )
             .into_form()
             .unwrap();
-        assert!(group.get("media").is_some());
+        let media: &str = group.get("media").unwrap().get_text().unwrap();
+        assert_eq!(
+            serde_json::from_str::<serde_json::Value>(media).unwrap(),
+            serde_json::json!([
+                {
+                    "media": "attach://tgbot_im_file_0",
+                    "type": "audio"
+                },
+                {
+                    "media": "attach://tgbot_im_file_1",
+                    "type": "document"
+                },
+                {
+                    "media": "attach://tgbot_im_file_2",
+                    "type": "photo"
+                },
+                {
+                    "media": "attach://tgbot_im_file_3",
+                    "type": "video"
+                },
+                {
+                    "media": "file-id",
+                    "thumb": "thumb-url",
+                    "type": "audio"
+                },
+                {
+                    "media": "file-id",
+                    "thumb": "thumb-url",
+                    "type": "document"
+                },
+                {
+                    "media": "file-id",
+                    "thumb": "thumb-url",
+                    "type": "video"
+                }
+            ])
+        );
         assert!(group.get("tgbot_im_file_0").is_some());
         assert!(group.get("tgbot_im_file_1").is_some());
+        assert!(group.get("tgbot_im_file_2").is_some());
+        assert!(group.get("tgbot_im_file_3").is_some());
 
         let err = MediaGroup::default().into_form().unwrap_err();
         assert_eq!(err.to_string(), "media group must contain at least 2 attachments");

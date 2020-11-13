@@ -64,6 +64,7 @@ impl<'de> Deserialize<'de> for ChatMember {
         Ok(match raw.status {
             RawChatMemberStatus::Administrator => ChatMember::Administrator(ChatMemberAdministrator {
                 user: raw.user,
+                is_anonymous: required!(is_anonymous),
                 can_be_edited: required!(can_be_edited),
                 can_change_info: required!(can_change_info),
                 custom_title: raw.custom_title,
@@ -77,6 +78,7 @@ impl<'de> Deserialize<'de> for ChatMember {
             }),
             RawChatMemberStatus::Creator => ChatMember::Creator(ChatMemberCreator {
                 user: raw.user,
+                is_anonymous: required!(is_anonymous),
                 custom_title: raw.custom_title,
             }),
             RawChatMemberStatus::Kicked => ChatMember::Kicked(ChatMemberKicked {
@@ -106,6 +108,8 @@ impl<'de> Deserialize<'de> for ChatMember {
 pub struct ChatMemberCreator {
     /// Information about the user
     pub user: User,
+    /// True, if the user's presence in the chat is hidden
+    pub is_anonymous: bool,
     /// Custom title for this user
     pub custom_title: Option<String>,
 }
@@ -115,6 +119,8 @@ pub struct ChatMemberCreator {
 pub struct ChatMemberAdministrator {
     /// Information about the user
     pub user: User,
+    /// True, if the user's presence in the chat is hidden
+    pub is_anonymous: bool,
     /// True, if the bot is allowed
     /// to edit administrator privileges of that user
     pub can_be_edited: bool,
@@ -207,6 +213,7 @@ mod tests {
                 "language_code": "RU"
             },
             "custom_title": "god",
+            "is_anonymous": false,
             "can_be_edited": true,
             "can_change_info": false,
             "can_post_messages": true,
@@ -221,6 +228,7 @@ mod tests {
         assert!(admin.is_member());
         assert_eq!(admin.get_user().id, 1);
         if let ChatMember::Administrator(ref mut admin) = admin {
+            assert!(!admin.is_anonymous);
             assert_eq!(admin.user.id, 1);
             assert_eq!(admin.user.is_bot, false);
             assert_eq!(admin.user.first_name, "firstname");
@@ -246,6 +254,7 @@ mod tests {
     fn deserialize_chat_member_creator() {
         let mut creator: ChatMember = serde_json::from_value(serde_json::json!({
             "status": "creator",
+            "is_anonymous": false,
             "custom_title": "creator",
             "user": {
                 "id": 1,
@@ -257,6 +266,7 @@ mod tests {
         assert!(creator.is_member());
         assert_eq!(creator.get_user().id, 1);
         if let ChatMember::Creator(ref mut creator) = creator {
+            assert!(!creator.is_anonymous);
             assert_eq!(creator.user.id, 1);
             assert_eq!(creator.user.is_bot, false);
             assert_eq!(creator.user.first_name, String::from("firstname"));

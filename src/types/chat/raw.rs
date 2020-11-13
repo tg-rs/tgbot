@@ -42,6 +42,7 @@ pub struct RawChatMember {
     pub user: User,
     pub status: RawChatMemberStatus,
     pub custom_title: Option<String>,
+    pub is_anonymous: Option<bool>,
     pub until_date: Option<Integer>,
     pub can_be_edited: Option<bool>,
     pub can_change_info: Option<bool>,

@@ -92,8 +92,7 @@ mod tests {
             "chat": {
                 "id": 1,
                 "type": "group",
-                "title": "grouptitle",
-                "all_members_are_administrators": true
+                "title": "grouptitle"
             },
             "text": "test",
             "edit_date": 1
@@ -108,7 +107,6 @@ mod tests {
         if let MessageKind::Group { chat, from } = msg.kind {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "grouptitle");
-            assert_eq!(chat.all_members_are_administrators, true);
             assert_eq!(from.id, 1);
             assert_eq!(from.first_name, "firstname");
             assert_eq!(from.is_bot, false);
@@ -124,7 +122,7 @@ mod tests {
 
         let input = json!({
             "message_id": 1, "date": 0, "text": "test",
-            "chat": {"id": 1, "type": "group", "title": "grouptitle", "all_members_are_administrators": true}
+            "chat": {"id": 1, "type": "group", "title": "grouptitle"}
         });
         let err = serde_json::from_value::<Message>(input).unwrap_err();
         assert_eq!(err.to_string(), String::from("\"from\" field is missing"));

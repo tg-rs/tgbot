@@ -6,12 +6,14 @@ use crate::types::{
 use serde::{de::Error, Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
 
+mod location;
 mod member;
 mod permissions;
 mod photo;
 mod raw;
 
 pub use self::{
+    location::ChatLocation,
     member::{ChatMember, ChatMemberAdministrator, ChatMemberKicked, ChatMemberRestricted},
     permissions::ChatPermissions,
     photo::ChatPhoto,
@@ -53,11 +55,11 @@ impl<'de> Deserialize<'de> for Chat {
                 photo: raw_chat.photo,
                 pinned_message: raw_chat.pinned_message,
                 invite_link: raw_chat.invite_link,
+                linked_chat_id: raw_chat.linked_chat_id,
             }),
             RawChatKind::Group => Chat::Group(GroupChat {
                 id: raw_chat.id,
                 title: required!(title),
-                all_members_are_administrators: required!(all_members_are_administrators),
                 photo: raw_chat.photo,
                 pinned_message: raw_chat.pinned_message,
                 invite_link: raw_chat.invite_link,
@@ -69,6 +71,8 @@ impl<'de> Deserialize<'de> for Chat {
                 first_name: required!(first_name),
                 last_name: raw_chat.last_name,
                 photo: raw_chat.photo,
+                bio: raw_chat.bio,
+                pinned_message: raw_chat.pinned_message,
             }),
             RawChatKind::Supergroup => Chat::Supergroup(SupergroupChat {
                 id: raw_chat.id,
@@ -82,6 +86,8 @@ impl<'de> Deserialize<'de> for Chat {
                 can_set_sticker_set: raw_chat.can_set_sticker_set,
                 permissions: raw_chat.permissions,
                 slow_mode_delay: raw_chat.slow_mode_delay,
+                linked_chat_id: raw_chat.linked_chat_id,
+                location: raw_chat.location,
             }),
         })
     }
@@ -108,10 +114,14 @@ pub struct ChannelChat {
     ///
     /// Returned only in getChat
     pub invite_link: Option<String>,
-    /// Pinned message
+    /// Latest pinned message
     ///
     /// Returned only in getChat
     pub pinned_message: Option<Box<Message>>,
+    /// Unique identifier for the linked discussion group
+    ///
+    /// Returned only in getChat
+    pub linked_chat_id: Option<Integer>,
 }
 
 /// Group chat
@@ -121,11 +131,6 @@ pub struct GroupChat {
     pub id: Integer,
     /// Title
     pub title: String,
-    /// True if a group has ‘All Members Are Admins’ enabled
-    ///
-    /// The field is still returned in the object for backward compatibility,
-    /// but new bots should use the permissions field instead
-    pub all_members_are_administrators: bool,
     /// Chat photo
     ///
     /// Returned only in getChat
@@ -134,7 +139,8 @@ pub struct GroupChat {
     ///
     /// Returned only in getChat
     pub invite_link: Option<String>,
-    /// Pinned message
+    /// Latest pinned message
+    ///
     /// Returned only in getChat
     pub pinned_message: Option<Box<Message>>,
     /// Default chat member permissions, for groups and supergroups
@@ -158,6 +164,14 @@ pub struct PrivateChat {
     ///
     /// Returned only in getChat
     pub photo: Option<ChatPhoto>,
+    /// Bio of the other party
+    ///
+    /// Returned only in getChat
+    pub bio: Option<String>,
+    /// Latest pinned message
+    ///
+    /// Returned only in getChat
+    pub pinned_message: Option<Box<Message>>,
 }
 
 /// Supergroup chat
@@ -181,7 +195,7 @@ pub struct SupergroupChat {
     ///
     /// Returned only in getChat
     pub invite_link: Option<String>,
-    /// Pinned message
+    /// Latest pinned message
     ///
     /// Returned only in getChat
     pub pinned_message: Option<Box<Message>>,
@@ -201,6 +215,14 @@ pub struct SupergroupChat {
     ///
     /// Returned only in getChat
     pub slow_mode_delay: Option<Integer>,
+    /// Unique identifier for the linked channel
+    ///
+    /// Returned only in getChat
+    pub linked_chat_id: Option<Integer>,
+    /// The location to which the supergroup is connected
+    ///
+    /// Returned only in getChat
+    pub location: Option<ChatLocation>,
 }
 
 /// Chat ID or username
@@ -283,7 +305,7 @@ mod tests {
     use std::collections::HashMap;
 
     #[test]
-    fn deserialize_channel() {
+    fn deserialize_channel_full() {
         let chat: Chat = serde_json::from_value(serde_json::json!({
             "id": 1,
             "type": "channel",
@@ -306,7 +328,8 @@ mod tests {
                     "title": "channeltitle"
                 },
                 "text": "test"
-            }
+            },
+            "linked_chat_id": 2
         }))
         .unwrap();
         if let Chat::Channel(chat) = chat {
@@ -321,10 +344,14 @@ mod tests {
             assert_eq!(chat.description.unwrap(), "channeldescription");
             assert_eq!(chat.invite_link.unwrap(), "channelinvitelink");
             assert!(chat.pinned_message.is_some());
+            assert_eq!(chat.linked_chat_id.unwrap(), 2);
         } else {
             panic!("Unexpected chat: {:?}", chat);
         }
+    }
 
+    #[test]
+    fn deserialize_channel_partial() {
         let chat: Chat = serde_json::from_value(serde_json::json!({
             "id": 1,
             "type": "channel",
@@ -345,12 +372,11 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_group() {
+    fn deserialize_group_full() {
         let chat: Chat = serde_json::from_value(serde_json::json!({
             "id": 1,
             "type": "group",
             "title": "grouptitle",
-            "all_members_are_administrators": true,
             "photo": {
                 "small_file_id": "smallfileid",
                 "small_file_unique_id": "smallfileuniqueid",
@@ -364,8 +390,7 @@ mod tests {
                 "chat": {
                     "id": 1,
                     "type": "group",
-                    "title": "grouptitle",
-                    "all_members_are_administrators": true
+                    "title": "grouptitle"
                 },
                 "from": {
                     "id": 1,
@@ -380,7 +405,6 @@ mod tests {
         if let Chat::Group(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "grouptitle");
-            assert!(chat.all_members_are_administrators);
             let photo = chat.photo.unwrap();
             assert_eq!(photo.small_file_id, "smallfileid");
             assert_eq!(photo.small_file_unique_id, "smallfileuniqueid");
@@ -393,18 +417,19 @@ mod tests {
         } else {
             panic!("Unexpected chat: {:?}", chat);
         }
+    }
 
+    #[test]
+    fn deserialize_group_partial() {
         let chat: Chat = serde_json::from_value(serde_json::json!({
             "id": 1,
             "type": "group",
-            "title": "grouptitle",
-            "all_members_are_administrators": false
+            "title": "grouptitle"
         }))
         .unwrap();
         if let Chat::Group(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "grouptitle");
-            assert!(!chat.all_members_are_administrators);
             assert!(chat.photo.is_none());
             assert!(chat.invite_link.is_none());
             assert!(chat.pinned_message.is_none());
@@ -415,7 +440,7 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_private() {
+    fn deserialize_private_full() {
         let chat: Chat = serde_json::from_value(serde_json::json!({
             "id": 1,
             "type": "private",
@@ -427,6 +452,22 @@ mod tests {
                 "small_file_unique_id": "smallfileuniqueid",
                 "big_file_id": "bigfileid",
                 "big_file_unique_id": "bigfileuniqueid",
+            },
+            "bio": "testbio",
+            "pinned_message": {
+                "message_id": 1,
+                "date": 0,
+                "chat": {
+                    "id": 2,
+                    "type": "private",
+                    "first_name": "test"
+                },
+                "from": {
+                    "id": 1,
+                    "is_bot": false,
+                    "first_name": "user"
+                },
+                "text": "test"
             }
         }))
         .unwrap();
@@ -440,10 +481,15 @@ mod tests {
             assert_eq!(photo.small_file_unique_id, "smallfileuniqueid");
             assert_eq!(photo.big_file_id, "bigfileid");
             assert_eq!(photo.big_file_unique_id, "bigfileuniqueid");
+            assert_eq!(chat.bio.unwrap(), "testbio");
+            assert_eq!(chat.pinned_message.unwrap().id, 1);
         } else {
             panic!("Unexpected chat: {:?}", chat)
         }
+    }
 
+    #[test]
+    fn deserialize_private_partial() {
         let chat: Chat = serde_json::from_value(serde_json::json!({
             "id": 1,
             "type": "private",
@@ -497,6 +543,14 @@ mod tests {
                     "first_name": "user"
                 },
                 "text": "test"
+            },
+            "linked_chat_id": 2,
+            "location": {
+                "location": {
+                    "longitude": 0,
+                    "latitude": 1
+                },
+                "address": "test location"
             }
         }))
         .unwrap();
@@ -517,6 +571,8 @@ mod tests {
             assert!(chat.pinned_message.is_some());
             let permissions = chat.permissions.unwrap();
             assert!(permissions.can_send_messages.unwrap());
+            assert_eq!(chat.linked_chat_id.unwrap(), 2);
+            assert_eq!(chat.location.unwrap().address, "test location");
         } else {
             panic!("Unexpected chat: {:?}", chat)
         }

@@ -1,5 +1,5 @@
 use crate::types::{
-    chat::{permissions::ChatPermissions, photo::ChatPhoto},
+    chat::{location::ChatLocation, permissions::ChatPermissions, photo::ChatPhoto},
     message::Message,
     primitive::Integer,
     user::User,
@@ -15,15 +15,17 @@ pub struct RawChat {
     pub username: Option<String>,
     pub first_name: Option<String>,
     pub last_name: Option<String>,
-    pub all_members_are_administrators: Option<bool>,
     pub photo: Option<ChatPhoto>,
+    pub bio: Option<String>,
     pub description: Option<String>,
     pub invite_link: Option<String>,
     pub pinned_message: Option<Box<Message>>,
-    pub sticker_set_name: Option<String>,
-    pub can_set_sticker_set: Option<bool>,
     pub permissions: Option<ChatPermissions>,
     pub slow_mode_delay: Option<Integer>,
+    pub sticker_set_name: Option<String>,
+    pub can_set_sticker_set: Option<bool>,
+    pub linked_chat_id: Option<Integer>,
+    pub location: Option<ChatLocation>,
 }
 
 #[derive(Debug, Deserialize)]

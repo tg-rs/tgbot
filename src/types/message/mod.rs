@@ -462,7 +462,7 @@ mod tests {
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 2, "date": 1,
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-            "chat": {"id": 5, "type": "group", "title": "grouptitle", "all_members_are_administrators": false},
+            "chat": {"id": 5, "type": "group", "title": "grouptitle"},
             "text": "test"
         }))
         .unwrap();

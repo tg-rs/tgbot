@@ -15,6 +15,8 @@ use serde::Serialize;
 pub struct UnbanChatMember {
     chat_id: ChatId,
     user_id: Integer,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    only_if_banned: Option<bool>,
 }
 
 impl UnbanChatMember {
@@ -28,7 +30,14 @@ impl UnbanChatMember {
         UnbanChatMember {
             chat_id: chat_id.into(),
             user_id,
+            only_if_banned: None,
         }
+    }
+
+    /// If true - do nothing if the user is not banned
+    pub fn only_if_banned(mut self, only_if_banned: bool) -> Self {
+        self.only_if_banned = Some(only_if_banned);
+        self
     }
 }
 
@@ -47,8 +56,8 @@ mod tests {
     use serde_json::Value;
 
     #[test]
-    fn unban_chat_member() {
-        let request = UnbanChatMember::new(1, 2).into_request();
+    fn unban_chat_member_full() {
+        let request = UnbanChatMember::new(1, 2).only_if_banned(true).into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
             request.build_url("base-url", "token"),
@@ -58,6 +67,22 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["user_id"], 2);
+            assert_eq!(data["only_if_banned"], true);
+        } else {
+            panic!("Unexpected request body");
+        }
+    }
+
+    #[test]
+    fn unban_chat_member_partial() {
+        let request = UnbanChatMember::new(1, 2).into_request();
+        assert_eq!(request.get_method(), RequestMethod::Post);
+        assert_eq!(
+            request.build_url("base-url", "token"),
+            "base-url/bottoken/unbanChatMember"
+        );
+        if let RequestBody::Json(data) = request.into_body() {
+            assert_eq!(data.unwrap(), r#"{"chat_id":1,"user_id":2}"#);
         } else {
             panic!("Unexpected request body");
         }

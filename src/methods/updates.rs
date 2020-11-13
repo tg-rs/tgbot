@@ -108,6 +108,8 @@ pub struct SetWebhook {
     max_connections: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allowed_updates: Option<HashSet<AllowedUpdate>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    drop_pending_updates: Option<bool>,
 }
 
 impl SetWebhook {
@@ -124,6 +126,7 @@ impl SetWebhook {
             ip_address: None,
             max_connections: None,
             allowed_updates: None,
+            drop_pending_updates: None,
         }
     }
 
@@ -177,6 +180,12 @@ impl SetWebhook {
         };
         self
     }
+
+    /// Pass true to drop all pending updates
+    pub fn drop_pending_updates(mut self, drop_pending_updates: bool) -> Self {
+        self.drop_pending_updates = Some(drop_pending_updates);
+        self
+    }
 }
 
 impl Method for SetWebhook {
@@ -190,14 +199,28 @@ impl Method for SetWebhook {
 /// Remove webhook integration if you decide to switch back to getUpdates
 ///
 /// Returns True on success
-#[derive(Clone, Copy, Debug)]
-pub struct DeleteWebhook;
+#[derive(Clone, Copy, Debug, Default, Serialize)]
+pub struct DeleteWebhook {
+    drop_pending_updates: Option<bool>,
+}
+
+impl DeleteWebhook {
+    /// Pass true to drop all pending updates
+    pub fn drop_pending_updates(mut self, drop_pending_updates: bool) -> Self {
+        self.drop_pending_updates = Some(drop_pending_updates);
+        self
+    }
+}
 
 impl Method for DeleteWebhook {
     type Response = bool;
 
     fn into_request(self) -> Request {
-        Request::empty("deleteWebhook")
+        if self.drop_pending_updates.is_some() {
+            Request::json("deleteWebhook", self)
+        } else {
+            Request::empty("deleteWebhook")
+        }
     }
 }
 
@@ -311,6 +334,7 @@ mod tests {
             .add_allowed_update(AllowedUpdate::CallbackQuery)
             .add_allowed_update(AllowedUpdate::PreCheckoutQuery)
             .add_allowed_update(AllowedUpdate::ShippingQuery)
+            .drop_pending_updates(true)
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/setWebhook");
@@ -320,6 +344,7 @@ mod tests {
                 assert_eq!(data["certificate"], "cert");
                 assert_eq!(data["ip_address"], "127.0.0.1");
                 assert_eq!(data["max_connections"], 10);
+                assert_eq!(data["drop_pending_updates"], true);
                 let mut updates: Vec<&str> = data["allowed_updates"]
                     .as_array()
                     .unwrap()
@@ -351,7 +376,7 @@ mod tests {
 
     #[test]
     fn delete_webhook() {
-        let request = DeleteWebhook.into_request();
+        let request = DeleteWebhook::default().into_request();
         assert_eq!(request.get_method(), RequestMethod::Get);
         assert_eq!(
             request.build_url("base-url", "token"),
@@ -359,6 +384,19 @@ mod tests {
         );
         match request.into_body() {
             RequestBody::Empty => {}
+            data => panic!("Unexpected request data: {:?}", data),
+        }
+
+        let request = DeleteWebhook::default().drop_pending_updates(false).into_request();
+        assert_eq!(request.get_method(), RequestMethod::Post);
+        assert_eq!(
+            request.build_url("base-url", "token"),
+            "base-url/bottoken/deleteWebhook"
+        );
+        match request.into_body() {
+            RequestBody::Json(data) => {
+                assert_eq!(data.unwrap(), r#"{"drop_pending_updates":false}"#);
+            }
             data => panic!("Unexpected request data: {:?}", data),
         }
     }

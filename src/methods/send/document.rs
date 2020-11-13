@@ -56,6 +56,13 @@ impl SendDocument {
         self
     }
 
+    /// Disables automatic server-side content type detection
+    /// for files uploaded using multipart/form-data
+    pub fn disable_content_type_detection(mut self, value: bool) -> Self {
+        self.form.insert_field("disable_content_type_detection", value);
+        self
+    }
+
     /// Parse mode
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.form.insert_field("parse_mode", parse_mode);
@@ -106,6 +113,7 @@ mod tests {
             .thumb(InputFile::file_id("file-id"))
             .caption("caption")
             .parse_mode(ParseMode::Markdown)
+            .disable_content_type_detection(true)
             .disable_notification(true)
             .reply_to_message_id(1)
             .reply_markup(ForceReply::new(true))
@@ -118,6 +126,10 @@ mod tests {
             assert!(form.fields["document"].get_file().is_some());
             assert!(form.fields["thumb"].get_file().is_some());
             assert_eq!(form.fields["caption"].get_text().unwrap(), "caption");
+            assert_eq!(
+                form.fields["disable_content_type_detection"].get_text().unwrap(),
+                "true"
+            );
             assert_eq!(form.fields["parse_mode"].get_text().unwrap(), "Markdown");
             assert_eq!(form.fields["disable_notification"].get_text().unwrap(), "true");
             assert_eq!(form.fields["reply_to_message_id"].get_text().unwrap(), "1");

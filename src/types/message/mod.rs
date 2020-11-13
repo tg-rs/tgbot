@@ -240,6 +240,7 @@ impl Message {
         message!(PassportData(passport_data));
         message!(Photo(photo, caption));
         message!(Poll(poll));
+        message!(ProximityAlertTriggered(proximity_alert_triggered));
         message!(Sticker(sticker));
         message!(SuccessfulPayment(successful_payment));
         message!(SupergroupChatCreated(supergroup_chat_created, flag));

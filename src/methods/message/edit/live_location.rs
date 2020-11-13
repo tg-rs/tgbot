@@ -22,6 +22,8 @@ pub struct EditMessageLiveLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    proximity_alert_radius: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
@@ -42,6 +44,7 @@ impl EditMessageLiveLocation {
             latitude,
             longitude,
             heading: None,
+            proximity_alert_radius: None,
             reply_markup: None,
         }
     }
@@ -61,6 +64,7 @@ impl EditMessageLiveLocation {
             latitude,
             longitude,
             heading: None,
+            proximity_alert_radius: None,
             reply_markup: None,
         }
     }
@@ -70,6 +74,14 @@ impl EditMessageLiveLocation {
     /// Must be between 1 and 360 if specified
     pub fn heading(mut self, heading: Integer) -> Self {
         self.heading = Some(heading);
+        self
+    }
+
+    /// Maximum distance for proximity alerts about approaching another chat member, in meters
+    ///
+    /// Must be between 1 and 100000 if specified
+    pub fn proximity_alert_radius(mut self, proximity_alert_radius: Integer) -> Self {
+        self.proximity_alert_radius = Some(proximity_alert_radius);
         self
     }
 
@@ -158,6 +170,7 @@ mod tests {
     fn edit_message_live_location() {
         let request = EditMessageLiveLocation::new(1, 2, 3.0, 4.0)
             .heading(100)
+            .proximity_alert_radius(200)
             .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
@@ -172,6 +185,7 @@ mod tests {
             assert_eq!(data["latitude"], 3.0);
             assert_eq!(data["longitude"], 4.0);
             assert_eq!(data["heading"], 100);
+            assert_eq!(data["proximity_alert_radius"], 200);
             assert_eq!(data["reply_markup"]["inline_keyboard"][0][0]["text"], "text");
         } else {
             panic!("Unexpected request body");

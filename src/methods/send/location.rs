@@ -16,6 +16,8 @@ pub struct SendLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    proximity_alert_radius: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<Integer>,
@@ -38,6 +40,7 @@ impl SendLocation {
             longitude,
             live_period: None,
             heading: None,
+            proximity_alert_radius: None,
             disable_notification: None,
             reply_to_message_id: None,
             reply_markup: None,
@@ -57,6 +60,15 @@ impl SendLocation {
     /// Must be between 1 and 360 if specified
     pub fn heading(mut self, heading: Integer) -> Self {
         self.heading = Some(heading);
+        self
+    }
+
+    /// For live locations, a maximum distance for proximity alerts about approaching
+    /// another chat member, in meters
+    ///
+    /// Must be between 1 and 100000 if specified
+    pub fn proximity_alert_radius(mut self, proximity_alert_radius: Integer) -> Self {
+        self.proximity_alert_radius = Some(proximity_alert_radius);
         self
     }
 
@@ -104,6 +116,7 @@ mod tests {
         let request = SendLocation::new(1, 2.0, 3.0)
             .live_period(100)
             .heading(120)
+            .proximity_alert_radius(100)
             .disable_notification(true)
             .reply_to_message_id(1)
             .reply_markup(ForceReply::new(true))
@@ -117,6 +130,7 @@ mod tests {
             assert_eq!(data["longitude"], 3.0);
             assert_eq!(data["live_period"], 100);
             assert_eq!(data["heading"], 120);
+            assert_eq!(data["proximity_alert_radius"], 100);
             assert_eq!(data["disable_notification"], true);
             assert_eq!(data["reply_to_message_id"], 1);
             assert_eq!(data["reply_markup"]["force_reply"], true);

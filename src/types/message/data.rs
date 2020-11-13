@@ -5,7 +5,7 @@ use crate::types::{
     dice::Dice,
     document::Document,
     game::Game,
-    location::Location,
+    location::{Location, ProximityAlertTriggered},
     message::{Message, Text},
     passport::PassportData,
     payments::{Invoice, SuccessfulPayment},
@@ -92,6 +92,10 @@ pub enum MessageData {
     },
     /// Message is a native poll, information about the poll
     Poll(Poll),
+    /// Service message
+    ///
+    /// A user in the chat triggered another user's proximity alert while sharing Live Location
+    ProximityAlertTriggered(ProximityAlertTriggered),
     /// Message is a sticker, information about the sticker
     Sticker(Sticker),
     /// Message is a service message about a successful payment, information about the payment
@@ -646,6 +650,36 @@ mod tests {
             } else {
                 panic!("Unexpected poll kind")
             }
+        } else {
+            panic!("Unexpected message data: {:?}", msg.data);
+        }
+    }
+
+    #[test]
+    fn deserialize_proximity_alert_triggered() {
+        let msg: Message = serde_json::from_value(serde_json::json!({
+            "message_id": 1, "date": 1,
+            "from": {"id": 1, "first_name": "firstname1", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "proximity_alert_triggered": {
+                "traveler": {
+                    "id": 1,
+                    "first_name": "firstname1",
+                    "is_bot": false
+                },
+                "watcher": {
+                    "id": 2,
+                    "first_name": "firstname2",
+                    "is_bot": false
+                },
+                "distance": 100,
+            }
+        }))
+        .unwrap();
+        if let MessageData::ProximityAlertTriggered(alert) = msg.data {
+            assert_eq!(alert.traveler.id, 1);
+            assert_eq!(alert.watcher.id, 2);
+            assert_eq!(alert.distance, 100);
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }

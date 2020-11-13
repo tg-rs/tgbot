@@ -21,6 +21,8 @@ pub struct InlineQueryResultLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    proximity_alert_radius: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
@@ -53,6 +55,7 @@ impl InlineQueryResultLocation {
             title: title.into(),
             live_period: None,
             heading: None,
+            proximity_alert_radius: None,
             reply_markup: None,
             input_message_content: None,
             thumb_url: None,
@@ -72,6 +75,15 @@ impl InlineQueryResultLocation {
     /// Must be between 1 and 360 if specified
     pub fn heading(mut self, heading: Integer) -> Self {
         self.heading = Some(heading);
+        self
+    }
+
+    /// For live locations, a maximum distance for proximity alerts about
+    /// approaching another chat member, in meters
+    ///
+    /// Must be between 1 and 100000 if specified
+    pub fn proximity_alert_radius(mut self, proximity_alert_radius: Integer) -> Self {
+        self.proximity_alert_radius = Some(proximity_alert_radius);
         self
     }
 

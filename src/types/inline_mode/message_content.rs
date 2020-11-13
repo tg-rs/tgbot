@@ -67,6 +67,8 @@ pub struct InputMessageContentLocation {
     live_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    proximity_alert_radius: Option<Integer>,
 }
 
 impl InputMessageContentLocation {
@@ -82,6 +84,7 @@ impl InputMessageContentLocation {
             longitude,
             live_period: None,
             heading: None,
+            proximity_alert_radius: None,
         }
     }
 
@@ -96,6 +99,15 @@ impl InputMessageContentLocation {
     /// Must be between 1 and 360 if specified
     pub fn heading(mut self, heading: Integer) -> Self {
         self.heading = Some(heading);
+        self
+    }
+
+    /// For live locations, a maximum distance for proximity alerts
+    /// about approaching another chat member, in meters
+    ///
+    /// Must be between 1 and 100000 if specified
+    pub fn proximity_alert_radius(mut self, proximity_alert_radius: Integer) -> Self {
+        self.proximity_alert_radius = Some(proximity_alert_radius);
         self
     }
 }
@@ -224,19 +236,24 @@ mod tests {
     #[test]
     fn serialize_location() {
         let val = serde_json::to_value(InputMessageContent::from(
-            InputMessageContentLocation::new(1.1, 2.1).live_period(100).heading(90),
+            InputMessageContentLocation::new(1.1, 2.1)
+                .live_period(100)
+                .heading(90)
+                .proximity_alert_radius(100),
         ))
         .unwrap();
         assert_eq!(val.get("latitude").unwrap().as_f64().unwrap().round(), 1.0);
         assert_eq!(val.get("longitude").unwrap().as_f64().unwrap().round(), 2.0);
         assert_eq!(val.get("live_period").unwrap().as_i64().unwrap(), 100);
         assert_eq!(val.get("heading").unwrap().as_i64().unwrap(), 90);
+        assert_eq!(val.get("proximity_alert_radius").unwrap().as_i64().unwrap(), 100);
 
         let val = serde_json::to_value(InputMessageContent::from(InputMessageContentLocation::new(1.1, 2.1))).unwrap();
         assert_eq!(val.get("latitude").unwrap().as_f64().unwrap().round(), 1.0);
         assert_eq!(val.get("longitude").unwrap().as_f64().unwrap().round(), 2.0);
         assert!(val.get("live_period").is_none());
         assert!(val.get("heading").is_none());
+        assert!(val.get("proximity_alert_radius").is_none());
     }
 
     #[test]

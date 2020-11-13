@@ -43,6 +43,12 @@ pub struct Message {
     pub commands: Option<Vec<TextEntityBotCommand>>,
     /// Inline keyboard attached to the message
     pub reply_markup: Option<InlineKeyboardMarkup>,
+    /// Sender of the message, sent on behalf of a chat
+    ///
+    /// The channel itself for channel messages
+    /// The supergroup itself for messages from anonymous group administrators
+    /// The linked channel for messages automatically forwarded to the discussion group
+    pub sender_chat: Option<Chat>,
 }
 
 impl Message {
@@ -215,6 +221,7 @@ impl Message {
                     data: $data,
                     commands: $commands,
                     reply_markup: raw.reply_markup,
+                    sender_chat: raw.sender_chat,
                 });
             };
         };
@@ -481,12 +488,23 @@ mod tests {
                     "title": "channeltitle",
                     "username": "channelusername"
                 },
+                "sender_chat": {
+                    "id": 6,
+                    "type": "channel",
+                    "title": "channeltitle",
+                    "username": "channelusername"
+                },
                 "text": "test message from channel"
         }))
         .unwrap();
         assert_eq!(msg.get_chat_id(), 6);
         assert_eq!(msg.get_chat_username().unwrap(), "channelusername");
         assert!(msg.get_user().is_none());
+        if let Chat::Channel(chat) = msg.sender_chat.as_ref().unwrap() {
+            assert_eq!(chat.id, 6);
+        } else {
+            panic!("Unexpected sender chat: {:?}", msg.sender_chat);
+        }
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 1111,

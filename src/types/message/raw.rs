@@ -27,6 +27,7 @@ use serde::Deserialize;
 pub(super) struct RawMessage {
     pub message_id: Integer,
     pub from: Option<User>,
+    pub sender_chat: Option<Chat>,
     pub date: Integer,
     pub chat: Chat,
     pub forward_from: Option<User>,

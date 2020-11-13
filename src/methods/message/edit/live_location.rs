@@ -20,6 +20,8 @@ pub struct EditMessageLiveLocation {
     latitude: Float,
     longitude: Float,
     #[serde(skip_serializing_if = "Option::is_none")]
+    horizontal_accuracy: Option<Float>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proximity_alert_radius: Option<Integer>,
@@ -43,6 +45,7 @@ impl EditMessageLiveLocation {
             inline_message_id: None,
             latitude,
             longitude,
+            horizontal_accuracy: None,
             heading: None,
             proximity_alert_radius: None,
             reply_markup: None,
@@ -63,10 +66,17 @@ impl EditMessageLiveLocation {
             inline_message_id: Some(inline_message_id.into()),
             latitude,
             longitude,
+            horizontal_accuracy: None,
             heading: None,
             proximity_alert_radius: None,
             reply_markup: None,
         }
+    }
+
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    pub fn horizontal_accuracy(mut self, horizontal_accuracy: Float) -> Self {
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
     }
 
     /// Direction in which the user is moving, in degrees
@@ -169,6 +179,7 @@ mod tests {
     #[test]
     fn edit_message_live_location() {
         let request = EditMessageLiveLocation::new(1, 2, 3.0, 4.0)
+            .horizontal_accuracy(2.6)
             .heading(100)
             .proximity_alert_radius(200)
             .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
@@ -184,6 +195,7 @@ mod tests {
             assert_eq!(data["message_id"], 2);
             assert_eq!(data["latitude"], 3.0);
             assert_eq!(data["longitude"], 4.0);
+            assert_eq!(data["horizontal_accuracy"], 2.6);
             assert_eq!(data["heading"], 100);
             assert_eq!(data["proximity_alert_radius"], 200);
             assert_eq!(data["reply_markup"]["inline_keyboard"][0][0]["text"], "text");

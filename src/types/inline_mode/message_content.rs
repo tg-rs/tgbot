@@ -64,6 +64,8 @@ pub struct InputMessageContentLocation {
     latitude: Float,
     longitude: Float,
     #[serde(skip_serializing_if = "Option::is_none")]
+    horizontal_accuracy: Option<Float>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
@@ -82,10 +84,17 @@ impl InputMessageContentLocation {
         InputMessageContentLocation {
             latitude,
             longitude,
+            horizontal_accuracy: None,
             live_period: None,
             heading: None,
             proximity_alert_radius: None,
         }
+    }
+
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    pub fn horizontal_accuracy(mut self, horizontal_accuracy: Float) -> Self {
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
     }
 
     /// Period in seconds for which the location can be updated, should be between 60 and 86400
@@ -237,6 +246,7 @@ mod tests {
     fn serialize_location() {
         let val = serde_json::to_value(InputMessageContent::from(
             InputMessageContentLocation::new(1.1, 2.1)
+                .horizontal_accuracy(1.5)
                 .live_period(100)
                 .heading(90)
                 .proximity_alert_radius(100),
@@ -244,6 +254,7 @@ mod tests {
         .unwrap();
         assert_eq!(val.get("latitude").unwrap().as_f64().unwrap().round(), 1.0);
         assert_eq!(val.get("longitude").unwrap().as_f64().unwrap().round(), 2.0);
+        assert_eq!(val.get("horizontal_accuracy").unwrap().as_f64().unwrap(), 1.5);
         assert_eq!(val.get("live_period").unwrap().as_i64().unwrap(), 100);
         assert_eq!(val.get("heading").unwrap().as_i64().unwrap(), 90);
         assert_eq!(val.get("proximity_alert_radius").unwrap().as_i64().unwrap(), 100);
@@ -251,6 +262,7 @@ mod tests {
         let val = serde_json::to_value(InputMessageContent::from(InputMessageContentLocation::new(1.1, 2.1))).unwrap();
         assert_eq!(val.get("latitude").unwrap().as_f64().unwrap().round(), 1.0);
         assert_eq!(val.get("longitude").unwrap().as_f64().unwrap().round(), 2.0);
+        assert!(val.get("horizontal_accuracy").is_none());
         assert!(val.get("live_period").is_none());
         assert!(val.get("heading").is_none());
         assert!(val.get("proximity_alert_radius").is_none());

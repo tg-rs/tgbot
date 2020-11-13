@@ -12,6 +12,8 @@ pub struct SendLocation {
     latitude: Float,
     longitude: Float,
     #[serde(skip_serializing_if = "Option::is_none")]
+    horizontal_accuracy: Option<Float>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
@@ -38,6 +40,7 @@ impl SendLocation {
             chat_id: chat_id.into(),
             latitude,
             longitude,
+            horizontal_accuracy: None,
             live_period: None,
             heading: None,
             proximity_alert_radius: None,
@@ -45,6 +48,12 @@ impl SendLocation {
             reply_to_message_id: None,
             reply_markup: None,
         }
+    }
+
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    pub fn horizontal_accuracy(mut self, horizontal_accuracy: Float) -> Self {
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
     }
 
     /// Period in seconds for which the location will be updated
@@ -114,6 +123,7 @@ mod tests {
     #[test]
     fn send_location_full() {
         let request = SendLocation::new(1, 2.0, 3.0)
+            .horizontal_accuracy(1.5)
             .live_period(100)
             .heading(120)
             .proximity_alert_radius(100)
@@ -128,6 +138,7 @@ mod tests {
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["latitude"], 2.0);
             assert_eq!(data["longitude"], 3.0);
+            assert_eq!(data["horizontal_accuracy"], 1.5);
             assert_eq!(data["live_period"], 100);
             assert_eq!(data["heading"], 120);
             assert_eq!(data["proximity_alert_radius"], 100);

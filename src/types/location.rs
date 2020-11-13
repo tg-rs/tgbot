@@ -11,6 +11,8 @@ pub struct Location {
     pub longitude: Float,
     /// Latitude as defined by sender
     pub latitude: Float,
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    pub horizontal_accuracy: Option<Float>,
     /// Time relative to the message sending date,
     /// during which the location can be updated, in seconds
     ///
@@ -50,6 +52,7 @@ mod tests {
         let data: Location = serde_json::from_value(serde_json::json!({
             "longitude": 2.5,
             "latitude": 2.6,
+            "horizontal_accuracy": 0.4,
             "live_period": 1,
             "heading": 45,
             "proximity_alert_radius": 20
@@ -57,6 +60,7 @@ mod tests {
         .unwrap();
         assert_eq!(data.longitude, 2.5);
         assert_eq!(data.latitude, 2.6);
+        assert_eq!(data.horizontal_accuracy.unwrap(), 0.4);
         assert_eq!(data.live_period.unwrap(), 1);
         assert_eq!(data.heading.unwrap(), 45);
         assert_eq!(data.proximity_alert_radius.unwrap(), 20);
@@ -71,6 +75,7 @@ mod tests {
         .unwrap();
         assert_eq!(data.longitude, 2.5);
         assert_eq!(data.latitude, 2.6);
+        assert!(data.horizontal_accuracy.is_none());
         assert!(data.live_period.is_none());
         assert!(data.heading.is_none());
         assert!(data.proximity_alert_radius.is_none());

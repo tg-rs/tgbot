@@ -17,6 +17,8 @@ pub struct InlineQueryResultLocation {
     longitude: Float,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    horizontal_accuracy: Option<Float>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
@@ -53,6 +55,7 @@ impl InlineQueryResultLocation {
             latitude,
             longitude,
             title: title.into(),
+            horizontal_accuracy: None,
             live_period: None,
             heading: None,
             proximity_alert_radius: None,
@@ -62,6 +65,12 @@ impl InlineQueryResultLocation {
             thumb_width: None,
             thumb_height: None,
         }
+    }
+
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    pub fn horizontal_accuracy(mut self, horizontal_accuracy: Float) -> Self {
+        self.horizontal_accuracy = Some(horizontal_accuracy);
+        self
     }
 
     /// Period in seconds for which the location can be updated, should be between 60 and 86400

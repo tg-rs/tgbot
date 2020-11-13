@@ -19,6 +19,8 @@ pub enum MessageKind {
         chat: GroupChat,
         /// Sender
         from: User,
+        /// Custom title of an anonymous group administrator
+        author_signature: Option<String>,
     },
     /// Private chat
     Private {
@@ -33,6 +35,8 @@ pub enum MessageKind {
         chat: SupergroupChat,
         /// Sender
         from: User,
+        /// Custom title of an anonymous group administrator
+        author_signature: Option<String>,
     },
 }
 
@@ -104,12 +108,18 @@ mod tests {
         assert_eq!(msg.get_user().map(|u| u.id), Some(1));
         assert_eq!(msg.get_text().map(|t| t.data.as_str()), Some("test"));
         assert!(msg.is_edited());
-        if let MessageKind::Group { chat, from } = msg.kind {
+        if let MessageKind::Group {
+            chat,
+            from,
+            author_signature,
+        } = msg.kind
+        {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "grouptitle");
             assert_eq!(from.id, 1);
             assert_eq!(from.first_name, "firstname");
             assert_eq!(from.is_bot, false);
+            assert!(author_signature.is_none());
         } else {
             panic!("Unexpected message kind: {:?}", msg.kind);
         }
@@ -200,12 +210,18 @@ mod tests {
         assert_eq!(msg.get_chat_username().unwrap(), "supergroupusername");
         assert_eq!(msg.get_user().map(|u| u.id), Some(1));
         assert_eq!(msg.get_text().map(|t| t.data.as_str()), Some("test"));
-        if let MessageKind::Supergroup { chat, from } = msg.kind {
+        if let MessageKind::Supergroup {
+            chat,
+            from,
+            author_signature,
+        } = msg.kind
+        {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "supergrouptitle");
             assert_eq!(from.id, 1);
             assert_eq!(from.first_name, "firstname");
             assert_eq!(from.is_bot, false);
+            assert!(author_signature.is_none());
         } else {
             panic!("Unexpected message kind: {:?}", msg.kind);
         }

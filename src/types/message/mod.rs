@@ -165,6 +165,7 @@ impl Message {
             Chat::Group(chat) => MessageKind::Group {
                 chat,
                 from: required!(from),
+                author_signature: raw.author_signature,
             },
             Chat::Private(chat) => MessageKind::Private {
                 chat,
@@ -173,6 +174,7 @@ impl Message {
             Chat::Supergroup(chat) => MessageKind::Supergroup {
                 chat,
                 from: required!(from),
+                author_signature: raw.author_signature,
             },
         };
 

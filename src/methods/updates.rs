@@ -103,6 +103,8 @@ pub struct SetWebhook {
     #[serde(skip_serializing_if = "Option::is_none")]
     certificate: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    ip_address: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     max_connections: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allowed_updates: Option<HashSet<AllowedUpdate>>,
@@ -119,6 +121,7 @@ impl SetWebhook {
         SetWebhook {
             url: url.into(),
             certificate: None,
+            ip_address: None,
             max_connections: None,
             allowed_updates: None,
         }
@@ -127,6 +130,13 @@ impl SetWebhook {
     /// Upload your public key certificate so that the root certificate in use can be checked
     pub fn certificate<C: Into<String>>(mut self, certificate: C) -> Self {
         self.certificate = Some(certificate.into());
+        self
+    }
+
+    /// The fixed IP address which will be used to send webhook requests
+    /// instead of the IP address resolved through DNS
+    pub fn ip_address<A: Into<String>>(mut self, ip_address: A) -> Self {
+        self.ip_address = Some(ip_address.into());
         self
     }
 
@@ -294,6 +304,7 @@ mod tests {
         updates.insert(AllowedUpdate::ChosenInlineResult);
         let request = SetWebhook::new("url")
             .certificate("cert")
+            .ip_address("127.0.0.1")
             .max_connections(10)
             .allowed_updates(updates)
             .add_allowed_update(AllowedUpdate::InlineQuery)
@@ -307,6 +318,7 @@ mod tests {
             RequestBody::Json(data) => {
                 let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
                 assert_eq!(data["certificate"], "cert");
+                assert_eq!(data["ip_address"], "127.0.0.1");
                 assert_eq!(data["max_connections"], 10);
                 let mut updates: Vec<&str> = data["allowed_updates"]
                     .as_array()

@@ -149,6 +149,8 @@ pub struct WebhookInfo {
     pub has_custom_certificate: bool,
     /// Number of updates awaiting delivery
     pub pending_update_count: Integer,
+    /// Currently used webhook IP address
+    pub ip_address: Option<String>,
     ///  Unix time for the most recent error that happened when trying to deliver an update via webhook
     pub last_error_date: Option<Integer>,
     /// Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
@@ -674,6 +676,7 @@ mod tests {
             "url": "https://example.com/tg-webhook",
             "has_custom_certificate": true,
             "pending_update_count": 1,
+            "ip_address": "127.0.0.1",
             "last_error_date": 0,
             "last_error_message": "error",
             "max_connections": 10,
@@ -683,6 +686,7 @@ mod tests {
         assert_eq!(data.url, "https://example.com/tg-webhook");
         assert!(data.has_custom_certificate);
         assert_eq!(data.pending_update_count, 1);
+        assert_eq!(data.ip_address.unwrap(), "127.0.0.1");
         assert_eq!(data.last_error_date.unwrap(), 0);
         assert_eq!(data.last_error_message.unwrap(), "error");
         assert_eq!(data.max_connections.unwrap(), 10);
@@ -703,6 +707,7 @@ mod tests {
         assert_eq!(data.url, "https://example.com/tg-webhook");
         assert!(data.has_custom_certificate);
         assert_eq!(data.pending_update_count, 1);
+        assert!(data.ip_address.is_none());
         assert!(data.last_error_date.is_none());
         assert!(data.last_error_message.is_none());
         assert!(data.max_connections.is_none());

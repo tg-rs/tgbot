@@ -15,6 +15,8 @@ pub struct PromoteChatMember {
     chat_id: ChatId,
     user_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
+    is_anonymous: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     can_change_info: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_post_messages: Option<bool>,
@@ -43,6 +45,7 @@ impl PromoteChatMember {
         PromoteChatMember {
             chat_id: chat_id.into(),
             user_id,
+            is_anonymous: None,
             can_change_info: None,
             can_post_messages: None,
             can_edit_messages: None,
@@ -56,6 +59,7 @@ impl PromoteChatMember {
 
     /// Promote all privileges
     pub fn promote_all(mut self) -> Self {
+        self.is_anonymous = Some(true);
         self.can_change_info = Some(true);
         self.can_post_messages = Some(true);
         self.can_edit_messages = Some(true);
@@ -69,6 +73,7 @@ impl PromoteChatMember {
 
     /// Demote all privileges
     pub fn demote_all(mut self) -> Self {
+        self.is_anonymous = Some(false);
         self.can_change_info = Some(false);
         self.can_post_messages = Some(false);
         self.can_edit_messages = Some(false);
@@ -77,6 +82,13 @@ impl PromoteChatMember {
         self.can_restrict_members = Some(false);
         self.can_pin_messages = Some(false);
         self.can_promote_members = Some(false);
+        self
+    }
+
+    /// Administrator's presence in the chat is hidden if true
+    #[allow(clippy::wrong_self_convention)]
+    pub fn is_anonymous(mut self, is_anonymous: bool) -> Self {
+        self.is_anonymous = Some(is_anonymous);
         self
     }
 
@@ -156,6 +168,7 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["user_id"], 2);
+            assert_eq!(data["is_anonymous"], true);
             assert_eq!(data["can_change_info"], true);
             assert_eq!(data["can_post_messages"], true);
             assert_eq!(data["can_edit_messages"], true);
@@ -181,6 +194,7 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["user_id"], 2);
+            assert_eq!(data["is_anonymous"], false);
             assert_eq!(data["can_change_info"], false);
             assert_eq!(data["can_post_messages"], false);
             assert_eq!(data["can_edit_messages"], false);
@@ -197,6 +211,7 @@ mod tests {
     #[test]
     fn promote_chat_member_custom() {
         let request = PromoteChatMember::new(1, 2)
+            .is_anonymous(false)
             .can_change_info(true)
             .can_post_messages(false)
             .can_edit_messages(true)
@@ -215,6 +230,7 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["user_id"], 2);
+            assert_eq!(data["is_anonymous"], false);
             assert_eq!(data["can_change_info"], true);
             assert_eq!(data["can_post_messages"], false);
             assert_eq!(data["can_edit_messages"], true);

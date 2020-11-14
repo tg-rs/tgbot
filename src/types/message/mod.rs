@@ -3,7 +3,7 @@ use crate::types::{
     message::raw::RawMessage,
     primitive::Integer,
     reply_markup::InlineKeyboardMarkup,
-    text::{ParseTextError, Text, TextEntity, TextEntityBotCommand},
+    text::{Text, TextEntityError},
     user::User,
 };
 use serde::{de::Error, Deserialize, Deserializer};
@@ -39,8 +39,6 @@ pub struct Message {
     pub media_group_id: Option<String>,
     /// Contains message data
     pub data: MessageData,
-    /// Contains command data
-    pub commands: Option<Vec<TextEntityBotCommand>>,
     /// Inline keyboard attached to the message
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// Sender of the message, sent on behalf of a chat
@@ -179,7 +177,7 @@ impl Message {
         };
 
         let caption = match raw.caption {
-            Some(data) => Some(Text::parse(data, raw.caption_entities)?),
+            Some(data) => Some(Text::from_raw(data, raw.caption_entities)?),
             None => None,
         };
 
@@ -191,26 +189,20 @@ impl Message {
         macro_rules! message {
             ($variant:ident($attr:ident)) => {
                 if let Some(data) = raw.$attr {
-                    message!(MessageData::$variant(data), None);
+                    message!(MessageData::$variant(data));
                 }
             };
-            ($variant:ident($attr:ident,caption)) => {
+            ($variant:ident($attr:ident, caption)) => {
                 if let Some(data) = raw.$attr {
-                    let commands = if let Some(ref text) = caption {
-                        get_commands(text)
-                    } else {
-                        None
-                    };
-
-                    message!(MessageData::$variant { caption, data }, commands);
+                    message!(MessageData::$variant { caption, data });
                 }
             };
             ($variant:ident($attr:ident,flag)) => {
                 if raw.$attr.unwrap_or(false) {
-                    message!(MessageData::$variant, None);
+                    message!(MessageData::$variant);
                 }
             };
-            ($data:expr, $commands:expr) => {
+            ($data:expr) => {
                 return Ok(Message {
                     id: raw.message_id,
                     date: raw.date,
@@ -221,7 +213,6 @@ impl Message {
                     edit_date: raw.edit_date,
                     media_group_id: raw.media_group_id,
                     data: $data,
-                    commands: $commands,
                     reply_markup: raw.reply_markup,
                     sender_chat: raw.sender_chat,
                 });
@@ -260,16 +251,15 @@ impl Message {
 
         if let Some(data) = raw.pinned_message {
             let data = Message::from_raw(*data)?;
-            message!(MessageData::PinnedMessage(Box::new(data)), None);
+            message!(MessageData::PinnedMessage(Box::new(data)));
         }
 
         if let Some(data) = raw.text {
-            let text = Text::parse(data, raw.entities)?;
-            let commands = get_commands(&text);
-            message!(MessageData::Text(text), commands);
+            let text = Text::from_raw(data, raw.entities)?;
+            message!(MessageData::Text(text));
         }
 
-        message!(MessageData::Empty, None)
+        message!(MessageData::Empty)
     }
 }
 
@@ -297,7 +287,7 @@ pub enum EditMessageResult {
 #[derive(Debug, derive_more::From)]
 enum ParseError {
     BadForward,
-    BadText(ParseTextError),
+    BadText(TextEntityError),
     MissingField(&'static str),
 }
 
@@ -318,31 +308,6 @@ impl fmt::Display for ParseError {
             ParseError::MissingField(field) => write!(out, "\"{}\" field is missing", field),
         }
     }
-}
-
-fn get_commands(text: &Text) -> Option<Vec<TextEntityBotCommand>> {
-    if let Text {
-        entities: Some(ref entities),
-        ..
-    } = text
-    {
-        let commands = entities
-            .iter()
-            .filter_map(|entity| {
-                if let TextEntity::BotCommand(command) = entity {
-                    Some(command.clone())
-                } else {
-                    None
-                }
-            })
-            .collect::<Vec<TextEntityBotCommand>>();
-
-        if !commands.is_empty() {
-            return Some(commands);
-        }
-    }
-
-    None
 }
 
 #[cfg(test)]
@@ -616,27 +581,6 @@ mod tests {
         }))
         .unwrap();
         assert!(msg.get_text().is_none());
-    }
-
-    #[test]
-    fn commands() {
-        let msg: Message = serde_json::from_value(serde_json::json!({
-            "message_id": 1, "date": 0,
-            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-            "text": "/cmd1 /cmd2",
-            "entities": [
-                {"type": "bot_command", "offset": 0, "length": 5},
-                {"type": "bot_command", "offset": 6, "length": 5}
-            ]
-        }))
-        .unwrap();
-        let commands = msg.commands.unwrap();
-        assert_eq!(commands.len(), 2);
-        let cmd1 = &commands[0];
-        assert_eq!(cmd1.command, "/cmd1");
-        let cmd2 = &commands[1];
-        assert_eq!(cmd2.command, "/cmd2");
     }
 
     #[test]

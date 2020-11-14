@@ -28,7 +28,7 @@ async fn handle_update(api: &Api, update: Update) -> Option<Message> {
     match update.kind {
         UpdateKind::Message(message) => {
             let chat_id = message.get_chat_id();
-            if let Some(commands) = message.commands {
+            if let Some(commands) = message.get_text().and_then(|text| text.get_bot_commands()) {
                 let command = &commands[0];
                 if command.command == "/start" {
                     let callback_data = CallbackData::new("hello!");

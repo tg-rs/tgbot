@@ -95,15 +95,17 @@ impl TryFrom<Message> for Command {
     type Error = CommandError;
 
     fn try_from(message: Message) -> Result<Self, Self::Error> {
-        match (&message.commands, message.get_text()) {
-            (Some(commands), Some(text)) => {
+        match message.get_text().map(|text| (text.get_bot_commands(), text)) {
+            Some((Some(commands), text)) => {
                 // tgbot guarantees that commands will never be empty, but we must be sure
                 assert!(!commands.is_empty());
                 // just take first command and ignore others
                 let command = &commands[0];
                 let name = command.command.clone();
                 // assume that all text after command is arguments
-                let pos = command.data.offset + command.data.length;
+                let offset = text.data.find(&name).unwrap_or(0);
+                let length = name.len() + command.bot_name.as_ref().map(|x| x.len()).unwrap_or(0);
+                let pos = offset + length;
                 // pos is UTF-16 offset
                 let raw_args: Vec<u16> = text.data.encode_utf16().skip(pos).collect();
                 let raw_args = String::from_utf16(&raw_args)?;

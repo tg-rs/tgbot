@@ -40,7 +40,7 @@ impl<'de> Deserialize<'de> for Game {
             description: raw_game.description,
             photo: raw_game.photo,
             text: match raw_game.text {
-                Some(data) => Some(Text::parse(data, raw_game.text_entities).map_err(D::Error::custom)?),
+                Some(data) => Some(Text::from_raw(data, raw_game.text_entities).map_err(D::Error::custom)?),
                 None => None,
             },
             animation: raw_game.animation,

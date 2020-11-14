@@ -1,6 +1,6 @@
 use crate::types::{
     primitive::Integer,
-    text::{ParseTextError, RawTextEntity, Text},
+    text::{RawTextEntity, Text, TextEntityError},
     user::User,
 };
 use serde::{de::Error as _, Deserialize, Deserializer, Serialize};
@@ -123,7 +123,7 @@ impl Quiz {
             is_anonymous: raw.is_anonymous,
             correct_option_id: raw.correct_option_id.ok_or(PollError::CorrectOptionIdMissing)?,
             explanation: if let Some(text) = raw.explanation {
-                Some(Text::parse(text, raw.explanation_entities).map_err(PollError::ParseExplanation)?)
+                Some(Text::from_raw(text, raw.explanation_entities).map_err(PollError::ParseExplanation)?)
             } else {
                 None
             },
@@ -176,7 +176,7 @@ pub struct PollAnswer {
 #[derive(Debug)]
 enum PollError {
     CorrectOptionIdMissing,
-    ParseExplanation(ParseTextError),
+    ParseExplanation(TextEntityError),
 }
 
 impl fmt::Display for PollError {

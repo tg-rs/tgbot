@@ -22,7 +22,7 @@ pub struct Me {
 }
 
 /// Telegram user or bot
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct User {
     /// Unique identifier for this user or bot
     pub id: Integer,

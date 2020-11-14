@@ -81,6 +81,7 @@ impl Method for SendMessage {
         Request::json("sendMessage", self)
     }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;

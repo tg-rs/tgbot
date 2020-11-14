@@ -1,5 +1,6 @@
 use crate::types::{
     inline_mode::message_content::InputMessageContent, parse_mode::ParseMode, reply_markup::InlineKeyboardMarkup,
+    text::TextEntity,
 };
 use serde::Serialize;
 
@@ -16,6 +17,8 @@ pub struct InlineQueryResultCachedGif {
     title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    caption_entities: Option<Vec<TextEntity>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,6 +44,7 @@ impl InlineQueryResultCachedGif {
             gif_file_id: gif_file_id.into(),
             title: None,
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             reply_markup: None,
             input_message_content: None,
@@ -59,9 +63,18 @@ impl InlineQueryResultCachedGif {
         self
     }
 
+    /// List of special entities that appear in the caption,
+    /// which can be specified instead of parse_mode
+    pub fn caption_entities(mut self, caption_entities: Vec<TextEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self.parse_mode = None;
+        self
+    }
+
     /// Parse mode
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
+        self.caption_entities = None;
         self
     }
 

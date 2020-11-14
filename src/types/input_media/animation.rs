@@ -1,4 +1,4 @@
-use crate::types::{Integer, ParseMode};
+use crate::types::{Integer, ParseMode, TextEntity};
 use serde::Serialize;
 
 /// Animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent
@@ -8,6 +8,8 @@ pub struct InputMediaAnimation {
     thumb: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    caption_entities: Option<Vec<TextEntity>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,7 +41,18 @@ impl InputMediaAnimation {
         self
     }
 
-    /// Set parse mode
+    /// List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to None when this method is called
+    pub fn caption_entities(mut self, caption_entities: Vec<TextEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self.parse_mode = None;
+        self
+    }
+
+    /// Sets parse mode
+    ///
+    /// Caption entities will be set to None when this method is called
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
         self
@@ -95,5 +108,16 @@ mod tests {
             serde_json::to_value(InputMediaAnimation::default()).unwrap(),
             serde_json::json!({})
         );
+    }
+
+    #[test]
+    fn caption_entities_vs_parse_mode() {
+        let mut method = InputMediaAnimation::default();
+        method = method.parse_mode(ParseMode::Markdown);
+        assert_eq!(method.parse_mode.unwrap(), ParseMode::Markdown);
+        assert!(method.caption_entities.is_none());
+        method = method.caption_entities(vec![TextEntity::bold(0, 10)]);
+        assert!(method.caption_entities.is_some());
+        assert!(method.parse_mode.is_none());
     }
 }

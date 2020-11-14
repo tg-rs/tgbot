@@ -1,7 +1,10 @@
 use crate::{
     methods::Method,
     request::{Form, Request},
-    types::{ChatId, InputFile, Integer, Message, ParseMode, ReplyMarkup, ReplyMarkupError},
+    types::{
+        serialize_text_entities, ChatId, InputFile, Integer, Message, ParseMode, ReplyMarkup, ReplyMarkupError,
+        TextEntity, TextEntityError,
+    },
 };
 
 /// Send audio files, if you want Telegram clients to display the file as a playable voice message
@@ -39,9 +42,22 @@ impl SendVoice {
         self
     }
 
-    /// Sets a parse mode
+    /// List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to None when this method is called
+    pub fn caption_entities(mut self, value: &[TextEntity]) -> Result<Self, TextEntityError> {
+        self.form
+            .insert_field("caption_entities", serialize_text_entities(value)?);
+        self.form.remove_field("parse_mode");
+        Ok(self)
+    }
+
+    /// Sets parse mode
+    ///
+    /// Caption entities will be set to None when this method is called
     pub fn parse_mode(mut self, value: ParseMode) -> Self {
         self.form.insert_field("parse_mode", value);
+        self.form.remove_field("caption_entities");
         self
     }
 
@@ -125,5 +141,19 @@ mod tests {
         } else {
             panic!("Unexpected request body");
         }
+    }
+
+    #[test]
+    fn send_voice_caption() {
+        let mut method = SendVoice::new(1, InputFile::file_id("file-id"));
+        method = method.parse_mode(ParseMode::Markdown);
+        assert_eq!(method.form.fields["parse_mode"].get_text().unwrap(), "Markdown");
+        method = method.caption_entities(&[TextEntity::bold(0, 10)]).unwrap();
+        assert!(!method.form.fields.contains_key("parse_mode"));
+        let caption_entities = method.form.fields["caption_entities"].get_text().unwrap();
+        assert_eq!(
+            serde_json::from_str::<serde_json::Value>(&caption_entities).unwrap(),
+            serde_json::json!([{"type": "bold", "offset":0, "length": 10}])
+        );
     }
 }

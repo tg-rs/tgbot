@@ -93,6 +93,13 @@ impl Form {
         self.fields.insert(name.into(), value.into());
     }
 
+    pub(crate) fn remove_field<N>(&mut self, name: N)
+    where
+        N: Into<String>,
+    {
+        self.fields.remove(&name.into());
+    }
+
     pub(crate) async fn into_multipart(self) -> Result<MultipartForm, FormError> {
         let mut result = MultipartForm::new();
         for (field_name, field_value) in self.fields {

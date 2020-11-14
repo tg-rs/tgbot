@@ -1,6 +1,7 @@
 use crate::types::{
     parse_mode::ParseMode,
     primitive::{Float, Integer},
+    text::TextEntity,
 };
 use serde::Serialize;
 
@@ -126,6 +127,8 @@ impl InputMessageContentLocation {
 pub struct InputMessageContentText {
     message_text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    entities: Option<Vec<TextEntity>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
@@ -140,14 +143,27 @@ impl InputMessageContentText {
     pub fn new<S: Into<String>>(message_text: S) -> Self {
         InputMessageContentText {
             message_text: message_text.into(),
+            entities: None,
             parse_mode: None,
             disable_web_page_preview: None,
         }
     }
 
-    /// Parse mode
+    /// List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to None when this method is called
+    pub fn entities(mut self, entities: Vec<TextEntity>) -> Self {
+        self.entities = Some(entities);
+        self.parse_mode = None;
+        self
+    }
+
+    /// Sets parse mode
+    ///
+    /// Caption entities will be set to None when this method is called
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
+        self.entities = None;
         self
     }
 
@@ -293,6 +309,7 @@ mod tests {
         assert_eq!(
             serde_json::to_value(InputMessageContent::from(
                 InputMessageContentText::new("text")
+                    .entities(vec![TextEntity::bold(0, 10)])
                     .parse_mode(ParseMode::Html)
                     .disable_web_page_preview(true)
             ))
@@ -305,9 +322,21 @@ mod tests {
         );
 
         assert_eq!(
-            serde_json::to_value(InputMessageContent::from(InputMessageContentText::new("text"))).unwrap(),
+            serde_json::to_value(InputMessageContent::from(
+                InputMessageContentText::new("text")
+                    .parse_mode(ParseMode::Markdown)
+                    .entities(vec![TextEntity::bold(0, 10)])
+            ))
+            .unwrap(),
             serde_json::json!({
-                "message_text": "text"
+                "message_text": "text",
+                "entities": [
+                    {
+                        "type": "bold",
+                        "offset": 0,
+                        "length": 10
+                    }
+                ]
             })
         );
     }

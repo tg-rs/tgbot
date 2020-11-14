@@ -1,7 +1,7 @@
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, Integer, Message, ParseMode, ReplyMarkup},
+    types::{ChatId, Integer, Message, ParseMode, ReplyMarkup, TextEntity},
 };
 use serde::Serialize;
 
@@ -12,6 +12,8 @@ pub struct SendMessage {
     text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    entities: Option<Vec<TextEntity>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -36,6 +38,7 @@ impl SendMessage {
             chat_id: chat_id.into(),
             text: text.into(),
             parse_mode: None,
+            entities: None,
             disable_web_page_preview: None,
             disable_notification: None,
             reply_to_message_id: None,
@@ -45,8 +48,20 @@ impl SendMessage {
     }
 
     /// Sets parse mode
+    ///
+    /// Entities will be set to None when this method is called
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
+        self.entities = None;
+        self
+    }
+
+    /// List of special entities that appear in message text
+    ///
+    /// Parse mode will be set to None when this method is called
+    pub fn entities(mut self, entities: Vec<TextEntity>) -> Self {
+        self.entities = Some(entities);
+        self.parse_mode = None;
         self
     }
 
@@ -97,7 +112,7 @@ mod tests {
     use super::*;
     use crate::{
         request::{RequestBody, RequestMethod},
-        types::ForceReply,
+        types::{ForceReply, TextEntity, TextEntityPosition},
     };
     use serde_json::Value;
 
@@ -105,6 +120,7 @@ mod tests {
     fn send_message() {
         let request = SendMessage::new(1, "text")
             .parse_mode(ParseMode::Markdown)
+            .entities(vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 2 })])
             .disable_web_page_preview(true)
             .disable_notification(true)
             .reply_to_message_id(1)
@@ -115,14 +131,25 @@ mod tests {
         assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/sendMessage");
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["chat_id"], 1);
-            assert_eq!(data["text"], "text");
-            assert_eq!(data["parse_mode"], "Markdown");
-            assert_eq!(data["disable_web_page_preview"], true);
-            assert_eq!(data["disable_notification"], true);
-            assert_eq!(data["reply_to_message_id"], 1);
-            assert_eq!(data["allow_sending_without_reply"], true);
-            assert_eq!(data["reply_markup"]["force_reply"], true);
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "chat_id": 1,
+                    "text": "text",
+                    "entities": [{
+                        "type": "bold",
+                        "offset": 0,
+                        "length": 2
+                    }],
+                    "disable_web_page_preview": true,
+                    "disable_notification": true,
+                    "reply_to_message_id": 1,
+                    "allow_sending_without_reply": true,
+                    "reply_markup": {
+                        "force_reply": true
+                    }
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }

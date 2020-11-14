@@ -1,6 +1,6 @@
 use crate::types::{
     inline_mode::message_content::InputMessageContent, parse_mode::ParseMode, primitive::Integer,
-    reply_markup::InlineKeyboardMarkup,
+    reply_markup::InlineKeyboardMarkup, text::TextEntity,
 };
 use serde::Serialize;
 
@@ -30,6 +30,8 @@ pub struct InlineQueryResultVideo {
     video_duration: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    caption_entities: Option<Vec<TextEntity>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -66,6 +68,7 @@ impl InlineQueryResultVideo {
             video_height: None,
             video_duration: None,
             description: None,
+            caption_entities: None,
             reply_markup: None,
             input_message_content: None,
         }
@@ -77,9 +80,21 @@ impl InlineQueryResultVideo {
         self
     }
 
-    /// Parse mode
+    /// List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to None when this method is called
+    pub fn caption_entities(mut self, caption_entities: Vec<TextEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self.parse_mode = None;
+        self
+    }
+
+    /// Sets parse mode
+    ///
+    /// Caption entities will be set to None when this method is called
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
+        self.caption_entities = None;
         self
     }
 

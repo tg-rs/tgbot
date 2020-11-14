@@ -1,7 +1,7 @@
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, EditMessageResult, InlineKeyboardMarkup, Integer, ParseMode},
+    types::{ChatId, EditMessageResult, InlineKeyboardMarkup, Integer, ParseMode, TextEntity},
 };
 use serde::Serialize;
 
@@ -17,6 +17,8 @@ pub struct EditMessageText {
     text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    entities: Option<Vec<TextEntity>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,6 +40,7 @@ impl EditMessageText {
             inline_message_id: None,
             text: text.into(),
             parse_mode: None,
+            entities: None,
             disable_web_page_preview: None,
             reply_markup: None,
         }
@@ -56,14 +59,27 @@ impl EditMessageText {
             inline_message_id: Some(inline_message_id.into()),
             text: text.into(),
             parse_mode: None,
+            entities: None,
             disable_web_page_preview: None,
             reply_markup: None,
         }
     }
 
     /// Parse mode
+    ///
+    /// Entities will be set to None when this method is called
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
+        self.entities = None;
+        self
+    }
+
+    /// List of special entities that appear in message text
+    ///
+    /// Parse mode will be set to None when this method is called
+    pub fn entities(mut self, entities: Vec<TextEntity>) -> Self {
+        self.entities = Some(entities);
+        self.parse_mode = None;
         self
     }
 
@@ -111,17 +127,33 @@ mod tests {
         );
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["chat_id"], 1);
-            assert_eq!(data["message_id"], 2);
-            assert_eq!(data["text"], "text");
-            assert_eq!(data["parse_mode"], "Markdown");
-            assert_eq!(data["disable_web_page_preview"], true);
-            assert_eq!(data["reply_markup"]["inline_keyboard"][0][0]["text"], "text");
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "chat_id": 1,
+                    "message_id": 2,
+                    "text": "text",
+                    "parse_mode": "Markdown",
+                    "disable_web_page_preview": true,
+                    "reply_markup": {
+                        "inline_keyboard": [
+                            [
+                                {
+                                    "text": "text",
+                                    "url": "url"
+                                }
+                            ]
+                        ]
+                    }
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }
 
-        let request = EditMessageText::with_inline_message_id("msg-id", "text").into_request();
+        let request = EditMessageText::with_inline_message_id("msg-id", "text")
+            .entities(vec![TextEntity::bold(0, 4)])
+            .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
             request.build_url("base-url", "token"),
@@ -129,8 +161,20 @@ mod tests {
         );
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["inline_message_id"], "msg-id");
-            assert_eq!(data["text"], "text");
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "inline_message_id": "msg-id",
+                    "text": "text",
+                    "entities": [
+                        {
+                            "type": "bold",
+                            "offset": 0,
+                            "length": 4
+                        }
+                    ]
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }

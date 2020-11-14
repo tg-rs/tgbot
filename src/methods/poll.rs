@@ -1,7 +1,7 @@
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, InlineKeyboardMarkup, Integer, Message, ParseMode, Poll, PollKind, ReplyMarkup},
+    types::{ChatId, InlineKeyboardMarkup, Integer, Message, ParseMode, Poll, PollKind, ReplyMarkup, TextEntity},
 };
 use serde::Serialize;
 
@@ -23,6 +23,8 @@ struct PollParameters {
     explanation: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     explanation_parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    explanation_entities: Option<Vec<TextEntity>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     open_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -51,6 +53,7 @@ impl PollParameters {
             correct_option_id: None,
             explanation: None,
             explanation_parse_mode: None,
+            explanation_entities: None,
             open_period: None,
             close_date: None,
             is_closed: None,
@@ -119,8 +122,20 @@ impl SendQuiz {
     }
 
     /// Mode for parsing entities in the explanation
+    ///
+    /// Explanation entities will be set to None when this method is called
     pub fn explanation_parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.inner.explanation_parse_mode = Some(parse_mode);
+        self.inner.explanation_entities = None;
+        self
+    }
+
+    /// List of special entities that appear in the poll explanation
+    ///
+    /// Explanation parse mode will be set to None when this method is called
+    pub fn explanation_entities(mut self, entities: Vec<TextEntity>) -> Self {
+        self.inner.explanation_entities = Some(entities);
+        self.inner.explanation_parse_mode = None;
         self
     }
 

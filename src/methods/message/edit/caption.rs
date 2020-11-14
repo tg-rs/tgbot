@@ -1,7 +1,7 @@
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, EditMessageResult, InlineKeyboardMarkup, Integer, ParseMode},
+    types::{ChatId, EditMessageResult, InlineKeyboardMarkup, Integer, ParseMode, TextEntity},
 };
 use serde::Serialize;
 
@@ -16,6 +16,8 @@ pub struct EditMessageCaption {
     inline_message_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    caption_entities: Option<Vec<TextEntity>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,6 +37,7 @@ impl EditMessageCaption {
             message_id: Some(message_id),
             inline_message_id: None,
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             reply_markup: None,
         }
@@ -51,6 +54,7 @@ impl EditMessageCaption {
             message_id: None,
             inline_message_id: Some(inline_message_id.into()),
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             reply_markup: None,
         }
@@ -62,9 +66,21 @@ impl EditMessageCaption {
         self
     }
 
+    /// List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to None when this method is called
+    pub fn caption_entities(mut self, caption_entities: Vec<TextEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self.parse_mode = None;
+        self
+    }
+
     /// Parse mode
+    ///
+    /// Entities will be set to None when this method is called
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
+        self.caption_entities = None;
         self
     }
 
@@ -106,15 +122,29 @@ mod tests {
         );
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["chat_id"], 1);
-            assert_eq!(data["message_id"], 2);
-            assert_eq!(data["caption"], "caption");
-            assert_eq!(data["reply_markup"]["inline_keyboard"][0][0]["text"], "text");
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "chat_id": 1,
+                    "message_id": 2,
+                    "caption": "caption",
+                    "parse_mode": "Markdown",
+                    "reply_markup": {
+                        "inline_keyboard": [
+                            [
+                                {"text": "text", "url": "url"}
+                            ]
+                        ]
+                    }
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }
 
-        let request = EditMessageCaption::with_inline_message_id("msg-id").into_request();
+        let request = EditMessageCaption::with_inline_message_id("msg-id")
+            .caption_entities(vec![TextEntity::bold(0, 10)])
+            .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
             request.build_url("base-url", "token"),
@@ -122,7 +152,13 @@ mod tests {
         );
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["inline_message_id"], "msg-id");
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "inline_message_id": "msg-id",
+                    "caption_entities": [{"type": "bold", "offset": 0, "length": 10}]
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }

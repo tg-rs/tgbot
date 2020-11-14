@@ -1,6 +1,6 @@
 use crate::types::{
     inline_mode::message_content::InputMessageContent, parse_mode::ParseMode, primitive::Integer,
-    reply_markup::InlineKeyboardMarkup,
+    reply_markup::InlineKeyboardMarkup, text::TextEntity,
 };
 use serde::Serialize;
 
@@ -18,6 +18,8 @@ pub struct InlineQueryResultDocument {
     mime_type: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    caption_entities: Option<Vec<TextEntity>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -54,6 +56,7 @@ impl InlineQueryResultDocument {
             id: id.into(),
             title: title.into(),
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             document_url: document_url.into(),
             mime_type: mime_type.into(),
@@ -72,9 +75,21 @@ impl InlineQueryResultDocument {
         self
     }
 
-    /// Parse mode
+    /// List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to None when this method is called
+    pub fn caption_entities(mut self, caption_entities: Vec<TextEntity>) -> Self {
+        self.caption_entities = Some(caption_entities);
+        self.parse_mode = None;
+        self
+    }
+
+    /// Sets parse mode
+    ///
+    /// Caption entities will be set to None when this method is called
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
+        self.caption_entities = None;
         self
     }
 

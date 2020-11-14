@@ -5,7 +5,7 @@ use serde::{
 };
 use std::{error::Error, fmt};
 
-/// Represents a dice with random value from 1 to 6
+/// Represents a dice with random value
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Dice {
     kind: DiceKind,
@@ -20,12 +20,12 @@ impl Dice {
         })
     }
 
-    /// Kind of the dice (bones, darts)
+    /// Kind of the dice
     pub fn kind(&self) -> DiceKind {
         self.kind
     }
 
-    /// Value of the dice, 1-6
+    /// Value of the dice
     pub fn value(&self) -> Integer {
         self.value
     }
@@ -35,29 +35,49 @@ impl Dice {
 #[derive(Debug, Copy, Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
 #[non_exhaustive]
 pub enum DiceKind {
+    /// Basketball
+    ///
+    /// Value of the dice: 1-5
+    Basketball,
     /// Bones
+    ///
+    /// Value of the dice: 1-6
     Bones,
     /// Darts
+    ///
+    /// Value of the dice: 1-6
     Darts,
-    /// Basketball
-    Basketball,
+    /// Football
+    ///
+    /// Value of the dice: 1-5
+    Football,
+    /// Slot machine
+    ///
+    /// Value of the dice: 1-64
+    SlotMachine,
 }
 
 impl DiceKind {
     fn from_raw(raw: String) -> Result<Self, DiceError> {
+        use self::DiceKind::*;
         Ok(match raw.as_str() {
-            "🎲" => Self::Bones,
-            "🎯" => Self::Darts,
-            "🏀" => Self::Basketball,
+            "🏀" => Basketball,
+            "🎲" => Bones,
+            "🎯" => Darts,
+            "⚽" => Football,
+            "🎰" => SlotMachine,
             _ => return Err(DiceError::UnexpectedEmoji(raw)),
         })
     }
 
     pub(crate) fn into_raw(self) -> &'static str {
+        use self::DiceKind::*;
         match self {
-            Self::Bones => "🎲",
-            Self::Darts => "🎯",
-            Self::Basketball => "🏀",
+            Basketball => "🏀",
+            Bones => "🎲",
+            Darts => "🎯",
+            Football => "⚽",
+            SlotMachine => "🎰",
         }
     }
 }
@@ -99,12 +119,12 @@ mod tests {
     #[test]
     fn deserialize() {
         let dice: Dice = serde_json::from_value(serde_json::json!({
-            "emoji": "🎯",
-            "value": 1
+            "emoji": "🏀",
+            "value": 3
         }))
         .unwrap();
-        assert_eq!(dice.value(), 1);
-        assert_eq!(dice.kind(), DiceKind::Darts);
+        assert_eq!(dice.value(), 3);
+        assert_eq!(dice.kind(), DiceKind::Basketball);
 
         let dice: Dice = serde_json::from_value(serde_json::json!({
             "emoji": "🎲",
@@ -115,11 +135,27 @@ mod tests {
         assert_eq!(dice.kind(), DiceKind::Bones);
 
         let dice: Dice = serde_json::from_value(serde_json::json!({
-            "emoji": "🏀",
+            "emoji": "🎯",
+            "value": 1
+        }))
+        .unwrap();
+        assert_eq!(dice.value(), 1);
+        assert_eq!(dice.kind(), DiceKind::Darts);
+
+        let dice: Dice = serde_json::from_value(serde_json::json!({
+            "emoji": "⚽",
             "value": 3
         }))
         .unwrap();
         assert_eq!(dice.value(), 3);
-        assert_eq!(dice.kind(), DiceKind::Basketball);
+        assert_eq!(dice.kind(), DiceKind::Football);
+
+        let dice: Dice = serde_json::from_value(serde_json::json!({
+            "emoji": "🎰",
+            "value": 64
+        }))
+        .unwrap();
+        assert_eq!(dice.value(), 64);
+        assert_eq!(dice.kind(), DiceKind::SlotMachine);
     }
 }

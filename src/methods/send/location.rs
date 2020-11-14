@@ -24,6 +24,8 @@ pub struct SendLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    allow_sending_without_reply: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
 }
 
@@ -46,6 +48,7 @@ impl SendLocation {
             proximity_alert_radius: None,
             disable_notification: None,
             reply_to_message_id: None,
+            allow_sending_without_reply: None,
             reply_markup: None,
         }
     }
@@ -95,6 +98,13 @@ impl SendLocation {
         self
     }
 
+    /// Pass True, if the message should be sent even
+    /// if the specified replied-to message is not found
+    pub fn allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
+        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+        self
+    }
+
     /// Additional interface options
     pub fn reply_markup<R: Into<ReplyMarkup>>(mut self, reply_markup: R) -> Self {
         self.reply_markup = Some(reply_markup.into());
@@ -129,6 +139,7 @@ mod tests {
             .proximity_alert_radius(100)
             .disable_notification(true)
             .reply_to_message_id(1)
+            .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
@@ -144,6 +155,7 @@ mod tests {
             assert_eq!(data["proximity_alert_radius"], 100);
             assert_eq!(data["disable_notification"], true);
             assert_eq!(data["reply_to_message_id"], 1);
+            assert_eq!(data["allow_sending_without_reply"], true);
             assert_eq!(data["reply_markup"]["force_reply"], true);
         } else {
             panic!("Unexpected request body");

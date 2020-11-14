@@ -57,6 +57,13 @@ impl SendPhoto {
         self
     }
 
+    /// Pass True, if the message should be sent even
+    /// if the specified replied-to message is not found
+    pub fn allow_sending_without_reply(mut self, value: bool) -> Self {
+        self.form.insert_field("allow_sending_without_reply", value.to_string());
+        self
+    }
+
     /// Additional interface options
     pub fn reply_markup<R: Into<ReplyMarkup>>(mut self, value: R) -> Result<Self, ReplyMarkupError> {
         let value = value.into();
@@ -88,6 +95,7 @@ mod tests {
             .parse_mode(ParseMode::Markdown)
             .disable_notification(true)
             .reply_to_message_id(1)
+            .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
             .unwrap()
             .into_request();
@@ -100,6 +108,7 @@ mod tests {
             assert_eq!(form.fields["parse_mode"].get_text().unwrap(), "Markdown");
             assert_eq!(form.fields["disable_notification"].get_text().unwrap(), "true");
             assert_eq!(form.fields["reply_to_message_id"].get_text().unwrap(), "1");
+            assert_eq!(form.fields["allow_sending_without_reply"].get_text().unwrap(), "true");
             assert_eq!(
                 form.fields["reply_markup"].get_text().unwrap(),
                 r#"{"force_reply":true}"#

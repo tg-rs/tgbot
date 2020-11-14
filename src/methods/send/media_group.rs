@@ -38,6 +38,13 @@ impl SendMediaGroup {
         self.form.insert_field("reply_to_message_id", value);
         self
     }
+
+    /// Pass True, if the message should be sent even
+    /// if the specified replied-to message is not found
+    pub fn allow_sending_without_reply(mut self, value: bool) -> Self {
+        self.form.insert_field("allow_sending_without_reply", value.to_string());
+        self
+    }
 }
 
 impl Method for SendMediaGroup {
@@ -73,6 +80,7 @@ mod tests {
         .unwrap()
         .disable_notification(true)
         .reply_to_message_id(1)
+        .allow_sending_without_reply(true)
         .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
@@ -86,6 +94,7 @@ mod tests {
             assert!(form.fields.get("tgbot_im_file_1").is_some());
             assert_eq!(form.fields["disable_notification"].get_text().unwrap(), "true");
             assert_eq!(form.fields["reply_to_message_id"].get_text().unwrap(), "1");
+            assert_eq!(form.fields["allow_sending_without_reply"].get_text().unwrap(), "true");
         } else {
             panic!("Unexpected request body");
         }

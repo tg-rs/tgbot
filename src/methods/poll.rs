@@ -74,7 +74,7 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * chat_id - Unique identifier for the target chat
-    /// * question - Quiz question, 1-255 characters
+    /// * question - Quiz question, 1-300 characters
     pub fn new<C, Q>(chat_id: C, question: Q) -> Self
     where
         C: Into<ChatId>,
@@ -194,7 +194,7 @@ impl SendPoll {
     /// # Arguments
     ///
     /// * chat_id - Unique identifier for the target chat
-    /// * question - Poll question, 1-255 characters
+    /// * question - Poll question, 1-300 characters
     pub fn new<C, Q>(chat_id: C, question: Q) -> Self
     where
         C: Into<ChatId>,

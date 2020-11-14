@@ -783,6 +783,8 @@ mod tests {
                 InlineQueryResultVenue::new("id", 1.0, 2.0, "title", "addr")
                     .foursquare_id("f-id")
                     .foursquare_type("f-type")
+                    .google_place_id("g-id")
+                    .google_place_type("g-type")
                     .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
                     .input_message_content(InputMessageContentText::new("text"))
                     .thumb_url("thumb-url")
@@ -799,6 +801,8 @@ mod tests {
                 "address": "addr",
                 "foursquare_id": "f-id",
                 "foursquare_type": "f-type",
+                "google_place_id": "g-id",
+                "google_place_type": "g-type",
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
                 "input_message_content": {"message_text": "text"},
                 "thumb_url": "thumb-url",

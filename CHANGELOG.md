@@ -1,5 +1,99 @@
 # Changelog
 
+## 0.11.0 (15.11.2020)
+
+- Added Bot API 5.0 support.
+    - Allowed to specify text entities instead of specifying the `parse_mode`.
+      - Added `entities` parameter to `SendMessage` and `EditMessageText` methods.
+      - Added `explanation_entities` parameter to `SendQuiz` method
+      - Added `caption_entities` parameter to
+        `EditMessageCaption`, `SendAnimation`, `SendAudio`, `SendDocument`,
+        `SendPhoto`, `SendVideo` and `SendVoice` methods.
+      - Added `caption_entities` field to
+        `InlineQueryResultAudio`, `InlineQueryResultDocument`, `InlineQueryResultGif`,
+        `InlineQueryResultMpeg4Gif`, `InlineQueryResultPhoto`, `InlineQueryResultVideo`,
+        `InlineQueryResultVoice`, `InlineQueryResultCachedAudio`, `InlineQueryResultCachedDocument`,
+        `InlineQueryResultCachedMpeg4Gif`, `InlineQueryResultCachedPhoto`,
+        `InlineQueryResultCachedMpeg4Gif`, `InlineQueryResultCachedVideo`,
+        `InlineQueryResultCachedVoice`, `InputMediaAnimation`,
+        `InputMediaAudio`, `InputMediaDocument`, `InputMediaPhoto` and `InputMediaVideo` structs.
+      - Added `entities` field to `InputMessageContentText` struct.
+    - Added football and slot machine dices.
+    - Added `allow_sending_without_reply` parameter.
+      Affected methods:
+      - `SendMessage`
+      - `SendPhoto`
+      - `SendGame`
+      - `SendPoll`
+      - `SendAnimation`
+      - `SendAudio`
+      - `SendContact`
+      - `SendDice`
+      - `SendDocument`
+      - `SendInvoice`
+      - `SendLocation`
+      - `SendMediaGroup`
+      - `SendVenue`
+      - `SendVideo`
+      - `SendVideoNote`
+      - `SendVoice`
+      - `SendSticker`
+    - Added `google_place_id` and `google_place_type` fields.
+      Affected structs and methods:
+      - `SendVenue` method.
+      - `Venue` struct.
+      - `InlineQueryResultVenue` struct.
+      - `InputMessageContentVenue` struct.
+    - Maximum poll question length increased to 300 characters.
+    - Added `CopyMessage` method.
+    - Reworked `TextEntity`.
+      - Removed `Message.commands` field, use `Text::get_bot_commands()` instead.
+      - Removed `TextEntityData`, `TextEntityMention` and `TextEntityLink` structs.
+      - Added `TextEntityPosition` struct.
+      - Added support of serializing `TextEntity`.
+      - Added `Text::get_bot_commands()` method.
+      - `User` struct now implements `serde::Serialize`
+    - Added `author_signature` to message kinds for group chats.
+    - Added `is_anonymous` parameter `PromoteChatMember` method.
+    - Added `is_anonymous` field to `ChatMemberAdministrator` and `ChatMemberCreator` structs.
+    - Added `sender_chat` field to `Message` struct.
+    - Added horizontal accuracy support for location.
+      - Added `horizontal_accuracy` field to
+        `Location`, `InlineQueryResultLocation`
+        and `InputMessageContentLocation` struct.
+      - Added `horizontal_accuracy` parameter to `SendLocation` and `EditMessageLiveLocation` method.
+    - Added proximity alert support for location.
+      - Added `proximity_alert_radius` field to
+        `Location`, `InlineQueryResultLocation`
+        and `InputMessageContentLocation` struct.
+      - Added `proximity_alert_radius` parameter to `SendLocation`
+        and `EditMessageLiveLocation` method.
+      - Added `ProximityAlertTriggered` service message.
+    - Added heading support for location.
+      - Added `heading` field to
+        `Location`, `InlineQueryResultLocation` and `InputMessageContentLocation` struct.
+      - Added `heading` parameter to `SendLocation` and `EditMessageLiveLocation` method.
+    - Added `live_location` field to `Location` struct.
+    - Added support for `Audio` and `Video` to `MediaGroup`.
+    - Added `UnpinAllChatMessages` method.
+    - Added `message_id` parameter to `UnpinChatMessage` method.
+    - Added `disable_content_type_detection` field to `InputMediaDocument` struct.
+    - Added `disable_content_type_detection` parameter to `SendDocument` method.
+    - Added `file_name` to `Audio` and `Video` structs.
+    - Added `only_if_banned` parameter to `UnbanChatMember` method.
+    - Updated chat-related structs.
+      - Added `ChatLocation` struct.
+      - Added `linked_chat_id` field to `ChannelChat`.
+      - Removed `all_members_are_administrators` field from `GroupChat`.
+      - Added `bio` and `pinned_message` fields to `PrivateChat`.
+      - Added `linked_chat_id` and `location` fields to `SupergroupChat`.
+    - Added `drop_pending_updates` parameter to `SetWebhook` and `DeleteWebhook` methods.
+    - Added information about IP address in webhooks.
+      - Added `ip_address` parameter to `SetWebhook` method.
+      - Added `ip_address` field to `WebhookInfo` struct.
+    - Added `close` method.
+    - Added `LogOut` method.
+
 ## 0.10.0 (20.06.2020)
 
 - Added Bot API 4.9 support.

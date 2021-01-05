@@ -5,12 +5,12 @@ use crate::{
     types::{AllowedUpdate, Integer},
 };
 use async_stream::stream;
-use futures_util::{pin_mut, stream::StreamExt};
+use futures_util::{future::FutureExt, pin_mut, stream::StreamExt};
 use log::error;
 use std::{cmp::max, collections::HashSet, time::Duration};
 use tokio::{
     sync::mpsc::{channel, Receiver, Sender},
-    time::delay_for,
+    time::sleep,
 };
 
 const DEFAULT_LIMIT: Integer = 100;
@@ -75,7 +75,9 @@ where
         let mut receiver = self.receiver;
         let s = stream! {
             loop {
-                if receiver.try_recv().is_ok() {
+                // TODO: use receiver.try_recv().is_ok() when this method will be available again
+                // See https://github.com/tokio-rs/tokio/issues/3350
+                if receiver.recv().now_or_never().is_some() {
                     receiver.close();
                     break;
                 }
@@ -89,7 +91,7 @@ where
                     Err(err) => {
                         error!("An error has occurred while getting updates: {}", err);
                         let timeout = get_error_timeout(err, error_timeout);
-                        delay_for(error_timeout).await;
+                        sleep(error_timeout).await;
                         continue
                     }
                 };
@@ -113,7 +115,7 @@ pub struct LongPollHandle {
 
 impl LongPollHandle {
     /// Stop polling loop
-    pub async fn shutdown(mut self) {
+    pub async fn shutdown(self) {
         let _ = self.sender.send(()).await;
     }
 }

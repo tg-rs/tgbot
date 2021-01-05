@@ -30,9 +30,9 @@ impl BotCommand {
         let description = description.into();
         let name_len = name.len();
         let description_len = description.len();
-        if name_len < MIN_NAME_LEN || name_len > MAX_NAME_LEN {
+        if !(MIN_NAME_LEN..=MAX_NAME_LEN).contains(&name_len) {
             Err(BotCommandError::BadNameLen(name_len))
-        } else if description_len < MIN_DESCRIPTION_LEN || description_len > MAX_DESCRIPTION_LEN {
+        } else if !(MIN_DESCRIPTION_LEN..=MAX_DESCRIPTION_LEN).contains(&description_len) {
             Err(BotCommandError::BadDescriptionLen(description_len))
         } else {
             Ok(Self {

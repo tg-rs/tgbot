@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.0 (05.01.2021)
+
+- Tokio 1.0 support
+
 ## 0.11.0 (15.11.2020)
 
 - Added Bot API 5.0 support.

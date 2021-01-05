@@ -5,7 +5,7 @@ use tgbot::{
     types::{ChatId, Integer, Update},
     Api, Config,
 };
-use tokio::{spawn, sync::mpsc, time::delay_for};
+use tokio::{spawn, sync::mpsc, time::sleep};
 
 #[allow(clippy::large_enum_variant)]
 enum Notification {
@@ -32,7 +32,7 @@ async fn main() {
     }
     let api = Api::new(config).expect("Failed to create API");
 
-    let (mut tx, mut rx) = mpsc::channel(100);
+    let (tx, mut rx) = mpsc::channel(100);
 
     spawn(async move {
         let timeout = Duration::from_secs(1);
@@ -41,7 +41,7 @@ async fn main() {
                 println!("Receiver dropped");
                 return;
             }
-            delay_for(timeout).await;
+            sleep(timeout).await;
         }
     });
 

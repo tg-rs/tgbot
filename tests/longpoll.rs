@@ -7,7 +7,7 @@ use std::{
     time::{Duration, Instant},
 };
 use tgbot::{longpoll::LongPoll, types::Update, Api, Config, UpdateHandler};
-use tokio::{spawn, sync::Mutex, time::delay_for};
+use tokio::{spawn, sync::Mutex, time::sleep};
 
 struct Handler {
     updates: Arc<Mutex<Vec<Update>>>,
@@ -70,7 +70,7 @@ async fn longpoll() {
             if now.elapsed().as_secs() >= 2 {
                 break;
             }
-            delay_for(Duration::from_millis(100)).await;
+            sleep(Duration::from_millis(100)).await;
         }
         handle.shutdown().await
     });

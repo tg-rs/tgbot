@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use bytes::Buf;
 use dotenv::dotenv;
 use hyper::{body, header::HeaderValue, Body, Client, Method, Request, Server, StatusCode};
 use std::sync::Arc;
@@ -70,8 +69,8 @@ async fn webhook() {
     let rep = client.request(req).await.unwrap();
     let _ = tx.send(());
     let status = rep.status();
-    let data = body::aggregate(rep).await.unwrap();
+    let data = body::to_bytes(rep).await.unwrap();
     assert_eq!(status, StatusCode::OK);
-    assert_eq!(data.bytes(), b"");
+    assert!(data.is_empty());
     assert!(!updates.lock().await.is_empty())
 }

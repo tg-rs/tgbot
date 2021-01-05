@@ -1,5 +1,5 @@
 use crate::handler::UpdateHandler;
-use bytes::buf::BufExt;
+use bytes::Buf;
 use futures_util::future::{ok, ready, FutureExt, Ready};
 use http::Error as HttpError;
 use hyper::{body, service::Service, Body, Error as HyperError, Method, Request, Response, Server, StatusCode};

@@ -455,7 +455,7 @@ mod tests {
     #[test]
     fn create_error_accepts_kind() {
         use self::EncryptedPassportElementKind::*;
-        for (kind, flag) in vec![
+        for (kind, flag) in &[
             (Address, true),
             (BankStatement, false),
             (DriverLicense, true),
@@ -470,11 +470,11 @@ mod tests {
             (TemporaryRegistration, false),
             (UtilityBill, false),
         ] {
-            let err = PassportElementError::data_field(kind, "address", "data_hash", "bad address");
-            assert!(if flag { err.is_ok() } else { err.is_err() });
+            let err = PassportElementError::data_field(*kind, "address", "data_hash", "bad address");
+            assert!(if *flag { err.is_ok() } else { err.is_err() });
         }
 
-        for (kind, flag) in vec![
+        for (kind, flag) in &[
             (Address, false),
             (BankStatement, false),
             (DriverLicense, true),
@@ -489,11 +489,11 @@ mod tests {
             (TemporaryRegistration, false),
             (UtilityBill, false),
         ] {
-            let err = PassportElementError::front_side(kind, "file_hash", "bad file");
-            assert!(if flag { err.is_ok() } else { err.is_err() });
+            let err = PassportElementError::front_side(*kind, "file_hash", "bad file");
+            assert!(if *flag { err.is_ok() } else { err.is_err() });
         }
 
-        for (kind, flag) in vec![
+        for (kind, flag) in &[
             (Address, false),
             (BankStatement, false),
             (DriverLicense, true),
@@ -508,11 +508,11 @@ mod tests {
             (TemporaryRegistration, false),
             (UtilityBill, false),
         ] {
-            let err = PassportElementError::reverse_side(kind, "file_hash", "bad file");
-            assert!(if flag { err.is_ok() } else { err.is_err() });
+            let err = PassportElementError::reverse_side(*kind, "file_hash", "bad file");
+            assert!(if *flag { err.is_ok() } else { err.is_err() });
         }
 
-        for (kind, flag) in vec![
+        for (kind, flag) in &[
             (Address, false),
             (BankStatement, false),
             (DriverLicense, true),
@@ -527,11 +527,11 @@ mod tests {
             (TemporaryRegistration, false),
             (UtilityBill, false),
         ] {
-            let err = PassportElementError::selfie(kind, "file_hash", "bad file");
-            assert!(if flag { err.is_ok() } else { err.is_err() });
+            let err = PassportElementError::selfie(*kind, "file_hash", "bad file");
+            assert!(if *flag { err.is_ok() } else { err.is_err() });
         }
 
-        for (kind, flag) in vec![
+        for (kind, flag) in &[
             (Address, false),
             (BankStatement, true),
             (DriverLicense, false),
@@ -546,11 +546,11 @@ mod tests {
             (TemporaryRegistration, true),
             (UtilityBill, true),
         ] {
-            let err = PassportElementError::file(kind, "file_hash", "bad file");
-            assert!(if flag { err.is_ok() } else { err.is_err() });
+            let err = PassportElementError::file(*kind, "file_hash", "bad file");
+            assert!(if *flag { err.is_ok() } else { err.is_err() });
         }
 
-        for (kind, flag) in vec![
+        for (kind, flag) in &[
             (Address, false),
             (BankStatement, true),
             (DriverLicense, false),
@@ -565,11 +565,11 @@ mod tests {
             (TemporaryRegistration, true),
             (UtilityBill, true),
         ] {
-            let err = PassportElementError::files(kind, vec![String::from("file_hash")], "bad file");
-            assert!(if flag { err.is_ok() } else { err.is_err() });
+            let err = PassportElementError::files(*kind, vec![String::from("file_hash")], "bad file");
+            assert!(if *flag { err.is_ok() } else { err.is_err() });
         }
 
-        for (kind, flag) in vec![
+        for (kind, flag) in &[
             (Address, false),
             (BankStatement, true),
             (DriverLicense, true),
@@ -584,11 +584,11 @@ mod tests {
             (TemporaryRegistration, true),
             (UtilityBill, true),
         ] {
-            let err = PassportElementError::translation_file(kind, "file_hash", "bad file");
-            assert!(if flag { err.is_ok() } else { err.is_err() });
+            let err = PassportElementError::translation_file(*kind, "file_hash", "bad file");
+            assert!(if *flag { err.is_ok() } else { err.is_err() });
         }
 
-        for (kind, flag) in vec![
+        for (kind, flag) in &[
             (Address, false),
             (BankStatement, true),
             (DriverLicense, true),
@@ -603,8 +603,8 @@ mod tests {
             (TemporaryRegistration, true),
             (UtilityBill, true),
         ] {
-            let err = PassportElementError::translation_files(kind, vec![String::from("file_hash")], "bad file");
-            assert!(if flag { err.is_ok() } else { err.is_err() });
+            let err = PassportElementError::translation_files(*kind, vec![String::from("file_hash")], "bad file");
+            assert!(if *flag { err.is_ok() } else { err.is_err() });
         }
     }
 }

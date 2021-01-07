@@ -1,14 +1,11 @@
-use crate::types::{primitive::Integer, user::User};
-use serde::{Serialize, Serializer};
+use super::{error::TextEntityError, raw::RawTextEntity};
+use crate::types::{primitive::Integer, text::raw::RawTextEntityKind, user::User};
+use serde::Serialize;
 use std::convert::TryFrom;
 
-use super::{
-    error::TextEntityError,
-    raw::{RawTextEntity, RawTextEntityKind},
-};
-
 /// Respresents an entity in a text
-#[derive(Clone, Debug, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Serialize)]
+#[serde(into = "RawTextEntity")]
 pub enum TextEntity {
     /// Bold text
     Bold(TextEntityPosition),
@@ -149,18 +146,15 @@ impl TryFrom<RawTextEntity> for TextEntity {
             RawTextEntityKind::Italic => TextEntity::Italic(position),
             RawTextEntityKind::Mention => TextEntity::Mention(position),
             RawTextEntityKind::PhoneNumber => TextEntity::PhoneNumber(position),
-            RawTextEntityKind::Pre => TextEntity::Pre {
-                position,
-                language: raw.language,
-            },
+            RawTextEntityKind::Pre { language } => TextEntity::Pre { position, language },
             RawTextEntityKind::Strikethrough => TextEntity::Strikethrough(position),
-            RawTextEntityKind::TextLink => match raw.url {
-                Some(url) => TextEntity::TextLink { position, url },
-                None => return Err(TextEntityError::NoUrl),
+            RawTextEntityKind::TextLink { url } => TextEntity::TextLink {
+                position,
+                url: url.ok_or(TextEntityError::NoUrl)?,
             },
-            RawTextEntityKind::TextMention => match raw.user {
-                Some(user) => TextEntity::TextMention { position, user },
-                None => return Err(TextEntityError::NoUser),
+            RawTextEntityKind::TextMention { user } => TextEntity::TextMention {
+                position,
+                user: user.ok_or(TextEntityError::NoUser)?,
             },
             RawTextEntityKind::Underline => TextEntity::Underline(position),
             RawTextEntityKind::Url => TextEntity::Url(position),
@@ -171,31 +165,11 @@ impl TryFrom<RawTextEntity> for TextEntity {
 impl From<TextEntity> for RawTextEntity {
     fn from(entity: TextEntity) -> Self {
         macro_rules! raw {
-            ($kind:ident($position:ident)) => {
-                raw!($kind($position, url = None, user = None, language = None))
-            };
-            ($kind:ident($position:ident, url=$url:expr)) => {
-                raw!($kind($position, url = Some($url), user = None, language = None))
-            };
-            ($kind:ident($position:ident, user=$user:expr)) => {
-                raw!($kind($position, url = None, user = Some($user), language = None))
-            };
-            ($kind:ident($position:ident, language=$language:expr)) => {
-                raw!($kind($position, url = None, user = None, language = $language))
-            };
-            ($kind:ident(
-                $position:ident,
-                url=$url:expr,
-                user=$user:expr,
-                language=$language:expr
-            )) => {
+            ($kind:ident($position:ident $( , $item:ident )?)) => {
                 RawTextEntity {
-                    kind: RawTextEntityKind::$kind,
+                    kind: RawTextEntityKind::$kind $( { $item: $item.into() } )?,
                     offset: $position.offset,
                     length: $position.length,
-                    url: $url,
-                    user: $user,
-                    language: $language,
                 }
             };
         }
@@ -209,25 +183,13 @@ impl From<TextEntity> for RawTextEntity {
             TextEntity::Italic(p) => raw!(Italic(p)),
             TextEntity::Mention(p) => raw!(Mention(p)),
             TextEntity::PhoneNumber(p) => raw!(PhoneNumber(p)),
-            TextEntity::Pre {
-                position: p,
-                language: l,
-            } => raw!(Pre(p, language = l)),
+            TextEntity::Pre { position: p, language } => raw!(Pre(p, language)),
             TextEntity::Strikethrough(p) => raw!(Strikethrough(p)),
-            TextEntity::TextLink { position: p, url: u } => raw!(TextLink(p, url = u)),
-            TextEntity::TextMention { position: p, user: u } => raw!(TextMention(p, user = u)),
+            TextEntity::TextLink { position: p, url } => raw!(TextLink(p, url)),
+            TextEntity::TextMention { position: p, user } => raw!(TextMention(p, user)),
             TextEntity::Underline(p) => raw!(Underline(p)),
             TextEntity::Url(p) => raw!(Url(p)),
         }
-    }
-}
-
-impl Serialize for TextEntity {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        RawTextEntity::from(self.clone()).serialize(serializer)
     }
 }
 

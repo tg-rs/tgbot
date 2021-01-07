@@ -21,6 +21,13 @@ pub struct Text {
 }
 
 impl Text {
+    pub(crate) fn from_raw_opt<S: Into<String>>(
+        data: Option<S>,
+        entities: Option<Vec<RawTextEntity>>,
+    ) -> Result<Option<Text>, TextEntityError> {
+        data.map(|x| Text::from_raw(x, entities)).transpose()
+    }
+
     pub(crate) fn from_raw<S: Into<String>>(
         data: S,
         entities: Option<Vec<RawTextEntity>>,
@@ -191,7 +198,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: offset \"-1\" is out of text bounds",
+                r#"offset "-1" is out of text bounds"#,
             ),
             (
                 json!({
@@ -207,7 +214,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: offset \"11\" is out of text bounds",
+                r#"offset "11" is out of text bounds"#,
             ),
             (
                 json!({
@@ -223,7 +230,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: length \"-1\" is out of text bounds",
+                r#"length "-1" is out of text bounds"#,
             ),
             (
                 json!({
@@ -239,7 +246,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: length \"11\" is out of text bounds",
+                r#"length "11" is out of text bounds"#,
             ),
             (
                 json!({
@@ -255,7 +262,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: URL is required for text_link entity",
+                "URL is required for text_link entity",
             ),
             (
                 json!({
@@ -271,7 +278,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: user is required for text_mention entity",
+                "user is required for text_mention entity",
             ),
         ] {
             let err = serde_json::from_value::<Message>(input).unwrap_err();
@@ -305,15 +312,164 @@ mod tests {
 
     #[test]
     fn serialize_text_entity() {
-        let entity = TextEntity::Bold(TextEntityPosition { offset: 0, length: 10 });
-        let value: serde_json::Value = serde_json::from_str(&serde_json::to_string(&entity).unwrap()).unwrap();
-        assert_eq!(
-            value,
-            serde_json::json!({
-                "type": "bold",
-                "offset": 0,
-                "length": 10
-            })
-        );
+        for (entity, expected) in vec![
+            (
+                TextEntity::Bold(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "bold",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::BotCommand(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "bot_command",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Cashtag(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "cashtag",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Code(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "code",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Email(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "email",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Hashtag(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "hashtag",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Italic(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "italic",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Mention(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "mention",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::PhoneNumber(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "phone_number",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Pre {
+                    position: TextEntityPosition { offset: 0, length: 10 },
+                    language: None,
+                },
+                serde_json::json!({
+                    "type": "pre",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Pre {
+                    position: TextEntityPosition { offset: 0, length: 10 },
+                    language: Some(String::from("rust")),
+                },
+                serde_json::json!({
+                    "type": "pre",
+                    "offset": 0,
+                    "length": 10,
+                    "language": "rust"
+                }),
+            ),
+            (
+                TextEntity::Strikethrough(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "strikethrough",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::TextLink {
+                    position: TextEntityPosition { offset: 0, length: 10 },
+                    url: String::from("https://rust-lang.org"),
+                },
+                serde_json::json!({
+                    "type": "text_link",
+                    "offset": 0,
+                    "length": 10,
+                    "url": "https://rust-lang.org"
+                }),
+            ),
+            (
+                TextEntity::TextMention {
+                    position: TextEntityPosition { offset: 0, length: 10 },
+                    user: User {
+                        id: 1,
+                        is_bot: false,
+                        first_name: String::from("test"),
+                        last_name: None,
+                        username: None,
+                        language_code: None,
+                    },
+                },
+                serde_json::json!({
+                    "type": "text_mention",
+                    "offset": 0,
+                    "length": 10,
+                    "user": {
+                        "id": 1,
+                        "first_name": "test",
+                        "is_bot": false
+                    }
+                }),
+            ),
+            (
+                TextEntity::Underline(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "underline",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Url(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "url",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+        ] {
+            let value: serde_json::Value = serde_json::from_str(&serde_json::to_string(&entity).unwrap()).unwrap();
+            assert_eq!(value, expected);
+        }
     }
 }

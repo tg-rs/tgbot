@@ -30,8 +30,8 @@ impl fmt::Display for TextEntityError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         use self::TextEntityError::*;
         match self {
-            BadOffset(offset) => write!(out, "offset \"{}\" is out of text bounds", offset),
-            BadLength(length) => write!(out, "length \"{}\" is out of text bounds", length),
+            BadOffset(offset) => write!(out, r#"offset "{}" is out of text bounds"#, offset),
+            BadLength(length) => write!(out, r#"length "{}" is out of text bounds"#, length),
             NoUrl => write!(out, "URL is required for text_link entity"),
             NoUser => write!(out, "user is required for text_mention entity"),
             Serialize(err) => write!(out, "failed to serialize text entities: {}", err),

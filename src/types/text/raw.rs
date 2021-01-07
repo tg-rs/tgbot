@@ -3,20 +3,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub(crate) struct RawTextEntity {
-    #[serde(rename = "type")]
-    pub(super) kind: RawTextEntityKind,
     pub(super) offset: Integer,
     pub(super) length: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) user: Option<User>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) language: Option<String>,
+    #[serde(flatten)]
+    pub(super) kind: RawTextEntityKind,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
+#[serde(tag = "type")]
 pub(super) enum RawTextEntityKind {
     Bold,
     BotCommand,
@@ -27,10 +22,19 @@ pub(super) enum RawTextEntityKind {
     Italic,
     Mention,
     PhoneNumber,
-    Pre,
+    Pre {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        language: Option<String>,
+    },
     Strikethrough,
-    TextLink,
-    TextMention,
+    TextLink {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        url: Option<String>,
+    },
+    TextMention {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        user: Option<User>,
+    },
     Underline,
     Url,
 }

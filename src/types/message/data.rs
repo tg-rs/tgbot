@@ -6,7 +6,7 @@ use crate::types::{
     document::Document,
     game::Game,
     location::{Location, ProximityAlertTriggered},
-    message::{Message, Text},
+    message::{raw::RawMessageData, Message, Text},
     passport::PassportData,
     payments::{Invoice, SuccessfulPayment},
     photo_size::PhotoSize,
@@ -18,11 +18,19 @@ use crate::types::{
     video::Video,
     video_note::VideoNote,
     voice::Voice,
+    TextEntityError,
+};
+use serde::Deserialize;
+use std::{
+    convert::TryFrom,
+    error::{Error as StdError, Error},
+    fmt,
 };
 
 /// Contains message data
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 #[allow(clippy::large_enum_variant)]
+#[serde(try_from = "RawMessageData")]
 pub enum MessageData {
     /// Message is an animation, information about the animation
     Animation(Animation),
@@ -128,10 +136,124 @@ pub enum MessageData {
     },
 }
 
+impl TryFrom<RawMessageData> for MessageData {
+    type Error = MessageDataError;
+
+    fn try_from(raw: RawMessageData) -> Result<Self, Self::Error> {
+        Ok(match raw {
+            RawMessageData::Animation { animation } => MessageData::Animation(animation),
+            RawMessageData::Audio {
+                caption,
+                caption_entities,
+                audio,
+            } => MessageData::Audio {
+                caption: Text::from_raw_opt(caption, caption_entities)?,
+                data: audio,
+            },
+            RawMessageData::ChannelChatCreated { .. } => MessageData::ChannelChatCreated,
+            RawMessageData::ConnectedWebsite { connected_website } => MessageData::ConnectedWebsite(connected_website),
+            RawMessageData::Contact { contact } => MessageData::Contact(contact),
+            RawMessageData::DeleteChatPhoto { .. } => MessageData::DeleteChatPhoto,
+            RawMessageData::Dice { dice } => MessageData::Dice(dice),
+            RawMessageData::Document {
+                caption,
+                caption_entities,
+                document,
+            } => MessageData::Document {
+                caption: Text::from_raw_opt(caption, caption_entities)?,
+                data: document,
+            },
+            RawMessageData::Empty {} => MessageData::Empty,
+            RawMessageData::Game { game } => MessageData::Game(game),
+            RawMessageData::GroupChatCreated { .. } => MessageData::GroupChatCreated,
+            RawMessageData::Invoice { invoice } => MessageData::Invoice(invoice),
+            RawMessageData::LeftChatMember { left_chat_member } => MessageData::LeftChatMember(left_chat_member),
+            RawMessageData::Location { location } => MessageData::Location(location),
+            RawMessageData::MigrateFromChatId { migrate_from_chat_id } => {
+                MessageData::MigrateFromChatId(migrate_from_chat_id)
+            }
+            RawMessageData::MigrateToChatId { migrate_to_chat_id } => MessageData::MigrateToChatId(migrate_to_chat_id),
+            RawMessageData::NewChatMembers { new_chat_members } => MessageData::NewChatMembers(new_chat_members),
+            RawMessageData::NewChatPhoto { new_chat_photo } => MessageData::NewChatPhoto(new_chat_photo),
+            RawMessageData::NewChatTitle { new_chat_title } => MessageData::NewChatTitle(new_chat_title),
+            RawMessageData::PassportData { passport_data } => MessageData::PassportData(passport_data),
+            RawMessageData::PinnedMessage { pinned_message } => MessageData::PinnedMessage(pinned_message),
+            RawMessageData::Photo {
+                caption,
+                caption_entities,
+                photo,
+            } => MessageData::Photo {
+                caption: Text::from_raw_opt(caption, caption_entities)?,
+                data: photo,
+            },
+            RawMessageData::Poll { poll } => MessageData::Poll(poll),
+            RawMessageData::ProximityAlertTriggered {
+                proximity_alert_triggered,
+            } => MessageData::ProximityAlertTriggered(proximity_alert_triggered),
+            RawMessageData::Sticker { sticker } => MessageData::Sticker(sticker),
+            RawMessageData::SuccessfulPayment { successful_payment } => {
+                MessageData::SuccessfulPayment(successful_payment)
+            }
+            RawMessageData::SupergroupChatCreated { .. } => MessageData::SupergroupChatCreated,
+            RawMessageData::Text { text, entities } => MessageData::Text(Text::from_raw(text, entities)?),
+            RawMessageData::Venue { venue } => MessageData::Venue(venue),
+            RawMessageData::Video {
+                caption,
+                caption_entities,
+                video,
+            } => MessageData::Video {
+                caption: Text::from_raw_opt(caption, caption_entities)?,
+                data: video,
+            },
+            RawMessageData::VideoNote { video_note } => MessageData::VideoNote(video_note),
+            RawMessageData::Voice {
+                caption,
+                caption_entities,
+                voice,
+            } => MessageData::Voice {
+                caption: Text::from_raw_opt(caption, caption_entities)?,
+                data: voice,
+            },
+        })
+    }
+}
+
+/// A message data error when parsing message data
+#[derive(Debug)]
+pub enum MessageDataError {
+    /// Error when parsing text entities
+    TextEntity(TextEntityError),
+}
+
+impl StdError for MessageDataError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        match self {
+            MessageDataError::TextEntity(err) => Some(err),
+        }
+    }
+}
+
+impl fmt::Display for MessageDataError {
+    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            MessageDataError::TextEntity(err) => err.fmt(out),
+        }
+    }
+}
+
+impl From<TextEntityError> for MessageDataError {
+    fn from(err: TextEntityError) -> Self {
+        Self::TextEntity(err)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::types::dice::DiceKind;
+    use crate::types::{
+        dice::DiceKind,
+        text::{TextEntity, TextEntityPosition},
+    };
 
     #[test]
     fn deserialize_animation() {
@@ -184,6 +306,9 @@ mod tests {
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
             "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
             "caption": "test audio caption",
+            "caption_entities": [
+                {"type": "bold", "offset": 0, "length": 4},
+            ],
             "audio": {
                 "file_id": "AwADBAADbXXXXXXXXXXXGBdhD2l6_XX",
                 "file_unique_id": "unique-id",
@@ -195,7 +320,12 @@ mod tests {
             assert_eq!(msg.id, 1);
             assert_eq!(data.file_id, "AwADBAADbXXXXXXXXXXXGBdhD2l6_XX");
             assert_eq!(data.file_unique_id, "unique-id");
-            assert_eq!(caption.unwrap().data, "test audio caption");
+            let caption = caption.unwrap();
+            assert_eq!(caption.data, "test audio caption");
+            assert_eq!(
+                caption.entities.unwrap(),
+                vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 })]
+            );
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }
@@ -316,6 +446,9 @@ mod tests {
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
             "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
             "caption": "test document caption",
+            "caption_entities": [
+                {"type": "bold", "offset": 0, "length": 4},
+            ],
             "document": {
                 "file_id": "SSSxmmmsmsIIsooofiiiiaiiaIII_XLA",
                 "file_unique_id": "unique-id",
@@ -326,7 +459,12 @@ mod tests {
             assert_eq!(msg.id, 1);
             assert_eq!(data.file_id, "SSSxmmmsmsIIsooofiiiiaiiaIII_XLA");
             assert_eq!(data.file_unique_id, "unique-id");
-            assert_eq!(caption.unwrap().data, "test document caption");
+            let caption = caption.unwrap();
+            assert_eq!(caption.data, "test document caption");
+            assert_eq!(
+                caption.entities.unwrap(),
+                vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 })]
+            );
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }
@@ -602,6 +740,9 @@ mod tests {
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
             "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
             "caption": "test photo caption",
+            "caption_entities": [
+                {"type": "bold", "offset": 0, "length": 4},
+            ],
             "photo": [{
                 "file_id": "photo-id",
                 "file_unique_id": "unique-id",
@@ -616,7 +757,12 @@ mod tests {
             let photo = &data[0];
             assert_eq!(photo.file_id, "photo-id");
             assert_eq!(photo.file_unique_id, "unique-id");
-            assert_eq!(caption.unwrap().data, "test photo caption");
+            let caption = caption.unwrap();
+            assert_eq!(caption.data, "test photo caption");
+            assert_eq!(
+                caption.entities.unwrap(),
+                vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 })]
+            );
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }
@@ -818,6 +964,9 @@ mod tests {
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
             "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
             "caption": "test video caption",
+            "caption_entities": [
+                {"type": "bold", "offset": 0, "length": 4},
+            ],
             "video": {
                 "file_id": "video-id",
                 "file_unique_id": "unique-id",
@@ -831,7 +980,12 @@ mod tests {
             assert_eq!(msg.id, 1);
             assert_eq!(data.file_id, "video-id");
             assert_eq!(data.file_unique_id, "unique-id");
-            assert_eq!(caption.unwrap().data, "test video caption");
+            let caption = caption.unwrap();
+            assert_eq!(caption.data, "test video caption");
+            assert_eq!(
+                caption.entities.unwrap(),
+                vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 })]
+            );
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }
@@ -887,6 +1041,9 @@ mod tests {
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
             "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
             "caption": "test voice caption",
+            "caption_entities": [
+                {"type": "bold", "offset": 0, "length": 4},
+            ],
             "voice": {
                 "file_id": "voice-id",
                 "file_unique_id": "unique-id",
@@ -898,7 +1055,12 @@ mod tests {
             assert_eq!(msg.id, 1);
             assert_eq!(data.file_id, "voice-id");
             assert_eq!(data.file_unique_id, "unique-id");
-            assert_eq!(caption.unwrap().data, "test voice caption");
+            let caption = caption.unwrap();
+            assert_eq!(caption.data, "test voice caption");
+            assert_eq!(
+                caption.entities.unwrap(),
+                vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 })]
+            );
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }

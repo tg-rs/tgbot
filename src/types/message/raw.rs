@@ -1,17 +1,18 @@
 use crate::types::{
     animation::Animation,
     audio::Audio,
-    chat::Chat,
+    chat::{ChannelChat, Chat},
     contact::Contact,
     dice::Dice,
     document::Document,
     game::Game,
     location::{Location, ProximityAlertTriggered},
+    message::{Forward, Message, MessageData},
     passport::PassportData,
     payments::{Invoice, SuccessfulPayment},
     photo_size::PhotoSize,
     poll::Poll,
-    primitive::Integer,
+    primitive::{Integer, True},
     reply_markup::InlineKeyboardMarkup,
     stickers::Sticker,
     text::RawTextEntity,
@@ -30,50 +31,148 @@ pub(super) struct RawMessage {
     pub sender_chat: Option<Chat>,
     pub date: Integer,
     pub chat: Chat,
-    pub forward_from: Option<User>,
-    pub forward_from_chat: Option<Chat>,
-    pub forward_from_message_id: Option<Integer>,
-    pub forward_signature: Option<String>,
-    pub forward_sender_name: Option<String>,
-    pub forward_date: Option<Integer>,
-    pub reply_to_message: Option<Box<RawMessage>>,
+    #[serde(flatten)]
+    pub forward: Option<Forward>,
+    pub reply_to_message: Option<Message>,
     pub via_bot: Option<User>,
     pub edit_date: Option<Integer>,
     pub media_group_id: Option<String>,
     pub author_signature: Option<String>,
-    pub text: Option<String>,
-    pub entities: Option<Vec<RawTextEntity>>,
-    pub caption_entities: Option<Vec<RawTextEntity>>,
-    pub audio: Option<Audio>,
-    pub animation: Option<Animation>,
-    pub dice: Option<Dice>,
-    pub document: Option<Document>,
-    pub game: Option<Game>,
-    pub photo: Option<Vec<PhotoSize>>,
-    pub poll: Option<Poll>,
-    pub proximity_alert_triggered: Option<ProximityAlertTriggered>,
-    pub sticker: Option<Sticker>,
-    pub video: Option<Video>,
-    pub voice: Option<Voice>,
-    pub video_note: Option<VideoNote>,
-    pub caption: Option<String>,
-    pub contact: Option<Contact>,
-    pub location: Option<Location>,
-    pub venue: Option<Venue>,
-    pub new_chat_members: Option<Vec<User>>,
-    pub left_chat_member: Option<User>,
-    pub new_chat_title: Option<String>,
-    pub new_chat_photo: Option<Vec<PhotoSize>>,
-    pub delete_chat_photo: Option<bool>,
-    pub group_chat_created: Option<bool>,
-    pub supergroup_chat_created: Option<bool>,
-    pub channel_chat_created: Option<bool>,
-    pub migrate_to_chat_id: Option<Integer>,
-    pub migrate_from_chat_id: Option<Integer>,
-    pub pinned_message: Option<Box<RawMessage>>,
-    pub invoice: Option<Invoice>,
-    pub successful_payment: Option<SuccessfulPayment>,
-    pub connected_website: Option<String>,
-    pub passport_data: Option<PassportData>,
+    #[serde(flatten)]
+    pub data: MessageData,
     pub reply_markup: Option<InlineKeyboardMarkup>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub(super) struct RawForward {
+    pub forward_date: Integer,
+    #[serde(flatten)]
+    pub forward_from: RawForwardFrom,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(untagged)]
+pub(super) enum RawForwardFrom {
+    User {
+        forward_from: User,
+    },
+    HiddenUser {
+        forward_sender_name: String,
+    },
+    Channel {
+        forward_from_chat: ChannelChat,
+        forward_from_message_id: Integer,
+        forward_signature: Option<String>,
+    },
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(clippy::large_enum_variant)]
+#[serde(untagged)]
+pub(super) enum RawMessageData {
+    Animation {
+        animation: Animation,
+    },
+    Audio {
+        caption: Option<String>,
+        caption_entities: Option<Vec<RawTextEntity>>,
+        audio: Audio,
+    },
+    ChannelChatCreated {
+        channel_chat_created: True,
+    },
+    ConnectedWebsite {
+        connected_website: String,
+    },
+    Contact {
+        contact: Contact,
+    },
+    DeleteChatPhoto {
+        delete_chat_photo: True,
+    },
+    Dice {
+        dice: Dice,
+    },
+    Document {
+        caption: Option<String>,
+        caption_entities: Option<Vec<RawTextEntity>>,
+        document: Document,
+    },
+    Game {
+        game: Game,
+    },
+    GroupChatCreated {
+        group_chat_created: True,
+    },
+    Invoice {
+        invoice: Invoice,
+    },
+    LeftChatMember {
+        left_chat_member: User,
+    },
+    Location {
+        location: Location,
+    },
+    MigrateFromChatId {
+        migrate_from_chat_id: Integer,
+    },
+    MigrateToChatId {
+        migrate_to_chat_id: Integer,
+    },
+    NewChatMembers {
+        new_chat_members: Vec<User>,
+    },
+    NewChatPhoto {
+        new_chat_photo: Vec<PhotoSize>,
+    },
+    NewChatTitle {
+        new_chat_title: String,
+    },
+    PassportData {
+        passport_data: PassportData,
+    },
+    PinnedMessage {
+        pinned_message: Box<Message>,
+    },
+    Photo {
+        caption: Option<String>,
+        caption_entities: Option<Vec<RawTextEntity>>,
+        photo: Vec<PhotoSize>,
+    },
+    Poll {
+        poll: Poll,
+    },
+    ProximityAlertTriggered {
+        proximity_alert_triggered: ProximityAlertTriggered,
+    },
+    Sticker {
+        sticker: Sticker,
+    },
+    SuccessfulPayment {
+        successful_payment: SuccessfulPayment,
+    },
+    SupergroupChatCreated {
+        supergroup_chat_created: True,
+    },
+    Text {
+        text: String,
+        entities: Option<Vec<RawTextEntity>>,
+    },
+    Venue {
+        venue: Venue,
+    },
+    Video {
+        caption: Option<String>,
+        caption_entities: Option<Vec<RawTextEntity>>,
+        video: Video,
+    },
+    VideoNote {
+        video_note: VideoNote,
+    },
+    Voice {
+        caption: Option<String>,
+        caption_entities: Option<Vec<RawTextEntity>>,
+        voice: Voice,
+    },
+    Empty {}, // must be last because all variants below won't be deserialized
 }

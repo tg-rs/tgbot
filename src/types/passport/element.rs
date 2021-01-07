@@ -1,9 +1,11 @@
 use crate::types::passport::PassportFile;
-use serde::{de::Error, Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 
 /// Information about documents or other Telegram Passport elements shared with the bot by the user
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 #[allow(clippy::large_enum_variant)]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "type")]
 pub enum EncryptedPassportElement {
     /// Address
     Address(EncryptedPassportElementAddress),
@@ -33,103 +35,8 @@ pub enum EncryptedPassportElement {
     UtilityBill(EncryptedPassportElementUtilityBill),
 }
 
-impl<'de> Deserialize<'de> for EncryptedPassportElement {
-    fn deserialize<D>(deserializer: D) -> Result<EncryptedPassportElement, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let raw: RawEncryptedPassportElement = Deserialize::deserialize(deserializer)?;
-        use self::EncryptedPassportElementKind::*;
-        macro_rules! required {
-            ($name:ident) => {{
-                match raw.$name {
-                    Some(val) => val,
-                    None => return Err(D::Error::missing_field(stringify!($name))),
-                }
-            }};
-        }
-        Ok(match raw.kind {
-            Address => EncryptedPassportElement::Address(EncryptedPassportElementAddress {
-                data: required!(data),
-                hash: raw.hash,
-            }),
-            BankStatement => EncryptedPassportElement::BankStatement(EncryptedPassportElementBankStatement {
-                files: required!(files),
-                translation: raw.translation,
-                hash: raw.hash,
-            }),
-            DriverLicense => EncryptedPassportElement::DriverLicense(EncryptedPassportElementDriverLicense {
-                data: required!(data),
-                front_side: required!(front_side),
-                reverse_side: required!(reverse_side),
-                selfie: required!(selfie),
-                translation: raw.translation,
-                hash: raw.hash,
-            }),
-            Email => EncryptedPassportElement::Email(EncryptedPassportElementEmail {
-                email: required!(email),
-                hash: raw.hash,
-            }),
-            IdentityCard => EncryptedPassportElement::IdentityCard(EncryptedPassportElementIdentityCard {
-                data: required!(data),
-                front_side: required!(front_side),
-                reverse_side: required!(reverse_side),
-                selfie: required!(selfie),
-                translation: raw.translation,
-                hash: raw.hash,
-            }),
-            InternalPassport => EncryptedPassportElement::InternalPassport(EncryptedPassportElementInternalPassport {
-                data: required!(data),
-                front_side: required!(front_side),
-                selfie: required!(selfie),
-                translation: raw.translation,
-                hash: raw.hash,
-            }),
-            Passport => EncryptedPassportElement::Passport(EncryptedPassportElementPassport {
-                data: required!(data),
-                front_side: required!(front_side),
-                selfie: required!(selfie),
-                translation: raw.translation,
-                hash: raw.hash,
-            }),
-            PassportRegistration => {
-                EncryptedPassportElement::PassportRegistration(EncryptedPassportElementPassportRegistration {
-                    files: required!(files),
-                    translation: raw.translation,
-                    hash: raw.hash,
-                })
-            }
-            PersonalDetails => EncryptedPassportElement::PersonalDetails(EncryptedPassportElementPersonalDetails {
-                data: required!(data),
-                hash: raw.hash,
-            }),
-            PhoneNumber => EncryptedPassportElement::PhoneNumber(EncryptedPassportElementPhoneNumber {
-                phone_number: required!(phone_number),
-                hash: raw.hash,
-            }),
-            RentalAgreement => EncryptedPassportElement::RentalAgreement(EncryptedPassportElementRentalAgreement {
-                files: required!(files),
-                translation: raw.translation,
-                hash: raw.hash,
-            }),
-            TemporaryRegistration => {
-                EncryptedPassportElement::TemporaryRegistration(EncryptedPassportElementTemporaryRegistration {
-                    files: required!(files),
-                    translation: raw.translation,
-                    hash: raw.hash,
-                })
-            }
-            UtilityBill => EncryptedPassportElement::UtilityBill(EncryptedPassportElementUtilityBill {
-                files: required!(files),
-                translation: raw.translation,
-                hash: raw.hash,
-            }),
-        })
-    }
-}
-
 /// Address
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementAddress {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -142,7 +49,7 @@ pub struct EncryptedPassportElementAddress {
 }
 
 /// Bank statement
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementBankStatement {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -160,7 +67,7 @@ pub struct EncryptedPassportElementBankStatement {
 }
 
 /// Driver license
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementDriverLicense {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -193,7 +100,7 @@ pub struct EncryptedPassportElementDriverLicense {
 }
 
 /// E-Mail
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementEmail {
     /// User's verified email address
     pub email: String,
@@ -203,7 +110,7 @@ pub struct EncryptedPassportElementEmail {
 }
 
 /// Identity card
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementIdentityCard {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -236,7 +143,7 @@ pub struct EncryptedPassportElementIdentityCard {
 }
 
 /// Internal passport
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementInternalPassport {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -264,7 +171,7 @@ pub struct EncryptedPassportElementInternalPassport {
 }
 
 /// Passport
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementPassport {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -292,7 +199,7 @@ pub struct EncryptedPassportElementPassport {
 }
 
 /// Passport registration
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementPassportRegistration {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -310,7 +217,7 @@ pub struct EncryptedPassportElementPassportRegistration {
 }
 
 /// Personal details
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementPersonalDetails {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -323,7 +230,7 @@ pub struct EncryptedPassportElementPersonalDetails {
 }
 
 /// Phone number
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementPhoneNumber {
     /// User's verified phone number
     pub phone_number: String,
@@ -333,7 +240,7 @@ pub struct EncryptedPassportElementPhoneNumber {
 }
 
 /// Rental agreement
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementRentalAgreement {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -351,7 +258,7 @@ pub struct EncryptedPassportElementRentalAgreement {
 }
 
 /// Temporary registration
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementTemporaryRegistration {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -369,7 +276,7 @@ pub struct EncryptedPassportElementTemporaryRegistration {
 }
 
 /// Utility bill
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EncryptedPassportElementUtilityBill {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -386,23 +293,8 @@ pub struct EncryptedPassportElementUtilityBill {
     pub hash: String,
 }
 
-#[derive(Debug, Deserialize)]
-struct RawEncryptedPassportElement {
-    #[serde(rename = "type")]
-    kind: EncryptedPassportElementKind,
-    data: Option<String>,
-    phone_number: Option<String>,
-    email: Option<String>,
-    files: Option<Vec<PassportFile>>,
-    front_side: Option<PassportFile>,
-    reverse_side: Option<PassportFile>,
-    selfie: Option<PassportFile>,
-    translation: Option<Vec<PassportFile>>,
-    hash: String,
-}
-
 /// Type of encrypted passport element
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum EncryptedPassportElementKind {
     /// Address

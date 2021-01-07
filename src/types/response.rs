@@ -1,9 +1,10 @@
-use crate::types::primitive::Integer;
-use serde::{de::Error, Deserialize, Deserializer};
+use crate::types::primitive::{False, Integer, True};
+use serde::Deserialize;
 use std::{error::Error as StdError, fmt};
 
 /// API Response
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(from = "RawResponse<T>")]
 pub enum Response<T> {
     /// Success
     Success(T),
@@ -11,33 +12,22 @@ pub enum Response<T> {
     Error(ResponseError),
 }
 
-impl<'de, T> Deserialize<'de> for Response<T>
-where
-    T: Deserialize<'de>,
-{
-    fn deserialize<D>(deserializer: D) -> Result<Response<T>, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let raw: RawResponse<T> = Deserialize::deserialize(deserializer)?;
-        macro_rules! required {
-            ($name:ident) => {{
-                match raw.$name {
-                    Some(val) => val,
-                    None => return Err(D::Error::missing_field(stringify!($name))),
-                }
-            }};
-        };
-        Ok(if raw.ok {
-            Response::Success(required!(result))
-        } else {
-            Response::Error(ResponseError {
-                description: required!(description),
-                error_code: raw.error_code,
-                migrate_to_chat_id: raw.parameters.and_then(|x| x.migrate_to_chat_id),
-                retry_after: raw.parameters.and_then(|x| x.retry_after),
-            })
-        })
+impl<T> From<RawResponse<T>> for Response<T> {
+    fn from(raw: RawResponse<T>) -> Self {
+        match raw {
+            RawResponse::Success { result, .. } => Response::Success(result),
+            RawResponse::Error {
+                description,
+                error_code,
+                parameters,
+                ..
+            } => Response::Error(ResponseError {
+                description,
+                error_code,
+                migrate_to_chat_id: parameters.and_then(|x| x.migrate_to_chat_id),
+                retry_after: parameters.and_then(|x| x.retry_after),
+            }),
+        }
     }
 }
 
@@ -96,12 +86,18 @@ impl fmt::Display for ResponseError {
 }
 
 #[derive(Clone, Debug, Deserialize)]
-struct RawResponse<T> {
-    ok: bool,
-    description: Option<String>,
-    error_code: Option<Integer>,
-    result: Option<T>,
-    parameters: Option<RawResponseParameters>,
+#[serde(untagged)]
+enum RawResponse<T> {
+    Success {
+        ok: True,
+        result: T,
+    },
+    Error {
+        ok: False,
+        description: String,
+        error_code: Option<Integer>,
+        parameters: Option<RawResponseParameters>,
+    },
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]

@@ -135,7 +135,7 @@ mod tests {
             "chat": {"id": 1, "type": "group", "title": "grouptitle"}
         });
         let err = serde_json::from_value::<Message>(input).unwrap_err();
-        assert_eq!(err.to_string(), String::from("\"from\" field is missing"));
+        assert_eq!(err.to_string(), "missing field `from`");
     }
 
     #[test]
@@ -182,7 +182,7 @@ mod tests {
             "chat": {"id": 1, "type": "private", "first_name": "firstname"}
         });
         let err = serde_json::from_value::<Message>(input).unwrap_err();
-        assert_eq!(err.to_string(), String::from("\"from\" field is missing"));
+        assert_eq!(err.to_string(), "missing field `from`");
     }
 
     #[test]
@@ -238,6 +238,6 @@ mod tests {
             "text": "test"
         });
         let err = serde_json::from_value::<Message>(input).unwrap_err();
-        assert_eq!(err.to_string(), String::from("\"from\" field is missing"));
+        assert_eq!(err.to_string(), "missing field `from`");
     }
 }

@@ -1,12 +1,10 @@
-use crate::types::{
-    chat::raw::{RawChatMember, RawChatMemberStatus},
-    primitive::Integer,
-    user::User,
-};
-use serde::de::{Deserialize, Deserializer, Error};
+use crate::types::{primitive::Integer, user::User};
+use serde::{Deserialize, Deserializer};
 
 /// Information about one member of a chat
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "status")]
 pub enum ChatMember {
     /// Chat admin
     Administrator(ChatMemberAdministrator),
@@ -15,8 +13,10 @@ pub enum ChatMember {
     /// Kicked user
     Kicked(ChatMemberKicked),
     /// Left user
+    #[serde(deserialize_with = "deserialize_chat_user")]
     Left(User),
     /// Chat member
+    #[serde(deserialize_with = "deserialize_chat_user")]
     Member(User),
     /// Restricted user
     Restricted(ChatMemberRestricted),
@@ -47,64 +47,19 @@ impl ChatMember {
     }
 }
 
-impl<'de> Deserialize<'de> for ChatMember {
-    fn deserialize<D>(deserializer: D) -> Result<ChatMember, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let raw: RawChatMember = Deserialize::deserialize(deserializer)?;
-        macro_rules! required {
-            ($name:ident) => {{
-                match raw.$name {
-                    Some(val) => val,
-                    None => return Err(D::Error::missing_field(stringify!($name))),
-                }
-            }};
-        };
-        Ok(match raw.status {
-            RawChatMemberStatus::Administrator => ChatMember::Administrator(ChatMemberAdministrator {
-                user: raw.user,
-                is_anonymous: required!(is_anonymous),
-                can_be_edited: required!(can_be_edited),
-                can_change_info: required!(can_change_info),
-                custom_title: raw.custom_title,
-                can_post_messages: raw.can_post_messages,
-                can_edit_messages: raw.can_edit_messages,
-                can_delete_messages: required!(can_delete_messages),
-                can_invite_users: required!(can_invite_users),
-                can_restrict_members: required!(can_restrict_members),
-                can_pin_messages: raw.can_pin_messages,
-                can_promote_members: required!(can_promote_members),
-            }),
-            RawChatMemberStatus::Creator => ChatMember::Creator(ChatMemberCreator {
-                user: raw.user,
-                is_anonymous: required!(is_anonymous),
-                custom_title: raw.custom_title,
-            }),
-            RawChatMemberStatus::Kicked => ChatMember::Kicked(ChatMemberKicked {
-                user: raw.user,
-                until_date: required!(until_date),
-            }),
-            RawChatMemberStatus::Left => ChatMember::Left(raw.user),
-            RawChatMemberStatus::Member => ChatMember::Member(raw.user),
-            RawChatMemberStatus::Restricted => ChatMember::Restricted(ChatMemberRestricted {
-                user: raw.user,
-                until_date: required!(until_date),
-                can_change_info: required!(can_change_info),
-                can_invite_users: required!(can_invite_users),
-                can_pin_messages: raw.can_pin_messages,
-                can_send_messages: required!(can_send_messages),
-                can_send_polls: required!(can_send_polls),
-                can_send_media_messages: required!(can_send_media_messages),
-                can_send_other_messages: required!(can_send_other_messages),
-                can_add_web_page_previews: required!(can_add_web_page_previews),
-                is_member: required!(is_member),
-            }),
-        })
+fn deserialize_chat_user<'de, D>(deserializer: D) -> Result<User, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    struct Inner {
+        user: User,
     }
+
+    Inner::deserialize(deserializer).map(|x| x.user)
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct ChatMemberCreator {
     /// Information about the user
     pub user: User,
@@ -115,7 +70,7 @@ pub struct ChatMemberCreator {
 }
 
 /// Chat admin
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct ChatMemberAdministrator {
     /// Information about the user
     pub user: User,
@@ -153,7 +108,7 @@ pub struct ChatMemberAdministrator {
 }
 
 /// Kicked user
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct ChatMemberKicked {
     /// Information about the user
     pub user: User,
@@ -162,7 +117,7 @@ pub struct ChatMemberKicked {
 }
 
 /// Restricted user
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct ChatMemberRestricted {
     /// Information about the user
     pub user: User,
@@ -334,7 +289,7 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_chat_member_plain() {
+    fn deserialize_chat_member() {
         let plain: ChatMember = serde_json::from_value(serde_json::json!({
             "status": "member",
             "user": {

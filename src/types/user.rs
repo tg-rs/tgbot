@@ -1,5 +1,5 @@
 use crate::types::{parse_mode::ParseMode, photo_size::PhotoSize, primitive::Integer};
-use serde::{Deserialize, Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 use std::{error::Error, fmt};
 
 /// A Bot info returned in getMe
@@ -102,7 +102,8 @@ pub struct UserProfilePhotos {
 }
 
 /// User ID
-#[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd, Serialize)]
+#[serde(untagged)]
 pub enum UserId {
     /// @username of a user
     Username(String),
@@ -133,18 +134,6 @@ impl fmt::Display for UserId {
         match self {
             UserId::Username(username) => write!(out, "{}", username),
             UserId::Id(chat_id) => write!(out, "{}", chat_id),
-        }
-    }
-}
-
-impl Serialize for UserId {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        match self {
-            UserId::Username(username) => serializer.serialize_str(username),
-            UserId::Id(id) => serializer.serialize_i64(*id),
         }
     }
 }

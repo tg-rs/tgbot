@@ -1,12 +1,40 @@
-use crate::types::{chat::ChannelChat, primitive::Integer, user::User};
+use crate::types::{
+    chat::ChannelChat,
+    message::raw::{RawForward, RawForwardFrom},
+    primitive::Integer,
+    user::User,
+};
+use serde::Deserialize;
 
 /// Contains information about original message
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(from = "RawForward")]
 pub struct Forward {
     /// Sender of the original message
     pub from: ForwardFrom,
     /// Date the original message was sent in Unix time
     pub date: Integer,
+}
+
+impl From<RawForward> for Forward {
+    fn from(raw: RawForward) -> Self {
+        Self {
+            from: match raw.forward_from {
+                RawForwardFrom::User { forward_from } => ForwardFrom::User(forward_from),
+                RawForwardFrom::HiddenUser { forward_sender_name } => ForwardFrom::HiddenUser(forward_sender_name),
+                RawForwardFrom::Channel {
+                    forward_from_chat,
+                    forward_from_message_id,
+                    forward_signature,
+                } => ForwardFrom::Channel {
+                    chat: forward_from_chat,
+                    message_id: forward_from_message_id,
+                    signature: forward_signature,
+                },
+            },
+            date: raw.forward_date,
+        }
+    }
 }
 
 /// Sender of the original message
@@ -113,22 +141,5 @@ mod tests {
         } else {
             panic!("Unexpected forward data: {:?}", msg.forward);
         }
-    }
-
-    #[test]
-    fn deserialize_forward_from_unexpected() {
-        let input = json!({
-            "message_id": 1, "date": 0,
-            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-            "text": "test",
-            "forward_from": {"id": 1, "first_name": "firstname", "is_bot": false},
-            "forward_from_chat": {"id": 1, "type": "channel", "title": "test"},
-            "forward_from_message_id": 1,
-            "forward_signature": "test",
-            "forward_date": 0
-        });
-        let err = serde_json::from_value::<Message>(input).unwrap_err();
-        assert_eq!(err.to_string(), String::from("unexpected forward_* fields combination"));
     }
 }

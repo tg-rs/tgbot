@@ -1,13 +1,8 @@
 use crate::types::{
-    chat::Chat,
-    message::raw::RawMessage,
-    primitive::Integer,
-    reply_markup::InlineKeyboardMarkup,
-    text::{Text, TextEntityError},
+    chat::Chat, message::raw::RawMessage, primitive::Integer, reply_markup::InlineKeyboardMarkup, text::Text,
     user::User,
 };
 use serde::{de::Error, Deserialize, Deserializer};
-use std::{error::Error as StdError, fmt};
 
 mod data;
 mod forward;
@@ -116,44 +111,23 @@ impl Message {
             _ => None,
         }
     }
+}
 
-    fn from_raw(raw: RawMessage) -> Result<Message, ParseError> {
+impl<'de> Deserialize<'de> for Message {
+    fn deserialize<D>(deserializer: D) -> Result<Message, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let raw = RawMessage::deserialize(deserializer)?;
+
         macro_rules! required {
             ($name:ident) => {{
                 match raw.$name {
                     Some(val) => val,
-                    None => return Err(ParseError::MissingField(stringify!($name))),
+                    None => return Err(D::Error::missing_field(stringify!($name))),
                 }
             }};
-        };
-
-        let forward_info = match (
-            raw.forward_date,
-            raw.forward_from,
-            raw.forward_from_chat,
-            raw.forward_from_message_id,
-            raw.forward_signature,
-            raw.forward_sender_name,
-        ) {
-            (Some(date), Some(user), None, None, None, None) => Some(Forward {
-                date,
-                from: ForwardFrom::User(user),
-            }),
-            (Some(date), None, None, None, None, Some(sender_name)) => Some(Forward {
-                date,
-                from: ForwardFrom::HiddenUser(sender_name),
-            }),
-            (Some(date), None, Some(Chat::Channel(chat)), Some(message_id), signature, None) => Some(Forward {
-                date,
-                from: ForwardFrom::Channel {
-                    chat,
-                    message_id,
-                    signature,
-                },
-            }),
-            (None, None, None, None, None, None) => None,
-            _ => return Err(ParseError::BadForward),
-        };
+        }
 
         let message_kind = match raw.chat {
             Chat::Channel(chat) => MessageKind::Channel {
@@ -176,100 +150,19 @@ impl Message {
             },
         };
 
-        let caption = match raw.caption {
-            Some(data) => Some(Text::from_raw(data, raw.caption_entities)?),
-            None => None,
-        };
-
-        let reply_to_message = match raw.reply_to_message {
-            Some(x) => Some(Box::new(Message::from_raw(*x)?)),
-            None => None,
-        };
-
-        macro_rules! message {
-            ($variant:ident($attr:ident)) => {
-                if let Some(data) = raw.$attr {
-                    message!(MessageData::$variant(data));
-                }
-            };
-            ($variant:ident($attr:ident, caption)) => {
-                if let Some(data) = raw.$attr {
-                    message!(MessageData::$variant { caption, data });
-                }
-            };
-            ($variant:ident($attr:ident,flag)) => {
-                if raw.$attr.unwrap_or(false) {
-                    message!(MessageData::$variant);
-                }
-            };
-            ($data:expr) => {
-                return Ok(Message {
-                    id: raw.message_id,
-                    date: raw.date,
-                    kind: message_kind,
-                    forward: forward_info,
-                    reply_to: reply_to_message,
-                    via_bot: raw.via_bot,
-                    edit_date: raw.edit_date,
-                    media_group_id: raw.media_group_id,
-                    data: $data,
-                    reply_markup: raw.reply_markup,
-                    sender_chat: raw.sender_chat,
-                });
-            };
-        };
-
-        message!(Animation(animation));
-        message!(Audio(audio, caption));
-        message!(ChannelChatCreated(channel_chat_created, flag));
-        message!(ConnectedWebsite(connected_website));
-        message!(Contact(contact));
-        message!(DeleteChatPhoto(delete_chat_photo, flag));
-        message!(Dice(dice));
-        message!(Document(document, caption));
-        message!(Game(game));
-        message!(GroupChatCreated(group_chat_created, flag));
-        message!(Invoice(invoice));
-        message!(LeftChatMember(left_chat_member));
-        message!(Location(location));
-        message!(MigrateFromChatId(migrate_from_chat_id));
-        message!(MigrateToChatId(migrate_to_chat_id));
-        message!(NewChatMembers(new_chat_members));
-        message!(NewChatPhoto(new_chat_photo));
-        message!(NewChatTitle(new_chat_title));
-        message!(PassportData(passport_data));
-        message!(Photo(photo, caption));
-        message!(Poll(poll));
-        message!(ProximityAlertTriggered(proximity_alert_triggered));
-        message!(Sticker(sticker));
-        message!(SuccessfulPayment(successful_payment));
-        message!(SupergroupChatCreated(supergroup_chat_created, flag));
-        message!(Venue(venue));
-        message!(Video(video, caption));
-        message!(VideoNote(video_note));
-        message!(Voice(voice, caption));
-
-        if let Some(data) = raw.pinned_message {
-            let data = Message::from_raw(*data)?;
-            message!(MessageData::PinnedMessage(Box::new(data)));
-        }
-
-        if let Some(data) = raw.text {
-            let text = Text::from_raw(data, raw.entities)?;
-            message!(MessageData::Text(text));
-        }
-
-        message!(MessageData::Empty)
-    }
-}
-
-impl<'de> Deserialize<'de> for Message {
-    fn deserialize<D>(deserializer: D) -> Result<Message, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let raw_msg: RawMessage = Deserialize::deserialize(deserializer)?;
-        Message::from_raw(raw_msg).map_err(D::Error::custom)
+        Ok(Message {
+            id: raw.message_id,
+            date: raw.date,
+            kind: message_kind,
+            forward: raw.forward,
+            reply_to: raw.reply_to_message.map(Box::new),
+            via_bot: raw.via_bot,
+            edit_date: raw.edit_date,
+            media_group_id: raw.media_group_id,
+            data: raw.data,
+            reply_markup: raw.reply_markup,
+            sender_chat: raw.sender_chat,
+        })
     }
 }
 
@@ -282,32 +175,6 @@ pub enum EditMessageResult {
     Message(Message),
     /// Returned if edited message is NOT sent by the bot
     Bool(bool),
-}
-
-#[derive(Debug, derive_more::From)]
-enum ParseError {
-    BadForward,
-    BadText(TextEntityError),
-    MissingField(&'static str),
-}
-
-impl StdError for ParseError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
-        match self {
-            ParseError::BadText(err) => Some(err),
-            _ => None,
-        }
-    }
-}
-
-impl fmt::Display for ParseError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            ParseError::BadForward => write!(out, "unexpected forward_* fields combination"),
-            ParseError::BadText(err) => write!(out, "failed to parse text: {}", err),
-            ParseError::MissingField(field) => write!(out, "\"{}\" field is missing", field),
-        }
-    }
 }
 
 #[cfg(test)]

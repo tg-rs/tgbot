@@ -1,16 +1,11 @@
-use crate::types::{
-    chat::raw::{RawChat, RawChatKind},
-    message::Message,
-    primitive::Integer,
-};
-use serde::{de::Error, Deserialize, Deserializer, Serialize, Serializer};
+use crate::types::{message::Message, primitive::Integer};
+use serde::{Deserialize, Serialize};
 use std::fmt;
 
 mod location;
 mod member;
 mod permissions;
 mod photo;
-mod raw;
 
 pub use self::{
     location::ChatLocation,
@@ -20,7 +15,9 @@ pub use self::{
 };
 
 /// Chat
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(tag = "type")]
+#[serde(rename_all = "snake_case")]
 pub enum Chat {
     /// Channel
     Channel(ChannelChat),
@@ -32,69 +29,8 @@ pub enum Chat {
     Supergroup(SupergroupChat),
 }
 
-impl<'de> Deserialize<'de> for Chat {
-    fn deserialize<D>(deserializer: D) -> Result<Chat, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let raw_chat: RawChat = Deserialize::deserialize(deserializer)?;
-        macro_rules! required {
-            ($name:ident) => {{
-                match raw_chat.$name {
-                    Some(val) => val,
-                    None => return Err(D::Error::missing_field(stringify!($name))),
-                }
-            }};
-        };
-        Ok(match raw_chat.kind {
-            RawChatKind::Channel => Chat::Channel(ChannelChat {
-                id: raw_chat.id,
-                username: raw_chat.username,
-                title: required!(title),
-                description: raw_chat.description,
-                photo: raw_chat.photo,
-                pinned_message: raw_chat.pinned_message,
-                invite_link: raw_chat.invite_link,
-                linked_chat_id: raw_chat.linked_chat_id,
-            }),
-            RawChatKind::Group => Chat::Group(GroupChat {
-                id: raw_chat.id,
-                title: required!(title),
-                photo: raw_chat.photo,
-                pinned_message: raw_chat.pinned_message,
-                invite_link: raw_chat.invite_link,
-                permissions: raw_chat.permissions,
-            }),
-            RawChatKind::Private => Chat::Private(PrivateChat {
-                id: raw_chat.id,
-                username: raw_chat.username,
-                first_name: required!(first_name),
-                last_name: raw_chat.last_name,
-                photo: raw_chat.photo,
-                bio: raw_chat.bio,
-                pinned_message: raw_chat.pinned_message,
-            }),
-            RawChatKind::Supergroup => Chat::Supergroup(SupergroupChat {
-                id: raw_chat.id,
-                title: required!(title),
-                username: raw_chat.username,
-                description: raw_chat.description,
-                photo: raw_chat.photo,
-                pinned_message: raw_chat.pinned_message,
-                invite_link: raw_chat.invite_link,
-                sticker_set_name: raw_chat.sticker_set_name,
-                can_set_sticker_set: raw_chat.can_set_sticker_set,
-                permissions: raw_chat.permissions,
-                slow_mode_delay: raw_chat.slow_mode_delay,
-                linked_chat_id: raw_chat.linked_chat_id,
-                location: raw_chat.location,
-            }),
-        })
-    }
-}
-
 /// Channel chat
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct ChannelChat {
     /// Unique identifier for this chat
     pub id: Integer,
@@ -125,7 +61,7 @@ pub struct ChannelChat {
 }
 
 /// Group chat
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct GroupChat {
     /// Unique identifier for this chat
     pub id: Integer,
@@ -150,7 +86,7 @@ pub struct GroupChat {
 }
 
 /// Private chat
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct PrivateChat {
     /// Unique identifier for this chat
     pub id: Integer,
@@ -175,7 +111,7 @@ pub struct PrivateChat {
 }
 
 /// Supergroup chat
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct SupergroupChat {
     /// Unique identifier for this chat
     pub id: Integer,
@@ -226,7 +162,8 @@ pub struct SupergroupChat {
 }
 
 /// Chat ID or username
-#[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd, Serialize)]
+#[serde(untagged)]
 pub enum ChatId {
     /// @username of a chat
     Username(String),
@@ -239,18 +176,6 @@ impl fmt::Display for ChatId {
         match self {
             ChatId::Username(username) => write!(out, "{}", username),
             ChatId::Id(chat_id) => write!(out, "{}", chat_id),
-        }
-    }
-}
-
-impl Serialize for ChatId {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        match self {
-            ChatId::Username(username) => serializer.serialize_str(username),
-            ChatId::Id(id) => serializer.serialize_i64(*id),
         }
     }
 }

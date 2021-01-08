@@ -21,6 +21,10 @@ pub struct Text {
 }
 
 impl Text {
+    pub(crate) fn from_caption_opt(caption: Option<String>) -> Result<Option<Text>, TextEntityError> {
+        caption.map(|x| Text::from_raw(x, None)).transpose()
+    }
+
     pub(crate) fn from_raw<S: Into<String>>(
         data: S,
         entities: Option<Vec<RawTextEntity>>,
@@ -191,7 +195,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: offset \"-1\" is out of text bounds",
+                r#"offset "-1" is out of text bounds"#,
             ),
             (
                 json!({
@@ -207,7 +211,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: offset \"11\" is out of text bounds",
+                r#"offset "11" is out of text bounds"#,
             ),
             (
                 json!({
@@ -223,7 +227,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: length \"-1\" is out of text bounds",
+                r#"length "-1" is out of text bounds"#,
             ),
             (
                 json!({
@@ -239,7 +243,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: length \"11\" is out of text bounds",
+                "length \"11\" is out of text bounds",
             ),
             (
                 json!({
@@ -255,7 +259,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: URL is required for text_link entity",
+                "URL is required for text_link entity",
             ),
             (
                 json!({
@@ -271,7 +275,7 @@ mod tests {
                         }
                     ]
                 }),
-                "failed to parse text: user is required for text_mention entity",
+                "user is required for text_mention entity",
             ),
         ] {
             let err = serde_json::from_value::<Message>(input).unwrap_err();

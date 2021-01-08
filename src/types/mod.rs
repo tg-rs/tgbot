@@ -27,6 +27,7 @@ mod stickers;
 mod text;
 mod update;
 mod user;
+pub(crate) mod util;
 mod venue;
 mod video;
 mod video_note;

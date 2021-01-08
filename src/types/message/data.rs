@@ -6,7 +6,7 @@ use crate::types::{
     document::Document,
     game::Game,
     location::{Location, ProximityAlertTriggered},
-    message::{Message, Text},
+    message::{raw::RawMessageData, Message, Text},
     passport::PassportData,
     payments::{Invoice, SuccessfulPayment},
     photo_size::PhotoSize,
@@ -18,11 +18,19 @@ use crate::types::{
     video::Video,
     video_note::VideoNote,
     voice::Voice,
+    TextEntityError,
+};
+use serde::Deserialize;
+use std::{
+    convert::TryFrom,
+    error::{Error as StdError, Error},
+    fmt,
 };
 
 /// Contains message data
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 #[allow(clippy::large_enum_variant)]
+#[serde(try_from = "RawMessageData")]
 pub enum MessageData {
     /// Message is an animation, information about the animation
     Animation(Animation),
@@ -126,6 +134,98 @@ pub enum MessageData {
         /// Voice data
         data: Voice,
     },
+}
+
+impl TryFrom<RawMessageData> for MessageData {
+    type Error = MessageDataError;
+
+    fn try_from(raw: RawMessageData) -> Result<Self, Self::Error> {
+        let this = match raw {
+            RawMessageData::Animation { animation } => MessageData::Animation(animation),
+            RawMessageData::Audio { caption, audio } => MessageData::Audio {
+                caption: Text::from_caption_opt(caption)?,
+                data: audio,
+            },
+            RawMessageData::ChannelChatCreated { .. } => MessageData::ChannelChatCreated,
+            RawMessageData::ConnectedWebsite { connected_website } => MessageData::ConnectedWebsite(connected_website),
+            RawMessageData::Contact { contact } => MessageData::Contact(contact),
+            RawMessageData::DeleteChatPhoto { .. } => MessageData::DeleteChatPhoto,
+            RawMessageData::Dice { dice } => MessageData::Dice(dice),
+            RawMessageData::Document { caption, document } => MessageData::Document {
+                caption: Text::from_caption_opt(caption)?,
+                data: document,
+            },
+            RawMessageData::Game { game } => MessageData::Game(game),
+            RawMessageData::GroupChatCreated { .. } => MessageData::GroupChatCreated,
+            RawMessageData::Invoice { invoice } => MessageData::Invoice(invoice),
+            RawMessageData::LeftChatMember { left_chat_member } => MessageData::LeftChatMember(left_chat_member),
+            RawMessageData::Location { location } => MessageData::Location(location),
+            RawMessageData::MigrateFromChatId { migrate_from_chat_id } => {
+                MessageData::MigrateFromChatId(migrate_from_chat_id)
+            }
+            RawMessageData::MigrateToChatId { migrate_to_chat_id } => MessageData::MigrateToChatId(migrate_to_chat_id),
+            RawMessageData::NewChatMembers { new_chat_members } => MessageData::NewChatMembers(new_chat_members),
+            RawMessageData::NewChatPhoto { new_chat_photo } => MessageData::NewChatPhoto(new_chat_photo),
+            RawMessageData::NewChatTitle { new_chat_title } => MessageData::NewChatTitle(new_chat_title),
+            RawMessageData::PassportData { passport_data } => MessageData::PassportData(passport_data),
+            RawMessageData::PinnedMessage { pinned_message } => MessageData::PinnedMessage(pinned_message),
+            RawMessageData::Photo { caption, photo } => MessageData::Photo {
+                caption: Text::from_caption_opt(caption)?,
+                data: photo,
+            },
+            RawMessageData::Poll { poll } => MessageData::Poll(poll),
+            RawMessageData::ProximityAlertTriggered {
+                proximity_alert_triggered,
+            } => MessageData::ProximityAlertTriggered(proximity_alert_triggered),
+            RawMessageData::Sticker { sticker } => MessageData::Sticker(sticker),
+            RawMessageData::SuccessfulPayment { successful_payment } => {
+                MessageData::SuccessfulPayment(successful_payment)
+            }
+            RawMessageData::SupergroupChatCreated { .. } => MessageData::SupergroupChatCreated,
+            RawMessageData::Text { text, entities } => MessageData::Text(Text::from_raw(text, entities)?),
+            RawMessageData::Venue { venue } => MessageData::Venue(venue),
+            RawMessageData::Video { caption, video } => MessageData::Video {
+                caption: Text::from_caption_opt(caption)?,
+                data: video,
+            },
+            RawMessageData::VideoNote { video_note } => MessageData::VideoNote(video_note),
+            RawMessageData::Voice { caption, voice } => MessageData::Voice {
+                caption: Text::from_caption_opt(caption)?,
+                data: voice,
+            },
+            RawMessageData::Empty {} => MessageData::Empty,
+        };
+        Ok(this)
+    }
+}
+
+/// A message data error when parsing message data
+#[derive(Debug)]
+pub enum MessageDataError {
+    /// Error when parsing text entities
+    TextEntity(TextEntityError),
+}
+
+impl StdError for MessageDataError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        match self {
+            MessageDataError::TextEntity(err) => Some(err),
+        }
+    }
+}
+
+impl fmt::Display for MessageDataError {
+    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            MessageDataError::TextEntity(err) => err.fmt(out),
+        }
+    }
+}
+
+impl From<TextEntityError> for MessageDataError {
+    fn from(err: TextEntityError) -> Self {
+        Self::TextEntity(err)
+    }
 }
 
 #[cfg(test)]

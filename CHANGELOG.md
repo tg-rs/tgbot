@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.1 (11.01.2021)
+
+- Fixed a panic when getting a list of bot commands.
+
 ## 0.12.0 (05.01.2021)
 
 - Tokio 1.0 support

@@ -62,7 +62,11 @@ impl Text {
                     result.push(TextEntityBotCommand { command, bot_name })
                 }
             }
-            Some(result)
+            if result.is_empty() {
+                None
+            } else {
+                Some(result)
+            }
         } else {
             None
         }

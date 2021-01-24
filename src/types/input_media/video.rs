@@ -109,7 +109,7 @@ mod tests {
         method = method.parse_mode(ParseMode::Markdown);
         assert_eq!(method.parse_mode.unwrap(), ParseMode::Markdown);
         assert!(method.caption_entities.is_none());
-        method = method.caption_entities(vec![TextEntity::bold(0, 10)]);
+        method = method.caption_entities(vec![TextEntity::bold(0..10)]);
         assert!(method.caption_entities.is_some());
         assert!(method.parse_mode.is_none());
     }

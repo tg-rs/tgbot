@@ -27,6 +27,7 @@ shellwords = "1.1"
 tokio = { version = "1.0", features = ["fs", "sync", "time"] }
 tokio-util = { version = "0.6", features = ["codec"] }
 url = "2.2"
+vec1 = { version = "1.6.0", features = ["serde"] }
 
 [dev-dependencies]
 dotenv = "0.15"

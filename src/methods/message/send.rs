@@ -112,7 +112,7 @@ mod tests {
     use super::*;
     use crate::{
         request::{RequestBody, RequestMethod},
-        types::{ForceReply, TextEntity, TextEntityPosition},
+        types::{ForceReply, TextEntity},
     };
     use serde_json::Value;
 
@@ -120,7 +120,7 @@ mod tests {
     fn send_message() {
         let request = SendMessage::new(1, "text")
             .parse_mode(ParseMode::Markdown)
-            .entities(vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 2 })])
+            .entities(vec![TextEntity::bold(0..2)])
             .disable_web_page_preview(true)
             .disable_notification(true)
             .reply_to_message_id(1)

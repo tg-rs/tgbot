@@ -139,7 +139,7 @@ mod tests {
         let mut method = SendPhoto::new(1, InputFile::file_id("file-id"));
         method = method.parse_mode(ParseMode::Markdown);
         assert_eq!(method.form.fields["parse_mode"].get_text().unwrap(), "Markdown");
-        method = method.caption_entities(&[TextEntity::bold(0, 10)]).unwrap();
+        method = method.caption_entities(&[TextEntity::bold(0..10)]).unwrap();
         assert!(!method.form.fields.contains_key("parse_mode"));
         let caption_entities = method.form.fields["caption_entities"].get_text().unwrap();
         assert_eq!(

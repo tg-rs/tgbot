@@ -5,6 +5,7 @@ use crate::types::{
 };
 use serde::{de::Error as _, Deserialize, Deserializer, Serialize};
 use std::{error::Error, fmt};
+use vec1::Vec1;
 
 /// Contains information about a poll
 #[derive(Clone, Debug)]
@@ -146,7 +147,7 @@ struct RawPoll {
     allows_multiple_answers: Option<bool>,
     correct_option_id: Option<Integer>,
     explanation: Option<String>,
-    explanation_entities: Option<Vec<RawTextEntity>>,
+    explanation_entities: Option<Vec1<RawTextEntity>>,
     open_period: Option<Integer>,
     close_date: Option<Integer>,
 }

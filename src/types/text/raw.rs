@@ -1,10 +1,10 @@
-use crate::types::{primitive::Integer, user::User};
+use crate::types::user::User;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub(crate) struct RawTextEntity {
-    pub(super) offset: Integer,
-    pub(super) length: Integer,
+    pub(super) offset: u32,
+    pub(super) length: u32,
     #[serde(flatten)]
     pub(super) kind: RawTextEntityKind,
 }

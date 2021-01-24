@@ -6,6 +6,7 @@ use crate::types::{
     user::User,
 };
 use serde::{de::Error, Deserialize, Deserializer};
+use vec1::Vec1;
 
 /// Game
 ///
@@ -54,7 +55,7 @@ struct RawGame {
     description: String,
     photo: Vec<PhotoSize>,
     text: Option<String>,
-    text_entities: Option<Vec<RawTextEntity>>,
+    text_entities: Option<Vec1<RawTextEntity>>,
     animation: Option<Animation>,
 }
 

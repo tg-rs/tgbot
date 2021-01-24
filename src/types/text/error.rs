@@ -1,4 +1,3 @@
-use crate::types::primitive::Integer;
 use serde_json::Error as JsonError;
 use std::{error::Error as StdError, fmt};
 
@@ -6,9 +5,9 @@ use std::{error::Error as StdError, fmt};
 #[derive(Debug)]
 pub enum TextEntityError {
     /// Offset is out of text bounds
-    BadOffset(Integer),
+    BadOffset(u32),
     /// Length is out of text bounds
-    BadLength(Integer),
+    BadLength(u32),
     /// URL is required for text_link entity
     NoUrl,
     /// User is required for text_mention entity

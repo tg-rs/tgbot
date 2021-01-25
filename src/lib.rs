@@ -27,3 +27,4 @@ pub use self::{
 
 pub use async_trait::async_trait;
 pub use mime;
+pub use vec1::Vec1;

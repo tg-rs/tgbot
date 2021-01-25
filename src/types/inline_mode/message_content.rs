@@ -309,7 +309,7 @@ mod tests {
         assert_eq!(
             serde_json::to_value(InputMessageContent::from(
                 InputMessageContentText::new("text")
-                    .entities(vec![TextEntity::bold(0, 10)])
+                    .entities(vec![TextEntity::bold(0..10)])
                     .parse_mode(ParseMode::Html)
                     .disable_web_page_preview(true)
             ))
@@ -325,7 +325,7 @@ mod tests {
             serde_json::to_value(InputMessageContent::from(
                 InputMessageContentText::new("text")
                     .parse_mode(ParseMode::Markdown)
-                    .entities(vec![TextEntity::bold(0, 10)])
+                    .entities(vec![TextEntity::bold(0..10)])
             ))
             .unwrap(),
             serde_json::json!({

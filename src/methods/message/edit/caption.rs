@@ -143,7 +143,7 @@ mod tests {
         }
 
         let request = EditMessageCaption::with_inline_message_id("msg-id")
-            .caption_entities(vec![TextEntity::bold(0, 10)])
+            .caption_entities(vec![TextEntity::bold(0..10)])
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(

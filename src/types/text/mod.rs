@@ -10,6 +10,7 @@ pub use self::{
     entity::{TextEntity, TextEntityBotCommand, TextEntityPosition},
     error::TextEntityError,
 };
+use vec1::Vec1;
 
 /// Text with entities
 #[derive(Clone, Debug)]
@@ -17,37 +18,35 @@ pub struct Text {
     /// The actual UTF-8 text
     pub data: String,
     /// Text entities
-    pub entities: Option<Vec<TextEntity>>,
+    pub entities: Option<Vec1<TextEntity>>,
 }
 
 impl Text {
     pub(crate) fn from_raw_opt<S: Into<String>>(
         data: Option<S>,
-        entities: Option<Vec<RawTextEntity>>,
+        entities: Option<Vec1<RawTextEntity>>,
     ) -> Result<Option<Text>, TextEntityError> {
         data.map(|x| Text::from_raw(x, entities)).transpose()
     }
 
     pub(crate) fn from_raw<S: Into<String>>(
         data: S,
-        entities: Option<Vec<RawTextEntity>>,
+        entities: Option<Vec1<RawTextEntity>>,
     ) -> Result<Text, TextEntityError> {
         let data = data.into();
-        let entities = if let Some(entities) = entities {
-            if entities.is_empty() {
-                None
-            } else {
-                let text_len = data.encode_utf16().count() as i64;
-                Some(convert_entities(entities, text_len)?)
-            }
-        } else {
-            None
-        };
+        let text_len = data.encode_utf16().count() as u32;
+        let entities = entities
+            .map(|entities| convert_entities(entities, text_len))
+            .transpose()?
+            .map(Vec1::try_from_vec)
+            .map(Result::ok)
+            .flatten();
+
         Ok(Text { data, entities })
     }
 
     /// Returns a list of bot commands found in text
-    pub fn get_bot_commands(&self) -> Option<Vec<TextEntityBotCommand>> {
+    pub fn get_bot_commands(&self) -> Option<Vec1<TextEntityBotCommand>> {
         if let Some(ref entities) = self.entities {
             let mut result = Vec::new();
             let repr = TextRepr::from(self);
@@ -62,11 +61,7 @@ impl Text {
                     result.push(TextEntityBotCommand { command, bot_name })
                 }
             }
-            if result.is_empty() {
-                None
-            } else {
-                Some(result)
-            }
+            Vec1::try_from_vec(result).ok()
         } else {
             None
         }
@@ -136,7 +131,7 @@ mod tests {
         });
         let msg: Message = serde_json::from_value(input).unwrap();
         if let MessageData::Text(text) = msg.data {
-            let entities = text.entities.unwrap();
+            let entities = text.entities.unwrap().into_vec();
             assert_eq!(
                 vec![
                     TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 }),
@@ -197,44 +192,12 @@ mod tests {
                     "entities": [
                         {
                             "type": "bold",
-                            "offset": -1,
-                            "length": 1
-                        }
-                    ]
-                }),
-                r#"offset "-1" is out of text bounds"#,
-            ),
-            (
-                json!({
-                    "message_id": 1, "date": 0,
-                    "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-                    "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-                    "text": "bad offset",
-                    "entities": [
-                        {
-                            "type": "bold",
                             "offset": 11,
                             "length": 1
                         }
                     ]
                 }),
                 r#"offset "11" is out of text bounds"#,
-            ),
-            (
-                json!({
-                    "message_id": 1, "date": 0,
-                    "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-                    "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-                    "text": "bad offset",
-                    "entities": [
-                        {
-                            "type": "bold",
-                            "offset": 0,
-                            "length": -1
-                        }
-                    ]
-                }),
-                r#"length "-1" is out of text bounds"#,
             ),
             (
                 json!({

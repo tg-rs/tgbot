@@ -23,6 +23,7 @@ use crate::types::{
     voice::Voice,
 };
 use serde::Deserialize;
+use vec1::Vec1;
 
 #[derive(Debug, Deserialize)]
 pub(super) struct RawMessage {
@@ -75,7 +76,7 @@ pub(super) enum RawMessageData {
     },
     Audio {
         caption: Option<String>,
-        caption_entities: Option<Vec<RawTextEntity>>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
         audio: Audio,
     },
     ChannelChatCreated {
@@ -95,7 +96,7 @@ pub(super) enum RawMessageData {
     },
     Document {
         caption: Option<String>,
-        caption_entities: Option<Vec<RawTextEntity>>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
         document: Document,
     },
     Game {
@@ -136,7 +137,7 @@ pub(super) enum RawMessageData {
     },
     Photo {
         caption: Option<String>,
-        caption_entities: Option<Vec<RawTextEntity>>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
         photo: Vec<PhotoSize>,
     },
     Poll {
@@ -156,14 +157,14 @@ pub(super) enum RawMessageData {
     },
     Text {
         text: String,
-        entities: Option<Vec<RawTextEntity>>,
+        entities: Option<Vec1<RawTextEntity>>,
     },
     Venue {
         venue: Venue,
     },
     Video {
         caption: Option<String>,
-        caption_entities: Option<Vec<RawTextEntity>>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
         video: Video,
     },
     VideoNote {
@@ -171,7 +172,7 @@ pub(super) enum RawMessageData {
     },
     Voice {
         caption: Option<String>,
-        caption_entities: Option<Vec<RawTextEntity>>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
         voice: Voice,
     },
     Empty {}, // must be last because all variants below won't be deserialized

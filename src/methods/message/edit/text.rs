@@ -152,7 +152,7 @@ mod tests {
         }
 
         let request = EditMessageText::with_inline_message_id("msg-id", "text")
-            .entities(vec![TextEntity::bold(0, 4)])
+            .entities(vec![TextEntity::bold(0..4)])
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(

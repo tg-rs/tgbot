@@ -1,7 +1,8 @@
 use super::{error::TextEntityError, raw::RawTextEntity};
-use crate::types::{primitive::Integer, text::raw::RawTextEntityKind, user::User};
+use crate::types::{text::raw::RawTextEntityKind, user::User};
 use serde::Serialize;
-use std::convert::TryFrom;
+use std::{convert::TryFrom, ops::Range};
+use vec1::Vec1;
 
 /// Respresents an entity in a text
 #[derive(Clone, Debug, PartialEq, PartialOrd, Serialize)]
@@ -61,10 +62,9 @@ macro_rules! text_entity_factory {
             ///
             /// # Arguments
             ///
-            /// * offset - Offset in UTF-16 code units to the start of the entity
-            /// * length - Length of the entity in UTF-16 code units
-            pub fn $method_name(offset: Integer, length: Integer) -> TextEntity {
-                TextEntity::$enum_variant(TextEntityPosition { offset, length })
+            /// * pos - position of TextEntity in UTF-16 code units
+            pub fn $method_name<T: Into<TextEntityPosition>>(pos: T) -> TextEntity {
+                TextEntity::$enum_variant(pos.into())
             }
         )*
     };
@@ -89,12 +89,11 @@ impl TextEntity {
     ///
     /// # Arguments
     ///
-    /// * offset - Offset in UTF-16 code units to the start of the entity
-    /// * length - Length of the entity in UTF-16 code units
+    /// * pos - position of TextEntity in UTF-16 code units
     /// * language - The programming language of the entity text
-    pub fn pre<L: Into<String>>(offset: Integer, length: Integer, language: Option<L>) -> TextEntity {
+    pub fn pre<P: Into<TextEntityPosition>, L: Into<String>>(pos: P, language: Option<L>) -> TextEntity {
         TextEntity::Pre {
-            position: TextEntityPosition { offset, length },
+            position: pos.into(),
             language: language.map(|x| x.into()),
         }
     }
@@ -103,12 +102,11 @@ impl TextEntity {
     ///
     /// # Arguments
     ///
-    /// * offset - Offset in UTF-16 code units to the start of the entity
-    /// * length - Length of the entity in UTF-16 code units
+    /// * pos - position of TextEntity in UTF-16 code units
     /// * url - URL that will be opened after user taps on the text
-    pub fn text_link<U: Into<String>>(offset: Integer, length: Integer, url: U) -> TextEntity {
+    pub fn text_link<P: Into<TextEntityPosition>, U: Into<String>>(pos: P, url: U) -> TextEntity {
         TextEntity::TextLink {
-            position: TextEntityPosition { offset, length },
+            position: pos.into(),
             url: url.into(),
         }
     }
@@ -117,12 +115,11 @@ impl TextEntity {
     ///
     /// # Arguments
     ///
-    /// * offset - Offset in UTF-16 code units to the start of the entity
-    /// * length - Length of the entity in UTF-16 code units
+    /// * pos - position of TextEntity in UTF-16 code units
     /// * user - User to be mentioned
-    pub fn text_mention(offset: Integer, length: Integer, user: User) -> TextEntity {
+    pub fn text_mention<P: Into<TextEntityPosition>>(pos: P, user: User) -> TextEntity {
         TextEntity::TextMention {
-            position: TextEntityPosition { offset, length },
+            position: pos.into(),
             user,
         }
     }
@@ -168,8 +165,8 @@ impl From<TextEntity> for RawTextEntity {
             ($kind:ident($position:ident $( , $item:ident )?)) => {
                 RawTextEntity {
                     kind: RawTextEntityKind::$kind $( { $item: $item.into() } )?,
-                    offset: $position.offset,
-                    length: $position.length,
+                    offset: $position.offset as _,
+                    length: $position.length as _,
                 }
             };
         }
@@ -208,9 +205,18 @@ pub struct TextEntityBotCommand {
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
 pub struct TextEntityPosition {
     /// Offset in UTF-16 code units to the start of the entity
-    pub offset: Integer,
+    pub offset: u32,
     /// Length of the entity in UTF-16 code units
-    pub length: Integer,
+    pub length: u32,
+}
+
+impl From<Range<u32>> for TextEntityPosition {
+    fn from(range: Range<u32>) -> Self {
+        Self {
+            offset: range.start,
+            length: range.end - range.start,
+        }
+    }
 }
 
 /// Converts raw text entities to user-friendly representation
@@ -219,15 +225,15 @@ pub struct TextEntityPosition {
 ///
 /// * raw - List of raw entities
 /// * text_len - Length of the related text in UTF-16
-pub(super) fn convert_entities(raw: Vec<RawTextEntity>, text_len: i64) -> Result<Vec<TextEntity>, TextEntityError> {
+pub(super) fn convert_entities(raw: Vec1<RawTextEntity>, text_len: u32) -> Result<Vec<TextEntity>, TextEntityError> {
     let mut result = Vec::new();
     for raw_entity in raw {
         let (offset, length) = (raw_entity.offset, raw_entity.length);
-        if offset > text_len || offset < 0 {
+        if offset > text_len {
             return Err(TextEntityError::BadOffset(offset));
         }
         let limit = offset + length;
-        if limit > text_len || limit < 0 {
+        if limit > text_len {
             return Err(TextEntityError::BadLength(length));
         }
         result.push(TextEntity::try_from(raw_entity)?)

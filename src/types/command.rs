@@ -97,8 +97,6 @@ impl TryFrom<Message> for Command {
     fn try_from(message: Message) -> Result<Self, Self::Error> {
         match message.get_text().map(|text| (text.get_bot_commands(), text)) {
             Some((Some(commands), text)) => {
-                // tgbot guarantees that commands will never be empty, but we must be sure
-                assert!(!commands.is_empty());
                 // just take first command and ignore others
                 let command = &commands[0];
                 let name = command.command.clone();

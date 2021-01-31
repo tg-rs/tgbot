@@ -68,6 +68,18 @@ impl Text {
     }
 }
 
+impl PartialEq<str> for Text {
+    fn eq(&self, other: &str) -> bool {
+        self.data == other
+    }
+}
+
+impl PartialEq<String> for Text {
+    fn eq(&self, other: &String) -> bool {
+        self.data == *other
+    }
+}
+
 /// UTF-16 text representation
 struct TextRepr<'a> {
     iter: EncodeUtf16<'a>,

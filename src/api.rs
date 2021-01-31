@@ -9,7 +9,7 @@ use log::debug;
 use reqwest::{Client, ClientBuilder, Error as ReqwestError, Proxy};
 use serde::de::DeserializeOwned;
 use serde_json::Error as JsonError;
-use std::{error::Error as StdError, fmt, sync::Arc};
+use std::{error::Error as StdError, fmt};
 use url::{ParseError as UrlParseError, Url};
 
 const DEFAULT_HOST: &str = "https://api.telegram.org";
@@ -75,7 +75,7 @@ where
 /// Telegram Bot API client
 #[derive(Clone)]
 pub struct Api {
-    client: Arc<Client>,
+    client: Client,
     host: String,
     token: String,
 }
@@ -94,7 +94,7 @@ impl Api {
         let client = builder.use_rustls_tls().build().map_err(ApiError::BuildClient)?;
 
         Ok(Api {
-            client: Arc::new(client),
+            client,
             host: config.host,
             token: config.token,
         })

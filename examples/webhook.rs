@@ -6,7 +6,7 @@ struct Handler;
 
 #[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&mut self, update: Update) {
+    async fn handle(&self, update: Update) {
         log::info!("got an update: {:?}\n", update);
     }
 }

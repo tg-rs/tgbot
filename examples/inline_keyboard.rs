@@ -56,7 +56,7 @@ async fn handle_update(api: &Api, update: Update) -> Option<Message> {
 
 #[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&mut self, update: Update) {
+    async fn handle(&self, update: Update) {
         log::info!("Got an update: {:?}", update);
         if let Some(msg) = handle_update(&self.api, update).await {
             log::info!("Message sent: {:?}", msg);

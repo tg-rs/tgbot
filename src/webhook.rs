@@ -1,6 +1,6 @@
 use crate::handler::UpdateHandler;
 use bytes::Buf;
-use futures_util::future::{ok, ready, FutureExt, Ready};
+use futures_util::future::{ok, Ready};
 use http::Error as HttpError;
 use hyper::{body, service::Service, Body, Error as HyperError, Method, Request, Response, Server, StatusCode};
 use log::error;
@@ -13,12 +13,11 @@ use std::{
     sync::Arc,
     task::{Context, Poll},
 };
-use tokio::sync::Mutex;
 
 #[doc(hidden)]
 pub struct WebhookServiceFactory<H> {
     path: String,
-    handler: Arc<Mutex<H>>,
+    handler: Arc<H>,
 }
 
 impl<H> WebhookServiceFactory<H> {
@@ -29,7 +28,7 @@ impl<H> WebhookServiceFactory<H> {
     {
         WebhookServiceFactory {
             path: path.into(),
-            handler: Arc::new(Mutex::new(update_handler)),
+            handler: Arc::new(update_handler),
         }
     }
 }
@@ -55,23 +54,31 @@ impl<H, T> Service<T> for WebhookServiceFactory<H> {
 #[doc(hidden)]
 pub struct WebhookService<H> {
     path: String,
-    handler: Arc<Mutex<H>>,
+    handler: Arc<H>,
+}
+
+impl<H> Clone for WebhookService<H> {
+    fn clone(&self) -> Self {
+        Self {
+            path: self.path.clone(),
+            handler: self.handler.clone(),
+        }
+    }
 }
 
 async fn handle_request<H>(
-    handler: Arc<Mutex<H>>,
+    handler: Arc<H>,
     path: String,
     request: Request<Body>,
 ) -> Result<Response<Body>, WebhookError>
 where
-    H: UpdateHandler + Send,
+    H: UpdateHandler,
 {
     Ok(if let Method::POST = *request.method() {
         if request.uri().path() == path {
             let data = body::aggregate(request).await?;
             match serde_json::from_reader(data.reader()) {
                 Ok(update) => {
-                    let mut handler = handler.lock().await;
                     handler.handle(update).await;
                     Response::new(Body::empty())
                 }
@@ -95,7 +102,7 @@ type ServiceFuture = Pin<Box<dyn Future<Output = Result<Response<Body>, WebhookE
 
 impl<H> Service<Request<Body>> for WebhookService<H>
 where
-    H: UpdateHandler + Send + 'static,
+    H: UpdateHandler + Send + Sync + 'static,
 {
     type Response = Response<Body>;
     type Error = WebhookError;
@@ -106,20 +113,20 @@ where
     }
 
     fn call(&mut self, request: Request<Body>) -> Self::Future {
-        Box::pin(
-            handle_request(self.handler.clone(), self.path.clone(), request).then(|result| match result {
-                Ok(rep) => ok(rep),
+        let this = self.clone();
+        Box::pin(async move {
+            let result = handle_request(this.handler, this.path, request).await;
+            match result {
+                Ok(rep) => Ok(rep),
                 Err(err) => {
                     error!("Webhook error: {}", err);
-                    ready(
-                        Response::builder()
-                            .status(StatusCode::INTERNAL_SERVER_ERROR)
-                            .body(Body::empty())
-                            .map_err(WebhookError::from),
-                    )
+                    Response::builder()
+                        .status(StatusCode::INTERNAL_SERVER_ERROR)
+                        .body(Body::empty())
+                        .map_err(WebhookError::from)
                 }
-            }),
-        )
+            }
+        })
     }
 }
 
@@ -151,7 +158,7 @@ pub async fn run_server<A, P, H>(address: A, path: P, handler: H) -> Result<(), 
 where
     A: Into<SocketAddr>,
     P: Into<String>,
-    H: UpdateHandler + Send + 'static,
+    H: UpdateHandler + Send + Sync + 'static,
 {
     let address = address.into();
     let path = path.into();

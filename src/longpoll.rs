@@ -53,7 +53,7 @@ impl<H> LongPoll<H> {
 
 impl<H> LongPoll<H>
 where
-    H: UpdateHandler + Send,
+    H: UpdateHandler,
 {
     /// Returns a long poll handle
     pub fn get_handle(&self) -> LongPollHandle {
@@ -63,7 +63,7 @@ where
     }
 
     /// Start polling loop
-    pub async fn run(mut self) {
+    pub async fn run(self) {
         let LongPollOptions {
             mut offset,
             limit,

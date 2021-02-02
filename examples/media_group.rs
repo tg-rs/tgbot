@@ -17,7 +17,7 @@ struct Handler {
 
 #[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&mut self, update: Update) {
+    async fn handle(&self, update: Update) {
         log::info!("got an update: {:?}\n", update);
         if let Some(chat_id) = update.get_chat_id() {
             let photo_url = InputFile::url(self.photo_url.clone());

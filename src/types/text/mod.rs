@@ -80,6 +80,21 @@ impl PartialEq<String> for Text {
     }
 }
 
+impl AsRef<str> for Text {
+    fn as_ref(&self) -> &str {
+        self.data.as_str()
+    }
+}
+
+impl From<String> for Text {
+    fn from(s: String) -> Self {
+        Self {
+            data: s,
+            entities: None,
+        }
+    }
+}
+
 /// UTF-16 text representation
 struct TextRepr<'a> {
     iter: EncodeUtf16<'a>,

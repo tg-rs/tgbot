@@ -33,7 +33,7 @@ async fn handle_document(api: &Api, tmpdir: &Path, document: Document) {
 
 #[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&mut self, update: Update) {
+    async fn handle(&self, update: Update) {
         log::info!("got an update: {:?}\n", update);
         if let UpdateKind::Message(message) = update.kind {
             if let MessageData::Document { data, .. } = message.data {

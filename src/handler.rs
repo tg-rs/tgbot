@@ -9,5 +9,5 @@ pub trait UpdateHandler {
     /// # Arguments
     ///
     /// * update - A received update
-    async fn handle(&mut self, update: Update);
+    async fn handle(&self, update: Update);
 }

@@ -2,7 +2,7 @@ use crate::handler::UpdateHandler;
 use bytes::Buf;
 use futures_util::future::{ok, Ready};
 use http::Error as HttpError;
-use hyper::{body, service::Service, Body, Error as HyperError, Method, Request, Response, Server, StatusCode};
+use hyper::{body, service::Service, Body, Method, Request, Response, Server, StatusCode};
 use log::error;
 use std::{
     convert::Infallible,
@@ -13,6 +13,8 @@ use std::{
     sync::Arc,
     task::{Context, Poll},
 };
+
+pub use hyper::Error as HyperError;
 
 #[doc(hidden)]
 pub struct WebhookServiceFactory<H> {

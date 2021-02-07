@@ -1,13 +1,15 @@
 use crate::types::Update;
-use async_trait::async_trait;
+use std::future::Future;
 
 /// An update handler
-#[async_trait]
 pub trait UpdateHandler {
+    /// A future returned by `handle` method
+    type Future: Future<Output = ()>;
+
     /// Handles an update
     ///
     /// # Arguments
     ///
     /// * update - A received update
-    async fn handle(&self, update: Update);
+    fn handle(&self, update: Update) -> Self::Future;
 }

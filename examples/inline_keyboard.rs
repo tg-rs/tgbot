@@ -1,5 +1,5 @@
-use async_trait::async_trait;
 use dotenv::dotenv;
+use futures_util::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 use std::env;
 use tgbot::{
@@ -54,13 +54,17 @@ async fn handle_update(api: &Api, update: Update) -> Option<Message> {
     None
 }
 
-#[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&self, update: Update) {
-        log::info!("Got an update: {:?}", update);
-        if let Some(msg) = handle_update(&self.api, update).await {
-            log::info!("Message sent: {:?}", msg);
-        }
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
+        let api = self.api.clone();
+        Box::pin(async move {
+            log::info!("Got an update: {:?}", update);
+            if let Some(msg) = handle_update(&api, update).await {
+                log::info!("Message sent: {:?}", msg);
+            }
+        })
     }
 }
 

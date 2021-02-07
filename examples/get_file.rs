@@ -1,8 +1,10 @@
-use async_trait::async_trait;
 use dotenv::dotenv;
-use futures_util::stream::StreamExt;
-use std::{env, path::Path};
-use tempfile::{tempdir, TempDir};
+use futures_util::{future::BoxFuture, stream::StreamExt};
+use std::{
+    env,
+    path::{Path, PathBuf},
+};
+use tempfile::tempdir;
 use tgbot::{
     longpoll::LongPoll,
     methods::GetFile,
@@ -11,9 +13,10 @@ use tgbot::{
 };
 use tokio::{fs::File, io::AsyncWriteExt};
 
+#[derive(Clone)]
 struct Handler {
     api: Api,
-    tmpdir: TempDir,
+    tmpdir: PathBuf,
 }
 
 async fn handle_document(api: &Api, tmpdir: &Path, document: Document) {
@@ -31,15 +34,19 @@ async fn handle_document(api: &Api, tmpdir: &Path, document: Document) {
     }
 }
 
-#[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&self, update: Update) {
-        log::info!("got an update: {:?}\n", update);
-        if let UpdateKind::Message(message) = update.kind {
-            if let MessageData::Document { data, .. } = message.data {
-                handle_document(&self.api, self.tmpdir.path(), data).await;
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
+        let this = self.clone();
+        Box::pin(async move {
+            log::info!("got an update: {:?}\n", update);
+            if let UpdateKind::Message(message) = update.kind {
+                if let MessageData::Document { data, .. } = message.data {
+                    handle_document(&this.api, &this.tmpdir, data).await;
+                }
             }
-        }
+        })
     }
 }
 
@@ -57,5 +64,13 @@ async fn main() {
     let api = Api::new(config).expect("Failed to create API");
     let tmpdir = tempdir().expect("Failed to create temporary directory");
     log::info!("Temp dir: {}", tmpdir.path().display());
-    LongPoll::new(api.clone(), Handler { api, tmpdir }).run().await;
+    LongPoll::new(
+        api.clone(),
+        Handler {
+            api,
+            tmpdir: tmpdir.path().to_path_buf(),
+        },
+    )
+    .run()
+    .await;
 }

@@ -75,6 +75,7 @@ async fn handle_request<H>(
 ) -> Result<Response<Body>, WebhookError>
 where
     H: UpdateHandler,
+    H::Future: Send,
 {
     Ok(if let Method::POST = *request.method() {
         if request.uri().path() == path {
@@ -105,6 +106,7 @@ type ServiceFuture = Pin<Box<dyn Future<Output = Result<Response<Body>, WebhookE
 impl<H> Service<Request<Body>> for WebhookService<H>
 where
     H: UpdateHandler + Send + Sync + 'static,
+    H::Future: Send,
 {
     type Response = Response<Body>;
     type Error = WebhookError;
@@ -161,6 +163,7 @@ where
     A: Into<SocketAddr>,
     P: Into<String>,
     H: UpdateHandler + Send + Sync + 'static,
+    H::Future: Send,
 {
     let address = address.into();
     let path = path.into();

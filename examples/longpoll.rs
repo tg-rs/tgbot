@@ -1,5 +1,5 @@
-use async_trait::async_trait;
 use dotenv::dotenv;
+use futures_util::future::BoxFuture;
 use std::env;
 use tgbot::{
     longpoll::LongPoll,
@@ -12,17 +12,21 @@ struct Handler {
     api: Api,
 }
 
-#[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&self, update: Update) {
-        log::info!("got an update: {:?}\n", update);
-        if let UpdateKind::Message(message) = update.kind {
-            if let Some(text) = message.get_text() {
-                let chat_id = message.get_chat_id();
-                let method = SendMessage::new(chat_id, text.data.clone());
-                self.api.execute(method).await.unwrap();
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
+        let api = self.api.clone();
+        Box::pin(async move {
+            log::info!("got an update: {:?}\n", update);
+            if let UpdateKind::Message(message) = update.kind {
+                if let Some(text) = message.get_text() {
+                    let chat_id = message.get_chat_id();
+                    let method = SendMessage::new(chat_id, text.data.clone());
+                    api.execute(method).await.unwrap();
+                }
             }
-        }
+        })
     }
 }
 

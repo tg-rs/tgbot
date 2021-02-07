@@ -1,5 +1,5 @@
-use async_trait::async_trait;
 use dotenv::dotenv;
+use futures_util::future::BoxFuture;
 use mockito::{mock, server_url, Matcher};
 use serde_json::json;
 use std::{
@@ -13,11 +13,15 @@ struct Handler {
     updates: Arc<Mutex<Vec<Update>>>,
 }
 
-#[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&self, update: Update) {
-        let mut updates = self.updates.lock().await;
-        updates.push(update);
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
+        let updates = self.updates.clone();
+        Box::pin(async move {
+            let mut updates = updates.lock().await;
+            updates.push(update);
+        })
     }
 }
 

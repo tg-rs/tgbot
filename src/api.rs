@@ -183,6 +183,16 @@ impl Api {
     }
 }
 
+impl fmt::Debug for Api {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("Api")
+            .field("client", &self.client)
+            .field("host", &self.host)
+            .field("token", &format_args!("..."))
+            .finish()
+    }
+}
+
 /// A general API error
 #[derive(Debug)]
 pub enum ApiError {

@@ -25,6 +25,5 @@ pub use self::{
     handler::UpdateHandler,
 };
 
-pub use async_trait::async_trait;
 pub use mime;
 pub use vec1::Vec1;

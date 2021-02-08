@@ -1,5 +1,5 @@
-use async_trait::async_trait;
 use dotenv::dotenv;
+use futures_util::future::BoxFuture;
 use std::env;
 use tgbot::{
     longpoll::LongPoll,
@@ -8,6 +8,7 @@ use tgbot::{
     Api, Config, UpdateHandler,
 };
 
+#[derive(Clone)]
 struct Handler {
     api: Api,
     photo_path: String,
@@ -15,21 +16,25 @@ struct Handler {
     video_path: String,
 }
 
-#[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&self, update: Update) {
-        log::info!("got an update: {:?}\n", update);
-        if let Some(chat_id) = update.get_chat_id() {
-            let photo_url = InputFile::url(self.photo_url.clone());
-            let photo_path = InputFile::path(self.photo_path.clone()).await.unwrap();
-            let video_path = InputFile::path(self.video_path.clone()).await.unwrap();
-            let media = MediaGroup::default()
-                .add_item(photo_url, InputMediaPhoto::default().caption("Photo 01"))
-                .add_item(photo_path, InputMediaPhoto::default().caption("Photo 02"))
-                .add_item(video_path, InputMediaVideo::default().caption("Video 01"));
-            let method = SendMediaGroup::new(chat_id, media).unwrap();
-            self.api.execute(method).await.unwrap();
-        }
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
+        let this = self.clone();
+        Box::pin(async move {
+            log::info!("got an update: {:?}\n", update);
+            if let Some(chat_id) = update.get_chat_id() {
+                let photo_url = InputFile::url(this.photo_url);
+                let photo_path = InputFile::path(this.photo_path).await.unwrap();
+                let video_path = InputFile::path(this.video_path).await.unwrap();
+                let media = MediaGroup::default()
+                    .add_item(photo_url, InputMediaPhoto::default().caption("Photo 01"))
+                    .add_item(photo_path, InputMediaPhoto::default().caption("Photo 02"))
+                    .add_item(video_path, InputMediaVideo::default().caption("Video 01"));
+                let method = SendMediaGroup::new(chat_id, media).unwrap();
+                this.api.execute(method).await.unwrap();
+            }
+        })
     }
 }
 

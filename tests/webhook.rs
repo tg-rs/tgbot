@@ -1,5 +1,5 @@
-use async_trait::async_trait;
 use dotenv::dotenv;
+use futures_util::future::BoxFuture;
 use hyper::{body, header::HeaderValue, Body, Client, Method, Request, Server, StatusCode};
 use std::sync::Arc;
 use tgbot::{types::Update, webhook::WebhookServiceFactory, UpdateHandler};
@@ -9,11 +9,15 @@ struct Handler {
     updates: Arc<Mutex<Vec<Update>>>,
 }
 
-#[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&self, update: Update) {
-        let mut updates = self.updates.lock().await;
-        updates.push(update);
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
+        let updates = self.updates.clone();
+        Box::pin(async move {
+            let mut updates = updates.lock().await;
+            updates.push(update);
+        })
     }
 }
 

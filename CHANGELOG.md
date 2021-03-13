@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.13.0 (xx.03.2021)
+
+- New `UpdateHandler` API.
+  * Removed `async_trait` dependency.
+  * `handle` method now takes an immutable reference to `self`.
+  * Added `SyncedUpdateHandler` wrapper for non-sync handlers.
+- New `TextEntity` API.
+  * Use `Vec1` instead of `Vec` to guarantee that entities are not empty.
+  * `TextEntityPosition` now contains `u32` values instead of `i64`.
+  * You can convert ranges into `TextEntityPosition`.
+- Added `Text::as_ref()` method to get data as `&str`.
+- Implemented `String` to `Text` conversion.
+- Added `UpdateKind::Unknown` for updates introduced in new Bot API versions.
+
 ## 0.12.1 (11.01.2021)
 
 - Fixed a panic when getting a list of bot commands.

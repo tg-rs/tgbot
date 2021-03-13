@@ -1,5 +1,6 @@
 use crate::types::{
     callback_query::CallbackQuery,
+    chat::ChatMemberUpdated,
     inline_mode::{ChosenInlineResult, InlineQuery},
     message::Message,
     payments::{PreCheckoutQuery, ShippingQuery},
@@ -36,7 +37,7 @@ impl Update {
         self.get_message().and_then(|msg| msg.get_chat_username())
     }
 
-    /// Returns a user ID from update
+    /// Returns a user from update
     pub fn get_user(&self) -> Option<&User> {
         Some(match self.kind {
             UpdateKind::Message(ref msg)
@@ -50,6 +51,7 @@ impl Update {
             UpdateKind::PreCheckoutQuery(ref query) => &query.from,
             UpdateKind::Poll(_) => return None,
             UpdateKind::PollAnswer(ref answer) => &answer.user,
+            UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => &status.from,
             UpdateKind::Unknown(_) => return None,
         })
     }
@@ -103,6 +105,17 @@ pub enum UpdateKind {
     ///
     /// Bots receive new votes only in polls that were sent by the bot itself
     PollAnswer(PollAnswer),
+    /// The bot's chat member status was updated in a chat
+    ///
+    /// For private chats, this update is received only
+    /// when the bot is blocked or unblocked by the user
+    BotStatus(ChatMemberUpdated),
+    /// A chat member's status was updated in a chat
+    ///
+    /// The bot must be an administrator in the chat
+    /// and must explicitly specify “chat_member” in the list
+    /// of allowed_updates to receive these updates.
+    UserStatus(ChatMemberUpdated),
     /// Used for unknown update types
     ///
     /// For example, Telegram introduced a new update type,
@@ -141,6 +154,10 @@ impl<'de> Deserialize<'de> for Update {
                 UpdateKind::Poll(data)
             } else if let Some(data) = raw.poll_answer {
                 UpdateKind::PollAnswer(data)
+            } else if let Some(data) = raw.my_chat_member {
+                UpdateKind::BotStatus(data)
+            } else if let Some(data) = raw.chat_member {
+                UpdateKind::UserStatus(data)
             } else {
                 UpdateKind::Unknown(json)
             },
@@ -196,6 +213,8 @@ pub enum AllowedUpdate {
     Poll,
     /// Poll answer
     PollAnswer,
+    /// Chat member status
+    ChatMember,
 }
 
 #[derive(Debug, Deserialize)]
@@ -212,6 +231,8 @@ struct RawUpdate {
     pre_checkout_query: Option<PreCheckoutQuery>,
     poll: Option<Poll>,
     poll_answer: Option<PollAnswer>,
+    my_chat_member: Option<ChatMemberUpdated>,
+    chat_member: Option<ChatMemberUpdated>,
 }
 
 #[cfg(test)]
@@ -592,6 +613,108 @@ mod tests {
     }
 
     #[test]
+    fn deserialize_update_bot_status() {
+        let update: Update = serde_json::from_value(serde_json::json!({
+            "update_id": 1,
+            "my_chat_member": {
+                "chat": {
+                    "id": 1,
+                    "type": "group",
+                    "title": "grouptitle"
+                },
+                "from": {
+                    "id": 1,
+                    "is_bot": true,
+                    "first_name": "firstname"
+                },
+                "date": 0,
+                "old_chat_member": {
+                    "status": "member",
+                    "user": {
+                        "id": 2,
+                        "is_bot": true,
+                        "first_name": "firstname"
+                    }
+                },
+                "new_chat_member": {
+                    "status": "kicked",
+                    "user": {
+                        "id": 2,
+                        "is_bot": true,
+                        "first_name": "firstname",
+                    },
+                    "until_date": 0
+                }
+            }
+        }))
+        .unwrap();
+        assert!(update.get_chat_id().is_none());
+        assert!(update.get_chat_username().is_none());
+        assert!(update.get_user().is_some());
+        if let Update {
+            id,
+            kind: UpdateKind::BotStatus(data),
+        } = update
+        {
+            assert_eq!(id, 1);
+            assert_eq!(data.date, 0);
+        } else {
+            panic!("Unexpected update {:?}", update);
+        }
+    }
+
+    #[test]
+    fn deserialize_update_user_status() {
+        let update: Update = serde_json::from_value(serde_json::json!({
+            "update_id": 1,
+            "chat_member": {
+                "chat": {
+                    "id": 1,
+                    "type": "group",
+                    "title": "grouptitle"
+                },
+                "from": {
+                    "id": 1,
+                    "is_bot": true,
+                    "first_name": "firstname"
+                },
+                "date": 0,
+                "old_chat_member": {
+                    "status": "member",
+                    "user": {
+                        "id": 2,
+                        "is_bot": false,
+                        "first_name": "firstname"
+                    }
+                },
+                "new_chat_member": {
+                    "status": "kicked",
+                    "user": {
+                        "id": 2,
+                        "is_bot": false,
+                        "first_name": "firstname",
+                    },
+                    "until_date": 0
+                }
+            }
+        }))
+        .unwrap();
+        assert!(update.get_chat_id().is_none());
+        assert!(update.get_chat_username().is_none());
+        assert!(update.get_user().is_some());
+        if let Update {
+            id,
+            kind: UpdateKind::UserStatus(data),
+        } = update
+        {
+            assert_eq!(id, 1);
+            assert_eq!(data.date, 0);
+        } else {
+            panic!("Unexpected update {:?}", update);
+        }
+    }
+
+    #[test]
     fn allowed_update() {
         assert_eq!(serde_json::to_string(&AllowedUpdate::Message).unwrap(), r#""message""#);
         assert_eq!(
@@ -630,6 +753,10 @@ mod tests {
         assert_eq!(
             serde_json::to_string(&AllowedUpdate::PollAnswer).unwrap(),
             r#""poll_answer""#
+        );
+        assert_eq!(
+            serde_json::to_string(&AllowedUpdate::ChatMember).unwrap(),
+            r#""chat_member""#
         );
 
         assert_eq!(
@@ -675,6 +802,10 @@ mod tests {
         assert_eq!(
             AllowedUpdate::PollAnswer,
             serde_json::from_str::<AllowedUpdate>(r#""poll_answer""#).unwrap()
+        );
+        assert_eq!(
+            AllowedUpdate::ChatMember,
+            serde_json::from_str::<AllowedUpdate>(r#""chat_member""#).unwrap()
         );
     }
 

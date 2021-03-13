@@ -11,7 +11,7 @@ mod photo;
 pub use self::{
     invite_link::ChatInviteLink,
     location::ChatLocation,
-    member::{ChatMember, ChatMemberAdministrator, ChatMemberKicked, ChatMemberRestricted},
+    member::{ChatMember, ChatMemberAdministrator, ChatMemberKicked, ChatMemberRestricted, ChatMemberUpdated},
     permissions::ChatPermissions,
     photo::ChatPhoto,
 };

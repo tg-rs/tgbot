@@ -1,4 +1,8 @@
-use crate::types::{primitive::Integer, user::User};
+use crate::types::{
+    chat::{Chat, ChatInviteLink},
+    primitive::Integer,
+    user::User,
+};
 use serde::{Deserialize, Deserializer};
 
 /// Information about one member of a chat
@@ -149,6 +153,24 @@ pub struct ChatMemberRestricted {
     /// True, if the user is a member
     /// of the chat at the moment of the request
     pub is_member: bool,
+}
+
+/// Represents changes in the status of a chat member
+#[derive(Clone, Debug, Deserialize)]
+pub struct ChatMemberUpdated {
+    /// Chat the user belongs to
+    pub chat: Chat,
+    /// Performer of the action, which resulted in the change
+    pub from: User,
+    /// Date the change was done in Unix time
+    pub date: Integer,
+    /// Previous information about the chat member
+    pub old_chat_member: ChatMember,
+    /// New information about the chat member
+    pub new_chat_member: ChatMember,
+    /// Chat invite link, which was used by the user to join the chat;
+    /// for joining by invite link events only.
+    pub invite_link: Option<ChatInviteLink>,
 }
 
 #[cfg(test)]
@@ -356,5 +378,112 @@ mod tests {
         } else {
             panic!("Unexpected chat member: {:?}", restricted);
         }
+    }
+
+    #[test]
+    fn deserialize_chat_member_updated_partial() {
+        let data: ChatMemberUpdated = serde_json::from_value(serde_json::json!({
+            "chat": {
+                "id": 1,
+                "type": "group",
+                "title": "grouptitle"
+            },
+            "from": {
+                "id": 1,
+                "is_bot": true,
+                "first_name": "firstname"
+            },
+            "date": 0,
+            "old_chat_member": {
+                "status": "member",
+                "user": {
+                    "id": 2,
+                    "is_bot": false,
+                    "first_name": "firstname"
+                }
+            },
+            "new_chat_member": {
+                "status": "kicked",
+                "user": {
+                    "id": 2,
+                    "is_bot": true,
+                    "first_name": "firstname",
+                },
+                "until_date": 0
+            },
+        }))
+        .unwrap();
+        if let Chat::Group(ref chat) = data.chat {
+            assert_eq!(chat.id, 1);
+        } else {
+            panic!("Unknown chat type: {:?}", data.chat)
+        }
+        assert_eq!(data.from.id, 1);
+        assert_eq!(data.date, 0);
+        assert_eq!(data.old_chat_member.get_user().id, 2);
+        assert!(data.old_chat_member.is_member());
+        assert_eq!(data.new_chat_member.get_user().id, 2);
+        assert!(!data.new_chat_member.is_member());
+        assert!(data.invite_link.is_none());
+    }
+
+    #[test]
+    fn deserialize_chat_member_updated_full() {
+        let data: ChatMemberUpdated = serde_json::from_value(serde_json::json!({
+            "chat": {
+                "id": 1,
+                "type": "group",
+                "title": "grouptitle"
+            },
+            "from": {
+                "id": 1,
+                "is_bot": true,
+                "first_name": "firstname"
+            },
+            "date": 0,
+            "old_chat_member": {
+                "status": "member",
+                "user": {
+                    "id": 2,
+                    "is_bot": false,
+                    "first_name": "firstname"
+                }
+            },
+            "new_chat_member": {
+                "status": "kicked",
+                "user": {
+                    "id": 2,
+                    "is_bot": true,
+                    "first_name": "firstname",
+                },
+                "until_date": 0
+            },
+            "invite_link": {
+                "invite_link": "https://t.me/joinchat/o8oIBrbCI3U2OGJi",
+                "creator": {
+                    "id": 1,
+                    "is_bot": false,
+                    "first_name": "firstname"
+                },
+                "is_primary": true,
+                "is_revoked": false
+            }
+        }))
+        .unwrap();
+        if let Chat::Group(ref chat) = data.chat {
+            assert_eq!(chat.id, 1);
+        } else {
+            panic!("Unknown chat type: {:?}", data.chat)
+        }
+        assert_eq!(data.from.id, 1);
+        assert_eq!(data.date, 0);
+        assert_eq!(data.old_chat_member.get_user().id, 2);
+        assert!(data.old_chat_member.is_member());
+        assert_eq!(data.new_chat_member.get_user().id, 2);
+        assert!(!data.new_chat_member.is_member());
+        assert_eq!(
+            data.invite_link.unwrap().invite_link,
+            "https://t.me/joinchat/o8oIBrbCI3U2OGJi"
+        );
     }
 }

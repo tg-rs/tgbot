@@ -1,3 +1,4 @@
+mod create_chat_invite_link;
 mod delete_photo;
 mod delete_sticker_set;
 mod export_invite_link;
@@ -16,7 +17,8 @@ mod unpin_all_messages;
 mod unpin_message;
 
 pub use self::{
-    delete_photo::*, delete_sticker_set::*, export_invite_link::*, get::*, get_administrators::*, get_members_count::*,
-    leave::*, pin_message::*, set_administrator_custom_title::*, set_description::*, set_permissions::*, set_photo::*,
-    set_sticker_set::*, set_title::*, unpin_all_messages::*, unpin_message::*,
+    create_chat_invite_link::*, delete_photo::*, delete_sticker_set::*, export_invite_link::*, get::*,
+    get_administrators::*, get_members_count::*, leave::*, pin_message::*, set_administrator_custom_title::*,
+    set_description::*, set_permissions::*, set_photo::*, set_sticker_set::*, set_title::*, unpin_all_messages::*,
+    unpin_message::*,
 };

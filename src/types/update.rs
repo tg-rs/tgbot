@@ -8,6 +8,7 @@ use crate::types::{
     user::User,
 };
 use serde::{de::Error, Deserialize, Deserializer, Serialize};
+use serde_json::Value as JsonValue;
 
 /// Incoming update
 #[derive(Clone, Debug)]
@@ -49,6 +50,7 @@ impl Update {
             UpdateKind::PreCheckoutQuery(ref query) => &query.from,
             UpdateKind::Poll(_) => return None,
             UpdateKind::PollAnswer(ref answer) => &answer.user,
+            UpdateKind::Unknown(_) => return None,
         })
     }
 
@@ -101,6 +103,11 @@ pub enum UpdateKind {
     ///
     /// Bots receive new votes only in polls that were sent by the bot itself
     PollAnswer(PollAnswer),
+    /// Used for unknown update types
+    ///
+    /// For example, Telegram introduced a new update type,
+    /// but it is not supported in old versions of tgbot
+    Unknown(JsonValue),
 }
 
 impl<'de> Deserialize<'de> for Update {
@@ -108,7 +115,8 @@ impl<'de> Deserialize<'de> for Update {
     where
         D: Deserializer<'de>,
     {
-        let raw: RawUpdate = Deserialize::deserialize(deserializer)?;
+        let json: JsonValue = Deserialize::deserialize(deserializer)?;
+        let raw: RawUpdate = serde_json::from_value(json.clone()).map_err(|x| D::Error::custom(x.to_string()))?;
         Ok(Update {
             id: raw.update_id,
             kind: if let Some(data) = raw.message {
@@ -134,7 +142,7 @@ impl<'de> Deserialize<'de> for Update {
             } else if let Some(data) = raw.poll_answer {
                 UpdateKind::PollAnswer(data)
             } else {
-                return Err(D::Error::custom("Can not detect update kind"));
+                UpdateKind::Unknown(json)
             },
         })
     }

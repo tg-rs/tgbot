@@ -38,24 +38,32 @@ async fn longpoll() {
         .with_body(
             &serde_json::to_vec(&json!({
                 "ok": true,
-                "result": [{
-                    "update_id": 1,
-                    "message": {
-                        "message_id": 1,
-                        "date": 0,
-                        "from": {
-                            "id": 1,
-                            "is_bot": false,
-                            "first_name": "test"
-                        },
-                        "chat": {
-                            "id": 1,
-                            "type": "private",
-                            "first_name": "test"
-                        },
-                        "text": "test"
+                "result": [
+                    {
+                        "update_id": 1,
+                        "message": {
+                            "message_id": 1,
+                            "date": 0,
+                            "from": {
+                                "id": 1,
+                                "is_bot": false,
+                                "first_name": "test"
+                            },
+                            "chat": {
+                                "id": 1,
+                                "type": "private",
+                                "first_name": "test"
+                            },
+                            "text": "test"
+                        }
+                    },
+                    {
+                        "update_id": 1,
+                        "unknown": {
+                            "description": "unknown updates should be parsed",
+                        }
                     }
-                }]
+                ]
             }))
             .unwrap(),
         )

@@ -23,8 +23,9 @@ tgbot = "0.12.1"
 Long polling:
 
 ```rust no_run
+use futures_util::future::BoxFuture;
 use std::env;
-use tgbot::{Api, Config, UpdateHandler, async_trait};
+use tgbot::{Api, Config, UpdateHandler};
 use tgbot::longpoll::LongPoll;
 use tgbot::methods::SendMessage;
 use tgbot::types::{Update, UpdateKind};
@@ -33,18 +34,21 @@ struct Handler {
     api: Api,
 }
 
-#[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&mut self, update: Update) {
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
         println!("got an update: {:?}\n", update);
-        if let UpdateKind::Message(message) = update.kind {
-            if let Some(text) = message.get_text() {
-                let api = self.api.clone();
-                let chat_id = message.get_chat_id();
-                let method = SendMessage::new(chat_id, text.data.clone());
-                api.execute(method).await.unwrap();
+        let api = self.api.clone();
+        Box::pin(async move {
+            if let UpdateKind::Message(message) = update.kind {
+                if let Some(text) = message.get_text() {
+                    let chat_id = message.get_chat_id();
+                    let method = SendMessage::new(chat_id, text.data.clone());
+                    api.execute(method).await.unwrap();
+                }
             }
-        }
+        })
     }
 }
 
@@ -59,14 +63,18 @@ async fn main() {
 Webhook:
 
 ```rust no_run
-use tgbot::{types::Update, async_trait, webhook, UpdateHandler};
+use futures_util::future::BoxFuture;
+use tgbot::{UpdateHandler, types::Update, webhook};
 
 struct Handler;
 
-#[async_trait]
 impl UpdateHandler for Handler {
-    async fn handle(&mut self, update: Update) {
-        println!("got an update: {:?}\n", update);
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
+        Box::pin(async {
+            println!("got an update: {:?}\n", update);
+        })
     }
 }
 

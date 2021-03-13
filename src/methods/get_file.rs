@@ -5,8 +5,9 @@ use serde::Serialize;
 ///
 /// For the moment, bots can download files of up to 20MB in size
 ///
-/// The file can then be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>,
-/// where <file_path> is taken from the response
+/// The file can then be downloaded via the link
+/// `https://api.telegram.org/file/bot<token>/<file_path>`,
+/// where `<file_path>` is taken from the response
 ///
 /// It is guaranteed that the link will be valid for at least 1 hour
 ///

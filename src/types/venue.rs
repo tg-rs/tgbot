@@ -20,7 +20,7 @@ pub struct Venue {
     pub google_place_id: Option<String>,
     /// Google Places type of the venue
     ///
-    /// https://developers.google.com/places/web-service/supported_types
+    /// <https://developers.google.com/places/web-service/supported_types>
     pub google_place_type: Option<String>,
 }
 

@@ -95,7 +95,7 @@ impl GetUpdates {
 /// In case of an unsuccessful request, we will give up after a reasonable amount of attempts
 ///
 /// If you'd like to make sure that the Webhook request comes from Telegram,
-/// we recommend using a secret path in the URL, e.g. https://www.example.com/<token>
+/// we recommend using a secret path in the URL, e.g. `https://www.example.com/<token>`
 /// Since nobody else knows your bot‘s token, you can be pretty sure it’s us
 #[derive(Clone, Debug, Serialize)]
 pub struct SetWebhook {

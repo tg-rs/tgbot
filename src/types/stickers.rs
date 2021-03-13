@@ -147,7 +147,7 @@ impl NewSticker {
 
     /// TGS animation
     ///
-    /// See https://core.telegram.org/animated_stickers#technical-requirements
+    /// See <https://core.telegram.org/animated_stickers#technical-requirements>
     /// for technical requirements
     pub fn tgs<I>(file: I) -> Self
     where

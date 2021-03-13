@@ -34,7 +34,7 @@ impl Config {
 
     /// Sets an API host
     ///
-    /// https://api.telegram.org is used by default
+    /// `https://api.telegram.org` is used by default
     pub fn host<S: Into<String>>(mut self, host: S) -> Self {
         self.host = host.into();
         self

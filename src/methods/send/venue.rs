@@ -86,7 +86,7 @@ impl SendVenue {
 
     /// Google Places type of the venue.
     ///
-    /// https://developers.google.com/places/web-service/supported_types
+    /// <https://developers.google.com/places/web-service/supported_types>
     pub fn google_place_type<S: Into<String>>(mut self, google_place_type: S) -> Self {
         self.google_place_type = Some(google_place_type.into());
         self

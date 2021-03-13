@@ -5,6 +5,7 @@
 #![warn(missing_docs)]
 
 mod api;
+mod handler;
 mod request;
 
 /// Utilities to receive updates using long poll
@@ -19,12 +20,9 @@ pub mod types;
 /// Services to receive updates via webhook
 pub mod webhook;
 
-/// UpdateHandler trait and utilities for it
-pub mod handler;
-
 pub use self::{
     api::{Api, ApiError, Config, DownloadFileError, ExecuteError, ParseProxyError},
-    handler::UpdateHandler,
+    handler::{SyncedUpdateHandler, UpdateHandler},
 };
 
 pub use mime;

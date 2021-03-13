@@ -16,16 +16,12 @@ pub trait UpdateHandler {
     fn handle(&self, update: Update) -> Self::Future;
 }
 
-/// Wrapper for [`UpdateHandler`] that doesn't implement [`Sync`]
+/// A wrapper for non-sync [`UpdateHandler`]
 ///
-/// Uses [`Arc`] and [tokio Mutex] internally.
-/// Useful for [`webhook::run_server`] that require handler is sync
+/// Useful for [`webhook::run_server`] which requires a sync handler
 ///
 /// [`UpdateHandler`]: UpdateHandler
-/// [`Sync`]: Sync
 /// [`webhook::run_server`]: crate::webhook::run_server
-/// [`Arc`]: Arc
-/// [tokio Mutex]: tokio::sync::Mutex
 pub struct SyncedUpdateHandler<T> {
     handler: Arc<Mutex<T>>,
 }
@@ -65,11 +61,11 @@ mod tests {
     #[test]
     fn synced_is_sync() {
         // pointer is neither Send nor Sync
-        struct NotSync(*mut ());
+        struct NonSync(*mut ());
 
-        unsafe impl Send for NotSync {}
+        unsafe impl Send for NonSync {}
 
-        impl UpdateHandler for NotSync {
+        impl UpdateHandler for NonSync {
             type Future = BoxFuture<'static, ()>;
 
             fn handle(&self, _update: Update) -> Self::Future {
@@ -77,8 +73,8 @@ mod tests {
             }
         }
 
-        assert_send::<NotSync>();
-        assert_send::<SyncedUpdateHandler<NotSync>>();
-        assert_sync::<SyncedUpdateHandler<NotSync>>();
+        assert_send::<NonSync>();
+        assert_send::<SyncedUpdateHandler<NonSync>>();
+        assert_sync::<SyncedUpdateHandler<NonSync>>();
     }
 }

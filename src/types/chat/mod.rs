@@ -2,12 +2,14 @@ use crate::types::{message::Message, primitive::Integer};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
+mod invite_link;
 mod location;
 mod member;
 mod permissions;
 mod photo;
 
 pub use self::{
+    invite_link::ChatInviteLink,
     location::ChatLocation,
     member::{ChatMember, ChatMemberAdministrator, ChatMemberKicked, ChatMemberRestricted},
     permissions::ChatPermissions,

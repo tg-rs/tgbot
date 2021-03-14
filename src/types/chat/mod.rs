@@ -31,6 +31,32 @@ pub enum Chat {
     Supergroup(SupergroupChat),
 }
 
+impl Chat {
+    /// Returns ID of the chat
+    pub fn get_id(&self) -> Integer {
+        match self {
+            Chat::Channel(chat) => chat.id,
+            Chat::Group(chat) => chat.id,
+            Chat::Private(chat) => chat.id,
+            Chat::Supergroup(chat) => chat.id,
+        }
+    }
+
+    /// Returns username of the chat
+    pub fn get_username(&self) -> Option<&str> {
+        if let Some(ref username) = match self {
+            Chat::Channel(ref chat) => &chat.username,
+            Chat::Group(_) => &None,
+            Chat::Private(ref chat) => &chat.username,
+            Chat::Supergroup(ref chat) => &chat.username,
+        } {
+            Some(username.as_str())
+        } else {
+            None
+        }
+    }
+}
+
 /// Channel chat
 #[derive(Clone, Debug, Deserialize)]
 pub struct ChannelChat {
@@ -259,6 +285,8 @@ mod tests {
             "linked_chat_id": 2
         }))
         .unwrap();
+        assert_eq!(chat.get_id(), 1);
+        assert_eq!(chat.get_username().unwrap(), "channelusername");
         if let Chat::Channel(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "channeltitle");
@@ -285,6 +313,8 @@ mod tests {
             "title": "channeltitle"
         }))
         .unwrap();
+        assert_eq!(chat.get_id(), 1);
+        assert!(chat.get_username().is_none());
         if let Chat::Channel(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "channeltitle");
@@ -329,6 +359,8 @@ mod tests {
             "permissions": {"can_send_messages": true}
         }))
         .unwrap();
+        assert_eq!(chat.get_id(), 1);
+        assert!(chat.get_username().is_none());
         if let Chat::Group(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "grouptitle");
@@ -354,6 +386,8 @@ mod tests {
             "title": "grouptitle"
         }))
         .unwrap();
+        assert_eq!(chat.get_id(), 1);
+        assert!(chat.get_username().is_none());
         if let Chat::Group(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "grouptitle");
@@ -398,6 +432,8 @@ mod tests {
             }
         }))
         .unwrap();
+        assert_eq!(chat.get_id(), 1);
+        assert_eq!(chat.get_username().unwrap(), "testusername");
         if let Chat::Private(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.username.unwrap(), "testusername");
@@ -423,6 +459,8 @@ mod tests {
             "first_name": "testfirstname"
         }))
         .unwrap();
+        assert_eq!(chat.get_id(), 1);
+        assert!(chat.get_username().is_none());
         if let Chat::Private(chat) = chat {
             assert_eq!(chat.id, 1);
             assert!(chat.username.is_none());
@@ -481,6 +519,8 @@ mod tests {
             }
         }))
         .unwrap();
+        assert_eq!(chat.get_id(), 1);
+        assert_eq!(chat.get_username().unwrap(), "supergroupusername");
         if let Chat::Supergroup(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "supergrouptitle");
@@ -510,14 +550,15 @@ mod tests {
         let chat: Chat = serde_json::from_value(serde_json::json!({
             "id": 1,
             "type": "supergroup",
-            "title": "supergrouptitle",
-            "username": "supergroupusername"
+            "title": "supergrouptitle"
         }))
         .unwrap();
+        assert_eq!(chat.get_id(), 1);
+        assert!(chat.get_username().is_none());
         if let Chat::Supergroup(chat) = chat {
             assert_eq!(chat.id, 1);
             assert_eq!(chat.title, "supergrouptitle");
-            assert_eq!(chat.username.unwrap(), "supergroupusername");
+            assert!(chat.username.is_none());
             assert!(chat.photo.is_none());
             assert!(chat.description.is_none());
             assert!(chat.invite_link.is_none());

@@ -72,7 +72,7 @@ impl UpdateHandler for Handler {
     type Future = BoxFuture<'static, ()>;
 
     fn handle(&self, update: Update) -> Self::Future {
-        Box::pin(async {
+        Box::pin(async move {
             println!("got an update: {:?}\n", update);
         })
     }

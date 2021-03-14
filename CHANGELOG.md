@@ -1,18 +1,37 @@
 # Changelog
 
-## 0.13.0 (xx.03.2021)
+## 0.13.0 (14.03.2021)
 
+- Added Bot API 5.1 support.
+  - Added `ChatMemberUpdated` struct.
+  - Added `ChatInviteLink` struct.
+  - Added `CreateChatInviteLink`, `EditChatInviteLink` and `RevokeChatInviteLink` methods.
+  - Added voice chat service messages support.
+    - `MessageData::VoiceChatStarted`.
+    - `MessageData::VoiceChatEnded`.
+    - `MessageData::VoiceChatParticipantsInvited`.
+  - Added `AutoDeleteTimerChanged` service message support.
+  - Added `ChatMemberAdministrator.can_manage_voice_chats` field.
+  - Added `can_manage_voice_chats` parameter to `PromoteChatMember` method.
+  - Added `revoke_messages` parameter to `KickChatMember` method.
+  - Added `can_manage_chat` field to `ChatMemberAdministrator` struct.
+  - Added `can_manage_chat` parameter to `PromoteChatMember` method.
+  - Added `Bowling` dice.
 - New `UpdateHandler` API.
-  * Removed `async_trait` dependency.
-  * `handle` method now takes an immutable reference to `self`.
-  * Added `SyncedUpdateHandler` wrapper for non-sync handlers.
+  - Removed `async_trait` dependency.
+  - `handle` method now takes an immutable reference to `self`.
+  - Added `SyncedUpdateHandler` wrapper for non-sync handlers.
 - New `TextEntity` API.
-  * Use `Vec1` instead of `Vec` to guarantee that entities are not empty.
-  * `TextEntityPosition` now contains `u32` values instead of `i64`.
-  * You can convert ranges into `TextEntityPosition`.
+  - Use `Vec1` instead of `Vec` to guarantee that entities are not empty.
+  - `TextEntityPosition` now contains `u32` values instead of `i64`.
+  - You can convert ranges into `TextEntityPosition`.
 - Added `Text::as_ref()` method to get data as `&str`.
 - Implemented `String` to `Text` conversion.
 - Added `UpdateKind::Unknown` for updates introduced in new Bot API versions.
+- Added `Chat::get_id()` and `Chat::get_username()` methods.
+- async-stream updated to 0.3 version.
+- tokio updated to 1.3 version.
+- Fixed error timeout in longpoll.
 
 ## 0.12.1 (11.01.2021)
 

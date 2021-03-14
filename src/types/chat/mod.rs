@@ -44,16 +44,13 @@ impl Chat {
 
     /// Returns username of the chat
     pub fn get_username(&self) -> Option<&str> {
-        if let Some(ref username) = match self {
-            Chat::Channel(ref chat) => &chat.username,
+        match &self {
+            Chat::Channel(chat) => &chat.username,
             Chat::Group(_) => &None,
-            Chat::Private(ref chat) => &chat.username,
-            Chat::Supergroup(ref chat) => &chat.username,
-        } {
-            Some(username.as_str())
-        } else {
-            None
+            Chat::Private(chat) => &chat.username,
+            Chat::Supergroup(chat) => &chat.username,
         }
+        .as_deref()
     }
 }
 

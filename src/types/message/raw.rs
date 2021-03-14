@@ -7,7 +7,7 @@ use crate::types::{
     document::Document,
     game::Game,
     location::{Location, ProximityAlertTriggered},
-    message::{Forward, Message, MessageData},
+    message::{Forward, Message},
     passport::PassportData,
     payments::{Invoice, SuccessfulPayment},
     photo_size::PhotoSize,
@@ -39,9 +39,9 @@ pub(super) struct RawMessage {
     pub edit_date: Option<Integer>,
     pub media_group_id: Option<String>,
     pub author_signature: Option<String>,
-    #[serde(flatten)]
-    pub data: MessageData,
     pub reply_markup: Option<InlineKeyboardMarkup>,
+    #[serde(flatten)]
+    pub data: RawMessageData,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -175,5 +175,27 @@ pub(super) enum RawMessageData {
         caption_entities: Option<Vec1<RawTextEntity>>,
         voice: Voice,
     },
+    VoiceChatEnded {
+        voice_chat_ended: VoiceChatEnded,
+    },
+    VoiceChatParticipantsInvited {
+        voice_chat_participants_invited: VoiceChatParticipantsInvited,
+    },
+    VoiceChatStarted {
+        voice_chat_started: VoiceChatStarted,
+    },
     Empty {}, // must be last because all variants below won't be deserialized
 }
+
+#[derive(Debug, Deserialize)]
+pub(super) struct VoiceChatEnded {
+    pub(super) duration: Integer,
+}
+
+#[derive(Debug, Deserialize)]
+pub(super) struct VoiceChatParticipantsInvited {
+    pub(super) users: Option<Vec<User>>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(super) struct VoiceChatStarted {}

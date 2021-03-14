@@ -3,6 +3,7 @@ use crate::types::{
     user::User,
 };
 use serde::{de::Error, Deserialize, Deserializer};
+use std::convert::TryInto;
 
 mod data;
 mod forward;
@@ -159,7 +160,10 @@ impl<'de> Deserialize<'de> for Message {
             via_bot: raw.via_bot,
             edit_date: raw.edit_date,
             media_group_id: raw.media_group_id,
-            data: raw.data,
+            data: raw
+                .data
+                .try_into()
+                .map_err(|err: MessageDataError| D::Error::custom(err.to_string()))?,
             reply_markup: raw.reply_markup,
             sender_chat: raw.sender_chat,
         })

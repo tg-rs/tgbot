@@ -134,6 +134,18 @@ pub enum MessageData {
         /// Voice data
         data: Voice,
     },
+    /// A service message about a voice chat started in the chat
+    VoiceChatStarted,
+    /// A service message about a voice chat ended in the chat
+    VoiceChatEnded {
+        /// Voice chat duration; in seconds
+        duration: Integer,
+    },
+    /// A service message about new members invited to a voice chat
+    VoiceChatParticipantsInvited {
+        /// New members that were invited to the voice chat
+        users: Vec<User>,
+    },
 }
 
 impl TryFrom<RawMessageData> for MessageData {
@@ -213,6 +225,15 @@ impl TryFrom<RawMessageData> for MessageData {
             } => MessageData::Voice {
                 caption: Text::from_raw_opt(caption, caption_entities)?,
                 data: voice,
+            },
+            RawMessageData::VoiceChatStarted { .. } => MessageData::VoiceChatStarted,
+            RawMessageData::VoiceChatEnded { voice_chat_ended } => MessageData::VoiceChatEnded {
+                duration: voice_chat_ended.duration,
+            },
+            RawMessageData::VoiceChatParticipantsInvited {
+                voice_chat_participants_invited,
+            } => MessageData::VoiceChatParticipantsInvited {
+                users: voice_chat_participants_invited.users.unwrap_or_else(Vec::new),
             },
         })
     }
@@ -1061,6 +1082,61 @@ mod tests {
                 caption.entities.unwrap(),
                 vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 })]
             );
+        } else {
+            panic!("Unexpected message data: {:?}", msg.data);
+        }
+    }
+
+    #[test]
+    fn deserialize_voice_chat_started() {
+        let msg: Message = serde_json::from_value(serde_json::json!({
+            "message_id": 1, "date": 1,
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "voice_chat_started": {}
+        }))
+        .unwrap();
+        if let MessageData::VoiceChatStarted = msg.data {
+            assert_eq!(msg.id, 1);
+        } else {
+            panic!("Unexpected message data: {:?}", msg.data);
+        }
+    }
+
+    #[test]
+    fn deserialize_voice_chat_ended() {
+        let msg: Message = serde_json::from_value(serde_json::json!({
+            "message_id": 1, "date": 1,
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "voice_chat_ended": { "duration": 100 }
+        }))
+        .unwrap();
+        if let MessageData::VoiceChatEnded { duration } = msg.data {
+            assert_eq!(msg.id, 1);
+            assert_eq!(duration, 100);
+        } else {
+            panic!("Unexpected message data: {:?}", msg.data);
+        }
+    }
+
+    #[test]
+    fn deserialize_voice_chat_participants_invited() {
+        let msg: Message = serde_json::from_value(serde_json::json!({
+            "message_id": 1, "date": 1,
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "voice_chat_participants_invited": {
+                "users": [
+                    {"id": 1, "first_name": "firstname", "is_bot": false}
+                ]
+            }
+        }))
+        .unwrap();
+        if let MessageData::VoiceChatParticipantsInvited { users } = msg.data {
+            assert_eq!(msg.id, 1);
+            assert_eq!(users.len(), 1);
+            assert_eq!(users[0].id, 1);
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }

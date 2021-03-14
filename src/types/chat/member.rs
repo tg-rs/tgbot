@@ -111,6 +111,11 @@ pub struct ChatMemberAdministrator {
     pub can_promote_members: bool,
     /// True, if the administrator can manage voice chats
     pub can_manage_voice_chats: bool,
+    /// True, if the administrator can access the chat event log,
+    /// chat statistics, message statistics in channels, see channel members,
+    /// see anonymous administrators in supergroups and ignore slow mode.
+    /// Implied by any other administrator privilege
+    pub can_manage_chat: bool,
 }
 
 /// Kicked user
@@ -202,7 +207,8 @@ mod tests {
             "can_restrict_members": true,
             "can_pin_messages": false,
             "can_promote_members": true,
-            "can_manage_voice_chats": true
+            "can_manage_voice_chats": false,
+            "can_manage_chat": true
         }))
         .unwrap();
         assert!(admin.is_member());
@@ -225,7 +231,8 @@ mod tests {
             assert!(admin.can_restrict_members);
             assert_eq!(admin.can_pin_messages, Some(false));
             assert!(admin.can_promote_members);
-            assert!(admin.can_manage_voice_chats);
+            assert!(!admin.can_manage_voice_chats);
+            assert!(admin.can_manage_chat);
         } else {
             panic!("Unexpected chat member: {:?}", admin);
         }

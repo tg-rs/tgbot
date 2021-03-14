@@ -90,7 +90,7 @@ where
                     Ok(updates) => updates,
                     Err(err) => {
                         error!("An error has occurred while getting updates: {}", err);
-                        let timeout = get_error_timeout(err, error_timeout);
+                        let error_timeout = get_error_timeout(err, error_timeout);
                         sleep(error_timeout).await;
                         continue
                     }

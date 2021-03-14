@@ -24,6 +24,8 @@ pub struct KickChatMember {
     user_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
     until_date: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    revoke_messages: Option<bool>,
 }
 
 impl KickChatMember {
@@ -38,6 +40,7 @@ impl KickChatMember {
             chat_id: chat_id.into(),
             user_id,
             until_date: None,
+            revoke_messages: None,
         }
     }
 
@@ -47,6 +50,16 @@ impl KickChatMember {
     /// from the current time they are considered to be banned forever
     pub fn until_date(mut self, until_date: Integer) -> Self {
         self.until_date = Some(until_date);
+        self
+    }
+
+    /// Delete all messages from the chat for the user that is being removed
+    ///
+    /// If False, the user will be able to see messages in the group that were
+    /// sent before the user was removed.
+    /// Always True for supergroups and channels.
+    pub fn revoke_messages(mut self, revoke_messages: bool) -> Self {
+        self.revoke_messages = Some(revoke_messages);
         self
     }
 }
@@ -67,7 +80,10 @@ mod tests {
 
     #[test]
     fn kick_chat_member() {
-        let request = KickChatMember::new(1, 2).until_date(3).into_request();
+        let request = KickChatMember::new(1, 2)
+            .until_date(3)
+            .revoke_messages(true)
+            .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
             request.build_url("base-url", "token"),
@@ -78,6 +94,7 @@ mod tests {
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["user_id"], 2);
             assert_eq!(data["until_date"], 3);
+            assert_eq!(data["revoke_messages"], true);
         } else {
             panic!("Unexpected request body");
         }

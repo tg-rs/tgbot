@@ -63,16 +63,6 @@ where
     Inner::deserialize(deserializer).map(|x| x.user)
 }
 
-#[derive(Clone, Debug, Deserialize)]
-pub struct ChatMemberCreator {
-    /// Information about the user
-    pub user: User,
-    /// True, if the user's presence in the chat is hidden
-    pub is_anonymous: bool,
-    /// Custom title for this user
-    pub custom_title: Option<String>,
-}
-
 /// Chat admin
 #[derive(Clone, Debug, Deserialize)]
 pub struct ChatMemberAdministrator {
@@ -86,22 +76,25 @@ pub struct ChatMemberAdministrator {
     /// True, if the administrator can change
     /// the chat title, photo and other settings
     pub can_change_info: bool,
-    /// Custom title for this user
-    pub custom_title: Option<String>,
-    /// True, if the administrator can post
-    /// in the channel, channels only
-    pub can_post_messages: Option<bool>,
-    /// True, if the administrator can edit messages
-    /// of other users and can pin messages, channels only
-    pub can_edit_messages: Option<bool>,
     /// True, if the administrator can delete messages of other users
     pub can_delete_messages: bool,
+    /// True, if the administrator can edit messages
+    /// of other users and can pin messages; channels only
+    pub can_edit_messages: Option<bool>,
     /// True, if the administrator can invite new users to the chat
     pub can_invite_users: bool,
-    /// True, if the administrator can restrict, ban or unban chat members
-    pub can_restrict_members: bool,
-    /// True, if the administrator can pin messages, groups and supergroups only
+    /// True, if the administrator can access the chat event log,
+    /// chat statistics, message statistics in channels, see channel members,
+    /// see anonymous administrators in supergroups and ignore slow mode;
+    /// implied by any other administrator privilege
+    pub can_manage_chat: bool,
+    /// True, if the administrator can manage voice chats
+    pub can_manage_voice_chats: bool,
+    /// True, if the administrator can pin messages; groups and supergroups only
     pub can_pin_messages: Option<bool>,
+    /// True, if the administrator can post
+    /// in the channel; channels only
+    pub can_post_messages: Option<bool>,
     /// True, if the administrator can
     /// add new administrators with a subset
     /// of his own privileges or
@@ -109,13 +102,20 @@ pub struct ChatMemberAdministrator {
     /// directly or indirectly
     /// (promoted by administrators that were appointed by the user)
     pub can_promote_members: bool,
-    /// True, if the administrator can manage voice chats
-    pub can_manage_voice_chats: bool,
-    /// True, if the administrator can access the chat event log,
-    /// chat statistics, message statistics in channels, see channel members,
-    /// see anonymous administrators in supergroups and ignore slow mode.
-    /// Implied by any other administrator privilege
-    pub can_manage_chat: bool,
+    /// True, if the administrator can restrict, ban or unban chat members
+    pub can_restrict_members: bool,
+    /// Custom title for this user
+    pub custom_title: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub struct ChatMemberCreator {
+    /// Information about the user
+    pub user: User,
+    /// True, if the user's presence in the chat is hidden
+    pub is_anonymous: bool,
+    /// Custom title for this user
+    pub custom_title: Option<String>,
 }
 
 /// Kicked user
@@ -134,29 +134,29 @@ pub struct ChatMemberRestricted {
     pub user: User,
     /// Date when restrictions will be lifted for this user, unix time
     pub until_date: Integer,
+    /// True, if user may add web page previews
+    /// to his messages, implies can_send_media_messages
+    pub can_add_web_page_previews: bool,
     /// True, if the user allowed to change
     /// the chat title, photo and other settings
     pub can_change_info: bool,
     /// True, if the user allowed to invite new users to the chat
     pub can_invite_users: bool,
-    /// True, if the user allowed to pin messages, groups and supergroups only
+    /// True, if the user allowed to pin messages; groups and supergroups only
     pub can_pin_messages: Option<bool>,
-    /// True, if the user can send
-    /// text messages, contacts, locations and venues
-    pub can_send_messages: bool,
-    /// True, if the user is allowed to send polls
-    pub can_send_polls: bool,
     /// True, if the user can send
     /// audios, documents, photos, videos,
     /// video notes and voice notes, implies can_send_messages
     pub can_send_media_messages: bool,
     /// True, if the user can send
+    /// text messages, contacts, locations and venues
+    pub can_send_messages: bool,
+    /// True, if the user can send
     /// animations, games, stickers
     /// and use inline bots, implies can_send_media_messages
     pub can_send_other_messages: bool,
-    /// True, if user may add web page previews
-    /// to his messages, implies can_send_media_messages
-    pub can_add_web_page_previews: bool,
+    /// True, if the user is allowed to send polls
+    pub can_send_polls: bool,
     /// True, if the user is a member
     /// of the chat at the moment of the request
     pub is_member: bool,
@@ -185,7 +185,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn deserialize_chat_member_admin() {
+    fn deserialize_chat_member_admin_full() {
         let mut admin: ChatMember = serde_json::from_value(serde_json::json!({
             "status": "administrator",
             "user": {
@@ -239,7 +239,80 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_chat_member_creator() {
+    fn deserialize_chat_member_admin_partial() {
+        let mut admin: ChatMember = serde_json::from_value(serde_json::json!({
+            "status": "administrator",
+            "user": {
+                "id": 1,
+                "is_bot": false,
+                "first_name": "firstname",
+                "last_name": "lastname",
+                "username": "username",
+                "language_code": "RU"
+            },
+            "is_anonymous": false,
+            "can_be_edited": true,
+            "can_change_info": false,
+            "can_delete_messages": true,
+            "can_invite_users": false,
+            "can_restrict_members": true,
+            "can_promote_members": true,
+            "can_manage_voice_chats": false,
+            "can_manage_chat": true
+        }))
+        .unwrap();
+        assert!(admin.is_member());
+        assert_eq!(admin.get_user().id, 1);
+        if let ChatMember::Administrator(ref mut admin) = admin {
+            assert!(!admin.is_anonymous);
+            assert_eq!(admin.user.id, 1);
+            assert!(!admin.user.is_bot);
+            assert_eq!(admin.user.first_name, "firstname");
+            assert_eq!(admin.user.last_name.take().unwrap(), "lastname");
+            assert_eq!(admin.user.username.take().unwrap(), "username");
+            assert_eq!(admin.user.language_code.take().unwrap(), "RU");
+            assert!(admin.custom_title.is_none());
+            assert!(admin.can_be_edited);
+            assert!(!admin.can_change_info);
+            assert!(admin.can_delete_messages);
+            assert!(admin.can_edit_messages.is_none());
+            assert!(!admin.can_invite_users);
+            assert!(admin.can_manage_chat);
+            assert!(!admin.can_manage_voice_chats);
+            assert!(admin.can_pin_messages.is_none());
+            assert!(admin.can_post_messages.is_none());
+            assert!(admin.can_promote_members);
+            assert!(admin.can_restrict_members);
+        } else {
+            panic!("Unexpected chat member: {:?}", admin);
+        }
+    }
+
+    #[test]
+    fn deserialize_chat_member_creator_partial() {
+        let mut creator: ChatMember = serde_json::from_value(serde_json::json!({
+            "status": "creator",
+            "is_anonymous": false,
+            "user": {
+                "id": 1,
+                "is_bot": false,
+                "first_name": "firstname"
+            }
+        }))
+        .unwrap();
+        assert!(creator.is_member());
+        assert_eq!(creator.get_user().id, 1);
+        if let ChatMember::Creator(ref mut creator) = creator {
+            assert!(!creator.is_anonymous);
+            assert_eq!(creator.user.id, 1);
+            assert!(creator.custom_title.is_none());
+        } else {
+            panic!("Unexpected chat member: {:?}", creator);
+        }
+    }
+
+    #[test]
+    fn deserialize_chat_member_creator_full() {
         let mut creator: ChatMember = serde_json::from_value(serde_json::json!({
             "status": "creator",
             "is_anonymous": false,
@@ -256,7 +329,7 @@ mod tests {
         if let ChatMember::Creator(ref mut creator) = creator {
             assert!(!creator.is_anonymous);
             assert_eq!(creator.user.id, 1);
-            assert_eq!(creator.user.is_bot, false);
+            assert!(!creator.user.is_bot);
             assert_eq!(creator.user.first_name, String::from("firstname"));
             assert_eq!(creator.user.last_name, None);
             assert_eq!(creator.user.username, None);
@@ -285,7 +358,7 @@ mod tests {
         assert_eq!(kicked.get_user().id, 1);
         if let ChatMember::Kicked(ref mut kicked) = kicked {
             assert_eq!(kicked.user.id, 1);
-            assert_eq!(kicked.user.is_bot, true);
+            assert!(kicked.user.is_bot);
             assert_eq!(kicked.user.first_name, "firstname");
             assert_eq!(kicked.user.last_name.take().unwrap(), "lastname");
             assert_eq!(kicked.user.username.take().unwrap(), "username");
@@ -311,7 +384,7 @@ mod tests {
         assert_eq!(left.get_user().id, 1);
         if let ChatMember::Left(ref left) = left {
             assert_eq!(left.id, 1);
-            assert_eq!(left.is_bot, true);
+            assert!(left.is_bot);
             assert_eq!(left.first_name, "firstname");
             assert!(left.last_name.is_none());
             assert!(left.username.is_none());
@@ -323,7 +396,7 @@ mod tests {
 
     #[test]
     fn deserialize_chat_member() {
-        let plain: ChatMember = serde_json::from_value(serde_json::json!({
+        let member: ChatMember = serde_json::from_value(serde_json::json!({
             "status": "member",
             "user": {
                 "id": 1,
@@ -332,22 +405,22 @@ mod tests {
             }
         }))
         .unwrap();
-        assert!(plain.is_member());
-        assert_eq!(plain.get_user().id, 1);
-        if let ChatMember::Member(ref plain) = plain {
-            assert_eq!(plain.id, 1);
-            assert_eq!(plain.is_bot, false);
-            assert_eq!(plain.first_name, "firstname");
-            assert!(plain.last_name.is_none());
-            assert!(plain.username.is_none());
-            assert!(plain.language_code.is_none());
+        assert!(member.is_member());
+        assert_eq!(member.get_user().id, 1);
+        if let ChatMember::Member(ref member) = member {
+            assert_eq!(member.id, 1);
+            assert!(!member.is_bot);
+            assert_eq!(member.first_name, "firstname");
+            assert!(member.last_name.is_none());
+            assert!(member.username.is_none());
+            assert!(member.language_code.is_none());
         } else {
-            panic!("Unexpected chat member: {:?}", plain);
+            panic!("Unexpected chat member: {:?}", member);
         }
     }
 
     #[test]
-    fn deserialize_chat_member_restricted() {
+    fn deserialize_chat_member_restricted_full() {
         let restricted: ChatMember = serde_json::from_value(serde_json::json!({
             "status": "restricted",
             "user": {
@@ -371,20 +444,20 @@ mod tests {
         assert!(restricted.is_member());
         if let ChatMember::Restricted(ref restricted) = restricted {
             assert_eq!(restricted.user.id, 1);
-            assert_eq!(restricted.user.is_bot, true);
+            assert!(restricted.user.is_bot);
             assert_eq!(restricted.user.first_name, "firstname");
             assert!(restricted.user.last_name.is_none());
             assert!(restricted.user.username.is_none());
             assert!(restricted.user.language_code.is_none());
             assert_eq!(restricted.until_date, 0);
+            assert!(!restricted.can_add_web_page_previews);
             assert!(restricted.can_change_info);
             assert!(!restricted.can_invite_users);
-            assert!(restricted.can_send_polls);
             assert!(!restricted.can_pin_messages.unwrap());
-            assert!(restricted.can_send_messages);
             assert!(!restricted.can_send_media_messages);
+            assert!(restricted.can_send_messages);
             assert!(restricted.can_send_other_messages);
-            assert!(!restricted.can_add_web_page_previews);
+            assert!(restricted.can_send_polls);
             assert!(restricted.is_member);
         } else {
             panic!("Unexpected chat member: {:?}", restricted);
@@ -392,50 +465,42 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_chat_member_updated_partial() {
-        let data: ChatMemberUpdated = serde_json::from_value(serde_json::json!({
-            "chat": {
-                "id": 1,
-                "type": "group",
-                "title": "grouptitle"
-            },
-            "from": {
+    fn deserialize_chat_member_restricted_partial() {
+        let restricted: ChatMember = serde_json::from_value(serde_json::json!({
+            "status": "restricted",
+            "user": {
                 "id": 1,
                 "is_bot": true,
                 "first_name": "firstname"
             },
-            "date": 0,
-            "old_chat_member": {
-                "status": "member",
-                "user": {
-                    "id": 2,
-                    "is_bot": false,
-                    "first_name": "firstname"
-                }
-            },
-            "new_chat_member": {
-                "status": "kicked",
-                "user": {
-                    "id": 2,
-                    "is_bot": true,
-                    "first_name": "firstname",
-                },
-                "until_date": 0
-            },
+            "until_date": 0,
+            "can_change_info": true,
+            "can_invite_users": false,
+            "can_send_polls": true,
+            "can_send_messages": true,
+            "can_send_media_messages": false,
+            "can_send_other_messages": true,
+            "can_add_web_page_previews": false,
+            "is_member": true
         }))
         .unwrap();
-        if let Chat::Group(ref chat) = data.chat {
-            assert_eq!(chat.id, 1);
+        assert_eq!(restricted.get_user().id, 1);
+        assert!(restricted.is_member());
+        if let ChatMember::Restricted(ref restricted) = restricted {
+            assert_eq!(restricted.user.id, 1);
+            assert_eq!(restricted.until_date, 0);
+            assert!(!restricted.can_add_web_page_previews);
+            assert!(restricted.can_change_info);
+            assert!(!restricted.can_invite_users);
+            assert!(restricted.can_pin_messages.is_none());
+            assert!(!restricted.can_send_media_messages);
+            assert!(restricted.can_send_messages);
+            assert!(restricted.can_send_other_messages);
+            assert!(restricted.can_send_polls);
+            assert!(restricted.is_member);
         } else {
-            panic!("Unknown chat type: {:?}", data.chat)
+            panic!("Unexpected chat member: {:?}", restricted);
         }
-        assert_eq!(data.from.id, 1);
-        assert_eq!(data.date, 0);
-        assert_eq!(data.old_chat_member.get_user().id, 2);
-        assert!(data.old_chat_member.is_member());
-        assert_eq!(data.new_chat_member.get_user().id, 2);
-        assert!(!data.new_chat_member.is_member());
-        assert!(data.invite_link.is_none());
     }
 
     #[test]
@@ -496,5 +561,52 @@ mod tests {
             data.invite_link.unwrap().invite_link,
             "https://t.me/joinchat/o8oIBrbCI3U2OGJi"
         );
+    }
+
+    #[test]
+    fn deserialize_chat_member_updated_partial() {
+        let data: ChatMemberUpdated = serde_json::from_value(serde_json::json!({
+            "chat": {
+                "id": 1,
+                "type": "group",
+                "title": "grouptitle"
+            },
+            "from": {
+                "id": 1,
+                "is_bot": true,
+                "first_name": "firstname"
+            },
+            "date": 0,
+            "old_chat_member": {
+                "status": "member",
+                "user": {
+                    "id": 2,
+                    "is_bot": false,
+                    "first_name": "firstname"
+                }
+            },
+            "new_chat_member": {
+                "status": "kicked",
+                "user": {
+                    "id": 2,
+                    "is_bot": true,
+                    "first_name": "firstname",
+                },
+                "until_date": 0
+            },
+        }))
+        .unwrap();
+        if let Chat::Group(ref chat) = data.chat {
+            assert_eq!(chat.id, 1);
+        } else {
+            panic!("Unknown chat type: {:?}", data.chat)
+        }
+        assert_eq!(data.from.id, 1);
+        assert_eq!(data.date, 0);
+        assert_eq!(data.old_chat_member.get_user().id, 2);
+        assert!(data.old_chat_member.is_member());
+        assert_eq!(data.new_chat_member.get_user().id, 2);
+        assert!(!data.new_chat_member.is_member());
+        assert!(data.invite_link.is_none());
     }
 }

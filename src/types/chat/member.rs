@@ -109,6 +109,8 @@ pub struct ChatMemberAdministrator {
     /// directly or indirectly
     /// (promoted by administrators that were appointed by the user)
     pub can_promote_members: bool,
+    /// True, if the administrator can manage voice chats
+    pub can_manage_voice_chats: bool,
 }
 
 /// Kicked user
@@ -199,7 +201,8 @@ mod tests {
             "can_invite_users": false,
             "can_restrict_members": true,
             "can_pin_messages": false,
-            "can_promote_members": true
+            "can_promote_members": true,
+            "can_manage_voice_chats": true
         }))
         .unwrap();
         assert!(admin.is_member());
@@ -207,21 +210,22 @@ mod tests {
         if let ChatMember::Administrator(ref mut admin) = admin {
             assert!(!admin.is_anonymous);
             assert_eq!(admin.user.id, 1);
-            assert_eq!(admin.user.is_bot, false);
+            assert!(!admin.user.is_bot);
             assert_eq!(admin.user.first_name, "firstname");
             assert_eq!(admin.user.last_name.take().unwrap(), "lastname");
             assert_eq!(admin.user.username.take().unwrap(), "username");
             assert_eq!(admin.user.language_code.take().unwrap(), "RU");
             assert_eq!(admin.custom_title.take().unwrap(), "god");
-            assert_eq!(admin.can_be_edited, true);
-            assert_eq!(admin.can_change_info, false);
+            assert!(admin.can_be_edited);
+            assert!(!admin.can_change_info);
             assert_eq!(admin.can_post_messages, Some(true));
             assert_eq!(admin.can_edit_messages, Some(false));
-            assert_eq!(admin.can_delete_messages, true);
-            assert_eq!(admin.can_invite_users, false);
-            assert_eq!(admin.can_restrict_members, true);
+            assert!(admin.can_delete_messages);
+            assert!(!admin.can_invite_users);
+            assert!(admin.can_restrict_members);
             assert_eq!(admin.can_pin_messages, Some(false));
-            assert_eq!(admin.can_promote_members, true);
+            assert!(admin.can_promote_members);
+            assert!(admin.can_manage_voice_chats);
         } else {
             panic!("Unexpected chat member: {:?}", admin);
         }

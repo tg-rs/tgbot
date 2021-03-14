@@ -43,6 +43,10 @@ pub enum DiceKind {
     ///
     /// Value of the dice: 1-6
     Bones,
+    /// Bowling
+    ///
+    /// Value of the dice: 1-6
+    Bowling,
     /// Darts
     ///
     /// Value of the dice: 1-6
@@ -63,6 +67,7 @@ impl DiceKind {
         Ok(match raw.as_str() {
             "🏀" => Basketball,
             "🎲" => Bones,
+            "🎳" => Bowling,
             "🎯" => Darts,
             "⚽" => Football,
             "🎰" => SlotMachine,
@@ -75,6 +80,7 @@ impl DiceKind {
         match self {
             Basketball => "🏀",
             Bones => "🎲",
+            Bowling => "🎳",
             Darts => "🎯",
             Football => "⚽",
             SlotMachine => "🎰",
@@ -133,6 +139,14 @@ mod tests {
         .unwrap();
         assert_eq!(dice.value(), 5);
         assert_eq!(dice.kind(), DiceKind::Bones);
+
+        let dice: Dice = serde_json::from_value(serde_json::json!({
+            "emoji": "🎳",
+            "value": 5
+        }))
+        .unwrap();
+        assert_eq!(dice.value(), 5);
+        assert_eq!(dice.kind(), DiceKind::Bowling);
 
         let dice: Dice = serde_json::from_value(serde_json::json!({
             "emoji": "🎯",

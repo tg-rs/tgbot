@@ -29,12 +29,24 @@ pub struct Update {
 impl Update {
     /// Returns a chat ID from update
     pub fn get_chat_id(&self) -> Option<Integer> {
-        self.get_message().map(|msg| msg.get_chat_id())
+        self.get_message().map(|msg| msg.get_chat_id()).or_else(|| {
+            if let UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) = self.kind {
+                Some(status.chat.get_id())
+            } else {
+                None
+            }
+        })
     }
 
     /// Returns a chat username from update
     pub fn get_chat_username(&self) -> Option<&str> {
-        self.get_message().and_then(|msg| msg.get_chat_username())
+        self.get_message().and_then(|msg| msg.get_chat_username()).or_else(|| {
+            if let UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) = self.kind {
+                status.chat.get_username()
+            } else {
+                None
+            }
+        })
     }
 
     /// Returns a user from update
@@ -648,7 +660,7 @@ mod tests {
             }
         }))
         .unwrap();
-        assert!(update.get_chat_id().is_none());
+        assert_eq!(update.get_chat_id(), Some(1));
         assert!(update.get_chat_username().is_none());
         assert!(update.get_user().is_some());
         if let Update {
@@ -699,7 +711,7 @@ mod tests {
             }
         }))
         .unwrap();
-        assert!(update.get_chat_id().is_none());
+        assert_eq!(update.get_chat_id(), Some(1));
         assert!(update.get_chat_username().is_none());
         assert!(update.get_user().is_some());
         if let Update {

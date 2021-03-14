@@ -35,7 +35,7 @@ jobs:
           RUSTFLAGS: -Zinstrument-coverage
           LLVM_PROFILE_FILE: "tgbot-%p-%m.profraw"
       - name: Aggregate coverage data
-        run: ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" --ignore "examples/*" -o ./lcov.info
+        run: ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" --ignore "examples/*" --ignore "tests/*" -o ./lcov.info
       - name: Fix coverage info
         run: ./rust-covfix -o lcov.info lcov.info
       - name: Send results

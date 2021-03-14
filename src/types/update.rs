@@ -8,11 +8,12 @@ use crate::types::{
     primitive::Integer,
     user::User,
 };
-use serde::{de::Error, Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 
 /// Incoming update
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(from = "RawUpdate")]
 pub struct Update {
     /// The update‘s unique identifier
     ///
@@ -135,45 +136,33 @@ pub enum UpdateKind {
     Unknown(JsonValue),
 }
 
-impl<'de> Deserialize<'de> for Update {
-    fn deserialize<D>(deserializer: D) -> Result<Update, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let json: JsonValue = Deserialize::deserialize(deserializer)?;
-        let raw: RawUpdate = serde_json::from_value(json.clone()).map_err(|x| D::Error::custom(x.to_string()))?;
-        Ok(Update {
+impl From<RawUpdate> for Update {
+    fn from(raw: RawUpdate) -> Self {
+        Self {
             id: raw.update_id,
-            kind: if let Some(data) = raw.message {
-                UpdateKind::Message(data)
-            } else if let Some(data) = raw.edited_message {
-                UpdateKind::EditedMessage(data)
-            } else if let Some(data) = raw.channel_post {
-                UpdateKind::ChannelPost(data)
-            } else if let Some(data) = raw.edited_channel_post {
-                UpdateKind::EditedChannelPost(data)
-            } else if let Some(data) = raw.inline_query {
-                UpdateKind::InlineQuery(data)
-            } else if let Some(data) = raw.chosen_inline_result {
-                UpdateKind::ChosenInlineResult(data)
-            } else if let Some(data) = raw.callback_query {
-                UpdateKind::CallbackQuery(data)
-            } else if let Some(data) = raw.shipping_query {
-                UpdateKind::ShippingQuery(data)
-            } else if let Some(data) = raw.pre_checkout_query {
-                UpdateKind::PreCheckoutQuery(data)
-            } else if let Some(data) = raw.poll {
-                UpdateKind::Poll(data)
-            } else if let Some(data) = raw.poll_answer {
-                UpdateKind::PollAnswer(data)
-            } else if let Some(data) = raw.my_chat_member {
-                UpdateKind::BotStatus(data)
-            } else if let Some(data) = raw.chat_member {
-                UpdateKind::UserStatus(data)
-            } else {
-                UpdateKind::Unknown(json)
+            kind: match raw.kind {
+                RawUpdateKind::Message { message } => UpdateKind::Message(message),
+                RawUpdateKind::EditedMessage { edited_message } => UpdateKind::EditedMessage(edited_message),
+                RawUpdateKind::ChannelPost { channel_post } => UpdateKind::ChannelPost(channel_post),
+                RawUpdateKind::EditedChannelPost { edited_channel_post } => {
+                    UpdateKind::EditedChannelPost(edited_channel_post)
+                }
+                RawUpdateKind::InlineQuery { inline_query } => UpdateKind::InlineQuery(inline_query),
+                RawUpdateKind::ChosenInlineResult { chosen_inline_result } => {
+                    UpdateKind::ChosenInlineResult(chosen_inline_result)
+                }
+                RawUpdateKind::CallbackQuery { callback_query } => UpdateKind::CallbackQuery(callback_query),
+                RawUpdateKind::ShippingQuery { shipping_query } => UpdateKind::ShippingQuery(shipping_query),
+                RawUpdateKind::PreCheckoutQuery { pre_checkout_query } => {
+                    UpdateKind::PreCheckoutQuery(pre_checkout_query)
+                }
+                RawUpdateKind::Poll { poll } => UpdateKind::Poll(poll),
+                RawUpdateKind::PollAnswer { poll_answer } => UpdateKind::PollAnswer(poll_answer),
+                RawUpdateKind::MyChatMember { my_chat_member } => UpdateKind::BotStatus(my_chat_member),
+                RawUpdateKind::ChatMember { chat_member } => UpdateKind::UserStatus(chat_member),
+                RawUpdateKind::Unknown(value) => UpdateKind::Unknown(value),
             },
-        })
+        }
     }
 }
 
@@ -232,19 +221,28 @@ pub enum AllowedUpdate {
 #[derive(Debug, Deserialize)]
 struct RawUpdate {
     update_id: Integer,
-    message: Option<Message>,
-    edited_message: Option<Message>,
-    channel_post: Option<Message>,
-    edited_channel_post: Option<Message>,
-    inline_query: Option<InlineQuery>,
-    chosen_inline_result: Option<ChosenInlineResult>,
-    callback_query: Option<CallbackQuery>,
-    shipping_query: Option<ShippingQuery>,
-    pre_checkout_query: Option<PreCheckoutQuery>,
-    poll: Option<Poll>,
-    poll_answer: Option<PollAnswer>,
-    my_chat_member: Option<ChatMemberUpdated>,
-    chat_member: Option<ChatMemberUpdated>,
+    #[serde(flatten)]
+    kind: RawUpdateKind,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+#[allow(clippy::large_enum_variant)]
+enum RawUpdateKind {
+    Message { message: Message },
+    EditedMessage { edited_message: Message },
+    ChannelPost { channel_post: Message },
+    EditedChannelPost { edited_channel_post: Message },
+    InlineQuery { inline_query: InlineQuery },
+    ChosenInlineResult { chosen_inline_result: ChosenInlineResult },
+    CallbackQuery { callback_query: CallbackQuery },
+    ShippingQuery { shipping_query: ShippingQuery },
+    PreCheckoutQuery { pre_checkout_query: PreCheckoutQuery },
+    Poll { poll: Poll },
+    PollAnswer { poll_answer: PollAnswer },
+    MyChatMember { my_chat_member: ChatMemberUpdated },
+    ChatMember { chat_member: ChatMemberUpdated },
+    Unknown(JsonValue),
 }
 
 #[cfg(test)]

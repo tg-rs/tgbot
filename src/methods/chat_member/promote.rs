@@ -34,6 +34,8 @@ pub struct PromoteChatMember {
     can_promote_members: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_manage_voice_chats: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    can_manage_chat: Option<bool>,
 }
 
 impl PromoteChatMember {
@@ -57,6 +59,7 @@ impl PromoteChatMember {
             can_pin_messages: None,
             can_promote_members: None,
             can_manage_voice_chats: None,
+            can_manage_chat: None,
         }
     }
 
@@ -72,6 +75,7 @@ impl PromoteChatMember {
         self.can_pin_messages = Some(true);
         self.can_promote_members = Some(true);
         self.can_manage_voice_chats = Some(true);
+        self.can_manage_chat = Some(true);
         self
     }
 
@@ -87,6 +91,7 @@ impl PromoteChatMember {
         self.can_pin_messages = Some(false);
         self.can_promote_members = Some(false);
         self.can_manage_voice_chats = Some(false);
+        self.can_manage_chat = Some(false);
         self
     }
 
@@ -151,6 +156,16 @@ impl PromoteChatMember {
         self.can_manage_voice_chats = Some(can_manage_voice_chats);
         self
     }
+
+    /// Administrator can access the chat event log, chat statistics,
+    /// message statistics in channels, see channel members,
+    /// see anonymous administrators in supergroups and ignore slow mode
+    ///
+    /// Implied by any other administrator privilege
+    pub fn can_manage_chat(mut self, can_manage_chat: bool) -> Self {
+        self.can_manage_chat = Some(can_manage_chat);
+        self
+    }
 }
 
 impl Method for PromoteChatMember {
@@ -189,6 +204,7 @@ mod tests {
             assert_eq!(data["can_pin_messages"], true);
             assert_eq!(data["can_promote_members"], true);
             assert_eq!(data["can_manage_voice_chats"], true);
+            assert_eq!(data["can_manage_chat"], true);
         } else {
             panic!("Unexpected request body");
         }
@@ -216,6 +232,7 @@ mod tests {
             assert_eq!(data["can_pin_messages"], false);
             assert_eq!(data["can_promote_members"], false);
             assert_eq!(data["can_manage_voice_chats"], false);
+            assert_eq!(data["can_manage_chat"], false);
         } else {
             panic!("Unexpected request body");
         }
@@ -234,6 +251,7 @@ mod tests {
             .can_pin_messages(true)
             .can_promote_members(false)
             .can_manage_voice_chats(true)
+            .can_manage_chat(false)
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
@@ -254,6 +272,7 @@ mod tests {
             assert_eq!(data["can_pin_messages"], true);
             assert_eq!(data["can_promote_members"], false);
             assert_eq!(data["can_manage_voice_chats"], true);
+            assert_eq!(data["can_manage_chat"], false);
         } else {
             panic!("Unexpected request body");
         }

@@ -114,6 +114,9 @@ pub(super) enum RawMessageData {
     Location {
         location: Location,
     },
+    MessageAutoDeleteTimerChanged {
+        message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged,
+    },
     MigrateFromChatId {
         migrate_from_chat_id: Integer,
     },
@@ -185,6 +188,11 @@ pub(super) enum RawMessageData {
         voice_chat_started: VoiceChatStarted,
     },
     Empty {}, // must be last because all variants below won't be deserialized
+}
+
+#[derive(Debug, Deserialize)]
+pub(super) struct MessageAutoDeleteTimerChanged {
+    pub(super) message_auto_delete_time: Integer,
 }
 
 #[derive(Debug, Deserialize)]

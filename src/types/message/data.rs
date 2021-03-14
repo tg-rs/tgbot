@@ -41,6 +41,11 @@ pub enum MessageData {
         /// Audio data
         data: Audio,
     },
+    /// A service message about a change in auto-delete timer settings
+    AutoDeleteTimerChanged {
+        /// New auto-delete time for messages in the chat
+        time: Integer,
+    },
     /// Service message: the channel has been created
     /// This field can‘t be received in a message coming through updates,
     /// because bot can’t be a member of a channel when it is created
@@ -181,6 +186,11 @@ impl TryFrom<RawMessageData> for MessageData {
             RawMessageData::Invoice { invoice } => MessageData::Invoice(invoice),
             RawMessageData::LeftChatMember { left_chat_member } => MessageData::LeftChatMember(left_chat_member),
             RawMessageData::Location { location } => MessageData::Location(location),
+            RawMessageData::MessageAutoDeleteTimerChanged {
+                message_auto_delete_timer_changed,
+            } => MessageData::AutoDeleteTimerChanged {
+                time: message_auto_delete_timer_changed.message_auto_delete_time,
+            },
             RawMessageData::MigrateFromChatId { migrate_from_chat_id } => {
                 MessageData::MigrateFromChatId(migrate_from_chat_id)
             }
@@ -347,6 +357,25 @@ mod tests {
                 caption.entities.unwrap(),
                 vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 })]
             );
+        } else {
+            panic!("Unexpected message data: {:?}", msg.data);
+        }
+    }
+
+    #[test]
+    fn deserialize_auto_delete_timer() {
+        let msg: Message = serde_json::from_value(serde_json::json!({
+            "message_id": 1, "date": 1,
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "message_auto_delete_timer_changed": {
+                "message_auto_delete_time": 10000,
+            }
+        }))
+        .unwrap();
+        if let MessageData::AutoDeleteTimerChanged { time } = msg.data {
+            assert_eq!(msg.id, 1);
+            assert_eq!(time, 10000);
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }

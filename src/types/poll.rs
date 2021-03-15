@@ -1,37 +1,20 @@
 use crate::types::{
     primitive::Integer,
-    text::{RawTextEntity, Text, TextEntityError},
+    text::{RawTextEntity, Text},
     user::User,
 };
 use serde::{de::Error as _, Deserialize, Deserializer, Serialize};
-use std::{error::Error, fmt};
 use vec1::Vec1;
 
 /// Contains information about a poll
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(tag = "type")]
+#[serde(rename_all = "snake_case")]
 pub enum Poll {
     /// A regular poll
     Regular(RegularPoll),
     /// A quiz
     Quiz(Quiz),
-}
-
-impl Poll {
-    fn from_raw(raw: RawPoll) -> Result<Self, PollError> {
-        match raw.kind {
-            PollKind::Regular => Ok(Poll::Regular(RegularPoll::from_raw(raw))),
-            PollKind::Quiz => Quiz::from_raw(raw).map(Poll::Quiz),
-        }
-    }
-}
-
-impl<'de> Deserialize<'de> for Poll {
-    fn deserialize<D>(deserializer: D) -> Result<Poll, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        Poll::from_raw(Deserialize::deserialize(deserializer)?).map_err(D::Error::custom)
-    }
 }
 
 /// Kind of a poll
@@ -45,7 +28,7 @@ pub enum PollKind {
 }
 
 /// A regular poll
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct RegularPoll {
     /// Unique poll identifier
     pub id: String,
@@ -67,24 +50,8 @@ pub struct RegularPoll {
     pub close_date: Option<Integer>,
 }
 
-impl RegularPoll {
-    fn from_raw(raw: RawPoll) -> Self {
-        Self {
-            id: raw.id,
-            question: raw.question,
-            options: raw.options,
-            total_voter_count: raw.total_voter_count,
-            is_closed: raw.is_closed,
-            is_anonymous: raw.is_anonymous,
-            allows_multiple_answers: raw.allows_multiple_answers.unwrap_or(false),
-            open_period: raw.open_period,
-            close_date: raw.close_date,
-        }
-    }
-}
-
 /// A quiz
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Quiz {
     /// Unique quiz identifier
     pub id: String,
@@ -106,6 +73,8 @@ pub struct Quiz {
     pub correct_option_id: Integer,
     /// Text that is shown when a user chooses an incorrect answer or
     /// taps on the lamp icon in a quiz-style poll, 0-200 characters
+    #[serde(deserialize_with = "deserialize_explanation")]
+    #[serde(flatten)]
     pub explanation: Option<Text>,
     /// Amount of time in seconds the quiz will be active after creation
     pub open_period: Option<Integer>,
@@ -113,43 +82,20 @@ pub struct Quiz {
     pub close_date: Option<Integer>,
 }
 
-impl Quiz {
-    fn from_raw(raw: RawPoll) -> Result<Self, PollError> {
-        Ok(Self {
-            id: raw.id,
-            question: raw.question,
-            options: raw.options,
-            total_voter_count: raw.total_voter_count,
-            is_closed: raw.is_closed,
-            is_anonymous: raw.is_anonymous,
-            correct_option_id: raw.correct_option_id.ok_or(PollError::CorrectOptionIdMissing)?,
-            explanation: if let Some(text) = raw.explanation {
-                Some(Text::from_raw(text, raw.explanation_entities).map_err(PollError::ParseExplanation)?)
-            } else {
-                None
-            },
-            open_period: raw.open_period,
-            close_date: raw.close_date,
-        })
+fn deserialize_explanation<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    struct Inner {
+        explanation: String,
+        explanation_entities: Option<Vec1<RawTextEntity>>,
     }
-}
 
-#[derive(Clone, Debug, Deserialize)]
-struct RawPoll {
-    id: String,
-    question: String,
-    options: Vec<PollOption>,
-    total_voter_count: Integer,
-    is_closed: bool,
-    is_anonymous: bool,
-    #[serde(rename = "type")]
-    kind: PollKind,
-    allows_multiple_answers: Option<bool>,
-    correct_option_id: Option<Integer>,
-    explanation: Option<String>,
-    explanation_entities: Option<Vec1<RawTextEntity>>,
-    open_period: Option<Integer>,
-    close_date: Option<Integer>,
+    let inner = Option::<Inner>::deserialize(deserializer)?;
+    inner
+        .map(|inner| Text::from_raw(inner.explanation, inner.explanation_entities).map_err(D::Error::custom))
+        .transpose()
 }
 
 /// Contains information about one answer option in a poll
@@ -172,32 +118,6 @@ pub struct PollAnswer {
     ///
     /// May be empty if the user retracted their vote.
     pub option_ids: Vec<Integer>,
-}
-
-#[derive(Debug)]
-enum PollError {
-    CorrectOptionIdMissing,
-    ParseExplanation(TextEntityError),
-}
-
-impl fmt::Display for PollError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        use self::PollError::*;
-        match self {
-            CorrectOptionIdMissing => write!(out, "correct option id is required for a quiz"),
-            ParseExplanation(err) => write!(out, "could not to parse a quiz explanation: {}", err),
-        }
-    }
-}
-
-impl Error for PollError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        use self::PollError::*;
-        match self {
-            CorrectOptionIdMissing => None,
-            ParseExplanation(err) => Some(err),
-        }
-    }
 }
 
 #[cfg(test)]

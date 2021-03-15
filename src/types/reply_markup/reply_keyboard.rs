@@ -1,4 +1,4 @@
-use crate::types::poll::PollKind;
+use crate::types::{poll::PollKind, True};
 use serde::Serialize;
 use std::ops::Not;
 
@@ -79,12 +79,17 @@ impl From<Vec<Vec<KeyboardButton>>> for ReplyKeyboardMarkup {
 #[derive(Clone, Debug, Serialize)]
 pub struct KeyboardButton {
     text: String,
-    #[serde(skip_serializing_if = "Not::not")]
-    request_contact: bool,
-    #[serde(skip_serializing_if = "Not::not")]
-    request_location: bool,
+    #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    request_poll: Option<KeyboardButtonPollType>,
+    kind: Option<KeyboardButtonKind>,
+}
+
+#[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum KeyboardButtonKind {
+    RequestContact(True),
+    RequestLocation(True),
+    RequestPoll(KeyboardButtonPollType),
 }
 
 impl KeyboardButton {
@@ -98,9 +103,7 @@ impl KeyboardButton {
     pub fn new<S: Into<String>>(text: S) -> Self {
         KeyboardButton {
             text: text.into(),
-            request_contact: false,
-            request_location: false,
-            request_poll: None,
+            kind: None,
         }
     }
 
@@ -108,9 +111,7 @@ impl KeyboardButton {
     ///
     /// Available in private chats only
     pub fn request_contact(mut self) -> Self {
-        self.request_contact = true;
-        self.request_location = false;
-        self.request_poll = None;
+        self.kind = Some(KeyboardButtonKind::RequestContact(True));
         self
     }
 
@@ -118,9 +119,7 @@ impl KeyboardButton {
     ///
     /// Available in private chats only
     pub fn request_location(mut self) -> Self {
-        self.request_location = true;
-        self.request_contact = false;
-        self.request_poll = None;
+        self.kind = Some(KeyboardButtonKind::RequestLocation(True));
         self
     }
 
@@ -135,9 +134,7 @@ impl KeyboardButton {
     where
         T: Into<KeyboardButtonPollType>,
     {
-        self.request_poll = Some(button_type.into());
-        self.request_contact = false;
-        self.request_location = false;
+        self.kind = Some(KeyboardButtonKind::RequestPoll(button_type.into()));
         self
     }
 }

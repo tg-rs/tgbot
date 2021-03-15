@@ -85,6 +85,7 @@ pub struct KeyboardButton {
 }
 
 #[derive(Clone, Debug, Serialize)]
+#[allow(clippy::enum_variant_names)]
 #[serde(rename_all = "snake_case")]
 enum KeyboardButtonKind {
     RequestContact(True),

@@ -8,12 +8,11 @@ use crate::types::{
     primitive::Integer,
     user::User,
 };
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use serde_json::Value as JsonValue;
 
 /// Incoming update
 #[derive(Clone, Debug, Deserialize)]
-#[serde(from = "RawUpdate")]
 pub struct Update {
     /// The update‘s unique identifier
     ///
@@ -22,9 +21,30 @@ pub struct Update {
     /// ignore repeated updates or to restore the correct update sequence, should they get out of order
     /// If there are no new updates for at least a week, then identifier
     /// of the next update will be chosen randomly instead of sequentially
+    #[serde(rename = "update_id")]
     pub id: Integer,
     /// Kind of update
+    #[serde(flatten)]
+    #[serde(deserialize_with = "deserialize_update_kind")]
     pub kind: UpdateKind,
+}
+
+fn deserialize_update_kind<'de, D>(deserializer: D) -> Result<UpdateKind, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum Inner {
+        Kind(UpdateKind),
+        Unknown(JsonValue),
+    }
+
+    let inner = Inner::deserialize(deserializer)?;
+    match inner {
+        Inner::Kind(kind) => Ok(kind),
+        Inner::Unknown(value) => Ok(UpdateKind::Unknown(value)),
+    }
 }
 
 impl Update {
@@ -82,8 +102,9 @@ impl Update {
 }
 
 /// Kind of update
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 #[allow(clippy::large_enum_variant)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateKind {
     /// New incoming message of any kind — text, photo, sticker, etc
     Message(Message),
@@ -122,48 +143,20 @@ pub enum UpdateKind {
     ///
     /// For private chats, this update is received only
     /// when the bot is blocked or unblocked by the user
+    #[serde(rename = "my_chat_member")]
     BotStatus(ChatMemberUpdated),
     /// A chat member's status was updated in a chat
     ///
     /// The bot must be an administrator in the chat
     /// and must explicitly specify “chat_member” in the list
     /// of allowed_updates to receive these updates.
+    #[serde(rename = "chat_member")]
     UserStatus(ChatMemberUpdated),
     /// Used for unknown update types
     ///
     /// For example, Telegram introduced a new update type,
     /// but it is not supported in old versions of tgbot
     Unknown(JsonValue),
-}
-
-impl From<RawUpdate> for Update {
-    fn from(raw: RawUpdate) -> Self {
-        Self {
-            id: raw.update_id,
-            kind: match raw.kind {
-                RawUpdateKind::Message { message } => UpdateKind::Message(message),
-                RawUpdateKind::EditedMessage { edited_message } => UpdateKind::EditedMessage(edited_message),
-                RawUpdateKind::ChannelPost { channel_post } => UpdateKind::ChannelPost(channel_post),
-                RawUpdateKind::EditedChannelPost { edited_channel_post } => {
-                    UpdateKind::EditedChannelPost(edited_channel_post)
-                }
-                RawUpdateKind::InlineQuery { inline_query } => UpdateKind::InlineQuery(inline_query),
-                RawUpdateKind::ChosenInlineResult { chosen_inline_result } => {
-                    UpdateKind::ChosenInlineResult(chosen_inline_result)
-                }
-                RawUpdateKind::CallbackQuery { callback_query } => UpdateKind::CallbackQuery(callback_query),
-                RawUpdateKind::ShippingQuery { shipping_query } => UpdateKind::ShippingQuery(shipping_query),
-                RawUpdateKind::PreCheckoutQuery { pre_checkout_query } => {
-                    UpdateKind::PreCheckoutQuery(pre_checkout_query)
-                }
-                RawUpdateKind::Poll { poll } => UpdateKind::Poll(poll),
-                RawUpdateKind::PollAnswer { poll_answer } => UpdateKind::PollAnswer(poll_answer),
-                RawUpdateKind::MyChatMember { my_chat_member } => UpdateKind::BotStatus(my_chat_member),
-                RawUpdateKind::ChatMember { chat_member } => UpdateKind::UserStatus(chat_member),
-                RawUpdateKind::Unknown(value) => UpdateKind::Unknown(value),
-            },
-        }
-    }
 }
 
 /// Information about the current status of a webhook
@@ -216,33 +209,6 @@ pub enum AllowedUpdate {
     PollAnswer,
     /// Chat member status
     ChatMember,
-}
-
-#[derive(Debug, Deserialize)]
-struct RawUpdate {
-    update_id: Integer,
-    #[serde(flatten)]
-    kind: RawUpdateKind,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(untagged)]
-#[allow(clippy::large_enum_variant)]
-enum RawUpdateKind {
-    Message { message: Message },
-    EditedMessage { edited_message: Message },
-    ChannelPost { channel_post: Message },
-    EditedChannelPost { edited_channel_post: Message },
-    InlineQuery { inline_query: InlineQuery },
-    ChosenInlineResult { chosen_inline_result: ChosenInlineResult },
-    CallbackQuery { callback_query: CallbackQuery },
-    ShippingQuery { shipping_query: ShippingQuery },
-    PreCheckoutQuery { pre_checkout_query: PreCheckoutQuery },
-    Poll { poll: Poll },
-    PollAnswer { poll_answer: PollAnswer },
-    MyChatMember { my_chat_member: ChatMemberUpdated },
-    ChatMember { chat_member: ChatMemberUpdated },
-    Unknown(JsonValue),
 }
 
 #[cfg(test)]

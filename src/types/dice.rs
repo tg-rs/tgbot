@@ -1,25 +1,16 @@
 use crate::types::primitive::Integer;
-use serde::{
-    de::{Deserializer, Error as _},
-    Deserialize,
-};
-use std::{error::Error, fmt};
+use serde::{Deserialize, Serialize};
+use std::fmt;
 
 /// Represents a dice with random value
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Dice {
+    #[serde(rename = "emoji")]
     kind: DiceKind,
     value: Integer,
 }
 
 impl Dice {
-    fn from_raw(raw: RawDice) -> Result<Self, DiceError> {
-        Ok(Self {
-            kind: DiceKind::from_raw(raw.emoji)?,
-            value: raw.value,
-        })
-    }
-
     /// Kind of the dice
     pub fn kind(&self) -> DiceKind {
         self.kind
@@ -32,96 +23,71 @@ impl Dice {
 }
 
 /// Kind of the dice
-#[derive(Debug, Copy, Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Debug, Copy, Clone, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[non_exhaustive]
 pub enum DiceKind {
     /// Basketball
     ///
     /// Value of the dice: 1-5
+    #[serde(rename = "🏀")]
     Basketball,
     /// Bones
     ///
     /// Value of the dice: 1-6
+    #[serde(rename = "🎲")]
     Bones,
     /// Bowling
     ///
     /// Value of the dice: 1-6
+    #[serde(rename = "🎳")]
     Bowling,
     /// Darts
     ///
     /// Value of the dice: 1-6
+    #[serde(rename = "🎯")]
     Darts,
     /// Football
     ///
     /// Value of the dice: 1-5
+    #[serde(rename = "⚽")]
     Football,
     /// Slot machine
     ///
     /// Value of the dice: 1-64
+    #[serde(rename = "🎰")]
     SlotMachine,
 }
 
 impl DiceKind {
-    fn from_raw(raw: String) -> Result<Self, DiceError> {
-        use self::DiceKind::*;
-        Ok(match raw.as_str() {
-            "🏀" => Basketball,
-            "🎲" => Bones,
-            "🎳" => Bowling,
-            "🎯" => Darts,
-            "⚽" => Football,
-            "🎰" => SlotMachine,
-            _ => return Err(DiceError::UnexpectedEmoji(raw)),
-        })
-    }
-
-    pub(crate) fn into_raw(self) -> &'static str {
-        use self::DiceKind::*;
+    fn as_char(self) -> char {
+        use super::DiceKind::*;
         match self {
-            Basketball => "🏀",
-            Bones => "🎲",
-            Bowling => "🎳",
-            Darts => "🎯",
-            Football => "⚽",
-            SlotMachine => "🎰",
+            Basketball => '🏀',
+            Bones => '🎲',
+            Bowling => '🎳',
+            Darts => '🎯',
+            Football => '⚽',
+            SlotMachine => '🎰',
         }
     }
 }
 
-#[derive(Debug)]
-enum DiceError {
-    UnexpectedEmoji(String),
-}
-
-impl fmt::Display for DiceError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            DiceError::UnexpectedEmoji(emoji) => write!(out, "unexpected emoji: {}", emoji),
-        }
+impl From<DiceKind> for char {
+    fn from(kind: DiceKind) -> Self {
+        kind.as_char()
     }
 }
 
-impl Error for DiceError {}
-
-impl<'de> Deserialize<'de> for Dice {
-    fn deserialize<D>(deserializer: D) -> Result<Dice, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let raw: RawDice = Deserialize::deserialize(deserializer)?;
-        Dice::from_raw(raw).map_err(D::Error::custom)
+impl fmt::Display for DiceKind {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(&self.as_char(), f)
     }
-}
-
-#[derive(Deserialize)]
-struct RawDice {
-    emoji: String,
-    value: Integer,
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn deserialize() {
         let dice: Dice = serde_json::from_value(serde_json::json!({

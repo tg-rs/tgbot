@@ -11,7 +11,7 @@ use serde::Serialize;
 #[derive(Clone, Debug, Serialize)]
 pub struct SendDice {
     chat_id: ChatId,
-    emoji: String,
+    emoji: DiceKind,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,7 +35,7 @@ impl SendDice {
     {
         Self {
             chat_id: chat_id.into(),
-            emoji: String::from(kind.into_raw()),
+            emoji: kind,
             disable_notification: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,

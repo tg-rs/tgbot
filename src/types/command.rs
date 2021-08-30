@@ -102,7 +102,8 @@ impl TryFrom<Message> for Command {
                 let name = command.command.clone();
                 // assume that all text after command is arguments
                 let offset = text.data.find(&name).unwrap_or(0);
-                let length = name.len() + command.bot_name.as_ref().map(|x| x.len()).unwrap_or(0);
+                // bot suffix is 1 character longer due to '@' symbol
+                let length = name.len() + command.bot_name.as_ref().map(|x| x.len() + 1).unwrap_or(0);
                 let pos = offset + length;
                 // pos is UTF-16 offset
                 let raw_args: Vec<u16> = text.data.encode_utf16().skip(pos).collect();
@@ -142,6 +143,30 @@ mod tests {
         let command = create_command("/testcommand 'arg1 v' arg2");
         assert_eq!(command.get_name(), "/testcommand");
         assert_eq!(command.get_args(), &["arg1 v", "arg2"]);
+        assert_eq!(command.get_message().id, 1111);
+    }
+
+    #[test]
+    fn command_no_args() {
+        let command = create_command("/testcommand");
+        assert_eq!(command.get_name(), "/testcommand");
+        assert!(command.get_args().is_empty());
+        assert_eq!(command.get_message().id, 1111);
+    }
+
+    #[test]
+    fn command_bot_suffix() {
+        let command = create_command("/testcommand@bot 'arg1 v' arg2");
+        assert_eq!(command.get_name(), "/testcommand");
+        assert_eq!(command.get_args(), &["arg1 v", "arg2"]);
+        assert_eq!(command.get_message().id, 1111);
+    }
+
+    #[test]
+    fn command_bot_suffix_no_args() {
+        let command = create_command("/testcommand@abc");
+        assert_eq!(command.get_name(), "/testcommand");
+        assert!(command.get_args().is_empty());
         assert_eq!(command.get_message().id, 1111);
     }
 }

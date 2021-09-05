@@ -1,14 +1,14 @@
 use crate::{
     methods::Method,
     request::Request,
-    types::{InlineKeyboardMarkup, Integer, LabeledPrice, Message},
+    types::{ChatId, InlineKeyboardMarkup, Integer, LabeledPrice, Message},
 };
 use serde::Serialize;
 
 /// Send invoice
 #[derive(Clone, Debug, Serialize)]
 pub struct SendInvoice {
-    chat_id: Integer,
+    chat_id: ChatId,
     title: String,
     description: String,
     payload: String,
@@ -55,7 +55,7 @@ impl SendInvoice {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target private chat
+    /// * chat_id - Unique identifier for the target chat or username of the target channel (in the format @channelusername)
     /// * title - Product name, 1-32 characters
     /// * description - Product description, 1-255 characters
     /// * payload - Bot-defined invoice payload, 1-128 bytes
@@ -67,33 +67,35 @@ impl SendInvoice {
     /// * prices - Price breakdown, a list of components
     ///            (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
     #[allow(clippy::too_many_arguments)]
-    pub fn new<A, B, C, D, E, F>(
-        chat_id: Integer,
-        title: A,
-        description: B,
-        payload: C,
-        provider_token: D,
-        start_parameter: E,
-        currency: F,
-        prices: Vec<LabeledPrice>,
+    pub fn new<A, B, C, D, E, F, G, H>(
+        chat_id: A,
+        title: B,
+        description: C,
+        payload: D,
+        provider_token: E,
+        start_parameter: F,
+        currency: G,
+        prices: H,
     ) -> Self
     where
-        A: Into<String>,
+        A: Into<ChatId>,
         B: Into<String>,
         C: Into<String>,
         D: Into<String>,
         E: Into<String>,
         F: Into<String>,
+        G: Into<String>,
+        H: IntoIterator<Item = LabeledPrice>,
     {
         SendInvoice {
-            chat_id,
+            chat_id: chat_id.into(),
             title: title.into(),
             description: description.into(),
             payload: payload.into(),
             provider_token: provider_token.into(),
             start_parameter: start_parameter.into(),
             currency: currency.into(),
-            prices,
+            prices: prices.into_iter().collect(),
             provider_data: None,
             photo_url: None,
             photo_size: None,
@@ -239,7 +241,45 @@ mod tests {
     use serde_json::Value;
 
     #[test]
-    fn send_invoice() {
+    fn serialize_send_invoice_partial() {
+        let request = SendInvoice::new(
+            "@username",
+            "title",
+            "description",
+            "payload",
+            "token",
+            "param",
+            "RUB",
+            vec![LabeledPrice::new("item", 100)],
+        )
+        .into_request();
+        assert_eq!(request.get_method(), RequestMethod::Post);
+        assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/sendInvoice");
+        if let RequestBody::Json(data) = request.into_body() {
+            let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "chat_id": "@username",
+                    "title": "title",
+                    "description": "description",
+                    "payload": "payload",
+                    "provider_token": "token",
+                    "start_parameter": "param",
+                    "currency": "RUB",
+                    "prices": [
+                        {
+                            "label": "item",
+                            "amount": 100
+                        }
+                    ],
+                })
+            );
+        }
+    }
+
+    #[test]
+    fn serialize_send_invoice_full() {
         let request = SendInvoice::new(1, "title", "description", "payload", "token", "param", "RUB", vec![])
             .provider_data("data")
             .photo_url("url")

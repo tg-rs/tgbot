@@ -4,6 +4,7 @@ use crate::{
     types::{ChatId, InlineKeyboardMarkup, Integer, LabeledPrice, Message},
 };
 use serde::Serialize;
+use serde_json::Error as JsonError;
 
 /// Send invoice
 #[derive(Clone, Debug, Serialize)]
@@ -147,9 +148,12 @@ impl SendInvoice {
     /// JSON-encoded data about the invoice, which will be shared with the payment provider
     ///
     /// A detailed description of required fields should be provided by the payment provider
-    pub fn provider_data<S: Into<String>>(mut self, provider_data: S) -> Self {
-        self.provider_data = Some(provider_data.into());
-        self
+    pub fn provider_data<T>(mut self, value: &T) -> Result<Self, JsonError>
+    where
+        T: Serialize,
+    {
+        self.provider_data = Some(serde_json::to_string(value)?);
+        Ok(self)
     }
 
     /// URL of the product photo for the invoice
@@ -269,6 +273,11 @@ mod tests {
     };
     use serde_json::Value;
 
+    #[derive(Serialize)]
+    struct ProviderData {
+        key: String,
+    }
+
     #[test]
     fn serialize_send_invoice_partial() {
         let request = SendInvoice::new(
@@ -312,7 +321,10 @@ mod tests {
         let request = SendInvoice::new(1, "title", "description", "payload", "token", "param", "RUB", vec![])
             .max_tip_amount(100)
             .suggested_tip_amounts(vec![10, 50, 100])
-            .provider_data("data")
+            .provider_data(&ProviderData {
+                key: String::from("value"),
+            })
+            .unwrap()
             .photo_url("url")
             .photo_size(100)
             .photo_width(200)
@@ -346,7 +358,7 @@ mod tests {
                     "prices": [],
                     "max_tip_amount": 100,
                     "suggested_tip_amounts": [10, 50, 100],
-                    "provider_data": "data",
+                    "provider_data": "{\"key\":\"value\"}",
                     "photo_url": "url",
                     "photo_size": 100,
                     "photo_width": 200,

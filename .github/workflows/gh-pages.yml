@@ -8,8 +8,6 @@ jobs:
   docs:
     name: Generate master API documentation
     runs-on: ubuntu-latest
-    env:
-      RUSTDOCFLAGS: --cfg=nightly
     steps:
       - name: Checkout
         uses: actions/checkout@v1

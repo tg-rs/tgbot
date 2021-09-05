@@ -7,28 +7,28 @@ use serde::Serialize;
 
 /// Get the number of members in a chat
 #[derive(Clone, Debug, Serialize)]
-pub struct GetChatMembersCount {
+pub struct GetChatMemberCount {
     chat_id: ChatId,
 }
 
-impl GetChatMembersCount {
-    /// Creates a new GetChatMembersCount
+impl GetChatMemberCount {
+    /// Creates a new GetChatMemberCount
     ///
     /// # Arguments
     ///
     /// * chat_id - Unique identifier for the target chat
     pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
-        GetChatMembersCount {
+        GetChatMemberCount {
             chat_id: chat_id.into(),
         }
     }
 }
 
-impl Method for GetChatMembersCount {
+impl Method for GetChatMemberCount {
     type Response = Integer;
 
     fn into_request(self) -> Request {
-        Request::json("getChatMembersCount", self)
+        Request::json("getChatMemberCount", self)
     }
 }
 
@@ -40,11 +40,11 @@ mod tests {
 
     #[test]
     fn get_chat_members_count() {
-        let request = GetChatMembersCount::new(1).into_request();
+        let request = GetChatMemberCount::new(1).into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
             request.build_url("base-url", "token"),
-            "base-url/bottoken/getChatMembersCount"
+            "base-url/bottoken/getChatMemberCount"
         );
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();

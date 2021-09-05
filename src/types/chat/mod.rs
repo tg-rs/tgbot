@@ -187,7 +187,7 @@ pub struct SupergroupChat {
 }
 
 /// Chat ID or username
-#[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum ChatId {
     /// @username of a chat

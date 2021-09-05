@@ -1,3 +1,4 @@
+use crate::types::{chat::ChatId, primitive::Integer};
 use serde::{Deserialize, Serialize};
 use std::{error::Error, fmt};
 
@@ -82,9 +83,75 @@ impl fmt::Display for BotCommandError {
     }
 }
 
+/// Represents the scope to which bot commands are applied
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(tag = "type")]
+#[serde(rename_all = "snake_case")]
+pub enum BotCommandScope {
+    /// Represents the default scope of bot commands
+    ///
+    /// Default commands are used if no commands with a narrower scope are specified for the user
+    Default,
+    /// Represents the scope of bot commands, covering all private chats
+    AllPrivateChats,
+    /// Represents the scope of bot commands, covering all group and supergroup chats
+    AllGroupChats,
+    /// Represents the scope of bot commands, covering all group and supergroup chat administrators.
+    AllChatAdministrators,
+    /// Represents the scope of bot commands, covering a specific chat.
+    Chat {
+        /// Unique identifier for the target chat or username of the target supergroup
+        chat_id: ChatId,
+    },
+    /// Represents the scope of bot commands, covering all administrators
+    /// of a specific group or supergroup chat.
+    ChatAdministrators {
+        /// Unique identifier for the target chat or username of the target supergroup
+        chat_id: ChatId,
+    },
+    /// Represents the scope of bot commands, covering a specific member
+    /// of a group or supergroup chat.
+    ChatMember {
+        /// Unique identifier for the target chat or username of the target supergroup
+        chat_id: ChatId,
+        /// Unique identifier of the target user
+        user_id: Integer,
+    },
+}
+
+impl BotCommandScope {
+    /// Creates a new scope covering a specific chat
+    pub fn chat<T>(value: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
+        Self::Chat { chat_id: value.into() }
+    }
+
+    /// Creates a new scope covering all administrators of a specific group or supergroup chat
+    pub fn chat_administrators<T>(value: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
+        Self::ChatAdministrators { chat_id: value.into() }
+    }
+
+    /// Creates a new scope covering a specific member of a group or supergroup chat
+    pub fn chat_member<A>(chat_id: A, user_id: Integer) -> Self
+    where
+        A: Into<ChatId>,
+    {
+        Self::ChatMember {
+            chat_id: chat_id.into(),
+            user_id,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde_json::Value as JsonValue;
 
     #[test]
     fn new_bot_command() {
@@ -102,5 +169,24 @@ mod tests {
             err,
             "command description can have a length of 3 up to 256 characters, got 257"
         );
+    }
+
+    #[test]
+    fn bot_command_scope() {
+        for (scope, scope_type) in [
+            (BotCommandScope::Default, "default"),
+            (BotCommandScope::AllPrivateChats, "all_private_chats"),
+            (BotCommandScope::AllGroupChats, "all_group_chats"),
+            (BotCommandScope::AllChatAdministrators, "all_chat_administrators"),
+            (BotCommandScope::chat(1), "chat"),
+            (BotCommandScope::chat_administrators(1), "chat_administrators"),
+            (BotCommandScope::chat_member(1, 1), "chat_member"),
+        ] {
+            let serialized_scope = serde_json::to_string(&scope).unwrap();
+            let value: JsonValue = serde_json::from_str(&serialized_scope).unwrap();
+            assert_eq!(value["type"], scope_type);
+            let parsed_scope: BotCommandScope = serde_json::from_value(value).unwrap();
+            assert_eq!(scope, parsed_scope);
+        }
     }
 }

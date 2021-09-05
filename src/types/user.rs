@@ -105,7 +105,7 @@ pub struct UserProfilePhotos {
 }
 
 /// User ID
-#[derive(Clone, Debug, Eq, Hash, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum UserId {
     /// @username of a user

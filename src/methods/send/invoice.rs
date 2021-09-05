@@ -17,6 +17,10 @@ pub struct SendInvoice {
     currency: String,
     prices: Vec<LabeledPrice>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    max_tip_amount: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    suggested_tip_amounts: Option<Vec<Integer>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     provider_data: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     photo_url: Option<String>,
@@ -96,6 +100,8 @@ impl SendInvoice {
             start_parameter: start_parameter.into(),
             currency: currency.into(),
             prices: prices.into_iter().collect(),
+            max_tip_amount: None,
+            suggested_tip_amounts: None,
             provider_data: None,
             photo_url: None,
             photo_size: None,
@@ -113,6 +119,29 @@ impl SendInvoice {
             allow_sending_without_reply: None,
             reply_markup: None,
         }
+    }
+
+    /// The maximum accepted amount for tips in the smallest units of the currency
+    ///
+    /// For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145.
+    /// See the exp parameter in currencies.json, it shows the number of digits
+    /// past the decimal point for each currency
+    /// (2 for the majority of currencies). Defaults to 0
+    pub fn max_tip_amount(mut self, value: Integer) -> Self {
+        self.max_tip_amount = Some(value);
+        self
+    }
+
+    /// An array of suggested amounts of tips in the smallest units of the currency
+    ///
+    /// At most 4 suggested tip amounts can be specified. The suggested tip amounts
+    /// must be positive, passed in a strictly increased order and must not exceed max_tip_amount.
+    pub fn suggested_tip_amounts<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = Integer>,
+    {
+        self.suggested_tip_amounts = Some(value.into_iter().collect());
+        self
     }
 
     /// JSON-encoded data about the invoice, which will be shared with the payment provider
@@ -281,6 +310,8 @@ mod tests {
     #[test]
     fn serialize_send_invoice_full() {
         let request = SendInvoice::new(1, "title", "description", "payload", "token", "param", "RUB", vec![])
+            .max_tip_amount(100)
+            .suggested_tip_amounts(vec![10, 50, 100])
             .provider_data("data")
             .photo_url("url")
             .photo_size(100)
@@ -313,6 +344,8 @@ mod tests {
                     "start_parameter": "param",
                     "currency": "RUB",
                     "prices": [],
+                    "max_tip_amount": 100,
+                    "suggested_tip_amounts": [10, 50, 100],
                     "provider_data": "data",
                     "photo_url": "url",
                     "photo_size": 100,

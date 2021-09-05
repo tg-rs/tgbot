@@ -14,9 +14,10 @@ pub struct SendInvoice {
     description: String,
     payload: String,
     provider_token: String,
-    start_parameter: String,
     currency: String,
     prices: Vec<LabeledPrice>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    start_parameter: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     max_tip_amount: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -66,21 +67,18 @@ impl SendInvoice {
     /// * payload - Bot-defined invoice payload, 1-128 bytes
     ///             This will not be displayed to the user, use for your internal processes
     /// * provider_token - Payments provider token, obtained via Botfather
-    /// * start_parameter - Unique deep-linking parameter that can be used
-    ///                     to generate this invoice when used as a start parameter
     /// * currency - Three-letter ISO 4217 currency code, see more on currencies
     /// * prices - Price breakdown, a list of components
     ///            (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
     #[allow(clippy::too_many_arguments)]
-    pub fn new<A, B, C, D, E, F, G, H>(
+    pub fn new<A, B, C, D, E, F, G>(
         chat_id: A,
         title: B,
         description: C,
         payload: D,
         provider_token: E,
-        start_parameter: F,
-        currency: G,
-        prices: H,
+        currency: F,
+        prices: G,
     ) -> Self
     where
         A: Into<ChatId>,
@@ -89,8 +87,7 @@ impl SendInvoice {
         D: Into<String>,
         E: Into<String>,
         F: Into<String>,
-        G: Into<String>,
-        H: IntoIterator<Item = LabeledPrice>,
+        G: IntoIterator<Item = LabeledPrice>,
     {
         SendInvoice {
             chat_id: chat_id.into(),
@@ -98,9 +95,9 @@ impl SendInvoice {
             description: description.into(),
             payload: payload.into(),
             provider_token: provider_token.into(),
-            start_parameter: start_parameter.into(),
             currency: currency.into(),
             prices: prices.into_iter().collect(),
+            start_parameter: None,
             max_tip_amount: None,
             suggested_tip_amounts: None,
             provider_data: None,
@@ -120,6 +117,21 @@ impl SendInvoice {
             allow_sending_without_reply: None,
             reply_markup: None,
         }
+    }
+
+    /// Sets an Unique deep-linking parameter
+    ///
+    ///  If left empty, forwarded copies of the sent message will have a Pay button,
+    /// allowing multiple users to pay directly from the forwarded message, using the same invoice.
+    /// If non-empty, forwarded copies of the sent message will have a URL button
+    /// with a deep link to the bot (instead of a Pay button),
+    /// with the value used as the start parameter
+    pub fn start_parameter<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.start_parameter = Some(value.into());
+        self
     }
 
     /// The maximum accepted amount for tips in the smallest units of the currency
@@ -286,7 +298,6 @@ mod tests {
             "description",
             "payload",
             "token",
-            "param",
             "RUB",
             vec![LabeledPrice::new("item", 100)],
         )
@@ -303,7 +314,6 @@ mod tests {
                     "description": "description",
                     "payload": "payload",
                     "provider_token": "token",
-                    "start_parameter": "param",
                     "currency": "RUB",
                     "prices": [
                         {
@@ -318,7 +328,8 @@ mod tests {
 
     #[test]
     fn serialize_send_invoice_full() {
-        let request = SendInvoice::new(1, "title", "description", "payload", "token", "param", "RUB", vec![])
+        let request = SendInvoice::new(1, "title", "description", "payload", "token", "RUB", vec![])
+            .start_parameter("param")
             .max_tip_amount(100)
             .suggested_tip_amounts(vec![10, 50, 100])
             .provider_data(&ProviderData {

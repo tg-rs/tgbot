@@ -229,16 +229,14 @@ impl From<Integer> for ChatId {
 pub enum ChatAction {
     /// For location data
     FindLocation,
-    /// For audio files
-    RecordAudio,
     /// For videos
     RecordVideo,
+    /// For voice notes
+    RecordVoice,
     /// For video notes
     RecordVideoNote,
     /// For text messages
     Typing,
-    /// For audio files
-    UploadAudio,
     /// For general files
     UploadDocument,
     /// For photos
@@ -247,6 +245,8 @@ pub enum ChatAction {
     UploadVideo,
     /// For video notes
     UploadVideoNote,
+    /// For voice notes
+    UploadVoice,
 }
 
 #[cfg(test)]
@@ -613,10 +613,6 @@ mod tests {
             r#""find_location""#
         );
         assert_eq!(
-            serde_json::to_string(&ChatAction::RecordAudio).unwrap(),
-            r#""record_audio""#
-        );
-        assert_eq!(
             serde_json::to_string(&ChatAction::RecordVideo).unwrap(),
             r#""record_video""#
         );
@@ -624,11 +620,11 @@ mod tests {
             serde_json::to_string(&ChatAction::RecordVideoNote).unwrap(),
             r#""record_video_note""#
         );
-        assert_eq!(serde_json::to_string(&ChatAction::Typing).unwrap(), r#""typing""#);
         assert_eq!(
-            serde_json::to_string(&ChatAction::UploadAudio).unwrap(),
-            r#""upload_audio""#
+            serde_json::to_string(&ChatAction::RecordVoice).unwrap(),
+            r#""record_voice""#
         );
+        assert_eq!(serde_json::to_string(&ChatAction::Typing).unwrap(), r#""typing""#);
         assert_eq!(
             serde_json::to_string(&ChatAction::UploadDocument).unwrap(),
             r#""upload_document""#
@@ -644,6 +640,10 @@ mod tests {
         assert_eq!(
             serde_json::to_string(&ChatAction::UploadVideoNote).unwrap(),
             r#""upload_video_note""#
+        );
+        assert_eq!(
+            serde_json::to_string(&ChatAction::UploadVoice).unwrap(),
+            r#""upload_voice""#
         );
     }
 }

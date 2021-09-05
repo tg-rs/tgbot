@@ -11,6 +11,8 @@ pub struct ReplyKeyboardMarkup {
     resize_keyboard: bool,
     #[serde(skip_serializing_if = "Not::not")]
     one_time_keyboard: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    input_field_placeholder: Option<String>,
     #[serde(skip_serializing_if = "Not::not")]
     selective: bool,
 }
@@ -22,6 +24,7 @@ impl ReplyKeyboardMarkup {
             keyboard,
             resize_keyboard: false,
             one_time_keyboard: false,
+            input_field_placeholder: None,
             selective: false,
         }
     }
@@ -31,8 +34,8 @@ impl ReplyKeyboardMarkup {
     /// (e.g., make the keyboard smaller if there are just two rows of buttons)
     /// Defaults to false, in which case the custom keyboard
     /// is always of the same height as the app's standard keyboard
-    pub fn resize_keyboard(mut self, resize_keyboard: bool) -> Self {
-        self.resize_keyboard = resize_keyboard;
+    pub fn resize_keyboard(mut self, value: bool) -> Self {
+        self.resize_keyboard = value;
         self
     }
 
@@ -42,8 +45,17 @@ impl ReplyKeyboardMarkup {
     /// display the usual letter-keyboard in the chat – the user
     /// can press a special button in the input field to see the custom keyboard again
     /// Defaults to false
-    pub fn one_time_keyboard(mut self, one_time_keyboard: bool) -> Self {
-        self.one_time_keyboard = one_time_keyboard;
+    pub fn one_time_keyboard(mut self, value: bool) -> Self {
+        self.one_time_keyboard = value;
+        self
+    }
+
+    /// The placeholder to be shown in the input field when the keyboard is active; 1-64 characters
+    pub fn input_field_placeholder<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.input_field_placeholder = Some(value.into());
         self
     }
 
@@ -57,14 +69,14 @@ impl ReplyKeyboardMarkup {
     /// Example: A user requests to change the bot‘s language,
     /// bot replies to the request with a keyboard to select the new language
     /// Other users in the group don’t see the keyboard
-    pub fn selective(mut self, selective: bool) -> Self {
-        self.selective = selective;
+    pub fn selective(mut self, value: bool) -> Self {
+        self.selective = value;
         self
     }
 
     /// Adds a row to keyboard
-    pub fn row(mut self, row: Vec<KeyboardButton>) -> Self {
-        self.keyboard.push(row);
+    pub fn row(mut self, value: Vec<KeyboardButton>) -> Self {
+        self.keyboard.push(value);
         self
     }
 }
@@ -219,7 +231,8 @@ mod tests {
         let markup = ReplyKeyboardMarkup::from(vec![row.clone()])
             .one_time_keyboard(true)
             .selective(true)
-            .resize_keyboard(true);
+            .resize_keyboard(true)
+            .input_field_placeholder("placeholder");
         let data = serde_json::to_value(&ReplyMarkup::from(markup)).unwrap();
         assert_eq!(
             data,
@@ -236,6 +249,7 @@ mod tests {
                 ],
                 "resize_keyboard": true,
                 "one_time_keyboard": true,
+                "input_field_placeholder": "placeholder",
                 "selective": true
             })
         );

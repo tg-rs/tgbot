@@ -68,33 +68,22 @@ where
 pub struct ChatMemberAdministrator {
     /// Information about the user
     pub user: User,
-    /// True, if the user's presence in the chat is hidden
-    pub is_anonymous: bool,
     /// True, if the bot is allowed
     /// to edit administrator privileges of that user
     pub can_be_edited: bool,
-    /// True, if the administrator can change
-    /// the chat title, photo and other settings
-    pub can_change_info: bool,
-    /// True, if the administrator can delete messages of other users
-    pub can_delete_messages: bool,
-    /// True, if the administrator can edit messages
-    /// of other users and can pin messages; channels only
-    pub can_edit_messages: Option<bool>,
-    /// True, if the administrator can invite new users to the chat
-    pub can_invite_users: bool,
+    /// True, if the user's presence in the chat is hidden
+    pub is_anonymous: bool,
     /// True, if the administrator can access the chat event log,
     /// chat statistics, message statistics in channels, see channel members,
     /// see anonymous administrators in supergroups and ignore slow mode;
     /// implied by any other administrator privilege
     pub can_manage_chat: bool,
+    /// True, if the administrator can delete messages of other users
+    pub can_delete_messages: bool,
     /// True, if the administrator can manage voice chats
     pub can_manage_voice_chats: bool,
-    /// True, if the administrator can pin messages; groups and supergroups only
-    pub can_pin_messages: Option<bool>,
-    /// True, if the administrator can post
-    /// in the channel; channels only
-    pub can_post_messages: Option<bool>,
+    /// True, if the administrator can restrict, ban or unban chat members
+    pub can_restrict_members: bool,
     /// True, if the administrator can
     /// add new administrators with a subset
     /// of his own privileges or
@@ -102,8 +91,19 @@ pub struct ChatMemberAdministrator {
     /// directly or indirectly
     /// (promoted by administrators that were appointed by the user)
     pub can_promote_members: bool,
-    /// True, if the administrator can restrict, ban or unban chat members
-    pub can_restrict_members: bool,
+    /// True, if the administrator can change
+    /// the chat title, photo and other settings
+    pub can_change_info: bool,
+    /// True, if the administrator can invite new users to the chat
+    pub can_invite_users: bool,
+    /// True, if the administrator can post
+    /// in the channel; channels only
+    pub can_post_messages: Option<bool>,
+    /// True, if the administrator can edit messages
+    /// of other users and can pin messages; channels only
+    pub can_edit_messages: Option<bool>,
+    /// True, if the administrator can pin messages; groups and supergroups only
+    pub can_pin_messages: Option<bool>,
     /// Custom title for this user
     pub custom_title: Option<String>,
 }
@@ -132,11 +132,9 @@ pub struct ChatMemberKicked {
 pub struct ChatMemberRestricted {
     /// Information about the user
     pub user: User,
-    /// Date when restrictions will be lifted for this user, unix time
-    pub until_date: Integer,
-    /// True, if user may add web page previews
-    /// to his messages, implies can_send_media_messages
-    pub can_add_web_page_previews: bool,
+    /// True, if the user is a member
+    /// of the chat at the moment of the request
+    pub is_member: bool,
     /// True, if the user allowed to change
     /// the chat title, photo and other settings
     pub can_change_info: bool,
@@ -145,21 +143,23 @@ pub struct ChatMemberRestricted {
     /// True, if the user allowed to pin messages; groups and supergroups only
     pub can_pin_messages: Option<bool>,
     /// True, if the user can send
+    /// text messages, contacts, locations and venues
+    pub can_send_messages: bool,
+    /// True, if the user can send
     /// audios, documents, photos, videos,
     /// video notes and voice notes, implies can_send_messages
     pub can_send_media_messages: bool,
-    /// True, if the user can send
-    /// text messages, contacts, locations and venues
-    pub can_send_messages: bool,
+    /// True, if the user is allowed to send polls
+    pub can_send_polls: bool,
     /// True, if the user can send
     /// animations, games, stickers
     /// and use inline bots, implies can_send_media_messages
     pub can_send_other_messages: bool,
-    /// True, if the user is allowed to send polls
-    pub can_send_polls: bool,
-    /// True, if the user is a member
-    /// of the chat at the moment of the request
-    pub is_member: bool,
+    /// True, if user may add web page previews
+    /// to his messages, implies can_send_media_messages
+    pub can_add_web_page_previews: bool,
+    /// Date when restrictions will be lifted for this user, unix time
+    pub until_date: Integer,
 }
 
 /// Represents changes in the status of a chat member

@@ -188,7 +188,7 @@ mod tests {
         assert!(!method.form.fields.contains_key("parse_mode"));
         let caption_entities = method.form.fields["caption_entities"].get_text().unwrap();
         assert_eq!(
-            serde_json::from_str::<serde_json::Value>(&caption_entities).unwrap(),
+            serde_json::from_str::<serde_json::Value>(caption_entities).unwrap(),
             serde_json::json!([{"type": "bold", "offset":0, "length": 10}])
         );
     }

@@ -344,7 +344,7 @@ mod tests {
                 assert_eq!(data["certificate"], "cert");
                 assert_eq!(data["ip_address"], "127.0.0.1");
                 assert_eq!(data["max_connections"], 10);
-                assert_eq!(data["drop_pending_updates"], true);
+                assert!(data["drop_pending_updates"].as_bool().unwrap());
                 let mut updates: Vec<&str> = data["allowed_updates"]
                     .as_array()
                     .unwrap()

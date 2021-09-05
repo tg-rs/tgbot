@@ -109,8 +109,8 @@ mod tests {
             assert_eq!(data["message_id"], 2);
             assert_eq!(data["user_id"], 3);
             assert_eq!(data["score"], 100);
-            assert_eq!(data["force"], true);
-            assert_eq!(data["disable_edit_message"], true);
+            assert!(data["force"].as_bool().unwrap());
+            assert!(data["disable_edit_message"].as_bool().unwrap());
         } else {
             panic!("Unexpected request body");
         }
@@ -126,8 +126,8 @@ mod tests {
             assert_eq!(data["inline_message_id"], "msg-id");
             assert_eq!(data["user_id"], 3);
             assert_eq!(data["score"], 100);
-            assert_eq!(data["force"], true);
-            assert_eq!(data["disable_edit_message"], true);
+            assert!(data["force"].as_bool().unwrap());
+            assert!(data["disable_edit_message"].as_bool().unwrap());
         } else {
             panic!("Unexpected request body");
         }

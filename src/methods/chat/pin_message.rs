@@ -68,7 +68,7 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["message_id"], 2);
-            assert_eq!(data["disable_notification"], true);
+            assert!(data["disable_notification"].as_bool().unwrap());
         } else {
             panic!("Unexpected request body");
         }

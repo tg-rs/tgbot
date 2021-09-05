@@ -67,7 +67,7 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["user_id"], 2);
-            assert_eq!(data["only_if_banned"], true);
+            assert!(data["only_if_banned"].as_bool().unwrap());
         } else {
             panic!("Unexpected request body");
         }

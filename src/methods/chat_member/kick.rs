@@ -94,7 +94,7 @@ mod tests {
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["user_id"], 2);
             assert_eq!(data["until_date"], 3);
-            assert_eq!(data["revoke_messages"], true);
+            assert!(data["revoke_messages"].as_bool().unwrap());
         } else {
             panic!("Unexpected request body");
         }

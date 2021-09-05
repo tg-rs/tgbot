@@ -105,7 +105,7 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["callback_query_id"], "q-id");
             assert_eq!(data["text"], "text");
-            assert_eq!(data["show_alert"], true);
+            assert!(data["show_alert"].as_bool().unwrap());
             assert_eq!(data["url"], "url");
             assert_eq!(data["cache_time"], 10);
         } else {

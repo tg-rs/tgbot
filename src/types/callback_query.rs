@@ -106,7 +106,7 @@ mod tests {
         assert_eq!(data.id, "test");
         assert_eq!(data.from.id, 1);
         assert_eq!(data.from.first_name, "test");
-        assert_eq!(data.from.is_bot, false);
+        assert!(!data.from.is_bot);
         assert_eq!(data.message.take().unwrap().id, 2);
         assert_eq!(data.inline_message_id.take().unwrap(), "inline message id");
         assert_eq!(data.chat_instance.take().unwrap(), "chat instance");
@@ -131,7 +131,7 @@ mod tests {
         assert_eq!(data.id, "test");
         assert_eq!(data.from.id, 1);
         assert_eq!(data.from.first_name, "test");
-        assert_eq!(data.from.is_bot, false);
+        assert!(!data.from.is_bot);
         assert!(data.message.is_none());
         assert!(data.inline_message_id.is_none());
         assert!(data.chat_instance.is_none());

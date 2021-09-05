@@ -118,7 +118,7 @@ mod tests {
             assert_eq!(chat.title, "grouptitle");
             assert_eq!(from.id, 1);
             assert_eq!(from.first_name, "firstname");
-            assert_eq!(from.is_bot, false);
+            assert!(!from.is_bot);
             assert!(author_signature.is_none());
         } else {
             panic!("Unexpected message kind: {:?}", msg.kind);
@@ -166,7 +166,7 @@ mod tests {
             assert_eq!(chat.first_name, "firstname");
             assert_eq!(from.id, 1);
             assert_eq!(from.first_name, "firstname");
-            assert_eq!(from.is_bot, false);
+            assert!(!from.is_bot);
         } else {
             panic!("Unexpected message kind: {:?}", msg.kind);
         }
@@ -220,7 +220,7 @@ mod tests {
             assert_eq!(chat.title, "supergrouptitle");
             assert_eq!(from.id, 1);
             assert_eq!(from.first_name, "firstname");
-            assert_eq!(from.is_bot, false);
+            assert!(!from.is_bot);
             assert!(author_signature.is_none());
         } else {
             panic!("Unexpected message kind: {:?}", msg.kind);

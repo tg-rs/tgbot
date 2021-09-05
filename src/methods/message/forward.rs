@@ -68,7 +68,7 @@ mod tests {
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["from_chat_id"], 2);
             assert_eq!(data["message_id"], 3);
-            assert_eq!(data["disable_notification"], true);
+            assert!(data["disable_notification"].as_bool().unwrap());
         } else {
             panic!("Unexpected request body");
         }

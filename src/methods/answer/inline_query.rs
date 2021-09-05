@@ -126,7 +126,7 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["inline_query_id"], "id");
             assert_eq!(data["cache_time"], 300);
-            assert_eq!(data["is_personal"], true);
+            assert!(data["is_personal"].as_bool().unwrap());
             assert_eq!(data["next_offset"], "offset");
             assert_eq!(data["switch_pm_text"], "text");
             assert_eq!(data["switch_pm_parameter"], "param");

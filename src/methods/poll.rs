@@ -405,13 +405,13 @@ mod tests {
                         .collect::<Vec<&str>>(),
                     vec!["O1", "O2"]
                 );
-                assert_eq!(data["is_anonymous"], false);
-                assert_eq!(data["is_closed"], false);
+                assert!(!data["is_anonymous"].as_bool().unwrap());
+                assert!(!data["is_closed"].as_bool().unwrap());
                 assert_eq!(data["correct_option_id"], 0);
-                assert_eq!(data["disable_notification"], true);
+                assert!(data["disable_notification"].as_bool().unwrap());
                 assert_eq!(data["reply_to_message_id"], 1);
-                assert_eq!(data["allow_sending_without_reply"], true);
-                assert_eq!(data["reply_markup"]["force_reply"], true);
+                assert!(data["allow_sending_without_reply"].as_bool().unwrap());
+                assert!(data["reply_markup"]["force_reply"].as_bool().unwrap());
             }
             data => panic!("Unexpected request data: {:?}", data),
         }
@@ -447,13 +447,13 @@ mod tests {
                         .collect::<Vec<&str>>(),
                     vec!["O1", "O2"]
                 );
-                assert_eq!(data["is_anonymous"], false);
-                assert_eq!(data["allows_multiple_answers"], true);
-                assert_eq!(data["is_closed"], false);
-                assert_eq!(data["disable_notification"], true);
+                assert!(!data["is_anonymous"].as_bool().unwrap());
+                assert!(data["allows_multiple_answers"].as_bool().unwrap());
+                assert!(!data["is_closed"].as_bool().unwrap());
+                assert!(data["disable_notification"].as_bool().unwrap());
                 assert_eq!(data["reply_to_message_id"], 1);
-                assert_eq!(data["allow_sending_without_reply"], true);
-                assert_eq!(data["reply_markup"]["force_reply"], true);
+                assert!(data["allow_sending_without_reply"].as_bool().unwrap());
+                assert!(data["reply_markup"]["force_reply"].as_bool().unwrap());
             }
             data => panic!("Unexpected request data: {:?}", data),
         }

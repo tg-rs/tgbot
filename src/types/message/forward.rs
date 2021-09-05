@@ -81,7 +81,7 @@ mod tests {
             assert_eq!(date, 0);
             assert_eq!(user.id, 2);
             assert_eq!(user.first_name, String::from("firstname"));
-            assert_eq!(user.is_bot, false);
+            assert!(!user.is_bot);
         } else {
             panic!("Unexpected forward data: {:?}", msg.forward);
         }

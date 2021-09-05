@@ -72,7 +72,7 @@ mod tests {
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["shipping_query_id"], "id");
-            assert_eq!(data["ok"], true);
+            assert!(data["ok"].as_bool().unwrap());
             assert!(data["shipping_options"].as_array().unwrap().is_empty());
         } else {
             panic!("Unexpected request body");
@@ -87,7 +87,7 @@ mod tests {
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["shipping_query_id"], "id");
-            assert_eq!(data["ok"], false);
+            assert!(!data["ok"].as_bool().unwrap());
             assert_eq!(data["error_message"], "msg");
         } else {
             panic!("Unexpected request body");

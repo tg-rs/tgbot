@@ -102,10 +102,10 @@ mod tests {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
             assert_eq!(data["chat_id"], 1);
             assert_eq!(data["emoji"], "🎲");
-            assert_eq!(data["disable_notification"], true);
+            assert!(data["disable_notification"].as_bool().unwrap());
             assert_eq!(data["reply_to_message_id"], 1);
-            assert_eq!(data["allow_sending_without_reply"], true);
-            assert_eq!(data["reply_markup"]["force_reply"], true);
+            assert!(data["allow_sending_without_reply"].as_bool().unwrap());
+            assert!(data["reply_markup"]["force_reply"].as_bool().unwrap());
         } else {
             panic!("Unexpected request body");
         }

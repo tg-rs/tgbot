@@ -139,6 +139,12 @@ pub enum MessageData {
         /// Voice data
         data: Voice,
     },
+    /// A service message about a voice chat scheduled in the chat
+    VoiceChatScheduled {
+        /// Point in time (Unix timestamp) when the voice chat
+        /// is supposed to be started by a chat administrator
+        start_date: Integer,
+    },
     /// A service message about a voice chat started in the chat
     VoiceChatStarted,
     /// A service message about a voice chat ended in the chat
@@ -235,6 +241,9 @@ impl TryFrom<RawMessageData> for MessageData {
             } => MessageData::Voice {
                 caption: Text::from_raw_opt(caption, caption_entities)?,
                 data: voice,
+            },
+            RawMessageData::VoiceChatScheduled { voice_chat_scheduled } => MessageData::VoiceChatScheduled {
+                start_date: voice_chat_scheduled.start_date,
             },
             RawMessageData::VoiceChatStarted { .. } => MessageData::VoiceChatStarted,
             RawMessageData::VoiceChatEnded { voice_chat_ended } => MessageData::VoiceChatEnded {
@@ -1111,6 +1120,23 @@ mod tests {
                 caption.entities.unwrap(),
                 vec![TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 })]
             );
+        } else {
+            panic!("Unexpected message data: {:?}", msg.data);
+        }
+    }
+
+    #[test]
+    fn deserialize_voice_chat_scheduled() {
+        let msg: Message = serde_json::from_value(serde_json::json!({
+            "message_id": 1, "date": 1,
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "voice_chat_scheduled": {"start_date": 100}
+        }))
+        .unwrap();
+        if let MessageData::VoiceChatScheduled { start_date } = msg.data {
+            assert_eq!(msg.id, 1);
+            assert_eq!(start_date, 100);
         } else {
             panic!("Unexpected message data: {:?}", msg.data);
         }

@@ -178,6 +178,9 @@ pub(super) enum RawMessageData {
         caption_entities: Option<Vec1<RawTextEntity>>,
         voice: Voice,
     },
+    VoiceChatScheduled {
+        voice_chat_scheduled: VoiceChatScheduled,
+    },
     VoiceChatEnded {
         voice_chat_ended: VoiceChatEnded,
     },
@@ -193,6 +196,11 @@ pub(super) enum RawMessageData {
 #[derive(Debug, Deserialize)]
 pub(super) struct MessageAutoDeleteTimerChanged {
     pub(super) message_auto_delete_time: Integer,
+}
+
+#[derive(Debug, Deserialize)]
+pub(super) struct VoiceChatScheduled {
+    pub(super) start_date: Integer,
 }
 
 #[derive(Debug, Deserialize)]

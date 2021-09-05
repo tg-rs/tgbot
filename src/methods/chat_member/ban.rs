@@ -5,21 +5,14 @@ use crate::{
 };
 use serde::Serialize;
 
-/// Kick a user from a group, a supergroup or a channel
+/// Ban a user in a group, a supergroup or a channel
 ///
-/// In the case of supergroups and channels, the user will not be able to return
-/// to the group on their own using invite links, etc., unless unbanned first
-///
-/// The bot must be an administrator in the chat
+/// In the case of supergroups and channels,
+/// the user will not be able to return to the chat on their own using invite links,
+/// etc., unless unbanned first. The bot must be an administrator in the chat
 /// for this to work and must have the appropriate admin rights
-///
-/// Note: In regular groups (non-supergroups), this method
-/// will only work if the ‘All Members Are Admins’
-/// setting is off in the target group
-/// Otherwise members may only be removed
-/// by the group's creator or by the member that added them
 #[derive(Clone, Debug, Serialize)]
-pub struct KickChatMember {
+pub struct BanChatMember {
     chat_id: ChatId,
     user_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28,15 +21,15 @@ pub struct KickChatMember {
     revoke_messages: Option<bool>,
 }
 
-impl KickChatMember {
-    /// Creates a new KickChatMember
+impl BanChatMember {
+    /// Creates a new BanChatMember
     ///
     /// # Arguments
     ///
     /// * chat_id - Unique identifier for the target chat
     /// * user_id - Unique identifier of the target user
     pub fn new<C: Into<ChatId>>(chat_id: C, user_id: Integer) -> Self {
-        KickChatMember {
+        BanChatMember {
             chat_id: chat_id.into(),
             user_id,
             until_date: None,
@@ -64,11 +57,11 @@ impl KickChatMember {
     }
 }
 
-impl Method for KickChatMember {
+impl Method for BanChatMember {
     type Response = bool;
 
     fn into_request(self) -> Request {
-        Request::json("kickChatMember", self)
+        Request::json("banChatMember", self)
     }
 }
 
@@ -80,14 +73,14 @@ mod tests {
 
     #[test]
     fn kick_chat_member() {
-        let request = KickChatMember::new(1, 2)
+        let request = BanChatMember::new(1, 2)
             .until_date(3)
             .revoke_messages(true)
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
             request.build_url("base-url", "token"),
-            "base-url/bottoken/kickChatMember"
+            "base-url/bottoken/banChatMember"
         );
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();

@@ -18,6 +18,10 @@ A full-featured Telegram Bot API client
 tgbot = "0.14.0"
 ```
 
+## Versioning
+
+This project adheres to [ZeroVer](https://0ver.org/)
+
 ## Example
 
 Long polling:

@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.14.0 (06.09.2021)
+
+- Added Bot API 5.3 support.
+  - Added `BotCommandScope` enum.
+  - Added `scope` and `language_code` parameters to `Set/GetMyCommands` methods.
+  - Added `DeleteMyCommands` method.
+  - Added `input_field_placeholder` parameter to `ReplyKeyboardMarkup` struct.
+  - Added `input_field_placeholder` parameter to `ForceReply` struct.
+  - Renamed `KickChatMember` method to `BanChatMember`.
+  - Renamed `GetChatMembersCount` to `GetChatMemberCount`.
+- Added Bot API 5.2 support.
+  - Added `InputMessageContentInvoice` struct.
+  - Changed type of `chat_id` argument from `Integer` to `ChatId` in `SendInvoice` method.
+  - Added `max_tip_amount` and `suggested_tip_amounts` parameters to `SendInvoice` method.
+  - Changed `SendInvoice::provider_data` method to accept a `&Serialize` type.
+  - `SendInvoice.start_parameter` is optional now.
+  - Added `InlineQuery.chat_type` field.
+  - Added `MessageData::VoiceChatScheduled` variant.
+  - Renamed `ChatAction::{RecordAudio, UploadAudio}` to `ChatAction::{RecordVoice, UploadVoice}`.
+- Fixed parsing of command arguments when bot name is a part of the command.
+
 ## 0.13.0 (14.03.2021)
 
 - Added Bot API 5.1 support.

@@ -5,7 +5,7 @@ use crate::{
     types::{AllowedUpdate, Integer},
 };
 use async_stream::stream;
-use futures_util::{future::FutureExt, pin_mut, stream::StreamExt};
+use futures_util::{pin_mut, stream::StreamExt};
 use log::error;
 use std::{cmp::max, collections::HashSet, time::Duration};
 use tokio::{
@@ -75,9 +75,7 @@ where
         let mut receiver = self.receiver;
         let s = stream! {
             loop {
-                // TODO: use receiver.try_recv().is_ok() when this method will be available again
-                // See https://github.com/tokio-rs/tokio/issues/3350
-                if receiver.recv().now_or_never().is_some() {
+                if receiver.try_recv().is_ok() {
                     receiver.close();
                     break;
                 }

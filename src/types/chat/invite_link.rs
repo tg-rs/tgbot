@@ -11,6 +11,8 @@ pub struct ChatInviteLink {
     pub invite_link: String,
     /// Creator of the link
     pub creator: User,
+    /// True, if users joining the chat via the link need to be approved by chat administrators
+    pub creates_join_request: bool,
     /// True, if the link is primary
     pub is_primary: bool,
     /// True, if the link is revoked
@@ -36,12 +38,14 @@ mod tests {
                 "is_bot": false,
                 "first_name": "firstname"
             },
+            "creates_join_request": false,
             "is_primary": true,
             "is_revoked": false
         }))
         .unwrap();
         assert_eq!(data.invite_link, "https://t.me/joinchat/o8oIBrbCI3U2OGJi");
         assert_eq!(data.creator.id, 1);
+        assert!(!data.creates_join_request);
         assert!(data.is_primary);
         assert!(!data.is_revoked);
         assert!(data.expire_date.is_none());
@@ -57,6 +61,7 @@ mod tests {
                 "is_bot": false,
                 "first_name": "firstname"
             },
+            "creates_join_request": true,
             "is_primary": true,
             "is_revoked": false,
             "expire_date": 0,
@@ -65,6 +70,7 @@ mod tests {
         .unwrap();
         assert_eq!(data.invite_link, "https://t.me/joinchat/o8oIBrbCI3U2OGJi");
         assert_eq!(data.creator.id, 1);
+        assert!(data.creates_join_request);
         assert!(data.is_primary);
         assert!(!data.is_revoked);
         assert_eq!(data.expire_date, Some(0));

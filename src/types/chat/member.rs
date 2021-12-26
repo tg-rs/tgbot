@@ -541,6 +541,7 @@ mod tests {
                     "is_bot": false,
                     "first_name": "firstname"
                 },
+                "creates_join_request": false,
                 "is_primary": true,
                 "is_revoked": false
             }

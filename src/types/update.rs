@@ -35,6 +35,7 @@ where
 {
     #[derive(Deserialize)]
     #[serde(untagged)]
+    #[allow(clippy::large_enum_variant)]
     enum Inner {
         Kind(UpdateKind),
         Unknown(JsonValue),

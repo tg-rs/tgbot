@@ -80,6 +80,7 @@ pub(super) enum RawMessageData {
         audio: Audio,
     },
     ChannelChatCreated {
+        #[allow(dead_code)]
         channel_chat_created: True,
     },
     ConnectedWebsite {
@@ -89,6 +90,7 @@ pub(super) enum RawMessageData {
         contact: Contact,
     },
     DeleteChatPhoto {
+        #[allow(dead_code)]
         delete_chat_photo: True,
     },
     Dice {
@@ -103,6 +105,7 @@ pub(super) enum RawMessageData {
         game: Game,
     },
     GroupChatCreated {
+        #[allow(dead_code)]
         group_chat_created: True,
     },
     Invoice {
@@ -156,6 +159,7 @@ pub(super) enum RawMessageData {
         successful_payment: SuccessfulPayment,
     },
     SupergroupChatCreated {
+        #[allow(dead_code)]
         supergroup_chat_created: True,
     },
     Text {
@@ -188,6 +192,7 @@ pub(super) enum RawMessageData {
         voice_chat_participants_invited: VoiceChatParticipantsInvited,
     },
     VoiceChatStarted {
+        #[allow(dead_code)]
         voice_chat_started: VoiceChatStarted,
     },
     Empty {}, // must be last because all variants below won't be deserialized

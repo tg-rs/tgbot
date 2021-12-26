@@ -89,10 +89,12 @@ impl fmt::Display for ResponseError {
 #[serde(untagged)]
 enum RawResponse<T> {
     Success {
+        #[allow(dead_code)]
         ok: True,
         result: T,
     },
     Error {
+        #[allow(dead_code)]
         ok: False,
         description: String,
         error_code: Option<Integer>,

@@ -23,6 +23,8 @@ pub struct ChatInviteLink {
     /// of the chat simultaneously after joining
     /// the chat via this invite link; 1-99999
     pub member_limit: Option<Integer>,
+    /// Number of pending join requests created using this link
+    pub pending_join_request_count: Option<Integer>,
 }
 
 #[cfg(test)]
@@ -65,7 +67,8 @@ mod tests {
             "is_primary": true,
             "is_revoked": false,
             "expire_date": 0,
-            "member_limit": 10
+            "member_limit": 10,
+            "pending_join_request_count": 0
         }))
         .unwrap();
         assert_eq!(data.invite_link, "https://t.me/joinchat/o8oIBrbCI3U2OGJi");
@@ -75,5 +78,6 @@ mod tests {
         assert!(!data.is_revoked);
         assert_eq!(data.expire_date, Some(0));
         assert_eq!(data.member_limit, Some(10));
+        assert_eq!(data.pending_join_request_count, Some(0));
     }
 }

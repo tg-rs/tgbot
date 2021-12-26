@@ -18,6 +18,8 @@ pub struct EditChatInviteLink {
     expire_date: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     member_limit: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    creates_join_request: Option<bool>,
 }
 
 impl EditChatInviteLink {
@@ -37,6 +39,7 @@ impl EditChatInviteLink {
             invite_link: invite_link.into(),
             expire_date: None,
             member_limit: None,
+            creates_join_request: None,
         }
     }
 
@@ -50,6 +53,13 @@ impl EditChatInviteLink {
     /// after joining the chat via this invite link; 1-99999
     pub fn member_limit(mut self, value: Integer) -> Self {
         self.member_limit = Some(value);
+        self
+    }
+
+    /// True, if users joining the chat via the link need to be approved by chat administrators.
+    /// If True, member_limit can't be specified
+    pub fn creates_join_request(mut self, value: bool) -> Self {
+        self.creates_join_request = Some(value);
         self
     }
 }
@@ -73,6 +83,7 @@ mod tests {
         let request = EditChatInviteLink::new(1, "test")
             .expire_date(0)
             .member_limit(1)
+            .creates_join_request(false)
             .into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(
@@ -87,7 +98,8 @@ mod tests {
                     "chat_id": 1,
                     "invite_link": "test",
                     "expire_date": 0,
-                    "member_limit": 1
+                    "member_limit": 1,
+                    "creates_join_request": false
                 })
             );
         } else {

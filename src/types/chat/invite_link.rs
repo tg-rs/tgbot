@@ -17,6 +17,8 @@ pub struct ChatInviteLink {
     pub is_primary: bool,
     /// True, if the link is revoked
     pub is_revoked: bool,
+    /// Invite link name
+    pub name: Option<String>,
     /// Point in time (Unix timestamp) when the link will expire or has been expired
     pub expire_date: Option<Integer>,
     /// Maximum number of users that can be members
@@ -66,6 +68,7 @@ mod tests {
             "creates_join_request": true,
             "is_primary": true,
             "is_revoked": false,
+            "name": "test",
             "expire_date": 0,
             "member_limit": 10,
             "pending_join_request_count": 0
@@ -76,6 +79,7 @@ mod tests {
         assert!(data.creates_join_request);
         assert!(data.is_primary);
         assert!(!data.is_revoked);
+        assert_eq!(data.name, Some(String::from("test")));
         assert_eq!(data.expire_date, Some(0));
         assert_eq!(data.member_limit, Some(10));
         assert_eq!(data.pending_join_request_count, Some(0));

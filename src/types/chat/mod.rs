@@ -85,6 +85,10 @@ pub struct ChannelChat {
     ///
     /// Returned only in getChat
     pub linked_chat_id: Option<Integer>,
+    /// True, if messages from the chat can't be forwarded to other chats
+    ///
+    /// Returned only in getChat.
+    pub has_protected_content: Option<bool>,
 }
 
 /// Group chat
@@ -110,6 +114,10 @@ pub struct GroupChat {
     ///
     /// Returned only in getChat
     pub permissions: Option<ChatPermissions>,
+    /// True, if messages from the chat can't be forwarded to other chats
+    ///
+    /// Returned only in getChat.
+    pub has_protected_content: Option<bool>,
 }
 
 /// Private chat
@@ -192,6 +200,10 @@ pub struct SupergroupChat {
     ///
     /// Returned only in getChat
     pub location: Option<ChatLocation>,
+    /// True, if messages from the chat can't be forwarded to other chats
+    ///
+    /// Returned only in getChat.
+    pub has_protected_content: Option<bool>,
 }
 
 /// Chat ID or username
@@ -289,7 +301,8 @@ mod tests {
                 },
                 "text": "test"
             },
-            "linked_chat_id": 2
+            "linked_chat_id": 2,
+            "has_protected_content": true
         }))
         .unwrap();
         assert_eq!(chat.get_id(), 1);
@@ -307,6 +320,7 @@ mod tests {
             assert_eq!(chat.invite_link.unwrap(), "channelinvitelink");
             assert!(chat.pinned_message.is_some());
             assert_eq!(chat.linked_chat_id.unwrap(), 2);
+            assert!(chat.has_protected_content.unwrap());
         } else {
             panic!("Unexpected chat: {:?}", chat);
         }
@@ -363,7 +377,8 @@ mod tests {
                 },
                 "text": "test"
             },
-            "permissions": {"can_send_messages": true}
+            "permissions": {"can_send_messages": true},
+            "has_protected_content": true
         }))
         .unwrap();
         assert_eq!(chat.get_id(), 1);
@@ -380,6 +395,7 @@ mod tests {
             let permissions = chat.permissions.unwrap();
             assert!(permissions.can_send_messages.unwrap());
             assert!(chat.pinned_message.is_some());
+            assert!(chat.has_protected_content.unwrap());
         } else {
             panic!("Unexpected chat: {:?}", chat);
         }
@@ -525,7 +541,8 @@ mod tests {
                     "latitude": 1
                 },
                 "address": "test location"
-            }
+            },
+            "has_protected_content": true
         }))
         .unwrap();
         assert_eq!(chat.get_id(), 1);
@@ -549,6 +566,7 @@ mod tests {
             assert!(permissions.can_send_messages.unwrap());
             assert_eq!(chat.linked_chat_id.unwrap(), 2);
             assert_eq!(chat.location.unwrap().address, "test location");
+            assert!(chat.has_protected_content.unwrap());
         } else {
             panic!("Unexpected chat: {:?}", chat)
         }

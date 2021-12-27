@@ -41,6 +41,7 @@ pub(super) struct RawMessage {
     pub author_signature: Option<String>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
     pub has_protected_content: Option<True>,
+    pub is_automatic_forward: Option<True>,
     #[serde(flatten)]
     pub data: RawMessageData,
 }

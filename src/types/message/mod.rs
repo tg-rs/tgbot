@@ -23,6 +23,8 @@ pub struct Message {
     pub kind: MessageKind,
     /// True, if the message can't be forwarded
     pub has_protected_content: bool,
+    /// True, if the message is a channel post that was automatically forwarded to the connected discussion group
+    pub is_automatic_forward: bool,
     /// Forwarded data
     pub forward: Option<Forward>,
     /// For replies, the original message
@@ -155,6 +157,7 @@ impl<'de> Deserialize<'de> for Message {
             date: raw.date,
             kind: message_kind,
             has_protected_content: raw.has_protected_content.is_some(),
+            is_automatic_forward: raw.is_automatic_forward.is_some(),
             forward: raw.forward,
             reply_to: raw.reply_to_message.map(Box::new),
             via_bot: raw.via_bot,
@@ -334,12 +337,14 @@ mod tests {
                     "title": "channeltitle",
                     "username": "channelusername"
                 },
+                "is_automatic_forward": true,
                 "text": "test message from channel"
         }))
         .unwrap();
         assert_eq!(msg.get_chat_id(), 6);
         assert_eq!(msg.get_chat_username().unwrap(), "channelusername");
         assert!(msg.get_user().is_none());
+        assert!(msg.is_automatic_forward);
         if let Chat::Channel(chat) = msg.sender_chat.as_ref().unwrap() {
             assert_eq!(chat.id, 6);
         } else {

@@ -229,6 +229,8 @@ impl From<Integer> for ChatId {
 #[derive(Clone, Copy, Debug, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ChatAction {
+    /// For stickers
+    ChooseSticker,
     /// For location data
     FindLocation,
     /// For videos
@@ -610,6 +612,10 @@ mod tests {
 
     #[test]
     fn chat_action() {
+        assert_eq!(
+            serde_json::to_string(&ChatAction::ChooseSticker).unwrap(),
+            r#""choose_sticker""#
+        );
         assert_eq!(
             serde_json::to_string(&ChatAction::FindLocation).unwrap(),
             r#""find_location""#

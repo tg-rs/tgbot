@@ -21,6 +21,8 @@ pub struct Message {
     pub date: Integer,
     /// Contains chat-specific data
     pub kind: MessageKind,
+    /// True, if the message can't be forwarded
+    pub has_protected_content: bool,
     /// Forwarded data
     pub forward: Option<Forward>,
     /// For replies, the original message
@@ -152,6 +154,7 @@ impl<'de> Deserialize<'de> for Message {
             id: raw.message_id,
             date: raw.date,
             kind: message_kind,
+            has_protected_content: raw.has_protected_content.is_some(),
             forward: raw.forward,
             reply_to: raw.reply_to_message.map(Box::new),
             via_bot: raw.via_bot,
@@ -262,12 +265,14 @@ mod tests {
             "message_id": 2, "date": 1,
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
             "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "has_protected_content": true,
             "text": "test"
         }))
         .unwrap();
         assert_eq!(msg.get_chat_id(), 1);
         assert!(msg.get_chat_username().is_none());
         assert!(msg.get_user().is_some());
+        assert!(msg.has_protected_content);
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 2, "date": 1,

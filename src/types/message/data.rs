@@ -262,7 +262,7 @@ pub enum MessageDataError {
 }
 
 impl StdError for MessageDataError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
         match self {
             MessageDataError::TextEntity(err) => Some(err),
         }

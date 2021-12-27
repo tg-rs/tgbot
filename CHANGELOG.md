@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.15.0 (27.12.2021)
+
+- Updated tokio version to 1.15.
+- Added Bot API 5.5 support.
+  - Add `has_protected_content` parameter to `ChannelChat`, `GroupChat`, `SupergroupChat` and `Message` structs.
+  - Add `has_private_forwards` parameter to `PrivateChat` struct.
+  - Added `BanChatSenderChat` method.
+  - Added `UnbanChatSenderChat` method.
+- Added Bot API 5.4 support.
+  - Added `ChatJoinRequest` struct.
+  - Added `ApproveChatJoinRequest` method.
+  - Added `DeclineChatJoinRequest` method.
+  - Added `name` parameter to `EditChatInviteLink`, `CreateChatInviteLink` methods and `ChatInviteLink` struct.
+  - Added `pending_join_request_count` parameter to `CharInviteLink` struct.
+  - Added `creates_join_request` parameter to `EditChatInviteLink`, `CreateChatInviteLink` methods and `ChatInviteLink` struct.
+  - Added `ChooseSticker` variant to `ChatAction` enum.
+
 ## 0.14.0 (06.09.2021)
 
 - Added Bot API 5.3 support.

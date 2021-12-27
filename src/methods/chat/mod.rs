@@ -18,6 +18,7 @@ mod set_permissions;
 mod set_photo;
 mod set_sticker_set;
 mod set_title;
+mod unban_chat_sender_chat;
 mod unpin_all_messages;
 mod unpin_message;
 
@@ -26,5 +27,5 @@ pub use self::{
     delete_photo::*, delete_sticker_set::*, edit_chat_invite_link::*, export_invite_link::*, get::*,
     get_administrators::*, get_member_count::*, leave::*, pin_message::*, revoke_chat_invite_link::*,
     set_administrator_custom_title::*, set_description::*, set_permissions::*, set_photo::*, set_sticker_set::*,
-    set_title::*, unpin_all_messages::*, unpin_message::*,
+    set_title::*, unban_chat_sender_chat::*, unpin_all_messages::*, unpin_message::*,
 };

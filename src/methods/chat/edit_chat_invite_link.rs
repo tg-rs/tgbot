@@ -15,6 +15,8 @@ pub struct EditChatInviteLink {
     chat_id: ChatId,
     invite_link: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expire_date: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     member_limit: Option<Integer>,
@@ -37,10 +39,17 @@ impl EditChatInviteLink {
         Self {
             chat_id: chat_id.into(),
             invite_link: invite_link.into(),
+            name: None,
             expire_date: None,
             member_limit: None,
             creates_join_request: None,
         }
+    }
+
+    /// Sets invite link name; 0-32 characters
+    pub fn name<S: Into<String>>(mut self, value: S) -> Self {
+        self.name = Some(value.into());
+        self
     }
 
     /// Sets point in time (Unix timestamp) when the link will expire
@@ -81,6 +90,7 @@ mod tests {
     #[test]
     fn create_chat_invite_link() {
         let request = EditChatInviteLink::new(1, "test")
+            .name("test")
             .expire_date(0)
             .member_limit(1)
             .creates_join_request(false)
@@ -97,6 +107,7 @@ mod tests {
                 serde_json::json!({
                     "chat_id": 1,
                     "invite_link": "test",
+                    "name": "test",
                     "expire_date": 0,
                     "member_limit": 1,
                     "creates_join_request": false

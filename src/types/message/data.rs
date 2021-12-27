@@ -21,11 +21,7 @@ use crate::types::{
     TextEntityError,
 };
 use serde::Deserialize;
-use std::{
-    convert::TryFrom,
-    error::{Error as StdError, Error},
-    fmt,
-};
+use std::{convert::TryFrom, error::Error as StdError, fmt};
 
 /// Contains message data
 #[derive(Clone, Debug, Deserialize)]

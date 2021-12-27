@@ -9,13 +9,13 @@ A full-featured Telegram Bot API client
 [![Release Documentation](https://img.shields.io/badge/docs-release-brightgreen.svg?style=flat-square)](https://docs.rs/tgbot)
 [![Master Documentation](https://img.shields.io/badge/docs-master-blueviolet.svg?style=flat-square)](https://tg-rs.github.io/tgbot/tgbot/)
 [![Telegram Chat](https://img.shields.io/badge/-@tgrsusers-blue?style=flat-square&logo=telegram)](https://t.me/tgrsusers)
-[![License](https://img.shields.io/crates/l/tgbot.svg?style=flat-square)](https://github.com/tg-rs/tgbot/tree/0.14.0/LICENSE)
+[![License](https://img.shields.io/crates/l/tgbot.svg?style=flat-square)](https://github.com/tg-rs/tgbot/tree/0.15.0/LICENSE)
 
 ## Installation
 
 ```toml
 [dependencies]
-tgbot = "0.14.0"
+tgbot = "0.15.0"
 ```
 
 ## Versioning
@@ -88,7 +88,7 @@ async fn main() {
 }
 ```
 
-See more examples in [examples](https://github.com/tg-rs/tgbot/tree/0.14.0/examples) directory.
+See more examples in [examples](https://github.com/tg-rs/tgbot/tree/0.15.0/examples) directory.
 
 In order to run an example you need to create a `.env` file:
 ```sh
@@ -98,11 +98,11 @@ Don't forget to change value of `TGBOT_TOKEN` and other variables if required.
 
 ## Changelog
 
-See [CHANGELOG.md](https://github.com/tg-rs/tgbot/tree/0.14.0/CHANGELOG.md)
+See [CHANGELOG.md](https://github.com/tg-rs/tgbot/tree/0.15.0/CHANGELOG.md)
 
 ## Code of Conduct
 
-See [CODE_OF_CONDUCT.md](https://github.com/tg-rs/tgbot/tree/0.14.0/CODE_OF_CONDUCT.md).
+See [CODE_OF_CONDUCT.md](https://github.com/tg-rs/tgbot/tree/0.15.0/CODE_OF_CONDUCT.md).
 
 ## LICENSE
 

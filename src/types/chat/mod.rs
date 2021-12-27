@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 
 mod invite_link;
+mod join_request;
 mod location;
 mod member;
 mod permissions;
@@ -10,6 +11,7 @@ mod photo;
 
 pub use self::{
     invite_link::ChatInviteLink,
+    join_request::ChatJoinRequest,
     location::ChatLocation,
     member::{ChatMember, ChatMemberAdministrator, ChatMemberKicked, ChatMemberRestricted, ChatMemberUpdated},
     permissions::ChatPermissions,

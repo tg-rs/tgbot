@@ -11,6 +11,8 @@ use crate::types::{
 use serde::{Deserialize, Deserializer, Serialize};
 use serde_json::Value as JsonValue;
 
+use super::ChatJoinRequest;
+
 /// Incoming update
 #[derive(Clone, Debug, Deserialize)]
 pub struct Update {
@@ -51,24 +53,24 @@ where
 impl Update {
     /// Returns a chat ID from update
     pub fn get_chat_id(&self) -> Option<Integer> {
-        self.get_message().map(|msg| msg.get_chat_id()).or_else(|| {
-            if let UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) = self.kind {
-                Some(status.chat.get_id())
-            } else {
-                None
-            }
-        })
+        self.get_message()
+            .map(|msg| msg.get_chat_id())
+            .or_else(|| match self.kind {
+                UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => Some(status.chat.get_id()),
+                UpdateKind::ChatJoinRequest(ref request) => Some(request.chat.get_id()),
+                _ => None,
+            })
     }
 
     /// Returns a chat username from update
     pub fn get_chat_username(&self) -> Option<&str> {
-        self.get_message().and_then(|msg| msg.get_chat_username()).or_else(|| {
-            if let UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) = self.kind {
-                status.chat.get_username()
-            } else {
-                None
-            }
-        })
+        self.get_message()
+            .and_then(|msg| msg.get_chat_username())
+            .or_else(|| match self.kind {
+                UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => status.chat.get_username(),
+                UpdateKind::ChatJoinRequest(ref request) => request.chat.get_username(),
+                _ => None,
+            })
     }
 
     /// Returns a user from update
@@ -86,6 +88,7 @@ impl Update {
             UpdateKind::Poll(_) => return None,
             UpdateKind::PollAnswer(ref answer) => &answer.user,
             UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => &status.from,
+            UpdateKind::ChatJoinRequest(ref request) => &request.from,
             UpdateKind::Unknown(_) => return None,
         })
     }
@@ -153,6 +156,12 @@ pub enum UpdateKind {
     /// of allowed_updates to receive these updates.
     #[serde(rename = "chat_member")]
     UserStatus(ChatMemberUpdated),
+
+    /// A request to join the chat has been sent
+    ///
+    /// The bot must have the can_invite_users administrator right in the chat to receive these updates.
+    ChatJoinRequest(ChatJoinRequest),
+
     /// Used for unknown update types
     ///
     /// For example, Telegram introduced a new update type,
@@ -682,6 +691,40 @@ mod tests {
         if let Update {
             id,
             kind: UpdateKind::UserStatus(data),
+        } = update
+        {
+            assert_eq!(id, 1);
+            assert_eq!(data.date, 0);
+        } else {
+            panic!("Unexpected update {:?}", update);
+        }
+    }
+
+    #[test]
+    fn deserialize_update_chat_join_request() {
+        let update: Update = serde_json::from_value(serde_json::json!({
+            "update_id": 1,
+            "chat_join_request": {
+                "chat": {
+                    "id": 1,
+                    "type": "group",
+                    "title": "grouptitle"
+                },
+                "from": {
+                    "id": 1,
+                    "is_bot": false,
+                    "first_name": "firstname"
+                },
+                "date": 0
+            }
+        }))
+        .unwrap();
+        assert_eq!(update.get_chat_id(), Some(1));
+        assert!(update.get_chat_username().is_none());
+        assert!(update.get_user().is_some());
+        if let Update {
+            id,
+            kind: UpdateKind::ChatJoinRequest(data),
         } = update
         {
             assert_eq!(id, 1);

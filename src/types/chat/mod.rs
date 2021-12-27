@@ -135,6 +135,12 @@ pub struct PrivateChat {
     ///
     /// Returned only in getChat
     pub pinned_message: Option<Box<Message>>,
+    /// True, if privacy settings of the other party
+    /// in the private chat allows to use tg://user?id=<user_id>
+    /// links only in chats with the user.
+    ///
+    /// Returned only in getChat
+    pub has_private_forwards: Option<bool>,
 }
 
 /// Supergroup chat
@@ -430,7 +436,8 @@ mod tests {
                     "first_name": "user"
                 },
                 "text": "test"
-            }
+            },
+            "has_private_forwards": true
         }))
         .unwrap();
         assert_eq!(chat.get_id(), 1);
@@ -447,6 +454,7 @@ mod tests {
             assert_eq!(photo.big_file_unique_id, "bigfileuniqueid");
             assert_eq!(chat.bio.unwrap(), "testbio");
             assert_eq!(chat.pinned_message.unwrap().id, 1);
+            assert!(chat.has_private_forwards.unwrap());
         } else {
             panic!("Unexpected chat: {:?}", chat)
         }

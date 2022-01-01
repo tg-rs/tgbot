@@ -24,6 +24,8 @@ pub struct SendVenue {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
@@ -58,6 +60,7 @@ impl SendVenue {
             google_place_id: None,
             google_place_type: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -96,6 +99,12 @@ impl SendVenue {
     /// Users will receive a notification with no sound
     pub fn disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    /// Protects the contents of the sent message from forwarding and saving
+    pub fn protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
         self
     }
 
@@ -144,6 +153,7 @@ mod tests {
             .google_place_id("g-id")
             .google_place_type("g-type")
             .disable_notification(true)
+            .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
@@ -165,6 +175,7 @@ mod tests {
                     "google_place_id": "g-id",
                     "google_place_type": "g-type",
                     "disable_notification": true,
+                    "protect_content": true,
                     "reply_to_message_id": 1,
                     "allow_sending_without_reply": true,
                     "reply_markup": {"force_reply": true}

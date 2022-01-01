@@ -23,6 +23,8 @@ pub struct CopyMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
@@ -51,6 +53,7 @@ impl CopyMessage {
             caption_entities: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -88,6 +91,12 @@ impl CopyMessage {
     /// Users will receive a notification with no sound
     pub fn disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    /// Protects the contents of the sent message from forwarding and saving
+    pub fn protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
         self
     }
 
@@ -134,6 +143,7 @@ mod tests {
             .caption("caption")
             .parse_mode(ParseMode::Markdown)
             .disable_notification(true)
+            .protect_content(true)
             .reply_to_message_id(1)
             .reply_markup(ForceReply::new(true))
             .allow_sending_without_reply(true)
@@ -142,15 +152,21 @@ mod tests {
         assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/copyMessage");
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["chat_id"], 1);
-            assert_eq!(data["from_chat_id"], 2);
-            assert_eq!(data["message_id"], 3);
-            assert_eq!(data["caption"], "caption");
-            assert_eq!(data["parse_mode"], "Markdown");
-            assert!(data["disable_notification"].as_bool().unwrap());
-            assert_eq!(data["reply_to_message_id"], 1);
-            assert!(data["reply_markup"]["force_reply"].as_bool().unwrap());
-            assert!(data["allow_sending_without_reply"].as_bool().unwrap())
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "chat_id": 1,
+                    "from_chat_id": 2,
+                    "message_id": 3,
+                    "caption": "caption",
+                    "parse_mode": "Markdown",
+                    "disable_notification": true,
+                    "protect_content": true,
+                    "reply_to_message_id": 1,
+                    "reply_markup": {"force_reply": true},
+                    "allow_sending_without_reply": true
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }

@@ -34,6 +34,8 @@ struct PollParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
@@ -58,6 +60,7 @@ impl PollParameters {
             close_date: None,
             is_closed: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -170,6 +173,12 @@ impl SendQuiz {
     /// Users will receive a notification with no sound
     pub fn disable_notification(mut self, disable_notification: bool) -> Self {
         self.inner.disable_notification = Some(disable_notification);
+        self
+    }
+
+    /// Protects the contents of the sent message from forwarding and saving
+    pub fn protect_content(mut self, protect_content: bool) -> Self {
+        self.inner.protect_content = Some(protect_content);
         self
     }
 
@@ -286,6 +295,12 @@ impl SendPoll {
         self
     }
 
+    /// Protects the contents of the sent message from forwarding and saving
+    pub fn protect_content(mut self, protect_content: bool) -> Self {
+        self.inner.protect_content = Some(protect_content);
+        self
+    }
+
     /// If the message is a reply, ID of the original message
     pub fn reply_to_message_id(mut self, reply_to_message_id: Integer) -> Self {
         self.inner.reply_to_message_id = Some(reply_to_message_id);
@@ -384,6 +399,7 @@ mod tests {
             .correct_option_id(0)
             .is_closed(false)
             .disable_notification(true)
+            .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
@@ -393,25 +409,25 @@ mod tests {
         match request.into_body() {
             RequestBody::Json(data) => {
                 let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-                assert_eq!(data["chat_id"], 1);
-                assert_eq!(data["question"], "Q");
-                assert_eq!(data["type"], "quiz");
                 assert_eq!(
-                    data["options"]
-                        .as_array()
-                        .unwrap()
-                        .iter()
-                        .map(|x| x.as_str().unwrap())
-                        .collect::<Vec<&str>>(),
-                    vec!["O1", "O2"]
+                    data,
+                    serde_json::json!({
+                        "chat_id": 1,
+                        "question": "Q",
+                        "type": "quiz",
+                        "options": ["O1", "O2"],
+                        "is_anonymous": false,
+                        "is_closed": false,
+                        "correct_option_id": 0,
+                        "disable_notification": true,
+                        "protect_content": true,
+                        "reply_to_message_id": 1,
+                        "allow_sending_without_reply": true,
+                        "reply_markup": {
+                            "force_reply": true
+                        }
+                    })
                 );
-                assert!(!data["is_anonymous"].as_bool().unwrap());
-                assert!(!data["is_closed"].as_bool().unwrap());
-                assert_eq!(data["correct_option_id"], 0);
-                assert!(data["disable_notification"].as_bool().unwrap());
-                assert_eq!(data["reply_to_message_id"], 1);
-                assert!(data["allow_sending_without_reply"].as_bool().unwrap());
-                assert!(data["reply_markup"]["force_reply"].as_bool().unwrap());
             }
             data => panic!("Unexpected request data: {:?}", data),
         }
@@ -426,6 +442,7 @@ mod tests {
             .allows_multiple_answers(true)
             .is_closed(false)
             .disable_notification(true)
+            .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
@@ -435,25 +452,26 @@ mod tests {
         match request.into_body() {
             RequestBody::Json(data) => {
                 let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-                assert_eq!(data["chat_id"], 1);
-                assert_eq!(data["question"], "Q");
-                assert_eq!(data["type"], "regular");
+
                 assert_eq!(
-                    data["options"]
-                        .as_array()
-                        .unwrap()
-                        .iter()
-                        .map(|x| x.as_str().unwrap())
-                        .collect::<Vec<&str>>(),
-                    vec!["O1", "O2"]
+                    data,
+                    serde_json::json!({
+                        "chat_id": 1,
+                        "question": "Q",
+                        "type": "regular",
+                        "options": ["O1", "O2"],
+                        "is_anonymous": false,
+                        "is_closed": false,
+                        "allows_multiple_answers": true,
+                        "disable_notification": true,
+                        "protect_content": true,
+                        "reply_to_message_id": 1,
+                        "allow_sending_without_reply": true,
+                        "reply_markup": {
+                            "force_reply": true
+                        }
+                    })
                 );
-                assert!(!data["is_anonymous"].as_bool().unwrap());
-                assert!(data["allows_multiple_answers"].as_bool().unwrap());
-                assert!(!data["is_closed"].as_bool().unwrap());
-                assert!(data["disable_notification"].as_bool().unwrap());
-                assert_eq!(data["reply_to_message_id"], 1);
-                assert!(data["allow_sending_without_reply"].as_bool().unwrap());
-                assert!(data["reply_markup"]["force_reply"].as_bool().unwrap());
             }
             data => panic!("Unexpected request data: {:?}", data),
         }

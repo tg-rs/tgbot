@@ -104,6 +104,12 @@ impl SendAudio {
         self
     }
 
+    /// Protects the contents of the sent message from forwarding and saving
+    pub fn protect_content(mut self, value: bool) -> Self {
+        self.form.insert_field("protect_content", value.to_string());
+        self
+    }
+
     /// If the message is a reply, ID of the original message
     pub fn reply_to_message_id(mut self, value: Integer) -> Self {
         self.form.insert_field("reply_to_message_id", value);
@@ -151,6 +157,7 @@ mod tests {
             .title("title")
             .thumb(InputFile::file_id("thumb-id"))
             .disable_notification(true)
+            .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
@@ -168,6 +175,7 @@ mod tests {
             assert_eq!(form.fields["title"].get_text().unwrap(), "title");
             assert!(form.fields["thumb"].get_file().is_some());
             assert_eq!(form.fields["disable_notification"].get_text().unwrap(), "true");
+            assert_eq!(form.fields["protect_content"].get_text().unwrap(), "true");
             assert_eq!(form.fields["reply_to_message_id"].get_text().unwrap(), "1");
             assert_eq!(form.fields["allow_sending_without_reply"].get_text().unwrap(), "true");
             assert_eq!(

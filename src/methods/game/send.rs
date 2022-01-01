@@ -13,6 +13,8 @@ pub struct SendGame {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
@@ -32,6 +34,7 @@ impl SendGame {
             chat_id,
             game_short_name: game_short_name.into(),
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -43,6 +46,12 @@ impl SendGame {
     /// Users will receive a notification with no sound
     pub fn disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    /// Protects the contents of the sent message from forwarding and saving
+    pub fn protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
         self
     }
 
@@ -87,6 +96,7 @@ mod tests {
     fn send_game() {
         let request = SendGame::new(1, "name")
             .disable_notification(true)
+            .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
             .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
@@ -95,12 +105,22 @@ mod tests {
         assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/sendGame");
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["chat_id"], 1);
-            assert_eq!(data["game_short_name"], "name");
-            assert!(data["disable_notification"].as_bool().unwrap());
-            assert_eq!(data["reply_to_message_id"], 1);
-            assert!(data["allow_sending_without_reply"].as_bool().unwrap());
-            assert_eq!(data["reply_markup"]["inline_keyboard"][0][0]["text"], "text");
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "chat_id": 1,
+                    "game_short_name": "name",
+                    "disable_notification": true,
+                    "protect_content": true,
+                    "reply_to_message_id": 1,
+                    "allow_sending_without_reply": true,
+                    "reply_markup": {
+                        "inline_keyboard": [[
+                            {"text": "text", "url": "url"}
+                        ]]
+                    }
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }

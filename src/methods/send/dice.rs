@@ -15,6 +15,8 @@ pub struct SendDice {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_to_message_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
@@ -37,6 +39,7 @@ impl SendDice {
             chat_id: chat_id.into(),
             emoji: kind,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -48,6 +51,12 @@ impl SendDice {
     /// Users will receive a notification with no sound
     pub fn disable_notification(mut self, disable_notification: bool) -> Self {
         self.disable_notification = Some(disable_notification);
+        self
+    }
+
+    /// Protects the contents of the sent message from forwarding
+    pub fn protect_content(mut self, protect_content: bool) -> Self {
+        self.protect_content = Some(protect_content);
         self
     }
 
@@ -92,6 +101,7 @@ mod tests {
     fn send_dice() {
         let request = SendDice::new(1, DiceKind::Bones)
             .disable_notification(true)
+            .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
@@ -100,12 +110,20 @@ mod tests {
         assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/sendDice");
         if let RequestBody::Json(data) = request.into_body() {
             let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["chat_id"], 1);
-            assert_eq!(data["emoji"], "🎲");
-            assert!(data["disable_notification"].as_bool().unwrap());
-            assert_eq!(data["reply_to_message_id"], 1);
-            assert!(data["allow_sending_without_reply"].as_bool().unwrap());
-            assert!(data["reply_markup"]["force_reply"].as_bool().unwrap());
+            assert_eq!(
+                data,
+                serde_json::json!({
+                    "chat_id": 1,
+                    "emoji": "🎲",
+                    "disable_notification": true,
+                    "protect_content": true,
+                    "reply_to_message_id": 1,
+                    "allow_sending_without_reply": true,
+                    "reply_markup": {
+                        "force_reply": true
+                    }
+                })
+            );
         } else {
             panic!("Unexpected request body");
         }

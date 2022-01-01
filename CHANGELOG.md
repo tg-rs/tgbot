@@ -6,6 +6,7 @@
 - Added Bot API 5.6 support.
   - Added `protect_content` parameter to `send*` methods.
   - Added spoiler text entity support.
+- Rust 2021 edition.
 
 ## 0.15.0 (27.12.2021)
 

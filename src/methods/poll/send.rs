@@ -1,72 +1,11 @@
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, InlineKeyboardMarkup, Integer, Message, ParseMode, Poll, PollKind, ReplyMarkup, TextEntity},
+    types::{ChatId, Integer, Message, ParseMode, PollKind, ReplyMarkup, TextEntity},
 };
 use serde::Serialize;
 
-#[derive(Clone, Debug, Serialize)]
-struct PollParameters {
-    chat_id: ChatId,
-    question: String,
-    options: Vec<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    is_anonymous: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(rename = "type")]
-    kind: Option<PollKind>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    allows_multiple_answers: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    correct_option_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    explanation: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    explanation_parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    explanation_entities: Option<Vec<TextEntity>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    open_period: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    close_date: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    is_closed: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<ReplyMarkup>,
-}
-
-impl PollParameters {
-    fn new(chat_id: ChatId, question: String, kind: PollKind) -> Self {
-        Self {
-            chat_id,
-            question,
-            options: Vec::new(),
-            is_anonymous: None,
-            kind: Some(kind),
-            allows_multiple_answers: None,
-            correct_option_id: None,
-            explanation: None,
-            explanation_parse_mode: None,
-            explanation_entities: None,
-            open_period: None,
-            close_date: None,
-            is_closed: None,
-            disable_notification: None,
-            protect_content: None,
-            reply_to_message_id: None,
-            allow_sending_without_reply: None,
-            reply_markup: None,
-        }
-    }
-}
+use super::parameters::PollParameters;
 
 /// Use this method to send a quiz
 ///
@@ -332,61 +271,12 @@ impl Method for SendPoll {
     }
 }
 
-/// Use this method to stop a poll which was sent by the bot
-///
-/// On success, the stopped Poll with the final results is returned
-#[derive(Clone, Debug, Serialize)]
-pub struct StopPoll {
-    chat_id: ChatId,
-    message_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<InlineKeyboardMarkup>,
-}
-
-/// Use this method to stop a quiz which was sent by the bot
-///
-/// On success, the stopped Quiz with the final results is returned
-pub type StopQuiz = StopPoll;
-
-impl StopPoll {
-    /// Creates a new StopPoll
-    ///
-    /// # Arguments
-    ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * message_id - Identifier of the original message with the poll
-    pub fn new<C>(chat_id: C, message_id: Integer) -> Self
-    where
-        C: Into<ChatId>,
-    {
-        Self {
-            chat_id: chat_id.into(),
-            message_id,
-            reply_markup: None,
-        }
-    }
-
-    /// A JSON-serialized object for a new message inline keyboard
-    pub fn reply_markup<R: Into<InlineKeyboardMarkup>>(mut self, reply_markup: R) -> Self {
-        self.reply_markup = Some(reply_markup.into());
-        self
-    }
-}
-
-impl Method for StopPoll {
-    type Response = Poll;
-
-    fn into_request(self) -> Request {
-        Request::json("stopPoll", self)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::{
         request::{RequestBody, RequestMethod},
-        types::{ForceReply, InlineKeyboardButton},
+        types::ForceReply,
     };
     use serde_json::Value;
 
@@ -472,24 +362,6 @@ mod tests {
                         }
                     })
                 );
-            }
-            data => panic!("Unexpected request data: {:?}", data),
-        }
-    }
-
-    #[test]
-    fn stop_poll() {
-        let request = StopPoll::new(1, 2)
-            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-            .into_request();
-        assert_eq!(request.get_method(), RequestMethod::Post);
-        assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/stopPoll");
-        match request.into_body() {
-            RequestBody::Json(data) => {
-                let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-                assert_eq!(data["chat_id"], 1);
-                assert_eq!(data["message_id"], 2);
-                assert_eq!(data["reply_markup"]["inline_keyboard"][0][0]["text"], "text");
             }
             data => panic!("Unexpected request data: {:?}", data),
         }

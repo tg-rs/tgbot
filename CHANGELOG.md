@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.16.0 (01.01.2022)
+
+- Added `Update::get_user_id` and `Update::get_user_username` methods.
+- Added Bot API 5.6 support.
+  - Added `protect_content` parameter to `send*` methods.
+  - Added spoiler text entity support.
+
 ## 0.15.0 (27.12.2021)
 
 - Updated tokio version to 1.15.

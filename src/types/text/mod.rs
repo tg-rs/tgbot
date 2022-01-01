@@ -127,7 +127,7 @@ mod tests {
             "message_id": 1, "date": 0,
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
             "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-            "text": "bold /botcommand $cashtag code u@h.z #hashtag italic @mention phone pre textlink textmention url underline strikethrough pre",
+            "text": "bold /botcommand $cashtag code u@h.z #hashtag italic @mention phone pre textlink textmention url underline spoiler strikethrough pre",
             "entities": [
                 {"type": "bold", "offset": 0, "length": 4},
                 {"type": "bot_command", "offset": 5, "length": 11},
@@ -152,8 +152,9 @@ mod tests {
                 },
                 {"type": "url", "offset": 93, "length": 3},
                 {"type": "underline", "offset": 97, "length": 9},
-                {"type": "strikethrough", "offset": 107, "length": 13},
-                {"type": "pre", "offset": 121, "length": 3, "language": "rust"},
+                {"type": "spoiler", "offset": 107, "length": 7},
+                {"type": "strikethrough", "offset": 115, "length": 13},
+                {"type": "pre", "offset": 129, "length": 3, "language": "rust"},
             ]
         });
         let msg: Message = serde_json::from_value(input).unwrap();
@@ -191,12 +192,13 @@ mod tests {
                     },
                     TextEntity::Url(TextEntityPosition { offset: 93, length: 3 }),
                     TextEntity::Underline(TextEntityPosition { offset: 97, length: 9 }),
+                    TextEntity::Spoiler(TextEntityPosition { offset: 107, length: 7 }),
                     TextEntity::Strikethrough(TextEntityPosition {
-                        offset: 107,
+                        offset: 115,
                         length: 13
                     }),
                     TextEntity::Pre {
-                        position: TextEntityPosition { offset: 121, length: 3 },
+                        position: TextEntityPosition { offset: 129, length: 3 },
                         language: Some(String::from("rust"))
                     },
                 ],
@@ -403,6 +405,14 @@ mod tests {
                 }),
             ),
             (
+                TextEntity::Spoiler(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "spoiler",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
                 TextEntity::Strikethrough(TextEntityPosition { offset: 0, length: 10 }),
                 serde_json::json!({
                     "type": "strikethrough",
@@ -412,19 +422,19 @@ mod tests {
             ),
             (
                 TextEntity::TextLink {
-                    position: TextEntityPosition { offset: 0, length: 10 },
+                    position: TextEntityPosition { offset: 0, length: 21 },
                     url: String::from("https://rust-lang.org"),
                 },
                 serde_json::json!({
                     "type": "text_link",
                     "offset": 0,
-                    "length": 10,
+                    "length": 21,
                     "url": "https://rust-lang.org"
                 }),
             ),
             (
                 TextEntity::TextMention {
-                    position: TextEntityPosition { offset: 0, length: 10 },
+                    position: TextEntityPosition { offset: 0, length: 4 },
                     user: User {
                         id: 1,
                         is_bot: false,
@@ -437,7 +447,7 @@ mod tests {
                 serde_json::json!({
                     "type": "text_mention",
                     "offset": 0,
-                    "length": 10,
+                    "length": 4,
                     "user": {
                         "id": 1,
                         "first_name": "test",

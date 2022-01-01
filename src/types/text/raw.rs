@@ -26,6 +26,7 @@ pub(super) enum RawTextEntityKind {
         #[serde(skip_serializing_if = "Option::is_none")]
         language: Option<String>,
     },
+    Spoiler,
     Strikethrough,
     TextLink {
         #[serde(skip_serializing_if = "Option::is_none")]

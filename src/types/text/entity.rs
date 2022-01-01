@@ -33,6 +33,8 @@ pub enum TextEntity {
         /// Name of the programming language
         language: Option<String>,
     },
+    /// Spoiler message
+    Spoiler(TextEntityPosition),
     /// Strikethrough text
     Strikethrough(TextEntityPosition),
     /// Clickable text URLs
@@ -81,6 +83,7 @@ impl TextEntity {
         italic => Italic,
         mention => Mention,
         phone_number => PhoneNumber,
+        spoiler => Spoiler,
         strikethrough => Strikethrough,
         underline => Underline
     );
@@ -144,6 +147,7 @@ impl TryFrom<RawTextEntity> for TextEntity {
             RawTextEntityKind::Mention => TextEntity::Mention(position),
             RawTextEntityKind::PhoneNumber => TextEntity::PhoneNumber(position),
             RawTextEntityKind::Pre { language } => TextEntity::Pre { position, language },
+            RawTextEntityKind::Spoiler => TextEntity::Spoiler(position),
             RawTextEntityKind::Strikethrough => TextEntity::Strikethrough(position),
             RawTextEntityKind::TextLink { url } => TextEntity::TextLink {
                 position,
@@ -181,6 +185,7 @@ impl From<TextEntity> for RawTextEntity {
             TextEntity::Mention(p) => raw!(Mention(p)),
             TextEntity::PhoneNumber(p) => raw!(PhoneNumber(p)),
             TextEntity::Pre { position: p, language } => raw!(Pre(p, language)),
+            TextEntity::Spoiler(p) => raw!(Spoiler(p)),
             TextEntity::Strikethrough(p) => raw!(Strikethrough(p)),
             TextEntity::TextLink { position: p, url } => raw!(TextLink(p, url)),
             TextEntity::TextMention { position: p, user } => raw!(TextMention(p, user)),

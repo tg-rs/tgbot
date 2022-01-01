@@ -93,6 +93,16 @@ impl Update {
         })
     }
 
+    /// Returns a user ID from update
+    pub fn get_user_id(&self) -> Option<Integer> {
+        self.get_user().map(|user| user.id)
+    }
+
+    /// Returns a user username from update
+    pub fn get_user_username(&self) -> Option<String> {
+        self.get_user().and_then(|user| user.username.clone())
+    }
+
     /// Returns a message from update
     pub fn get_message(&self) -> Option<&Message> {
         match self.kind {
@@ -248,6 +258,8 @@ mod tests {
         .unwrap();
         assert_eq!(update.get_chat_id().unwrap(), 1);
         assert!(update.get_chat_username().is_none());
+        assert_eq!(update.get_user_id().unwrap(), 1);
+        assert!(update.get_user_username().is_none());
         assert_eq!(update.get_user().map(|u| u.id).unwrap(), 1);
         if let Update {
             id,
@@ -289,7 +301,8 @@ mod tests {
         .unwrap();
         assert_eq!(update.get_chat_id().unwrap(), 1111);
         assert_eq!(update.get_chat_username().unwrap(), "Testusername");
-        assert_eq!(update.get_user().map(|u| u.id).unwrap(), 1111);
+        assert_eq!(update.get_user_id().unwrap(), 1111);
+        assert_eq!(update.get_user_username().unwrap(), "Testusername");
         if let Update {
             id,
             kind: UpdateKind::EditedMessage(data),
@@ -418,7 +431,8 @@ mod tests {
         .unwrap();
         assert!(update.get_chat_id().is_none());
         assert!(update.get_chat_username().is_none());
-        assert_eq!(update.get_user().map(|u| u.id).unwrap(), 1111);
+        assert_eq!(update.get_user_id().unwrap(), 1111);
+        assert!(update.get_user_username().is_none());
         if let Update {
             id,
             kind: UpdateKind::ChosenInlineResult(data),
@@ -447,7 +461,8 @@ mod tests {
         .unwrap();
         assert!(update.get_chat_id().is_none());
         assert!(update.get_chat_username().is_none());
-        assert_eq!(update.get_user().map(|u| u.id).unwrap(), 1);
+        assert_eq!(update.get_user_id().unwrap(), 1);
+        assert!(update.get_user_username().is_none());
         if let Update {
             id,
             kind: UpdateKind::CallbackQuery(data),
@@ -485,7 +500,8 @@ mod tests {
         .unwrap();
         assert!(update.get_chat_id().is_none());
         assert!(update.get_chat_username().is_none());
-        assert_eq!(update.get_user().map(|u| u.id).unwrap(), 1);
+        assert_eq!(update.get_user_id().unwrap(), 1);
+        assert!(update.get_user_username().is_none());
         if let Update {
             id,
             kind: UpdateKind::ShippingQuery(data),
@@ -517,7 +533,8 @@ mod tests {
         .unwrap();
         assert!(update.get_chat_id().is_none());
         assert!(update.get_chat_username().is_none());
-        assert_eq!(update.get_user().map(|u| u.id).unwrap(), 1);
+        assert_eq!(update.get_user_id().unwrap(), 1);
+        assert!(update.get_user_username().is_none());
         if let Update {
             id,
             kind: UpdateKind::PreCheckoutQuery(data),
@@ -585,7 +602,8 @@ mod tests {
         .unwrap();
         assert!(update.get_chat_id().is_none());
         assert!(update.get_chat_username().is_none());
-        assert!(update.get_user().is_some());
+        assert_eq!(update.get_user_id().unwrap(), 1);
+        assert!(update.get_user_username().is_none());
         if let Update {
             id,
             kind: UpdateKind::PollAnswer(data),
@@ -636,7 +654,8 @@ mod tests {
         .unwrap();
         assert_eq!(update.get_chat_id(), Some(1));
         assert!(update.get_chat_username().is_none());
-        assert!(update.get_user().is_some());
+        assert_eq!(update.get_user_id().unwrap(), 1);
+        assert!(update.get_user_username().is_none());
         if let Update {
             id,
             kind: UpdateKind::BotStatus(data),
@@ -687,7 +706,8 @@ mod tests {
         .unwrap();
         assert_eq!(update.get_chat_id(), Some(1));
         assert!(update.get_chat_username().is_none());
-        assert!(update.get_user().is_some());
+        assert_eq!(update.get_user_id().unwrap(), 1);
+        assert!(update.get_user_username().is_none());
         if let Update {
             id,
             kind: UpdateKind::UserStatus(data),
@@ -721,7 +741,8 @@ mod tests {
         .unwrap();
         assert_eq!(update.get_chat_id(), Some(1));
         assert!(update.get_chat_username().is_none());
-        assert!(update.get_user().is_some());
+        assert_eq!(update.get_user_id().unwrap(), 1);
+        assert!(update.get_user_username().is_none());
         if let Update {
             id,
             kind: UpdateKind::ChatJoinRequest(data),

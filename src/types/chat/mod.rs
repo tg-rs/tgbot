@@ -89,6 +89,10 @@ pub struct ChannelChat {
     ///
     /// Returned only in getChat.
     pub has_protected_content: Option<bool>,
+    /// The time after which all messages sent to the chat
+    /// will be automatically deleted; in seconds.
+    /// Returned only in getChat.
+    pub message_auto_delete_time: Option<Integer>,
 }
 
 /// Group chat
@@ -118,6 +122,10 @@ pub struct GroupChat {
     ///
     /// Returned only in getChat.
     pub has_protected_content: Option<bool>,
+    /// The time after which all messages sent to the chat
+    /// will be automatically deleted; in seconds.
+    /// Returned only in getChat.
+    pub message_auto_delete_time: Option<Integer>,
 }
 
 /// Private chat
@@ -149,6 +157,10 @@ pub struct PrivateChat {
     ///
     /// Returned only in getChat
     pub has_private_forwards: Option<bool>,
+    /// The time after which all messages sent to the chat
+    /// will be automatically deleted; in seconds.
+    /// Returned only in getChat.
+    pub message_auto_delete_time: Option<Integer>,
 }
 
 /// Supergroup chat
@@ -192,6 +204,10 @@ pub struct SupergroupChat {
     ///
     /// Returned only in getChat
     pub slow_mode_delay: Option<Integer>,
+    /// The time after which all messages sent to the chat
+    /// will be automatically deleted; in seconds.
+    /// Returned only in getChat.
+    pub message_auto_delete_time: Option<Integer>,
     /// Unique identifier for the linked channel
     ///
     /// Returned only in getChat
@@ -302,7 +318,8 @@ mod tests {
                 "text": "test"
             },
             "linked_chat_id": 2,
-            "has_protected_content": true
+            "has_protected_content": true,
+            "message_auto_delete_time": 86400
         }))
         .unwrap();
         assert_eq!(chat.get_id(), 1);
@@ -321,6 +338,7 @@ mod tests {
             assert!(chat.pinned_message.is_some());
             assert_eq!(chat.linked_chat_id.unwrap(), 2);
             assert!(chat.has_protected_content.unwrap());
+            assert_eq!(chat.message_auto_delete_time.unwrap(), 86400);
         } else {
             panic!("Unexpected chat: {:?}", chat);
         }
@@ -378,7 +396,8 @@ mod tests {
                 "text": "test"
             },
             "permissions": {"can_send_messages": true},
-            "has_protected_content": true
+            "has_protected_content": true,
+            "message_auto_delete_time": 86400
         }))
         .unwrap();
         assert_eq!(chat.get_id(), 1);
@@ -396,6 +415,7 @@ mod tests {
             assert!(permissions.can_send_messages.unwrap());
             assert!(chat.pinned_message.is_some());
             assert!(chat.has_protected_content.unwrap());
+            assert_eq!(chat.message_auto_delete_time.unwrap(), 86400)
         } else {
             panic!("Unexpected chat: {:?}", chat);
         }
@@ -453,7 +473,8 @@ mod tests {
                 },
                 "text": "test"
             },
-            "has_private_forwards": true
+            "has_private_forwards": true,
+            "message_auto_delete_time": 86400
         }))
         .unwrap();
         assert_eq!(chat.get_id(), 1);
@@ -471,6 +492,7 @@ mod tests {
             assert_eq!(chat.bio.unwrap(), "testbio");
             assert_eq!(chat.pinned_message.unwrap().id, 1);
             assert!(chat.has_private_forwards.unwrap());
+            assert_eq!(chat.message_auto_delete_time.unwrap(), 86400);
         } else {
             panic!("Unexpected chat: {:?}", chat)
         }
@@ -542,7 +564,8 @@ mod tests {
                 },
                 "address": "test location"
             },
-            "has_protected_content": true
+            "has_protected_content": true,
+            "message_auto_delete_time": 86400
         }))
         .unwrap();
         assert_eq!(chat.get_id(), 1);
@@ -567,6 +590,7 @@ mod tests {
             assert_eq!(chat.linked_chat_id.unwrap(), 2);
             assert_eq!(chat.location.unwrap().address, "test location");
             assert!(chat.has_protected_content.unwrap());
+            assert_eq!(chat.message_auto_delete_time.unwrap(), 86400);
         } else {
             panic!("Unexpected chat: {:?}", chat)
         }

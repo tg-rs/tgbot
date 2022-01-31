@@ -4,6 +4,7 @@
 #![warn(missing_docs)]
 
 mod api;
+mod config;
 mod handler;
 mod request;
 
@@ -20,7 +21,8 @@ pub mod types;
 pub mod webhook;
 
 pub use self::{
-    api::{Api, ApiError, Config, DownloadFileError, ExecuteError, ParseProxyError},
+    api::{Api, ApiError, DownloadFileError, ExecuteError},
+    config::{Config, ParseProxyError},
     handler::{SyncedUpdateHandler, UpdateHandler},
 };
 

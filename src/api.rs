@@ -1,4 +1,5 @@
 use crate::{
+    config::Config,
     methods::Method,
     request::{FormError, Request, RequestBody, RequestMethod},
     types::{Response, ResponseError},
@@ -6,71 +7,10 @@ use crate::{
 use bytes::Bytes;
 use futures_util::stream::Stream;
 use log::debug;
-use reqwest::{Client, ClientBuilder, Error as ReqwestError, Proxy};
+use reqwest::{Client, ClientBuilder, Error as ReqwestError};
 use serde::de::DeserializeOwned;
 use serde_json::Error as JsonError;
 use std::{error::Error as StdError, fmt};
-use url::{ParseError as UrlParseError, Url};
-
-const DEFAULT_HOST: &str = "https://api.telegram.org";
-
-/// An API config
-#[derive(Debug, Clone)]
-pub struct Config {
-    host: String,
-    token: String,
-    proxy: Option<Proxy>,
-}
-
-impl Config {
-    /// Creates a new configuration with a given token
-    pub fn new<S: Into<String>>(token: S) -> Self {
-        Self {
-            token: token.into(),
-            host: String::from(DEFAULT_HOST),
-            proxy: None,
-        }
-    }
-
-    /// Sets an API host
-    ///
-    /// `https://api.telegram.org` is used by default
-    pub fn host<S: Into<String>>(mut self, host: S) -> Self {
-        self.host = host.into();
-        self
-    }
-
-    /// Sets a proxy to config
-    ///
-    /// Proxy format:
-    /// * http://\[user:password\]@host:port
-    /// * https://\[user:password\]@host:port
-    /// * socks5://\[user:password\]@host:port
-    pub fn proxy<U: AsRef<str>>(mut self, url: U) -> Result<Self, ParseProxyError> {
-        let raw_url = url.as_ref();
-        let url = Url::parse(raw_url)?;
-        let username = url.username();
-        if !username.is_empty() {
-            let mut base_url = format!("{}://{}", url.scheme(), url.host_str().expect("Can not get host"));
-            if let Some(port) = url.port() {
-                base_url = format!("{}:{}", base_url, port);
-            }
-            self.proxy = Some(Proxy::all(base_url.as_str())?.basic_auth(username, url.password().unwrap_or("")));
-        } else {
-            self.proxy = Some(Proxy::all(raw_url)?);
-        }
-        Ok(self)
-    }
-}
-
-impl<S> From<S> for Config
-where
-    S: Into<String>,
-{
-    fn from(token: S) -> Self {
-        Config::new(token.into())
-    }
-}
 
 /// Telegram Bot API client
 #[derive(Clone)]
@@ -86,8 +26,8 @@ impl Api {
         let config = config.into();
 
         let mut builder = ClientBuilder::new();
-        builder = if let Some(proxy) = config.proxy {
-            builder.proxy(proxy)
+        builder = if let Some(proxy) = config.get_proxy() {
+            builder.proxy(proxy.clone())
         } else {
             builder.no_proxy()
         };
@@ -95,8 +35,8 @@ impl Api {
 
         Ok(Api {
             client,
-            host: config.host,
-            token: config.token,
+            host: config.get_host().to_string(),
+            token: config.get_token().to_string(),
         })
     }
 
@@ -141,8 +81,9 @@ impl Api {
     }
 
     /// Executes a method
-    pub async fn execute<M: Method>(&self, method: M) -> Result<M::Response, ExecuteError>
+    pub async fn execute<M>(&self, method: M) -> Result<M::Response, ExecuteError>
     where
+        M: Method,
         M::Response: DeserializeOwned + Send + 'static,
     {
         let req = method.into_request();
@@ -213,37 +154,6 @@ impl fmt::Display for ApiError {
         match self {
             ApiError::BuildClient(err) => write!(out, "can not build HTTP client: {}", err),
         }
-    }
-}
-
-/// An error when parsing proxy
-#[derive(Debug, derive_more::From)]
-pub enum ParseProxyError {
-    /// Can not parse given URL
-    UrlParse(UrlParseError),
-    /// Can not create reqwest Proxy
-    Reqwest(ReqwestError),
-}
-
-impl StdError for ParseProxyError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
-        Some(match self {
-            ParseProxyError::UrlParse(err) => err,
-            ParseProxyError::Reqwest(err) => err,
-        })
-    }
-}
-
-impl fmt::Display for ParseProxyError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            out,
-            "can not parse proxy URL: {}",
-            match self {
-                ParseProxyError::UrlParse(err) => err.to_string(),
-                ParseProxyError::Reqwest(err) => err.to_string(),
-            }
-        )
     }
 }
 
@@ -331,34 +241,7 @@ impl fmt::Display for ExecuteError {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn config() {
-        let config = Config::new("token")
-            .proxy("socks5://user:password@127.0.0.1:1234")
-            .unwrap();
-        assert_eq!(config.token, "token");
-        assert_eq!(config.host, DEFAULT_HOST);
-        assert!(config.proxy.is_some());
-
-        let config = Config::new("token")
-            .host("https://example.com")
-            .proxy("http://127.0.0.1:1234")
-            .unwrap();
-        assert_eq!(config.token, "token");
-        assert_eq!(config.host, "https://example.com");
-        assert!(config.proxy.is_some());
-
-        let config = Config::new("token").proxy("https://127.0.0.1:1234").unwrap();
-        assert_eq!(config.token, "token");
-        assert_eq!(config.host, DEFAULT_HOST);
-        assert!(config.proxy.is_some());
-
-        let config = Config::new("token");
-        assert_eq!(config.token, "token");
-        assert_eq!(config.host, DEFAULT_HOST);
-        assert!(config.proxy.is_none());
-    }
+    use crate::config::DEFAULT_HOST;
 
     #[test]
     fn api() {

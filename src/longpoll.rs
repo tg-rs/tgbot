@@ -9,6 +9,7 @@ use futures_util::{pin_mut, stream::StreamExt};
 use log::error;
 use std::{cmp::max, collections::HashSet, time::Duration};
 use tokio::{
+    spawn,
     sync::mpsc::{channel, Receiver, Sender},
     time::sleep,
 };
@@ -54,6 +55,7 @@ impl<H> LongPoll<H> {
 impl<H> LongPoll<H>
 where
     H: UpdateHandler,
+    H::Future: Send + 'static,
 {
     /// Returns a long poll handle
     pub fn get_handle(&self) -> LongPollHandle {
@@ -101,7 +103,7 @@ where
         };
         pin_mut!(s);
         while let Some(update) = s.next().await {
-            self.handler.handle(update).await;
+            spawn(self.handler.handle(update));
         }
     }
 }

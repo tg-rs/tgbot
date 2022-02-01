@@ -25,7 +25,14 @@ pub struct Api {
 
 impl Api {
     /// Creates a new API instance with given configuration
-    pub fn new<C: Into<Config>>(config: C) -> Result<Self, ApiError> {
+    ///
+    /// # Arguments
+    ///
+    /// - config - A config
+    pub fn new<C>(config: C) -> Result<Self, ApiError>
+    where
+        C: Into<Config>,
+    {
         let config = config.into();
 
         let mut builder = HttpClientBuilder::new();
@@ -36,11 +43,28 @@ impl Api {
         };
         let client = builder.use_rustls_tls().build().map_err(ApiError::BuildClient)?;
 
-        Ok(Api {
+        Ok(Self::with_client(client, config))
+    }
+
+    /// Creates a new API instance with given HTTP client and configuration
+    ///
+    /// # Arguments
+    ///
+    /// - client - An HTTP client
+    /// - config - A config
+    ///
+    /// Note that proxy settings are not applied when using this method.
+    /// You need to do it manually.
+    pub fn with_client<C>(client: HttpClient, config: C) -> Self
+    where
+        C: Into<Config>,
+    {
+        let config = config.into();
+        Self {
             client,
             host: config.get_host().to_string(),
             token: config.get_token().to_string(),
-        })
+        }
     }
 
     /// Downloads a file

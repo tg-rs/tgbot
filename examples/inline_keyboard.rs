@@ -6,7 +6,7 @@ use tgbot::{
     longpoll::LongPoll,
     methods::SendMessage,
     types::{InlineKeyboardButton, Message, Update, UpdateKind},
-    Api, Config, UpdateHandler,
+    Api, UpdateHandler,
 };
 
 struct Handler {
@@ -74,11 +74,6 @@ async fn main() {
     env_logger::init();
 
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let proxy = env::var("TGBOT_PROXY").ok();
-    let mut config = Config::new(token);
-    if let Some(proxy) = proxy {
-        config = config.proxy(proxy).expect("Failed to set proxy");
-    }
-    let api = Api::new(config).expect("Failed to create API");
+    let api = Api::new(token).expect("Failed to create API");
     LongPoll::new(api.clone(), Handler { api }).run().await;
 }

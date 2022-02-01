@@ -1,5 +1,4 @@
 use crate::{
-    config::Config,
     methods::Method,
     request::{FormError, Request, RequestBody, RequestMethod},
     types::{Response, ResponseError},
@@ -15,6 +14,8 @@ use serde_json::Error as JsonError;
 use std::{error::Error as StdError, fmt, time::Duration};
 use tokio::time::sleep;
 
+const DEFAULT_HOST: &str = "https://api.telegram.org";
+
 /// Telegram Bot API client
 #[derive(Clone)]
 pub struct Api {
@@ -24,47 +25,51 @@ pub struct Api {
 }
 
 impl Api {
-    /// Creates a new API instance with given configuration
+    /// Creates a new API instance with given token
     ///
     /// # Arguments
     ///
-    /// - config - A config
-    pub fn new<C>(config: C) -> Result<Self, ApiError>
+    /// * token - A bot token
+    pub fn new<T>(token: T) -> Result<Self, ApiError>
     where
-        C: Into<Config>,
+        T: Into<String>,
     {
-        let config = config.into();
-
-        let mut builder = HttpClientBuilder::new();
-        builder = if let Some(proxy) = config.get_proxy() {
-            builder.proxy(proxy.clone())
-        } else {
-            builder.no_proxy()
-        };
-        let client = builder.use_rustls_tls().build().map_err(ApiError::BuildClient)?;
-
-        Ok(Self::with_client(client, config))
+        let client = HttpClientBuilder::new()
+            .use_rustls_tls()
+            .build()
+            .map_err(ApiError::BuildClient)?;
+        Ok(Self::with_client(client, token))
     }
 
-    /// Creates a new API instance with given HTTP client and configuration
+    /// Creates a new API instance with given HTTP client and token
     ///
     /// # Arguments
     ///
-    /// - client - An HTTP client
-    /// - config - A config
+    /// * client - An HTTP client
+    /// * token - A bot token
     ///
-    /// Note that proxy settings are not applied when using this method.
-    /// You need to do it manually.
-    pub fn with_client<C>(client: HttpClient, config: C) -> Self
+    pub fn with_client<T>(client: HttpClient, token: T) -> Self
     where
-        C: Into<Config>,
+        T: Into<String>,
     {
-        let config = config.into();
         Self {
             client,
-            host: config.get_host().to_string(),
-            token: config.get_token().to_string(),
+            host: String::from(DEFAULT_HOST),
+            token: token.into(),
         }
+    }
+
+    /// Overrides API host
+    ///
+    /// # Arguments
+    ///
+    /// * host - A new API host
+    pub fn with_host<T>(mut self, host: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.host = host.into();
+        self
     }
 
     /// Downloads a file
@@ -303,21 +308,15 @@ impl fmt::Display for ExecuteError {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::DEFAULT_HOST;
 
     #[test]
     fn api() {
-        let config = Config::new("token")
-            .host("https://example.com")
-            .proxy("http://user:password@127.0.0.1:1234")
-            .unwrap();
-        let api = Api::new(config).unwrap();
-        assert_eq!(api.host, "https://example.com");
+        let api = Api::new("token").unwrap();
         assert_eq!(api.token, "token");
-
-        let config = Config::new("token");
-        let api = Api::new(config).unwrap();
         assert_eq!(api.host, DEFAULT_HOST);
+
+        let api = Api::new("token").unwrap().with_host("https://example.com");
         assert_eq!(api.token, "token");
+        assert_eq!(api.host, "https://example.com");
     }
 }

@@ -5,7 +5,7 @@ use tgbot::{
     longpoll::LongPoll,
     methods::SendMediaGroup,
     types::{InputFile, InputMediaPhoto, InputMediaVideo, MediaGroup, Update},
-    Api, Config, UpdateHandler,
+    Api, UpdateHandler,
 };
 
 #[derive(Clone)]
@@ -44,15 +44,10 @@ async fn main() {
     env_logger::init();
 
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let proxy = env::var("TGBOT_PROXY").ok();
     let photo_path = env::var("TGBOT_PHOTO_PATH").expect("TGBOT_PHOTO_PATH is not set");
     let photo_url = env::var("TGBOT_PHOTO_URL").expect("TGBOT_PHOTO_URL is not set");
     let video_path = env::var("TGBOT_VIDEO_PATH").expect("TGBOT_VIDEO_PATH is not set");
-    let mut config = Config::new(token);
-    if let Some(proxy) = proxy {
-        config = config.proxy(proxy).expect("Failed to set proxy");
-    }
-    let api = Api::new(config).expect("Failed to create API");
+    let api = Api::new(token).expect("Failed to create API");
     LongPoll::new(
         api.clone(),
         Handler {

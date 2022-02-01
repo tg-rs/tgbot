@@ -29,7 +29,7 @@ Long polling:
 ```rust no_run
 use futures_util::future::BoxFuture;
 use std::env;
-use tgbot::{Api, Config, UpdateHandler};
+use tgbot::{Api, UpdateHandler};
 use tgbot::longpoll::LongPoll;
 use tgbot::methods::SendMessage;
 use tgbot::types::{Update, UpdateKind};
@@ -59,7 +59,7 @@ impl UpdateHandler for Handler {
 #[tokio::main]
 async fn main() {
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let api = Api::new(Config::new(token)).expect("Failed to create API");
+    let api = Api::new(token).expect("Failed to create API");
     LongPoll::new(api.clone(), Handler { api }).run().await;
 }
 ```

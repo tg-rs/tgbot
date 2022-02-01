@@ -9,7 +9,7 @@ use tgbot::{
     longpoll::LongPoll,
     methods::GetFile,
     types::{Document, MessageData, Update, UpdateKind},
-    Api, Config, UpdateHandler,
+    Api, UpdateHandler,
 };
 use tokio::{fs::File, io::AsyncWriteExt};
 
@@ -56,12 +56,7 @@ async fn main() {
     env_logger::init();
 
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let proxy = env::var("TGBOT_PROXY").ok();
-    let mut config = Config::new(token);
-    if let Some(proxy) = proxy {
-        config = config.proxy(proxy).expect("Failed to set proxy");
-    }
-    let api = Api::new(config).expect("Failed to create API");
+    let api = Api::new(token).expect("Failed to create API");
     let tmpdir = tempdir().expect("Failed to create temporary directory");
     log::info!("Temp dir: {}", tmpdir.path().display());
     LongPoll::new(

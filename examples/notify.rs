@@ -3,7 +3,7 @@ use std::{env, time::Duration};
 use tgbot::{
     methods::SendMessage,
     types::{ChatId, Integer, Update},
-    Api, Config,
+    Api,
 };
 use tokio::{spawn, sync::mpsc, time::sleep};
 
@@ -20,17 +20,12 @@ async fn main() {
     env_logger::init();
 
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let proxy = env::var("TGBOT_PROXY").ok();
     let chat_id = env::var("TGBOT_NOTIFICATION_CHAT_ID").expect("TGBOT_NOTIFICATION_CHAT_ID is not set");
     let chat_id = match chat_id.parse::<Integer>() {
         Ok(chat_id) => ChatId::Id(chat_id),
         Err(_) => ChatId::Username(chat_id),
     };
-    let mut config = Config::new(token);
-    if let Some(proxy) = proxy {
-        config = config.proxy(proxy).expect("Failed to set proxy");
-    }
-    let api = Api::new(config).expect("Failed to create API");
+    let api = Api::new(token).expect("Failed to create API");
 
     let (tx, mut rx) = mpsc::channel(100);
 

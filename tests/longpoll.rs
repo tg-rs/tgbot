@@ -6,7 +6,7 @@ use std::{
     sync::Arc,
     time::{Duration, Instant},
 };
-use tgbot::{longpoll::LongPoll, types::Update, Api, Config, UpdateHandler};
+use tgbot::{longpoll::LongPoll, types::Update, Api, UpdateHandler};
 use tokio::{spawn, sync::Mutex, time::sleep};
 
 struct Handler {
@@ -68,7 +68,7 @@ async fn longpoll() {
             .unwrap(),
         )
         .create();
-    let api = Api::new(Config::new("token").host(server_url())).unwrap();
+    let api = Api::new("token").unwrap().with_host(server_url());
     let updates = Arc::new(Mutex::new(Vec::new()));
     let handler = Handler {
         updates: updates.clone(),

@@ -12,6 +12,24 @@ pub enum Response<T> {
     Error(ResponseError),
 }
 
+impl<T> Response<T> {
+    /// Returns a number of seconds left to wait before the request can be repeated
+    pub fn retry_after(&self) -> Option<u64> {
+        match self {
+            Response::Success(_) => None,
+            Response::Error(err) => err.retry_after(),
+        }
+    }
+
+    /// Converts the response into std result
+    pub fn into_result(self) -> Result<T, ResponseError> {
+        match self {
+            Response::Success(obj) => Ok(obj),
+            Response::Error(err) => Err(err),
+        }
+    }
+}
+
 impl<T> From<RawResponse<T>> for Response<T> {
     fn from(raw: RawResponse<T>) -> Self {
         match raw {
@@ -57,8 +75,8 @@ impl ResponseError {
     }
 
     /// Number of seconds left to wait before the request can be repeated
-    pub fn retry_after(&self) -> Option<Integer> {
-        self.retry_after
+    pub fn retry_after(&self) -> Option<u64> {
+        self.retry_after.and_then(|x| x.try_into().ok())
     }
 
     /// The group has been migrated to a supergroup with the specified identifier

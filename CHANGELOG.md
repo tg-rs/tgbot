@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.0 (02.02.2022)
+
+- Removed `Config`.
+- Added `Api::with_client` method.
+- Spawn a new task for each incoming update in `LongPoll`.
+- Retry a request on timeout error.
+- Added `message_auto_delete_time` field to chat-related structs.
+
 ## 0.16.0 (01.01.2022)
 
 - Added `Update::get_user_id` and `Update::get_user_username` methods.

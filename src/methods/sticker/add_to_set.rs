@@ -17,7 +17,7 @@ impl AddStickerToSet {
     ///
     /// * user_id - User identifier of sticker set owner
     /// * name - Sticker set name
-    /// * sticker - PNG image or TGS animation
+    /// * sticker - Sticker file
     /// * emojis - One or more emoji corresponding to the sticker
     pub fn new<N, E>(user_id: Integer, name: N, sticker: NewSticker, emojis: E) -> Self
     where
@@ -33,6 +33,9 @@ impl AddStickerToSet {
             }
             NewStickerKind::Tgs(file) => {
                 form.insert_field("tgs_sticker", file);
+            }
+            NewStickerKind::Video(file) => {
+                form.insert_field("webm_sticker", file);
             }
         };
         form.insert_field("emojis", emojis.into());

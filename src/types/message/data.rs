@@ -897,7 +897,8 @@ mod tests {
                 "file_unique_id": "unique-id",
                 "width": 512,
                 "height": 512,
-                "is_animated": true
+                "is_animated": true,
+                "is_video": false
             }
         }))
         .unwrap();

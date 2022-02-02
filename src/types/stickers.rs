@@ -100,6 +100,8 @@ pub struct Sticker {
     pub file_size: Option<Integer>,
     /// True, if the sticker is animated
     pub is_animated: bool,
+    /// True, if the sticker is a video sticker
+    pub is_video: bool,
 }
 
 /// Sticker set
@@ -115,6 +117,8 @@ pub struct StickerSet {
     pub stickers: Vec<Sticker>,
     /// True, if the sticker set contains animated stickers
     pub is_animated: bool,
+    /// True, if the sticker set contains video stickers
+    pub is_video: bool,
     /// Sticker set thumbnail in the .WEBP or .TGS format
     pub thumb: Option<PhotoSize>,
 }
@@ -129,6 +133,7 @@ pub struct NewSticker {
 pub(crate) enum NewStickerKind {
     Png(InputFile),
     Tgs(InputFile),
+    Video(InputFile),
 }
 
 impl NewSticker {
@@ -155,6 +160,19 @@ impl NewSticker {
     {
         Self {
             kind: NewStickerKind::Tgs(file.into()),
+        }
+    }
+
+    /// WEBM video
+    ///
+    /// See https://core.telegram.org/stickers#video-sticker-requirements
+    /// for technical requirements
+    pub fn video<I>(file: I) -> Self
+    where
+        I: Into<InputFile>,
+    {
+        Self {
+            kind: NewStickerKind::Video(file.into()),
         }
     }
 }
@@ -187,7 +205,8 @@ mod tests {
                 "scale": 3.0,
             },
             "file_size": 1234,
-            "is_animated": false
+            "is_animated": false,
+            "is_video": false
         }))
         .unwrap();
 
@@ -196,6 +215,7 @@ mod tests {
         assert_eq!(data.width, 512);
         assert_eq!(data.height, 512);
         assert!(!data.is_animated);
+        assert!(!data.is_video);
 
         let thumb = data.thumb.unwrap();
         assert_eq!(thumb.file_id, "AdddddUuUUUUccccUUmm_PPP");
@@ -223,7 +243,8 @@ mod tests {
             "file_unique_id": "unique-id",
             "width": 512,
             "height": 512,
-            "is_animated": true
+            "is_animated": true,
+            "is_video": false
         }))
         .unwrap();
 
@@ -232,6 +253,7 @@ mod tests {
         assert_eq!(data.width, 512);
         assert_eq!(data.height, 512);
         assert!(data.is_animated);
+        assert!(!data.is_video);
         assert!(data.thumb.is_none());
         assert!(data.emoji.is_none());
         assert!(data.set_name.is_none());
@@ -274,6 +296,7 @@ mod tests {
             "contains_masks": false,
             "stickers": [],
             "is_animated": false,
+            "is_video": false,
             "thumb": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-file-unique-id",
@@ -286,6 +309,7 @@ mod tests {
         assert_eq!(data.name, "test");
         assert_eq!(data.title, "test");
         assert!(!data.is_animated);
+        assert!(!data.is_video);
         assert!(!data.contains_masks);
         assert!(data.stickers.is_empty());
 

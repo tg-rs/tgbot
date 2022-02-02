@@ -25,7 +25,7 @@ impl CreateNewStickerSet {
     ///          <bot_username> is case insensitive
     ///          1-64 characters
     /// * title - Sticker set title, 1-64 characters
-    /// * sticker - PNG image or TGS animation
+    /// * sticker - Sticker file
     /// * emojis - One or more emoji corresponding to the sticker
     pub fn new<N, T, E>(user_id: Integer, name: N, title: T, sticker: NewSticker, emojis: E) -> Self
     where
@@ -43,6 +43,9 @@ impl CreateNewStickerSet {
             }
             NewStickerKind::Tgs(file) => {
                 form.insert_field("tgs_sticker", file);
+            }
+            NewStickerKind::Video(file) => {
+                form.insert_field("webm_sticker", file);
             }
         };
         form.insert_field("emojis", emojis.into());

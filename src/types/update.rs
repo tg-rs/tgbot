@@ -112,6 +112,7 @@ impl Update {
             | UpdateKind::EditedMessage(ref msg)
             | UpdateKind::ChannelPost(ref msg)
             | UpdateKind::EditedChannelPost(ref msg) => Some(msg),
+            UpdateKind::CallbackQuery(ref query) => query.message.as_ref(),
             _ => None,
         }
     }

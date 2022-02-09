@@ -99,8 +99,10 @@ impl Update {
     }
 
     /// Returns a user username from update
-    pub fn get_user_username(&self) -> Option<String> {
-        self.get_user().and_then(|user| user.username.clone())
+    pub fn get_user_username(&self) -> Option<&str> {
+        self.get_user()
+            .and_then(|user| user.username.as_ref())
+            .map(String::as_str)
     }
 
     /// Returns a message from update

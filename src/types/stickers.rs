@@ -165,7 +165,7 @@ impl NewSticker {
 
     /// WEBM video
     ///
-    /// See https://core.telegram.org/stickers#video-sticker-requirements
+    /// See <https://core.telegram.org/stickers#video-sticker-requirements>
     /// for technical requirements
     pub fn video<I>(file: I) -> Self
     where

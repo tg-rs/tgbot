@@ -86,6 +86,18 @@ impl Message {
         }
     }
 
+    /// Returns ID of the message author
+    pub fn get_user_id(&self) -> Option<Integer> {
+        self.get_user().map(|user| user.id)
+    }
+
+    /// Returns Username of the message author
+    pub fn get_user_username(&self) -> Option<&str> {
+        self.get_user()
+            .and_then(|user| user.username.as_ref())
+            .map(String::as_str)
+    }
+
     /// Returns text of the message (includes caption)
     pub fn get_text(&self) -> Option<&Text> {
         match self.data {
@@ -275,6 +287,8 @@ mod tests {
         assert_eq!(msg.get_chat_id(), 1);
         assert!(msg.get_chat_username().is_none());
         assert!(msg.get_user().is_some());
+        assert_eq!(msg.get_user_id(), Some(1));
+        assert!(msg.get_user_username().is_none());
         assert!(msg.has_protected_content);
 
         let msg: Message = serde_json::from_value(serde_json::json!({
@@ -287,6 +301,8 @@ mod tests {
         assert_eq!(msg.get_chat_id(), 2);
         assert_eq!(msg.get_chat_username().unwrap(), "supergroupusername");
         assert!(msg.get_user().is_some());
+        assert_eq!(msg.get_user_id(), Some(1));
+        assert!(msg.get_user_username().is_none());
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 2, "date": 1,
@@ -298,6 +314,8 @@ mod tests {
         assert_eq!(msg.get_chat_id(), 3);
         assert!(msg.get_chat_username().is_none());
         assert!(msg.get_user().is_some());
+        assert_eq!(msg.get_user_id(), Some(1));
+        assert!(msg.get_user_username().is_none());
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 2, "date": 1,
@@ -309,10 +327,12 @@ mod tests {
         assert_eq!(msg.get_chat_id(), 4);
         assert_eq!(msg.get_chat_username().unwrap(), "username");
         assert!(msg.get_user().is_some());
+        assert_eq!(msg.get_user_id(), Some(1));
+        assert!(msg.get_user_username().is_none());
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 2, "date": 1,
-            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false, "username": "test"},
             "chat": {"id": 5, "type": "group", "title": "grouptitle"},
             "text": "test"
         }))
@@ -320,6 +340,8 @@ mod tests {
         assert_eq!(msg.get_chat_id(), 5);
         assert!(msg.get_chat_username().is_none());
         assert!(msg.get_user().is_some());
+        assert_eq!(msg.get_user_id(), Some(1));
+        assert_eq!(msg.get_user_username(), Some("test"));
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 1111,
@@ -344,6 +366,8 @@ mod tests {
         assert_eq!(msg.get_chat_id(), 6);
         assert_eq!(msg.get_chat_username().unwrap(), "channelusername");
         assert!(msg.get_user().is_none());
+        assert!(msg.get_user_id().is_none());
+        assert!(msg.get_user_username().is_none());
         assert!(msg.is_automatic_forward);
         if let Chat::Channel(chat) = msg.sender_chat.as_ref().unwrap() {
             assert_eq!(chat.id, 6);
@@ -366,6 +390,8 @@ mod tests {
         assert_eq!(msg.get_chat_id(), 7);
         assert!(msg.get_chat_username().is_none());
         assert!(msg.get_user().is_none());
+        assert!(msg.get_user_id().is_none());
+        assert!(msg.get_user_username().is_none());
     }
 
     #[test]

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.18.0 (10.02.2022)
+
+- Updated tokio version to 1.16.
+- Added Bot API 5.7 support.
+  - Added `NewSticker::video` method.
+  - Added `StickerSet.is_video` field.
+  - Added `Sticker.is_video` field.
+- `Update::get_user_username()` now returns `Option<&str>` instead of `Option<String>`.
+- `Update::get_message()` now includes a message from `CallbackQuery`.
+- Added `Message::get_user_id()` and `Message::get_user_username()` methods.
+
 ## 0.17.0 (02.02.2022)
 
 - Removed `Config`.

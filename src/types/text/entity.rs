@@ -1,12 +1,12 @@
 use super::{error::TextEntityError, raw::RawTextEntity};
 use crate::types::{text::raw::RawTextEntityKind, user::User};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::{convert::TryFrom, ops::Range};
 use vec1::Vec1;
 
 /// Respresents an entity in a text
-#[derive(Clone, Debug, PartialEq, PartialOrd, Serialize)]
-#[serde(into = "RawTextEntity")]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(try_from = "RawTextEntity", into = "RawTextEntity")]
 pub enum TextEntity {
     /// Bold text
     Bold(TextEntityPosition),

@@ -162,7 +162,7 @@ impl Api {
         };
         Ok(match request.into_body() {
             RequestBody::Form(form) => {
-                let form = form.into_multipart().await?;
+                let form = form.into_multipart()?;
                 debug!("Sending multipart body: {:?}", form);
                 builder.multipart(form)
             }

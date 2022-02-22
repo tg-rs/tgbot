@@ -28,7 +28,7 @@ impl FormValue {
         }
     }
 
-    async fn into_part(self) -> Result<Part, FormError> {
+    fn into_part(self) -> Result<Part, FormError> {
         Ok(match self {
             FormValue::Text(text) => Part::text(text),
             FormValue::File(file) => match file.kind {
@@ -100,10 +100,10 @@ impl Form {
         self.fields.remove(&name.into());
     }
 
-    pub(crate) async fn into_multipart(self) -> Result<MultipartForm, FormError> {
+    pub(crate) fn into_multipart(self) -> Result<MultipartForm, FormError> {
         let mut result = MultipartForm::new();
         for (field_name, field_value) in self.fields {
-            let field_value = field_value.into_part().await?;
+            let field_value = field_value.into_part()?;
             result = result.part(field_name, field_value);
         }
         Ok(result)
@@ -159,13 +159,13 @@ mod tests {
         assert!(val.get_file().is_some());
     }
 
-    #[tokio::test]
-    async fn form() {
+    #[test]
+    fn form() {
         let mut form = Form::new();
         form.insert_field("id", 1);
         form.insert_field("file-id", InputFile::file_id("file-id"));
         form.insert_field("file-url", InputFile::url("url"));
         form.insert_field("file-reader", InputFile::from(Cursor::new(b"test")));
-        form.into_multipart().await.unwrap();
+        form.into_multipart().unwrap();
     }
 }

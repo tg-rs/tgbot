@@ -1,101 +1,59 @@
-use crate::types::{
-    chat::Chat, message::raw::RawMessage, primitive::Integer, reply_markup::InlineKeyboardMarkup, text::Text,
-    user::User,
-};
-use serde::{de::Error, Deserialize, Deserializer};
-use std::convert::TryInto;
+use crate::types::{chat::Chat, primitive::Integer, reply_markup::InlineKeyboardMarkup, text::Text, user::User};
+use serde::Deserialize;
 
 mod data;
+mod edit_result;
 mod forward;
-mod kind;
-mod raw;
+mod sender;
 
-pub use self::{data::*, forward::*, kind::*};
+pub use self::{data::*, edit_result::*, forward::*, sender::*};
 
 /// This object represents a message
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Message {
     /// Unique message identifier inside this chat
+    #[serde(rename = "message_id")]
     pub id: Integer,
     /// Date the message was sent in Unix time
     pub date: Integer,
-    /// Contains chat-specific data
-    pub kind: MessageKind,
+    /// Date the message was last edited in Unix time
+    pub edit_date: Option<Integer>,
+    /// Sender of the message
+    #[serde(flatten)]
+    pub sender: MessageSender,
+    /// Conversation the message belongs to
+    pub chat: Chat,
+    /// Author signature
+    pub author_signature: Option<String>,
     /// True, if the message can't be forwarded
+    #[serde(default)]
     pub has_protected_content: bool,
-    /// True, if the message is a channel post that was automatically forwarded to the connected discussion group
-    pub is_automatic_forward: bool,
     /// Forwarded data
+    #[serde(flatten)]
     pub forward: Option<Forward>,
+    /// True, if the message is a channel post that was automatically forwarded to the connected discussion group
+    #[serde(default)]
+    pub is_automatic_forward: bool,
     /// For replies, the original message
     /// Note that the Message object in this field will not contain further
     /// reply_to fields even if it itself is a reply
+    #[serde(rename = "reply_to_message")]
     pub reply_to: Option<Box<Message>>,
     /// Bot through which the message was sent
     pub via_bot: Option<User>,
-    /// Date the message was last edited in Unix time
-    pub edit_date: Option<Integer>,
     /// The unique identifier of a media message group this message belongs to
     pub media_group_id: Option<String>,
-    /// Contains message data
-    pub data: MessageData,
     /// Inline keyboard attached to the message
     pub reply_markup: Option<InlineKeyboardMarkup>,
-    /// Sender of the message, sent on behalf of a chat
-    ///
-    /// The channel itself for channel messages
-    /// The supergroup itself for messages from anonymous group administrators
-    /// The linked channel for messages automatically forwarded to the discussion group
-    pub sender_chat: Option<Chat>,
+    /// Contains message data
+    #[serde(flatten)]
+    pub data: MessageData,
 }
 
 impl Message {
     /// Returns true if message has edited and false otherwise
     pub fn is_edited(&self) -> bool {
         self.edit_date.is_some()
-    }
-
-    /// Returns ID of the chat
-    pub fn get_chat_id(&self) -> Integer {
-        match self.kind {
-            MessageKind::Private { ref chat, .. } => chat.id,
-            MessageKind::Channel { ref chat, .. } => chat.id,
-            MessageKind::Group { ref chat, .. } => chat.id,
-            MessageKind::Supergroup { ref chat, .. } => chat.id,
-        }
-    }
-
-    /// Returns username of the chat
-    pub fn get_chat_username(&self) -> Option<&str> {
-        match &self.kind {
-            MessageKind::Private { chat, .. } => &chat.username,
-            MessageKind::Channel { chat, .. } => &chat.username,
-            MessageKind::Supergroup { chat, .. } => &chat.username,
-            _ => &None,
-        }
-        .as_deref()
-    }
-
-    /// Returns author of the message
-    pub fn get_user(&self) -> Option<&User> {
-        match self.kind {
-            MessageKind::Channel { .. } => None,
-            MessageKind::Private { ref from, .. }
-            | MessageKind::Group { ref from, .. }
-            | MessageKind::Supergroup { ref from, .. } => Some(from),
-        }
-    }
-
-    /// Returns ID of the message author
-    pub fn get_user_id(&self) -> Option<Integer> {
-        self.get_user().map(|user| user.id)
-    }
-
-    /// Returns Username of the message author
-    pub fn get_user_username(&self) -> Option<&str> {
-        self.get_user()
-            .and_then(|user| user.username.as_ref())
-            .map(String::as_str)
     }
 
     /// Returns text of the message (includes caption)
@@ -125,75 +83,6 @@ impl Message {
             _ => None,
         }
     }
-}
-
-impl<'de> Deserialize<'de> for Message {
-    fn deserialize<D>(deserializer: D) -> Result<Message, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let raw = RawMessage::deserialize(deserializer)?;
-
-        macro_rules! required {
-            ($name:ident) => {{
-                match raw.$name {
-                    Some(val) => val,
-                    None => return Err(D::Error::missing_field(stringify!($name))),
-                }
-            }};
-        }
-
-        let message_kind = match raw.chat {
-            Chat::Channel(chat) => MessageKind::Channel {
-                chat,
-                author_signature: raw.author_signature,
-            },
-            Chat::Group(chat) => MessageKind::Group {
-                chat,
-                from: required!(from),
-                author_signature: raw.author_signature,
-            },
-            Chat::Private(chat) => MessageKind::Private {
-                chat,
-                from: required!(from),
-            },
-            Chat::Supergroup(chat) => MessageKind::Supergroup {
-                chat,
-                from: required!(from),
-                author_signature: raw.author_signature,
-            },
-        };
-
-        Ok(Message {
-            id: raw.message_id,
-            date: raw.date,
-            kind: message_kind,
-            has_protected_content: raw.has_protected_content.is_some(),
-            is_automatic_forward: raw.is_automatic_forward.is_some(),
-            forward: raw.forward,
-            reply_to: raw.reply_to_message.map(Box::new),
-            via_bot: raw.via_bot,
-            edit_date: raw.edit_date,
-            media_group_id: raw.media_group_id,
-            data: raw
-                .data
-                .try_into()
-                .map_err(|err: MessageDataError| D::Error::custom(err.to_string()))?,
-            reply_markup: raw.reply_markup,
-            sender_chat: raw.sender_chat,
-        })
-    }
-}
-
-/// Result of editMessage* requests
-#[derive(Clone, Debug, Deserialize)]
-#[allow(clippy::large_enum_variant)]
-#[serde(untagged)]
-pub enum EditMessageResult {
-    /// Returned if edited message is sent by the bot
-    Message(Message),
-    /// Returned if edited message is NOT sent by the bot
-    Bool(bool),
 }
 
 #[cfg(test)]
@@ -284,11 +173,11 @@ mod tests {
             "text": "test"
         }))
         .unwrap();
-        assert_eq!(msg.get_chat_id(), 1);
-        assert!(msg.get_chat_username().is_none());
-        assert!(msg.get_user().is_some());
-        assert_eq!(msg.get_user_id(), Some(1));
-        assert!(msg.get_user_username().is_none());
+        assert_eq!(msg.chat.get_id(), 1);
+        assert!(msg.chat.get_username().is_none());
+        assert!(msg.sender.get_user().is_some());
+        assert_eq!(msg.sender.get_user_id(), Some(1));
+        assert!(msg.sender.get_user_username().is_none());
         assert!(msg.has_protected_content);
 
         let msg: Message = serde_json::from_value(serde_json::json!({
@@ -298,11 +187,11 @@ mod tests {
             "text": "test"
         }))
         .unwrap();
-        assert_eq!(msg.get_chat_id(), 2);
-        assert_eq!(msg.get_chat_username().unwrap(), "supergroupusername");
-        assert!(msg.get_user().is_some());
-        assert_eq!(msg.get_user_id(), Some(1));
-        assert!(msg.get_user_username().is_none());
+        assert_eq!(msg.chat.get_id(), 2);
+        assert_eq!(msg.chat.get_username().unwrap(), "supergroupusername");
+        assert!(msg.sender.get_user().is_some());
+        assert_eq!(msg.sender.get_user_id(), Some(1));
+        assert!(msg.sender.get_user_username().is_none());
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 2, "date": 1,
@@ -311,11 +200,11 @@ mod tests {
             "text": "test"
         }))
         .unwrap();
-        assert_eq!(msg.get_chat_id(), 3);
-        assert!(msg.get_chat_username().is_none());
-        assert!(msg.get_user().is_some());
-        assert_eq!(msg.get_user_id(), Some(1));
-        assert!(msg.get_user_username().is_none());
+        assert_eq!(msg.chat.get_id(), 3);
+        assert!(msg.chat.get_username().is_none());
+        assert!(msg.sender.get_user().is_some());
+        assert_eq!(msg.sender.get_user_id(), Some(1));
+        assert!(msg.sender.get_user_username().is_none());
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 2, "date": 1,
@@ -324,11 +213,11 @@ mod tests {
             "text": "test"
         }))
         .unwrap();
-        assert_eq!(msg.get_chat_id(), 4);
-        assert_eq!(msg.get_chat_username().unwrap(), "username");
-        assert!(msg.get_user().is_some());
-        assert_eq!(msg.get_user_id(), Some(1));
-        assert!(msg.get_user_username().is_none());
+        assert_eq!(msg.chat.get_id(), 4);
+        assert_eq!(msg.chat.get_username().unwrap(), "username");
+        assert!(msg.sender.get_user().is_some());
+        assert_eq!(msg.sender.get_user_id(), Some(1));
+        assert!(msg.sender.get_user_username().is_none());
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 2, "date": 1,
@@ -337,11 +226,11 @@ mod tests {
             "text": "test"
         }))
         .unwrap();
-        assert_eq!(msg.get_chat_id(), 5);
-        assert!(msg.get_chat_username().is_none());
-        assert!(msg.get_user().is_some());
-        assert_eq!(msg.get_user_id(), Some(1));
-        assert_eq!(msg.get_user_username(), Some("test"));
+        assert_eq!(msg.chat.get_id(), 5);
+        assert!(msg.chat.get_username().is_none());
+        assert!(msg.sender.get_user().is_some());
+        assert_eq!(msg.sender.get_user_id(), Some(1));
+        assert_eq!(msg.sender.get_user_username(), Some("test"));
 
         let msg: Message = serde_json::from_value(serde_json::json!({
             "message_id": 1111,
@@ -363,16 +252,16 @@ mod tests {
                 "text": "test message from channel"
         }))
         .unwrap();
-        assert_eq!(msg.get_chat_id(), 6);
-        assert_eq!(msg.get_chat_username().unwrap(), "channelusername");
-        assert!(msg.get_user().is_none());
-        assert!(msg.get_user_id().is_none());
-        assert!(msg.get_user_username().is_none());
+        assert_eq!(msg.chat.get_id(), 6);
+        assert_eq!(msg.chat.get_username().unwrap(), "channelusername");
+        assert!(msg.sender.get_user().is_none());
+        assert!(msg.sender.get_user_id().is_none());
+        assert!(msg.sender.get_user_username().is_none());
         assert!(msg.is_automatic_forward);
-        if let Chat::Channel(chat) = msg.sender_chat.as_ref().unwrap() {
+        if let Chat::Channel(chat) = msg.sender.get_chat().as_ref().unwrap() {
             assert_eq!(chat.id, 6);
         } else {
-            panic!("Unexpected sender chat: {:?}", msg.sender_chat);
+            panic!("Unexpected sender: {:?}", msg.sender);
         }
 
         let msg: Message = serde_json::from_value(serde_json::json!({
@@ -387,11 +276,11 @@ mod tests {
                 "text": "test message from channel"
         }))
         .unwrap();
-        assert_eq!(msg.get_chat_id(), 7);
-        assert!(msg.get_chat_username().is_none());
-        assert!(msg.get_user().is_none());
-        assert!(msg.get_user_id().is_none());
-        assert!(msg.get_user_username().is_none());
+        assert_eq!(msg.chat.get_id(), 7);
+        assert!(msg.chat.get_username().is_none());
+        assert!(msg.sender.get_user().is_none());
+        assert!(msg.sender.get_user_id().is_none());
+        assert!(msg.sender.get_user_username().is_none());
     }
 
     #[test]

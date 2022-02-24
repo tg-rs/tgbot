@@ -47,7 +47,7 @@ impl UpdateHandler for Handler {
         Box::pin(async move {
             if let UpdateKind::Message(message) = update.kind {
                 if let Some(text) = message.get_text() {
-                    let chat_id = message.get_chat_id();
+                    let chat_id = message.chat.get_id();
                     let method = SendMessage::new(chat_id, text.data.clone());
                     api.execute(method).await.unwrap();
                 }

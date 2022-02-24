@@ -27,7 +27,7 @@ impl CallbackData {
 async fn handle_update(api: &Api, update: Update) -> Option<Message> {
     match update.kind {
         UpdateKind::Message(message) => {
-            let chat_id = message.get_chat_id();
+            let chat_id = message.chat.get_id();
             if let Some(commands) = message.get_text().and_then(|text| text.get_bot_commands()) {
                 let command = &commands[0];
                 if command.command == "/start" {
@@ -42,7 +42,7 @@ async fn handle_update(api: &Api, update: Update) -> Option<Message> {
         }
         UpdateKind::CallbackQuery(query) => {
             if let Some(ref message) = query.message {
-                let chat_id = message.get_chat_id();
+                let chat_id = message.chat.get_id();
                 // or query.data if you have passed a plain string
                 let data = query.parse_data::<CallbackData>().unwrap().unwrap();
                 let method = SendMessage::new(chat_id, data.value);

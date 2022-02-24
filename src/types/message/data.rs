@@ -6,13 +6,14 @@ use crate::types::{
     document::Document,
     game::Game,
     location::{Location, ProximityAlertTriggered},
-    message::{raw::RawMessageData, Message, Text},
+    message::{Message, Text},
     passport::PassportData,
     payments::{Invoice, SuccessfulPayment},
     photo_size::PhotoSize,
     poll::Poll,
-    primitive::Integer,
+    primitive::{Integer, True},
     stickers::Sticker,
+    text::RawTextEntity,
     user::User,
     venue::Venue,
     video::Video,
@@ -21,7 +22,8 @@ use crate::types::{
     TextEntityError,
 };
 use serde::Deserialize;
-use std::{convert::TryFrom, error::Error as StdError, fmt};
+use std::{convert::TryFrom, error::Error, fmt};
+use vec1::Vec1;
 
 /// Contains message data
 #[derive(Clone, Debug, Deserialize)]
@@ -254,6 +256,160 @@ impl TryFrom<RawMessageData> for MessageData {
     }
 }
 
+#[derive(Debug, Deserialize)]
+#[allow(clippy::large_enum_variant)]
+#[serde(untagged)]
+enum RawMessageData {
+    Animation {
+        animation: Animation,
+    },
+    Audio {
+        caption: Option<String>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
+        audio: Audio,
+    },
+    ChannelChatCreated {
+        #[allow(dead_code)]
+        channel_chat_created: True,
+    },
+    ConnectedWebsite {
+        connected_website: String,
+    },
+    Contact {
+        contact: Contact,
+    },
+    DeleteChatPhoto {
+        #[allow(dead_code)]
+        delete_chat_photo: True,
+    },
+    Dice {
+        dice: Dice,
+    },
+    Document {
+        caption: Option<String>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
+        document: Document,
+    },
+    Game {
+        game: Game,
+    },
+    GroupChatCreated {
+        #[allow(dead_code)]
+        group_chat_created: True,
+    },
+    Invoice {
+        invoice: Invoice,
+    },
+    LeftChatMember {
+        left_chat_member: User,
+    },
+    Location {
+        location: Location,
+    },
+    MessageAutoDeleteTimerChanged {
+        message_auto_delete_timer_changed: RawMessageAutoDeleteTimerChanged,
+    },
+    MigrateFromChatId {
+        migrate_from_chat_id: Integer,
+    },
+    MigrateToChatId {
+        migrate_to_chat_id: Integer,
+    },
+    NewChatMembers {
+        new_chat_members: Vec<User>,
+    },
+    NewChatPhoto {
+        new_chat_photo: Vec<PhotoSize>,
+    },
+    NewChatTitle {
+        new_chat_title: String,
+    },
+    PassportData {
+        passport_data: PassportData,
+    },
+    PinnedMessage {
+        pinned_message: Box<Message>,
+    },
+    Photo {
+        caption: Option<String>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
+        photo: Vec<PhotoSize>,
+    },
+    Poll {
+        poll: Poll,
+    },
+    ProximityAlertTriggered {
+        proximity_alert_triggered: ProximityAlertTriggered,
+    },
+    Sticker {
+        sticker: Sticker,
+    },
+    SuccessfulPayment {
+        successful_payment: SuccessfulPayment,
+    },
+    SupergroupChatCreated {
+        #[allow(dead_code)]
+        supergroup_chat_created: True,
+    },
+    Text {
+        text: String,
+        entities: Option<Vec1<RawTextEntity>>,
+    },
+    Venue {
+        venue: Venue,
+    },
+    Video {
+        caption: Option<String>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
+        video: Video,
+    },
+    VideoNote {
+        video_note: VideoNote,
+    },
+    Voice {
+        caption: Option<String>,
+        caption_entities: Option<Vec1<RawTextEntity>>,
+        voice: Voice,
+    },
+    VoiceChatScheduled {
+        voice_chat_scheduled: RawVoiceChatScheduled,
+    },
+    VoiceChatEnded {
+        voice_chat_ended: RawVoiceChatEnded,
+    },
+    VoiceChatParticipantsInvited {
+        voice_chat_participants_invited: RawVoiceChatParticipantsInvited,
+    },
+    VoiceChatStarted {
+        #[allow(dead_code)]
+        voice_chat_started: RawVoiceChatStarted,
+    },
+    Empty {}, // must be last because all variants below won't be deserialized
+}
+
+#[derive(Debug, Deserialize)]
+struct RawMessageAutoDeleteTimerChanged {
+    message_auto_delete_time: Integer,
+}
+
+#[derive(Debug, Deserialize)]
+struct RawVoiceChatScheduled {
+    start_date: Integer,
+}
+
+#[derive(Debug, Deserialize)]
+struct RawVoiceChatEnded {
+    duration: Integer,
+}
+
+#[derive(Debug, Deserialize)]
+struct RawVoiceChatParticipantsInvited {
+    users: Option<Vec<User>>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RawVoiceChatStarted {}
+
 /// A message data error when parsing message data
 #[derive(Debug)]
 pub enum MessageDataError {
@@ -261,8 +417,8 @@ pub enum MessageDataError {
     TextEntity(TextEntityError),
 }
 
-impl StdError for MessageDataError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for MessageDataError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
             MessageDataError::TextEntity(err) => Some(err),
         }

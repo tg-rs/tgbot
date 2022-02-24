@@ -29,7 +29,7 @@ impl UpdateHandler for Handler {
         Box::pin(async move {
             log::info!("got an update: {:?}\n", update);
             if let UpdateKind::Message(message) = update.kind {
-                let chat_id = message.get_chat_id();
+                let chat_id = message.chat.get_id();
                 if let Some(reply_to) = message.reply_to {
                     match reply_to.data {
                         // Change animation to document

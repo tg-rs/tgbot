@@ -54,7 +54,7 @@ impl Update {
     /// Returns a chat ID from update
     pub fn get_chat_id(&self) -> Option<Integer> {
         self.get_message()
-            .map(|msg| msg.get_chat_id())
+            .map(|msg| msg.chat.get_id())
             .or_else(|| match self.kind {
                 UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => Some(status.chat.get_id()),
                 UpdateKind::ChatJoinRequest(ref request) => Some(request.chat.get_id()),
@@ -65,7 +65,7 @@ impl Update {
     /// Returns a chat username from update
     pub fn get_chat_username(&self) -> Option<&str> {
         self.get_message()
-            .and_then(|msg| msg.get_chat_username())
+            .and_then(|msg| msg.chat.get_username())
             .or_else(|| match self.kind {
                 UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => status.chat.get_username(),
                 UpdateKind::ChatJoinRequest(ref request) => request.chat.get_username(),
@@ -79,7 +79,7 @@ impl Update {
             UpdateKind::Message(ref msg)
             | UpdateKind::EditedMessage(ref msg)
             | UpdateKind::ChannelPost(ref msg)
-            | UpdateKind::EditedChannelPost(ref msg) => return msg.get_user(),
+            | UpdateKind::EditedChannelPost(ref msg) => return msg.sender.get_user(),
             UpdateKind::InlineQuery(ref query) => &query.from,
             UpdateKind::ChosenInlineResult(ref result) => &result.from,
             UpdateKind::CallbackQuery(ref query) => &query.from,

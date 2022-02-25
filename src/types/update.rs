@@ -1,6 +1,6 @@
 use crate::types::{
     callback_query::CallbackQuery,
-    chat::ChatMemberUpdated,
+    chat::{Chat, ChatMemberUpdated},
     inline_mode::{ChosenInlineResult, InlineQuery},
     message::Message,
     payments::{PreCheckoutQuery, ShippingQuery},
@@ -8,7 +8,7 @@ use crate::types::{
     primitive::Integer,
     user::User,
 };
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 
 use super::ChatJoinRequest;
@@ -27,50 +27,27 @@ pub struct Update {
     pub id: Integer,
     /// Kind of update
     #[serde(flatten)]
-    #[serde(deserialize_with = "deserialize_update_kind")]
     pub kind: UpdateKind,
 }
 
-fn deserialize_update_kind<'de, D>(deserializer: D) -> Result<UpdateKind, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    #[derive(Deserialize)]
-    #[serde(untagged)]
-    #[allow(clippy::large_enum_variant)]
-    enum Inner {
-        Kind(UpdateKind),
-        Unknown(JsonValue),
-    }
-
-    let inner = Inner::deserialize(deserializer)?;
-    match inner {
-        Inner::Kind(kind) => Ok(kind),
-        Inner::Unknown(value) => Ok(UpdateKind::Unknown(value)),
-    }
-}
-
 impl Update {
+    /// Returns a chat from update
+    pub fn get_chat(&self) -> Option<&Chat> {
+        self.get_message().map(|msg| &msg.chat).or(match self.kind {
+            UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => Some(&status.chat),
+            UpdateKind::ChatJoinRequest(ref request) => Some(&request.chat),
+            _ => None,
+        })
+    }
+
     /// Returns a chat ID from update
     pub fn get_chat_id(&self) -> Option<Integer> {
-        self.get_message()
-            .map(|msg| msg.chat.get_id())
-            .or_else(|| match self.kind {
-                UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => Some(status.chat.get_id()),
-                UpdateKind::ChatJoinRequest(ref request) => Some(request.chat.get_id()),
-                _ => None,
-            })
+        self.get_chat().map(|chat| chat.get_id())
     }
 
     /// Returns a chat username from update
     pub fn get_chat_username(&self) -> Option<&str> {
-        self.get_message()
-            .and_then(|msg| msg.chat.get_username())
-            .or_else(|| match self.kind {
-                UpdateKind::BotStatus(ref status) | UpdateKind::UserStatus(ref status) => status.chat.get_username(),
-                UpdateKind::ChatJoinRequest(ref request) => request.chat.get_username(),
-                _ => None,
-            })
+        self.get_chat().and_then(|chat| chat.get_username())
     }
 
     /// Returns a user from update

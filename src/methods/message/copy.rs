@@ -1,9 +1,10 @@
+use serde::Serialize;
+
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, Integer, MessageId, ParseMode, ReplyMarkup, TextEntity},
+    types::{ChatId, Integer, MessageId, ParseMode, ReplyMarkup, TextEntities, TextEntity},
 };
-use serde::Serialize;
 
 /// Copy messages of any kind
 ///
@@ -19,7 +20,7 @@ pub struct CopyMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption_entities: Option<Vec<TextEntity>>,
+    caption_entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -71,8 +72,11 @@ impl CopyMessage {
     /// List of special entities that appear in the new caption
     ///
     /// Parse mode will be set to None when this method is called
-    pub fn caption_entities(mut self, caption_entities: Vec<TextEntity>) -> Self {
-        self.caption_entities = Some(caption_entities);
+    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.caption_entities = Some(caption_entities.into_iter().collect());
         self.parse_mode = None;
         self
     }
@@ -130,24 +134,26 @@ impl Method for CopyMessage {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use serde_json::Value;
+
     use crate::{
         request::{RequestBody, RequestMethod},
-        types::ForceReply,
+        types::{ForceReply, TextEntity},
     };
-    use serde_json::Value;
+
+    use super::*;
 
     #[test]
     fn serialize_copy_message_full() {
-        let request = CopyMessage::new(1, 2, 3)
+        let method = CopyMessage::new(1, 2, 3)
             .caption("caption")
             .parse_mode(ParseMode::Markdown)
             .disable_notification(true)
             .protect_content(true)
             .reply_to_message_id(1)
             .reply_markup(ForceReply::new(true))
-            .allow_sending_without_reply(true)
-            .into_request();
+            .allow_sending_without_reply(true);
+        let request = method.clone().into_request();
         assert_eq!(request.get_method(), RequestMethod::Post);
         assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/copyMessage");
         if let RequestBody::Json(data) = request.into_body() {
@@ -169,6 +175,14 @@ mod tests {
             );
         } else {
             panic!("Unexpected request body");
+        }
+        let request = method.caption_entities(vec![TextEntity::bold(1..2)]).into_request();
+        if let RequestBody::Json(data) = request.into_body() {
+            let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
+            assert_eq!(
+                data.get("caption_entities").unwrap(),
+                &serde_json::json!([{"type": "bold", "offset": 1, "length": 1}])
+            );
         }
     }
 

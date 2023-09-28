@@ -1,70 +1,50 @@
-use self::entity::convert_entities;
 use std::str::EncodeUtf16;
 
-mod entity;
+use serde::{Deserialize, Serialize};
+
+pub use self::{
+    entities::{TextEntities, TextEntity, TextEntityBotCommand, TextEntityPosition},
+    error::TextEntityError,
+};
+
+mod entities;
 mod error;
 mod raw;
 
-pub(crate) use self::{entity::serialize_text_entities, raw::RawTextEntity};
-pub use self::{
-    entity::{TextEntity, TextEntityBotCommand, TextEntityPosition},
-    error::TextEntityError,
-};
-use vec1::Vec1;
-
 /// Text with entities
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Text {
     /// The actual UTF-8 text
     pub data: String,
     /// Text entities
-    pub entities: Option<Vec1<TextEntity>>,
+    pub entities: Option<TextEntities>,
 }
 
 impl Text {
-    pub(crate) fn from_raw_opt<S: Into<String>>(
-        data: Option<S>,
-        entities: Option<Vec1<RawTextEntity>>,
-    ) -> Result<Option<Text>, TextEntityError> {
-        data.map(|x| Text::from_raw(x, entities)).transpose()
-    }
-
-    pub(crate) fn from_raw<S: Into<String>>(
-        data: S,
-        entities: Option<Vec1<RawTextEntity>>,
-    ) -> Result<Text, TextEntityError> {
-        let data = data.into();
-        let text_len = data.encode_utf16().count() as u32;
-        let entities = entities
-            .map(|entities| convert_entities(entities, text_len))
-            .transpose()?
-            .map(Vec1::try_from_vec)
-            .map(Result::ok)
-            .flatten();
-
-        Ok(Text { data, entities })
-    }
-
     /// Returns a list of bot commands found in text
-    pub fn get_bot_commands(&self) -> Option<Vec1<TextEntityBotCommand>> {
-        if let Some(ref entities) = self.entities {
-            let mut result = Vec::new();
-            let repr = TextRepr::from(self);
-            for entity in entities {
-                if let TextEntity::BotCommand(position) = entity {
-                    let entity_data = repr.get_entity_content(*position);
-                    let parts = entity_data.as_str().splitn(2, '@').collect::<Vec<&str>>();
-                    let len = parts.len();
-                    assert!(len >= 1);
-                    let command = parts[0].to_string();
-                    let bot_name = if len == 2 { Some(parts[1].to_string()) } else { None };
-                    result.push(TextEntityBotCommand { command, bot_name })
-                }
-            }
-            Vec1::try_from_vec(result).ok()
-        } else {
-            None
-        }
+    pub fn get_bot_commands(&self) -> Option<Vec<TextEntityBotCommand>> {
+        self.entities
+            .as_ref()
+            .map(|entities| {
+                let repr = TextRepr::from(self);
+                entities
+                    .into_iter()
+                    .filter_map(|entity| {
+                        if let TextEntity::BotCommand(position) = entity {
+                            let entity_data = repr.get_entity_content(*position);
+                            let parts = entity_data.as_str().splitn(2, '@').collect::<Vec<&str>>();
+                            let len = parts.len();
+                            assert!(len >= 1);
+                            let command = parts[0].to_string();
+                            let bot_name = if len == 2 { Some(parts[1].to_string()) } else { None };
+                            Some(TextEntityBotCommand { command, bot_name })
+                        } else {
+                            None
+                        }
+                    })
+                    .collect::<Vec<TextEntityBotCommand>>()
+            })
+            .filter(|entities| !entities.is_empty())
     }
 }
 
@@ -117,9 +97,11 @@ impl<'a> TextRepr<'a> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::types::{Message, MessageData, User};
     use serde_json::json;
+
+    use crate::types::{Message, MessageData, User};
+
+    use super::*;
 
     #[test]
     fn deserialize_message_entities() {
@@ -159,7 +141,7 @@ mod tests {
         });
         let msg: Message = serde_json::from_value(input).unwrap();
         if let MessageData::Text(text) = msg.data {
-            let entities = text.entities.unwrap().into_vec();
+            let entities: Vec<TextEntity> = text.entities.unwrap().into();
             assert_eq!(
                 vec![
                     TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 }),
@@ -210,74 +192,18 @@ mod tests {
     }
 
     #[test]
-    fn deserialize_message_bad_entities() {
-        for (input, error) in vec![
+    fn deserialize_bad_entities() {
+        for (input, error) in [
             (
-                json!({
-                    "message_id": 1, "date": 0,
-                    "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-                    "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-                    "text": "bad offset",
-                    "entities": [
-                        {
-                            "type": "bold",
-                            "offset": 11,
-                            "length": 1
-                        }
-                    ]
-                }),
-                r#"offset "11" is out of text bounds"#,
-            ),
-            (
-                json!({
-                    "message_id": 1, "date": 0,
-                    "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-                    "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-                    "text": "bad offset",
-                    "entities": [
-                        {
-                            "type": "bold",
-                            "offset": 0,
-                            "length": 11
-                        }
-                    ]
-                }),
-                r#"length "11" is out of text bounds"#,
-            ),
-            (
-                json!({
-                    "message_id": 1, "date": 0,
-                    "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-                    "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-                    "text": "bad offset",
-                    "entities": [
-                        {
-                            "type": "text_link",
-                            "offset": 0,
-                            "length": 2
-                        }
-                    ]
-                }),
+                json!([{"type": "text_link", "offset": 0, "length": 2}]),
                 "URL is required for text_link entity",
             ),
             (
-                json!({
-                    "message_id": 1, "date": 0,
-                    "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-                    "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-                    "text": "bad offset",
-                    "entities": [
-                        {
-                            "type": "text_mention",
-                            "offset": 0,
-                            "length": 2
-                        }
-                    ]
-                }),
+                json!([{"type": "text_mention", "offset": 0, "length": 2}]),
                 "user is required for text_mention entity",
             ),
         ] {
-            let err = serde_json::from_value::<Message>(input).unwrap_err();
+            let err = serde_json::from_value::<TextEntities>(input).unwrap_err();
             assert_eq!(err.to_string(), error.to_string());
         }
     }

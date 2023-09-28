@@ -2,7 +2,7 @@ use crate::types::{
     parse_mode::ParseMode,
     payments::LabeledPrice,
     primitive::{Float, Integer},
-    text::TextEntity,
+    text::{TextEntities, TextEntity},
 };
 use serde::Serialize;
 use serde_json::Error as JsonError;
@@ -331,7 +331,7 @@ impl InputMessageContentLocation {
 pub struct InputMessageContentText {
     message_text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    entities: Option<Vec<TextEntity>>,
+    entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -356,7 +356,10 @@ impl InputMessageContentText {
     /// List of special entities that appear in the caption
     ///
     /// Parse mode will be set to None when this method is called
-    pub fn entities(mut self, entities: Vec<TextEntity>) -> Self {
+    pub fn entities<T>(mut self, entities: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
         self.entities = Some(entities);
         self.parse_mode = None;
         self

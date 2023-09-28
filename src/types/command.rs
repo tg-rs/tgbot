@@ -1,11 +1,13 @@
-use crate::types::message::Message;
-use shellwords::MismatchedQuotes;
 use std::{convert::TryFrom, error::Error, fmt, string::FromUtf16Error};
+
+use shellwords::MismatchedQuotes;
+
+use crate::types::message::Message;
 
 /// A simple command implementation
 ///
 /// We just take first command from a message and ignore others.
-/// Also we assume that all text after command is arguments separated by whitespace.
+/// Also we assume that entire text after command is arguments separated by whitespace.
 /// In order to include space in argument you need to wrap it with `'`: `'arg1 v' arg2`.
 ///
 /// # Example

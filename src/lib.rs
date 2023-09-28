@@ -3,6 +3,13 @@
 #![recursion_limit = "256"]
 #![warn(missing_docs)]
 
+pub use mime;
+
+pub use self::{
+    api::{Api, ApiError, DownloadFileError, ExecuteError},
+    handler::{SyncedUpdateHandler, UpdateHandler},
+};
+
 mod api;
 mod handler;
 mod request;
@@ -18,11 +25,3 @@ pub mod types;
 
 /// Services to receive updates via webhook
 pub mod webhook;
-
-pub use self::{
-    api::{Api, ApiError, DownloadFileError, ExecuteError},
-    handler::{SyncedUpdateHandler, UpdateHandler},
-};
-
-pub use mime;
-pub use vec1::Vec1;

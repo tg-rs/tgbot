@@ -1,3 +1,7 @@
+use std::{convert::TryFrom, error::Error, fmt};
+
+use serde::{Deserialize, Deserializer};
+
 use crate::types::{
     animation::Animation,
     audio::Audio,
@@ -13,17 +17,13 @@ use crate::types::{
     poll::Poll,
     primitive::{Integer, True},
     stickers::Sticker,
-    text::RawTextEntity,
+    text::{TextEntities, TextEntityError},
     user::User,
     venue::Venue,
     video::Video,
     video_note::VideoNote,
     voice::Voice,
-    TextEntityError,
 };
-use serde::Deserialize;
-use std::{convert::TryFrom, error::Error, fmt};
-use vec1::Vec1;
 
 /// Contains message data
 #[derive(Clone, Debug, Deserialize)]
@@ -163,14 +163,7 @@ impl TryFrom<RawMessageData> for MessageData {
     fn try_from(raw: RawMessageData) -> Result<Self, Self::Error> {
         Ok(match raw {
             RawMessageData::Animation { animation } => MessageData::Animation(animation),
-            RawMessageData::Audio {
-                caption,
-                caption_entities,
-                audio,
-            } => MessageData::Audio {
-                caption: Text::from_raw_opt(caption, caption_entities)?,
-                data: audio,
-            },
+            RawMessageData::Audio { caption, audio } => MessageData::Audio { caption, data: audio },
             RawMessageData::ChannelChatCreated { .. } => MessageData::ChannelChatCreated,
             RawMessageData::ConnectedWebsite { connected_website } => MessageData::ConnectedWebsite(connected_website),
             RawMessageData::Contact { contact } => MessageData::Contact(contact),
@@ -178,12 +171,8 @@ impl TryFrom<RawMessageData> for MessageData {
             RawMessageData::Dice { dice } => MessageData::Dice(dice),
             RawMessageData::Document {
                 caption,
-                caption_entities,
-                document,
-            } => MessageData::Document {
-                caption: Text::from_raw_opt(caption, caption_entities)?,
-                data: document,
-            },
+                document: data,
+            } => MessageData::Document { caption, data },
             RawMessageData::Empty {} => MessageData::Empty,
             RawMessageData::Game { game } => MessageData::Game(game),
             RawMessageData::GroupChatCreated { .. } => MessageData::GroupChatCreated,
@@ -204,14 +193,7 @@ impl TryFrom<RawMessageData> for MessageData {
             RawMessageData::NewChatTitle { new_chat_title } => MessageData::NewChatTitle(new_chat_title),
             RawMessageData::PassportData { passport_data } => MessageData::PassportData(passport_data),
             RawMessageData::PinnedMessage { pinned_message } => MessageData::PinnedMessage(pinned_message),
-            RawMessageData::Photo {
-                caption,
-                caption_entities,
-                photo,
-            } => MessageData::Photo {
-                caption: Text::from_raw_opt(caption, caption_entities)?,
-                data: photo,
-            },
+            RawMessageData::Photo { caption, photo: data } => MessageData::Photo { caption, data },
             RawMessageData::Poll { poll } => MessageData::Poll(poll),
             RawMessageData::ProximityAlertTriggered {
                 proximity_alert_triggered,
@@ -221,25 +203,11 @@ impl TryFrom<RawMessageData> for MessageData {
                 MessageData::SuccessfulPayment(successful_payment)
             }
             RawMessageData::SupergroupChatCreated { .. } => MessageData::SupergroupChatCreated,
-            RawMessageData::Text { text, entities } => MessageData::Text(Text::from_raw(text, entities)?),
+            RawMessageData::Text { text: data, entities } => MessageData::Text(Text { data, entities }),
             RawMessageData::Venue { venue } => MessageData::Venue(venue),
-            RawMessageData::Video {
-                caption,
-                caption_entities,
-                video,
-            } => MessageData::Video {
-                caption: Text::from_raw_opt(caption, caption_entities)?,
-                data: video,
-            },
+            RawMessageData::Video { caption, video: data } => MessageData::Video { caption, data },
             RawMessageData::VideoNote { video_note } => MessageData::VideoNote(video_note),
-            RawMessageData::Voice {
-                caption,
-                caption_entities,
-                voice,
-            } => MessageData::Voice {
-                caption: Text::from_raw_opt(caption, caption_entities)?,
-                data: voice,
-            },
+            RawMessageData::Voice { caption, voice: data } => MessageData::Voice { caption, data },
             RawMessageData::VoiceChatScheduled { voice_chat_scheduled } => MessageData::VoiceChatScheduled {
                 start_date: voice_chat_scheduled.start_date,
             },
@@ -250,10 +218,30 @@ impl TryFrom<RawMessageData> for MessageData {
             RawMessageData::VoiceChatParticipantsInvited {
                 voice_chat_participants_invited,
             } => MessageData::VoiceChatParticipantsInvited {
-                users: voice_chat_participants_invited.users.unwrap_or_else(Vec::new),
+                users: voice_chat_participants_invited.users.unwrap_or_default(),
             },
         })
     }
+}
+
+fn deserialize_caption<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    struct Wrapper {
+        caption: String,
+        caption_entities: Option<TextEntities>,
+    }
+
+    Option::<Wrapper>::deserialize(deserializer).map(|wrapper| {
+        wrapper.map(
+            |Wrapper {
+                 caption: data,
+                 caption_entities: entities,
+             }| Text { data, entities },
+        )
+    })
 }
 
 #[derive(Debug, Deserialize)]
@@ -264,8 +252,9 @@ enum RawMessageData {
         animation: Animation,
     },
     Audio {
-        caption: Option<String>,
-        caption_entities: Option<Vec1<RawTextEntity>>,
+        #[serde(deserialize_with = "deserialize_caption")]
+        #[serde(flatten)]
+        caption: Option<Text>,
         audio: Audio,
     },
     ChannelChatCreated {
@@ -286,8 +275,9 @@ enum RawMessageData {
         dice: Dice,
     },
     Document {
-        caption: Option<String>,
-        caption_entities: Option<Vec1<RawTextEntity>>,
+        #[serde(deserialize_with = "deserialize_caption")]
+        #[serde(flatten)]
+        caption: Option<Text>,
         document: Document,
     },
     Game {
@@ -331,8 +321,9 @@ enum RawMessageData {
         pinned_message: Box<Message>,
     },
     Photo {
-        caption: Option<String>,
-        caption_entities: Option<Vec1<RawTextEntity>>,
+        #[serde(deserialize_with = "deserialize_caption")]
+        #[serde(flatten)]
+        caption: Option<Text>,
         photo: Vec<PhotoSize>,
     },
     Poll {
@@ -353,22 +344,24 @@ enum RawMessageData {
     },
     Text {
         text: String,
-        entities: Option<Vec1<RawTextEntity>>,
+        entities: Option<TextEntities>,
     },
     Venue {
         venue: Venue,
     },
     Video {
-        caption: Option<String>,
-        caption_entities: Option<Vec1<RawTextEntity>>,
+        #[serde(deserialize_with = "deserialize_caption")]
+        #[serde(flatten)]
+        caption: Option<Text>,
         video: Video,
     },
     VideoNote {
         video_note: VideoNote,
     },
     Voice {
-        caption: Option<String>,
-        caption_entities: Option<Vec1<RawTextEntity>>,
+        #[serde(deserialize_with = "deserialize_caption")]
+        #[serde(flatten)]
+        caption: Option<Text>,
         voice: Voice,
     },
     VoiceChatScheduled {

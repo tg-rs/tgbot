@@ -1,10 +1,6 @@
-use crate::types::{
-    primitive::Integer,
-    text::{RawTextEntity, Text},
-    user::User,
-};
-use serde::{de::Error as _, Deserialize, Deserializer, Serialize};
-use vec1::Vec1;
+use serde::{Deserialize, Deserializer, Serialize};
+
+use crate::types::{primitive::Integer, text::Text, user::User, TextEntities};
 
 /// Contains information about a poll
 #[derive(Clone, Debug, Deserialize)]
@@ -87,15 +83,19 @@ where
     D: Deserializer<'de>,
 {
     #[derive(Deserialize)]
-    struct Inner {
+    struct Wrapper {
         explanation: String,
-        explanation_entities: Option<Vec1<RawTextEntity>>,
+        explanation_entities: Option<TextEntities>,
     }
 
-    let inner = Option::<Inner>::deserialize(deserializer)?;
-    inner
-        .map(|inner| Text::from_raw(inner.explanation, inner.explanation_entities).map_err(D::Error::custom))
-        .transpose()
+    Option::<Wrapper>::deserialize(deserializer).map(|wrapper| {
+        wrapper.map(
+            |Wrapper {
+                 explanation: data,
+                 explanation_entities: entities,
+             }| Text { data, entities },
+        )
+    })
 }
 
 /// Contains information about one answer option in a poll

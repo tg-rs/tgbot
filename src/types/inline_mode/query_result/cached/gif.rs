@@ -1,8 +1,9 @@
+use serde::Serialize;
+
 use crate::types::{
     inline_mode::message_content::InputMessageContent, parse_mode::ParseMode, reply_markup::InlineKeyboardMarkup,
-    text::TextEntity,
+    text::TextEntity, TextEntities,
 };
-use serde::Serialize;
 
 /// Link to an animated GIF file stored on the Telegram servers
 ///
@@ -18,7 +19,7 @@ pub struct InlineQueryResultCachedGif {
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption_entities: Option<Vec<TextEntity>>,
+    caption_entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -65,8 +66,11 @@ impl InlineQueryResultCachedGif {
 
     /// List of special entities that appear in the caption,
     /// which can be specified instead of parse_mode
-    pub fn caption_entities(mut self, caption_entities: Vec<TextEntity>) -> Self {
-        self.caption_entities = Some(caption_entities);
+    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.caption_entities = Some(caption_entities.into_iter().collect());
         self.parse_mode = None;
         self
     }

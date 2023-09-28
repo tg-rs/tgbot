@@ -2,8 +2,8 @@ use crate::{
     methods::Method,
     request::{Form, Request},
     types::{
-        serialize_text_entities, ChatId, InputFile, Integer, Message, ParseMode, ReplyMarkup, ReplyMarkupError,
-        TextEntity, TextEntityError,
+        ChatId, InputFile, Integer, Message, ParseMode, ReplyMarkup, ReplyMarkupError, TextEntities, TextEntity,
+        TextEntityError,
     },
 };
 
@@ -45,9 +45,12 @@ impl SendVoice {
     /// List of special entities that appear in the caption
     ///
     /// Parse mode will be set to None when this method is called
-    pub fn caption_entities(mut self, value: &[TextEntity]) -> Result<Self, TextEntityError> {
-        self.form
-            .insert_field("caption_entities", serialize_text_entities(value)?);
+    pub fn caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        let value: TextEntities = value.into_iter().collect();
+        self.form.insert_field("caption_entities", value.serialize()?);
         self.form.remove_field("parse_mode");
         Ok(self)
     }
@@ -111,11 +114,12 @@ impl Method for SendVoice {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::{
         request::{RequestBody, RequestMethod},
         types::ForceReply,
     };
+
+    use super::*;
 
     #[test]
     fn send_voice() {
@@ -156,7 +160,7 @@ mod tests {
         let mut method = SendVoice::new(1, InputFile::file_id("file-id"));
         method = method.parse_mode(ParseMode::Markdown);
         assert_eq!(method.form.fields["parse_mode"].get_text().unwrap(), "Markdown");
-        method = method.caption_entities(&[TextEntity::bold(0..10)]).unwrap();
+        method = method.caption_entities(vec![TextEntity::bold(0..10)]).unwrap();
         assert!(!method.form.fields.contains_key("parse_mode"));
         let caption_entities = method.form.fields["caption_entities"].get_text().unwrap();
         assert_eq!(

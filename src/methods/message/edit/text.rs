@@ -1,9 +1,10 @@
+use serde::Serialize;
+
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, EditMessageResult, InlineKeyboardMarkup, Integer, ParseMode, TextEntity},
+    types::{ChatId, EditMessageResult, InlineKeyboardMarkup, Integer, ParseMode, TextEntities, TextEntity},
 };
-use serde::Serialize;
 
 /// Edit text and game messages sent by the bot or via the bot (for inline bots)
 #[derive(Clone, Debug, Serialize)]
@@ -18,7 +19,7 @@ pub struct EditMessageText {
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    entities: Option<Vec<TextEntity>>,
+    entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -77,8 +78,11 @@ impl EditMessageText {
     /// List of special entities that appear in message text
     ///
     /// Parse mode will be set to None when this method is called
-    pub fn entities(mut self, entities: Vec<TextEntity>) -> Self {
-        self.entities = Some(entities);
+    pub fn entities<T>(mut self, entities: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.entities = Some(entities.into_iter().collect());
         self.parse_mode = None;
         self
     }
@@ -106,12 +110,14 @@ impl Method for EditMessageText {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use serde_json::Value;
+
     use crate::{
         request::{RequestBody, RequestMethod},
         types::InlineKeyboardButton,
     };
-    use serde_json::Value;
+
+    use super::*;
 
     #[test]
     fn edit_message_text() {

@@ -1,9 +1,10 @@
+use serde::Serialize;
+
 use crate::{
     methods::Method,
     request::Request,
     types::{ChatId, Integer, Message, ParseMode, PollKind, ReplyMarkup, TextEntity},
 };
-use serde::Serialize;
 
 use super::parameters::PollParameters;
 
@@ -75,8 +76,11 @@ impl SendQuiz {
     /// List of special entities that appear in the poll explanation
     ///
     /// Explanation parse mode will be set to None when this method is called
-    pub fn explanation_entities(mut self, entities: Vec<TextEntity>) -> Self {
-        self.inner.explanation_entities = Some(entities);
+    pub fn explanation_entities<T>(mut self, entities: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.inner.explanation_entities = Some(entities.into_iter().collect());
         self.inner.explanation_parse_mode = None;
         self
     }
@@ -273,12 +277,14 @@ impl Method for SendPoll {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use serde_json::Value;
+
     use crate::{
         request::{RequestBody, RequestMethod},
         types::ForceReply,
     };
-    use serde_json::Value;
+
+    use super::*;
 
     #[test]
     fn send_quiz() {

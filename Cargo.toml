@@ -25,7 +25,6 @@ serde_json = "1.0"
 shellwords = "1.1"
 tokio = { version = "1.17", features = ["fs", "sync", "time"] }
 tokio-util = { version = "0.7", features = ["codec"] }
-vec1 = { version = "1.8", features = ["serde"] }
 
 [dev-dependencies]
 dotenv = "0.15"

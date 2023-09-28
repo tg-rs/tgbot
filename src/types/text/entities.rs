@@ -1,10 +1,101 @@
-use super::{error::TextEntityError, raw::RawTextEntity};
-use crate::types::{text::raw::RawTextEntityKind, user::User};
-use serde::{Deserialize, Serialize};
-use std::{convert::TryFrom, ops::Range};
-use vec1::Vec1;
+use std::{
+    convert::TryFrom,
+    ops::{Index, IndexMut, Range},
+};
 
-/// Respresents an entity in a text
+use serde::{Deserialize, Serialize};
+
+use crate::types::{text::raw::RawTextEntityKind, user::User};
+
+use super::{error::TextEntityError, raw::RawTextEntity};
+
+/// A collection of text entities
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[serde(into = "Vec<TextEntity>", try_from = "Vec<RawTextEntity>")]
+pub struct TextEntities {
+    items: Vec<TextEntity>,
+}
+
+impl TextEntities {
+    /// Pushes a new item into the collection
+    pub fn push(&mut self, item: TextEntity) {
+        self.items.push(item);
+    }
+
+    /// Serializes text entities into JSON string
+    pub fn serialize(&self) -> Result<String, TextEntityError> {
+        serde_json::to_string(self).map_err(TextEntityError::Serialize)
+    }
+}
+
+impl TryFrom<Vec<RawTextEntity>> for TextEntities {
+    type Error = TextEntityError;
+
+    fn try_from(entities: Vec<RawTextEntity>) -> Result<Self, Self::Error> {
+        entities
+            .into_iter()
+            .map(TryFrom::try_from)
+            .collect::<Result<Vec<TextEntity>, _>>()
+            .map(|items| Self { items })
+    }
+}
+
+impl FromIterator<TextEntity> for TextEntities {
+    fn from_iter<T: IntoIterator<Item = TextEntity>>(iter: T) -> Self {
+        Self {
+            items: iter.into_iter().collect(),
+        }
+    }
+}
+
+impl IntoIterator for TextEntities {
+    type Item = TextEntity;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.items.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a TextEntities {
+    type Item = &'a TextEntity;
+    type IntoIter = std::slice::Iter<'a, TextEntity>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.items.as_slice().iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a mut TextEntities {
+    type Item = &'a mut TextEntity;
+    type IntoIter = std::slice::IterMut<'a, TextEntity>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.items.as_mut_slice().iter_mut()
+    }
+}
+
+impl Index<usize> for TextEntities {
+    type Output = TextEntity;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.items[index]
+    }
+}
+
+impl IndexMut<usize> for TextEntities {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.items[index]
+    }
+}
+
+impl From<TextEntities> for Vec<TextEntity> {
+    fn from(entities: TextEntities) -> Self {
+        entities.items
+    }
+}
+
+/// Represents an entity in a text
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(try_from = "RawTextEntity", into = "RawTextEntity")]
 pub enum TextEntity {
@@ -136,6 +227,7 @@ impl TryFrom<RawTextEntity> for TextEntity {
             offset: raw.offset,
             length: raw.length,
         };
+
         Ok(match raw.kind {
             RawTextEntityKind::Bold => TextEntity::Bold(position),
             RawTextEntityKind::BotCommand => TextEntity::BotCommand(position),
@@ -222,30 +314,4 @@ impl From<Range<u32>> for TextEntityPosition {
             length: range.end - range.start,
         }
     }
-}
-
-/// Converts raw text entities to user-friendly representation
-///
-/// # Arguments
-///
-/// * raw - List of raw entities
-/// * text_len - Length of the related text in UTF-16
-pub(super) fn convert_entities(raw: Vec1<RawTextEntity>, text_len: u32) -> Result<Vec<TextEntity>, TextEntityError> {
-    let mut result = Vec::new();
-    for raw_entity in raw {
-        let (offset, length) = (raw_entity.offset, raw_entity.length);
-        if offset > text_len {
-            return Err(TextEntityError::BadOffset(offset));
-        }
-        let limit = offset + length;
-        if limit > text_len {
-            return Err(TextEntityError::BadLength(length));
-        }
-        result.push(TextEntity::try_from(raw_entity)?)
-    }
-    Ok(result)
-}
-
-pub(crate) fn serialize_text_entities(entities: &[TextEntity]) -> Result<String, TextEntityError> {
-    serde_json::to_string(entities).map_err(TextEntityError::Serialize)
 }

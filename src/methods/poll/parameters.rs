@@ -1,5 +1,6 @@
-use crate::types::{ChatId, Integer, ParseMode, PollKind, ReplyMarkup, TextEntity};
 use serde::Serialize;
+
+use crate::types::{ChatId, Integer, ParseMode, PollKind, ReplyMarkup, TextEntities};
 
 #[derive(Clone, Debug, Serialize)]
 pub(super) struct PollParameters {
@@ -20,7 +21,7 @@ pub(super) struct PollParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) explanation_parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) explanation_entities: Option<Vec<TextEntity>>,
+    pub(super) explanation_entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) open_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]

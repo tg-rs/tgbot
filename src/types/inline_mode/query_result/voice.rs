@@ -1,8 +1,9 @@
+use serde::Serialize;
+
 use crate::types::{
     inline_mode::message_content::InputMessageContent, parse_mode::ParseMode, primitive::Integer,
-    reply_markup::InlineKeyboardMarkup, text::TextEntity,
+    reply_markup::InlineKeyboardMarkup, text::TextEntity, TextEntities,
 };
-use serde::Serialize;
 
 /// Link to a voice recording in an .ogg container encoded with OPUS
 ///
@@ -17,7 +18,7 @@ pub struct InlineQueryResultVoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption_entities: Option<Vec<TextEntity>>,
+    caption_entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -64,8 +65,11 @@ impl InlineQueryResultVoice {
     /// List of special entities that appear in the caption
     ///
     /// Parse mode will be set to None when this method is called
-    pub fn caption_entities(mut self, caption_entities: Vec<TextEntity>) -> Self {
-        self.caption_entities = Some(caption_entities);
+    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.caption_entities = Some(caption_entities.into_iter().collect());
         self.parse_mode = None;
         self
     }

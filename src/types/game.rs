@@ -1,18 +1,18 @@
+use serde::{Deserialize, Deserializer};
+
 use crate::types::{
     animation::Animation,
     photo_size::PhotoSize,
     primitive::Integer,
-    text::{RawTextEntity, Text},
+    text::{Text, TextEntities},
     user::User,
 };
-use serde::{de::Error, Deserialize, Deserializer};
-use vec1::Vec1;
 
 /// Game
 ///
 /// Use BotFather to create and edit games,
 /// their short names will act as unique identifiers
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Game {
     /// Title of the game
     pub title: String,
@@ -24,39 +24,32 @@ pub struct Game {
     /// Can be automatically edited to include current high scores for the game
     /// when the bot calls setGameScore, or manually edited using editMessageText
     /// 0-4096 characters
+    #[serde(deserialize_with = "deserialize_text")]
+    #[serde(flatten)]
     pub text: Option<Text>,
     /// Animation that will be displayed in the game message in chats
     /// Upload via BotFather
     pub animation: Option<Animation>,
 }
 
-impl<'de> Deserialize<'de> for Game {
-    fn deserialize<D>(deserializer: D) -> Result<Game, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let raw_game: RawGame = Deserialize::deserialize(deserializer)?;
-        Ok(Game {
-            title: raw_game.title,
-            description: raw_game.description,
-            photo: raw_game.photo,
-            text: match raw_game.text {
-                Some(data) => Some(Text::from_raw(data, raw_game.text_entities).map_err(D::Error::custom)?),
-                None => None,
-            },
-            animation: raw_game.animation,
-        })
+fn deserialize_text<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    struct Wrapper {
+        text: String,
+        text_entities: Option<TextEntities>,
     }
-}
 
-#[derive(Debug, Deserialize)]
-struct RawGame {
-    title: String,
-    description: String,
-    photo: Vec<PhotoSize>,
-    text: Option<String>,
-    text_entities: Option<Vec1<RawTextEntity>>,
-    animation: Option<Animation>,
+    Option::<Wrapper>::deserialize(deserializer).map(|wrapper| {
+        wrapper.map(
+            |Wrapper {
+                 text: data,
+                 text_entities: entities,
+             }| Text { data, entities },
+        )
+    })
 }
 
 /// One row of the high scores table for a game

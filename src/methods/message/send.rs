@@ -1,9 +1,10 @@
+use serde::Serialize;
+
 use crate::{
     methods::Method,
     request::Request,
-    types::{ChatId, Integer, Message, ParseMode, ReplyMarkup, TextEntity},
+    types::{ChatId, Integer, Message, ParseMode, ReplyMarkup, TextEntities, TextEntity},
 };
-use serde::Serialize;
 
 /// Send text messages
 #[derive(Clone, Debug, Serialize)]
@@ -13,7 +14,7 @@ pub struct SendMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    entities: Option<Vec<TextEntity>>,
+    entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_web_page_preview: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -62,8 +63,11 @@ impl SendMessage {
     /// List of special entities that appear in message text
     ///
     /// Parse mode will be set to None when this method is called
-    pub fn entities(mut self, entities: Vec<TextEntity>) -> Self {
-        self.entities = Some(entities);
+    pub fn entities<T>(mut self, entities: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.entities = Some(entities.into_iter().collect());
         self.parse_mode = None;
         self
     }
@@ -118,12 +122,14 @@ impl Method for SendMessage {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use serde_json::Value;
+
     use crate::{
         request::{RequestBody, RequestMethod},
-        types::{ForceReply, TextEntity},
+        types::ForceReply,
     };
-    use serde_json::Value;
+
+    use super::*;
 
     #[test]
     fn send_message() {

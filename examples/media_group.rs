@@ -4,7 +4,7 @@ use std::env;
 use tgbot::{
     longpoll::LongPoll,
     methods::SendMediaGroup,
-    types::{InputFile, InputMediaPhoto, InputMediaVideo, MediaGroup, Update},
+    types::{InputFile, InputMediaPhoto, InputMediaVideo, MediaGroup, MediaGroupItem, Update},
     Api, UpdateHandler,
 };
 
@@ -27,11 +27,14 @@ impl UpdateHandler for Handler {
                 let photo_url = InputFile::url(this.photo_url);
                 let photo_path = InputFile::path(this.photo_path).await.unwrap();
                 let video_path = InputFile::path(this.video_path).await.unwrap();
-                let media = MediaGroup::default()
-                    .add_item(photo_url, InputMediaPhoto::default().caption("Photo 01"))
-                    .add_item(photo_path, InputMediaPhoto::default().caption("Photo 02"))
-                    .add_item(video_path, InputMediaVideo::default().caption("Video 01"));
-                let method = SendMediaGroup::new(chat_id, media).unwrap();
+                let media = MediaGroup::new(vec![
+                    MediaGroupItem::photo(photo_url, InputMediaPhoto::default().caption("Photo 01")),
+                    MediaGroupItem::photo(photo_path, InputMediaPhoto::default().caption("Photo 02")),
+                    MediaGroupItem::video(video_path, InputMediaVideo::default().caption("Video 01")),
+                ])
+                .unwrap();
+
+                let method = SendMediaGroup::new(chat_id, media);
                 this.api.execute(method).await.unwrap();
             }
         })

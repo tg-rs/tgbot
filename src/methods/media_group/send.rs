@@ -1,7 +1,7 @@
 use crate::{
     methods::Method,
     request::{Form, Request},
-    types::{ChatId, Integer, MediaGroup, MediaGroupError, Message},
+    types::{ChatId, Integer, MediaGroup, Message},
 };
 
 /// Send a group of photos or videos as an album
@@ -15,14 +15,10 @@ impl SendMediaGroup {
     ///
     /// * chat_id - Unique identifier for the target chat
     /// * media - Photos and videos to be sent, must include 2–10 items
-    pub fn new<C: Into<ChatId>>(chat_id: C, media: MediaGroup) -> Result<Self, MediaGroupError> {
-        let mut form = Form::new();
+    pub fn new<C: Into<ChatId>>(chat_id: C, media: MediaGroup) -> Self {
+        let mut form: Form = media.into();
         form.insert_field("chat_id", chat_id.into());
-        let media_form = media.into_form()?;
-        for (k, v) in media_form {
-            form.insert_field(k, v);
-        }
-        Ok(SendMediaGroup { form })
+        SendMediaGroup { form }
     }
 
     /// Sends the messages silently
@@ -66,7 +62,7 @@ mod tests {
     use super::*;
     use crate::{
         request::{RequestBody, RequestMethod},
-        types::{InputFile, InputFileReader, InputMediaPhoto, InputMediaVideo},
+        types::{InputFile, InputFileReader, InputMediaPhoto, InputMediaVideo, MediaGroupItem},
     };
     use std::io::Cursor;
 
@@ -74,16 +70,14 @@ mod tests {
     fn send_media_group() {
         let request = SendMediaGroup::new(
             1,
-            MediaGroup::default()
-                .add_item(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default())
-                .add_item(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default())
-                .add_item_with_thumb(
-                    InputFile::file_id("file-id"),
-                    InputFile::url("thumb-url"),
-                    InputMediaVideo::default(),
-                ),
+            MediaGroup::new(vec![
+                MediaGroupItem::photo(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default()),
+                MediaGroupItem::video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
+                MediaGroupItem::video(InputFile::file_id("file-id"), InputMediaVideo::default())
+                    .with_thumb(InputFile::url("thumb-url")),
+            ])
+            .unwrap(),
         )
-        .unwrap()
         .disable_notification(true)
         .protect_content(true)
         .reply_to_message_id(1)

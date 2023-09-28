@@ -1,82 +1,182 @@
 use crate::{
-    request::FormValue,
+    request::Form,
     types::{InputFile, InputFileKind, InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo},
 };
 use serde::Serialize;
 use serde_json::Error as JsonError;
-use std::{collections::HashMap, error::Error as StdError, fmt};
+use std::{error::Error as StdError, fmt};
 
 const MIN_GROUP_ATTACHMENTS: usize = 2;
 const MAX_GROUP_ATTACHMENTS: usize = 10;
 
-/// Group of photos and/or videos to be sent
-#[derive(Debug, Default)]
+/// Group of input media to be sent
+#[derive(Debug)]
 pub struct MediaGroup {
-    files: HashMap<String, InputFile>,
-    items: Vec<MediaGroupItem>,
+    form: Form,
 }
 
 impl MediaGroup {
-    /// Adds a photo or video to group
-    pub fn add_item<I, F>(mut self, file: F, info: I) -> Self
+    /// Creates a new group
+    ///
+    /// # Arguments
+    ///
+    /// * items - Items of the group
+    pub fn new<I>(items: I) -> Result<Self, MediaGroupError>
     where
-        MediaGroupItem: From<(String, I)>,
-        F: Into<InputFile>,
+        I: IntoIterator<Item = MediaGroupItem>,
     {
-        let file = self.add_file(file.into());
-        self.items.push(MediaGroupItem::from((file, info)));
-        self
-    }
+        let items: Vec<(usize, MediaGroupItem)> = items.into_iter().enumerate().collect();
 
-    /// Adds an item with thumbnail
-    pub fn add_item_with_thumb<F, T, I>(mut self, file: F, thumb: T, info: I) -> Self
-    where
-        F: Into<InputFile>,
-        T: Into<InputFile>,
-        MediaGroupItem: From<(String, String, I)>,
-    {
-        let file = self.add_file(file.into());
-        let thumb = self.add_file(thumb.into());
-        self.items.push(MediaGroupItem::from((file, thumb, info)));
-        self
-    }
-
-    fn add_file(&mut self, file: InputFile) -> String {
-        match &file.kind {
-            InputFileKind::Id(text) | InputFileKind::Url(text) => text.clone(),
-            _ => {
-                let idx = self.files.len();
-                let key = format!("tgbot_im_file_{}", idx);
-                self.files.insert(key.clone(), file);
-                format!("attach://{}", key)
-            }
-        }
-    }
-
-    pub(crate) fn into_form(self) -> Result<HashMap<String, FormValue>, MediaGroupError> {
-        let total_files = self.items.len();
-        if total_files < MIN_GROUP_ATTACHMENTS {
+        let total_items = items.len();
+        if total_items < MIN_GROUP_ATTACHMENTS {
             return Err(MediaGroupError::NotEnoughAttachments(MIN_GROUP_ATTACHMENTS));
         }
-        if total_files > MAX_GROUP_ATTACHMENTS {
+        if total_items > MAX_GROUP_ATTACHMENTS {
             return Err(MediaGroupError::TooManyAttachments(MAX_GROUP_ATTACHMENTS));
         }
-        let mut fields: HashMap<String, FormValue> = self.files.into_iter().map(|(k, v)| (k, v.into())).collect();
-        fields.insert(
-            String::from("media"),
-            serde_json::to_string(&self.items)
-                .map_err(MediaGroupError::Serialize)?
-                .into(),
+
+        let mut form = Form::new();
+
+        let mut add_file = |key: String, file: InputFile| -> String {
+            match &file.kind {
+                InputFileKind::Id(text) | InputFileKind::Url(text) => text.clone(),
+                _ => {
+                    form.insert_field(&key, file);
+                    format!("attach://{}", key)
+                }
+            }
+        };
+
+        let mut info = Vec::new();
+        for (idx, item) in items {
+            let media = add_file(format!("tgbot_im_file_{}", idx), item.file);
+            let thumb = item
+                .thumb
+                .map(|thumb| add_file(format!("tgbot_im_thumb_{}", idx), thumb));
+            let data = match item.kind {
+                MediaGroupItemKind::Audio(info) => MediaGroupItemData::Audio { media, thumb, info },
+                MediaGroupItemKind::Document(info) => MediaGroupItemData::Document { media, thumb, info },
+                MediaGroupItemKind::Photo(info) => MediaGroupItemData::Photo { media, info },
+                MediaGroupItemKind::Video(info) => MediaGroupItemData::Video { media, thumb, info },
+            };
+            info.push(data);
+        }
+
+        form.insert_field(
+            "media",
+            serde_json::to_string(&info).map_err(MediaGroupError::Serialize)?,
         );
-        Ok(fields)
+
+        Ok(Self { form })
     }
 }
 
+impl From<MediaGroup> for Form {
+    fn from(group: MediaGroup) -> Self {
+        group.form
+    }
+}
+
+/// A media group item
+#[derive(Debug)]
+pub struct MediaGroupItem {
+    kind: MediaGroupItemKind,
+    file: InputFile,
+    thumb: Option<InputFile>,
+}
+
+impl MediaGroupItem {
+    /// Creates an audio item
+    ///
+    /// # Arguments
+    ///
+    /// * file - File to attach
+    /// * info - Item metadata
+    pub fn audio<F>(file: F, info: InputMediaAudio) -> Self
+    where
+        F: Into<InputFile>,
+    {
+        Self::new(file, MediaGroupItemKind::Audio(info))
+    }
+
+    /// Creates a document item
+    ///
+    /// # Arguments
+    ///
+    /// * file - File to attach
+    /// * info - Item metadata
+    pub fn document<F>(file: F, info: InputMediaDocument) -> Self
+    where
+        F: Into<InputFile>,
+    {
+        Self::new(file, MediaGroupItemKind::Document(info))
+    }
+
+    /// Creates a photo item
+    ///
+    /// # Arguments
+    ///
+    /// * file - File to attach
+    /// * info - Item metadata
+    pub fn photo<F>(file: F, info: InputMediaPhoto) -> Self
+    where
+        F: Into<InputFile>,
+    {
+        Self::new(file, MediaGroupItemKind::Photo(info))
+    }
+
+    /// Creates a video item
+    ///
+    /// # Arguments
+    ///
+    /// * file - File to attach
+    /// * info - Item metadata
+    pub fn video<F>(file: F, info: InputMediaVideo) -> Self
+    where
+        F: Into<InputFile>,
+    {
+        Self::new(file, MediaGroupItemKind::Video(info))
+    }
+
+    /// Adds a thumbnail to the item
+    ///
+    /// # Arguments
+    ///
+    /// * file - Thumbnail file
+    ///
+    /// Note that photo can not have thumbnail and it will be ignored
+    pub fn with_thumb<F>(mut self, file: F) -> Self
+    where
+        F: Into<InputFile>,
+    {
+        self.thumb = Some(file.into());
+        self
+    }
+
+    fn new<F>(file: F, kind: MediaGroupItemKind) -> Self
+    where
+        F: Into<InputFile>,
+    {
+        Self {
+            kind,
+            file: file.into(),
+            thumb: None,
+        }
+    }
+}
+
+#[derive(Debug)]
+enum MediaGroupItemKind {
+    Audio(InputMediaAudio),
+    Document(InputMediaDocument),
+    Photo(InputMediaPhoto),
+    Video(InputMediaVideo),
+}
+
 #[derive(Debug, Serialize)]
-#[doc(hidden)]
 #[serde(tag = "type")]
 #[serde(rename_all = "lowercase")]
-pub enum MediaGroupItem {
+enum MediaGroupItemData {
     Audio {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -103,72 +203,6 @@ pub enum MediaGroupItem {
         #[serde(flatten)]
         info: InputMediaVideo,
     },
-}
-
-impl From<(String, InputMediaAudio)> for MediaGroupItem {
-    fn from((media, info): (String, InputMediaAudio)) -> Self {
-        MediaGroupItem::Audio {
-            media,
-            info,
-            thumb: None,
-        }
-    }
-}
-
-impl From<(String, String, InputMediaAudio)> for MediaGroupItem {
-    fn from((media, thumb, info): (String, String, InputMediaAudio)) -> Self {
-        MediaGroupItem::Audio {
-            media,
-            info,
-            thumb: Some(thumb),
-        }
-    }
-}
-
-impl From<(String, InputMediaDocument)> for MediaGroupItem {
-    fn from((media, info): (String, InputMediaDocument)) -> Self {
-        MediaGroupItem::Document {
-            media,
-            info,
-            thumb: None,
-        }
-    }
-}
-
-impl From<(String, String, InputMediaDocument)> for MediaGroupItem {
-    fn from((media, thumb, info): (String, String, InputMediaDocument)) -> Self {
-        MediaGroupItem::Document {
-            media,
-            info,
-            thumb: Some(thumb),
-        }
-    }
-}
-
-impl From<(String, InputMediaPhoto)> for MediaGroupItem {
-    fn from((media, info): (String, InputMediaPhoto)) -> Self {
-        MediaGroupItem::Photo { media, info }
-    }
-}
-
-impl From<(String, InputMediaVideo)> for MediaGroupItem {
-    fn from((media, info): (String, InputMediaVideo)) -> Self {
-        MediaGroupItem::Video {
-            media,
-            info,
-            thumb: None,
-        }
-    }
-}
-
-impl From<(String, String, InputMediaVideo)> for MediaGroupItem {
-    fn from((media, thumb, info): (String, String, InputMediaVideo)) -> Self {
-        MediaGroupItem::Video {
-            media,
-            info,
-            thumb: Some(thumb),
-        }
-    }
 }
 
 /// A media group error
@@ -209,36 +243,31 @@ impl fmt::Display for MediaGroupError {
 mod tests {
     use super::*;
     use crate::types::InputFileReader;
-    use std::io::Cursor;
+    use std::{io::Cursor, iter::repeat_with};
 
     #[test]
     fn media_group() {
-        let group = MediaGroup::default()
-            .add_item(InputFileReader::from(Cursor::new("test")), InputMediaAudio::default())
-            .add_item(
+        let group: Form = MediaGroup::new(vec![
+            MediaGroupItem::audio(InputFileReader::from(Cursor::new("test")), InputMediaAudio::default()),
+            MediaGroupItem::document(
                 InputFileReader::from(Cursor::new("test")),
                 InputMediaDocument::default(),
-            )
-            .add_item(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default())
-            .add_item(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default())
-            .add_item_with_thumb(
-                InputFile::file_id("file-id"),
-                InputFile::url("thumb-url"),
-                InputMediaAudio::default(),
-            )
-            .add_item_with_thumb(
-                InputFile::file_id("file-id"),
-                InputFile::url("thumb-url"),
-                InputMediaDocument::default(),
-            )
-            .add_item_with_thumb(
-                InputFile::file_id("file-id"),
-                InputFile::url("thumb-url"),
-                InputMediaVideo::default(),
-            )
-            .into_form()
-            .unwrap();
-        let media: &str = group.get("media").unwrap().get_text().unwrap();
+            ),
+            MediaGroupItem::photo(
+                InputFileReader::from(Cursor::new("test")),
+                InputMediaPhoto::default().caption("caption"),
+            ),
+            MediaGroupItem::video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
+            MediaGroupItem::audio(InputFile::file_id("file-id"), InputMediaAudio::default())
+                .with_thumb(InputFile::url("thumb-url")),
+            MediaGroupItem::document(InputFile::file_id("file-id"), InputMediaDocument::default())
+                .with_thumb(InputFile::url("thumb-url")),
+            MediaGroupItem::video(InputFile::file_id("file-id"), InputMediaVideo::default())
+                .with_thumb(InputFile::url("thumb-url")),
+        ])
+        .try_into()
+        .unwrap();
+        let media: &str = group.fields.get("media").unwrap().get_text().unwrap();
         assert_eq!(
             serde_json::from_str::<serde_json::Value>(media).unwrap(),
             serde_json::json!([
@@ -252,7 +281,8 @@ mod tests {
                 },
                 {
                     "media": "attach://tgbot_im_file_2",
-                    "type": "photo"
+                    "type": "photo",
+                    "caption": "caption"
                 },
                 {
                     "media": "attach://tgbot_im_file_3",
@@ -275,61 +305,22 @@ mod tests {
                 }
             ])
         );
-        assert!(group.get("tgbot_im_file_0").is_some());
-        assert!(group.get("tgbot_im_file_1").is_some());
-        assert!(group.get("tgbot_im_file_2").is_some());
-        assert!(group.get("tgbot_im_file_3").is_some());
+        assert!(group.fields.get("tgbot_im_file_0").is_some());
+        assert!(group.fields.get("tgbot_im_file_1").is_some());
+        assert!(group.fields.get("tgbot_im_file_2").is_some());
+        assert!(group.fields.get("tgbot_im_file_3").is_some());
 
-        let err = MediaGroup::default().into_form().unwrap_err();
+        let err = TryInto::<Form>::try_into(MediaGroup::default()).unwrap_err();
         assert_eq!(err.to_string(), "media group must contain at least 2 attachments");
 
-        let mut group = MediaGroup::default();
-        for _ in 0..11 {
-            group = group.add_item(InputFile::file_id("file-id"), InputMediaPhoto::default());
-        }
-        let err = group.into_form().unwrap_err();
+        let group = MediaGroup::new(
+            repeat_with(|| {
+                MediaGroupItem::photo(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default())
+            })
+            .take(11)
+            .collect::<Vec<_>>(),
+        );
+        let err = TryInto::<Form>::try_into(group).unwrap_err();
         assert_eq!(err.to_string(), "media group must contain no more than 10 attachments");
-    }
-
-    #[test]
-    fn media_group_item() {
-        assert_eq!(
-            serde_json::to_value(MediaGroupItem::from((
-                String::from("file-id"),
-                String::from("thumb-id"),
-                InputMediaVideo::default().caption("test"),
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "video",
-                "media": "file-id",
-                "thumb": "thumb-id",
-                "caption": "test"
-            })
-        );
-        assert_eq!(
-            serde_json::to_value(MediaGroupItem::from((
-                String::from("file-id"),
-                InputMediaVideo::default().caption("test")
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "video",
-                "media": "file-id",
-                "caption": "test"
-            })
-        );
-        assert_eq!(
-            serde_json::to_value(MediaGroupItem::from((
-                String::from("file-id"),
-                InputMediaPhoto::default().caption("test")
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "photo",
-                "media": "file-id",
-                "caption": "test"
-            })
-        );
     }
 }

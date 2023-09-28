@@ -1,18 +1,24 @@
-use crate::{
-    methods::Method,
-    request::{FormError, Request, RequestBody, RequestMethod},
-    types::{Response, ResponseError},
-};
+use std::{error::Error as StdError, fmt, time::Duration};
+
 use bytes::Bytes;
 use futures_util::stream::Stream;
 use log::debug;
 use reqwest::{
-    Client as HttpClient, ClientBuilder as HttpClientBuilder, Error as HttpError, RequestBuilder as HttpRequestBuilder,
+    Client as HttpClient,
+    ClientBuilder as HttpClientBuilder,
+    Error as HttpError,
+    RequestBuilder as HttpRequestBuilder,
 };
 use serde::de::DeserializeOwned;
 use serde_json::Error as JsonError;
-use std::{error::Error as StdError, fmt, time::Duration};
 use tokio::time::sleep;
+
+use crate::{
+    form::FormError,
+    method::Method,
+    request::{Request, RequestBody, RequestMethod},
+    types::{Response, ResponseError},
+};
 
 const DEFAULT_HOST: &str = "https://api.telegram.org";
 

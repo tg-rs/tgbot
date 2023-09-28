@@ -8,19 +8,20 @@ pub use mime;
 pub use self::{
     api::{Api, ApiError, DownloadFileError, ExecuteError},
     handler::{SyncedUpdateHandler, UpdateHandler},
+    method::Method,
 };
 
 mod api;
 mod handler;
+mod method;
 mod request;
+
+pub(crate) mod form;
 
 /// Utilities to receive updates using long poll
 pub mod longpoll;
 
-/// Methods available in the Bot API
-pub mod methods;
-
-/// Types available in the Bot API
+/// Types and methods available in the Bot API
 pub mod types;
 
 /// Services to receive updates via webhook

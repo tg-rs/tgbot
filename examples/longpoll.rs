@@ -1,11 +1,13 @@
+use std::env;
+
 use dotenv::dotenv;
 use futures_util::future::BoxFuture;
-use std::env;
+
 use tgbot::{
     longpoll::LongPoll,
-    methods::SendMessage,
-    types::{Update, UpdateKind},
-    Api, UpdateHandler,
+    types::{SendMessage, Update, UpdateKind},
+    Api,
+    UpdateHandler,
 };
 
 struct Handler {

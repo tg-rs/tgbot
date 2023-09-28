@@ -1,17 +1,19 @@
-use dotenv::dotenv;
-use futures_util::{future::BoxFuture, stream::StreamExt};
 use std::{
     env,
     path::{Path, PathBuf},
 };
+
+use dotenv::dotenv;
+use futures_util::{future::BoxFuture, stream::StreamExt};
 use tempfile::tempdir;
+use tokio::{fs::File, io::AsyncWriteExt};
+
 use tgbot::{
     longpoll::LongPoll,
-    methods::GetFile,
-    types::{Document, MessageData, Update, UpdateKind},
-    Api, UpdateHandler,
+    types::{Document, GetFile, MessageData, Update, UpdateKind},
+    Api,
+    UpdateHandler,
 };
-use tokio::{fs::File, io::AsyncWriteExt};
 
 #[derive(Clone)]
 struct Handler {

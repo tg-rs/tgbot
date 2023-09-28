@@ -31,8 +31,7 @@ use futures_util::future::BoxFuture;
 use std::env;
 use tgbot::{Api, UpdateHandler};
 use tgbot::longpoll::LongPoll;
-use tgbot::methods::SendMessage;
-use tgbot::types::{Update, UpdateKind};
+use tgbot::types::{SendMessage, Update, UpdateKind};
 
 struct Handler {
     api: Api,

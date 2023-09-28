@@ -1,15 +1,30 @@
+use std::{env, io::Cursor};
+
 use dotenv::dotenv;
 use futures_util::future::BoxFuture;
-use std::{env, io::Cursor};
+
 use tgbot::{
     longpoll::LongPoll,
-    methods::{EditMessageMedia, SendAnimation, SendDocument, SendPhoto, SendVideo},
     mime,
     types::{
-        InlineKeyboardButton, InputFile, InputFileReader, InputMedia, InputMediaAnimation, InputMediaPhoto,
-        InputMediaVideo, MessageData, Update, UpdateKind,
+        EditMessageMedia,
+        InlineKeyboardButton,
+        InputFile,
+        InputFileReader,
+        InputMedia,
+        InputMediaAnimation,
+        InputMediaPhoto,
+        InputMediaVideo,
+        MessageData,
+        SendAnimation,
+        SendDocument,
+        SendPhoto,
+        SendVideo,
+        Update,
+        UpdateKind,
     },
-    Api, UpdateHandler,
+    Api,
+    UpdateHandler,
 };
 
 #[derive(Clone)]

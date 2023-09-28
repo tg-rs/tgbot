@@ -1,17 +1,18 @@
-use crate::{
-    api::{Api, ExecuteError},
-    handler::UpdateHandler,
-    methods::GetUpdates,
-    types::{AllowedUpdate, Integer},
-};
+use std::{cmp::max, collections::HashSet, time::Duration};
+
 use async_stream::stream;
 use futures_util::{pin_mut, stream::StreamExt};
 use log::error;
-use std::{cmp::max, collections::HashSet, time::Duration};
 use tokio::{
     spawn,
     sync::mpsc::{channel, Receiver, Sender},
     time::sleep,
+};
+
+use crate::{
+    api::{Api, ExecuteError},
+    handler::UpdateHandler,
+    types::{AllowedUpdate, GetUpdates, Integer},
 };
 
 const DEFAULT_LIMIT: Integer = 100;

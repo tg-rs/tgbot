@@ -1,18 +1,23 @@
-use crate::{
-    request::Form,
-    types::{InputFile, InputFileKind},
-};
+use std::{error::Error, fmt};
+
 use serde::Serialize;
 use serde_json::Error as JsonError;
-use std::{error::Error, fmt};
+
+use crate::{
+    form::Form,
+    types::{InputFile, InputFileKind},
+};
+
+pub use self::{animation::*, audio::*, document::*, photo::*, video::*};
+
+#[cfg(test)]
+mod tests;
 
 mod animation;
 mod audio;
 mod document;
 mod photo;
 mod video;
-
-pub use self::{animation::*, audio::*, document::*, photo::*, video::*};
 
 /// Content of a media message to be sent
 #[derive(Debug)]
@@ -155,158 +160,5 @@ impl fmt::Display for InputMediaError {
         match self {
             InputMediaError::SerializeInfo(err) => write!(out, "failed to serialize input media info: {}", err),
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::types::InputFileReader;
-    use std::io::Cursor;
-
-    #[test]
-    fn input_media() {
-        let data = InputMedia::new(
-            InputFile::file_id("animation-file-id"),
-            InputMediaAnimation::default().caption("test"),
-        )
-        .unwrap()
-        .into_form();
-        assert!(data.get("media").is_some());
-
-        let data = InputMedia::with_thumb(
-            InputFileReader::from(Cursor::new("animation-file-data")),
-            InputFileReader::from(Cursor::new("animation-thumb-data")),
-            InputMediaAnimation::default(),
-        )
-        .unwrap()
-        .into_form();
-        assert!(data.get("tgbot_im_file").is_some());
-        assert!(data.get("tgbot_im_thumb").is_some());
-        assert!(data.get("media").is_some());
-    }
-
-    #[test]
-    fn input_media_kind() {
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                InputMediaAnimation::default().caption("test")
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "animation",
-                "media": "file-id",
-                "caption": "test"
-            })
-        );
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                String::from("thumb-id"),
-                InputMediaAnimation::default().caption("test"),
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "animation",
-                "media": "file-id",
-                "thumb": "thumb-id",
-                "caption": "test"
-            })
-        );
-
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                InputMediaAudio::default().caption("test")
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "audio",
-                "media": "file-id",
-                "caption": "test"
-            })
-        );
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                String::from("thumb-id"),
-                InputMediaAudio::default().caption("test"),
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "audio",
-                "media": "file-id",
-                "thumb": "thumb-id",
-                "caption": "test"
-            })
-        );
-
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                InputMediaDocument::default().caption("test")
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "document",
-                "media": "file-id",
-                "caption": "test"
-            })
-        );
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                String::from("thumb-id"),
-                InputMediaDocument::default().caption("test"),
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "document",
-                "media": "file-id",
-                "thumb": "thumb-id",
-                "caption": "test"
-            })
-        );
-
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                InputMediaVideo::default().caption("test")
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "video",
-                "media": "file-id",
-                "caption": "test"
-            })
-        );
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                String::from("thumb-id"),
-                InputMediaVideo::default().caption("test"),
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "video",
-                "media": "file-id",
-                "thumb": "thumb-id",
-                "caption": "test"
-            })
-        );
-
-        assert_eq!(
-            serde_json::to_value(InputMediaKind::from((
-                String::from("file-id"),
-                InputMediaPhoto::default().caption("test")
-            )))
-            .unwrap(),
-            serde_json::json!({
-                "type": "photo",
-                "media": "file-id",
-                "caption": "test"
-            })
-        );
     }
 }

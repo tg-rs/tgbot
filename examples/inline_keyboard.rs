@@ -1,12 +1,14 @@
+use std::env;
+
 use dotenv::dotenv;
 use futures_util::future::BoxFuture;
 use serde::{Deserialize, Serialize};
-use std::env;
+
 use tgbot::{
     longpoll::LongPoll,
-    methods::SendMessage,
-    types::{InlineKeyboardButton, Message, Update, UpdateKind},
-    Api, UpdateHandler,
+    types::{InlineKeyboardButton, Message, SendMessage, Update, UpdateKind},
+    Api,
+    UpdateHandler,
 };
 
 struct Handler {

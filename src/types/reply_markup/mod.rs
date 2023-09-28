@@ -1,12 +1,13 @@
+use std::{error::Error, fmt};
+
 use serde::Serialize;
 use serde_json::Error as JsonError;
-use std::{error::Error as StdError, fmt};
+
+pub use self::{force_reply::*, inline_keyboard::*, reply_keyboard::*};
 
 mod force_reply;
 mod inline_keyboard;
 mod reply_keyboard;
-
-pub use self::{force_reply::*, inline_keyboard::*, reply_keyboard::*};
 
 /// Reply markup
 #[derive(Clone, Debug, derive_more::From, Serialize)]
@@ -47,8 +48,8 @@ pub enum ReplyMarkupError {
     Serialize(JsonError),
 }
 
-impl StdError for ReplyMarkupError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for ReplyMarkupError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
             ReplyMarkupError::Serialize(err) => Some(err),
         }

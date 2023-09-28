@@ -1,11 +1,13 @@
+use std::env;
+
 use dotenv::dotenv;
 use futures_util::future::BoxFuture;
-use std::env;
+
 use tgbot::{
     longpoll::LongPoll,
-    methods::SendMediaGroup,
-    types::{InputFile, InputMediaPhoto, InputMediaVideo, MediaGroup, MediaGroupItem, Update},
-    Api, UpdateHandler,
+    types::{InputFile, InputMediaPhoto, InputMediaVideo, MediaGroup, MediaGroupItem, SendMediaGroup, Update},
+    Api,
+    UpdateHandler,
 };
 
 #[derive(Clone)]

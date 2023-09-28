@@ -1,8 +1,9 @@
-use crate::types::user::User;
 use serde::{Deserialize, Serialize};
 
+use crate::types::User;
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub(crate) struct RawTextEntity {
+pub(super) struct RawTextEntity {
     pub(super) offset: u32,
     pub(super) length: u32,
     #[serde(flatten)]

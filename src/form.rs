@@ -1,4 +1,4 @@
-use std::{collections::HashMap, error::Error as StdError, fmt, io::Error as IoError};
+use std::{collections::HashMap, error::Error, fmt, io::Error as IoError};
 
 use reqwest::{
     multipart::{Form as MultipartForm, Part},
@@ -128,8 +128,8 @@ impl From<IoError> for FormError {
     }
 }
 
-impl StdError for FormError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for FormError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         Some(match self {
             FormError::Io(err) => err,
             FormError::Mime(err) => err,

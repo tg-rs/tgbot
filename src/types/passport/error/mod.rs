@@ -1,4 +1,4 @@
-use std::{error::Error as StdError, fmt};
+use std::{error::Error, fmt};
 
 use serde::Serialize;
 
@@ -364,7 +364,7 @@ enum PassportElementErrorKind {
 #[derive(Clone, Debug)]
 pub struct UnexpectedEncryptedPassportElementKind(EncryptedPassportElementKind);
 
-impl StdError for UnexpectedEncryptedPassportElementKind {}
+impl Error for UnexpectedEncryptedPassportElementKind {}
 
 impl fmt::Display for UnexpectedEncryptedPassportElementKind {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {

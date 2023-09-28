@@ -1,4 +1,4 @@
-use std::{error::Error as StdError, fmt};
+use std::{error::Error, fmt};
 
 use serde::Serialize;
 use serde_json::Error as JsonError;
@@ -233,8 +233,8 @@ pub enum MediaGroupError {
     Serialize(JsonError),
 }
 
-impl StdError for MediaGroupError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for MediaGroupError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
             MediaGroupError::Serialize(err) => Some(err),
             _ => None,

@@ -1,4 +1,4 @@
-use std::{error::Error as StdError, fmt, time::Duration};
+use std::{error::Error, fmt, time::Duration};
 
 use bytes::Bytes;
 use futures_util::stream::Stream;
@@ -210,8 +210,8 @@ pub enum ApiError {
     BuildClient(HttpError),
 }
 
-impl StdError for ApiError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for ApiError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         Some(match self {
             ApiError::BuildClient(err) => err,
         })
@@ -246,8 +246,8 @@ impl From<HttpError> for DownloadFileError {
     }
 }
 
-impl StdError for DownloadFileError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for DownloadFileError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
             DownloadFileError::Http(err) => Some(err),
             _ => None,
@@ -281,8 +281,8 @@ pub enum ExecuteError {
     TooManyRequests,
 }
 
-impl StdError for ExecuteError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for ExecuteError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         use self::ExecuteError::*;
         Some(match self {
             Http(err) => err,

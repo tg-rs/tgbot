@@ -1,4 +1,4 @@
-use std::{error::Error as StdError, fmt};
+use std::{error::Error, fmt};
 
 use serde::Deserialize;
 
@@ -90,7 +90,7 @@ impl ResponseError {
     }
 }
 
-impl StdError for ResponseError {}
+impl Error for ResponseError {}
 
 impl fmt::Display for ResponseError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {

@@ -1,12 +1,6 @@
-use crate::handler::UpdateHandler;
-use bytes::Buf;
-use futures_util::future::{ok, Ready};
-use http::Error as HttpError;
-use hyper::{body, service::Service, Body, Method, Request, Response, Server, StatusCode};
-use log::error;
 use std::{
     convert::Infallible,
-    error::Error as StdError,
+    error::Error,
     future::Future,
     net::SocketAddr,
     pin::Pin,
@@ -14,7 +8,14 @@ use std::{
     task::{Context, Poll},
 };
 
+use bytes::Buf;
+use futures_util::future::{ok, Ready};
+use http::Error as HttpError;
 pub use hyper::Error as HyperError;
+use hyper::{body, service::Service, Body, Method, Request, Response, Server, StatusCode};
+use log::error;
+
+use crate::handler::UpdateHandler;
 
 #[doc(hidden)]
 pub struct WebhookServiceFactory<H> {
@@ -141,8 +142,8 @@ pub enum WebhookError {
     Http(HttpError),
 }
 
-impl StdError for WebhookError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for WebhookError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         use self::WebhookError::*;
         Some(match self {
             Hyper(err) => err,

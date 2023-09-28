@@ -1,10 +1,10 @@
 use crate::{
-    request::FormValue,
+    request::Form,
     types::{InputFile, InputFileKind},
 };
 use serde::Serialize;
 use serde_json::Error as JsonError;
-use std::{collections::HashMap, error::Error as StdError, fmt};
+use std::{error::Error, fmt};
 
 mod animation;
 mod audio;
@@ -15,65 +15,91 @@ mod video;
 pub use self::{animation::*, audio::*, document::*, photo::*, video::*};
 
 /// Content of a media message to be sent
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct InputMedia {
-    fields: HashMap<String, FormValue>,
+    form: Form,
 }
 
 impl InputMedia {
     /// Creates a new input media
-    pub fn new<F, K>(file: F, info: K) -> Result<InputMedia, InputMediaError>
+    pub fn new<F, K>(file: F, kind: K) -> Result<InputMedia, InputMediaError>
     where
         F: Into<InputFile>,
-        InputMediaKind: From<(String, K)>,
+        K: Into<InputMediaKind>,
     {
-        let mut result = Self::default();
-        let file = result.add_file("tgbot_im_file", file.into());
-        result.add_info(InputMediaKind::from((file, info)))?;
-        Ok(result)
+        Self::create(file, None::<InputFile>, kind)
     }
 
     /// Creates a new input media with thumbnail
-    pub fn with_thumb<F, T, K>(file: F, thumb: T, info: K) -> Result<InputMedia, InputMediaError>
+    ///
+    /// Note that photo can not have a thumbnail
+    pub fn with_thumb<F, T, K>(file: F, thumb: T, kind: K) -> Result<InputMedia, InputMediaError>
     where
         F: Into<InputFile>,
         T: Into<InputFile>,
-        InputMediaKind: From<(String, String, K)>,
+        K: Into<InputMediaKind>,
     {
-        let mut result = Self::default();
-        let file = result.add_file("tgbot_im_file", file.into());
-        let thumb = result.add_file("tgbot_im_thumb", thumb.into());
-        result.add_info(InputMediaKind::from((file, thumb, info)))?;
-        Ok(result)
+        Self::create(file, Some(thumb), kind)
     }
 
-    fn add_file<S: Into<String>>(&mut self, key: S, file: InputFile) -> String {
-        let key = key.into();
-        match file.kind {
-            InputFileKind::Id(text) | InputFileKind::Url(text) => text,
-            _ => {
-                self.fields.insert(key.clone(), file.into());
-                format!("attach://{}", key)
+    fn create<K, F, T>(media: F, thumb: Option<T>, kind: K) -> Result<Self, InputMediaError>
+    where
+        K: Into<InputMediaKind>,
+        F: Into<InputFile>,
+        T: Into<InputFile>,
+    {
+        let mut form = Form::new();
+
+        let add_file = |form: &mut Form, key: &str, file: InputFile| -> String {
+            match file.kind {
+                InputFileKind::Id(text) | InputFileKind::Url(text) => text,
+                _ => {
+                    form.insert_field(key, file);
+                    format!("attach://{}", key)
+                }
             }
-        }
-    }
+        };
 
-    fn add_info(&mut self, info: InputMediaKind) -> Result<(), InputMediaError> {
-        let info = serde_json::to_string(&info).map_err(InputMediaError::SerializeInfo)?;
-        self.fields.insert(String::from("media"), info.into());
-        Ok(())
-    }
-
-    pub(crate) fn into_form(self) -> HashMap<String, FormValue> {
-        self.fields
+        let media = add_file(&mut form, "tgbot_im_file", media.into());
+        let thumb = thumb.map(|thumb| add_file(&mut form, "tgbot_im_thumb", thumb.into()));
+        let data = match kind.into() {
+            InputMediaKind::Animation(info) => InputMediaData::Animation { media, thumb, info },
+            InputMediaKind::Audio(info) => InputMediaData::Audio { media, thumb, info },
+            InputMediaKind::Document(info) => InputMediaData::Document { media, thumb, info },
+            InputMediaKind::Photo(info) => InputMediaData::Photo { media, info },
+            InputMediaKind::Video(info) => InputMediaData::Video { media, thumb, info },
+        };
+        let info = serde_json::to_string(&data).map_err(InputMediaError::SerializeInfo)?;
+        form.insert_field("media", info);
+        Ok(Self { form })
     }
 }
 
+impl From<InputMedia> for Form {
+    fn from(value: InputMedia) -> Self {
+        value.form
+    }
+}
+
+/// Metadata of the input media
+#[derive(Debug, derive_more::From)]
+pub enum InputMediaKind {
+    /// An animation file
+    Animation(InputMediaAnimation),
+    /// An audio file
+    Audio(InputMediaAudio),
+    /// A general file
+    Document(InputMediaDocument),
+    /// A photo
+    Photo(InputMediaPhoto),
+    /// A video file
+    Video(InputMediaVideo),
+}
+
 #[derive(Debug, Serialize)]
-#[doc(hidden)]
 #[serde(tag = "type")]
 #[serde(rename_all = "lowercase")]
-pub enum InputMediaKind {
+enum InputMediaData {
     Animation {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -109,57 +135,6 @@ pub enum InputMediaKind {
     },
 }
 
-macro_rules! convert_media_kind {
-    (
-        $($to:ident(thumb $from:ty)),*
-    ) => {
-        $(
-            impl From<(String, $from)> for InputMediaKind {
-                fn from((media, info): (String, $from)) -> Self {
-                    InputMediaKind::$to {
-                        media,
-                        info,
-                        thumb: None,
-                    }
-                }
-            }
-
-            impl From<(String, String, $from)> for InputMediaKind {
-                fn from((media, thumb, info): (String, String, $from)) -> Self {
-                    InputMediaKind::$to {
-                        media,
-                        info,
-                        thumb: Some(thumb),
-                    }
-                }
-            }
-        )*
-    };
-    (
-        $($to:ident($from:ty)),*
-    ) => {
-        $(
-            impl From<(String, $from)> for InputMediaKind {
-                fn from((media, info): (String, $from)) -> Self {
-                    InputMediaKind::$to {
-                        media,
-                        info,
-                    }
-                }
-            }
-        )*
-    };
-}
-
-convert_media_kind!(
-    Animation(thumb InputMediaAnimation),
-    Audio(thumb InputMediaAudio),
-    Document(thumb InputMediaDocument),
-    Video(thumb InputMediaVideo)
-);
-
-convert_media_kind!(Photo(InputMediaPhoto));
-
 /// An error occurred with InputMedia
 #[derive(Debug)]
 pub enum InputMediaError {
@@ -167,8 +142,8 @@ pub enum InputMediaError {
     SerializeInfo(JsonError),
 }
 
-impl StdError for InputMediaError {
-    fn source(&self) -> Option<&(dyn StdError + 'static)> {
+impl Error for InputMediaError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
             InputMediaError::SerializeInfo(err) => Some(err),
         }

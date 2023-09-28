@@ -24,12 +24,9 @@ impl EditMessageMedia {
     /// * message_id - Identifier of the sent message
     /// * media - New media content of the message
     pub fn new<C: Into<ChatId>>(chat_id: C, message_id: Integer, media: InputMedia) -> Self {
-        let mut form = Form::new();
+        let mut form: Form = media.into();
         form.insert_field("chat_id", chat_id.into());
         form.insert_field("message_id", message_id);
-        for (k, v) in media.into_form() {
-            form.insert_field(k, v);
-        }
         EditMessageMedia { form }
     }
 
@@ -40,11 +37,8 @@ impl EditMessageMedia {
     /// * inline_message_id - Identifier of the inline message
     /// * media - New media content of the message
     pub fn with_inline_message_id<S: Into<String>>(inline_message_id: S, media: InputMedia) -> Self {
-        let mut form = Form::new();
+        let mut form: Form = media.into();
         form.insert_field("inline_message_id", inline_message_id.into());
-        for (k, v) in media.into_form() {
-            form.insert_field(k, v);
-        }
         EditMessageMedia { form }
     }
 

@@ -3,7 +3,17 @@ use serde_json::Value as JsonValue;
 use crate::{
     method::Method,
     request::{RequestBody, RequestMethod},
-    types::{Bot, BotCommand, BotCommandScope, Close, DeleteMyCommands, GetMe, GetMyCommands, LogOut, SetMyCommands},
+    types::{
+        Bot,
+        BotCommand,
+        BotCommandScope,
+        Close,
+        DeleteBotCommands,
+        GetBotCommands,
+        GetMe,
+        LogOut,
+        SetBotCommands,
+    },
 };
 
 #[test]
@@ -78,7 +88,7 @@ fn close() {
 
 #[test]
 fn delete_bot_commands() {
-    let request = DeleteMyCommands::default().into_request();
+    let request = DeleteBotCommands::default().into_request();
     assert_eq!(request.get_method(), RequestMethod::Post);
     assert_eq!(
         request.build_url("base-url", "token"),
@@ -90,7 +100,7 @@ fn delete_bot_commands() {
         panic!("Unexpected request body");
     }
 
-    let request = DeleteMyCommands::default()
+    let request = DeleteBotCommands::default()
         .scope(BotCommandScope::Default)
         .language_code("ru")
         .into_request();
@@ -108,7 +118,7 @@ fn delete_bot_commands() {
 
 #[test]
 fn get_bot_commands() {
-    let request = GetMyCommands::default().into_request();
+    let request = GetBotCommands::default().into_request();
     assert_eq!(request.get_method(), RequestMethod::Post);
     assert_eq!(
         request.build_url("base-url", "token"),
@@ -120,7 +130,7 @@ fn get_bot_commands() {
         panic!("Unexpected request body");
     }
 
-    let request = GetMyCommands::default()
+    let request = GetBotCommands::default()
         .scope(BotCommandScope::Default)
         .language_code("ru")
         .into_request();
@@ -160,7 +170,7 @@ fn log_out() {
 
 #[test]
 fn set_bot_commands() {
-    let request = SetMyCommands::new(vec![BotCommand::new("name", "description").unwrap()]).into_request();
+    let request = SetBotCommands::new(vec![BotCommand::new("name", "description").unwrap()]).into_request();
     assert_eq!(request.get_method(), RequestMethod::Post);
     assert_eq!(
         request.build_url("base-url", "token"),
@@ -175,7 +185,7 @@ fn set_bot_commands() {
         panic!("Unexpected request body");
     }
 
-    let request = SetMyCommands::new(vec![BotCommand::new("name", "description").unwrap()])
+    let request = SetBotCommands::new(vec![BotCommand::new("name", "description").unwrap()])
         .scope(BotCommandScope::AllPrivateChats)
         .language_code("ru")
         .into_request();

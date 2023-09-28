@@ -197,14 +197,14 @@ impl Method for Close {
 ///
 ///  After deletion, higher level commands will be shown to affected users
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct DeleteMyCommands {
+pub struct DeleteBotCommands {
     #[serde(skip_serializing_if = "Option::is_none")]
     scope: Option<BotCommandScope>,
     #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
 }
 
-impl DeleteMyCommands {
+impl DeleteBotCommands {
     /// An object, describing scope of users
     ///
     /// Defaults to BotCommandScopeDefault
@@ -223,7 +223,7 @@ impl DeleteMyCommands {
     }
 }
 
-impl Method for DeleteMyCommands {
+impl Method for DeleteBotCommands {
     type Response = bool;
 
     fn into_request(self) -> Request {
@@ -245,14 +245,14 @@ impl Method for GetMe {
 
 /// Use this method to get the current list of the bot's commands
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct GetMyCommands {
+pub struct GetBotCommands {
     #[serde(skip_serializing_if = "Option::is_none")]
     scope: Option<BotCommandScope>,
     #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
 }
 
-impl GetMyCommands {
+impl GetBotCommands {
     /// An object, describing scope of users
     ///
     /// Defaults to BotCommandScopeDefault
@@ -271,7 +271,7 @@ impl GetMyCommands {
     }
 }
 
-impl Method for GetMyCommands {
+impl Method for GetBotCommands {
     type Response = Vec<BotCommand>;
 
     fn into_request(self) -> Request {
@@ -298,7 +298,7 @@ impl Method for LogOut {
 
 /// Use this method to change the list of the bot's commands
 #[derive(Clone, Debug, Serialize)]
-pub struct SetMyCommands {
+pub struct SetBotCommands {
     commands: Vec<BotCommand>,
     #[serde(skip_serializing_if = "Option::is_none")]
     scope: Option<BotCommandScope>,
@@ -306,8 +306,8 @@ pub struct SetMyCommands {
     language_code: Option<String>,
 }
 
-impl SetMyCommands {
-    /// Creates a new SetMyCommands
+impl SetBotCommands {
+    /// Creates a new SetBotCommands
     ///
     /// # Arguments
     ///
@@ -341,7 +341,7 @@ impl SetMyCommands {
     }
 }
 
-impl Method for SetMyCommands {
+impl Method for SetBotCommands {
     type Response = bool;
 
     fn into_request(self) -> Request {

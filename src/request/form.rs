@@ -1,4 +1,4 @@
-use crate::types::{InputFile, InputFileInfo, InputFileKind, InputFileReader};
+use crate::types::{InputFile, InputFileKind, InputFileReader};
 use reqwest::{
     multipart::{Form as MultipartForm, Part},
     Body, Error as ReqwestError,
@@ -39,17 +39,17 @@ impl FormValue {
                     let body = Body::wrap_stream(reader);
                     let part = Part::stream(body);
                     match file_info {
-                        Some(InputFileInfo {
-                            name: file_name,
-                            mime_type: Some(mime_type),
-                        }) => part
-                            .file_name(file_name)
-                            .mime_str(mime_type.as_ref())
-                            .map_err(FormError::Mime)?,
-                        Some(InputFileInfo {
-                            name: file_name,
-                            mime_type: None,
-                        }) => part.file_name(file_name),
+                        Some(info) => {
+                            let file_name = String::from(info.name());
+                            let mime_type = info.mime_type();
+                            match mime_type {
+                                Some(mime_type) => part
+                                    .file_name(file_name)
+                                    .mime_str(mime_type.as_ref())
+                                    .map_err(FormError::Mime)?,
+                                None => part.file_name(file_name),
+                            }
+                        }
                         None => part,
                     }
                 }

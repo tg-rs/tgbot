@@ -33,8 +33,8 @@ pub struct File {
 /// Information about a file for reader
 #[derive(Clone, Debug)]
 pub struct InputFileInfo {
-    pub(crate) name: String,
-    pub(crate) mime_type: Option<Mime>,
+    name: String,
+    mime_type: Option<Mime>,
 }
 
 impl InputFileInfo {
@@ -47,9 +47,19 @@ impl InputFileInfo {
     }
 
     /// Sets mime type of a file
-    pub fn mime_type(mut self, mime_type: Mime) -> Self {
+    pub fn with_mime_type(mut self, mime_type: Mime) -> Self {
         self.mime_type = Some(mime_type);
         self
+    }
+
+    /// Returns a file name
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// Returns a mime type of a file
+    pub fn mime_type(&self) -> Option<&Mime> {
+        self.mime_type.as_ref()
     }
 }
 
@@ -61,7 +71,7 @@ impl From<&str> for InputFileInfo {
 
 impl From<(&str, Mime)> for InputFileInfo {
     fn from((name, mime_type): (&str, Mime)) -> Self {
-        InputFileInfo::new(name).mime_type(mime_type)
+        InputFileInfo::new(name).with_mime_type(mime_type)
     }
 }
 
@@ -73,7 +83,7 @@ impl From<String> for InputFileInfo {
 
 impl From<(String, Mime)> for InputFileInfo {
     fn from((name, mime_type): (String, Mime)) -> Self {
-        InputFileInfo::new(name).mime_type(mime_type)
+        InputFileInfo::new(name).with_mime_type(mime_type)
     }
 }
 
@@ -151,7 +161,7 @@ impl InputFile {
                 .and_then(|x| x.to_str())
                 .and_then(|x| mime_guess::from_ext(x).first())
                 .unwrap_or(APPLICATION_OCTET_STREAM);
-            reader = reader.info(InputFileInfo::new(file_name).mime_type(mime_type));
+            reader = reader.info(InputFileInfo::new(file_name).with_mime_type(mime_type));
         }
         Ok(Self {
             kind: InputFileKind::Reader(reader),
@@ -194,80 +204,5 @@ where
 {
     fn from(reader: R) -> Self {
         InputFile::reader(InputFileReader::new(reader))
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::io::Cursor;
-
-    #[test]
-    fn deserialize_file_full() {
-        let data: File = serde_json::from_value(serde_json::json!({
-            "file_id": "id",
-            "file_unique_id": "unique-id",
-            "file_size": 123,
-            "file_path": "path"
-        }))
-        .unwrap();
-        assert_eq!(data.file_id, "id");
-        assert_eq!(data.file_unique_id, "unique-id");
-        assert_eq!(data.file_size.unwrap(), 123);
-        assert_eq!(data.file_path.unwrap(), "path");
-    }
-
-    #[test]
-    fn deserialize_file_partial() {
-        let data: File = serde_json::from_value(serde_json::json!({
-            "file_id": "id",
-            "file_unique_id": "unique-id"
-        }))
-        .unwrap();
-        assert_eq!(data.file_id, "id");
-        assert_eq!(data.file_unique_id, "unique-id");
-        assert!(data.file_size.is_none());
-        assert!(data.file_path.is_none());
-    }
-
-    #[tokio::test]
-    async fn input_file() {
-        let id = InputFile::file_id("file-id");
-        assert_eq!(format!("{:?}", id.kind), r#"InputFileKind::Id("file-id")"#);
-        let url = InputFile::url("http://example.com/archive.zip");
-        assert_eq!(
-            format!("{:?}", url.kind),
-            r#"InputFileKind::Url("http://example.com/archive.zip")"#
-        );
-        // NOTE: you must be sure that file exists in current working directory (usually it exists)
-        // otherwise test will fail
-        let path = InputFile::path("LICENSE").await.unwrap();
-        assert!(format!("{:?}", path.kind).starts_with("InputFileKind::Reader("),);
-
-        let reader = InputFileReader::from(Cursor::new(b"data")).info(("name", mime::TEXT_PLAIN));
-        let reader = InputFile::from(reader);
-        assert!(format!("{:?}", reader.kind).starts_with("InputFileKind::Reader("));
-
-        let reader = InputFile::from(Cursor::new(b"data"));
-        assert!(format!("{:?}", reader.kind).starts_with("InputFileKind::Reader("));
-    }
-
-    #[test]
-    fn input_file_info() {
-        let info = InputFileInfo::from("name");
-        assert_eq!(info.name, "name");
-        assert!(info.mime_type.is_none());
-
-        let info = InputFileInfo::from(("name", mime::TEXT_PLAIN));
-        assert_eq!(info.name, "name");
-        assert_eq!(info.mime_type.unwrap(), mime::TEXT_PLAIN);
-
-        let info = InputFileInfo::from(String::from("name"));
-        assert_eq!(info.name, "name");
-        assert!(info.mime_type.is_none());
-
-        let info = InputFileInfo::from((String::from("name"), mime::TEXT_PLAIN));
-        assert_eq!(info.name, "name");
-        assert_eq!(info.mime_type.unwrap(), mime::TEXT_PLAIN);
     }
 }

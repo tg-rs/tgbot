@@ -35,7 +35,7 @@ fn input_message_content_invoice() {
             .need_shipping_address(false)
             .send_phone_number_to_provider(true)
             .send_email_to_provider(false)
-            .is_flexible(true),
+            .flexible(true),
         ),
         serde_json::json!({
             "title": "title",

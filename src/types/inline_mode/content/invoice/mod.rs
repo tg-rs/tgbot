@@ -200,7 +200,7 @@ impl InputMessageContentInvoice {
     }
 
     /// Pass True, if the final price depends on the shipping method
-    pub fn is_flexible(mut self, value: bool) -> Self {
+    pub fn flexible(mut self, value: bool) -> Self {
         self.is_flexible = Some(value);
         self
     }

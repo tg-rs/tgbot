@@ -1,77 +1,120 @@
-use crate::types::Chat;
+use crate::{
+    tests::assert_json_eq,
+    types::{Chat, ChatPermissions, ChatPhoto, GroupChat, Message, MessageData, MessageSender, Text, User},
+};
 
 #[test]
-fn group_chat_deserialize_full() {
-    let chat: Chat = serde_json::from_value(serde_json::json!({
-        "id": 1,
-        "type": "group",
-        "title": "grouptitle",
-        "photo": {
-            "small_file_id": "smallfileid",
-            "small_file_unique_id": "smallfileuniqueid",
-            "big_file_id": "bigfileid",
-            "big_file_unique_id": "bigfileuniqueid",
-        },
-        "invite_link": "groupinvitelink",
-        "pinned_message": {
-            "message_id": 1,
-            "date": 0,
-            "chat": {
-                "id": 1,
-                "type": "group",
-                "title": "grouptitle"
+fn group_chat() {
+    let expected_struct = Chat::Group(GroupChat {
+        id: 1,
+        title: String::from("Group"),
+        photo: Some(ChatPhoto {
+            small_file_id: String::from("small-file-id"),
+            small_file_unique_id: String::from("small-file-unique-id"),
+            big_file_id: String::from("big-file-id"),
+            big_file_unique_id: String::from("big-file-unique-id"),
+        }),
+        invite_link: Some(String::from("example.com/join/group")),
+        pinned_message: Some(Box::new(Message {
+            id: 1,
+            date: 0,
+            edit_date: None,
+            sender: MessageSender::User(User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("User"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            }),
+            chat: Chat::Group(GroupChat {
+                id: 1,
+                title: String::from("Group"),
+                photo: None,
+                invite_link: None,
+                pinned_message: None,
+                permissions: None,
+                has_protected_content: None,
+                message_auto_delete_time: None,
+            }),
+            author_signature: None,
+            has_protected_content: false,
+            forward: None,
+            is_automatic_forward: false,
+            reply_to: None,
+            via_bot: None,
+            media_group_id: None,
+            reply_markup: None,
+            data: MessageData::Text(Text {
+                data: String::from("text"),
+                entities: None,
+            }),
+        })),
+        permissions: Some(ChatPermissions::allowed()),
+        has_protected_content: Some(true),
+        message_auto_delete_time: Some(86400),
+    });
+    assert_eq!(expected_struct.get_id(), 1);
+    assert!(expected_struct.get_username().is_none());
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "id": 1,
+            "type": "group",
+            "title": "Group",
+            "photo": {
+                "small_file_id": "small-file-id",
+                "small_file_unique_id": "small-file-unique-id",
+                "big_file_id": "big-file-id",
+                "big_file_unique_id": "big-file-unique-id",
             },
-            "from": {
-                "id": 1,
-                "is_bot": false,
-                "first_name": "user"
+            "invite_link": "example.com/join/group",
+            "pinned_message": {
+                "message_id": 1,
+                "date": 0,
+                "chat": {
+                    "id": 1,
+                    "type": "group",
+                    "title": "Group"
+                },
+                "from": {
+                    "id": 1,
+                    "is_bot": false,
+                    "first_name": "User"
+                },
+                "text": "text",
+                "has_protected_content": false,
+                "is_automatic_forward": false
             },
-            "text": "test"
-        },
-        "permissions": {"can_send_messages": true},
-        "has_protected_content": true,
-        "message_auto_delete_time": 86400
-    }))
-    .unwrap();
-    assert_eq!(chat.get_id(), 1);
-    assert!(chat.get_username().is_none());
-    if let Chat::Group(chat) = chat {
-        assert_eq!(chat.id, 1);
-        assert_eq!(chat.title, "grouptitle");
-        let photo = chat.photo.unwrap();
-        assert_eq!(photo.small_file_id, "smallfileid");
-        assert_eq!(photo.small_file_unique_id, "smallfileuniqueid");
-        assert_eq!(photo.big_file_id, "bigfileid");
-        assert_eq!(photo.big_file_unique_id, "bigfileuniqueid");
-        assert_eq!(chat.invite_link.unwrap(), "groupinvitelink");
-        let permissions = chat.permissions.unwrap();
-        assert!(permissions.can_send_messages.unwrap());
-        assert!(chat.pinned_message.is_some());
-        assert!(chat.has_protected_content.unwrap());
-        assert_eq!(chat.message_auto_delete_time.unwrap(), 86400)
-    } else {
-        panic!("Unexpected chat: {:?}", chat);
-    }
-}
-
-#[test]
-fn group_chat_deserialize_partial() {
-    let chat: Chat = serde_json::from_value(serde_json::json!({
-        "id": 1,
-        "type": "group",
-        "title": "grouptitle"
-    }))
-    .unwrap();
-    assert_eq!(chat.get_id(), 1);
-    assert!(chat.get_username().is_none());
-    if let Chat::Group(chat) = chat {
-        assert_eq!(chat.id, 1);
-        assert_eq!(chat.title, "grouptitle");
-        assert!(chat.photo.is_none());
-        assert!(chat.invite_link.is_none());
-        assert!(chat.pinned_message.is_none());
-        assert!(chat.permissions.is_none());
-    } else {
-        panic!("Unexpected chat: {:?}", chat);
-    }
+            "permissions": {
+                "can_send_messages": true,
+                "can_send_media_messages": true,
+                "can_send_polls": true,
+                "can_send_other_messages": true,
+                "can_add_web_page_previews": true,
+                "can_change_info": true,
+                "can_invite_users": true,
+                "can_pin_messages": true,
+            },
+            "has_protected_content": true,
+            "message_auto_delete_time": 86400
+        }),
+    );
+    assert_json_eq(
+        Chat::Group(GroupChat {
+            id: 1,
+            title: String::from("Group"),
+            photo: None,
+            invite_link: None,
+            pinned_message: None,
+            permissions: None,
+            has_protected_content: None,
+            message_auto_delete_time: None,
+        }),
+        serde_json::json!({
+            "id": 1,
+            "type": "group",
+            "title": "Group",
+        }),
+    );
 }

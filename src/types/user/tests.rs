@@ -1,148 +1,181 @@
+use crate::{
+    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    types::{GetUserProfilePhotos, ParseMode, PhotoSize, User, UserId, UserProfilePhotos},
+};
 use std::collections::HashMap;
 
-use serde_json::Value;
-
-use crate::{
-    method::Method,
-    request::{RequestBody, RequestMethod},
-    types::{GetUserProfilePhotos, ParseMode, User, UserId, UserProfilePhotos},
-};
-
 #[test]
-fn deserialize_user_full() {
-    let data: User = serde_json::from_value(serde_json::json!({
-        "id": 1,
-        "first_name": "Vladimir",
-        "last_name": "Zelenskiy",
-        "is_bot": false,
-        "username": "zelenskiy",
-        "language_code": "UA"
-    }))
-    .unwrap();
-    assert_eq!(data.id, 1);
-    assert_eq!(data.first_name, "Vladimir");
-    assert_eq!(data.last_name.unwrap(), "Zelenskiy");
-    assert!(!data.is_bot);
-    assert_eq!(data.username.unwrap(), "zelenskiy");
-    assert_eq!(data.language_code.unwrap(), "UA");
+fn user() {
+    assert_json_eq(
+        User {
+            id: 1,
+            is_bot: false,
+            first_name: String::from("Vladimir"),
+            last_name: Some(String::from("Zelenskiy")),
+            username: Some(String::from("zelenskiy")),
+            language_code: Some(String::from("UA")),
+        },
+        serde_json::json!({
+            "id": 1,
+            "first_name": "Vladimir",
+            "last_name": "Zelenskiy",
+            "is_bot": false,
+            "username": "zelenskiy",
+            "language_code": "UA"
+        }),
+    );
+    assert_json_eq(
+        User {
+            id: 1,
+            is_bot: false,
+            first_name: String::from("Vladimir"),
+            last_name: None,
+            username: None,
+            language_code: None,
+        },
+        serde_json::json!({
+            "id": 1,
+            "first_name": "Vladimir",
+            "is_bot": false,
+        }),
+    );
 }
 
 #[test]
-fn deserialize_user_partial() {
-    let data: User = serde_json::from_value(serde_json::json!({
-        "id": 1,
-        "first_name": "Vladimir",
-        "is_bot": false
-    }))
-    .unwrap();
-    assert_eq!(data.id, 1);
-    assert_eq!(data.first_name, "Vladimir");
-    assert!(data.last_name.is_none());
-    assert!(!data.is_bot);
-    assert!(data.username.is_none());
-    assert!(data.language_code.is_none());
+fn user_get_full_name() {
+    let full = User {
+        id: 1,
+        is_bot: false,
+        first_name: String::from("Vladimir"),
+        last_name: Some(String::from("Zelenskiy")),
+        username: Some(String::from("zelenskiy")),
+        language_code: Some(String::from("UA")),
+    };
+    assert_eq!(full.get_full_name(), "Vladimir Zelenskiy");
+
+    let partial = User {
+        id: 1,
+        is_bot: false,
+        first_name: String::from("Vladimir"),
+        last_name: None,
+        username: None,
+        language_code: None,
+    };
+    assert_eq!(partial.get_full_name(), "Vladimir");
 }
 
 #[test]
-fn get_user_full_name() {
-    let user: User = serde_json::from_value(serde_json::json!({
-        "id": 1,
-        "first_name": "first",
-        "last_name": "last",
-        "is_bot": false
-    }))
-    .unwrap();
-    assert_eq!(user.get_full_name(), "first last");
-
-    let user: User = serde_json::from_value(serde_json::json!({
-        "id": 1,
-        "first_name": "first",
-        "is_bot": false
-    }))
-    .unwrap();
-    assert_eq!(user.get_full_name(), "first");
+fn user_get_link() {
+    let user = User {
+        id: 1,
+        is_bot: false,
+        first_name: String::from("Vladimir"),
+        last_name: None,
+        username: None,
+        language_code: None,
+    };
+    assert_eq!(user.get_link(), "tg://user?id=1")
 }
 
 #[test]
-fn get_user_mention() {
-    let user: User = serde_json::from_value(serde_json::json!({
-        "id": 1,
-        "first_name": r#"_*[]()~`>#+-=|{}.!<&"#,
-        "is_bot": false
-    }))
-    .unwrap();
+fn user_get_mention() {
+    let user: User = User {
+        id: 1,
+        first_name: String::from(r#"_*[]()~`>#+-=|{}.!<&"#),
+        last_name: None,
+        username: None,
+        is_bot: false,
+        language_code: None,
+    };
     assert_eq!(
         user.get_mention(ParseMode::Html).unwrap(),
         r#"<a href="tg://user?id=1">_*[]()~`&gt;#+-=|{}.!&lt;&amp;</a>"#
     );
     assert_eq!(
         user.get_mention(ParseMode::MarkdownV2).unwrap(),
-        r#"[\_\*\[\]\(\)\~\`\>\#\+\-\=\|\{\}\.\!<&](tg://user?id=1)"#
+        r"[\_\*\[\]\(\)\~\`\>\#\+\-\=\|\{\}\.\!<&](tg://user?id=1)"
     );
     assert!(user.get_mention(ParseMode::Markdown).is_err());
 }
 
 #[test]
-fn deserialize_user_profile_photos() {
-    let data: UserProfilePhotos = serde_json::from_value(serde_json::json!({
-        "total_count": 2,
-        "photos": [
-            [
-                {
-                    "file_id": "photo-1-big",
-                    "file_unique_id": "photo-1-big-unique",
-                    "width": 500,
-                    "height": 500,
-                    "file_size": 9999
-                },
-                {
-                    "file_id": "photo-1-small",
-                    "file_unique_id": "photo-1-small-unique",
-                    "width": 100,
-                    "height": 100,
-                    "file_size": 1111
-                },
+fn user_profile_photos() {
+    assert_json_eq(
+        UserProfilePhotos {
+            total_count: 2,
+            photos: vec![
+                vec![
+                    PhotoSize {
+                        file_id: String::from("photo-1-big"),
+                        file_unique_id: String::from("photo-1-big-unique"),
+                        width: 500,
+                        height: 500,
+                        file_size: Some(9999),
+                    },
+                    PhotoSize {
+                        file_id: String::from("photo-1-small"),
+                        file_unique_id: String::from("photo-1-small-unique"),
+                        width: 100,
+                        height: 100,
+                        file_size: Some(1111),
+                    },
+                ],
+                vec![
+                    PhotoSize {
+                        file_id: String::from("photo-2-big"),
+                        file_unique_id: String::from("photo-2-big-unique"),
+                        width: 500,
+                        height: 500,
+                        file_size: Some(9999),
+                    },
+                    PhotoSize {
+                        file_id: String::from("photo-2-small"),
+                        file_unique_id: String::from("photo-2-small-unique"),
+                        width: 100,
+                        height: 100,
+                        file_size: Some(1111),
+                    },
+                ],
             ],
-            [
-                {
-                    "file_id": "photo-2-big",
-                    "file_unique_id": "photo-2-big-unique",
-                    "width": 500,
-                    "height": 500,
-                    "file_size": 9999
-                },
-                {
-                    "file_id": "photo-2-small",
-                    "file_unique_id": "photo-2-small-unique",
-                    "width": 100,
-                    "height": 100,
-                    "file_size": 1111
-                },
-            ],
-        ]
-    }))
-    .unwrap();
-    assert_eq!(data.total_count, 2);
-
-    assert_eq!(data.photos.len(), 2);
-
-    let group1 = &data.photos[0];
-    assert_eq!(group1.len(), 2);
-    let big = &group1[0];
-    let small = &group1[1];
-    assert_eq!(big.file_id, "photo-1-big");
-    assert_eq!(big.file_unique_id, "photo-1-big-unique");
-    assert_eq!(small.file_id, "photo-1-small");
-    assert_eq!(small.file_unique_id, "photo-1-small-unique");
-
-    let group2 = &data.photos[1];
-    assert_eq!(group2.len(), 2);
-    let big = &group2[0];
-    let small = &group2[1];
-    assert_eq!(big.file_id, "photo-2-big");
-    assert_eq!(big.file_unique_id, "photo-2-big-unique");
-    assert_eq!(small.file_id, "photo-2-small");
-    assert_eq!(small.file_unique_id, "photo-2-small-unique");
+        },
+        serde_json::json!({
+            "total_count": 2,
+            "photos": [
+                [
+                    {
+                        "file_id": "photo-1-big",
+                        "file_unique_id": "photo-1-big-unique",
+                        "width": 500,
+                        "height": 500,
+                        "file_size": 9999
+                    },
+                    {
+                        "file_id": "photo-1-small",
+                        "file_unique_id": "photo-1-small-unique",
+                        "width": 100,
+                        "height": 100,
+                        "file_size": 1111
+                    },
+                ],
+                [
+                    {
+                        "file_id": "photo-2-big",
+                        "file_unique_id": "photo-2-big-unique",
+                        "width": 500,
+                        "height": 500,
+                        "file_size": 9999
+                    },
+                    {
+                        "file_id": "photo-2-small",
+                        "file_unique_id": "photo-2-small-unique",
+                        "width": 100,
+                        "height": 100,
+                        "file_size": 1111
+                    },
+                ],
+            ]
+        }),
+    );
 }
 
 #[test]
@@ -183,18 +216,25 @@ fn user_id() {
 
 #[test]
 fn get_user_profile_photos() {
-    let request = GetUserProfilePhotos::new(1).offset(5).limit(10).into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/getUserProfilePhotos"
+    let method = GetUserProfilePhotos::new(1);
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "getUserProfilePhotos",
+            serde_json::json!({
+                "user_id": 1
+            }),
+        ),
+        method.clone(),
     );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(data["user_id"], 1);
-        assert_eq!(data["offset"], 5);
-        assert_eq!(data["limit"], 10);
-    } else {
-        panic!("Unexpected request body");
-    }
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "getUserProfilePhotos",
+            serde_json::json!({
+                "user_id": 1,
+                "offset": 5,
+                "limit": 10
+            }),
+        ),
+        method.offset(5).limit(10),
+    )
 }

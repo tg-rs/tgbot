@@ -1,81 +1,143 @@
-use crate::types::{Forward, ForwardFrom, Message};
+use crate::{
+    tests::assert_json_eq,
+    types::{ChannelChat, Chat, Forward, ForwardFrom, Message, MessageData, MessageSender, SupergroupChat, Text, User},
+};
+
+fn create_message_struct() -> Message {
+    Message {
+        id: 1,
+        date: 0,
+        edit_date: None,
+        sender: MessageSender::User(User {
+            id: 1,
+            is_bot: false,
+            first_name: String::from("User"),
+            last_name: None,
+            username: None,
+            language_code: None,
+        }),
+        chat: Chat::Supergroup(SupergroupChat {
+            id: 1,
+            title: String::from("Chat"),
+            username: None,
+            photo: None,
+            description: None,
+            invite_link: None,
+            pinned_message: None,
+            sticker_set_name: None,
+            can_set_sticker_set: None,
+            permissions: None,
+            slow_mode_delay: None,
+            message_auto_delete_time: None,
+            linked_chat_id: None,
+            location: None,
+            has_protected_content: None,
+        }),
+        author_signature: None,
+        has_protected_content: false,
+        forward: None,
+        is_automatic_forward: false,
+        reply_to: None,
+        via_bot: None,
+        media_group_id: None,
+        reply_markup: None,
+        data: MessageData::Text(Text {
+            data: String::from("test"),
+            entities: None,
+        }),
+    }
+}
+
+fn create_message_value() -> serde_json::Value {
+    serde_json::json!({
+        "message_id": 1,
+        "date": 0,
+        "from": {
+            "id": 1,
+            "first_name": "User",
+            "is_bot": false
+        },
+        "chat": {
+            "id": 1,
+            "type": "supergroup",
+            "title": "Chat"
+        },
+        "text": "test",
+        "has_protected_content": false,
+        "is_automatic_forward": false
+    })
+}
 
 #[test]
-fn deserialize_forward_from_user() {
-    let input = serde_json::json!({
-        "message_id": 1, "date": 0,
-        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-        "text": "test",
-        "forward_from": {"id": 2, "first_name": "firstname", "is_bot": false},
-        "forward_date": 0
+fn forward_from_user() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.forward = Some(Forward {
+        from: ForwardFrom::User(User {
+            id: 2,
+            is_bot: false,
+            first_name: String::from("firstname"),
+            last_name: None,
+            username: None,
+            language_code: None,
+        }),
+        date: 0,
     });
-    let msg: Message = serde_json::from_value(input).unwrap();
-    if let Some(Forward {
-        date,
-        from: ForwardFrom::User(user),
-    }) = msg.forward
-    {
-        assert_eq!(date, 0);
-        assert_eq!(user.id, 2);
-        assert_eq!(user.first_name, String::from("firstname"));
-        assert!(!user.is_bot);
-    } else {
-        panic!("Unexpected forward data: {:?}", msg.forward);
-    }
+    expected_value["forward_from"] = serde_json::json!({
+        "id": 2,
+        "first_name": "firstname",
+        "is_bot": false
+    });
+    expected_value["forward_date"] = serde_json::json!(0);
+
+    assert_json_eq(expected_struct, expected_value);
 }
 
 #[test]
 fn deserialize_forward_from_hidden_user() {
-    let input = serde_json::json!({
-        "message_id": 1, "date": 0,
-        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-        "text": "test",
-        "forward_sender_name": "Hidden User",
-        "forward_date": 0
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.forward = Some(Forward {
+        date: 0,
+        from: ForwardFrom::HiddenUser(String::from("Hidden User")),
     });
-    let msg: Message = serde_json::from_value(input).unwrap();
-    if let Some(Forward {
-        date,
-        from: ForwardFrom::HiddenUser(name),
-    }) = msg.forward
-    {
-        assert_eq!(date, 0);
-        assert_eq!(name, String::from("Hidden User"));
-    } else {
-        panic!("Unexpected forward data: {:?}", msg.forward);
-    }
+    expected_value["forward_sender_name"] = serde_json::json!("Hidden User");
+    expected_value["forward_date"] = serde_json::json!(0);
+    assert_json_eq(expected_struct, expected_value);
 }
 
 #[test]
 fn deserialize_forward_from_channel() {
-    let input = serde_json::json!({
-        "message_id": 1, "date": 0,
-        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-        "text": "test",
-        "forward_from_chat": {"id": 1, "type": "channel", "title": "test"},
-        "forward_from_message_id": 1,
-        "forward_signature": "test",
-        "forward_date": 0
-    });
-    let msg: Message = serde_json::from_value(input).unwrap();
-    if let Some(Forward {
-        date,
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.forward = Some(Forward {
+        date: 0,
         from: ForwardFrom::Channel {
-            chat,
-            message_id,
-            signature,
+            chat: ChannelChat {
+                id: 1,
+                title: String::from("test"),
+                username: None,
+                photo: None,
+                description: None,
+                invite_link: None,
+                pinned_message: None,
+                linked_chat_id: None,
+                has_protected_content: None,
+                message_auto_delete_time: None,
+            },
+            message_id: 1,
+            signature: Some(String::from("test")),
         },
-    }) = msg.forward
-    {
-        assert_eq!(date, 0);
-        assert_eq!(message_id, 1);
-        assert_eq!(chat.id, 1);
-        assert_eq!(chat.title, String::from("test"));
-        assert_eq!(signature, Some(String::from("test")));
-    } else {
-        panic!("Unexpected forward data: {:?}", msg.forward);
-    }
+    });
+    expected_value["forward_from_chat"] = serde_json::json!({
+        "id": 1,
+        "title": "test"
+    });
+    expected_value["forward_from_message_id"] = serde_json::json!(1);
+    expected_value["forward_signature"] = serde_json::json!("test");
+    expected_value["forward_date"] = serde_json::json!(0);
+    assert_json_eq(expected_struct, expected_value);
 }

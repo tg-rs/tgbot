@@ -1,77 +1,136 @@
-use serde_json::Value;
-
 use crate::{
-    method::Method,
-    request::{RequestBody, RequestMethod},
-    types::{AnswerInlineQuery, ChosenInlineResult},
+    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    types::{
+        AnswerInlineQuery,
+        ChosenInlineResult,
+        InlineQueryResult,
+        InlineQueryResultArticle,
+        InputMessageContent,
+        InputMessageContentText,
+        Location,
+        User,
+    },
 };
 
 #[test]
 fn answer_inline_query() {
-    let request = AnswerInlineQuery::new("id", vec![])
-        .cache_time(300)
-        .personal(true)
-        .next_offset("offset")
-        .switch_pm_text("text")
-        .switch_pm_parameter("param")
-        .into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/answerInlineQuery"
+    let text = InputMessageContent::Text(InputMessageContentText::new("text"));
+    let article = InlineQueryResult::Article(InlineQueryResultArticle::new("id", "title", text));
+    let method = AnswerInlineQuery::new("id", vec![article]);
+
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "answerInlineQuery",
+            serde_json::json!({
+                "inline_query_id": "id",
+                "results": [
+                    {
+                        "type": "article",
+                        "id": "id",
+                        "title": "title",
+                        "input_message_content": {
+                            "message_text": "text"
+                        }
+                    }
+                ]
+            }),
+        ),
+        method.clone(),
     );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(data["inline_query_id"], "id");
-        assert_eq!(data["cache_time"], 300);
-        assert!(data["is_personal"].as_bool().unwrap());
-        assert_eq!(data["next_offset"], "offset");
-        assert_eq!(data["switch_pm_text"], "text");
-        assert_eq!(data["switch_pm_parameter"], "param");
-    } else {
-        panic!("Unexpected request body");
-    }
+
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "answerInlineQuery",
+            serde_json::json!({
+                "inline_query_id": "id",
+                "results": [
+                    {
+                        "type": "article",
+                        "id": "id",
+                        "title": "title",
+                        "input_message_content": {
+                            "message_text": "text"
+                        }
+                    }
+                ],
+                "cache_time": 300,
+                "is_personal": true,
+                "next_offset": "offset",
+                "switch_pm_text": "text",
+                "switch_pm_parameter": "param"
+            }),
+        ),
+        method
+            .cache_time(300)
+            .personal(true)
+            .next_offset("offset")
+            .switch_pm_text("text")
+            .switch_pm_parameter("param"),
+    );
 }
 
 #[test]
-fn chosen_inline_result_deserialize_full() {
-    let data: ChosenInlineResult = serde_json::from_value(serde_json::json!({
-        "result_id": "result-id",
-        "from": {
-            "id": 1,
-            "first_name": "test",
-            "is_bot": false
+fn chosen_inline_result() {
+    assert_json_eq(
+        ChosenInlineResult {
+            result_id: String::from("result-id"),
+            from: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("test"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            location: Some(Location {
+                longitude: 1.0,
+                latitude: 2.0,
+                horizontal_accuracy: None,
+                live_period: None,
+                heading: None,
+                proximity_alert_radius: None,
+            }),
+            inline_message_id: Some(String::from("message-id")),
+            query: String::from("q"),
         },
-        "location": {
-            "latitude": 2.1,
-            "longitude": 3.0
+        serde_json::json!({
+            "result_id": "result-id",
+            "from": {
+                "id": 1,
+                "first_name": "test",
+                "is_bot": false
+            },
+            "location": {
+                "latitude": 2.0,
+                "longitude": 1.0
+            },
+            "inline_message_id": "message-id",
+            "query": "q",
+        }),
+    );
+    assert_json_eq(
+        ChosenInlineResult {
+            result_id: String::from("result-id"),
+            from: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("test"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            location: None,
+            inline_message_id: None,
+            query: String::from("q"),
         },
-        "inline_message_id": "message-id",
-        "query": "q",
-    }))
-    .unwrap();
-    assert_eq!(data.result_id, "result-id");
-    assert_eq!(data.from.id, 1);
-    assert_eq!(data.location.unwrap().latitude, 2.1);
-    assert_eq!(data.inline_message_id.unwrap(), "message-id");
-    assert_eq!(data.query, "q");
-}
-
-#[test]
-fn chosen_inline_result_deserialize_partial() {
-    let data: ChosenInlineResult = serde_json::from_value(serde_json::json!({
-        "result_id": "result-id",
-        "from": {
-            "id": 1,
-            "first_name": "test",
-            "is_bot": false
-        },
-        "query": "q",
-    }))
-    .unwrap();
-    assert_eq!(data.result_id, "result-id");
-    assert_eq!(data.from.id, 1);
-    assert!(data.location.is_none());
-    assert!(data.inline_message_id.is_none());
-    assert_eq!(data.query, "q");
+        serde_json::json!({
+            "result_id": "result-id",
+            "from": {
+                "id": 1,
+                "first_name": "test",
+                "is_bot": false
+            },
+            "query": "q",
+        }),
+    );
 }

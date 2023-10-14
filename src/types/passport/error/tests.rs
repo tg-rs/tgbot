@@ -1,87 +1,113 @@
-use serde_json::Value;
-
 use crate::{
-    method::Method,
-    request::{RequestBody, RequestMethod},
+    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
     types::{EncryptedPassportElementKind, PassportElementError, SetPassportDataErrors},
 };
 
 #[test]
-fn serialize_error() {
-    let err = PassportElementError::data_field(
-        EncryptedPassportElementKind::Address,
-        "address",
-        "data_hash",
-        "bad address",
-    )
-    .unwrap();
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"data","type":"address","field_name":"address","data_hash":"data_hash","message":"bad address"})
-    );
+fn passport_element_error() {
+    for (expected_struct, expected_value) in [
+        (
+            PassportElementError::data_field(
+                EncryptedPassportElementKind::Address,
+                "address",
+                "data_hash",
+                "bad address",
+            ),
+            serde_json::json!({
+                "source": "data",
+                "type": "address",
+                "field_name": "address",
+                "data_hash": "data_hash",
+                "message": "bad address"
+            }),
+        ),
+        (
+            PassportElementError::front_side(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file"),
+            serde_json::json!({
+                "source": "front_side",
+                "type": "driver_license",
+                "file_hash": "file_hash",
+                "message": "bad file"
+            }),
+        ),
+        (
+            PassportElementError::reverse_side(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file"),
+            serde_json::json!({
+                "source": "reverse_side",
+                "type": "driver_license",
+                "file_hash": "file_hash",
+                "message": "bad file"
+            }),
+        ),
+        (
+            PassportElementError::selfie(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file"),
+            serde_json::json!({
+                "source": "selfie",
+                "type": "driver_license",
+                "file_hash": "file_hash",
+                "message": "bad file"
+            }),
+        ),
+        (
+            PassportElementError::file(EncryptedPassportElementKind::BankStatement, "file_hash", "bad file"),
+            serde_json::json!({
+                "source": "file",
+                "type": "bank_statement",
+                "file_hash": "file_hash",
+                "message": "bad file"
+            }),
+        ),
+        (
+            PassportElementError::files(
+                EncryptedPassportElementKind::BankStatement,
+                vec![String::from("file_hash")],
+                "bad file",
+            ),
+            serde_json::json!({
+                "source": "files",
+                "type": "bank_statement",
+                "file_hashes": ["file_hash"],
+                "message": "bad file"
+            }),
+        ),
+        (
+            PassportElementError::translation_file(
+                EncryptedPassportElementKind::BankStatement,
+                "file_hash",
+                "bad file",
+            ),
+            serde_json::json!({
+                "source": "translation_file",
+                "type": "bank_statement",
+                "file_hash": "file_hash",
+                "message": "bad file"
+            }),
+        ),
+        (
+            PassportElementError::translation_files(
+                EncryptedPassportElementKind::BankStatement,
+                vec![String::from("file_hash")],
+                "bad file",
+            ),
+            serde_json::json!({
+                "source": "translation_files",
+                "type": "bank_statement",
+                "file_hashes": ["file_hash"],
+                "message": "bad file"
+            }),
+        ),
+    ] {
+        assert_json_eq(expected_struct.unwrap(), expected_value);
+    }
 
-    let err =
-        PassportElementError::front_side(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file").unwrap();
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"front_side","type":"driver_license","file_hash":"file_hash","message":"bad file"})
-    );
-
-    let err = PassportElementError::reverse_side(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file")
-        .unwrap();
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"reverse_side","type":"driver_license","file_hash":"file_hash","message":"bad file"})
-    );
-
-    let err =
-        PassportElementError::selfie(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file").unwrap();
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"selfie","type":"driver_license","file_hash":"file_hash","message":"bad file"})
-    );
-
-    let err = PassportElementError::file(EncryptedPassportElementKind::BankStatement, "file_hash", "bad file").unwrap();
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"file","type":"bank_statement","file_hash":"file_hash","message":"bad file"})
-    );
-
-    let err = PassportElementError::files(
-        EncryptedPassportElementKind::BankStatement,
-        vec![String::from("file_hash")],
-        "bad file",
-    )
-    .unwrap();
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"files","type":"bank_statement","file_hashes":["file_hash"],"message":"bad file"})
-    );
-
-    let err =
-        PassportElementError::translation_file(EncryptedPassportElementKind::BankStatement, "file_hash", "bad file")
-            .unwrap();
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"translation_file","type":"bank_statement","file_hash":"file_hash","message":"bad file"})
-    );
-
-    let err = PassportElementError::translation_files(
-        EncryptedPassportElementKind::BankStatement,
-        vec![String::from("file_hash")],
-        "bad file",
-    )
-    .unwrap();
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"translation_files","type":"bank_statement","file_hashes":["file_hash"],"message":"bad file"})
-    );
-
-    let err =
-        PassportElementError::unspecified(EncryptedPassportElementKind::BankStatement, "element_hash", "bad file");
-    assert_eq!(
-        serde_json::to_value(&err).unwrap(),
-        serde_json::json!({"source":"unspecified","type":"bank_statement","element_hash":"element_hash","message":"bad file"})
+    assert_json_eq(
+        PassportElementError::unspecified(EncryptedPassportElementKind::BankStatement, "element_hash", "bad file"),
+        serde_json::json!({
+            "source": "unspecified",
+            "type": "bank_statement",
+            "element_hash": "element_hash",
+            "message": "bad file"
+        }),
     );
 }
 
@@ -243,17 +269,14 @@ fn create_error_accepts_kind() {
 
 #[test]
 fn set_passport_data_errors() {
-    let request = SetPassportDataErrors::new(1, vec![]).into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/setPassportDataErrors"
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "setPassportDataErrors",
+            serde_json::json!({
+                "user_id": 1,
+                "errors": []
+            }),
+        ),
+        SetPassportDataErrors::new(1, vec![]),
     );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(data["user_id"], 1);
-        assert!(data["errors"].as_array().unwrap().is_empty());
-    } else {
-        panic!("Unexpected request body");
-    }
 }

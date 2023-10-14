@@ -1,660 +1,935 @@
 use std::{collections::HashSet, time::Duration};
 
-use serde_json::Value;
-
 use crate::{
-    method::Method,
-    request::{RequestBody, RequestMethod},
-    types::{AllowedUpdate, GetUpdates, Poll, Update, UpdateKind},
+    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    types::{
+        AllowedUpdate,
+        CallbackQuery,
+        ChannelChat,
+        Chat,
+        ChatJoinRequest,
+        ChatMember,
+        ChatMemberKicked,
+        ChatMemberUpdated,
+        ChosenInlineResult,
+        GetUpdates,
+        GroupChat,
+        InlineQuery,
+        Message,
+        MessageData,
+        MessageSender,
+        Poll,
+        PollAnswer,
+        PollOption,
+        PreCheckoutQuery,
+        PrivateChat,
+        RegularPoll,
+        ShippingAddress,
+        ShippingQuery,
+        Text,
+        Update,
+        UpdateKind,
+        User,
+    },
 };
 
 #[test]
-fn allowed_update_serialize() {
+fn allowed_update() {
     use crate::types::AllowedUpdate::*;
-    for (variant, expected) in [
-        (Message, r#""message""#),
-        (EditedMessage, r#""edited_message""#),
-        (ChannelPost, r#""channel_post""#),
-        (EditedChannelPost, r#""edited_channel_post""#),
-        (InlineQuery, r#""inline_query""#),
-        (ChosenInlineResult, r#""chosen_inline_result""#),
-        (CallbackQuery, r#""callback_query""#),
-        (ShippingQuery, r#""shipping_query""#),
-        (PreCheckoutQuery, r#""pre_checkout_query""#),
-        (Poll, r#""poll""#),
-        (PollAnswer, r#""poll_answer""#),
-        (ChatMember, r#""chat_member""#),
+    for (expected_struct, expected_value) in [
+        (Message, serde_json::json!("message")),
+        (EditedMessage, serde_json::json!("edited_message")),
+        (ChannelPost, serde_json::json!("channel_post")),
+        (EditedChannelPost, serde_json::json!("edited_channel_post")),
+        (InlineQuery, serde_json::json!("inline_query")),
+        (ChosenInlineResult, serde_json::json!("chosen_inline_result")),
+        (CallbackQuery, serde_json::json!("callback_query")),
+        (ShippingQuery, serde_json::json!("shipping_query")),
+        (PreCheckoutQuery, serde_json::json!("pre_checkout_query")),
+        (Poll, serde_json::json!("poll")),
+        (PollAnswer, serde_json::json!("poll_answer")),
+        (ChatMember, serde_json::json!("chat_member")),
     ] {
-        assert_eq!(serde_json::to_string(&variant).unwrap(), expected);
+        assert_json_eq(expected_struct, expected_value);
     }
 }
 
 #[test]
-fn allowed_update_deserialize() {
-    use crate::types::AllowedUpdate::*;
-    for (expected, raw_value) in [
-        (Message, r#""message""#),
-        (EditedMessage, r#""edited_message""#),
-        (ChannelPost, r#""channel_post""#),
-        (EditedChannelPost, r#""edited_channel_post""#),
-        (InlineQuery, r#""inline_query""#),
-        (ChosenInlineResult, r#""chosen_inline_result""#),
-        (CallbackQuery, r#""callback_query""#),
-        (ShippingQuery, r#""shipping_query""#),
-        (PreCheckoutQuery, r#""pre_checkout_query""#),
-        (Poll, r#""poll""#),
-        (PollAnswer, r#""poll_answer""#),
-        (ChatMember, r#""chat_member""#),
-    ] {
-        assert_eq!(serde_json::from_str::<AllowedUpdate>(raw_value).unwrap(), expected)
-    }
-}
-
-#[test]
-fn bot_status_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "my_chat_member": {
-            "chat": {
-                "id": 1,
-                "type": "group",
-                "title": "grouptitle"
+fn bot_status() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::BotStatus(ChatMemberUpdated {
+            chat: Chat::Group(GroupChat {
+                id: 1,
+                title: String::from("Group"),
+                photo: None,
+                invite_link: None,
+                pinned_message: None,
+                permissions: None,
+                has_protected_content: None,
+                message_auto_delete_time: None,
+            }),
+            from: User {
+                id: 1,
+                is_bot: true,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
             },
-            "from": {
-                "id": 1,
-                "is_bot": true,
-                "first_name": "firstname"
-            },
-            "date": 0,
-            "old_chat_member": {
-                "status": "member",
-                "user": {
-                    "id": 2,
-                    "is_bot": true,
-                    "first_name": "firstname"
-                }
-            },
-            "new_chat_member": {
-                "status": "kicked",
-                "user": {
-                    "id": 2,
-                    "is_bot": true,
-                    "first_name": "firstname",
+            date: 0,
+            old_chat_member: ChatMember::Member(User {
+                id: 2,
+                is_bot: true,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            }),
+            new_chat_member: ChatMember::Kicked(ChatMemberKicked {
+                user: User {
+                    id: 2,
+                    is_bot: true,
+                    first_name: String::from("John"),
+                    last_name: None,
+                    username: None,
+                    language_code: None,
                 },
-                "until_date": 0
+                until_date: 0,
+            }),
+            invite_link: None,
+        }),
+    };
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "my_chat_member": {
+                "chat": {
+                    "id": 1,
+                    "type": "group",
+                    "title": "Group"
+                },
+                "from": {
+                    "id": 1,
+                    "is_bot": true,
+                    "first_name": "John"
+                },
+                "date": 0,
+                "old_chat_member": {
+                    "status": "member",
+                    "user": {
+                        "id": 2,
+                        "is_bot": true,
+                        "first_name": "John"
+                    }
+                },
+                "new_chat_member": {
+                    "status": "kicked",
+                    "user": {
+                        "id": 2,
+                        "is_bot": true,
+                        "first_name": "John",
+                    },
+                    "until_date": 0
+                }
             }
-        }
-    }))
-    .unwrap();
-    assert_eq!(update.get_chat_id(), Some(1));
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1);
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::BotStatus(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.date, 0);
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+        }),
+    );
 }
 
 #[test]
-fn callback_query_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "callback_query": {
-            "id": "test",
-            "from": {
-                "id": 1,
-                "first_name": "test",
-                "is_bot": false
+fn callback_query() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::CallbackQuery(CallbackQuery {
+            id: String::from("query-id"),
+            from: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            message: None,
+            inline_message_id: None,
+            chat_instance: None,
+            data: None,
+            game_short_name: None,
+        }),
+    };
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "callback_query": {
+                "id": "query-id",
+                "from": {
+                    "id": 1,
+                    "first_name": "John",
+                    "is_bot": false
+                }
             }
-        }
-    }))
-    .unwrap();
-    assert!(update.get_chat_id().is_none());
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1);
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::CallbackQuery(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.id, "test");
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+        }),
+    );
 }
 
 #[test]
-fn channel_post_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "channel_post": {
-            "message_id": 1111,
-            "date": 0,
-            "author_signature": "test",
-            "chat": {
-                "id": 1,
-                "type": "channel",
-                "title": "channeltitle",
-                "username": "channelusername"
-            },
-            "text": "test message from channel"
-        }
-    }))
-    .unwrap();
-    assert_eq!(update.get_chat_id().unwrap(), 1);
-    assert_eq!(update.get_chat_username().unwrap(), "channelusername");
-    assert!(update.get_user().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::ChannelPost(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.id, 1111);
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+fn channel_post() {
+    let chat = Chat::Channel(ChannelChat {
+        id: 1,
+        title: String::from("Channel"),
+        username: Some(String::from("channel_username")),
+        photo: None,
+        description: None,
+        invite_link: None,
+        pinned_message: None,
+        linked_chat_id: None,
+        has_protected_content: None,
+        message_auto_delete_time: None,
+    });
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::ChannelPost(Message {
+            id: 1111,
+            date: 0,
+            edit_date: None,
+            sender: MessageSender::Chat(chat.clone()),
+            chat,
+            author_signature: Some(String::from("John D.")),
+            has_protected_content: false,
+            forward: None,
+            is_automatic_forward: false,
+            reply_to: None,
+            via_bot: None,
+            media_group_id: None,
+            reply_markup: None,
+            data: MessageData::Text(Text {
+                data: String::from("test message from channel"),
+                entities: None,
+            }),
+        }),
+    };
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert_eq!(expected_struct.get_chat_username().unwrap(), "channel_username");
+    assert!(expected_struct.get_user().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "channel_post": {
+                "message_id": 1111,
+                "date": 0,
+                "author_signature": "John D.",
+                "chat": {
+                    "id": 1,
+                    "type": "channel",
+                    "title": "Channel",
+                    "username": "channel_username"
+                },
+                "sender_chat": {
+                    "id": 1,
+                    "type": "channel",
+                    "title": "Channel",
+                    "username": "channel_username"
+                },
+                "text": "test message from channel",
+                "has_protected_content": false,
+                "is_automatic_forward": false
+            }
+        }),
+    );
 }
 
 #[test]
-fn chat_join_request_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "chat_join_request": {
-            "chat": {
-                "id": 1,
-                "type": "group",
-                "title": "grouptitle"
+fn chat_join_request() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::ChatJoinRequest(ChatJoinRequest {
+            chat: Chat::Group(GroupChat {
+                id: 1,
+                title: String::from("Group"),
+                photo: None,
+                invite_link: None,
+                pinned_message: None,
+                permissions: None,
+                has_protected_content: None,
+                message_auto_delete_time: None,
+            }),
+            from: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
             },
-            "from": {
-                "id": 1,
-                "is_bot": false,
-                "first_name": "firstname"
-            },
-            "date": 0
-        }
-    }))
-    .unwrap();
-    assert_eq!(update.get_chat_id(), Some(1));
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1);
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::ChatJoinRequest(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.date, 0);
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+            date: 0,
+            bio: None,
+            invite_link: None,
+        }),
+    };
+    assert_eq!(expected_struct.get_chat_id(), Some(1));
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "chat_join_request": {
+                "chat": {
+                    "id": 1,
+                    "type": "group",
+                    "title": "Group"
+                },
+                "from": {
+                    "id": 1,
+                    "is_bot": false,
+                    "first_name": "John"
+                },
+                "date": 0
+            }
+        }),
+    );
 }
 
 #[test]
-fn chosen_inline_result_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "chosen_inline_result": {
-            "result_id": "result id",
-            "from": {
-                "id": 1111,
-                "first_name": "Test Firstname",
-                "is_bot": false
+fn chosen_inline_result() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::ChosenInlineResult(ChosenInlineResult {
+            result_id: String::from("chosen-inline-result-id"),
+            from: User {
+                id: 1111,
+                is_bot: false,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
             },
-            "query": "q",
-        }
-    }))
-    .unwrap();
-    assert!(update.get_chat_id().is_none());
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1111);
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::ChosenInlineResult(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.result_id, "result id");
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+            location: None,
+            inline_message_id: None,
+            query: String::from("q"),
+        }),
+    };
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1111);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "chosen_inline_result": {
+                "result_id": "chosen-inline-result-id",
+                "from": {
+                    "id": 1111,
+                    "first_name": "John",
+                    "is_bot": false
+                },
+                "query": "q",
+            }
+        }),
+    );
 }
 
 #[test]
-fn edited_channel_post_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "edited_channel_post": {
-            "message_id": 1111,
-            "date": 0,
-            "author_signature": "test",
-            "chat": {
-                "id": 1,
-                "type": "channel",
-                "title": "channeltitle",
-                "username": "channelusername"
-            },
-            "text": "test message from channel"
-        }
-    }))
-    .unwrap();
-    assert_eq!(update.get_chat_id().unwrap(), 1);
-    assert_eq!(update.get_chat_username().unwrap(), "channelusername");
-    assert!(update.get_user().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::EditedChannelPost(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.id, 1111);
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+fn edited_channel_post() {
+    let chat = Chat::Channel(ChannelChat {
+        id: 1,
+        title: String::from("Channel"),
+        username: Some(String::from("channel_username")),
+        photo: None,
+        description: None,
+        invite_link: None,
+        pinned_message: None,
+        linked_chat_id: None,
+        has_protected_content: None,
+        message_auto_delete_time: None,
+    });
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::EditedChannelPost(Message {
+            id: 1111,
+            date: 0,
+            edit_date: None,
+            sender: MessageSender::Chat(chat.clone()),
+            chat,
+            author_signature: Some(String::from("John D.")),
+            has_protected_content: false,
+            forward: None,
+            is_automatic_forward: false,
+            reply_to: None,
+            via_bot: None,
+            media_group_id: None,
+            reply_markup: None,
+            data: MessageData::Text(Text {
+                data: String::from("test message from channel"),
+                entities: None,
+            }),
+        }),
+    };
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert_eq!(expected_struct.get_chat_username().unwrap(), "channel_username");
+    assert!(expected_struct.get_user().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "edited_channel_post": {
+                "message_id": 1111,
+                "date": 0,
+                "author_signature": "John D.",
+                "chat": {
+                    "id": 1,
+                    "type": "channel",
+                    "title": "Channel",
+                    "username": "channel_username"
+                },
+                "sender_chat": {
+                    "id": 1,
+                    "type": "channel",
+                    "title": "Channel",
+                    "username": "channel_username"
+                },
+                "text": "test message from channel",
+                "has_protected_content": false,
+                "is_automatic_forward": false
+            }
+        }),
+    );
 }
 
 #[test]
-fn edited_message_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "edited_message": {
-            "date": 1441,
-            "chat": {
-                "id": 1111,
-                "first_name": "Test Firstname",
-                "last_name": "Test Lastname",
-                "username": "Testusername",
-                "type": "private",
-            },
-            "message_id": 1365,
-            "from": {
-                "id": 1111,
-                "first_name": "Test Firstname",
-                "last_name": "Test Lastname",
-                "username": "Testusername",
-                "is_bot": false
-            },
-            "text": "Edited text",
-            "edit_date": 1441
-        }
-    }))
-    .unwrap();
-    assert_eq!(update.get_chat_id().unwrap(), 1111);
-    assert_eq!(update.get_chat_username().unwrap(), "Testusername");
-    assert_eq!(update.get_user_id().unwrap(), 1111);
-    assert_eq!(update.get_user_username().unwrap(), "Testusername");
-    if let Update {
-        id,
-        kind: UpdateKind::EditedMessage(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.id, 1365);
-        assert!(data.is_edited());
-        assert_eq!(data.edit_date.unwrap(), 1441);
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+fn edited_message() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::EditedMessage(Message {
+            author_signature: None,
+            chat: Chat::Private(PrivateChat {
+                bio: None,
+                first_name: String::from("John"),
+                has_private_forwards: None,
+                id: 1111,
+                last_name: Some(String::from("Doe")),
+                message_auto_delete_time: None,
+                photo: None,
+                pinned_message: None,
+                username: Some(String::from("john_doe")),
+            }),
+            data: MessageData::Text(Text {
+                data: String::from("Edited text"),
+                entities: None,
+            }),
+            date: 1441,
+            edit_date: Some(1441),
+            forward: None,
+            has_protected_content: false,
+            id: 1365,
+            is_automatic_forward: false,
+            media_group_id: None,
+            reply_markup: None,
+            reply_to: None,
+            sender: MessageSender::User(User {
+                first_name: String::from("John"),
+                id: 1111,
+                is_bot: false,
+                language_code: None,
+                last_name: Some(String::from("Doe")),
+                username: Some(String::from("john_doe")),
+            }),
+            via_bot: None,
+        }),
+    };
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1111);
+    assert_eq!(expected_struct.get_chat_username().unwrap(), "john_doe");
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1111);
+    assert_eq!(expected_struct.get_user_username().unwrap(), "john_doe");
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "edited_message": {
+                "chat": {
+                    "id": 1111,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "username": "john_doe",
+                    "type": "private",
+                },
+                "date": 1441,
+                "edit_date": 1441,
+                "from": {
+                    "id": 1111,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "username": "john_doe",
+                    "is_bot": false
+                },
+                "has_protected_content": false,
+                "is_automatic_forward": false,
+                "message_id": 1365,
+                "text": "Edited text",
+            }
+        }),
+    );
 }
 
 #[test]
-fn inline_query_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "inline_query": {
-            "id": "query id",
-            "from": {
-                "id": 1111,
-                "first_name": "Test Firstname",
-                "is_bot": false
+fn inline_query() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::InlineQuery(InlineQuery {
+            id: String::from("query-id"),
+            from: User {
+                id: 1111,
+                is_bot: false,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
             },
-            "query": "query text",
-            "offset": "query offset"
-        }
-    }))
-    .unwrap();
-    assert!(update.get_chat_id().is_none());
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user().map(|u| u.id).unwrap(), 1111);
-    if let Update {
-        id,
-        kind: UpdateKind::InlineQuery(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.id, "query id");
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+            query: String::from("query query"),
+            offset: String::from("query offset"),
+            chat_type: None,
+            location: None,
+        }),
+    };
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user().map(|u| u.id).unwrap(), 1111);
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "inline_query": {
+                "id": "query-id",
+                "from": {
+                    "id": 1111,
+                    "first_name": "John",
+                    "is_bot": false
+                },
+                "query": "query query",
+                "offset": "query offset"
+            }
+        }),
+    );
 }
 
 #[test]
-fn message_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "message": {
-            "message_id": 1,
-            "date": 0,
-            "from": {
-                "id": 1,
-                "is_bot": false,
-                "first_name": "test"
-            },
-            "chat": {
-                "id": 1,
-                "type": "private",
-                "first_name": "test"
-            },
-            "text": "test"
-        }
-    }))
-    .unwrap();
-    assert_eq!(update.get_chat_id().unwrap(), 1);
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1);
-    assert!(update.get_user_username().is_none());
-    assert_eq!(update.get_user().map(|u| u.id).unwrap(), 1);
-    if let Update {
-        id,
-        kind: UpdateKind::Message(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.id, 1);
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+fn message() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::Message(Message {
+            id: 1,
+            date: 0,
+            edit_date: None,
+            sender: MessageSender::User(User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            }),
+            chat: Chat::Private(PrivateChat {
+                id: 1,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                photo: None,
+                bio: None,
+                pinned_message: None,
+                has_private_forwards: None,
+                message_auto_delete_time: None,
+            }),
+            author_signature: None,
+            has_protected_content: false,
+            forward: None,
+            is_automatic_forward: false,
+            reply_to: None,
+            via_bot: None,
+            media_group_id: None,
+            reply_markup: None,
+            data: MessageData::Text(Text {
+                data: String::from("message-text"),
+                entities: None,
+            }),
+        }),
+    };
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+    assert_eq!(expected_struct.get_user().map(|u| u.id).unwrap(), 1);
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "message": {
+                "message_id": 1,
+                "date": 0,
+                "from": {
+                    "id": 1,
+                    "is_bot": false,
+                    "first_name": "John"
+                },
+                "chat": {
+                    "id": 1,
+                    "type": "private",
+                    "first_name": "John"
+                },
+                "text": "message-text",
+                "has_protected_content": false,
+                "is_automatic_forward": false
+            }
+        }),
+    );
 }
 
 #[test]
-fn poll_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "poll": {
-            "id": "poll-id",
-            "question": "Rust?",
-            "options": [
-                {"text": "Yes", "voter_count": 1000},
-                {"text": "No", "voter_count": 0}
+fn poll() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::Poll(Poll::Regular(RegularPoll {
+            id: String::from("poll-id"),
+            question: String::from("Rust?"),
+            options: vec![
+                PollOption {
+                    text: String::from("Yes"),
+                    voter_count: 1000,
+                },
+                PollOption {
+                    text: String::from("No"),
+                    voter_count: 0,
+                },
             ],
-            "is_closed": true,
-            "total_voter_count": 100,
-            "is_anonymous": true,
-            "type": "regular",
-            "allows_multiple_answers": false
-        }
-    }))
-    .unwrap();
-    assert!(update.get_chat_id().is_none());
-    assert!(update.get_chat_username().is_none());
-    assert!(update.get_user().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::Poll(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        if let Poll::Regular(data) = data {
-            assert_eq!(data.id, "poll-id");
-        } else {
-            panic!("Unexpected poll kind");
-        }
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
-}
+            total_voter_count: 1000,
+            is_closed: true,
+            is_anonymous: true,
+            allows_multiple_answers: false,
+            open_period: None,
+            close_date: None,
+        })),
+    };
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert!(expected_struct.get_user().is_none());
 
-#[test]
-fn poll_answer_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "poll_answer": {
-            "poll_id": "poll-id",
-            "user": {
-                "id": 1,
-                "first_name": "Jamie",
-                "is_bot": false
-            },
-            "option_ids": [0],
-        }
-    }))
-    .unwrap();
-    assert!(update.get_chat_id().is_none());
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1);
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::PollAnswer(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.poll_id, "poll-id");
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
-}
-
-#[test]
-fn pre_checkout_query_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "pre_checkout_query": {
-            "id": "query id",
-            "from": {
-                "id": 1,
-                "first_name": "test",
-                "is_bot": false
-            },
-            "currency": "GEL",
-            "total_amount": 100,
-            "invoice_payload": "invoice payload"
-        }
-    }))
-    .unwrap();
-    assert!(update.get_chat_id().is_none());
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1);
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::PreCheckoutQuery(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.id, "query id");
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
-}
-
-#[test]
-fn shipping_query_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "shipping_query": {
-            "id": "query-id",
-            "from": {
-                "id": 1,
-                "first_name": "test",
-                "is_bot": false
-            },
-            "invoice_payload": "payload",
-            "shipping_address": {
-                "country_code": "RU",
-                "state": "Chechen Republic",
-                "city": "Gudermes",
-                "street_line1": "Nuradilov st., 12",
-                "street_line2": "",
-                "post_code": "366200",
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "poll": {
+                "id": "poll-id",
+                "question": "Rust?",
+                "options": [
+                    {"text": "Yes", "voter_count": 1000},
+                    {"text": "No", "voter_count": 0}
+                ],
+                "is_closed": true,
+                "total_voter_count": 1000,
+                "is_anonymous": true,
+                "type": "regular",
+                "allows_multiple_answers": false
             }
-        }
-    }))
-    .unwrap();
-    assert!(update.get_chat_id().is_none());
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1);
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::ShippingQuery(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.id, "query-id");
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+        }),
+    );
 }
 
 #[test]
-fn unknown_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "unknown": {
-            "key": "value"
-        }
-    }))
-    .unwrap();
-    assert!(update.get_chat_id().is_none());
-    assert!(update.get_chat_username().is_none());
-    assert!(update.get_user_id().is_none());
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::Unknown(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data, serde_json::json!({"key": "value"}));
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
-}
+fn poll_answer() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::PollAnswer(PollAnswer {
+            poll_id: String::from("poll-id"),
+            user: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("Jamie"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            option_ids: vec![0],
+        }),
+    };
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
 
-#[test]
-fn user_status_deserialize() {
-    let update: Update = serde_json::from_value(serde_json::json!({
-        "update_id": 1,
-        "chat_member": {
-            "chat": {
-                "id": 1,
-                "type": "group",
-                "title": "grouptitle"
-            },
-            "from": {
-                "id": 1,
-                "is_bot": true,
-                "first_name": "firstname"
-            },
-            "date": 0,
-            "old_chat_member": {
-                "status": "member",
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "poll_answer": {
+                "poll_id": "poll-id",
                 "user": {
-                    "id": 2,
-                    "is_bot": false,
-                    "first_name": "firstname"
-                }
-            },
-            "new_chat_member": {
-                "status": "kicked",
-                "user": {
-                    "id": 2,
-                    "is_bot": false,
-                    "first_name": "firstname",
+                    "id": 1,
+                    "first_name": "Jamie",
+                    "is_bot": false
                 },
-                "until_date": 0
+                "option_ids": [0],
             }
-        }
-    }))
-    .unwrap();
-    assert_eq!(update.get_chat_id(), Some(1));
-    assert!(update.get_chat_username().is_none());
-    assert_eq!(update.get_user_id().unwrap(), 1);
-    assert!(update.get_user_username().is_none());
-    if let Update {
-        id,
-        kind: UpdateKind::UserStatus(data),
-    } = update
-    {
-        assert_eq!(id, 1);
-        assert_eq!(data.date, 0);
-    } else {
-        panic!("Unexpected update {:?}", update);
-    }
+        }),
+    );
+}
+
+#[test]
+fn pre_checkout_query() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::PreCheckoutQuery(PreCheckoutQuery {
+            id: String::from("query-id"),
+            from: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            currency: String::from("GEL"),
+            total_amount: 100,
+            invoice_payload: String::from("invoice payload"),
+            shipping_option_id: None,
+            order_info: None,
+        }),
+    };
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "pre_checkout_query": {
+                "id": "query-id",
+                "from": {
+                    "id": 1,
+                    "first_name": "John",
+                    "is_bot": false
+                },
+                "currency": "GEL",
+                "total_amount": 100,
+                "invoice_payload": "invoice payload"
+            }
+        }),
+    );
+}
+
+#[test]
+fn shipping_query() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::ShippingQuery(ShippingQuery {
+            id: String::from("query-id"),
+            from: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("Ramazan"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            invoice_payload: String::from("payload"),
+            shipping_address: ShippingAddress {
+                country_code: String::from("RU"),
+                state: String::from("Chechen Republic"),
+                city: String::from("Gudermes"),
+                street_line1: String::from("Nuradilov st., 12"),
+                street_line2: String::from(""),
+                post_code: String::from("366200"),
+            },
+        }),
+    };
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "shipping_query": {
+                "id": "query-id",
+                "from": {
+                    "id": 1,
+                    "first_name": "Ramazan",
+                    "is_bot": false
+                },
+                "invoice_payload": "payload",
+                "shipping_address": {
+                    "country_code": "RU",
+                    "state": "Chechen Republic",
+                    "city": "Gudermes",
+                    "street_line1": "Nuradilov st., 12",
+                    "street_line2": "",
+                    "post_code": "366200",
+                }
+            }
+        }),
+    );
+}
+
+#[test]
+fn unknown() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::Unknown(serde_json::json!({"key": "value"})),
+    };
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert!(expected_struct.get_user_id().is_none());
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "unknown": {
+                "key": "value"
+            }
+        }),
+    );
+}
+
+#[test]
+fn user_status() {
+    let expected_struct = Update {
+        id: 1,
+        kind: UpdateKind::UserStatus(ChatMemberUpdated {
+            chat: Chat::Group(GroupChat {
+                id: 1,
+                title: String::from("Group"),
+                photo: None,
+                invite_link: None,
+                pinned_message: None,
+                permissions: None,
+                has_protected_content: None,
+                message_auto_delete_time: None,
+            }),
+            from: User {
+                id: 1,
+                is_bot: true,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            date: 0,
+            old_chat_member: ChatMember::Member(User {
+                id: 2,
+                is_bot: false,
+                first_name: String::from("John"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            }),
+            new_chat_member: ChatMember::Kicked(ChatMemberKicked {
+                user: User {
+                    id: 2,
+                    is_bot: false,
+                    first_name: String::from("John"),
+                    last_name: None,
+                    username: None,
+                    language_code: None,
+                },
+                until_date: 0,
+            }),
+            invite_link: None,
+        }),
+    };
+    assert_eq!(expected_struct.get_chat_id(), Some(1));
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "chat_member": {
+                "chat": {
+                    "id": 1,
+                    "type": "group",
+                    "title": "Group"
+                },
+                "from": {
+                    "id": 1,
+                    "is_bot": true,
+                    "first_name": "John"
+                },
+                "date": 0,
+                "old_chat_member": {
+                    "status": "member",
+                    "user": {
+                        "id": 2,
+                        "is_bot": false,
+                        "first_name": "John"
+                    }
+                },
+                "new_chat_member": {
+                    "status": "kicked",
+                    "user": {
+                        "id": 2,
+                        "is_bot": false,
+                        "first_name": "John",
+                    },
+                    "until_date": 0
+                }
+            }
+        }),
+    );
 }
 
 #[test]
 fn get_updates() {
-    let request = GetUpdates::default().into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/getUpdates");
-    match request.into_body() {
-        RequestBody::Json(data) => {
-            assert_eq!(data.unwrap(), "{}");
-        }
-        data => panic!("Unexpected request data: {:?}", data),
-    }
+    assert_request_eq(
+        ExpectedRequest::post_json("getUpdates", serde_json::json!({})),
+        GetUpdates::default(),
+    );
 
     let mut updates = HashSet::new();
     updates.insert(AllowedUpdate::Message);
-    updates.insert(AllowedUpdate::Message);
-    updates.insert(AllowedUpdate::EditedMessage);
-    updates.insert(AllowedUpdate::ChannelPost);
-    updates.insert(AllowedUpdate::EditedChannelPost);
-    updates.insert(AllowedUpdate::ChosenInlineResult);
-    let request = GetUpdates::default()
-        .offset(0)
-        .limit(10)
-        .timeout(Duration::from_secs(10))
-        .allowed_updates(updates)
-        .add_allowed_update(AllowedUpdate::InlineQuery)
-        .add_allowed_update(AllowedUpdate::CallbackQuery)
-        .add_allowed_update(AllowedUpdate::PreCheckoutQuery)
-        .add_allowed_update(AllowedUpdate::ShippingQuery)
-        .into_request();
-    match request.into_body() {
-        RequestBody::Json(data) => {
-            let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-            assert_eq!(data["offset"], 0);
-            assert_eq!(data["limit"], 10);
-            assert_eq!(data["timeout"], 10);
-            let mut updates: Vec<&str> = data["allowed_updates"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|x| x.as_str().unwrap())
-                .collect();
-            updates.sort_unstable();
-            assert_eq!(
-                updates,
-                vec![
-                    "callback_query",
-                    "channel_post",
-                    "chosen_inline_result",
-                    "edited_channel_post",
-                    "edited_message",
-                    "inline_query",
-                    "message",
-                    "pre_checkout_query",
-                    "shipping_query",
-                ]
-            );
-        }
-        data => panic!("Unexpected request data: {:?}", data),
-    }
-
-    let method = GetUpdates::default().add_allowed_update(AllowedUpdate::Message);
-    assert_eq!(method.allowed_updates.unwrap().len(), 1);
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "getUpdates",
+            serde_json::json!({
+                "offset": 0,
+                "limit": 10,
+                "timeout": 10,
+                "allowed_updates": ["message"]
+            }),
+        ),
+        GetUpdates::default()
+            .offset(0)
+            .limit(10)
+            .timeout(Duration::from_secs(10))
+            .allowed_updates(updates)
+            .add_allowed_update(AllowedUpdate::Message),
+    );
 }

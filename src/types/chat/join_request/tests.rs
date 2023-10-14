@@ -1,110 +1,145 @@
-use serde_json::Value;
-
 use crate::{
-    method::Method,
-    request::{RequestBody, RequestMethod},
-    types::{ApproveChatJoinRequest, ChatJoinRequest, DeclineChatJoinRequest},
+    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    types::{ApproveChatJoinRequest, ChannelChat, Chat, ChatInviteLink, ChatJoinRequest, DeclineChatJoinRequest, User},
 };
 
 #[test]
-fn chat_join_request_deserialize_full() {
-    let data: ChatJoinRequest = serde_json::from_value(serde_json::json!({
-        "chat": {
-            "id": 1,
-            "type": "channel",
-            "title": "channeltitle"
-        },
-        "from": {
-            "id": 1,
-            "is_bot": false,
-            "first_name": "firstname"
-        },
-        "date": 0,
-        "bio": "bio",
-        "invite_link": {
-            "invite_link": "https://t.me/joinchat/o8oIBrbCI3U2OGJi",
-            "creator": {
-                "id": 2,
-                "is_bot": false,
-                "first_name": "firstname"
+fn chat_join_request() {
+    assert_json_eq(
+        ChatJoinRequest {
+            chat: Chat::Channel(ChannelChat {
+                id: 1,
+                title: String::from("Channel"),
+                username: None,
+                photo: None,
+                description: None,
+                invite_link: None,
+                pinned_message: None,
+                linked_chat_id: None,
+                has_protected_content: None,
+                message_auto_delete_time: None,
+            }),
+            from: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("User"),
+                last_name: None,
+                username: None,
+                language_code: None,
             },
-            "creates_join_request": false,
-            "is_primary": true,
-            "is_revoked": false
-        }
-    }))
-    .unwrap();
-    assert_eq!(data.chat.get_id(), 1);
-    assert_eq!(data.from.id, 1);
-    assert_eq!(data.date, 0);
-    assert_eq!(data.bio, Some(String::from("bio")));
-    assert_eq!(
-        data.invite_link.unwrap().invite_link,
-        "https://t.me/joinchat/o8oIBrbCI3U2OGJi"
+            date: 0,
+            bio: Some(String::from("Bio")),
+            invite_link: Some(ChatInviteLink {
+                invite_link: String::from("example.com/join/channel"),
+                creator: User {
+                    id: 2,
+                    is_bot: false,
+                    first_name: String::from("User"),
+                    last_name: None,
+                    username: None,
+                    language_code: None,
+                },
+                creates_join_request: false,
+                is_primary: true,
+                is_revoked: false,
+                name: None,
+                expire_date: None,
+                member_limit: None,
+                pending_join_request_count: None,
+            }),
+        },
+        serde_json::json!({
+            "chat": {
+                "id": 1,
+                "type": "channel",
+                "title": "Channel"
+            },
+            "from": {
+                "id": 1,
+                "is_bot": false,
+                "first_name": "User"
+            },
+            "date": 0,
+            "bio": "Bio",
+            "invite_link": {
+                "invite_link": "example.com/join/channel",
+                "creator": {
+                    "id": 2,
+                    "is_bot": false,
+                    "first_name": "User"
+                },
+                "creates_join_request": false,
+                "is_primary": true,
+                "is_revoked": false
+            }
+        }),
     );
-}
-
-#[test]
-fn chat_join_request_deserialize_partial() {
-    let data: ChatJoinRequest = serde_json::from_value(serde_json::json!({
-        "chat": {
-            "id": 1,
-            "type": "channel",
-            "title": "channeltitle"
+    assert_json_eq(
+        ChatJoinRequest {
+            chat: Chat::Channel(ChannelChat {
+                id: 1,
+                title: String::from("Channel"),
+                username: None,
+                photo: None,
+                description: None,
+                invite_link: None,
+                pinned_message: None,
+                linked_chat_id: None,
+                has_protected_content: None,
+                message_auto_delete_time: None,
+            }),
+            from: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("User"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            date: 0,
+            bio: None,
+            invite_link: None,
         },
-        "from": {
-            "id": 1,
-            "is_bot": false,
-            "first_name": "firstname"
-        },
-        "date": 0
-    }))
-    .unwrap();
-    assert_eq!(data.chat.get_id(), 1);
-    assert_eq!(data.from.id, 1);
-    assert_eq!(data.date, 0);
+        serde_json::json!({
+            "chat": {
+                "id": 1,
+                "type": "channel",
+                "title": "Channel"
+            },
+            "from": {
+                "id": 1,
+                "is_bot": false,
+                "first_name": "User"
+            },
+            "date": 0,
+        }),
+    );
 }
 
 #[test]
 fn approve_chat_join_request() {
-    let request = ApproveChatJoinRequest::new(1, 1).into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/approveChatJoinRequest"
-    );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(
-            data,
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "approveChatJoinRequest",
             serde_json::json!({
                 "chat_id": 1,
                 "user_id": 1,
-            })
-        );
-    } else {
-        panic!("Unexpected request body");
-    }
+            }),
+        ),
+        ApproveChatJoinRequest::new(1, 1),
+    );
 }
 
 #[test]
 fn decline_chat_join_request() {
-    let request = DeclineChatJoinRequest::new(1, 1).into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/declineChatJoinRequest"
-    );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(
-            data,
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "declineChatJoinRequest",
             serde_json::json!({
                 "chat_id": 1,
                 "user_id": 1,
-            })
-        );
-    } else {
-        panic!("Unexpected request body");
-    }
+            }),
+        ),
+        DeclineChatJoinRequest::new(1, 1),
+    );
 }

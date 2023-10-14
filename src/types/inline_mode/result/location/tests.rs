@@ -1,18 +1,22 @@
-use crate::types::{InlineKeyboardButton, InlineQueryResult, InlineQueryResultLocation, InputMessageContentText};
+use crate::{
+    tests::assert_json_eq,
+    types::{InlineKeyboardButton, InlineQueryResult, InlineQueryResultLocation, InputMessageContentText},
+};
 
 #[test]
-fn inline_query_result_location_serialize_full() {
-    assert_eq!(
-        serde_json::to_value(InlineQueryResult::from(
-            InlineQueryResultLocation::new("id", 1.0, 2.0, "title")
+fn inline_query_result_location() {
+    let result = InlineQueryResultLocation::new("id", 1.0, 2.0, "title");
+    assert_json_eq(
+        InlineQueryResult::from(
+            result
+                .clone()
                 .live_period(100)
                 .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
                 .input_message_content(InputMessageContentText::new("text"))
                 .thumb_url("thumb-url")
                 .thumb_width(200)
-                .thumb_height(300)
-        ))
-        .unwrap(),
+                .thumb_height(300),
+        ),
         serde_json::json!({
             "type": "location",
             "id": "id",
@@ -25,23 +29,16 @@ fn inline_query_result_location_serialize_full() {
             "thumb_url": "thumb-url",
             "thumb_width": 200,
             "thumb_height": 300
-        })
+        }),
     );
-}
-
-#[test]
-fn inline_query_result_location_serialize_partial() {
-    assert_eq!(
-        serde_json::to_value(InlineQueryResult::from(InlineQueryResultLocation::new(
-            "id", 1.0, 2.0, "title",
-        )))
-        .unwrap(),
+    assert_json_eq(
+        InlineQueryResult::from(result),
         serde_json::json!({
             "type": "location",
             "id": "id",
             "latitude": 1.0,
             "longitude": 2.0,
             "title": "title"
-        })
+        }),
     );
 }

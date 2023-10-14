@@ -1,18 +1,18 @@
-use crate::types::{InputMediaAnimation, ParseMode, TextEntity};
+use crate::{
+    tests::assert_json_eq,
+    types::{InputMediaAnimation, ParseMode, TextEntity},
+};
 
 #[test]
-fn input_media_animation_serialize() {
-    assert_eq!(
-        serde_json::to_value(
-            InputMediaAnimation::default()
-                .thumb("attach://thumb.jpg")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .width(200)
-                .height(200)
-                .duration(10)
-        )
-        .unwrap(),
+fn input_media_animation() {
+    assert_json_eq(
+        InputMediaAnimation::default()
+            .thumb("attach://thumb.jpg")
+            .caption("caption")
+            .parse_mode(ParseMode::Markdown)
+            .width(200)
+            .height(200)
+            .duration(10),
         serde_json::json!({
             "thumb": "attach://thumb.jpg",
             "caption": "caption",
@@ -20,30 +20,22 @@ fn input_media_animation_serialize() {
             "width": 200,
             "height": 200,
             "duration": 10
-        })
+        }),
     );
-
-    assert_eq!(
-        serde_json::to_value(InputMediaAnimation::default()).unwrap(),
-        serde_json::json!({})
-    );
+    assert_json_eq(InputMediaAnimation::default(), serde_json::json!({}));
 }
 
 #[test]
 fn input_media_animation_caption_entities_vs_parse_mode() {
-    let mut method = InputMediaAnimation::default();
-    method = method.parse_mode(ParseMode::Markdown);
+    let mut data = InputMediaAnimation::default();
+    data = data.parse_mode(ParseMode::Markdown);
     assert_eq!(
-        serde_json::to_value(&method).unwrap(),
-        serde_json::json!({
-            "parse_mode": "Markdown"
-        })
+        serde_json::to_value(&data).unwrap(),
+        serde_json::json!({"parse_mode": "Markdown"})
     );
-    method = method.caption_entities(vec![TextEntity::bold(0..10)]);
+    data = data.caption_entities(vec![TextEntity::bold(0..10)]);
     assert_eq!(
-        serde_json::to_value(method).unwrap(),
-        serde_json::json!({
-            "caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]
-        })
+        serde_json::to_value(data).unwrap(),
+        serde_json::json!({"caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]})
     );
 }

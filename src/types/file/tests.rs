@@ -1,88 +1,81 @@
-use std::io::Cursor;
-
 use crate::{
-    method::Method,
-    request::{RequestBody, RequestMethod},
+    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
     types::{File, GetFile, InputFile, InputFileInfo, InputFileReader},
 };
+use std::io::Cursor;
 
 #[test]
-fn file_deserialize_full() {
-    let data: File = serde_json::from_value(serde_json::json!({
-        "file_id": "id",
-        "file_unique_id": "unique-id",
-        "file_size": 123,
-        "file_path": "path"
-    }))
-    .unwrap();
-    assert_eq!(data.file_id, "id");
-    assert_eq!(data.file_unique_id, "unique-id");
-    assert_eq!(data.file_size.unwrap(), 123);
-    assert_eq!(data.file_path.unwrap(), "path");
-}
-
-#[test]
-fn file_deserialize_partial() {
-    let data: File = serde_json::from_value(serde_json::json!({
-        "file_id": "id",
-        "file_unique_id": "unique-id"
-    }))
-    .unwrap();
-    assert_eq!(data.file_id, "id");
-    assert_eq!(data.file_unique_id, "unique-id");
-    assert!(data.file_size.is_none());
-    assert!(data.file_path.is_none());
+fn file() {
+    assert_json_eq(
+        File {
+            file_id: String::from("file-id"),
+            file_unique_id: String::from("file-unique-id"),
+            file_size: Some(1024),
+            file_path: Some(String::from("file-path")),
+        },
+        serde_json::json!({
+            "file_id": "file-id",
+            "file_unique_id": "file-unique-id",
+            "file_size": 1024,
+            "file_path": "file-path"
+        }),
+    );
+    assert_json_eq(
+        File {
+            file_id: String::from("file-id"),
+            file_unique_id: String::from("file-unique-id"),
+            file_size: None,
+            file_path: None,
+        },
+        serde_json::json!({
+            "file_id": "file-id",
+            "file_unique_id": "file-unique-id",
+        }),
+    );
 }
 
 #[test]
 fn get_file() {
-    let request = GetFile::new("file-id").into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(request.build_url("base-url", "token"), "base-url/bottoken/getFile");
-    if let RequestBody::Json(data) = request.into_body() {
-        assert_eq!(data.unwrap(), r#"{"file_id":"file-id"}"#);
-    } else {
-        panic!("Unexpected request body");
-    }
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "getFile",
+            serde_json::json!({
+                "file_id": "file-id"
+            }),
+        ),
+        GetFile::new("file-id"),
+    );
 }
 
 #[tokio::test]
 async fn input_file() {
     let id = InputFile::file_id("file-id");
-    assert_eq!(
-        format!("{:?}", id),
-        r#"InputFile { kind: InputFileKind::Id("file-id") }"#
-    );
+    assert_eq!(format!("{:?}", id), r#"InputFile { kind: Id("file-id") }"#);
+
     let url = InputFile::url("http://example.com/archive.zip");
     assert_eq!(
         format!("{:?}", url),
-        r#"InputFile { kind: InputFileKind::Url("http://example.com/archive.zip") }"#
+        r#"InputFile { kind: Url("http://example.com/archive.zip") }"#
     );
+
     // NOTE: you must be sure that file exists in current working directory (usually it exists)
     // otherwise test will fail
     let path = InputFile::path("LICENSE").await.unwrap();
-    let repr = format!("{:?}", path);
-    assert!(
-        repr.starts_with("InputFile { kind: InputFileKind::Reader("),
-        "repr: {}",
-        repr
+    assert_eq!(
+        format!("{:?}", path),
+        r#"InputFile { kind: Reader(InputFileReader(reader: ..., info: Some(InputFileInfo { name: "LICENSE", mime_type: Some("application/octet-stream") }))) }"#,
     );
 
-    let reader = InputFileReader::from(Cursor::new(b"data")).info(("name", mime::TEXT_PLAIN));
-    let reader = InputFile::from(reader);
-    let repr = format!("{:?}", reader);
-    assert!(
-        repr.starts_with("InputFile { kind: InputFileKind::Reader("),
-        "repr: {}",
-        repr
+    let reader = InputFile::from(InputFileReader::from(Cursor::new(b"data")).info(("name", mime::TEXT_PLAIN)));
+    assert_eq!(
+        format!("{:?}", reader),
+        r#"InputFile { kind: Reader(InputFileReader(reader: ..., info: Some(InputFileInfo { name: "name", mime_type: Some("text/plain") }))) }"#,
     );
 
     let reader = InputFile::from(Cursor::new(b"data"));
-    let repr = format!("{:?}", reader);
-    assert!(
-        repr.starts_with("InputFile { kind: InputFileKind::Reader("),
-        "repr: {}",
-        repr
+    assert_eq!(
+        format!("{:?}", reader),
+        "InputFile { kind: Reader(InputFileReader(reader: ..., info: None)) }",
     );
 }
 

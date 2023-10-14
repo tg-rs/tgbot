@@ -1,26 +1,34 @@
-use crate::types::{ForceReply, ReplyMarkup};
+use crate::{
+    tests::assert_json_eq,
+    types::{ForceReply, ReplyMarkup},
+};
 
 #[test]
-fn serialize() {
-    let markup: ReplyMarkup = ForceReply::new(true).into();
-    let data = serde_json::to_value(&markup).unwrap();
-    assert_eq!(data, serde_json::json!({"force_reply":true}));
-
-    let markup: ReplyMarkup = ForceReply::new(true)
-        .selective(true)
-        .input_field_placeholder("placeholder")
-        .into();
-    let data = serde_json::to_value(&markup).unwrap();
-    assert_eq!(
-        data,
-        serde_json::json!({
-            "force_reply": true,
-            "selective": true,
-            "input_field_placeholder": "placeholder"
-        })
-    );
-
-    let markup: ReplyMarkup = ForceReply::new(true).selective(false).into();
-    let data = serde_json::to_value(&markup).unwrap();
-    assert_eq!(data, serde_json::json!({"force_reply":true,"selective":false}));
+fn force_reply() {
+    for (expected_struct, expected_value) in [
+        (
+            ReplyMarkup::from(ForceReply::new(true)),
+            serde_json::json!({"force_reply": true}),
+        ),
+        (
+            ForceReply::new(true)
+                .selective(true)
+                .input_field_placeholder("placeholder")
+                .into(),
+            serde_json::json!({
+                "force_reply": true,
+                "selective": true,
+                "input_field_placeholder": "placeholder"
+            }),
+        ),
+        (
+            ForceReply::new(true).selective(false).into(),
+            serde_json::json!({
+                "force_reply": true,
+                "selective": false
+            }),
+        ),
+    ] {
+        assert_json_eq(expected_struct, expected_value)
+    }
 }

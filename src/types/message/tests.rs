@@ -1,11 +1,14 @@
-use crate::types::{EditMessageResult, Message};
+use crate::{
+    tests::assert_json_eq,
+    types::{Chat, EditMessageResult, Message, MessageData, MessageSender, SupergroupChat, User},
+};
 
 #[test]
 fn get_text() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "text": "text"
     }))
     .unwrap();
@@ -17,10 +20,10 @@ fn get_text_from_audio() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "caption": "test audio caption",
         "audio": {
-            "file_id": "AwADBAADbXXXXXXXXXXXGBdhD2l6_XX",
+            "file_id": "file-id",
             "file_unique_id": "unique-id",
             "duration": 243
         }
@@ -34,10 +37,10 @@ fn get_text_from_document() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "caption": "test document caption",
         "document": {
-            "file_id": "SSSxmmmsmsIIsooofiiiiaiiaIII_XLA",
+            "file_id": "file-id",
             "file_unique_id": "unique-id",
         }
     }))
@@ -50,7 +53,7 @@ fn get_text_from_photo() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "caption": "test photo caption",
         "photo": [{
             "file_id": "photo-id",
@@ -68,7 +71,7 @@ fn get_text_from_video() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "caption": "test video caption",
         "video": {
             "file_id": "video-id",
@@ -87,7 +90,7 @@ fn get_text_from_voice() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "caption": "test voice caption",
         "voice": {
             "file_id": "voice-id",
@@ -104,7 +107,7 @@ fn get_text_returns_none() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "group_chat_created": true
     }))
     .unwrap();
@@ -116,7 +119,7 @@ fn is_edited() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "text": "test",
         "edit_date": 1
     }))
@@ -126,7 +129,7 @@ fn is_edited() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "text": "test"
     }))
     .unwrap();
@@ -138,12 +141,12 @@ fn reply_to() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "text": "test",
         "reply_to_message": {
             "message_id": 1, "date": 0,
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
             "text": "test"
         }
     }))
@@ -160,12 +163,12 @@ fn reply_to_with_empty_data() {
     let data: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "text": "test",
         "reply_to_message": {
             "message_id": 1, "date": 0,
             "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-            "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+            "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         }
     }))
     .unwrap();
@@ -177,14 +180,14 @@ fn via_bot() {
     let data: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
         "text": "test",
         "via_bot": {
             "id": 3,
             "is_bot": true,
             "first_name": "example",
             "last_name": "bot",
-            "username": "examplebot"
+            "username": "example_bot"
         }
     }))
     .unwrap();
@@ -192,19 +195,61 @@ fn via_bot() {
     assert_eq!(bot.id, 3);
     assert_eq!(bot.first_name, "example");
     assert_eq!(bot.last_name.unwrap(), "bot");
-    assert_eq!(bot.username.unwrap(), "examplebot");
+    assert_eq!(bot.username.unwrap(), "example_bot");
 }
 
 #[test]
-fn deserialize_edit_message_result() {
-    let result: EditMessageResult = serde_json::from_value(serde_json::json!({
-        "message_id": 1, "date": 1,
-        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
-        "chat": {"id": 1, "type": "supergroup", "title": "supergrouptitle"},
-        "text": "text"
-    }))
-    .unwrap();
-    assert!(matches!(result, EditMessageResult::Message(_)));
-    let result: EditMessageResult = serde_json::from_value(serde_json::json!(true)).unwrap();
-    assert!(matches!(result, EditMessageResult::Bool(true)));
+fn edit_message_result() {
+    let expected_struct = EditMessageResult::Message(Message {
+        id: 1,
+        date: 0,
+        edit_date: None,
+        sender: MessageSender::User(User {
+            id: 1,
+            is_bot: false,
+            first_name: String::from("test"),
+            last_name: None,
+            username: None,
+            language_code: None,
+        }),
+        chat: Chat::Supergroup(SupergroupChat {
+            id: 1,
+            title: String::from("test"),
+            username: None,
+            photo: None,
+            description: None,
+            invite_link: None,
+            pinned_message: None,
+            sticker_set_name: None,
+            can_set_sticker_set: None,
+            permissions: None,
+            slow_mode_delay: None,
+            message_auto_delete_time: None,
+            linked_chat_id: None,
+            location: None,
+            has_protected_content: None,
+        }),
+        author_signature: None,
+        has_protected_content: false,
+        forward: None,
+        is_automatic_forward: false,
+        reply_to: None,
+        via_bot: None,
+        media_group_id: None,
+        reply_markup: None,
+        data: MessageData::Empty,
+    });
+    let expected_value = serde_json::json!({
+        "message_id": 1,
+        "date": 0,
+        "from": {"id": 1, "first_name": "test", "is_bot": false},
+        "chat": {"id": 1, "type": "supergroup", "title": "test"},
+        "has_protected_content": false,
+        "is_automatic_forward": false
+    });
+    assert_json_eq(expected_struct, expected_value);
+
+    let expected_struct = EditMessageResult::Bool(true);
+    let expected_value = serde_json::json!(true);
+    assert_json_eq(expected_struct, expected_value);
 }

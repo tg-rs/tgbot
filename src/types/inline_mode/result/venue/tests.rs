@@ -1,10 +1,15 @@
-use crate::types::{InlineKeyboardButton, InlineQueryResult, InlineQueryResultVenue, InputMessageContentText};
+use crate::{
+    tests::assert_json_eq,
+    types::{InlineKeyboardButton, InlineQueryResult, InlineQueryResultVenue, InputMessageContentText},
+};
 
 #[test]
-fn inline_query_result_venue_serialize_full() {
-    assert_eq!(
-        serde_json::to_value(InlineQueryResult::from(
-            InlineQueryResultVenue::new("id", 1.0, 2.0, "title", "addr")
+fn inline_query_result_venue() {
+    let result = InlineQueryResultVenue::new("id", 1.0, 2.0, "title", "addr");
+    assert_json_eq(
+        InlineQueryResult::from(
+            result
+                .clone()
                 .foursquare_id("f-id")
                 .foursquare_type("f-type")
                 .google_place_id("g-id")
@@ -13,9 +18,8 @@ fn inline_query_result_venue_serialize_full() {
                 .input_message_content(InputMessageContentText::new("text"))
                 .thumb_url("thumb-url")
                 .thumb_width(200)
-                .thumb_height(300)
-        ))
-        .unwrap(),
+                .thumb_height(300),
+        ),
         serde_json::json!({
             "type": "venue",
             "id": "id",
@@ -32,17 +36,10 @@ fn inline_query_result_venue_serialize_full() {
             "thumb_url": "thumb-url",
             "thumb_width": 200,
             "thumb_height": 300
-        })
+        }),
     );
-}
-
-#[test]
-fn inline_query_result_venue_serialize_partial() {
-    assert_eq!(
-        serde_json::to_value(InlineQueryResult::from(InlineQueryResultVenue::new(
-            "id", 1.0, 2.0, "title", "addr",
-        )))
-        .unwrap(),
+    assert_json_eq(
+        InlineQueryResult::from(result),
         serde_json::json!({
             "type": "venue",
             "id": "id",
@@ -50,6 +47,6 @@ fn inline_query_result_venue_serialize_partial() {
             "longitude": 2.0,
             "title": "title",
             "address": "addr"
-        })
+        }),
     );
 }

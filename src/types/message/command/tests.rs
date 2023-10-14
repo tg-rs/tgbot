@@ -20,32 +20,32 @@ fn create_command(command: &str) -> Command {
 
 #[test]
 fn command() {
-    let command = create_command("/testcommand 'arg1 v' arg2");
-    assert_eq!(command.get_name(), "/testcommand");
+    let command = create_command("/test_command 'arg1 v' arg2");
+    assert_eq!(command.get_name(), "/test_command");
     assert_eq!(command.get_args(), &["arg1 v", "arg2"]);
     assert_eq!(command.get_message().id, 1111);
 }
 
 #[test]
 fn command_no_args() {
-    let command = create_command("/testcommand");
-    assert_eq!(command.get_name(), "/testcommand");
+    let command = create_command("/test_command");
+    assert_eq!(command.get_name(), "/test_command");
     assert!(command.get_args().is_empty());
     assert_eq!(command.get_message().id, 1111);
 }
 
 #[test]
 fn command_bot_suffix() {
-    let command = create_command("/testcommand@bot 'arg1 v' arg2");
-    assert_eq!(command.get_name(), "/testcommand");
+    let command = create_command("/test_command@bot 'arg1 v' arg2");
+    assert_eq!(command.get_name(), "/test_command");
     assert_eq!(command.get_args(), &["arg1 v", "arg2"]);
     assert_eq!(command.get_message().id, 1111);
 }
 
 #[test]
 fn command_bot_suffix_no_args() {
-    let command = create_command("/testcommand@abc");
-    assert_eq!(command.get_name(), "/testcommand");
+    let command = create_command("/test_command@abc");
+    assert_eq!(command.get_name(), "/test_command");
     assert!(command.get_args().is_empty());
     assert_eq!(command.get_message().id, 1111);
 }

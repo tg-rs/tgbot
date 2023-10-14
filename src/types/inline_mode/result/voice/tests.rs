@@ -1,65 +1,66 @@
-use crate::types::{
-    InlineKeyboardButton,
-    InlineQueryResult,
-    InlineQueryResultCachedVoice,
-    InlineQueryResultVoice,
-    InputMessageContentText,
-    ParseMode,
+use crate::{
+    tests::assert_json_eq,
+    types::{
+        InlineKeyboardButton,
+        InlineQueryResult,
+        InlineQueryResultCachedVoice,
+        InlineQueryResultVoice,
+        InputMessageContentText,
+        ParseMode,
+    },
 };
 
 #[test]
-fn inline_query_result_voice_serialize_full() {
-    assert_eq!(
-        serde_json::to_value(InlineQueryResult::from(
-            InlineQueryResultVoice::new("id", "url", "title")
-                .caption("caption")
+fn inline_query_result_voice() {
+    let result = InlineQueryResultVoice::new("voice-id", "voice-url", "voice-title");
+    assert_json_eq(
+        InlineQueryResult::from(
+            result
+                .clone()
+                .caption("voice-caption")
                 .parse_mode(ParseMode::Markdown)
                 .voice_duration(100)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text"))
-        ))
-        .unwrap(),
+                .reply_markup(vec![vec![InlineKeyboardButton::with_url(
+                    "voice-kb-text",
+                    "voice-kb-url",
+                )]])
+                .input_message_content(InputMessageContentText::new("voice-content-text")),
+        ),
         serde_json::json!({
             "type": "voice",
-            "id": "id",
-            "voice_url": "url",
-            "title": "title",
-            "caption": "caption",
+            "id": "voice-id",
+            "voice_url": "voice-url",
+            "title": "voice-title",
+            "caption": "voice-caption",
             "parse_mode": "Markdown",
             "voice_duration": 100,
-            "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
-            "input_message_content": {"message_text": "text"}
-        })
+            "reply_markup": {"inline_keyboard": [[{"text": "voice-kb-text", "url": "voice-kb-url"}]]},
+            "input_message_content": {"message_text": "voice-content-text"}
+        }),
     );
-}
-
-#[test]
-fn inline_query_result_voice_serialize_partial() {
-    assert_eq!(
-        serde_json::to_value(InlineQueryResult::from(InlineQueryResultVoice::new(
-            "id", "url", "title",
-        )))
-        .unwrap(),
+    assert_json_eq(
+        InlineQueryResult::from(result),
         serde_json::json!({
             "type": "voice",
-            "id": "id",
-            "voice_url": "url",
-            "title": "title"
-        })
+            "id": "voice-id",
+            "voice_url": "voice-url",
+            "title": "voice-title"
+        }),
     );
 }
 
 #[test]
-fn inline_query_result_cached_voice_serialize_full() {
-    assert_eq!(
-        serde_json::to_value(InlineQueryResult::from(
-            InlineQueryResultCachedVoice::new("id", "file-id", "title")
+fn inline_query_result_cached_voice() {
+    let result = InlineQueryResultCachedVoice::new("id", "file-id", "title");
+    assert_json_eq(
+        InlineQueryResult::from(
+            result
+                .clone()
                 .caption("caption")
                 .parse_mode(ParseMode::Markdown)
                 .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text"))
-        ))
-        .unwrap(),
+                .input_message_content(InputMessageContentText::new("text")),
+        ),
         serde_json::json!({
             "type": "voice",
             "id": "id",
@@ -69,22 +70,15 @@ fn inline_query_result_cached_voice_serialize_full() {
             "parse_mode": "Markdown",
             "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
             "input_message_content": {"message_text": "text"}
-        })
+        }),
     );
-}
-
-#[test]
-fn inline_query_result_cached_voice_serialize_partial() {
-    assert_eq!(
-        serde_json::to_value(InlineQueryResult::from(InlineQueryResultCachedVoice::new(
-            "id", "file-id", "title",
-        )))
-        .unwrap(),
+    assert_json_eq(
+        InlineQueryResult::from(result),
         serde_json::json!({
             "type": "voice",
             "id": "id",
             "voice_file_id": "file-id",
             "title": "title"
-        })
+        }),
     );
 }

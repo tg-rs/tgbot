@@ -1,178 +1,172 @@
-use serde_json::Value;
-
 use crate::{
-    method::Method,
-    request::{RequestBody, RequestMethod},
-    types::{ChatInviteLink, CreateChatInviteLink, EditChatInviteLink, ExportChatInviteLink, RevokeChatInviteLink},
+    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    types::{
+        ChatInviteLink,
+        CreateChatInviteLink,
+        EditChatInviteLink,
+        ExportChatInviteLink,
+        RevokeChatInviteLink,
+        User,
+    },
 };
 
 #[test]
-fn chat_invite_link_deserialize_full() {
-    let data: ChatInviteLink = serde_json::from_value(serde_json::json!({
-        "invite_link": "https://t.me/joinchat/o8oIBrbCI3U2OGJi",
-        "creator": {
-            "id": 1,
-            "is_bot": false,
-            "first_name": "firstname"
+fn chat_invite_link() {
+    assert_json_eq(
+        ChatInviteLink {
+            invite_link: String::from("example.com/join/chat"),
+            creator: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("User"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            creates_join_request: true,
+            is_primary: true,
+            is_revoked: false,
+            name: Some(String::from("Link")),
+            expire_date: Some(0),
+            member_limit: Some(10),
+            pending_join_request_count: Some(0),
         },
-        "creates_join_request": true,
-        "is_primary": true,
-        "is_revoked": false,
-        "name": "test",
-        "expire_date": 0,
-        "member_limit": 10,
-        "pending_join_request_count": 0
-    }))
-    .unwrap();
-    assert_eq!(data.invite_link, "https://t.me/joinchat/o8oIBrbCI3U2OGJi");
-    assert_eq!(data.creator.id, 1);
-    assert!(data.creates_join_request);
-    assert!(data.is_primary);
-    assert!(!data.is_revoked);
-    assert_eq!(data.name, Some(String::from("test")));
-    assert_eq!(data.expire_date, Some(0));
-    assert_eq!(data.member_limit, Some(10));
-    assert_eq!(data.pending_join_request_count, Some(0));
-}
-
-#[test]
-fn chat_invite_link_deserialize_partial() {
-    let data: ChatInviteLink = serde_json::from_value(serde_json::json!({
-        "invite_link": "https://t.me/joinchat/o8oIBrbCI3U2OGJi",
-        "creator": {
-            "id": 1,
-            "is_bot": false,
-            "first_name": "firstname"
+        serde_json::json!({
+            "invite_link": "example.com/join/chat",
+            "creator": {
+                "id": 1,
+                "is_bot": false,
+                "first_name": "User"
+            },
+            "creates_join_request": true,
+            "is_primary": true,
+            "is_revoked": false,
+            "name": "Link",
+            "expire_date": 0,
+            "member_limit": 10,
+            "pending_join_request_count": 0
+        }),
+    );
+    assert_json_eq(
+        ChatInviteLink {
+            invite_link: String::from("example.com/join/chat"),
+            creator: User {
+                id: 1,
+                is_bot: false,
+                first_name: String::from("User"),
+                last_name: None,
+                username: None,
+                language_code: None,
+            },
+            creates_join_request: true,
+            is_primary: true,
+            is_revoked: false,
+            name: None,
+            expire_date: None,
+            member_limit: None,
+            pending_join_request_count: None,
         },
-        "creates_join_request": false,
-        "is_primary": true,
-        "is_revoked": false
-    }))
-    .unwrap();
-    assert_eq!(data.invite_link, "https://t.me/joinchat/o8oIBrbCI3U2OGJi");
-    assert_eq!(data.creator.id, 1);
-    assert!(!data.creates_join_request);
-    assert!(data.is_primary);
-    assert!(!data.is_revoked);
-    assert!(data.expire_date.is_none());
-    assert!(data.member_limit.is_none());
+        serde_json::json!({
+            "invite_link": "example.com/join/chat",
+            "creator": {
+                "id": 1,
+                "is_bot": false,
+                "first_name": "User"
+            },
+            "creates_join_request": true,
+            "is_primary": true,
+            "is_revoked": false,
+        }),
+    );
 }
 
 #[test]
 fn create_chat_invite_link() {
-    let request = CreateChatInviteLink::new(1)
-        .name("test")
-        .expire_date(0)
-        .member_limit(1)
-        .creates_join_request(false)
-        .into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/createChatInviteLink"
+    let method = CreateChatInviteLink::new(1);
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "createChatInviteLink",
+            serde_json::json!({
+                "chat_id": 1
+            }),
+        ),
+        method.clone(),
     );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(
-            data,
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "createChatInviteLink",
             serde_json::json!({
                 "chat_id": 1,
-                "name": "test",
+                "name": "Link",
                 "expire_date": 0,
                 "member_limit": 1,
                 "creates_join_request": false
-            })
-        );
-    } else {
-        panic!("Unexpected request body");
-    }
-
-    let request = CreateChatInviteLink::new(1).into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/createChatInviteLink"
-    );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(data, serde_json::json!({"chat_id": 1}));
-    } else {
-        panic!("Unexpected request body");
-    }
+            }),
+        ),
+        method
+            .name("Link")
+            .expire_date(0)
+            .member_limit(1)
+            .creates_join_request(false),
+    )
 }
 
 #[test]
 fn edit_chat_invite_link() {
-    let request = EditChatInviteLink::new(1, "test")
-        .name("test")
-        .expire_date(0)
-        .member_limit(1)
-        .creates_join_request(false)
-        .into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/editChatInviteLink"
-    );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(
-            data,
+    let method = EditChatInviteLink::new(1, "example.com/join/chat");
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "editChatInviteLink",
             serde_json::json!({
                 "chat_id": 1,
-                "invite_link": "test",
-                "name": "test",
+                "invite_link": "example.com/join/chat"
+            }),
+        ),
+        method.clone(),
+    );
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "editChatInviteLink",
+            serde_json::json!({
+                "chat_id": 1,
+                "invite_link": "example.com/join/chat",
+                "name": "Link",
                 "expire_date": 0,
                 "member_limit": 1,
                 "creates_join_request": false
-            })
-        );
-    } else {
-        panic!("Unexpected request body");
-    }
-
-    let request = EditChatInviteLink::new(1, "test").into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/editChatInviteLink"
+            }),
+        ),
+        method
+            .name("Link")
+            .expire_date(0)
+            .member_limit(1)
+            .creates_join_request(false),
     );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(data, serde_json::json!({"chat_id": 1, "invite_link": "test"}));
-    } else {
-        panic!("Unexpected request body");
-    }
 }
 
 #[test]
 fn export_chat_invite_link() {
-    let request = ExportChatInviteLink::new(1).into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/exportChatInviteLink"
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "exportChatInviteLink",
+            serde_json::json!({
+                "chat_id": 1
+            }),
+        ),
+        ExportChatInviteLink::new(1),
     );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(data["chat_id"], 1);
-    } else {
-        panic!("Unexpected request body");
-    }
 }
 
 #[test]
 fn revoke_chat_invite_link() {
-    let request = RevokeChatInviteLink::new(1, "test").into_request();
-    assert_eq!(request.get_method(), RequestMethod::Post);
-    assert_eq!(
-        request.build_url("base-url", "token"),
-        "base-url/bottoken/revokeChatInviteLink"
+    assert_request_eq(
+        ExpectedRequest::post_json(
+            "revokeChatInviteLink",
+            serde_json::json!({
+                "chat_id": 1,
+                "invite_link": "example.com/join/chat"
+            }),
+        ),
+        RevokeChatInviteLink::new(1, "example.com/join/chat"),
     );
-    if let RequestBody::Json(data) = request.into_body() {
-        let data: Value = serde_json::from_str(&data.unwrap()).unwrap();
-        assert_eq!(data, serde_json::json!({"chat_id": 1, "invite_link": "test"}));
-    } else {
-        panic!("Unexpected request body");
-    }
 }

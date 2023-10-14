@@ -11,6 +11,9 @@ pub use self::{
     method::Method,
 };
 
+#[cfg(test)]
+pub(crate) mod tests;
+
 mod api;
 mod handler;
 mod method;

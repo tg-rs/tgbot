@@ -1,3 +1,4 @@
+use crate::tests::assert_json_eq;
 use serde::Serialize;
 
 use crate::types::{InputMessageContent, InputMessageContentInvoice, LabeledPrice};
@@ -8,37 +9,35 @@ struct InvoiceProviderData {
 }
 
 #[test]
-fn input_message_content_invoice_serialize_full() {
-    let val = serde_json::to_value(InputMessageContent::from(
-        InputMessageContentInvoice::new(
-            "title",
-            "description",
-            "payload",
-            "provider-token",
-            "RUB",
-            [LabeledPrice::new("item", 100)],
-        )
-        .max_tip_amount(1)
-        .suggested_tip_amounts([2])
-        .provider_data(&InvoiceProviderData {
-            key: String::from("value"),
-        })
-        .unwrap()
-        .photo_url("https://google.com/favicon.ico")
-        .photo_size(100)
-        .photo_width(24)
-        .photo_height(24)
-        .need_name(true)
-        .need_email(false)
-        .need_phone_number(true)
-        .need_shipping_address(false)
-        .send_phone_number_to_provider(true)
-        .send_email_to_provider(false)
-        .is_flexible(true),
-    ))
-    .unwrap();
-    assert_eq!(
-        val,
+fn input_message_content_invoice() {
+    assert_json_eq(
+        InputMessageContent::from(
+            InputMessageContentInvoice::new(
+                "title",
+                "description",
+                "payload",
+                "provider-token",
+                "RUB",
+                [LabeledPrice::new("item", 100)],
+            )
+            .max_tip_amount(1)
+            .suggested_tip_amounts([2])
+            .provider_data(&InvoiceProviderData {
+                key: String::from("value"),
+            })
+            .unwrap()
+            .photo_url("https://google.com/favicon.ico")
+            .photo_size(100)
+            .photo_width(24)
+            .photo_height(24)
+            .need_name(true)
+            .need_email(false)
+            .need_phone_number(true)
+            .need_shipping_address(false)
+            .send_phone_number_to_provider(true)
+            .send_email_to_provider(false)
+            .is_flexible(true),
+        ),
         serde_json::json!({
             "title": "title",
             "description": "description",
@@ -60,23 +59,17 @@ fn input_message_content_invoice_serialize_full() {
             "send_phone_number_to_provider": true,
             "send_email_to_provider": false,
             "is_flexible": true
-        })
+        }),
     );
-}
-
-#[test]
-fn input_message_content_invoice_serialize_partial() {
-    let val = serde_json::to_value(InputMessageContent::from(InputMessageContentInvoice::new(
-        "title",
-        "description",
-        "payload",
-        "provider-token",
-        "RUB",
-        [LabeledPrice::new("item", 100)],
-    )))
-    .unwrap();
-    assert_eq!(
-        val,
+    assert_json_eq(
+        InputMessageContent::from(InputMessageContentInvoice::new(
+            "title",
+            "description",
+            "payload",
+            "provider-token",
+            "RUB",
+            [LabeledPrice::new("item", 100)],
+        )),
         serde_json::json!({
             "title": "title",
             "description": "description",
@@ -84,6 +77,6 @@ fn input_message_content_invoice_serialize_partial() {
             "provider_token": "provider-token",
             "currency": "RUB",
             "prices": [{"label": "item", "amount": 100}]
-        })
+        }),
     );
 }

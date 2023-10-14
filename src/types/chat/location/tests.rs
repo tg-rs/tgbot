@@ -1,16 +1,28 @@
-use crate::types::ChatLocation;
+use crate::{
+    tests::assert_json_eq,
+    types::{ChatLocation, Location},
+};
 
 #[test]
-fn chat_location_deserialize() {
-    let data: ChatLocation = serde_json::from_value(serde_json::json!({
-        "location": {
-            "longitude": 0.0,
-            "latitude": 1.0
+fn chat_location() {
+    assert_json_eq(
+        ChatLocation {
+            location: Location {
+                longitude: 0.0,
+                latitude: 1.0,
+                horizontal_accuracy: None,
+                live_period: None,
+                heading: None,
+                proximity_alert_radius: None,
+            },
+            address: String::from("Address"),
         },
-        "address": "address"
-    }))
-    .unwrap();
-    assert_eq!(data.location.longitude, 0.0);
-    assert_eq!(data.location.latitude, 1.0);
-    assert_eq!(data.address, "address");
+        serde_json::json!({
+            "location": {
+                "longitude": 0.0,
+                "latitude": 1.0
+            },
+            "address": "Address"
+        }),
+    );
 }

@@ -1,34 +1,25 @@
-use crate::types::{InputMessageContent, InputMessageContentContact};
+use crate::{
+    tests::assert_json_eq,
+    types::{InputMessageContent, InputMessageContentContact},
+};
 
 #[test]
-fn input_message_content_contact_serialize_full() {
-    assert_eq!(
-        serde_json::to_value(InputMessageContent::from(
-            InputMessageContentContact::new("+79001231212", "Vasya")
-                .last_name("Pupkin")
-                .vcard("vcard")
-        ))
-        .unwrap(),
+fn input_message_content_contact() {
+    let content = InputMessageContentContact::new("+79001231212", "V");
+    assert_json_eq(
+        InputMessageContent::from(content.clone().last_name("P").vcard("vcard")),
         serde_json::json!({
             "phone_number": "+79001231212",
-            "first_name": "Vasya",
-            "last_name": "Pupkin",
+            "first_name": "V",
+            "last_name": "P",
             "vcard": "vcard"
-        })
+        }),
     );
-}
-
-#[test]
-fn input_message_content_contact_serialize_partial() {
-    assert_eq!(
-        serde_json::to_value(InputMessageContent::from(InputMessageContentContact::new(
-            "+79001231212",
-            "Vasya",
-        )))
-        .unwrap(),
+    assert_json_eq(
+        content,
         serde_json::json!({
             "phone_number": "+79001231212",
-            "first_name": "Vasya"
-        })
+            "first_name": "V"
+        }),
     );
 }

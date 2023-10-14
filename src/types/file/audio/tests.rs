@@ -1,7 +1,6 @@
 use crate::{
-    form::{Form, FormValue},
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{Audio, ForceReply, InputFile, ParseMode, PhotoSize, SendAudio, TextEntity},
+    api::{assert_payload_eq, Form, FormValue, Payload},
+    types::{tests::assert_json_eq, Audio, ForceReply, InputFile, ParseMode, PhotoSize, SendAudio, TextEntity},
 };
 
 #[test]
@@ -64,8 +63,8 @@ fn audio() {
 
 #[test]
 fn send_audio() {
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendAudio",
             Form::from([
                 ("chat_id", FormValue::from(1)),
@@ -74,8 +73,8 @@ fn send_audio() {
         ),
         SendAudio::new(1, InputFile::file_id("file-id")),
     );
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendAudio",
             Form::from([
                 ("chat_id", FormValue::from(1)),

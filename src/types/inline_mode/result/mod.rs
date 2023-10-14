@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{Integer, Location, User},
 };
 
@@ -200,7 +199,7 @@ impl AnswerInlineQuery {
 impl Method for AnswerInlineQuery {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("answerInlineQuery", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("answerInlineQuery", self)
     }
 }

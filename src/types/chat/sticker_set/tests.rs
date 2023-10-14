@@ -1,12 +1,12 @@
 use crate::{
-    tests::{assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{DeleteChatStickerSet, SetChatStickerSet},
 };
 
 #[test]
 fn delete_chat_sticker_set() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "deleteChatStickerSet",
             serde_json::json!({
                 "chat_id": 1
@@ -18,8 +18,8 @@ fn delete_chat_sticker_set() {
 
 #[test]
 fn set_chat_sticker_set() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setChatStickerSet",
             serde_json::json!({"chat_id": 1, "sticker_set_name": "Sticker Set"}),
         ),

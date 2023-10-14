@@ -1,9 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    form::Form,
-    method::Method,
-    request::Request,
+    api::{Form, Method, Payload},
     types::{ChatId, InputFile, Integer, Message, PhotoSize, ReplyMarkup, ReplyMarkupError},
 };
 
@@ -123,7 +121,7 @@ impl SendVideoNote {
 impl Method for SendVideoNote {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::form("sendVideoNote", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("sendVideoNote", self.form)
     }
 }

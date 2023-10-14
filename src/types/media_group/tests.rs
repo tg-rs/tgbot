@@ -1,8 +1,7 @@
 use std::io::Cursor;
 
 use crate::{
-    form::Form,
-    tests::{assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Form, Payload},
     types::{
         InputFile,
         InputFileReader,
@@ -34,8 +33,8 @@ fn send_media_group() {
     form.insert_field("protect_content", true);
     form.insert_field("reply_to_message_id", 1);
     form.insert_field("allow_sending_without_reply", true);
-    assert_request_eq(
-        ExpectedRequest::post_form("sendMediaGroup", form),
+    assert_payload_eq(
+        Payload::form("sendMediaGroup", form),
         SendMediaGroup::new(1, create_media_group())
             .disable_notification(true)
             .protect_content(true)

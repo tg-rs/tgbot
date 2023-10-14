@@ -1,7 +1,4 @@
-use crate::{
-    tests::assert_json_eq,
-    types::{MaskPosition, MaskPositionPoint},
-};
+use crate::types::{tests::assert_json_eq, MaskPosition, MaskPositionPoint};
 
 #[test]
 fn mask_position() {

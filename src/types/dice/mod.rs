@@ -3,8 +3,7 @@ use std::fmt;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{ChatId, Integer, Message, ReplyMarkup},
 };
 
@@ -171,7 +170,7 @@ impl SendDice {
 impl Method for SendDice {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("sendDice", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendDice", self)
     }
 }

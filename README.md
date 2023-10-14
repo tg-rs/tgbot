@@ -29,12 +29,13 @@ Long polling:
 ```rust no_run
 use futures_util::future::BoxFuture;
 use std::env;
-use tgbot::{Api, UpdateHandler};
+use tgbot::UpdateHandler;
+use tgbot::api::Client;
 use tgbot::longpoll::LongPoll;
 use tgbot::types::{SendMessage, Update, UpdateKind};
 
 struct Handler {
-    api: Api,
+    client: Client,
 }
 
 impl UpdateHandler for Handler {
@@ -42,13 +43,13 @@ impl UpdateHandler for Handler {
 
     fn handle(&self, update: Update) -> Self::Future {
         println!("got an update: {:?}\n", update);
-        let api = self.api.clone();
+        let client = self.client.clone();
         Box::pin(async move {
             if let UpdateKind::Message(message) = update.kind {
                 if let Some(text) = message.get_text() {
                     let chat_id = message.chat.get_id();
                     let method = SendMessage::new(chat_id, text.data.clone());
-                    api.execute(method).await.unwrap();
+                    client.execute(method).await.unwrap();
                 }
             }
         })
@@ -58,8 +59,8 @@ impl UpdateHandler for Handler {
 #[tokio::main]
 async fn main() {
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let api = Api::new(token).expect("Failed to create API");
-    LongPoll::new(api.clone(), Handler { api }).run().await;
+    let client = Client::new(token).expect("Failed to create API");
+    LongPoll::new(client.clone(), Handler { client }).run().await;
 }
 ```
 

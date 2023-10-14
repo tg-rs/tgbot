@@ -1,6 +1,7 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{
+        tests::assert_json_eq,
         Animation,
         Game,
         GameHighScore,
@@ -116,15 +117,15 @@ fn game_high_score() {
 
 #[test]
 fn get_game_high_scores() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getGameHighScores",
             serde_json::json!({"user_id": 1, "chat_id": 2, "message_id": 3}),
         ),
         GetGameHighScores::new(1, 2, 3),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getGameHighScores",
             serde_json::json!({"user_id": 1, "inline_message_id": "inline-message-id"}),
         ),
@@ -135,8 +136,8 @@ fn get_game_high_scores() {
 #[test]
 fn send_game() {
     let method = SendGame::new(1, "Game");
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendGame",
             serde_json::json!({
                 "chat_id": 1,
@@ -145,8 +146,8 @@ fn send_game() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendGame",
             serde_json::json!({
                 "chat_id": 1,
@@ -174,8 +175,8 @@ fn send_game() {
 #[test]
 fn set_game_score() {
     let method = SetGameScore::new(1, 2, 3, 100);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setGameScore",
             serde_json::json!({
                 "chat_id": 1,
@@ -186,8 +187,8 @@ fn set_game_score() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setGameScore",
             serde_json::json!({
                 "chat_id": 1,
@@ -202,8 +203,8 @@ fn set_game_score() {
     );
 
     let method = SetGameScore::with_inline_message_id("inline-message-id", 3, 100);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setGameScore",
             serde_json::json!({
                 "inline_message_id": "inline-message-id",
@@ -213,8 +214,8 @@ fn set_game_score() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setGameScore",
             serde_json::json!({
                 "inline_message_id": "inline-message-id",

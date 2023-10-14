@@ -1,7 +1,6 @@
 use crate::{
-    form::{Form, FormValue},
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{ForceReply, InputFile, PhotoSize, SendVideoNote, VideoNote},
+    api::{assert_payload_eq, Form, FormValue, Payload},
+    types::{tests::assert_json_eq, ForceReply, InputFile, PhotoSize, SendVideoNote, VideoNote},
 };
 
 #[test]
@@ -56,8 +55,8 @@ fn video_note() {
 
 #[test]
 fn send_video_note() {
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendVideoNote",
             Form::from([
                 ("chat_id", FormValue::from(1)),
@@ -66,8 +65,8 @@ fn send_video_note() {
         ),
         SendVideoNote::new(1, InputFile::file_id("file-id")),
     );
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendVideoNote",
             Form::from([
                 ("chat_id", FormValue::from(1)),

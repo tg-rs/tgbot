@@ -1,6 +1,10 @@
-use crate::{
+use crate::types::{
     tests::assert_json_eq,
-    types::{KeyboardButton, PollKind, ReplyKeyboardMarkup, ReplyKeyboardRemove, ReplyMarkup},
+    KeyboardButton,
+    PollKind,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+    ReplyMarkup,
 };
 
 #[test]

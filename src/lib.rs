@@ -5,21 +5,12 @@
 
 pub use mime;
 
-pub use self::{
-    api::{Api, ApiError, DownloadFileError, ExecuteError},
-    handler::{SyncedUpdateHandler, UpdateHandler},
-    method::Method,
-};
+pub use self::handler::{SyncedUpdateHandler, UpdateHandler};
 
-#[cfg(test)]
-pub(crate) mod tests;
-
-mod api;
 mod handler;
-mod method;
-mod request;
 
-pub(crate) mod form;
+/// An HTTP client implementation
+pub mod api;
 
 /// Utilities to receive updates using long poll
 pub mod longpoll;

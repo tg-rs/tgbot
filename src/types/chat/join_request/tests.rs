@@ -1,6 +1,15 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{ApproveChatJoinRequest, ChannelChat, Chat, ChatInviteLink, ChatJoinRequest, DeclineChatJoinRequest, User},
+    api::{assert_payload_eq, Payload},
+    types::{
+        tests::assert_json_eq,
+        ApproveChatJoinRequest,
+        ChannelChat,
+        Chat,
+        ChatInviteLink,
+        ChatJoinRequest,
+        DeclineChatJoinRequest,
+        User,
+    },
 };
 
 #[test]
@@ -118,8 +127,8 @@ fn chat_join_request() {
 
 #[test]
 fn approve_chat_join_request() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "approveChatJoinRequest",
             serde_json::json!({
                 "chat_id": 1,
@@ -132,8 +141,8 @@ fn approve_chat_join_request() {
 
 #[test]
 fn decline_chat_join_request() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "declineChatJoinRequest",
             serde_json::json!({
                 "chat_id": 1,

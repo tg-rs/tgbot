@@ -10,40 +10,39 @@ use reqwest::{
     RequestBuilder as HttpRequestBuilder,
 };
 use serde::de::DeserializeOwned;
-use serde_json::Error as JsonError;
 use tokio::time::sleep;
 
-use crate::{
-    form::FormError,
-    method::Method,
-    request::{Request, RequestBody, RequestMethod},
-    types::{Response, ResponseError},
-};
+use crate::types::{Response, ResponseError};
+
+use super::payload::{Payload, PayloadError};
+
+#[cfg(test)]
+mod tests;
 
 const DEFAULT_HOST: &str = "https://api.telegram.org";
 
 /// Telegram Bot API client
 #[derive(Clone)]
-pub struct Api {
-    client: HttpClient,
+pub struct Client {
     host: String,
+    http_client: HttpClient,
     token: String,
 }
 
-impl Api {
+impl Client {
     /// Creates a new API instance with given token
     ///
     /// # Arguments
     ///
     /// * token - A bot token
-    pub fn new<T>(token: T) -> Result<Self, ApiError>
+    pub fn new<T>(token: T) -> Result<Self, ClientError>
     where
         T: Into<String>,
     {
         let client = HttpClientBuilder::new()
             .use_rustls_tls()
             .build()
-            .map_err(ApiError::BuildClient)?;
+            .map_err(ClientError::BuildClient)?;
         Ok(Self::with_client(client, token))
     }
 
@@ -54,12 +53,12 @@ impl Api {
     /// * client - An HTTP client
     /// * token - A bot token
     ///
-    pub fn with_client<T>(client: HttpClient, token: T) -> Self
+    pub fn with_client<T>(http_client: HttpClient, token: T) -> Self
     where
         T: Into<String>,
     {
         Self {
-            client,
+            http_client,
             host: String::from(DEFAULT_HOST),
             token: token.into(),
         }
@@ -86,9 +85,9 @@ impl Api {
     ///
     /// ```
     /// # async fn download_file() {
-    /// use tgbot::Api;
+    /// use tgbot::api::Client;
     /// use futures_util::stream::StreamExt;
-    /// let api = Api::new("token").unwrap();
+    /// let api = Client::new("token").unwrap();
     /// let mut stream = api.download_file("path").await.unwrap();
     /// while let Some(chunk) = stream.next().await {
     ///     let chunk = chunk.unwrap();
@@ -103,10 +102,10 @@ impl Api {
     where
         P: AsRef<str>,
     {
-        let req = Request::empty(file_path.as_ref());
-        let url = req.build_url(&format!("{}/file", &self.host), &self.token);
+        let payload = Payload::empty(file_path.as_ref());
+        let url = payload.build_url(&format!("{}/file", &self.host), &self.token);
         debug!("Downloading file from {}", url);
-        let rep = self.client.get(&url).send().await?;
+        let rep = self.http_client.get(&url).send().await?;
         let status = rep.status();
         if !status.is_success() {
             Err(DownloadFileError::Response {
@@ -128,8 +127,9 @@ impl Api {
         M: Method,
         M::Response: DeserializeOwned + Send + 'static,
     {
-        let request = method.into_request();
-        let builder = self.get_http_request_builder(request).await?;
+        let builder = method
+            .into_payload()
+            .into_http_request_builder(&self.http_client, &self.host, &self.token)?;
         for i in 0..2 {
             if i != 0 {
                 debug!("Retrying request after timeout error");
@@ -154,36 +154,6 @@ impl Api {
         Err(ExecuteError::TooManyRequests)
     }
 
-    async fn get_http_request_builder(&self, request: Request) -> Result<HttpRequestBuilder, ExecuteError> {
-        let url = request.build_url(&self.host, &self.token);
-        let builder = match request.get_method() {
-            RequestMethod::Get => {
-                debug!("Execute GET {}", url);
-                self.client.get(&url)
-            }
-            RequestMethod::Post => {
-                debug!("Execute POST: {}", url);
-                self.client.post(&url)
-            }
-        };
-        Ok(match request.into_body() {
-            RequestBody::Form(form) => {
-                let form = form.into_multipart()?;
-                debug!("Sending multipart body: {:?}", form);
-                builder.multipart(form)
-            }
-            RequestBody::Json(data) => {
-                let data = data?;
-                debug!("Sending JSON body: {:?}", data);
-                builder.header("Content-Type", "application/json").body(data)
-            }
-            RequestBody::Empty => {
-                debug!("Sending empty body");
-                builder
-            }
-        })
-    }
-
     async fn send_request<T>(&self, http_request: HttpRequestBuilder) -> Result<Response<T>, ExecuteError>
     where
         T: DeserializeOwned,
@@ -193,35 +163,44 @@ impl Api {
     }
 }
 
-impl fmt::Debug for Api {
+impl fmt::Debug for Client {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_struct("Api")
-            .field("client", &self.client)
+        f.debug_struct("Client")
+            .field("http_client", &self.http_client)
             .field("host", &self.host)
             .field("token", &format_args!("..."))
             .finish()
     }
 }
 
-/// A general API error
+/// Represents an API method
+pub trait Method {
+    /// Type of successful result in API response
+    type Response;
+
+    /// Returns information about HTTP request
+    fn into_payload(self) -> Payload;
+}
+
+/// A general Client error
 #[derive(Debug)]
-pub enum ApiError {
+pub enum ClientError {
     /// Can not build HTTP client
     BuildClient(HttpError),
 }
 
-impl Error for ApiError {
+impl Error for ClientError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         Some(match self {
-            ApiError::BuildClient(err) => err,
+            ClientError::BuildClient(err) => err,
         })
     }
 }
 
-impl fmt::Display for ApiError {
+impl fmt::Display for ClientError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ApiError::BuildClient(err) => write!(out, "can not build HTTP client: {}", err),
+            ClientError::BuildClient(err) => write!(out, "can not build HTTP client: {}", err),
         }
     }
 }
@@ -271,10 +250,8 @@ impl fmt::Display for DownloadFileError {
 pub enum ExecuteError {
     /// Error when sending request
     Http(HttpError),
-    /// Can not build multipart form
-    Form(FormError),
-    /// Can not serialize JSON
-    Json(JsonError),
+    /// Can not build an HTTP request
+    Payload(PayloadError),
     /// Telegram error got in response
     Response(ResponseError),
     /// Too many requests
@@ -286,8 +263,7 @@ impl Error for ExecuteError {
         use self::ExecuteError::*;
         Some(match self {
             Http(err) => err,
-            Form(err) => err,
-            Json(err) => err,
+            Payload(err) => err,
             Response(err) => err,
             TooManyRequests => return None,
         })
@@ -302,27 +278,10 @@ impl fmt::Display for ExecuteError {
             "failed to execute method: {}",
             match self {
                 Http(err) => err.to_string(),
-                Form(err) => err.to_string(),
-                Json(err) => err.to_string(),
+                Payload(err) => err.to_string(),
                 Response(err) => err.to_string(),
                 TooManyRequests => "too many requests".to_string(),
             }
         )
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn api() {
-        let api = Api::new("token").unwrap();
-        assert_eq!(api.token, "token");
-        assert_eq!(api.host, DEFAULT_HOST);
-
-        let api = Api::new("token").unwrap().with_host("https://example.com");
-        assert_eq!(api.token, "token");
-        assert_eq!(api.host, "https://example.com");
     }
 }

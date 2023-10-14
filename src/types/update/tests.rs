@@ -1,8 +1,9 @@
 use std::{collections::HashSet, time::Duration};
 
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{
+        tests::assert_json_eq,
         AllowedUpdate,
         CallbackQuery,
         ChannelChat,
@@ -908,15 +909,15 @@ fn user_status() {
 
 #[test]
 fn get_updates() {
-    assert_request_eq(
-        ExpectedRequest::post_json("getUpdates", serde_json::json!({})),
+    assert_payload_eq(
+        Payload::json("getUpdates", serde_json::json!({})),
         GetUpdates::default(),
     );
 
     let mut updates = HashSet::new();
     updates.insert(AllowedUpdate::Message);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getUpdates",
             serde_json::json!({
                 "offset": 0,

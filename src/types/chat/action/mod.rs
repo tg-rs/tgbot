@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{method::Method, request::Request, types::ChatId};
+use crate::{
+    api::{Method, Payload},
+    types::ChatId,
+};
 
 #[cfg(test)]
 mod tests;
@@ -68,7 +71,7 @@ impl SendChatAction {
 impl Method for SendChatAction {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("sendChatAction", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendChatAction", self)
     }
 }

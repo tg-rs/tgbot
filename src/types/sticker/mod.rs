@@ -1,9 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    form::Form,
-    method::Method,
-    request::Request,
+    api::{Form, Method, Payload},
     types::{ChatId, File, InputFile, Integer, Message, PhotoSize, ReplyMarkup, ReplyMarkupError},
 };
 
@@ -134,8 +132,8 @@ impl SendSticker {
 impl Method for SendSticker {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::form("sendSticker", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("sendSticker", self.form)
     }
 }
 
@@ -202,7 +200,7 @@ impl UploadStickerFile {
 impl Method for UploadStickerFile {
     type Response = File;
 
-    fn into_request(self) -> Request {
-        Request::form("uploadStickerFile", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("uploadStickerFile", self.form)
     }
 }

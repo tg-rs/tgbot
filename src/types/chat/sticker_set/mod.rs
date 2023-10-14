@@ -1,6 +1,9 @@
 use serde::Serialize;
 
-use crate::{method::Method, request::Request, types::ChatId};
+use crate::{
+    api::{Method, Payload},
+    types::ChatId,
+};
 
 #[cfg(test)]
 mod tests;
@@ -32,8 +35,8 @@ impl DeleteChatStickerSet {
 impl Method for DeleteChatStickerSet {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("deleteChatStickerSet", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteChatStickerSet", self)
     }
 }
 
@@ -68,7 +71,7 @@ impl SetChatStickerSet {
 impl Method for SetChatStickerSet {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setChatStickerSet", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setChatStickerSet", self)
     }
 }

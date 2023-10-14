@@ -1,6 +1,7 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{
+        tests::assert_json_eq,
         ForceReply,
         InlineKeyboardButton,
         Poll,
@@ -134,8 +135,8 @@ fn poll_answer() {
 
 #[test]
 fn send_quiz() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendPoll",
             serde_json::json!({
                 "chat_id": 1,
@@ -170,8 +171,8 @@ fn send_quiz() {
 
 #[test]
 fn send_poll() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendPoll",
             serde_json::json!({
                 "chat_id": 1,
@@ -206,8 +207,8 @@ fn send_poll() {
 
 #[test]
 fn stop_poll() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "stopPoll",
             serde_json::json!({
                 "chat_id": 1,

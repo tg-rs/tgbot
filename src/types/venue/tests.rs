@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{ForceReply, Location, SendVenue, Venue},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, ForceReply, Location, SendVenue, Venue},
 };
 
 #[test]
@@ -65,8 +65,8 @@ fn venue() {
 
 #[test]
 fn send_venue() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendVenue",
             serde_json::json!({
                 "chat_id": 1,
@@ -96,8 +96,8 @@ fn send_venue() {
             .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true)),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendVenue",
             serde_json::json!({
                 "chat_id": 1,

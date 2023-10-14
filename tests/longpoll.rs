@@ -1,13 +1,15 @@
-use dotenv::dotenv;
-use futures_util::future::BoxFuture;
-use mockito::{mock, server_url, Matcher};
-use serde_json::json;
 use std::{
     sync::Arc,
     time::{Duration, Instant},
 };
-use tgbot::{longpoll::LongPoll, types::Update, Api, UpdateHandler};
+
+use dotenv::dotenv;
+use futures_util::future::BoxFuture;
+use mockito::{mock, server_url, Matcher};
+use serde_json::json;
 use tokio::{spawn, sync::Mutex, time::sleep};
+
+use tgbot::{api::Client, longpoll::LongPoll, types::Update, UpdateHandler};
 
 struct Handler {
     updates: Arc<Mutex<Vec<Update>>>,
@@ -29,7 +31,7 @@ impl UpdateHandler for Handler {
 async fn longpoll() {
     dotenv().ok();
     env_logger::init();
-    let _m = mock("POST", "/bottoken/getUpdates")
+    let _m = mock("POST", "/bot-token/getUpdates")
         .match_body(Matcher::PartialJson(json!({
             "limit": 100,
             "timeout": 10,
@@ -68,12 +70,12 @@ async fn longpoll() {
             .unwrap(),
         )
         .create();
-    let api = Api::new("token").unwrap().with_host(server_url());
+    let client = Client::new("-token").unwrap().with_host(server_url());
     let updates = Arc::new(Mutex::new(Vec::new()));
     let handler = Handler {
         updates: updates.clone(),
     };
-    let poll = LongPoll::new(api, handler);
+    let poll = LongPoll::new(client, handler);
     let handle = poll.get_handle();
     let wait_updates = updates.clone();
     spawn(async move {

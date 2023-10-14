@@ -1,12 +1,12 @@
 use crate::{
-    tests::{assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{BanChatSenderChat, UnbanChatSenderChat},
 };
 
 #[test]
 fn ban_chat_sender_chat() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "banChatSenderChat",
             serde_json::json!({
                 "chat_id": 1,
@@ -19,8 +19,8 @@ fn ban_chat_sender_chat() {
 
 #[test]
 fn unban_chat_sender_chat() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "unbanChatSenderChat",
             serde_json::json!({
                 "chat_id": 1,

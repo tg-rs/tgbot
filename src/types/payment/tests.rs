@@ -1,7 +1,4 @@
-use crate::{
-    tests::assert_json_eq,
-    types::{OrderInfo, SuccessfulPayment},
-};
+use crate::types::{tests::assert_json_eq, OrderInfo, SuccessfulPayment};
 
 #[test]
 fn successful_payment() {

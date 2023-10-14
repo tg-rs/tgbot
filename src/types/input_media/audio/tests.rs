@@ -1,7 +1,4 @@
-use crate::{
-    tests::assert_json_eq,
-    types::{InputMediaAudio, ParseMode, TextEntity},
-};
+use crate::types::{tests::assert_json_eq, InputMediaAudio, ParseMode, TextEntity};
 
 #[test]
 fn input_media_audio() {

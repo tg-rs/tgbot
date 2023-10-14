@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{AllowedUpdate, DeleteWebhook, GetWebhookInfo, SetWebhook, WebhookInfo},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, AllowedUpdate, DeleteWebhook, GetWebhookInfo, SetWebhook, WebhookInfo},
 };
 
 #[test]
@@ -50,9 +50,9 @@ fn webhook_info() {
 
 #[test]
 fn delete_webhook() {
-    assert_request_eq(ExpectedRequest::get("deleteWebhook"), DeleteWebhook::default());
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(Payload::empty("deleteWebhook"), DeleteWebhook::default());
+    assert_payload_eq(
+        Payload::json(
             "deleteWebhook",
             serde_json::json!({
                 "drop_pending_updates": false
@@ -64,13 +64,13 @@ fn delete_webhook() {
 
 #[test]
 fn get_webhook_info() {
-    assert_request_eq(ExpectedRequest::get("getWebhookInfo"), GetWebhookInfo);
+    assert_payload_eq(Payload::empty("getWebhookInfo"), GetWebhookInfo);
 }
 
 #[test]
 fn set_webhook() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setWebhook",
             serde_json::json!({
                 "url": "url",
@@ -81,8 +81,8 @@ fn set_webhook() {
 
     let mut updates = HashSet::new();
     updates.insert(AllowedUpdate::Message);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setWebhook",
             serde_json::json!({
                 "url": "url",

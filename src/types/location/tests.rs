@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{ForceReply, Location, ProximityAlertTriggered, SendLocation, User},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, ForceReply, Location, ProximityAlertTriggered, SendLocation, User},
 };
 
 #[test]
@@ -79,8 +79,8 @@ fn proximity_alert_triggered() {
 
 #[test]
 fn send_location() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendLocation",
             serde_json::json!({
                 "chat_id": 1,
@@ -90,8 +90,8 @@ fn send_location() {
         ),
         SendLocation::new(1, 2.0, 3.0),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendLocation",
             serde_json::json!({
                 "chat_id": 1,

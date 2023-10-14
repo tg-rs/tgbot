@@ -1,18 +1,16 @@
-use crate::{
+use crate::types::{
     tests::assert_json_eq,
-    types::{
-        Chat,
-        ChatLocation,
-        ChatPermissions,
-        ChatPhoto,
-        Location,
-        Message,
-        MessageData,
-        MessageSender,
-        SupergroupChat,
-        Text,
-        User,
-    },
+    Chat,
+    ChatLocation,
+    ChatPermissions,
+    ChatPhoto,
+    Location,
+    Message,
+    MessageData,
+    MessageSender,
+    SupergroupChat,
+    Text,
+    User,
 };
 
 #[test]

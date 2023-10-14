@@ -49,3 +49,6 @@ mod update;
 mod user;
 mod venue;
 mod webhook;
+
+#[cfg(test)]
+pub(in crate::types) mod tests;

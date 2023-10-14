@@ -4,8 +4,7 @@ use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{Integer, Message, User},
 };
 
@@ -162,7 +161,7 @@ impl AnswerCallbackQuery {
 impl Method for AnswerCallbackQuery {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("answerCallbackQuery", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("answerCallbackQuery", self)
     }
 }

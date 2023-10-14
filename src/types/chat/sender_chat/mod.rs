@@ -1,8 +1,7 @@
 use serde::Serialize;
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{ChatId, Integer},
 };
 
@@ -38,8 +37,8 @@ impl BanChatSenderChat {
 impl Method for BanChatSenderChat {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("banChatSenderChat", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("banChatSenderChat", self)
     }
 }
 
@@ -71,7 +70,7 @@ impl UnbanChatSenderChat {
 impl Method for UnbanChatSenderChat {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("unbanChatSenderChat", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("unbanChatSenderChat", self)
     }
 }

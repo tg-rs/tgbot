@@ -1,8 +1,8 @@
 use serde::Serialize;
 
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{InlineKeyboardButton, Invoice, LabeledPrice, SendInvoice},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, InlineKeyboardButton, Invoice, LabeledPrice, SendInvoice},
 };
 
 #[test]
@@ -40,8 +40,8 @@ struct ProviderData {
 
 #[test]
 fn send_invoice() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendInvoice",
             serde_json::json!({
                 "chat_id": "@username",
@@ -68,8 +68,8 @@ fn send_invoice() {
             vec![LabeledPrice::new("item", 100)],
         ),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendInvoice",
             serde_json::json!({
                 "chat_id": 1,

@@ -1,7 +1,6 @@
 use crate::{
-    form::{Form, FormValue},
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{ChatPhoto, DeleteChatPhoto, InputFile, SetChatPhoto},
+    api::{assert_payload_eq, Form, FormValue, Payload},
+    types::{tests::assert_json_eq, ChatPhoto, DeleteChatPhoto, InputFile, SetChatPhoto},
 };
 
 #[test]
@@ -24,8 +23,8 @@ fn chat_photo() {
 
 #[test]
 fn delete_chat_photo() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "deleteChatPhoto",
             serde_json::json!({
                 "chat_id": 1
@@ -37,8 +36,8 @@ fn delete_chat_photo() {
 
 #[test]
 fn set_chat_photo() {
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "setChatPhoto",
             Form::from([
                 ("chat_id", FormValue::from(1)),

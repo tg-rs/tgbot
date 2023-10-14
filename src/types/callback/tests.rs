@@ -1,6 +1,9 @@
+use serde::Deserialize;
+
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{
+        tests::assert_json_eq,
         AnswerCallbackQuery,
         CallbackQuery,
         Chat,
@@ -12,7 +15,6 @@ use crate::{
         User,
     },
 };
-use serde::Deserialize;
 
 #[derive(Clone, Debug, Deserialize)]
 struct QueryData {
@@ -136,8 +138,8 @@ fn callback_query() {
 #[test]
 fn answer_callback_query() {
     let method = AnswerCallbackQuery::new("id");
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "answerCallbackQuery",
             serde_json::json!({
                 "callback_query_id": "id"
@@ -145,8 +147,8 @@ fn answer_callback_query() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "answerCallbackQuery",
             serde_json::json!({
                 "callback_query_id": "id",

@@ -1,6 +1,7 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{
+        tests::assert_json_eq,
         AnswerInlineQuery,
         ChosenInlineResult,
         InlineQueryResult,
@@ -18,8 +19,8 @@ fn answer_inline_query() {
     let article = InlineQueryResult::Article(InlineQueryResultArticle::new("id", "title", text));
     let method = AnswerInlineQuery::new("id", vec![article]);
 
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "answerInlineQuery",
             serde_json::json!({
                 "inline_query_id": "id",
@@ -38,8 +39,8 @@ fn answer_inline_query() {
         method.clone(),
     );
 
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "answerInlineQuery",
             serde_json::json!({
                 "inline_query_id": "id",

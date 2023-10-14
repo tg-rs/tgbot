@@ -1,7 +1,6 @@
 use crate::{
-    form::{Form, FormValue},
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{Document, ForceReply, InputFile, ParseMode, PhotoSize, SendDocument, TextEntity},
+    api::{assert_payload_eq, Form, FormValue, Payload},
+    types::{tests::assert_json_eq, Document, ForceReply, InputFile, ParseMode, PhotoSize, SendDocument, TextEntity},
 };
 
 #[test]
@@ -54,8 +53,8 @@ fn document() {
 
 #[test]
 fn send_document() {
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendDocument",
             Form::from([
                 ("chat_id", FormValue::from(1)),
@@ -64,8 +63,8 @@ fn send_document() {
         ),
         SendDocument::new(1, InputFile::file_id("file-id")),
     );
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendDocument",
             Form::from([
                 ("chat_id", FormValue::from(1)),

@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{EncryptedPassportElementKind, PassportElementError, SetPassportDataErrors},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, EncryptedPassportElementKind, PassportElementError, SetPassportDataErrors},
 };
 
 #[test]
@@ -269,8 +269,8 @@ fn create_error_accepts_kind() {
 
 #[test]
 fn set_passport_data_errors() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setPassportDataErrors",
             serde_json::json!({
                 "user_id": 1,

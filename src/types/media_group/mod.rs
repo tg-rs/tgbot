@@ -4,9 +4,7 @@ use serde::Serialize;
 use serde_json::Error as JsonError;
 
 use crate::{
-    form::Form,
-    method::Method,
-    request::Request,
+    api::{Form, Method, Payload},
     types::{
         ChatId,
         InputFile,
@@ -304,7 +302,7 @@ impl SendMediaGroup {
 impl Method for SendMediaGroup {
     type Response = Vec<Message>;
 
-    fn into_request(self) -> Request {
-        Request::form("sendMediaGroup", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("sendMediaGroup", self.form)
     }
 }

@@ -1,12 +1,12 @@
 use crate::{
-    tests::{assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{GetChat, LeaveChat, SetChatDescription, SetChatTitle},
 };
 
 #[test]
 fn get_chat() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getChat",
             serde_json::json!({
                 "chat_id": 1
@@ -18,8 +18,8 @@ fn get_chat() {
 
 #[test]
 fn leave_chat() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "leaveChat",
             serde_json::json!({
                 "chat_id": 1
@@ -32,8 +32,8 @@ fn leave_chat() {
 #[test]
 fn set_chat_description() {
     let method = SetChatDescription::new(1);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setChatDescription",
             serde_json::json!({
                 "chat_id": 1
@@ -41,8 +41,8 @@ fn set_chat_description() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setChatDescription",
             serde_json::json!({
                 "chat_id": 1,
@@ -55,8 +55,8 @@ fn set_chat_description() {
 
 #[test]
 fn set_chat_title() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setChatTitle",
             serde_json::json!({
                 "chat_id": 1,

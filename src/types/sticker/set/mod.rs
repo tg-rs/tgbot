@@ -1,9 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    form::Form,
-    method::Method,
-    request::Request,
+    api::{Form, Method, Payload},
     types::{InputFile, Integer, MaskPosition, MaskPositionError, NewSticker, PhotoSize, Sticker},
 };
 
@@ -80,8 +78,8 @@ impl AddStickerToSet {
 impl Method for AddStickerToSet {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::form("addStickerToSet", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("addStickerToSet", self.form)
     }
 }
 
@@ -107,8 +105,8 @@ impl DeleteStickerFromSet {
 impl Method for DeleteStickerFromSet {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("deleteStickerFromSet", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteStickerFromSet", self)
     }
 }
 
@@ -132,8 +130,8 @@ impl GetStickerSet {
 impl Method for GetStickerSet {
     type Response = StickerSet;
 
-    fn into_request(self) -> Request {
-        Request::json("getStickerSet", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getStickerSet", self)
     }
 }
 
@@ -201,8 +199,8 @@ impl CreateNewStickerSet {
 impl Method for CreateNewStickerSet {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::form("createNewStickerSet", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("createNewStickerSet", self.form)
     }
 }
 
@@ -231,8 +229,8 @@ impl SetStickerPositionInSet {
 impl Method for SetStickerPositionInSet {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setStickerPositionInSet", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setStickerPositionInSet", self)
     }
 }
 
@@ -272,7 +270,7 @@ impl SetStickerSetThumb {
 impl Method for SetStickerSetThumb {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::form("setStickerSetThumb", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("setStickerSetThumb", self.form)
     }
 }

@@ -1,8 +1,9 @@
-use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{GetUserProfilePhotos, ParseMode, PhotoSize, User, UserId, UserProfilePhotos},
-};
 use std::collections::HashMap;
+
+use crate::{
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, GetUserProfilePhotos, ParseMode, PhotoSize, User, UserId, UserProfilePhotos},
+};
 
 #[test]
 fn user() {
@@ -217,8 +218,8 @@ fn user_id() {
 #[test]
 fn get_user_profile_photos() {
     let method = GetUserProfilePhotos::new(1);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getUserProfilePhotos",
             serde_json::json!({
                 "user_id": 1
@@ -226,8 +227,8 @@ fn get_user_profile_photos() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getUserProfilePhotos",
             serde_json::json!({
                 "user_id": 1,

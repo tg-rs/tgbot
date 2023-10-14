@@ -1,13 +1,13 @@
 use crate::{
-    tests::{assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{PinChatMessage, UnpinAllChatMessages, UnpinChatMessage},
 };
 
 #[test]
 fn pin_chat_message() {
     let method = PinChatMessage::new(1, 2);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "pinChatMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -16,8 +16,8 @@ fn pin_chat_message() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "pinChatMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -32,8 +32,8 @@ fn pin_chat_message() {
 #[test]
 fn unpin_chat_message() {
     let method = UnpinChatMessage::new(1);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "unpinChatMessage",
             serde_json::json!({
                 "chat_id": 1
@@ -41,8 +41,8 @@ fn unpin_chat_message() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "unpinChatMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -55,8 +55,8 @@ fn unpin_chat_message() {
 
 #[test]
 fn unpin_all_chat_messages() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "unpinAllChatMessages",
             serde_json::json!({
                 "chat_id": 1

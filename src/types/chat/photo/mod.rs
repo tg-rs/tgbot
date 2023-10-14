@@ -1,9 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    form::Form,
-    method::Method,
-    request::Request,
+    api::{Form, Method, Payload},
     types::{ChatId, InputFile},
 };
 
@@ -64,8 +62,8 @@ impl DeleteChatPhoto {
 impl Method for DeleteChatPhoto {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("deleteChatPhoto", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteChatPhoto", self)
     }
 }
 
@@ -104,7 +102,7 @@ impl SetChatPhoto {
 impl Method for SetChatPhoto {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::form("setChatPhoto", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("setChatPhoto", self.form)
     }
 }

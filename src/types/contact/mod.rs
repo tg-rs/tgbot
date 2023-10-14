@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{ChatId, Integer, Message, ReplyMarkup},
 };
 
@@ -121,7 +120,7 @@ impl SendContact {
 impl Method for SendContact {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("sendContact", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendContact", self)
     }
 }

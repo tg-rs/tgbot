@@ -3,8 +3,7 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{EncryptedPassportElementKind, Integer},
 };
 
@@ -405,7 +404,7 @@ impl SetPassportDataErrors {
 impl Method for SetPassportDataErrors {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setPassportDataErrors", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setPassportDataErrors", self)
     }
 }

@@ -1,8 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{
         Animation,
         EditMessageResult,
@@ -144,8 +143,8 @@ impl GetGameHighScores {
 impl Method for GetGameHighScores {
     type Response = Vec<GameHighScore>;
 
-    fn into_request(self) -> Request {
-        Request::json("getGameHighScores", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getGameHighScores", self)
     }
 }
 
@@ -222,8 +221,8 @@ impl SendGame {
 impl Method for SendGame {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("sendGame", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendGame", self)
     }
 }
 
@@ -306,7 +305,7 @@ impl SetGameScore {
 impl Method for SetGameScore {
     type Response = EditMessageResult;
 
-    fn into_request(self) -> Request {
-        Request::json("setGameScore", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setGameScore", self)
     }
 }

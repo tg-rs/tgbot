@@ -1,8 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{Chat, ChatId, ChatInviteLink, ChatPermissions, Integer, User},
 };
 
@@ -259,8 +258,8 @@ impl BanChatMember {
 impl Method for BanChatMember {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("banChatMember", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("banChatMember", self)
     }
 }
 
@@ -291,8 +290,8 @@ impl GetChatAdministrators {
 impl Method for GetChatAdministrators {
     type Response = Vec<ChatMember>;
 
-    fn into_request(self) -> Request {
-        Request::json("getChatAdministrators", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getChatAdministrators", self)
     }
 }
 
@@ -321,8 +320,8 @@ impl GetChatMember {
 impl Method for GetChatMember {
     type Response = ChatMember;
 
-    fn into_request(self) -> Request {
-        Request::json("getChatMember", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getChatMember", self)
     }
 }
 
@@ -348,8 +347,8 @@ impl GetChatMemberCount {
 impl Method for GetChatMemberCount {
     type Response = Integer;
 
-    fn into_request(self) -> Request {
-        Request::json("getChatMemberCount", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getChatMemberCount", self)
     }
 }
 
@@ -519,8 +518,8 @@ impl PromoteChatMember {
 impl Method for PromoteChatMember {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("promoteChatMember", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("promoteChatMember", self)
     }
 }
 
@@ -586,8 +585,8 @@ impl RestrictChatMember {
 impl Method for RestrictChatMember {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("restrictChatMember", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("restrictChatMember", self)
     }
 }
 
@@ -625,8 +624,8 @@ impl SetChatAdministratorCustomTitle {
 impl Method for SetChatAdministratorCustomTitle {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setChatAdministratorCustomTitle", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setChatAdministratorCustomTitle", self)
     }
 }
 
@@ -669,7 +668,7 @@ impl UnbanChatMember {
 impl Method for UnbanChatMember {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("unbanChatMember", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("unbanChatMember", self)
     }
 }

@@ -3,8 +3,7 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{Integer, ParseMode, PhotoSize},
 };
 
@@ -176,7 +175,7 @@ impl GetUserProfilePhotos {
 impl Method for GetUserProfilePhotos {
     type Response = UserProfilePhotos;
 
-    fn into_request(self) -> Request {
-        Request::json("getUserProfilePhotos", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getUserProfilePhotos", self)
     }
 }

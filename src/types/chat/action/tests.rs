@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{ChatAction, SendChatAction},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, ChatAction, SendChatAction},
 };
 
 #[test]
@@ -24,8 +24,8 @@ fn chat_action() {
 
 #[test]
 fn send_chat_action() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendChatAction",
             serde_json::json!({
                 "chat_id": 1,

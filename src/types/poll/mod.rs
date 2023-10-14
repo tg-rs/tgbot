@@ -1,8 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{
         text::Text,
         ChatId,
@@ -362,8 +361,8 @@ impl SendQuiz {
 impl Method for SendQuiz {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("sendPoll", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendPoll", self)
     }
 }
 
@@ -481,8 +480,8 @@ impl SendPoll {
 impl Method for SendPoll {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("sendPoll", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendPoll", self)
     }
 }
 
@@ -530,7 +529,7 @@ impl StopPoll {
 impl Method for StopPoll {
     type Response = Poll;
 
-    fn into_request(self) -> Request {
-        Request::json("stopPoll", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("stopPoll", self)
     }
 }

@@ -8,7 +8,10 @@ use tokio::{
 };
 use tokio_util::codec::{BytesCodec, FramedRead};
 
-use crate::{method::Method, request::Request, types::Integer};
+use crate::{
+    api::{Method, Payload},
+    types::Integer,
+};
 
 pub use self::{animation::*, audio::*, document::*, photo::*, video::*, video_note::*, voice::*};
 
@@ -82,8 +85,8 @@ impl GetFile {
 impl Method for GetFile {
     type Response = File;
 
-    fn into_request(self) -> Request {
-        Request::json("getFile", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getFile", self)
     }
 }
 

@@ -1,7 +1,4 @@
-use crate::{
-    tests::assert_json_eq,
-    types::{InputMessageContent, InputMessageContentVenue},
-};
+use crate::types::{tests::assert_json_eq, InputMessageContent, InputMessageContentVenue};
 
 #[test]
 fn input_message_content_venue() {

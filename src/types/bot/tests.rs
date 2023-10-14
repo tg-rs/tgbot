@@ -1,6 +1,7 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{
+        tests::assert_json_eq,
         Bot,
         BotCommand,
         BotCommandScope,
@@ -94,18 +95,15 @@ fn bot_command_scope() {
 
 #[test]
 fn close() {
-    assert_request_eq(ExpectedRequest::get("close"), Close);
+    assert_payload_eq(Payload::empty("close"), Close);
 }
 
 #[test]
 fn delete_bot_commands() {
     let method = DeleteBotCommands::default();
-    assert_request_eq(
-        ExpectedRequest::post_json("deleteMyCommands", serde_json::json!({})),
-        method.clone(),
-    );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(Payload::json("deleteMyCommands", serde_json::json!({})), method.clone());
+    assert_payload_eq(
+        Payload::json(
             "deleteMyCommands",
             serde_json::json!({
                 "scope": {
@@ -120,18 +118,15 @@ fn delete_bot_commands() {
 
 #[test]
 fn get_me() {
-    assert_request_eq(ExpectedRequest::get("getMe"), GetBot);
+    assert_payload_eq(Payload::empty("getMe"), GetBot);
 }
 
 #[test]
 fn get_bot_commands() {
     let method = GetBotCommands::default();
-    assert_request_eq(
-        ExpectedRequest::post_json("getMyCommands", serde_json::json!({})),
-        method.clone(),
-    );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(Payload::json("getMyCommands", serde_json::json!({})), method.clone());
+    assert_payload_eq(
+        Payload::json(
             "getMyCommands",
             serde_json::json!({
                 "scope": {
@@ -146,14 +141,14 @@ fn get_bot_commands() {
 
 #[test]
 fn log_out() {
-    assert_request_eq(ExpectedRequest::get("logOut"), LogOut);
+    assert_payload_eq(Payload::empty("logOut"), LogOut);
 }
 
 #[test]
 fn set_bot_commands() {
     let method = SetBotCommands::new(vec![BotCommand::new("name", "description").unwrap()]);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setMyCommands",
             serde_json::json!({
                 "commands": [
@@ -166,8 +161,8 @@ fn set_bot_commands() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setMyCommands",
             serde_json::json!({
                 "commands": [

@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{Dice, DiceKind, ForceReply, SendDice},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, Dice, DiceKind, ForceReply, SendDice},
 };
 
 #[test]
@@ -79,8 +79,8 @@ fn dice() {
 #[test]
 fn send_dice() {
     let method = SendDice::new(1, DiceKind::Bones);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendDice",
             serde_json::json!({
                 "chat_id": 1,
@@ -89,8 +89,8 @@ fn send_dice() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendDice",
             serde_json::json!({
                 "chat_id": 1,

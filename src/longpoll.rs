@@ -10,7 +10,7 @@ use tokio::{
 };
 
 use crate::{
-    api::{Api, ExecuteError},
+    api::{Client, ExecuteError},
     handler::UpdateHandler,
     types::{AllowedUpdate, GetUpdates, Integer},
 };
@@ -21,7 +21,7 @@ const DEFAULT_ERROR_TIMEOUT: Duration = Duration::from_secs(5);
 
 /// Receive incoming updates using long polling
 pub struct LongPoll<H> {
-    api: Api,
+    client: Client,
     handler: Box<H>,
     options: LongPollOptions,
     sender: Sender<()>,
@@ -33,12 +33,12 @@ impl<H> LongPoll<H> {
     ///
     /// # Arguments
     ///
-    /// * api - Telegram Bot API Client
+    /// * client - Telegram Bot API Client
     /// * handler - Updates Handler
-    pub fn new(api: Api, handler: H) -> Self {
+    pub fn new(client: Client, handler: H) -> Self {
         let (sender, receiver) = channel(1);
         Self {
-            api,
+            client,
             handler: Box::new(handler),
             options: LongPollOptions::default(),
             sender,
@@ -74,7 +74,7 @@ where
             error_timeout,
             allowed_updates,
         } = self.options;
-        let api = self.api.clone();
+        let client = self.client.clone();
         let mut receiver = self.receiver;
         let s = stream! {
             loop {
@@ -87,7 +87,7 @@ where
                     .limit(limit)
                     .timeout(poll_timeout)
                     .allowed_updates(allowed_updates.clone());
-                let updates = match api.execute(method).await {
+                let updates = match client.execute(method).await {
                     Ok(updates) => updates,
                     Err(err) => {
                         error!("An error has occurred while getting updates: {}", err);

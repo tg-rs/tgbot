@@ -2,8 +2,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{ChatId, InlineKeyboardMarkup, Integer, Message},
 };
 
@@ -337,7 +336,7 @@ impl SendInvoice {
 impl Method for SendInvoice {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("sendInvoice", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendInvoice", self)
     }
 }

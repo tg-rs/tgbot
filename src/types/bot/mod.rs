@@ -3,8 +3,7 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{ChatId, Integer},
 };
 
@@ -189,8 +188,8 @@ pub struct Close;
 impl Method for Close {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::empty("close")
+    fn into_payload(self) -> Payload {
+        Payload::empty("close")
     }
 }
 
@@ -227,8 +226,8 @@ impl DeleteBotCommands {
 impl Method for DeleteBotCommands {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("deleteMyCommands", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteMyCommands", self)
     }
 }
 
@@ -239,8 +238,8 @@ pub struct GetBot;
 impl Method for GetBot {
     type Response = Bot;
 
-    fn into_request(self) -> Request {
-        Request::empty("getMe")
+    fn into_payload(self) -> Payload {
+        Payload::empty("getMe")
     }
 }
 
@@ -275,8 +274,8 @@ impl GetBotCommands {
 impl Method for GetBotCommands {
     type Response = Vec<BotCommand>;
 
-    fn into_request(self) -> Request {
-        Request::json("getMyCommands", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getMyCommands", self)
     }
 }
 
@@ -292,8 +291,8 @@ pub struct LogOut;
 impl Method for LogOut {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::empty("logOut")
+    fn into_payload(self) -> Payload {
+        Payload::empty("logOut")
     }
 }
 
@@ -345,7 +344,7 @@ impl SetBotCommands {
 impl Method for SetBotCommands {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setMyCommands", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setMyCommands", self)
     }
 }

@@ -3,8 +3,7 @@ use std::collections::HashSet;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{AllowedUpdate, Integer},
 };
 
@@ -57,11 +56,11 @@ impl DeleteWebhook {
 impl Method for DeleteWebhook {
     type Response = bool;
 
-    fn into_request(self) -> Request {
+    fn into_payload(self) -> Payload {
         if self.drop_pending_updates.is_some() {
-            Request::json("deleteWebhook", self)
+            Payload::json("deleteWebhook", self)
         } else {
-            Request::empty("deleteWebhook")
+            Payload::empty("deleteWebhook")
         }
     }
 }
@@ -73,8 +72,8 @@ pub struct GetWebhookInfo;
 impl Method for GetWebhookInfo {
     type Response = WebhookInfo;
 
-    fn into_request(self) -> Request {
-        Request::empty("getWebhookInfo")
+    fn into_payload(self) -> Payload {
+        Payload::empty("getWebhookInfo")
     }
 }
 
@@ -181,7 +180,7 @@ impl SetWebhook {
 impl Method for SetWebhook {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setWebhook", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setWebhook", self)
     }
 }

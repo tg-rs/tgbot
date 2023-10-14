@@ -4,15 +4,15 @@ use dotenv::dotenv;
 use futures_util::future::BoxFuture;
 
 use tgbot::{
+    api::Client,
     longpoll::LongPoll,
     types::{InputFile, InputMediaPhoto, InputMediaVideo, MediaGroup, MediaGroupItem, SendMediaGroup, Update},
-    Api,
     UpdateHandler,
 };
 
 #[derive(Clone)]
 struct Handler {
-    api: Api,
+    client: Client,
     photo_path: String,
     photo_url: String,
     video_path: String,
@@ -37,7 +37,7 @@ impl UpdateHandler for Handler {
                 .unwrap();
 
                 let method = SendMediaGroup::new(chat_id, media);
-                this.api.execute(method).await.unwrap();
+                this.client.execute(method).await.unwrap();
             }
         })
     }
@@ -52,11 +52,11 @@ async fn main() {
     let photo_path = env::var("TGBOT_PHOTO_PATH").expect("TGBOT_PHOTO_PATH is not set");
     let photo_url = env::var("TGBOT_PHOTO_URL").expect("TGBOT_PHOTO_URL is not set");
     let video_path = env::var("TGBOT_VIDEO_PATH").expect("TGBOT_VIDEO_PATH is not set");
-    let api = Api::new(token).expect("Failed to create API");
+    let client = Client::new(token).expect("Failed to create API");
     LongPoll::new(
-        api.clone(),
+        client.clone(),
         Handler {
-            api,
+            client,
             photo_path,
             photo_url,
             video_path,

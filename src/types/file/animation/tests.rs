@@ -1,7 +1,6 @@
 use crate::{
-    form::{Form, FormValue},
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{Animation, ForceReply, InputFile, ParseMode, PhotoSize, SendAnimation, TextEntity},
+    api::{assert_payload_eq, Form, FormValue, Payload},
+    types::{tests::assert_json_eq, Animation, ForceReply, InputFile, ParseMode, PhotoSize, SendAnimation, TextEntity},
 };
 
 #[test]
@@ -66,8 +65,8 @@ fn animation() {
 
 #[test]
 fn send_animation() {
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendAnimation",
             Form::from([
                 ("chat_id", FormValue::from(1)),
@@ -76,8 +75,8 @@ fn send_animation() {
         ),
         SendAnimation::new(1, InputFile::file_id("file-id")),
     );
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendAnimation",
             Form::from([
                 ("chat_id", FormValue::from(1)),

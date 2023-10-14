@@ -1,7 +1,6 @@
-use crate::tests::assert_json_eq;
 use serde::Serialize;
 
-use crate::types::{InlineKeyboardButton, InlineKeyboardMarkup, LoginUrl, ReplyMarkup};
+use crate::types::{tests::assert_json_eq, InlineKeyboardButton, InlineKeyboardMarkup, LoginUrl, ReplyMarkup};
 
 #[derive(Serialize)]
 struct CallbackData {

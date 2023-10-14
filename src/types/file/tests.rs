@@ -1,8 +1,9 @@
-use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{File, GetFile, InputFile, InputFileInfo, InputFileReader},
-};
 use std::io::Cursor;
+
+use crate::{
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, File, GetFile, InputFile, InputFileInfo, InputFileReader},
+};
 
 #[test]
 fn file() {
@@ -36,8 +37,8 @@ fn file() {
 
 #[test]
 fn get_file() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getFile",
             serde_json::json!({
                 "file_id": "file-id"

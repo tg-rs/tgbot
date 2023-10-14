@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{ChatId, Float, Integer, Location, Message, ReplyMarkup},
 };
 
@@ -162,7 +161,7 @@ impl SendVenue {
 impl Method for SendVenue {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("sendVenue", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendVenue", self)
     }
 }

@@ -1,6 +1,13 @@
-use crate::{
+use crate::types::{
     tests::assert_json_eq,
-    types::{Chat, ChatPhoto, Message, MessageData, MessageSender, PrivateChat, Text, User},
+    Chat,
+    ChatPhoto,
+    Message,
+    MessageData,
+    MessageSender,
+    PrivateChat,
+    Text,
+    User,
 };
 
 #[test]

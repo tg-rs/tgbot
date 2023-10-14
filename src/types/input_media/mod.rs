@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 use crate::{
-    form::Form,
+    api::Form,
     types::{InputFile, InputFileKind},
 };
 

@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{AnswerShippingQuery, ShippingAddress, ShippingOption, ShippingQuery, User},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, AnswerShippingQuery, ShippingAddress, ShippingOption, ShippingQuery, User},
 };
 
 #[test]
@@ -87,8 +87,8 @@ fn shipping_query() {
 
 #[test]
 fn answer_shipping_query() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "answerShippingQuery",
             serde_json::json!({
                 "shipping_query_id": "id",
@@ -98,8 +98,8 @@ fn answer_shipping_query() {
         ),
         AnswerShippingQuery::ok("id", vec![]),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "answerShippingQuery",
             serde_json::json!({
                 "shipping_query_id": "id",

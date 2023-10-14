@@ -1,6 +1,7 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{
+        tests::assert_json_eq,
         BanChatMember,
         Chat,
         ChatInviteLink,
@@ -534,8 +535,8 @@ fn chat_member_updated() {
 #[test]
 fn ban_chat_member() {
     let method = BanChatMember::new(1, 2);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "banChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -544,8 +545,8 @@ fn ban_chat_member() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "banChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -560,8 +561,8 @@ fn ban_chat_member() {
 
 #[test]
 fn get_chat_administrators() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getChatAdministrators",
             serde_json::json!({
                 "chat_id": 1
@@ -573,8 +574,8 @@ fn get_chat_administrators() {
 
 #[test]
 fn get_chat_member() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -587,8 +588,8 @@ fn get_chat_member() {
 
 #[test]
 fn get_chat_members_count() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getChatMemberCount",
             serde_json::json!({
                 "chat_id": 1
@@ -600,8 +601,8 @@ fn get_chat_members_count() {
 
 #[test]
 fn promote_chat_member() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "promoteChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -621,8 +622,8 @@ fn promote_chat_member() {
         ),
         PromoteChatMember::new(1, 2).promote_all(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "promoteChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -642,8 +643,8 @@ fn promote_chat_member() {
         ),
         PromoteChatMember::new(1, 2).demote_all(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "promoteChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -674,8 +675,8 @@ fn promote_chat_member() {
             .can_promote_members(false)
             .can_restrict_members(false),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "promoteChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -689,8 +690,8 @@ fn promote_chat_member() {
 #[test]
 fn restrict_chat_member() {
     let method = RestrictChatMember::new(1, 2);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "restrictChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -700,8 +701,8 @@ fn restrict_chat_member() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "restrictChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -713,8 +714,8 @@ fn restrict_chat_member() {
         method.until_date(100),
     );
     let method = RestrictChatMember::new(1, 2).allow_all();
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "restrictChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -733,8 +734,8 @@ fn restrict_chat_member() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "restrictChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -754,8 +755,8 @@ fn restrict_chat_member() {
         ),
         method.until_date(100),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "restrictChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -779,8 +780,8 @@ fn restrict_chat_member() {
             )
             .until_date(100),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "restrictChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -794,8 +795,8 @@ fn restrict_chat_member() {
 
 #[test]
 fn set_chat_administrator_custom_title() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setChatAdministratorCustomTitle",
             serde_json::json!({
                 "chat_id": 1,
@@ -810,8 +811,8 @@ fn set_chat_administrator_custom_title() {
 #[test]
 fn unban_chat_member() {
     let method = UnbanChatMember::new(1, 2);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "unbanChatMember",
             serde_json::json!({
                 "chat_id": 1,
@@ -820,8 +821,8 @@ fn unban_chat_member() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "unbanChatMember",
             serde_json::json!({
                 "chat_id": 1,

@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{Contact, ForceReply, SendContact},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, Contact, ForceReply, SendContact},
 };
 
 #[test]
@@ -39,8 +39,8 @@ fn concat() {
 #[test]
 fn send_contact() {
     let method = SendContact::new(1, "+79001231212", "John");
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendContact",
             serde_json::json!({
                 "chat_id": 1,
@@ -50,8 +50,8 @@ fn send_contact() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendContact",
             serde_json::json!({
                 "chat_id": 1,

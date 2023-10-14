@@ -1,7 +1,7 @@
 use crate::{
-    form::{Form, FormValue},
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Form, FormValue, Payload},
     types::{
+        tests::assert_json_eq,
         ForceReply,
         InputFile,
         MaskPosition,
@@ -116,8 +116,8 @@ fn new_sticker_video() {
 #[test]
 fn send_sticker() {
     let reply_markup = ReplyMarkup::from(ForceReply::new(true));
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendSticker",
             Form::from([
                 ("chat_id", FormValue::from(1)),
@@ -137,8 +137,8 @@ fn send_sticker() {
             .reply_markup(reply_markup)
             .unwrap(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendSticker",
             Form::from([
                 ("chat_id", FormValue::from(1)),
@@ -151,8 +151,8 @@ fn send_sticker() {
 
 #[test]
 fn upload_sticker_file() {
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "uploadStickerFile",
             Form::from([
                 ("user_id", FormValue::from(1).into()),

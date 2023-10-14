@@ -1,6 +1,7 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Payload},
     types::{
+        tests::assert_json_eq,
         ChatInviteLink,
         CreateChatInviteLink,
         EditChatInviteLink,
@@ -83,8 +84,8 @@ fn chat_invite_link() {
 #[test]
 fn create_chat_invite_link() {
     let method = CreateChatInviteLink::new(1);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "createChatInviteLink",
             serde_json::json!({
                 "chat_id": 1
@@ -92,8 +93,8 @@ fn create_chat_invite_link() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "createChatInviteLink",
             serde_json::json!({
                 "chat_id": 1,
@@ -114,8 +115,8 @@ fn create_chat_invite_link() {
 #[test]
 fn edit_chat_invite_link() {
     let method = EditChatInviteLink::new(1, "example.com/join/chat");
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editChatInviteLink",
             serde_json::json!({
                 "chat_id": 1,
@@ -124,8 +125,8 @@ fn edit_chat_invite_link() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editChatInviteLink",
             serde_json::json!({
                 "chat_id": 1,
@@ -146,8 +147,8 @@ fn edit_chat_invite_link() {
 
 #[test]
 fn export_chat_invite_link() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "exportChatInviteLink",
             serde_json::json!({
                 "chat_id": 1
@@ -159,8 +160,8 @@ fn export_chat_invite_link() {
 
 #[test]
 fn revoke_chat_invite_link() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "revokeChatInviteLink",
             serde_json::json!({
                 "chat_id": 1,

@@ -1,7 +1,4 @@
-use crate::{
-    tests::assert_json_eq,
-    types::{InputMessageContent, InputMessageContentText, ParseMode, TextEntity},
-};
+use crate::types::{tests::assert_json_eq, InputMessageContent, InputMessageContentText, ParseMode, TextEntity};
 
 #[test]
 fn input_message_content_text() {

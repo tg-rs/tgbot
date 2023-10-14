@@ -1,6 +1,5 @@
 use crate::{
-    form::Form,
-    tests::{assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Form, Payload},
     types::{
         CopyMessage,
         DeleteMessage,
@@ -26,8 +25,8 @@ use crate::{
 #[test]
 fn copy_message() {
     let method = CopyMessage::new(1, 2, 3);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "copyMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -37,8 +36,8 @@ fn copy_message() {
         ),
         method.clone(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "copyMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -63,8 +62,8 @@ fn copy_message() {
             .reply_markup(ForceReply::new(true))
             .allow_sending_without_reply(true),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "copyMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -85,8 +84,8 @@ fn copy_message() {
 
 #[test]
 fn delete_message() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "deleteMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -99,8 +98,8 @@ fn delete_message() {
 
 #[test]
 fn edit_message_caption() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageCaption",
             serde_json::json!({
                 "chat_id": 1,
@@ -109,8 +108,8 @@ fn edit_message_caption() {
         ),
         EditMessageCaption::new(1, 2),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageCaption",
             serde_json::json!({
                 "chat_id": 1,
@@ -132,8 +131,8 @@ fn edit_message_caption() {
             .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
     );
 
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageCaption",
             serde_json::json!({
                 "inline_message_id": "msg-id"
@@ -141,8 +140,8 @@ fn edit_message_caption() {
         ),
         EditMessageCaption::with_inline_message_id("msg-id"),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageCaption",
             serde_json::json!({
                 "inline_message_id": "msg-id",
@@ -155,8 +154,8 @@ fn edit_message_caption() {
 
 #[test]
 fn edit_message_live_location() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageLiveLocation",
             serde_json::json!({
                 "chat_id": 1,
@@ -167,8 +166,8 @@ fn edit_message_live_location() {
         ),
         EditMessageLiveLocation::new(1, 2, 3.0, 4.0),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageLiveLocation",
             serde_json::json!({
                 "chat_id": 1,
@@ -188,8 +187,8 @@ fn edit_message_live_location() {
             .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
     );
 
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageLiveLocation",
             serde_json::json!({
                 "inline_message_id": "msg-id",
@@ -211,8 +210,8 @@ fn edit_message_media() {
     form.insert_field("chat_id", 1);
     form.insert_field("message_id", 2);
     form.insert_field("reply_markup", markup.serialize().unwrap());
-    assert_request_eq(
-        ExpectedRequest::post_form("editMessageMedia", form),
+    assert_payload_eq(
+        Payload::form("editMessageMedia", form),
         EditMessageMedia::new(1, 2, input_media).reply_markup(markup).unwrap(),
     );
     let input_media = InputMedia::new(InputFile::file_id("file-id"), InputMediaPhoto::default()).unwrap();
@@ -220,8 +219,8 @@ fn edit_message_media() {
         .unwrap()
         .into();
     form.insert_field("inline_message_id", "msg-id");
-    assert_request_eq(
-        ExpectedRequest::post_form("editMessageMedia", form),
+    assert_payload_eq(
+        Payload::form("editMessageMedia", form),
         EditMessageMedia::with_inline_message_id("msg-id", input_media),
     );
 }
@@ -229,8 +228,8 @@ fn edit_message_media() {
 #[test]
 fn edit_message_reply_markup() {
     let markup = vec![vec![InlineKeyboardButton::with_url("text", "url")]];
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageReplyMarkup",
             serde_json::json!({
                 "chat_id": 1,
@@ -239,8 +238,8 @@ fn edit_message_reply_markup() {
         ),
         EditMessageReplyMarkup::new(1, 2),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageReplyMarkup",
             serde_json::json!({
                 "chat_id": 1,
@@ -250,15 +249,15 @@ fn edit_message_reply_markup() {
         ),
         EditMessageReplyMarkup::new(1, 2).reply_markup(markup.clone()),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageReplyMarkup",
             serde_json::json!({"inline_message_id": "msg-id"}),
         ),
         EditMessageReplyMarkup::with_inline_message_id("msg-id"),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageReplyMarkup",
             serde_json::json!({
                 "inline_message_id": "msg-id",
@@ -271,8 +270,8 @@ fn edit_message_reply_markup() {
 
 #[test]
 fn edit_message_text() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageText",
             serde_json::json!({
                 "chat_id": 1,
@@ -282,8 +281,8 @@ fn edit_message_text() {
         ),
         EditMessageText::new(1, 2, "text"),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageText",
             serde_json::json!({
                 "chat_id": 1,
@@ -309,8 +308,8 @@ fn edit_message_text() {
             .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
     );
 
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageText",
             serde_json::json!({
                 "inline_message_id": "msg-id",
@@ -319,8 +318,8 @@ fn edit_message_text() {
         ),
         EditMessageText::with_inline_message_id("msg-id", "text"),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "editMessageText",
             serde_json::json!({
                 "inline_message_id": "msg-id",
@@ -340,8 +339,8 @@ fn edit_message_text() {
 
 #[test]
 fn forward_message() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "forwardMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -351,8 +350,8 @@ fn forward_message() {
         ),
         ForwardMessage::new(1, 2, 3),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "forwardMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -370,8 +369,8 @@ fn forward_message() {
 
 #[test]
 fn send_message() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -380,8 +379,8 @@ fn send_message() {
         ),
         SendMessage::new(1, "text"),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "sendMessage",
             serde_json::json!({
                 "chat_id": 1,
@@ -415,8 +414,8 @@ fn send_message() {
 
 #[test]
 fn stop_message_live_location() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "stopMessageLiveLocation",
             serde_json::json!({
                 "chat_id": 1,
@@ -425,8 +424,8 @@ fn stop_message_live_location() {
         ),
         StopMessageLiveLocation::new(1, 2),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "stopMessageLiveLocation",
             serde_json::json!({
                 "chat_id": 1,
@@ -436,8 +435,8 @@ fn stop_message_live_location() {
         ),
         StopMessageLiveLocation::new(1, 2).reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "stopMessageLiveLocation",
             serde_json::json!({"inline_message_id": "msg-id"}),
         ),

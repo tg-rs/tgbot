@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{ChatPermissions, SetChatPermissions},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, ChatPermissions, SetChatPermissions},
 };
 
 #[test]
@@ -58,8 +58,8 @@ fn chat_permissions() {
 #[test]
 fn set_chat_permissions() {
     let permissions = ChatPermissions::default().with_send_messages(true);
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setChatPermissions",
             serde_json::json!({
                 "chat_id": 1,

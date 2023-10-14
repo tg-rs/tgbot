@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{method::Method, request::Request, types::ChatId};
+use crate::{
+    api::{Method, Payload},
+    types::ChatId,
+};
 
 #[cfg(test)]
 mod tests;
@@ -149,7 +152,7 @@ impl SetChatPermissions {
 impl Method for SetChatPermissions {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setChatPermissions", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setChatPermissions", self)
     }
 }

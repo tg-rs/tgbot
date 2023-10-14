@@ -1,7 +1,6 @@
 use crate::{
-    form::{Form, FormValue},
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{ForceReply, InputFile, ParseMode, PhotoSize, SendPhoto, TextEntity},
+    api::{assert_payload_eq, Form, FormValue, Payload},
+    types::{tests::assert_json_eq, ForceReply, InputFile, ParseMode, PhotoSize, SendPhoto, TextEntity},
 };
 
 #[test]
@@ -41,8 +40,8 @@ fn photo_size() {
 
 #[test]
 fn send_photo() {
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendPhoto",
             Form::from([
                 ("chat_id", FormValue::from(1)),
@@ -51,8 +50,8 @@ fn send_photo() {
         ),
         SendPhoto::new(1, InputFile::file_id("file-id")),
     );
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "sendPhoto",
             Form::from([
                 ("chat_id", FormValue::from(1)),

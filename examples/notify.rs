@@ -4,8 +4,8 @@ use dotenv::dotenv;
 use tokio::{spawn, sync::mpsc, time::sleep};
 
 use tgbot::{
+    api::Client,
     types::{ChatId, Integer, SendMessage, Update},
-    Api,
 };
 
 #[allow(clippy::large_enum_variant)]
@@ -26,7 +26,7 @@ async fn main() {
         Ok(chat_id) => ChatId::Id(chat_id),
         Err(_) => ChatId::Username(chat_id),
     };
-    let api = Api::new(token).expect("Failed to create API");
+    let client = Client::new(token).expect("Failed to create API");
 
     let (tx, mut rx) = mpsc::channel(100);
 
@@ -48,7 +48,10 @@ async fn main() {
                 unimplemented!()
             }
             Notification::Hello => {
-                api.execute(SendMessage::new(chat_id.clone(), "Hello!")).await.unwrap();
+                client
+                    .execute(SendMessage::new(chat_id.clone(), "Hello!"))
+                    .await
+                    .unwrap();
             }
         }
     }

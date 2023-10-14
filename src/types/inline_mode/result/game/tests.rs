@@ -1,7 +1,4 @@
-use crate::{
-    tests::assert_json_eq,
-    types::{InlineKeyboardButton, InlineQueryResult, InlineQueryResultGame},
-};
+use crate::types::{tests::assert_json_eq, InlineKeyboardButton, InlineQueryResult, InlineQueryResultGame};
 
 #[test]
 fn inline_query_result_game() {

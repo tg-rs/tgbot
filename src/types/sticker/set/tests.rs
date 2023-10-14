@@ -1,7 +1,7 @@
 use crate::{
-    form::{Form, FormValue},
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
+    api::{assert_payload_eq, Form, FormValue, Payload},
     types::{
+        tests::assert_json_eq,
         AddStickerToSet,
         CreateNewStickerSet,
         DeleteStickerFromSet,
@@ -61,8 +61,8 @@ fn add_sticker_to_set() {
         y_shift: 2.0,
         scale: 3.0,
     };
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "addStickerToSet",
             Form::from([
                 ("user_id", FormValue::from(1)),
@@ -76,8 +76,8 @@ fn add_sticker_to_set() {
             .mask_position(mask_position)
             .unwrap(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "addStickerToSet",
             Form::from([
                 ("user_id", FormValue::from(1)),
@@ -92,8 +92,8 @@ fn add_sticker_to_set() {
 
 #[test]
 fn delete_sticker_from_set() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "deleteStickerFromSet",
             serde_json::json!({
                 "sticker": "sticker"
@@ -105,8 +105,8 @@ fn delete_sticker_from_set() {
 
 #[test]
 fn get_sticker_set() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "getStickerSet",
             serde_json::json!({
                 "name": "name"
@@ -124,8 +124,8 @@ fn create_new_sticker_set() {
         y_shift: 2.0,
         scale: 3.0,
     };
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "createNewStickerSet",
             Form::from([
                 ("user_id", FormValue::from(1)),
@@ -148,8 +148,8 @@ fn create_new_sticker_set() {
         .mask_position(mask_position)
         .unwrap(),
     );
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "createNewStickerSet",
             Form::from([
                 ("user_id", FormValue::from(1)),
@@ -171,8 +171,8 @@ fn create_new_sticker_set() {
 
 #[test]
 fn set_sticker_position_in_set() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "setStickerPositionInSet",
             serde_json::json!({
                 "sticker": "sticker",
@@ -185,8 +185,8 @@ fn set_sticker_position_in_set() {
 
 #[test]
 fn set_sticker_set_thumb() {
-    assert_request_eq(
-        ExpectedRequest::post_form(
+    assert_payload_eq(
+        Payload::form(
             "setStickerSetThumb",
             Form::from([
                 ("name", FormValue::from("name")),

@@ -4,28 +4,28 @@ use dotenv::dotenv;
 use futures_util::future::BoxFuture;
 
 use tgbot::{
+    api::Client,
     longpoll::LongPoll,
     types::{SendMessage, Update, UpdateKind},
-    Api,
     UpdateHandler,
 };
 
 struct Handler {
-    api: Api,
+    client: Client,
 }
 
 impl UpdateHandler for Handler {
     type Future = BoxFuture<'static, ()>;
 
     fn handle(&self, update: Update) -> Self::Future {
-        let api = self.api.clone();
+        let client = self.client.clone();
         Box::pin(async move {
             log::info!("got an update: {:?}\n", update);
             if let UpdateKind::Message(message) = update.kind {
                 if let Some(text) = message.get_text() {
                     let chat_id = message.chat.get_id();
                     let method = SendMessage::new(chat_id, text.data.clone());
-                    api.execute(method).await.unwrap();
+                    client.execute(method).await.unwrap();
                 }
             }
         })
@@ -38,6 +38,6 @@ async fn main() {
     env_logger::init();
 
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let api = Api::new(token).expect("Failed to create API");
-    LongPoll::new(api.clone(), Handler { api }).run().await;
+    let client = Client::new(token).expect("Failed to create API");
+    LongPoll::new(client.clone(), Handler { client }).run().await;
 }

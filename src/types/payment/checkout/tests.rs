@@ -1,6 +1,6 @@
 use crate::{
-    tests::{assert_json_eq, assert_request_eq, ExpectedRequest},
-    types::{AnswerPreCheckoutQuery, OrderInfo, PreCheckoutQuery, User},
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, AnswerPreCheckoutQuery, OrderInfo, PreCheckoutQuery, User},
 };
 
 #[test]
@@ -74,8 +74,8 @@ fn pre_checkout_query() {
 
 #[test]
 fn answer_pre_checkout_query() {
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "answerPreCheckoutQuery",
             serde_json::json!({
                 "pre_checkout_query_id": "query-id",
@@ -84,8 +84,8 @@ fn answer_pre_checkout_query() {
         ),
         AnswerPreCheckoutQuery::ok("query-id"),
     );
-    assert_request_eq(
-        ExpectedRequest::post_json(
+    assert_payload_eq(
+        Payload::json(
             "answerPreCheckoutQuery",
             serde_json::json!({
                 "pre_checkout_query_id": "query-id",

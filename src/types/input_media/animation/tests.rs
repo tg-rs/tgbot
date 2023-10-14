@@ -1,7 +1,4 @@
-use crate::{
-    tests::assert_json_eq,
-    types::{InputMediaAnimation, ParseMode, TextEntity},
-};
+use crate::types::{tests::assert_json_eq, InputMediaAnimation, ParseMode, TextEntity};
 
 #[test]
 fn input_media_animation() {

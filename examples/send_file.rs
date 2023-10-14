@@ -4,6 +4,7 @@ use dotenv::dotenv;
 use futures_util::future::BoxFuture;
 
 use tgbot::{
+    api::Client,
     longpoll::LongPoll,
     mime,
     types::{
@@ -23,13 +24,12 @@ use tgbot::{
         Update,
         UpdateKind,
     },
-    Api,
     UpdateHandler,
 };
 
 #[derive(Clone)]
 struct Handler {
-    api: Api,
+    client: Client,
     gif_url: String,
     photo_path: String,
     video_path: String,
@@ -56,14 +56,14 @@ impl UpdateHandler for Handler {
                                 InputMediaAnimation::default().caption("test"),
                             )
                             .unwrap();
-                            this.api
+                            this.client
                                 .execute(EditMessageMedia::new(chat_id, reply_to.id, input_media))
                                 .await
                                 .unwrap();
                         }
                         // Change document to animation
                         MessageData::Document { .. } => {
-                            this.api
+                            this.client
                                 .execute(EditMessageMedia::new(
                                     chat_id,
                                     reply_to.id,
@@ -83,7 +83,7 @@ impl UpdateHandler for Handler {
                                 InputMediaVideo::default(),
                             )
                             .unwrap();
-                            this.api
+                            this.client
                                 .execute(EditMessageMedia::new(chat_id, reply_to.id, input_media))
                                 .await
                                 .unwrap();
@@ -95,7 +95,7 @@ impl UpdateHandler for Handler {
                                 InputMediaPhoto::default(),
                             )
                             .unwrap();
-                            this.api
+                            this.client
                                 .execute(EditMessageMedia::new(chat_id, reply_to.id, input_media))
                                 .await
                                 .unwrap();
@@ -104,7 +104,7 @@ impl UpdateHandler for Handler {
                     }
                 } else if let MessageData::Document { data, .. } = message.data {
                     // Resend document by file id (you also can send a document using URL)
-                    this.api
+                    this.client
                         .execute(SendDocument::new(chat_id, InputFile::file_id(data.file_id)))
                         .await
                         .unwrap();
@@ -113,25 +113,25 @@ impl UpdateHandler for Handler {
                         // Send animation by URL (you also can send animation using a file_id)
                         "/gif" => {
                             let method = SendAnimation::new(chat_id, InputFile::url(this.gif_url));
-                            this.api.execute(method).await.unwrap();
+                            this.client.execute(method).await.unwrap();
                         }
                         "/photo" => {
                             let markup = vec![vec![InlineKeyboardButton::with_callback_data("test", "cb-data")]];
                             let method = SendPhoto::new(chat_id, InputFile::path(this.photo_path).await.unwrap())
                                 .reply_markup(markup)
                                 .unwrap();
-                            this.api.execute(method).await.unwrap();
+                            this.client.execute(method).await.unwrap();
                         }
                         "/text" => {
                             let document = Cursor::new(b"Hello World!");
                             let reader = InputFileReader::new(document).info(("hello.txt", mime::TEXT_PLAIN));
                             let method = SendDocument::new(chat_id, reader)
                                 .thumb(InputFile::path(this.document_thumb_path).await.unwrap());
-                            this.api.execute(method).await.unwrap();
+                            this.client.execute(method).await.unwrap();
                         }
                         "/video" => {
                             let method = SendVideo::new(chat_id, InputFile::path(this.video_path).await.unwrap());
-                            this.api.execute(method).await.unwrap();
+                            this.client.execute(method).await.unwrap();
                         }
                         // The same way for other file types...
                         _ => {}
@@ -152,11 +152,11 @@ async fn main() {
     let photo_path = env::var("TGBOT_PHOTO_PATH").expect("TGBOT_PHOTO_PATH is not set");
     let video_path = env::var("TGBOT_VIDEO_PATH").expect("TGBOT_VIDEO_PATH is not set");
     let document_thumb_path = env::var("TGBOT_DOCUMENT_THUMB_PATH").expect("TGBOT_DOCUMENT_THUMB_PATH is not set");
-    let api = Api::new(token).expect("Failed to create API");
+    let client = Client::new(token).expect("Failed to create API");
     LongPoll::new(
-        api.clone(),
+        client.clone(),
         Handler {
-            api,
+            client,
             gif_url,
             photo_path,
             video_path,

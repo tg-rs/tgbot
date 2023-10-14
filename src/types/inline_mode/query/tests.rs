@@ -1,7 +1,4 @@
-use crate::{
-    tests::assert_json_eq,
-    types::{InlineQuery, InlineQueryChatType, Location, User},
-};
+use crate::types::{tests::assert_json_eq, InlineQuery, InlineQueryChatType, Location, User};
 
 #[test]
 fn inline_query() {

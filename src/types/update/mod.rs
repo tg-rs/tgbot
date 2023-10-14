@@ -4,8 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 
 use crate::{
-    method::Method,
-    request::Request,
+    api::{Method, Payload},
     types::{
         CallbackQuery,
         Chat,
@@ -220,8 +219,8 @@ pub struct GetUpdates {
 impl Method for GetUpdates {
     type Response = Vec<Update>;
 
-    fn into_request(self) -> Request {
-        Request::json("getUpdates", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getUpdates", self)
     }
 }
 

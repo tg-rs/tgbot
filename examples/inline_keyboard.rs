@@ -5,14 +5,14 @@ use futures_util::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 
 use tgbot::{
+    api::Client,
     longpoll::LongPoll,
     types::{InlineKeyboardButton, Message, SendMessage, Update, UpdateKind},
-    Api,
     UpdateHandler,
 };
 
 struct Handler {
-    api: Api,
+    client: Client,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -26,7 +26,7 @@ impl CallbackData {
     }
 }
 
-async fn handle_update(api: &Api, update: Update) -> Option<Message> {
+async fn handle_update(client: &Client, update: Update) -> Option<Message> {
     match update.kind {
         UpdateKind::Message(message) => {
             let chat_id = message.chat.get_id();
@@ -38,7 +38,7 @@ async fn handle_update(api: &Api, update: Update) -> Option<Message> {
                         // You also can use with_callback_data in order to pass a plain string
                         InlineKeyboardButton::with_callback_data_struct("button", &callback_data).unwrap(),
                     ]]);
-                    return Some(api.execute(method).await.unwrap());
+                    return Some(client.execute(method).await.unwrap());
                 }
             }
         }
@@ -48,7 +48,7 @@ async fn handle_update(api: &Api, update: Update) -> Option<Message> {
                 // or query.data if you have passed a plain string
                 let data = query.parse_data::<CallbackData>().unwrap().unwrap();
                 let method = SendMessage::new(chat_id, data.value);
-                return Some(api.execute(method).await.unwrap());
+                return Some(client.execute(method).await.unwrap());
             }
         }
         _ => {}
@@ -60,10 +60,10 @@ impl UpdateHandler for Handler {
     type Future = BoxFuture<'static, ()>;
 
     fn handle(&self, update: Update) -> Self::Future {
-        let api = self.api.clone();
+        let client = self.client.clone();
         Box::pin(async move {
             log::info!("Got an update: {:?}", update);
-            if let Some(msg) = handle_update(&api, update).await {
+            if let Some(msg) = handle_update(&client, update).await {
                 log::info!("Message sent: {:?}", msg);
             }
         })
@@ -76,6 +76,6 @@ async fn main() {
     env_logger::init();
 
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let api = Api::new(token).expect("Failed to create API");
-    LongPoll::new(api.clone(), Handler { api }).run().await;
+    let client = Client::new(token).expect("Failed to create API");
+    LongPoll::new(client.clone(), Handler { client }).run().await;
 }

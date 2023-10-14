@@ -1,9 +1,7 @@
 use serde::Serialize;
 
 use crate::{
-    form::Form,
-    method::Method,
-    request::Request,
+    api::{Form, Method, Payload},
     types::{
         ChatId,
         EditMessageResult,
@@ -145,8 +143,8 @@ impl CopyMessage {
 impl Method for CopyMessage {
     type Response = MessageId;
 
-    fn into_request(self) -> Request {
-        Request::json("copyMessage", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("copyMessage", self)
     }
 }
 
@@ -184,8 +182,8 @@ impl DeleteMessage {
 impl Method for DeleteMessage {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("deleteMessage", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteMessage", self)
     }
 }
 
@@ -281,8 +279,8 @@ impl EditMessageCaption {
 impl Method for EditMessageCaption {
     type Response = EditMessageResult;
 
-    fn into_request(self) -> Request {
-        Request::json("editMessageCaption", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("editMessageCaption", self)
     }
 }
 
@@ -386,8 +384,8 @@ impl EditMessageLiveLocation {
 impl Method for EditMessageLiveLocation {
     type Response = EditMessageResult;
 
-    fn into_request(self) -> Request {
-        Request::json("editMessageLiveLocation", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("editMessageLiveLocation", self)
     }
 }
 
@@ -440,8 +438,8 @@ impl EditMessageMedia {
 impl Method for EditMessageMedia {
     type Response = EditMessageResult;
 
-    fn into_request(self) -> Request {
-        Request::form("editMessageMedia", self.form)
+    fn into_payload(self) -> Payload {
+        Payload::form("editMessageMedia", self.form)
     }
 }
 
@@ -498,8 +496,8 @@ impl EditMessageReplyMarkup {
 impl Method for EditMessageReplyMarkup {
     type Response = EditMessageResult;
 
-    fn into_request(self) -> Request {
-        Request::json("editMessageReplyMarkup", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("editMessageReplyMarkup", self)
     }
 }
 
@@ -600,8 +598,8 @@ impl EditMessageText {
 impl Method for EditMessageText {
     type Response = EditMessageResult;
 
-    fn into_request(self) -> Request {
-        Request::json("editMessageText", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("editMessageText", self)
     }
 }
 
@@ -653,8 +651,8 @@ impl ForwardMessage {
 impl Method for ForwardMessage {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("forwardMessage", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("forwardMessage", self)
     }
 }
 
@@ -767,8 +765,8 @@ impl SendMessage {
 impl Method for SendMessage {
     type Response = Message;
 
-    fn into_request(self) -> Request {
-        Request::json("sendMessage", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("sendMessage", self)
     }
 }
 
@@ -827,7 +825,7 @@ impl StopMessageLiveLocation {
 impl Method for StopMessageLiveLocation {
     type Response = EditMessageResult;
 
-    fn into_request(self) -> Request {
-        Request::json("stopMessageLiveLocation", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("stopMessageLiveLocation", self)
     }
 }

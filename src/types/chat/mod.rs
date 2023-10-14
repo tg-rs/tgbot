@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{method::Method, request::Request, types::Integer};
+use crate::{
+    api::{Method, Payload},
+    types::Integer,
+};
 
 pub use self::{
     action::*,
@@ -99,8 +102,8 @@ impl GetChat {
 impl Method for GetChat {
     type Response = Chat;
 
-    fn into_request(self) -> Request {
-        Request::json("getChat", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("getChat", self)
     }
 }
 
@@ -126,8 +129,8 @@ impl LeaveChat {
 impl Method for LeaveChat {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("leaveChat", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("leaveChat", self)
     }
 }
 
@@ -165,8 +168,8 @@ impl SetChatDescription {
 impl Method for SetChatDescription {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setChatDescription", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setChatDescription", self)
     }
 }
 
@@ -202,7 +205,7 @@ impl SetChatTitle {
 impl Method for SetChatTitle {
     type Response = bool;
 
-    fn into_request(self) -> Request {
-        Request::json("setChatTitle", self)
+    fn into_payload(self) -> Payload {
+        Payload::json("setChatTitle", self)
     }
 }

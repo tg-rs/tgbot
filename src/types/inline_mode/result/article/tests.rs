@@ -1,6 +1,9 @@
-use crate::{
+use crate::types::{
     tests::assert_json_eq,
-    types::{InlineKeyboardButton, InlineQueryResult, InlineQueryResultArticle, InputMessageContentText},
+    InlineKeyboardButton,
+    InlineQueryResult,
+    InlineQueryResultArticle,
+    InputMessageContentText,
 };
 
 #[test]

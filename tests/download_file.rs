@@ -1,6 +1,6 @@
 use dotenv::dotenv;
 use futures_util::stream::StreamExt;
-use mockito::{mock, server_url};
+use mockito::Server;
 
 use tgbot::api::Client;
 
@@ -8,10 +8,12 @@ use tgbot::api::Client;
 async fn download_file() {
     dotenv().ok();
     env_logger::init();
-    let _m = mock("GET", "/file/bot-token/file-path")
+    let mut server = Server::new();
+    server
+        .mock("GET", "/file/bot-token/file-path")
         .with_body(b"file-data")
         .create();
-    let client = Client::new("-token").unwrap().with_host(server_url());
+    let client = Client::new("-token").unwrap().with_host(server.url());
     let mut stream = client.download_file("file-path").await.unwrap();
     let mut buf = Vec::new();
     while let Some(chunk) = stream.next().await {

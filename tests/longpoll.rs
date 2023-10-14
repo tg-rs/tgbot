@@ -5,7 +5,7 @@ use std::{
 
 use dotenv::dotenv;
 use futures_util::future::BoxFuture;
-use mockito::{mock, server_url, Matcher};
+use mockito::{Matcher, Server};
 use serde_json::json;
 use tokio::{spawn, sync::Mutex, time::sleep};
 
@@ -35,7 +35,9 @@ impl UpdateHandler for Handler {
 async fn longpoll() {
     dotenv().ok();
     env_logger::init();
-    let _m = mock("POST", "/bot-token/getUpdates")
+    let mut server = Server::new();
+    server
+        .mock("POST", "/bot-token/getUpdates")
         .match_body(Matcher::PartialJson(json!({
             "limit": 100,
             "timeout": 10,
@@ -74,7 +76,7 @@ async fn longpoll() {
             .unwrap(),
         )
         .create();
-    let client = Client::new("-token").unwrap().with_host(server_url());
+    let client = Client::new("-token").unwrap().with_host(server.url());
     let updates = Arc::new(Mutex::new(Vec::new()));
     let handler = Handler {
         updates: updates.clone(),

@@ -36,7 +36,7 @@ fn game() {
             }),
             animation: Some(Animation {
                 file_id: String::from("animation-file-id"),
-                file_unique_id: String::from("animation-file-uniqueid"),
+                file_unique_id: String::from("animation-file-unique-id"),
                 width: 200,
                 height: 200,
                 duration: 24,
@@ -65,7 +65,7 @@ fn game() {
             }],
             "animation": {
                 "file_id": "animation-file-id",
-                "file_unique_id": "animation-file-uniqueid",
+                "file_unique_id": "animation-file-unique-id",
                 "width": 200,
                 "height": 200,
                 "duration": 24

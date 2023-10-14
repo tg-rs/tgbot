@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::Float;
+use crate::types::{Float, Venue};
 
 #[cfg(test)]
 mod tests;
@@ -71,5 +71,20 @@ impl InputMessageContentVenue {
     pub fn google_place_type<S: Into<String>>(mut self, google_place_type: S) -> Self {
         self.google_place_type = Some(google_place_type.into());
         self
+    }
+}
+
+impl From<Venue> for InputMessageContentVenue {
+    fn from(value: Venue) -> Self {
+        Self {
+            latitude: value.location.latitude,
+            longitude: value.location.longitude,
+            title: value.title,
+            address: value.address,
+            foursquare_id: value.foursquare_id,
+            foursquare_type: value.foursquare_type,
+            google_place_id: value.google_place_id,
+            google_place_type: value.google_place_type,
+        }
     }
 }

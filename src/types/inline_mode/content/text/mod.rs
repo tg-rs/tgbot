@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ParseMode, TextEntities, TextEntity};
+use crate::types::{ParseMode, Text, TextEntities, TextEntity};
 
 #[cfg(test)]
 mod tests;
@@ -57,5 +57,24 @@ impl InputMessageContentText {
     pub fn disable_web_page_preview(mut self, disable_web_page_preview: bool) -> Self {
         self.disable_web_page_preview = Some(disable_web_page_preview);
         self
+    }
+}
+
+impl<T> From<T> for InputMessageContentText
+where
+    T: Into<String>,
+{
+    fn from(value: T) -> Self {
+        Self::new(value)
+    }
+}
+
+impl From<Text> for InputMessageContentText {
+    fn from(value: Text) -> Self {
+        let mut result = Self::new(value.data);
+        if let Some(entities) = value.entities {
+            result = result.entities(entities);
+        }
+        result
     }
 }

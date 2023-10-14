@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::types::Contact;
+
 #[cfg(test)]
 mod tests;
 
@@ -40,5 +42,16 @@ impl InputMessageContentContact {
     pub fn vcard<S: Into<String>>(mut self, vcard: S) -> Self {
         self.vcard = Some(vcard.into());
         self
+    }
+}
+
+impl From<Contact> for InputMessageContentContact {
+    fn from(value: Contact) -> Self {
+        Self {
+            phone_number: value.phone_number,
+            first_name: value.first_name,
+            last_name: value.last_name,
+            vcard: value.vcard,
+        }
     }
 }

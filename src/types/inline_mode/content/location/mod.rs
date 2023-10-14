@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Float, Integer};
+use crate::types::{Float, Integer, Location};
 
 #[cfg(test)]
 mod tests;
@@ -65,5 +65,18 @@ impl InputMessageContentLocation {
     pub fn proximity_alert_radius(mut self, proximity_alert_radius: Integer) -> Self {
         self.proximity_alert_radius = Some(proximity_alert_radius);
         self
+    }
+}
+
+impl From<Location> for InputMessageContentLocation {
+    fn from(value: Location) -> Self {
+        Self {
+            latitude: value.latitude,
+            longitude: value.longitude,
+            horizontal_accuracy: value.horizontal_accuracy,
+            live_period: value.live_period,
+            heading: value.heading,
+            proximity_alert_radius: value.proximity_alert_radius,
+        }
     }
 }

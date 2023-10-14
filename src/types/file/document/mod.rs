@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     form::Form,
@@ -23,7 +23,7 @@ use crate::{
 mod tests;
 
 /// General file (as opposed to photos, voice messages and audio files)
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Document {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: String,
@@ -33,12 +33,16 @@ pub struct Document {
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
     /// Document thumbnail as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<PhotoSize>,
     /// Original filename as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
     /// MIME type of the file as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// File size
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
 }
 

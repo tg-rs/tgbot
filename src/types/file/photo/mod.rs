@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     form::Form,
@@ -22,7 +22,7 @@ use crate::{
 mod tests;
 
 /// Size of a photo or a file / sticker thumbnail
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PhotoSize {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: String,
@@ -36,6 +36,7 @@ pub struct PhotoSize {
     /// Photo height
     pub height: Integer,
     /// File size
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
 }
 

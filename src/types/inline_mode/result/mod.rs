@@ -6,6 +6,7 @@ use crate::{
     types::{Integer, Location, User},
 };
 
+use self::raw::RawInlineQueryResult;
 pub use self::{
     article::*,
     audio::*,
@@ -34,91 +35,74 @@ mod gif;
 mod location;
 mod mpeg4_gif;
 mod photo;
+mod raw;
 mod sticker;
 mod venue;
 mod video;
 mod voice;
 
 /// Result of an inline query
-#[derive(Clone, Debug, derive_more::From, Serialize)]
-#[serde(tag = "type")]
 #[allow(clippy::large_enum_variant)]
+#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
+#[serde(try_from = "RawInlineQueryResult", into = "RawInlineQueryResult")]
 pub enum InlineQueryResult {
     /// Link to an article or web page
-    #[serde(rename = "article")]
     Article(InlineQueryResultArticle),
     /// Link to an mp3 audio file
-    #[serde(rename = "audio")]
     Audio(InlineQueryResultAudio),
     /// Link to an mp3 audio file stored on the Telegram servers
-    #[serde(rename = "audio")]
     CachedAudio(InlineQueryResultCachedAudio),
     /// Link to a file stored on the Telegram servers
-    #[serde(rename = "document")]
     CachedDocument(InlineQueryResultCachedDocument),
     /// Link to an animated GIF file stored on the Telegram servers
-    #[serde(rename = "gif")]
     CachedGif(InlineQueryResultCachedGif),
     /// Link to a video animation
     /// (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers
-    #[serde(rename = "mpeg4_gif")]
     CachedMpeg4Gif(InlineQueryResultCachedMpeg4Gif),
     /// Link to a photo stored on the Telegram servers
-    #[serde(rename = "photo")]
     CachedPhoto(InlineQueryResultCachedPhoto),
     /// Link to a sticker stored on the Telegram servers
-    #[serde(rename = "sticker")]
     CachedSticker(InlineQueryResultCachedSticker),
     /// Link to a video file stored on the Telegram servers
-    #[serde(rename = "video")]
     CachedVideo(InlineQueryResultCachedVideo),
     /// Link to a voice message stored on the Telegram servers
-    #[serde(rename = "voice")]
     CachedVoice(InlineQueryResultCachedVoice),
     /// Contact with a phone number
-    #[serde(rename = "contact")]
     Contact(InlineQueryResultContact),
     /// Link to a file
-    #[serde(rename = "document")]
     Document(InlineQueryResultDocument),
     /// Game
-    #[serde(rename = "game")]
     Game(InlineQueryResultGame),
     /// Link to an animated GIF file
-    #[serde(rename = "gif")]
     Gif(InlineQueryResultGif),
     /// Location on a map
-    #[serde(rename = "location")]
     Location(InlineQueryResultLocation),
     /// Link to a video animation (H.264/MPEG-4 AVC video without sound)
-    #[serde(rename = "mpeg4_gif")]
     Mpeg4Gif(InlineQueryResultMpeg4Gif),
     /// Link to a photo
-    #[serde(rename = "photo")]
     Photo(InlineQueryResultPhoto),
     /// Venue
-    #[serde(rename = "venue")]
     Venue(InlineQueryResultVenue),
     /// Link to a page containing an embedded video player or a video file
-    #[serde(rename = "video")]
     Video(InlineQueryResultVideo),
     /// Link to a voice recording in an .ogg container encoded with OPUS
-    #[serde(rename = "voice")]
     Voice(InlineQueryResultVoice),
 }
 
 /// Result of an inline query that was chosen by the user and sent to their chat partner
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChosenInlineResult {
     /// The unique identifier for the result that was chosen
     pub result_id: String,
     /// The user that chose the result
     pub from: User,
     /// Sender location, only for bots that require user location
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<Location>,
     /// Identifier of the sent inline message.
     /// Available only if there is an inline keyboard attached to the message
     /// Will be also received in callback queries and can be used to edit the message
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
     /// The query that was used to obtain the result
     pub query: String,
@@ -178,7 +162,7 @@ impl AnswerInlineQuery {
         self
     }
 
-    /// Offset that a clien should send in the next query with the same text to receive more results
+    /// Offset that a client should send in the next query with the same text to receive more results
     ///
     /// Pass an empty string if there are no more results or if you don‘t support pagination
     /// Offset length can’t exceed 64 bytes
@@ -206,7 +190,7 @@ impl AnswerInlineQuery {
     /// The user presses the button, switches to a private chat with the bot and, in doing so,
     /// passes a start parameter that instructs the bot to return an oauth link
     /// Once done, the bot can offer a switch_inline button so that the user can easily
-    /// return to the chat where they wanted to use the bot's inline capabilities
+    /// return to the chat where they wanted to use the bot inline capabilities
     pub fn switch_pm_parameter<S: Into<String>>(mut self, switch_pm_parameter: S) -> Self {
         self.switch_pm_parameter = Some(switch_pm_parameter.into());
         self

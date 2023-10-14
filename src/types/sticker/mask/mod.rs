@@ -9,7 +9,7 @@ use crate::types::Float;
 mod tests;
 
 /// Position on faces where a mask should be placed by default
-#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MaskPosition {
     /// The part of the face relative
     /// to which the mask should be placed

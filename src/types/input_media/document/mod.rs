@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{ParseMode, TextEntities, TextEntity};
 
@@ -6,7 +6,7 @@ use crate::types::{ParseMode, TextEntities, TextEntity};
 mod tests;
 
 /// General file to be sent
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMediaDocument {
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,

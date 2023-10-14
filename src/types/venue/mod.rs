@@ -10,7 +10,7 @@ use crate::{
 mod tests;
 
 /// Venue
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Venue {
     /// Venue location
     pub location: Location,
@@ -19,16 +19,20 @@ pub struct Venue {
     /// Address of the venue
     pub address: String,
     /// Foursquare identifier of the venue
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_id: Option<String>,
     /// Foursquare type of the venue
     /// For example: “arts_entertainment/default”,
-    /// “arts_entertainment/aquarium” or “food/icecream”
+    /// “arts_entertainment/aquarium” or “food/ice-cream”
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_type: Option<String>,
     /// Google Places identifier of the venue
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub google_place_id: Option<String>,
     /// Google Places type of the venue
     ///
     /// <https://developers.google.com/places/web-service/supported_types>
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub google_place_type: Option<String>,
 }
 
@@ -102,7 +106,7 @@ impl SendVenue {
 
     /// Foursquare type of the venue, if known
     ///
-    /// For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”
+    /// For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/ice-cream”
     pub fn foursquare_type<S: Into<String>>(mut self, foursquare_type: S) -> Self {
         self.foursquare_type = Some(foursquare_type.into());
         self

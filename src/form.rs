@@ -8,7 +8,7 @@ use reqwest::{
 
 use crate::types::{InputFile, InputFileKind, InputFileReader};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub(crate) enum FormValue {
     Text(String),
     File(InputFile),
@@ -78,7 +78,7 @@ impl From<InputFile> for FormValue {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub(crate) struct Form {
     pub(crate) fields: HashMap<String, FormValue>,
 }
@@ -110,6 +110,20 @@ impl Form {
             result = result.part(field_name, field_value);
         }
         Ok(result)
+    }
+}
+
+impl<I, K> From<I> for Form
+where
+    I: IntoIterator<Item = (K, FormValue)>,
+    K: Into<String>,
+{
+    fn from(fields: I) -> Form {
+        let mut form = Form::new();
+        for (name, value) in fields {
+            form.insert_field(name, value);
+        }
+        form
     }
 }
 

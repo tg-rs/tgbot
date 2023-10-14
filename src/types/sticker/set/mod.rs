@@ -13,7 +13,7 @@ use super::NewStickerKind;
 mod tests;
 
 /// Sticker set
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct StickerSet {
     /// Sticker set name
     pub name: String,
@@ -28,6 +28,7 @@ pub struct StickerSet {
     /// True, if the sticker set contains video stickers
     pub is_video: bool,
     /// Sticker set thumbnail in the .WEBP or .TGS format
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<PhotoSize>,
 }
 

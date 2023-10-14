@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{Float, Integer};
 
@@ -6,7 +6,7 @@ use crate::types::{Float, Integer};
 mod tests;
 
 /// Location message to be sent as the result of an inline query
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentLocation {
     latitude: Float,
     longitude: Float,

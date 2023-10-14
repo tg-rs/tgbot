@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -10,7 +17,7 @@ mod tests;
 /// By default, this contact will be sent by the user
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the contact
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultContact {
     id: String,
     phone_number: String,
@@ -99,5 +106,45 @@ impl InlineQueryResultContact {
     pub fn thumb_height(mut self, thumb_height: Integer) -> Self {
         self.thumb_height = Some(thumb_height);
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultContact {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            phone_number: value.data.phone_number.ok_or(MissingField("phone_number"))?,
+            first_name: value.data.first_name.ok_or(MissingField("first_name"))?,
+            last_name: value.data.last_name,
+            vcard: value.data.vcard,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+            thumb_url: value.data.thumb_url,
+            thumb_width: value.data.thumb_width,
+            thumb_height: value.data.thumb_height,
+        })
+    }
+}
+
+impl From<InlineQueryResultContact> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultContact) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                phone_number: Some(value.phone_number),
+                first_name: Some(value.first_name),
+                last_name: value.last_name,
+                vcard: value.vcard,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                thumb_url: value.thumb_url,
+                thumb_width: value.thumb_width,
+                thumb_height: value.thumb_height,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Contact,
+        }
     }
 }

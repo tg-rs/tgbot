@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{Float, InlineKeyboardMarkup, InputMessageContent, Integer};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -10,7 +17,7 @@ mod tests;
 /// By default, the location will be sent by the user
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the location
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultLocation {
     id: String,
     latitude: Float,
@@ -124,5 +131,51 @@ impl InlineQueryResultLocation {
     pub fn thumb_height(mut self, thumb_height: Integer) -> Self {
         self.thumb_height = Some(thumb_height);
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultLocation {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            latitude: value.data.latitude.ok_or(MissingField("latitude"))?,
+            longitude: value.data.longitude.ok_or(MissingField("longitude"))?,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            horizontal_accuracy: value.data.horizontal_accuracy,
+            live_period: value.data.live_period,
+            heading: value.data.heading,
+            proximity_alert_radius: value.data.proximity_alert_radius,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+            thumb_url: value.data.thumb_url,
+            thumb_width: value.data.thumb_width,
+            thumb_height: value.data.thumb_height,
+        })
+    }
+}
+
+impl From<InlineQueryResultLocation> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultLocation) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                latitude: Some(value.latitude),
+                longitude: Some(value.longitude),
+                title: Some(value.title),
+                horizontal_accuracy: value.horizontal_accuracy,
+                live_period: value.live_period,
+                heading: value.heading,
+                proximity_alert_radius: value.proximity_alert_radius,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                thumb_url: value.thumb_url,
+                thumb_width: value.thumb_width,
+                thumb_height: value.thumb_height,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Location,
+        }
     }
 }

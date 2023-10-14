@@ -29,7 +29,7 @@ mod voice;
 /// It is guaranteed that the link will be valid for at least 1 hour
 /// When the link expires, a new one can be requested by calling getFile
 /// Maximum file size to download is 20 MB
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct File {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: String,
@@ -39,9 +39,11 @@ pub struct File {
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
     /// File size, if known
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// File path
     /// Use `https://api.telegram.org/file/bot<token>/<file_path>` to get the file
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_path: Option<String>,
 }
 
@@ -86,7 +88,7 @@ impl Method for GetFile {
 }
 
 /// Information about a file for reader
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct InputFileInfo {
     name: String,
     mime_type: Option<Mime>,
@@ -148,6 +150,12 @@ pub struct InputFileReader {
     pub(crate) reader: FramedRead<Box<dyn AsyncRead + Send + Sync + Unpin>, BytesCodec>,
 }
 
+impl PartialEq for InputFileReader {
+    fn eq(&self, other: &Self) -> bool {
+        self.info.eq(&other.info)
+    }
+}
+
 impl fmt::Debug for InputFileReader {
     fn fmt(&self, out: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(out, "InputFileReader(reader: ..., info: {:?})", self.info)
@@ -183,7 +191,7 @@ where
 }
 
 /// File to upload
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct InputFile {
     pub(crate) kind: InputFileKind,
 }
@@ -231,20 +239,11 @@ impl InputFile {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub(crate) enum InputFileKind {
     Id(String),
     Url(String),
     Reader(InputFileReader),
-}
-
-impl fmt::Debug for InputFileKind {
-    fn fmt(&self, out: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            InputFileKind::Id(ref s) => write!(out, "InputFileKind::Id({:?})", s),
-            InputFileKind::Url(ref s) => write!(out, "InputFileKind::Url({:?})", s),
-            InputFileKind::Reader(ref r) => write!(out, "InputFileKind::Reader({:?})", r),
-        }
-    }
 }
 
 impl From<InputFileReader> for InputFile {

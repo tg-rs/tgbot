@@ -5,7 +5,7 @@ use crate::{method::Method, request::Request, types::ChatId};
 #[cfg(test)]
 mod tests;
 
-/// Type of action to tell the user that some is happening on the bot's side
+/// Type of action to tell the user that some is happening on the bot side
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ChatAction {
@@ -33,7 +33,7 @@ pub enum ChatAction {
     UploadVoice,
 }
 
-/// Tell the user that something is happening on the bot's side
+/// Tell the user that something is happening on the bot side
 ///
 /// The status is set for 5 seconds or less
 /// (when a message arrives from your bot, Telegram clients clear its typing status)
@@ -55,7 +55,7 @@ impl SendChatAction {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identitifer for the target chat
+    /// * chat_id - Unique identifier for the target chat
     /// * action - Type of action to broadcast
     pub fn new<C: Into<ChatId>>(chat_id: C, action: ChatAction) -> Self {
         SendChatAction {

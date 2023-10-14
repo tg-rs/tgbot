@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer, ParseMode, TextEntities, TextEntity};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -10,7 +17,7 @@ mod tests;
 /// By default, this animated MPEG-4 file will be sent by the user with optional caption
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the animation
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultMpeg4Gif {
     id: String,
     mpeg4_url: String,
@@ -148,7 +155,7 @@ impl InlineQueryResultMpeg4Gif {
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content
 /// instead of the animation
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedMpeg4Gif {
     id: String,
     mpeg4_file_id: String,
@@ -233,5 +240,87 @@ impl InlineQueryResultCachedMpeg4Gif {
     pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
         self.input_message_content = Some(input_message_content.into());
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultMpeg4Gif {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            mpeg4_url: value.data.mpeg4_url.ok_or(MissingField("mpeg4_url"))?,
+            thumb_url: value.data.thumb_url.ok_or(MissingField("thumb_url"))?,
+            thumb_mime_type: value.data.thumb_mime_type,
+            mpeg4_width: value.data.mpeg4_width,
+            mpeg4_height: value.data.mpeg4_height,
+            mpeg4_duration: value.data.mpeg4_duration,
+            title: value.data.title,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultMpeg4Gif> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultMpeg4Gif) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                mpeg4_url: Some(value.mpeg4_url),
+                thumb_url: Some(value.thumb_url),
+                thumb_mime_type: value.thumb_mime_type,
+                mpeg4_width: value.mpeg4_width,
+                mpeg4_height: value.mpeg4_height,
+                mpeg4_duration: value.mpeg4_duration,
+                title: value.title,
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Mpeg4Gif,
+        }
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedMpeg4Gif {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            mpeg4_file_id: value.data.mpeg4_file_id.ok_or(MissingField("mpeg4_file_id"))?,
+            title: value.data.title,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultCachedMpeg4Gif> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultCachedMpeg4Gif) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                mpeg4_file_id: Some(value.mpeg4_file_id),
+                title: value.title,
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::CachedMpeg4Gif,
+        }
     }
 }

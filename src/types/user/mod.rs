@@ -86,7 +86,7 @@ impl fmt::Display for MentionError {
 }
 
 /// User's profile pictures
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct UserProfilePhotos {
     /// Total number of profile pictures the target user has
     pub total_count: Integer,

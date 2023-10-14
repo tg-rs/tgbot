@@ -10,7 +10,7 @@ use crate::{
 mod tests;
 
 /// Represents an invite link for a chat.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatInviteLink {
     /// The invite link
     ///
@@ -26,14 +26,18 @@ pub struct ChatInviteLink {
     /// True, if the link is revoked
     pub is_revoked: bool,
     /// Invite link name
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Point in time (Unix timestamp) when the link will expire or has been expired
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub expire_date: Option<Integer>,
     /// Maximum number of users that can be members
     /// of the chat simultaneously after joining
     /// the chat via this invite link; 1-99999
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub member_limit: Option<Integer>,
     /// Number of pending join requests created using this link
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_join_request_count: Option<Integer>,
 }
 

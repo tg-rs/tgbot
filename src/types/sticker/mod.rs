@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     form::Form,
@@ -140,7 +140,7 @@ impl Method for SendSticker {
 }
 
 /// Sticker
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Sticker {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: String,
@@ -154,14 +154,19 @@ pub struct Sticker {
     /// Sticker height
     pub height: Integer,
     /// Sticker thumbnail in the .webp or .jpg format
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<PhotoSize>,
     /// Emoji associated with the sticker
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub emoji: Option<String>,
     /// Name of the sticker set to which the sticker belongs
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub set_name: Option<String>,
     /// For mask stickers, the position where the mask should be placed
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mask_position: Option<MaskPosition>,
     /// File size
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// True, if the sticker is animated
     pub is_animated: bool,

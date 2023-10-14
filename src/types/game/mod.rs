@@ -1,4 +1,4 @@
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
     method::Method,
@@ -23,7 +23,7 @@ mod tests;
 ///
 /// Use BotFather to create and edit games,
 /// their short names will act as unique identifiers
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Game {
     /// Title of the game
     pub title: String,
@@ -35,36 +35,52 @@ pub struct Game {
     /// Can be automatically edited to include current high scores for the game
     /// when the bot calls setGameScore, or manually edited using editMessageText
     /// 0-4096 characters
-    #[serde(deserialize_with = "deserialize_text")]
     #[serde(flatten)]
+    #[serde(deserialize_with = "GameText::deserialize_value")]
+    #[serde(serialize_with = "GameText::serialize_value")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub text: Option<Text>,
     /// Animation that will be displayed in the game message in chats
     /// Upload via BotFather
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub animation: Option<Animation>,
 }
 
-fn deserialize_text<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    #[derive(Deserialize)]
-    struct Wrapper {
-        text: String,
-        text_entities: Option<TextEntities>,
+#[derive(Deserialize, Serialize)]
+struct GameText {
+    text: String,
+    text_entities: Option<TextEntities>,
+}
+
+impl GameText {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Option::<GameText>::deserialize(deserializer).map(|wrapper| {
+            wrapper.map(
+                |GameText {
+                     text: data,
+                     text_entities: entities,
+                 }| Text { data, entities },
+            )
+        })
     }
 
-    Option::<Wrapper>::deserialize(deserializer).map(|wrapper| {
-        wrapper.map(
-            |Wrapper {
-                 text: data,
-                 text_entities: entities,
-             }| Text { data, entities },
-        )
-    })
+    fn serialize_value<S>(value: &Option<Text>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let value = value.clone().map(|value| GameText {
+            text: value.data,
+            text_entities: value.entities,
+        });
+        value.serialize(serializer)
+    }
 }
 
 /// One row of the high scores table for a game
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct GameHighScore {
     /// Position in high score table for the game
     pub position: Integer,

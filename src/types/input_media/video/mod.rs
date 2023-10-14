@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{Integer, ParseMode, TextEntities, TextEntity};
 
@@ -6,7 +6,7 @@ use crate::types::{Integer, ParseMode, TextEntities, TextEntity};
 mod tests;
 
 /// Video to be sent
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMediaVideo {
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,

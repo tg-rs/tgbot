@@ -12,7 +12,7 @@ use crate::{
 mod tests;
 
 /// Represents a dice with random value
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize)]
 pub struct Dice {
     #[serde(rename = "emoji")]
     kind: DiceKind,

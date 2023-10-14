@@ -10,7 +10,7 @@ use crate::{
 mod tests;
 
 /// Shipping address
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ShippingAddress {
     /// ISO 3166-1 alpha-2 country code
     pub country_code: String,
@@ -27,7 +27,7 @@ pub struct ShippingAddress {
 }
 
 /// Shipping option
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ShippingOption {
     id: String,
     title: String,
@@ -71,7 +71,7 @@ impl ShippingOption {
 }
 
 /// Information about an incoming shipping query
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ShippingQuery {
     /// Unique query identifier
     pub id: String,

@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{Integer, ParseMode, TextEntities, TextEntity};
 
@@ -6,7 +6,7 @@ use crate::types::{Integer, ParseMode, TextEntities, TextEntity};
 mod tests;
 
 /// Animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent
-#[derive(Clone, Default, Debug, Serialize)]
+#[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMediaAnimation {
     #[serde(skip_serializing_if = "Option::is_none")]
     thumb: Option<String>,

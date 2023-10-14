@@ -13,7 +13,7 @@ mod tests;
 
 macro_rules! impl_bool_type {
     ($name:ident = $value:ident) => {
-        #[derive(Clone, Copy)]
+        #[derive(Clone, Copy, PartialEq, PartialOrd)]
         pub(crate) struct $name;
 
         impl Serialize for $name {

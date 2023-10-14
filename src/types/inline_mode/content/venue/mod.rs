@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::Float;
 
@@ -6,7 +6,7 @@ use crate::types::Float;
 mod tests;
 
 /// Venue message to be sent as the result of an inline query
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentVenue {
     latitude: Float,
     longitude: Float,
@@ -53,7 +53,7 @@ impl InputMessageContentVenue {
     /// Foursquare type of the venue, if known
     ///
     /// For example, “arts_entertainment/default”,
-    /// “arts_entertainment/aquarium” or “food/icecream”
+    /// “arts_entertainment/aquarium” or “food/ice-cream”
     pub fn foursquare_type<S: Into<String>>(mut self, foursquare_type: S) -> Self {
         self.foursquare_type = Some(foursquare_type.into());
         self

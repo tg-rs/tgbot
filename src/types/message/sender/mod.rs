@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{Chat, Integer, User};
 
@@ -6,9 +6,9 @@ use crate::types::{Chat, Integer, User};
 mod tests;
 
 /// Sender of the message
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[allow(clippy::large_enum_variant)]
-#[serde(untagged, from = "RawMessageSender")]
+#[serde(untagged, from = "RawMessageSender", into = "RawMessageSender")]
 pub enum MessageSender {
     /// For messages sent by chat
     ///
@@ -62,9 +62,11 @@ impl MessageSender {
     }
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 struct RawMessageSender {
+    #[serde(skip_serializing_if = "Option::is_none")]
     sender_chat: Option<Chat>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     from: Option<User>,
 }
 
@@ -74,6 +76,25 @@ impl From<RawMessageSender> for MessageSender {
             (Some(chat), None) => MessageSender::Chat(chat),
             (None, Some(user)) => MessageSender::User(user),
             _ => MessageSender::Unknown,
+        }
+    }
+}
+
+impl Into<RawMessageSender> for MessageSender {
+    fn into(self) -> RawMessageSender {
+        match self {
+            MessageSender::Chat(chat) => RawMessageSender {
+                sender_chat: Some(chat),
+                from: None,
+            },
+            MessageSender::User(user) => RawMessageSender {
+                sender_chat: None,
+                from: Some(user),
+            },
+            MessageSender::Unknown => RawMessageSender {
+                sender_chat: None,
+                from: None,
+            },
         }
     }
 }

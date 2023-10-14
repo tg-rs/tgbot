@@ -10,34 +10,38 @@ use crate::{
 mod tests;
 
 /// Point on the map
-#[derive(Clone, Copy, Debug, Deserialize)]
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Location {
     /// Longitude as defined by sender
     pub longitude: Float,
     /// Latitude as defined by sender
     pub latitude: Float,
     /// The radius of uncertainty for the location, measured in meters; 0-1500
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub horizontal_accuracy: Option<Float>,
     /// Time relative to the message sending date,
     /// during which the location can be updated, in seconds
     ///
     /// For active live locations only
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub live_period: Option<Integer>,
     /// The direction in which user is moving, in degrees; 1-360
     ///
     /// For active live locations only
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub heading: Option<Integer>,
     /// Maximum distance for proximity alerts about
     /// approaching another chat member, in meters
     ///
     /// For sent live locations only
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub proximity_alert_radius: Option<Integer>,
 }
 
 /// Represents the content of a service message,
 /// sent whenever a user in the chat triggers
 /// a proximity alert set by another user
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ProximityAlertTriggered {
     /// User that triggered the alert
     pub traveler: User,

@@ -11,7 +11,7 @@ use crate::{
 mod tests;
 
 /// Basic information about an invoice
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Invoice {
     /// Product name
     pub title: String,
@@ -30,7 +30,7 @@ pub struct Invoice {
 }
 
 /// Portion of the price for goods or services
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct LabeledPrice {
     label: String,
     amount: Integer,
@@ -120,12 +120,12 @@ impl SendInvoice {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat or username of the target channel (in the format @channelusername)
+    /// * chat_id - Unique identifier for the target chat or username of the target channel (in the format @channel_username)
     /// * title - Product name, 1-32 characters
     /// * description - Product description, 1-255 characters
     /// * payload - Bot-defined invoice payload, 1-128 bytes
     ///             This will not be displayed to the user, use for your internal processes
-    /// * provider_token - Payments provider token, obtained via Botfather
+    /// * provider_token - Payments provider token, obtained via Bot Father
     /// * currency - Three-letter ISO 4217 currency code, see more on currencies
     /// * prices - Price breakdown, a list of components
     ///            (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)

@@ -13,7 +13,7 @@ pub type Integer = i64;
 pub type Float = f32;
 
 /// Represents a unique message identifier
-#[derive(Copy, Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MessageId {
     /// Unique message identifier
     pub message_id: Integer,

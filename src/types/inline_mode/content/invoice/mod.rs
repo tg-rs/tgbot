@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 use crate::types::{Integer, LabeledPrice};
@@ -7,7 +7,7 @@ use crate::types::{Integer, LabeledPrice};
 mod tests;
 
 /// Represents the content of an invoice message to be sent as the result of an inline query
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentInvoice {
     title: String,
     description: String,
@@ -55,7 +55,7 @@ impl InputMessageContentInvoice {
     /// * payload - Bot-defined invoice payload, 1-128 bytes.
     ///             This will not be displayed to the user,
     ///             use for your internal processes.
-    /// * provider_token - Payment provider token, obtained via Botfather
+    /// * provider_token - Payment provider token, obtained via Bot Father
     /// * currency - Three-letter ISO 4217 currency code, see more on currencies
     /// * prices - Price breakdown  (e.g. product price, tax, discount,
     ///            delivery cost, delivery tax, bonus, etc.)

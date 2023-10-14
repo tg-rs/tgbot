@@ -1,6 +1,6 @@
 use std::{error::Error, fmt};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     method::Method,
@@ -12,7 +12,7 @@ use crate::{
 mod tests;
 
 /// Error in the Telegram Passport element which was submitted that should be resolved by the user
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PassportElementError {
     #[serde(flatten)]
     kind: PassportElementErrorKind,
@@ -291,7 +291,7 @@ impl PassportElementError {
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(tag = "source")]
 enum PassportElementErrorKind {
     #[serde(rename = "data")]

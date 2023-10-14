@@ -7,7 +7,7 @@ use serde_json::{Error as JsonError, Value as JsonValue};
 mod tests;
 
 /// Inline keyboard that appears right next to the message it belongs to
-#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct InlineKeyboardMarkup {
     inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
 }
@@ -49,7 +49,7 @@ impl From<InlineKeyboardMarkup> for Vec<Vec<InlineKeyboardButton>> {
 /// Button of an inline keyboard
 ///
 /// You must use exactly one of the optional fields
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineKeyboardButton {
     text: String,
     #[serde(flatten)]
@@ -197,7 +197,7 @@ pub enum InlineKeyboardButtonKind {
     LoginUrl(LoginUrl),
 }
 
-#[derive(Default, Clone, Debug, Deserialize, Serialize)]
+#[derive(Default, Clone, Debug, Deserialize, PartialEq, Serialize)]
 struct InlineKeyboardButtonKindRaw {
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<String>,
@@ -292,7 +292,7 @@ impl fmt::Display for InlineKeyboardError {
 /// Represents a parameter of the inline keyboard button used to automatically authorize a user
 ///
 /// Serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct LoginUrl {
     url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -342,9 +342,9 @@ impl LoginUrl {
     ///
     /// See [Setting up a bot][1] for more details
     ///
-    /// If not specified, the current bot's username will be assumed
+    /// If not specified, the current bot username will be assumed
     ///
-    /// The url's domain must be the same as the domain linked with the bot
+    /// The url domain must be the same as the domain linked with the bot
     ///
     /// See [Linking your domain to the bot][2] for more details
     ///

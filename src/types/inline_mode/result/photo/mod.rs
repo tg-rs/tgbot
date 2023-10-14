@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer, ParseMode, TextEntities, TextEntity};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -10,7 +17,7 @@ mod tests;
 /// By default, this photo will be sent by the user with optional caption
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the photo
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultPhoto {
     id: String,
     photo_url: String,
@@ -134,7 +141,7 @@ impl InlineQueryResultPhoto {
 /// By default, this photo will be sent by the user with an optional caption
 /// Alternatively, you can use input_message_content to send
 /// a message with the specified content instead of the photo
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedPhoto {
     id: String,
     photo_file_id: String,
@@ -228,5 +235,87 @@ impl InlineQueryResultCachedPhoto {
     pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
         self.input_message_content = Some(input_message_content.into());
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultPhoto {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            photo_url: value.data.photo_url.ok_or(MissingField("photo_url"))?,
+            thumb_url: value.data.thumb_url.ok_or(MissingField("thumb_url"))?,
+            photo_width: value.data.photo_width,
+            photo_height: value.data.photo_height,
+            title: value.data.title,
+            description: value.data.description,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultPhoto> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultPhoto) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                photo_url: Some(value.photo_url),
+                thumb_url: Some(value.thumb_url),
+                photo_width: value.photo_width,
+                photo_height: value.photo_height,
+                title: value.title,
+                description: value.description,
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Photo,
+        }
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedPhoto {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            photo_file_id: value.data.photo_file_id.ok_or(MissingField("photo_file_id"))?,
+            title: value.data.title,
+            description: value.data.description,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultCachedPhoto> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultCachedPhoto) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                photo_file_id: Some(value.photo_file_id),
+                title: value.title,
+                description: value.description,
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::CachedPhoto,
+        }
     }
 }

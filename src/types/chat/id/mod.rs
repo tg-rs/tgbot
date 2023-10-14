@@ -8,7 +8,7 @@ use crate::types::Integer;
 mod tests;
 
 /// Chat ID or username
-#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum ChatId {
     /// @username of a chat

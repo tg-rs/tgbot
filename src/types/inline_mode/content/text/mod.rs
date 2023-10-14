@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{ParseMode, TextEntities, TextEntity};
 
@@ -6,7 +6,7 @@ use crate::types::{ParseMode, TextEntities, TextEntity};
 mod tests;
 
 /// Text message to be sent as the result of an inline query
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentText {
     message_text: String,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -1,6 +1,6 @@
 use std::{convert::TryFrom, error::Error, fmt};
 
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::types::{
     Animation,
@@ -34,8 +34,9 @@ use crate::types::{
 mod tests;
 
 /// Contains message data
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[allow(clippy::large_enum_variant)]
+#[serde(into = "RawMessageData")]
 #[serde(try_from = "RawMessageData")]
 pub enum MessageData {
     /// Message is an animation, information about the animation
@@ -43,6 +44,7 @@ pub enum MessageData {
     /// Audio message
     Audio {
         /// Audio caption
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         /// Audio data
         data: Audio,
@@ -68,6 +70,7 @@ pub enum MessageData {
     /// Document message
     Document {
         /// Document caption
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         /// Document data
         data: Document,
@@ -105,6 +108,7 @@ pub enum MessageData {
     /// Message is a photo, available sizes of the photo
     Photo {
         /// Photo caption
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         /// Photos
         data: Vec<PhotoSize>,
@@ -132,6 +136,7 @@ pub enum MessageData {
     /// Message is a video, information about the video
     Video {
         /// Video caption
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         /// Video data
         data: Video,
@@ -141,6 +146,7 @@ pub enum MessageData {
     /// Message is a voice message, information about the file
     Voice {
         /// Voice caption
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         /// Voice data
         data: Voice,
@@ -232,27 +238,121 @@ impl TryFrom<RawMessageData> for MessageData {
     }
 }
 
-fn deserialize_caption<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    #[derive(Deserialize)]
-    struct Wrapper {
-        caption: String,
-        caption_entities: Option<TextEntities>,
+impl Into<RawMessageData> for MessageData {
+    fn into(self) -> RawMessageData {
+        match self {
+            MessageData::Animation(animation) => RawMessageData::Animation { animation },
+            MessageData::Audio { data: audio, caption } => RawMessageData::Audio { caption, audio },
+            MessageData::AutoDeleteTimerChanged { time } => RawMessageData::MessageAutoDeleteTimerChanged {
+                message_auto_delete_timer_changed: RawMessageAutoDeleteTimerChanged {
+                    message_auto_delete_time: time,
+                },
+            },
+            MessageData::ChannelChatCreated => RawMessageData::ChannelChatCreated {
+                channel_chat_created: True,
+            },
+            MessageData::ConnectedWebsite(connected_website) => RawMessageData::ConnectedWebsite { connected_website },
+            MessageData::Contact(contact) => RawMessageData::Contact { contact },
+            MessageData::DeleteChatPhoto => RawMessageData::DeleteChatPhoto {
+                delete_chat_photo: True,
+            },
+            MessageData::Dice(dice) => RawMessageData::Dice { dice },
+            MessageData::Document {
+                data: document,
+                caption,
+            } => RawMessageData::Document { caption, document },
+            MessageData::Empty => RawMessageData::Empty {},
+            MessageData::Game(game) => RawMessageData::Game { game },
+            MessageData::GroupChatCreated => RawMessageData::GroupChatCreated {
+                group_chat_created: True,
+            },
+            MessageData::Invoice(invoice) => RawMessageData::Invoice { invoice },
+            MessageData::LeftChatMember(left_chat_member) => RawMessageData::LeftChatMember { left_chat_member },
+            MessageData::Location(location) => RawMessageData::Location { location },
+            MessageData::MigrateFromChatId(migrate_from_chat_id) => {
+                RawMessageData::MigrateFromChatId { migrate_from_chat_id }
+            }
+            MessageData::MigrateToChatId(migrate_to_chat_id) => RawMessageData::MigrateToChatId { migrate_to_chat_id },
+            MessageData::NewChatMembers(new_chat_members) => RawMessageData::NewChatMembers { new_chat_members },
+            MessageData::NewChatPhoto(new_chat_photo) => RawMessageData::NewChatPhoto { new_chat_photo },
+            MessageData::NewChatTitle(new_chat_title) => RawMessageData::NewChatTitle { new_chat_title },
+            MessageData::PassportData(passport_data) => RawMessageData::PassportData { passport_data },
+            MessageData::PinnedMessage(pinned_message) => RawMessageData::PinnedMessage { pinned_message },
+            MessageData::Photo { caption, data: photo } => RawMessageData::Photo { caption, photo },
+            MessageData::Poll(poll) => RawMessageData::Poll { poll },
+            MessageData::ProximityAlertTriggered(proximity_alert_triggered) => {
+                RawMessageData::ProximityAlertTriggered {
+                    proximity_alert_triggered,
+                }
+            }
+            MessageData::Sticker(sticker) => RawMessageData::Sticker { sticker },
+            MessageData::SuccessfulPayment(successful_payment) => {
+                RawMessageData::SuccessfulPayment { successful_payment }
+            }
+            MessageData::SupergroupChatCreated => RawMessageData::SupergroupChatCreated {
+                supergroup_chat_created: True,
+            },
+            MessageData::Text(text) => RawMessageData::Text {
+                text: text.data,
+                entities: text.entities,
+            },
+            MessageData::Venue(venue) => RawMessageData::Venue { venue },
+            MessageData::Video { caption, data: video } => RawMessageData::Video { caption, video },
+            MessageData::VideoNote(video_note) => RawMessageData::VideoNote { video_note },
+            MessageData::Voice { caption, data: voice } => RawMessageData::Voice { caption, voice },
+            MessageData::VoiceChatScheduled { start_date } => RawMessageData::VoiceChatScheduled {
+                voice_chat_scheduled: RawVoiceChatScheduled { start_date },
+            },
+            MessageData::VoiceChatStarted => RawMessageData::VoiceChatStarted {
+                voice_chat_started: RawVoiceChatStarted {},
+            },
+            MessageData::VoiceChatEnded { duration } => RawMessageData::VoiceChatEnded {
+                voice_chat_ended: RawVoiceChatEnded { duration },
+            },
+            MessageData::VoiceChatParticipantsInvited { users } => RawMessageData::VoiceChatParticipantsInvited {
+                voice_chat_participants_invited: RawVoiceChatParticipantsInvited {
+                    users: if users.is_empty() { None } else { Some(users) },
+                },
+            },
+        }
     }
-
-    Option::<Wrapper>::deserialize(deserializer).map(|wrapper| {
-        wrapper.map(
-            |Wrapper {
-                 caption: data,
-                 caption_entities: entities,
-             }| Text { data, entities },
-        )
-    })
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize, Serialize)]
+struct MessageCaption {
+    caption: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    caption_entities: Option<TextEntities>,
+}
+
+impl MessageCaption {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Option::<MessageCaption>::deserialize(deserializer).map(|wrapper| {
+            wrapper.map(
+                |MessageCaption {
+                     caption: data,
+                     caption_entities: entities,
+                 }| Text { data, entities },
+            )
+        })
+    }
+
+    fn serialize_value<S>(value: &Option<Text>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let value = value.clone().map(|value| MessageCaption {
+            caption: value.data,
+            caption_entities: value.entities,
+        });
+        value.serialize(serializer)
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(untagged)]
 enum RawMessageData {
@@ -260,8 +360,10 @@ enum RawMessageData {
         animation: Animation,
     },
     Audio {
-        #[serde(deserialize_with = "deserialize_caption")]
         #[serde(flatten)]
+        #[serde(deserialize_with = "MessageCaption::deserialize_value")]
+        #[serde(serialize_with = "MessageCaption::serialize_value")]
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         audio: Audio,
     },
@@ -283,8 +385,10 @@ enum RawMessageData {
         dice: Dice,
     },
     Document {
-        #[serde(deserialize_with = "deserialize_caption")]
         #[serde(flatten)]
+        #[serde(deserialize_with = "MessageCaption::deserialize_value")]
+        #[serde(serialize_with = "MessageCaption::serialize_value")]
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         document: Document,
     },
@@ -329,8 +433,10 @@ enum RawMessageData {
         pinned_message: Box<Message>,
     },
     Photo {
-        #[serde(deserialize_with = "deserialize_caption")]
         #[serde(flatten)]
+        #[serde(deserialize_with = "MessageCaption::deserialize_value")]
+        #[serde(serialize_with = "MessageCaption::serialize_value")]
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         photo: Vec<PhotoSize>,
     },
@@ -352,14 +458,17 @@ enum RawMessageData {
     },
     Text {
         text: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
         entities: Option<TextEntities>,
     },
     Venue {
         venue: Venue,
     },
     Video {
-        #[serde(deserialize_with = "deserialize_caption")]
         #[serde(flatten)]
+        #[serde(deserialize_with = "MessageCaption::deserialize_value")]
+        #[serde(serialize_with = "MessageCaption::serialize_value")]
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         video: Video,
     },
@@ -367,8 +476,10 @@ enum RawMessageData {
         video_note: VideoNote,
     },
     Voice {
-        #[serde(deserialize_with = "deserialize_caption")]
         #[serde(flatten)]
+        #[serde(deserialize_with = "MessageCaption::deserialize_value")]
+        #[serde(serialize_with = "MessageCaption::serialize_value")]
+        #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         voice: Voice,
     },
@@ -388,27 +499,28 @@ enum RawMessageData {
     Empty {}, // must be last because all variants below won't be deserialized
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct RawMessageAutoDeleteTimerChanged {
     message_auto_delete_time: Integer,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct RawVoiceChatScheduled {
     start_date: Integer,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct RawVoiceChatEnded {
     duration: Integer,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct RawVoiceChatParticipantsInvited {
+    #[serde(skip_serializing_if = "Option::is_none")]
     users: Option<Vec<User>>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct RawVoiceChatStarted {}
 
 /// A message data error when parsing message data

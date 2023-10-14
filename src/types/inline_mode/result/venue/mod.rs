@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{Float, InlineKeyboardMarkup, InputMessageContent, Integer};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -10,7 +17,7 @@ mod tests;
 /// By default, the venue will be sent by the user
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the venue
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultVenue {
     id: String,
     latitude: Float,
@@ -79,7 +86,7 @@ impl InlineQueryResultVenue {
 
     /// Foursquare type of the venue, if known
     ///
-    /// For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”
+    /// For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/ice-cream”
     pub fn foursquare_type<S: Into<String>>(mut self, foursquare_type: S) -> Self {
         self.foursquare_type = Some(foursquare_type.into());
         self
@@ -127,5 +134,53 @@ impl InlineQueryResultVenue {
     pub fn thumb_height(mut self, thumb_height: Integer) -> Self {
         self.thumb_height = Some(thumb_height);
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultVenue {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            latitude: value.data.latitude.ok_or(MissingField("latitude"))?,
+            longitude: value.data.longitude.ok_or(MissingField("longitude"))?,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            address: value.data.address.ok_or(MissingField("address"))?,
+            foursquare_id: value.data.foursquare_id,
+            foursquare_type: value.data.foursquare_type,
+            google_place_id: value.data.google_place_id,
+            google_place_type: value.data.google_place_type,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+            thumb_url: value.data.thumb_url,
+            thumb_width: value.data.thumb_width,
+            thumb_height: value.data.thumb_height,
+        })
+    }
+}
+
+impl From<InlineQueryResultVenue> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultVenue) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                latitude: Some(value.latitude),
+                longitude: Some(value.longitude),
+                title: Some(value.title),
+                address: Some(value.address),
+                foursquare_id: value.foursquare_id,
+                foursquare_type: value.foursquare_type,
+                google_place_id: value.google_place_id,
+                google_place_type: value.google_place_type,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                thumb_url: value.thumb_url,
+                thumb_width: value.thumb_width,
+                thumb_height: value.thumb_height,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Venue,
+        }
     }
 }

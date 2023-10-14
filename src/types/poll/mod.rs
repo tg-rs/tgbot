@@ -1,4 +1,4 @@
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
     method::Method,
@@ -21,7 +21,7 @@ use crate::{
 mod tests;
 
 /// Contains information about a poll
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum Poll {
@@ -42,7 +42,7 @@ pub enum PollKind {
 }
 
 /// A regular poll
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct RegularPoll {
     /// Unique poll identifier
     pub id: String,
@@ -59,13 +59,15 @@ pub struct RegularPoll {
     /// True, if the poll allows multiple answers
     pub allows_multiple_answers: bool,
     /// Amount of time in seconds the poll will be active after creation
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub open_period: Option<Integer>,
     /// Point in time (Unix timestamp) when the poll will be automatically closed
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub close_date: Option<Integer>,
 }
 
 /// A quiz
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Quiz {
     /// Unique quiz identifier
     pub id: String,
@@ -87,37 +89,53 @@ pub struct Quiz {
     pub correct_option_id: Integer,
     /// Text that is shown when a user chooses an incorrect answer or
     /// taps on the lamp icon in a quiz-style poll, 0-200 characters
-    #[serde(deserialize_with = "deserialize_explanation")]
     #[serde(flatten)]
+    #[serde(deserialize_with = "QuizExplanation::deserialize_value")]
+    #[serde(serialize_with = "QuizExplanation::serialize_value")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub explanation: Option<Text>,
     /// Amount of time in seconds the quiz will be active after creation
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub open_period: Option<Integer>,
     /// Point in time (Unix timestamp) when the quiz will be automatically closed
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub close_date: Option<Integer>,
 }
 
-fn deserialize_explanation<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    #[derive(Deserialize)]
-    struct Wrapper {
-        explanation: String,
-        explanation_entities: Option<TextEntities>,
+#[derive(Deserialize, Serialize)]
+struct QuizExplanation {
+    explanation: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    explanation_entities: Option<TextEntities>,
+}
+
+impl QuizExplanation {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Option::<QuizExplanation>::deserialize(deserializer).map(|x| {
+            x.map(|value| Text {
+                data: value.explanation,
+                entities: value.explanation_entities,
+            })
+        })
     }
 
-    Option::<Wrapper>::deserialize(deserializer).map(|wrapper| {
-        wrapper.map(
-            |Wrapper {
-                 explanation: data,
-                 explanation_entities: entities,
-             }| Text { data, entities },
-        )
-    })
+    fn serialize_value<S>(value: &Option<Text>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let value = value.clone().map(|value| QuizExplanation {
+            explanation: value.data,
+            explanation_entities: value.entities,
+        });
+        value.serialize(serializer)
+    }
 }
 
 /// Contains information about one answer option in a poll
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PollOption {
     /// Option text, 1-100 characters
     pub text: String,
@@ -126,7 +144,7 @@ pub struct PollOption {
 }
 
 /// An answer of a user in a non-anonymous poll
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PollAnswer {
     /// Unique poll identifier
     pub poll_id: String,

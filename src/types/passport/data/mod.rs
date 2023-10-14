@@ -9,7 +9,7 @@ mod tests;
 ///
 /// Currently all Telegram Passport files are in JPEG
 /// format when decrypted and don't exceed 10MB
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PassportFile {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: String,
@@ -28,7 +28,7 @@ pub struct PassportFile {
 ///
 /// See the Telegram Passport Documentation for a complete description
 /// of the data decryption and authentication processes
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedCredentials {
     /// Base64-encoded encrypted JSON-serialized data
     /// with unique user's payload,
@@ -38,13 +38,13 @@ pub struct EncryptedCredentials {
     /// Base64-encoded data hash for data authentication
     pub hash: String,
     /// Base64-encoded secret, encrypted
-    /// with the bot's public RSA key,
+    /// with the bot public RSA key,
     /// required for data decryption
     pub secret: String,
 }
 
 /// Address
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementAddress {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -57,7 +57,7 @@ pub struct EncryptedPassportElementAddress {
 }
 
 /// Bank statement
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementBankStatement {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -68,6 +68,7 @@ pub struct EncryptedPassportElementBankStatement {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -75,7 +76,7 @@ pub struct EncryptedPassportElementBankStatement {
 }
 
 /// Driver license
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementDriverLicense {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -101,6 +102,7 @@ pub struct EncryptedPassportElementDriverLicense {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -108,7 +110,7 @@ pub struct EncryptedPassportElementDriverLicense {
 }
 
 /// E-Mail
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementEmail {
     /// User's verified email address
     pub email: String,
@@ -118,7 +120,7 @@ pub struct EncryptedPassportElementEmail {
 }
 
 /// Identity card
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementIdentityCard {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -144,6 +146,7 @@ pub struct EncryptedPassportElementIdentityCard {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -151,7 +154,7 @@ pub struct EncryptedPassportElementIdentityCard {
 }
 
 /// Internal passport
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementInternalPassport {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -172,6 +175,7 @@ pub struct EncryptedPassportElementInternalPassport {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -179,7 +183,7 @@ pub struct EncryptedPassportElementInternalPassport {
 }
 
 /// Passport
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementPassport {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -200,6 +204,7 @@ pub struct EncryptedPassportElementPassport {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -207,7 +212,7 @@ pub struct EncryptedPassportElementPassport {
 }
 
 /// Passport registration
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementPassportRegistration {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -218,6 +223,7 @@ pub struct EncryptedPassportElementPassportRegistration {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -225,7 +231,7 @@ pub struct EncryptedPassportElementPassportRegistration {
 }
 
 /// Personal details
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementPersonalDetails {
     /// Base64-encoded encrypted
     /// Telegram Passport element data provided by the user
@@ -238,7 +244,7 @@ pub struct EncryptedPassportElementPersonalDetails {
 }
 
 /// Phone number
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementPhoneNumber {
     /// User's verified phone number
     pub phone_number: String,
@@ -248,7 +254,7 @@ pub struct EncryptedPassportElementPhoneNumber {
 }
 
 /// Rental agreement
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementRentalAgreement {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -259,6 +265,7 @@ pub struct EncryptedPassportElementRentalAgreement {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -266,7 +273,7 @@ pub struct EncryptedPassportElementRentalAgreement {
 }
 
 /// Temporary registration
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementTemporaryRegistration {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -277,6 +284,7 @@ pub struct EncryptedPassportElementTemporaryRegistration {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -284,7 +292,7 @@ pub struct EncryptedPassportElementTemporaryRegistration {
 }
 
 /// Utility bill
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementUtilityBill {
     /// Array of encrypted files with
     /// documents provided by the user
@@ -295,6 +303,7 @@ pub struct EncryptedPassportElementUtilityBill {
     /// versions of documents provided by the user
     /// Files can be decrypted and verified
     /// using the accompanying EncryptedCredentials
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
     /// Base64-encoded element hash for
     /// using in PassportElementErrorUnspecified
@@ -302,7 +311,7 @@ pub struct EncryptedPassportElementUtilityBill {
 }
 
 /// Information about documents or other Telegram Passport elements shared with the bot by the user
-#[derive(Clone, Debug, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "type")]
@@ -336,7 +345,7 @@ pub enum EncryptedPassportElement {
 }
 
 /// Type of encrypted passport element
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum EncryptedPassportElementKind {
     /// Address
@@ -368,7 +377,7 @@ pub enum EncryptedPassportElementKind {
 }
 
 /// Telegram Passport data shared with the bot by the user
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PassportData {
     /// Array with information about documents
     /// and other Telegram Passport elements

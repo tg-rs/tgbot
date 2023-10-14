@@ -11,7 +11,7 @@ use crate::{
 mod tests;
 
 /// Chat photo
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatPhoto {
     /// File identifier of small (160x160) chat photo
     ///

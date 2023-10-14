@@ -27,7 +27,7 @@ use crate::{
 mod tests;
 
 /// Incoming update
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Update {
     /// The update‘s unique identifier
     ///
@@ -109,7 +109,7 @@ impl Update {
 }
 
 /// Kind of update
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateKind {
@@ -146,7 +146,7 @@ pub enum UpdateKind {
     ///
     /// Bots receive new votes only in polls that were sent by the bot itself
     PollAnswer(PollAnswer),
-    /// The bot's chat member status was updated in a chat
+    /// The bot chat member status was updated in a chat
     ///
     /// For private chats, this update is received only
     /// when the bot is blocked or unblocked by the user

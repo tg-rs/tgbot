@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     form::Form,
@@ -23,7 +23,7 @@ use crate::{
 mod tests;
 
 /// An animation file (GIF or H.264/MPEG-4 AVC video without sound)
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Animation {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: String,
@@ -39,12 +39,16 @@ pub struct Animation {
     /// Duration of the video in seconds as defined by sender
     pub duration: Integer,
     /// Animation thumbnail as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<PhotoSize>,
     /// Original animation filename as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
     /// MIME type of the file as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// File size
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
 }
 

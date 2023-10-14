@@ -6,7 +6,7 @@ use crate::{method::Method, request::Request, types::ChatId};
 mod tests;
 
 /// Describes actions that a non-administrator user is allowed to take in a chat
-#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatPermissions {
     /// True, if the user is allowed to send text messages, contacts, locations and venues
     #[serde(skip_serializing_if = "Option::is_none")]

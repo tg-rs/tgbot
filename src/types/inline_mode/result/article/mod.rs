@@ -1,12 +1,19 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
 
 /// Link to an article or web page
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultArticle {
     id: String,
     title: String,
@@ -95,5 +102,45 @@ impl InlineQueryResultArticle {
     pub fn thumb_height(mut self, thumb_height: Integer) -> Self {
         self.thumb_height = Some(thumb_height);
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultArticle {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            input_message_content: value.data.input_message_content.ok_or(MissingField("content"))?,
+            reply_markup: value.data.reply_markup,
+            url: value.data.url,
+            hide_url: value.data.hide_url,
+            description: value.data.description,
+            thumb_url: value.data.thumb_url,
+            thumb_width: value.data.thumb_width,
+            thumb_height: value.data.thumb_height,
+        })
+    }
+}
+
+impl From<InlineQueryResultArticle> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultArticle) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                title: Some(value.title),
+                input_message_content: Some(value.input_message_content),
+                reply_markup: value.reply_markup,
+                url: value.url,
+                hide_url: value.hide_url,
+                description: value.description,
+                thumb_url: value.thumb_url,
+                thumb_width: value.thumb_width,
+                thumb_height: value.thumb_height,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Article,
+        }
     }
 }

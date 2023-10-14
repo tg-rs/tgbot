@@ -10,7 +10,7 @@ use crate::{
 mod tests;
 
 /// Information about an incoming pre-checkout query
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialOrd, PartialEq, Serialize)]
 pub struct PreCheckoutQuery {
     /// Unique query identifier
     pub id: String,
@@ -27,8 +27,10 @@ pub struct PreCheckoutQuery {
     /// Bot specified invoice payload
     pub invoice_payload: String,
     /// Identifier of the shipping option chosen by the user
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_option_id: Option<String>,
     /// Order info provided by the user
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub order_info: Option<OrderInfo>,
 }
 

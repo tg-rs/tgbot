@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer, ParseMode, TextEntities, TextEntity};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -10,7 +17,7 @@ mod tests;
 /// By default, this voice recording will be sent by the user
 /// Alternatively, you can use input_message_content to send
 /// a message with the specified content instead of the the voice message
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultVoice {
     id: String,
     voice_url: String,
@@ -106,7 +113,7 @@ impl InlineQueryResultVoice {
 /// By default, this voice message will be sent by the user
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the voice message
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedVoice {
     id: String,
     voice_file_id: String,
@@ -186,5 +193,79 @@ impl InlineQueryResultCachedVoice {
     pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
         self.input_message_content = Some(input_message_content.into());
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultVoice {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            voice_url: value.data.voice_url.ok_or(MissingField("voice_url"))?,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            voice_duration: value.data.voice_duration,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultVoice> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultVoice) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                voice_url: Some(value.voice_url),
+                title: Some(value.title),
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                voice_duration: value.voice_duration,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Voice,
+        }
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedVoice {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            voice_file_id: value.data.voice_file_id.ok_or(MissingField("voice_file_id"))?,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultCachedVoice> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultCachedVoice) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                voice_file_id: Some(value.voice_file_id),
+                title: Some(value.title),
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::CachedVoice,
+        }
     }
 }

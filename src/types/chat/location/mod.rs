@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::Location;
 
@@ -6,7 +6,7 @@ use crate::types::Location;
 mod tests;
 
 /// Represents a location to which a chat is connected
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatLocation {
     /// The location to which the supergroup is connected
     ///

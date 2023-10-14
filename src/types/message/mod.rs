@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{Chat, InlineKeyboardMarkup, Integer, Text, User};
 
@@ -14,7 +14,7 @@ mod methods;
 mod sender;
 
 /// This object represents a message
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Message {
     /// Unique message identifier inside this chat
     #[serde(rename = "message_id")]
@@ -22,6 +22,7 @@ pub struct Message {
     /// Date the message was sent in Unix time
     pub date: Integer,
     /// Date the message was last edited in Unix time
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub edit_date: Option<Integer>,
     /// Sender of the message
     #[serde(flatten)]
@@ -29,12 +30,14 @@ pub struct Message {
     /// Conversation the message belongs to
     pub chat: Chat,
     /// Author signature
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
     /// True, if the message can't be forwarded
     #[serde(default)]
     pub has_protected_content: bool,
     /// Forwarded data
     #[serde(flatten)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub forward: Option<Forward>,
     /// True, if the message is a channel post that was automatically forwarded to the connected discussion group
     #[serde(default)]
@@ -43,12 +46,16 @@ pub struct Message {
     /// Note that the Message object in this field will not contain further
     /// reply_to fields even if it itself is a reply
     #[serde(rename = "reply_to_message")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to: Option<Box<Message>>,
     /// Bot through which the message was sent
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub via_bot: Option<User>,
     /// The unique identifier of a media message group this message belongs to
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub media_group_id: Option<String>,
     /// Inline keyboard attached to the message
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// Contains message data
     #[serde(flatten)]
@@ -91,7 +98,7 @@ impl Message {
 }
 
 /// Result of editMessage* requests
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(untagged)]
 pub enum EditMessageResult {

@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer, ParseMode, TextEntities, TextEntity};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -11,7 +18,7 @@ mod tests;
 /// will be sent by the user with optional caption
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the animation
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultGif {
     id: String,
     gif_url: String,
@@ -148,7 +155,7 @@ impl InlineQueryResultGif {
 /// By default, this animated GIF file will be sent by the user with an optional caption
 /// Alternatively, you can use input_message_content to send
 /// a message with specified content instead of the animation
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedGif {
     id: String,
     gif_file_id: String,
@@ -230,5 +237,87 @@ impl InlineQueryResultCachedGif {
     pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
         self.input_message_content = Some(input_message_content.into());
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultGif {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            gif_url: value.data.gif_url.ok_or(MissingField("gif_url"))?,
+            thumb_url: value.data.thumb_url.ok_or(MissingField("thumb_url"))?,
+            thumb_mime_type: value.data.thumb_mime_type,
+            gif_width: value.data.gif_width,
+            gif_height: value.data.gif_height,
+            gif_duration: value.data.gif_duration,
+            title: value.data.title,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultGif> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultGif) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                gif_url: Some(value.gif_url),
+                thumb_url: Some(value.thumb_url),
+                thumb_mime_type: value.thumb_mime_type,
+                gif_width: value.gif_width,
+                gif_height: value.gif_height,
+                gif_duration: value.gif_duration,
+                title: value.title,
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Gif,
+        }
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedGif {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            gif_file_id: value.data.gif_file_id.ok_or(MissingField("gif_file_id"))?,
+            title: value.data.title,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultCachedGif> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultCachedGif) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                gif_file_id: Some(value.gif_file_id),
+                title: value.title,
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::CachedGif,
+        }
     }
 }

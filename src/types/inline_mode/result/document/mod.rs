@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer, ParseMode, TextEntities, TextEntity};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -11,7 +18,7 @@ mod tests;
 /// Alternatively, you can use input_message_content to send a message
 /// with the specified content instead of the file
 /// Currently, only .PDF and .ZIP files can be sent using this method
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultDocument {
     id: String,
     title: String,
@@ -139,7 +146,7 @@ impl InlineQueryResultDocument {
 /// By default, this file will be sent by the user with an optional caption
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the file
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedDocument {
     id: String,
     title: String,
@@ -228,5 +235,89 @@ impl InlineQueryResultCachedDocument {
     pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
         self.input_message_content = Some(input_message_content.into());
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultDocument {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            document_url: value.data.document_url.ok_or(MissingField("document_url"))?,
+            mime_type: value.data.mime_type.ok_or(MissingField("mime_type"))?,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            description: value.data.description,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+            thumb_url: value.data.thumb_url,
+            thumb_width: value.data.thumb_width,
+            thumb_height: value.data.thumb_height,
+        })
+    }
+}
+
+impl From<InlineQueryResultDocument> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultDocument) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                title: Some(value.title),
+                document_url: Some(value.document_url),
+                mime_type: Some(value.mime_type),
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                description: value.description,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                thumb_url: value.thumb_url,
+                thumb_width: value.thumb_width,
+                thumb_height: value.thumb_height,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Document,
+        }
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedDocument {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            document_file_id: value.data.document_file_id.ok_or(MissingField("document_file_id"))?,
+            description: value.data.description,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultCachedDocument> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultCachedDocument) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                title: Some(value.title),
+                document_file_id: Some(value.document_file_id),
+                description: value.description,
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::CachedDocument,
+        }
     }
 }

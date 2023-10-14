@@ -40,7 +40,7 @@ mod sticker_set;
 mod supergroup;
 
 /// Chat
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum Chat {

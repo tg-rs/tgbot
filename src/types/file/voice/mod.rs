@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     form::Form,
@@ -22,7 +22,7 @@ use crate::{
 mod tests;
 
 /// Voice note
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Voice {
     /// Identifier for this file, which can be used to download or reuse the file
     pub file_id: String,
@@ -34,8 +34,10 @@ pub struct Voice {
     /// Duration of the audio in seconds as defined by sender
     pub duration: Integer,
     /// MIME type of the file as defined by sender
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// File size
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
 }
 

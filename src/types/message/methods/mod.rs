@@ -777,9 +777,13 @@ impl Method for SendMessage {
 /// before live_period expires
 #[derive(Clone, Debug, Serialize)]
 pub struct StopMessageLiveLocation {
+    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<ChatId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     message_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     inline_message_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 

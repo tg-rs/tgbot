@@ -1,6 +1,6 @@
 use std::ops::Not;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{PollKind, True};
 
@@ -8,17 +8,17 @@ use crate::types::{PollKind, True};
 mod tests;
 
 /// Custom keyboard with reply options
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ReplyKeyboardMarkup {
     /// Array of button rows, each represented by an Array of KeyboardButton objects
     keyboard: Vec<Vec<KeyboardButton>>,
-    #[serde(skip_serializing_if = "Not::not")]
+    #[serde(default, skip_serializing_if = "Not::not")]
     resize_keyboard: bool,
-    #[serde(skip_serializing_if = "Not::not")]
+    #[serde(default, skip_serializing_if = "Not::not")]
     one_time_keyboard: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     input_field_placeholder: Option<String>,
-    #[serde(skip_serializing_if = "Not::not")]
+    #[serde(default, skip_serializing_if = "Not::not")]
     selective: bool,
 }
 
@@ -69,7 +69,7 @@ impl ReplyKeyboardMarkup {
     /// Targets:
     ///
     /// 1. users that are @mentioned in the text of the Message object;
-    /// 2. if the bot's message is a reply (has reply_to_message_id), sender of the original message
+    /// 2. if the bot message is a reply (has reply_to_message_id), sender of the original message
     ///
     /// Example: A user requests to change the bot‘s language,
     /// bot replies to the request with a keyboard to select the new language
@@ -93,7 +93,7 @@ impl From<Vec<Vec<KeyboardButton>>> for ReplyKeyboardMarkup {
 }
 
 /// Button of the reply keyboard
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct KeyboardButton {
     text: String,
     #[serde(flatten)]
@@ -101,7 +101,7 @@ pub struct KeyboardButton {
     kind: Option<KeyboardButtonKind>,
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[allow(clippy::enum_variant_names)]
 #[serde(rename_all = "snake_case")]
 enum KeyboardButtonKind {
@@ -159,7 +159,7 @@ impl KeyboardButton {
 
 /// This object represents type of a poll which is allowed to be created
 /// and sent when the corresponding button is pressed
-#[derive(Clone, Copy, Debug, Serialize, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct KeyboardButtonPollType {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "type")]
@@ -183,7 +183,7 @@ impl From<Option<PollKind>> for KeyboardButtonPollType {
 /// (user will not be able to summon this keyboard;
 /// if you want to hide the keyboard from sight but keep it accessible,
 /// use one_time_keyboard in ReplyKeyboardMarkup)
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ReplyKeyboardRemove {
     remove_keyboard: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -206,7 +206,7 @@ impl ReplyKeyboardRemove {
     /// Targets:
     ///
     /// 1. users that are @mentioned in the text of the Message object;
-    /// 2. if the bot's message is a reply (has reply_to_message_id), sender of the original message
+    /// 2. if the bot message is a reply (has reply_to_message_id), sender of the original message
     ///
     /// Example: A user votes in a poll, bot returns confirmation message
     /// in reply to the vote and removes the keyboard for that user,

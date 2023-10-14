@@ -1,6 +1,6 @@
 use std::{error::Error, fmt};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 pub use self::{force_reply::*, inline_keyboard::*, reply_keyboard::*};
@@ -10,7 +10,7 @@ mod inline_keyboard;
 mod reply_keyboard;
 
 /// Reply markup
-#[derive(Clone, Debug, derive_more::From, Serialize)]
+#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(untagged)]
 pub enum ReplyMarkup {
     /// Force reply

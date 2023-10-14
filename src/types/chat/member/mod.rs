@@ -1,4 +1,4 @@
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
     method::Method,
@@ -10,7 +10,7 @@ use crate::{
 mod tests;
 
 /// Information about one member of a chat
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "status")]
 pub enum ChatMember {
@@ -21,10 +21,12 @@ pub enum ChatMember {
     /// Kicked user
     Kicked(ChatMemberKicked),
     /// Left user
-    #[serde(deserialize_with = "deserialize_chat_user")]
+    #[serde(deserialize_with = "ChatMemberUser::deserialize_value")]
+    #[serde(serialize_with = "ChatMemberUser::serialize_value")]
     Left(User),
     /// Chat member
-    #[serde(deserialize_with = "deserialize_chat_user")]
+    #[serde(deserialize_with = "ChatMemberUser::deserialize_value")]
+    #[serde(serialize_with = "ChatMemberUser::serialize_value")]
     Member(User),
     /// Restricted user
     Restricted(ChatMemberRestricted),
@@ -55,20 +57,30 @@ impl ChatMember {
     }
 }
 
-fn deserialize_chat_user<'de, D>(deserializer: D) -> Result<User, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    #[derive(Deserialize)]
-    struct Inner {
-        user: User,
+#[derive(Deserialize, Serialize)]
+struct ChatMemberUser {
+    user: User,
+}
+
+impl ChatMemberUser {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<User, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        ChatMemberUser::deserialize(deserializer).map(|x| x.user)
     }
 
-    Inner::deserialize(deserializer).map(|x| x.user)
+    fn serialize_value<S>(value: &User, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let value = ChatMemberUser { user: value.clone() };
+        value.serialize(serializer)
+    }
 }
 
 /// Chat admin
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberAdministrator {
     /// Information about the user
     pub user: User,
@@ -102,29 +114,34 @@ pub struct ChatMemberAdministrator {
     pub can_invite_users: bool,
     /// True, if the administrator can post
     /// in the channel; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
     /// True, if the administrator can edit messages
     /// of other users and can pin messages; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_messages: Option<bool>,
     /// True, if the administrator can pin messages; groups and supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
     /// Custom title for this user
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_title: Option<String>,
 }
 
 /// Represents a chat member that owns the chat and has all administrator privileges.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberCreator {
     /// Information about the user
     pub user: User,
     /// True, if the user's presence in the chat is hidden
     pub is_anonymous: bool,
     /// Custom title for this user
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_title: Option<String>,
 }
 
 /// Kicked user
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberKicked {
     /// Information about the user
     pub user: User,
@@ -133,7 +150,7 @@ pub struct ChatMemberKicked {
 }
 
 /// Restricted user
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberRestricted {
     /// Information about the user
     pub user: User,
@@ -146,6 +163,7 @@ pub struct ChatMemberRestricted {
     /// True, if the user allowed to invite new users to the chat
     pub can_invite_users: bool,
     /// True, if the user allowed to pin messages; groups and supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
     /// True, if the user can send
     /// text messages, contacts, locations and venues
@@ -168,7 +186,7 @@ pub struct ChatMemberRestricted {
 }
 
 /// Represents changes in the status of a chat member
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChatMemberUpdated {
     /// Chat the user belongs to
     pub chat: Chat,
@@ -182,6 +200,7 @@ pub struct ChatMemberUpdated {
     pub new_chat_member: ChatMember,
     /// Chat invite link, which was used by the user to join the chat;
     /// for joining by invite link events only.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<ChatInviteLink>,
 }
 

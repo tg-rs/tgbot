@@ -1,6 +1,6 @@
 use std::{error::Error, fmt};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 use crate::{
@@ -101,7 +101,7 @@ pub enum InputMediaKind {
     Video(InputMediaVideo),
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "lowercase")]
 enum InputMediaData {

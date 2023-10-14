@@ -1,6 +1,13 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer, ParseMode, TextEntities, TextEntity};
+
+use super::raw::{
+    RawInlineQueryResult,
+    RawInlineQueryResultData,
+    RawInlineQueryResultDataError::{self, MissingField},
+    RawInlineQueryResultKind,
+};
 
 #[cfg(test)]
 mod tests;
@@ -12,7 +19,7 @@ mod tests;
 /// the specified content instead of the video
 /// If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube),
 /// you must replace its content using input_message_content
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultVideo {
     id: String,
     video_url: String,
@@ -147,7 +154,7 @@ impl InlineQueryResultVideo {
 /// By default, this video file will be sent by the user with an optional caption
 /// Alternatively, you can use input_message_content
 /// to send a message with the specified content instead of the video
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedVideo {
     id: String,
     video_file_id: String,
@@ -236,5 +243,91 @@ impl InlineQueryResultCachedVideo {
     pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
         self.input_message_content = Some(input_message_content.into());
         self
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultVideo {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            video_url: value.data.video_url.ok_or(MissingField("video_url"))?,
+            mime_type: value.data.mime_type.ok_or(MissingField("mime_type"))?,
+            thumb_url: value.data.thumb_url.ok_or(MissingField("thumb_url"))?,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            caption: value.data.caption,
+            parse_mode: value.data.parse_mode,
+            video_width: value.data.video_width,
+            video_height: value.data.video_height,
+            video_duration: value.data.video_duration,
+            description: value.data.description,
+            caption_entities: value.data.caption_entities,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultVideo> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultVideo) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                video_url: Some(value.video_url),
+                mime_type: Some(value.mime_type),
+                thumb_url: Some(value.thumb_url),
+                title: Some(value.title),
+                caption: value.caption,
+                parse_mode: value.parse_mode,
+                video_width: value.video_width,
+                video_height: value.video_height,
+                video_duration: value.video_duration,
+                description: value.description,
+                caption_entities: value.caption_entities,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::Video,
+        }
+    }
+}
+
+impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedVideo {
+    type Error = RawInlineQueryResultDataError;
+
+    fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
+        Ok(Self {
+            id: value.id,
+            video_file_id: value.data.video_file_id.ok_or(MissingField("video_file_id"))?,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            description: value.data.description,
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            input_message_content: value.data.input_message_content,
+        })
+    }
+}
+
+impl From<InlineQueryResultCachedVideo> for RawInlineQueryResult {
+    fn from(value: InlineQueryResultCachedVideo) -> Self {
+        Self {
+            data: RawInlineQueryResultData {
+                video_file_id: Some(value.video_file_id),
+                title: Some(value.title),
+                description: value.description,
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                input_message_content: value.input_message_content,
+                ..Default::default()
+            },
+            id: value.id,
+            kind: RawInlineQueryResultKind::CachedVideo,
+        }
     }
 }

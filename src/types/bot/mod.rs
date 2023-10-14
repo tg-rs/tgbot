@@ -12,7 +12,7 @@ use crate::{
 mod tests;
 
 /// A Bot info returned in getMe
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Bot {
     /// Unique identifier of this bot
     pub id: Integer,
@@ -21,6 +21,7 @@ pub struct Bot {
     /// Bots first name
     pub first_name: String,
     /// Bots last name
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
     /// True, if the bot can be invited to groups
     pub can_join_groups: bool,
@@ -193,7 +194,7 @@ impl Method for Close {
     }
 }
 
-/// Use this method to delete the list of the bot's commands for the given scope and user language
+/// Use this method to delete the list of the bot commands for the given scope and user language
 ///
 ///  After deletion, higher level commands will be shown to affected users
 #[derive(Clone, Debug, Default, Serialize)]
@@ -243,7 +244,7 @@ impl Method for GetMe {
     }
 }
 
-/// Use this method to get the current list of the bot's commands
+/// Use this method to get the current list of the bot commands
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotCommands {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -296,7 +297,7 @@ impl Method for LogOut {
     }
 }
 
-/// Use this method to change the list of the bot's commands
+/// Use this method to change the list of the bot commands
 #[derive(Clone, Debug, Serialize)]
 pub struct SetBotCommands {
     commands: Vec<BotCommand>,

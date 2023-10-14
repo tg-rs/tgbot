@@ -42,7 +42,7 @@ async fn longpoll() {
             "allowed_updates": []
         })))
         .with_body(
-            &serde_json::to_vec(&json!({
+            serde_json::to_vec(&json!({
                 "ok": true,
                 "result": [
                     {

@@ -80,18 +80,18 @@ impl From<RawMessageSender> for MessageSender {
     }
 }
 
-impl Into<RawMessageSender> for MessageSender {
-    fn into(self) -> RawMessageSender {
-        match self {
-            MessageSender::Chat(chat) => RawMessageSender {
+impl From<MessageSender> for RawMessageSender {
+    fn from(value: MessageSender) -> Self {
+        match value {
+            MessageSender::Chat(chat) => Self {
                 sender_chat: Some(chat),
                 from: None,
             },
-            MessageSender::User(user) => RawMessageSender {
+            MessageSender::User(user) => Self {
                 sender_chat: None,
                 from: Some(user),
             },
-            MessageSender::Unknown => RawMessageSender {
+            MessageSender::Unknown => Self {
                 sender_chat: None,
                 from: None,
             },

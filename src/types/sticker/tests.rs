@@ -155,7 +155,7 @@ fn upload_sticker_file() {
         Payload::form(
             "uploadStickerFile",
             Form::from([
-                ("user_id", FormValue::from(1).into()),
+                ("user_id", FormValue::from(1)),
                 ("png_sticker", InputFile::file_id("sticker-id").into()),
             ]),
         ),

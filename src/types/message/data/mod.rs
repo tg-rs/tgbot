@@ -238,78 +238,72 @@ impl TryFrom<RawMessageData> for MessageData {
     }
 }
 
-impl Into<RawMessageData> for MessageData {
-    fn into(self) -> RawMessageData {
-        match self {
-            MessageData::Animation(animation) => RawMessageData::Animation { animation },
-            MessageData::Audio { data: audio, caption } => RawMessageData::Audio { caption, audio },
-            MessageData::AutoDeleteTimerChanged { time } => RawMessageData::MessageAutoDeleteTimerChanged {
+impl From<MessageData> for RawMessageData {
+    fn from(value: MessageData) -> Self {
+        match value {
+            MessageData::Animation(animation) => Self::Animation { animation },
+            MessageData::Audio { data: audio, caption } => Self::Audio { caption, audio },
+            MessageData::AutoDeleteTimerChanged { time } => Self::MessageAutoDeleteTimerChanged {
                 message_auto_delete_timer_changed: RawMessageAutoDeleteTimerChanged {
                     message_auto_delete_time: time,
                 },
             },
-            MessageData::ChannelChatCreated => RawMessageData::ChannelChatCreated {
+            MessageData::ChannelChatCreated => Self::ChannelChatCreated {
                 channel_chat_created: True,
             },
-            MessageData::ConnectedWebsite(connected_website) => RawMessageData::ConnectedWebsite { connected_website },
-            MessageData::Contact(contact) => RawMessageData::Contact { contact },
-            MessageData::DeleteChatPhoto => RawMessageData::DeleteChatPhoto {
+            MessageData::ConnectedWebsite(connected_website) => Self::ConnectedWebsite { connected_website },
+            MessageData::Contact(contact) => Self::Contact { contact },
+            MessageData::DeleteChatPhoto => Self::DeleteChatPhoto {
                 delete_chat_photo: True,
             },
-            MessageData::Dice(dice) => RawMessageData::Dice { dice },
+            MessageData::Dice(dice) => Self::Dice { dice },
             MessageData::Document {
                 data: document,
                 caption,
-            } => RawMessageData::Document { caption, document },
-            MessageData::Empty => RawMessageData::Empty {},
-            MessageData::Game(game) => RawMessageData::Game { game },
-            MessageData::GroupChatCreated => RawMessageData::GroupChatCreated {
+            } => Self::Document { caption, document },
+            MessageData::Empty => Self::Empty {},
+            MessageData::Game(game) => Self::Game { game },
+            MessageData::GroupChatCreated => Self::GroupChatCreated {
                 group_chat_created: True,
             },
-            MessageData::Invoice(invoice) => RawMessageData::Invoice { invoice },
-            MessageData::LeftChatMember(left_chat_member) => RawMessageData::LeftChatMember { left_chat_member },
-            MessageData::Location(location) => RawMessageData::Location { location },
-            MessageData::MigrateFromChatId(migrate_from_chat_id) => {
-                RawMessageData::MigrateFromChatId { migrate_from_chat_id }
-            }
-            MessageData::MigrateToChatId(migrate_to_chat_id) => RawMessageData::MigrateToChatId { migrate_to_chat_id },
-            MessageData::NewChatMembers(new_chat_members) => RawMessageData::NewChatMembers { new_chat_members },
-            MessageData::NewChatPhoto(new_chat_photo) => RawMessageData::NewChatPhoto { new_chat_photo },
-            MessageData::NewChatTitle(new_chat_title) => RawMessageData::NewChatTitle { new_chat_title },
-            MessageData::PassportData(passport_data) => RawMessageData::PassportData { passport_data },
-            MessageData::PinnedMessage(pinned_message) => RawMessageData::PinnedMessage { pinned_message },
-            MessageData::Photo { caption, data: photo } => RawMessageData::Photo { caption, photo },
-            MessageData::Poll(poll) => RawMessageData::Poll { poll },
-            MessageData::ProximityAlertTriggered(proximity_alert_triggered) => {
-                RawMessageData::ProximityAlertTriggered {
-                    proximity_alert_triggered,
-                }
-            }
-            MessageData::Sticker(sticker) => RawMessageData::Sticker { sticker },
-            MessageData::SuccessfulPayment(successful_payment) => {
-                RawMessageData::SuccessfulPayment { successful_payment }
-            }
-            MessageData::SupergroupChatCreated => RawMessageData::SupergroupChatCreated {
+            MessageData::Invoice(invoice) => Self::Invoice { invoice },
+            MessageData::LeftChatMember(left_chat_member) => Self::LeftChatMember { left_chat_member },
+            MessageData::Location(location) => Self::Location { location },
+            MessageData::MigrateFromChatId(migrate_from_chat_id) => Self::MigrateFromChatId { migrate_from_chat_id },
+            MessageData::MigrateToChatId(migrate_to_chat_id) => Self::MigrateToChatId { migrate_to_chat_id },
+            MessageData::NewChatMembers(new_chat_members) => Self::NewChatMembers { new_chat_members },
+            MessageData::NewChatPhoto(new_chat_photo) => Self::NewChatPhoto { new_chat_photo },
+            MessageData::NewChatTitle(new_chat_title) => Self::NewChatTitle { new_chat_title },
+            MessageData::PassportData(passport_data) => Self::PassportData { passport_data },
+            MessageData::PinnedMessage(pinned_message) => Self::PinnedMessage { pinned_message },
+            MessageData::Photo { caption, data: photo } => Self::Photo { caption, photo },
+            MessageData::Poll(poll) => Self::Poll { poll },
+            MessageData::ProximityAlertTriggered(proximity_alert_triggered) => Self::ProximityAlertTriggered {
+                proximity_alert_triggered,
+            },
+            MessageData::Sticker(sticker) => Self::Sticker { sticker },
+            MessageData::SuccessfulPayment(successful_payment) => Self::SuccessfulPayment { successful_payment },
+            MessageData::SupergroupChatCreated => Self::SupergroupChatCreated {
                 supergroup_chat_created: True,
             },
-            MessageData::Text(text) => RawMessageData::Text {
+            MessageData::Text(text) => Self::Text {
                 text: text.data,
                 entities: text.entities,
             },
-            MessageData::Venue(venue) => RawMessageData::Venue { venue },
-            MessageData::Video { caption, data: video } => RawMessageData::Video { caption, video },
-            MessageData::VideoNote(video_note) => RawMessageData::VideoNote { video_note },
-            MessageData::Voice { caption, data: voice } => RawMessageData::Voice { caption, voice },
-            MessageData::VoiceChatScheduled { start_date } => RawMessageData::VoiceChatScheduled {
+            MessageData::Venue(venue) => Self::Venue { venue },
+            MessageData::Video { caption, data: video } => Self::Video { caption, video },
+            MessageData::VideoNote(video_note) => Self::VideoNote { video_note },
+            MessageData::Voice { caption, data: voice } => Self::Voice { caption, voice },
+            MessageData::VoiceChatScheduled { start_date } => Self::VoiceChatScheduled {
                 voice_chat_scheduled: RawVoiceChatScheduled { start_date },
             },
-            MessageData::VoiceChatStarted => RawMessageData::VoiceChatStarted {
+            MessageData::VoiceChatStarted => Self::VoiceChatStarted {
                 voice_chat_started: RawVoiceChatStarted {},
             },
-            MessageData::VoiceChatEnded { duration } => RawMessageData::VoiceChatEnded {
+            MessageData::VoiceChatEnded { duration } => Self::VoiceChatEnded {
                 voice_chat_ended: RawVoiceChatEnded { duration },
             },
-            MessageData::VoiceChatParticipantsInvited { users } => RawMessageData::VoiceChatParticipantsInvited {
+            MessageData::VoiceChatParticipantsInvited { users } => Self::VoiceChatParticipantsInvited {
                 voice_chat_participants_invited: RawVoiceChatParticipantsInvited {
                     users: if users.is_empty() { None } else { Some(users) },
                 },

@@ -1,5 +1,6 @@
-use regex::Regex;
 use std::fs::read_to_string;
+
+use regex::Regex;
 use toml::Value;
 
 fn get_crate_version() -> String {
@@ -16,7 +17,7 @@ fn readme_versions() {
     let version = get_crate_version();
     let readme = read_to_string("./README.md").expect("Failed to get README.md data");
     for pattern in &[
-        r#"https://github\.com/tg-rs/tgbot/tree/([\d\.]+)"#,
+        r"https://github\.com/tg-rs/tgbot/tree/([\d\.]+)",
         r#"tgbot\s?=\s?"([\d\.]+)""#,
     ] {
         let regex = Regex::new(pattern).expect("Can not create regex");

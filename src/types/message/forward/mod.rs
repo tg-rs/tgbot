@@ -73,20 +73,20 @@ impl From<RawForwardFrom> for ForwardFrom {
     }
 }
 
-impl Into<RawForwardFrom> for ForwardFrom {
-    fn into(self) -> RawForwardFrom {
-        match self {
-            Self::Channel {
+impl From<ForwardFrom> for RawForwardFrom {
+    fn from(value: ForwardFrom) -> Self {
+        match value {
+            ForwardFrom::Channel {
                 chat: forward_from_chat,
                 message_id: forward_from_message_id,
                 signature: forward_signature,
-            } => RawForwardFrom::Channel {
+            } => Self::Channel {
                 forward_from_chat,
                 forward_from_message_id,
                 forward_signature,
             },
-            Self::HiddenUser(forward_sender_name) => RawForwardFrom::HiddenUser { forward_sender_name },
-            Self::User(forward_from) => RawForwardFrom::User { forward_from },
+            ForwardFrom::HiddenUser(forward_sender_name) => Self::HiddenUser { forward_sender_name },
+            ForwardFrom::User(forward_from) => Self::User { forward_from },
         }
     }
 }

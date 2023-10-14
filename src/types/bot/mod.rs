@@ -234,9 +234,9 @@ impl Method for DeleteBotCommands {
 
 /// Returns basic information about the bot
 #[derive(Clone, Copy, Debug)]
-pub struct GetMe;
+pub struct GetBot;
 
-impl Method for GetMe {
+impl Method for GetBot {
     type Response = Bot;
 
     fn into_request(self) -> Request {

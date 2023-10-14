@@ -6,8 +6,8 @@ use crate::{
         BotCommandScope,
         Close,
         DeleteBotCommands,
+        GetBot,
         GetBotCommands,
-        GetMe,
         LogOut,
         SetBotCommands,
     },
@@ -120,7 +120,7 @@ fn delete_bot_commands() {
 
 #[test]
 fn get_me() {
-    assert_request_eq(ExpectedRequest::get("getMe"), GetMe);
+    assert_request_eq(ExpectedRequest::get("getMe"), GetBot);
 }
 
 #[test]

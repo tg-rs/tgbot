@@ -1,3 +1,5 @@
+pub use mime;
+
 pub use self::{
     bot::*,
     callback::*,

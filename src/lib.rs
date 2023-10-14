@@ -3,8 +3,6 @@
 #![recursion_limit = "256"]
 #![warn(missing_docs)]
 
-pub use mime;
-
 /// An HTTP client implementation
 pub mod api;
 

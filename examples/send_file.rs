@@ -6,8 +6,8 @@ use futures_util::future::BoxFuture;
 use tgbot::{
     api::Client,
     handler::{LongPoll, UpdateHandler},
-    mime,
     types::{
+        mime,
         EditMessageMedia,
         InlineKeyboardButton,
         InputFile,

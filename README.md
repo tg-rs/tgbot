@@ -29,9 +29,8 @@ Long polling:
 ```rust no_run
 use futures_util::future::BoxFuture;
 use std::env;
-use tgbot::UpdateHandler;
 use tgbot::api::Client;
-use tgbot::longpoll::LongPoll;
+use tgbot::handler::{LongPoll, UpdateHandler};
 use tgbot::types::{SendMessage, Update, UpdateKind};
 
 struct Handler {
@@ -68,7 +67,7 @@ Webhook:
 
 ```rust no_run
 use futures_util::future::BoxFuture;
-use tgbot::{UpdateHandler, types::Update, webhook};
+use tgbot::{handler::{run_server, UpdateHandler}, types::Update};
 
 struct Handler;
 
@@ -84,7 +83,7 @@ impl UpdateHandler for Handler {
 
 #[tokio::main]
 async fn main() {
-    webhook::run_server(([127, 0, 0, 1], 8080), "/", Handler).await.unwrap();
+    run_server(([127, 0, 0, 1], 8080), "/", Handler).await.unwrap();
 }
 ```
 

@@ -1,9 +1,14 @@
+use std::sync::Arc;
+
 use dotenv::dotenv;
 use futures_util::future::BoxFuture;
 use hyper::{body, header::HeaderValue, Body, Client, Method, Request, Server, StatusCode};
-use std::sync::Arc;
-use tgbot::{types::Update, webhook::WebhookServiceFactory, UpdateHandler};
 use tokio::sync::{oneshot::channel, Mutex};
+
+use tgbot::{
+    handler::{UpdateHandler, WebhookServiceFactory},
+    types::Update,
+};
 
 struct Handler {
     updates: Arc<Mutex<Vec<Update>>>,

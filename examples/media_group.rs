@@ -5,9 +5,8 @@ use futures_util::future::BoxFuture;
 
 use tgbot::{
     api::Client,
-    longpoll::LongPoll,
+    handler::{LongPoll, UpdateHandler},
     types::{InputFile, InputMediaPhoto, InputMediaVideo, MediaGroup, MediaGroupItem, SendMediaGroup, Update},
-    UpdateHandler,
 };
 
 #[derive(Clone)]

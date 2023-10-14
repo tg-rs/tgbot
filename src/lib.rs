@@ -5,18 +5,11 @@
 
 pub use mime;
 
-pub use self::handler::{SyncedUpdateHandler, UpdateHandler};
-
-mod handler;
-
 /// An HTTP client implementation
 pub mod api;
 
-/// Utilities to receive updates using long poll
-pub mod longpoll;
+/// Update handlers
+pub mod handler;
 
 /// Types and methods available in the Bot API
 pub mod types;
-
-/// Services to receive updates via webhook
-pub mod webhook;

@@ -9,7 +9,11 @@ use mockito::{mock, server_url, Matcher};
 use serde_json::json;
 use tokio::{spawn, sync::Mutex, time::sleep};
 
-use tgbot::{api::Client, longpoll::LongPoll, types::Update, UpdateHandler};
+use tgbot::{
+    api::Client,
+    handler::{LongPoll, UpdateHandler},
+    types::Update,
+};
 
 struct Handler {
     updates: Arc<Mutex<Vec<Update>>>,

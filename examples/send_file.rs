@@ -5,7 +5,7 @@ use futures_util::future::BoxFuture;
 
 use tgbot::{
     api::Client,
-    longpoll::LongPoll,
+    handler::{LongPoll, UpdateHandler},
     mime,
     types::{
         EditMessageMedia,
@@ -24,7 +24,6 @@ use tgbot::{
         Update,
         UpdateKind,
     },
-    UpdateHandler,
 };
 
 #[derive(Clone)]

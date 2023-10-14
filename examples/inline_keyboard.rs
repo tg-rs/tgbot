@@ -6,9 +6,8 @@ use serde::{Deserialize, Serialize};
 
 use tgbot::{
     api::Client,
-    longpoll::LongPoll,
+    handler::{LongPoll, UpdateHandler},
     types::{InlineKeyboardButton, Message, SendMessage, Update, UpdateKind},
-    UpdateHandler,
 };
 
 struct Handler {

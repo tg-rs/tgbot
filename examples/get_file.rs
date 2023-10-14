@@ -10,9 +10,8 @@ use tokio::{fs::File, io::AsyncWriteExt};
 
 use tgbot::{
     api::Client,
-    longpoll::LongPoll,
+    handler::{LongPoll, UpdateHandler},
     types::{Document, GetFile, MessageData, Update, UpdateKind},
-    UpdateHandler,
 };
 
 #[derive(Clone)]

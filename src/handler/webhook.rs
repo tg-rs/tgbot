@@ -9,13 +9,14 @@ use std::{
 };
 
 use bytes::Buf;
-use futures_util::future::{ok, Ready};
+use futures_util::future::{ok, BoxFuture, Ready};
 use http::Error as HttpError;
 pub use hyper::Error as HyperError;
 use hyper::{body, service::Service, Body, Method, Request, Response, Server, StatusCode};
 use log::error;
+use tokio::sync::Mutex;
 
-use crate::handler::UpdateHandler;
+use crate::{handler::UpdateHandler, types::Update};
 
 #[doc(hidden)]
 pub struct WebhookServiceFactory<H> {
@@ -152,6 +153,46 @@ impl Error for WebhookError {
     }
 }
 
+/// A wrapper for non-sync [`UpdateHandler`]
+///
+/// Useful for [`run_server`] which requires a sync handler
+///
+/// [`UpdateHandler`]: UpdateHandler
+/// [`run_server`]: run_server
+pub struct SyncedUpdateHandler<T> {
+    handler: Arc<Mutex<T>>,
+}
+
+impl<T> From<T> for SyncedUpdateHandler<T> {
+    fn from(value: T) -> Self {
+        Self::new(value)
+    }
+}
+
+impl<T> SyncedUpdateHandler<T> {
+    /// Creates a new SyncedUpdateHandler
+    pub fn new(handler: T) -> Self {
+        Self {
+            handler: Arc::new(Mutex::new(handler)),
+        }
+    }
+}
+
+impl<T> UpdateHandler for SyncedUpdateHandler<T>
+where
+    T: UpdateHandler + Send + 'static,
+{
+    type Future = BoxFuture<'static, ()>;
+
+    fn handle(&self, update: Update) -> Self::Future {
+        let handler = Arc::clone(&self.handler);
+        Box::pin(async move {
+            let handler = handler.lock().await;
+            handler.handle(update);
+        })
+    }
+}
+
 /// Starts a server for webhook
 ///
 /// # Arguments
@@ -170,4 +211,33 @@ where
     let path = path.into();
     let server = Server::bind(&address).serve(WebhookServiceFactory::new(path, handler));
     server.await
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn assert_send<T: Send>() {}
+
+    fn assert_sync<T: Sync>() {}
+
+    #[test]
+    fn synced_is_sync() {
+        // pointer is neither Send nor Sync
+        struct NonSync(*mut ());
+
+        unsafe impl Send for NonSync {}
+
+        impl UpdateHandler for NonSync {
+            type Future = BoxFuture<'static, ()>;
+
+            fn handle(&self, _update: Update) -> Self::Future {
+                Box::pin(async {})
+            }
+        }
+
+        assert_send::<NonSync>();
+        assert_send::<SyncedUpdateHandler<NonSync>>();
+        assert_sync::<SyncedUpdateHandler<NonSync>>();
+    }
 }

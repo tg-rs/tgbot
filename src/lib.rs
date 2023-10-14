@@ -1,6 +1,5 @@
 //! A Telegram Bot API client library
 #![doc = include_str!("../README.md")]
-#![recursion_limit = "256"]
 #![warn(missing_docs)]
 
 /// An HTTP client implementation

@@ -22,7 +22,7 @@ fn input_media_form() {
     )
     .unwrap()
     .into();
-    assert!(data.fields.contains_key("media"));
+    assert!(data.has_field("media"));
 
     let data: Form = InputMedia::with_thumb(
         InputFileReader::from(Cursor::new("animation-file-data")),
@@ -31,9 +31,9 @@ fn input_media_form() {
     )
     .unwrap()
     .into();
-    assert!(data.fields.contains_key("tgbot_im_file"));
-    assert!(data.fields.contains_key("tgbot_im_thumb"));
-    assert!(data.fields.contains_key("media"));
+    assert!(data.has_field("tgbot_im_file"));
+    assert!(data.has_field("tgbot_im_thumb"));
+    assert!(data.has_field("media"));
 }
 
 #[test]

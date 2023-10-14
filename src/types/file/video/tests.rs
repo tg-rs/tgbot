@@ -121,17 +121,20 @@ fn send_video_caption_entities_vs_parse_mode() {
     let mut method = SendVideo::new(1, InputFile::file_id("file-id"));
 
     method = method.parse_mode(ParseMode::Markdown);
-    assert_eq!(method.form.fields["parse_mode"].get_text().unwrap(), "Markdown");
+    assert_eq!(
+        method.form.get_field("parse_mode").unwrap().get_text().unwrap(),
+        "Markdown"
+    );
 
     method = method.caption_entities(vec![TextEntity::bold(0..10)]).unwrap();
-    assert!(!method.form.fields.contains_key("parse_mode"));
+    assert!(!method.form.has_field("parse_mode"));
 
-    let caption_entities = method.form.fields["caption_entities"].get_text().unwrap();
+    let caption_entities = method.form.get_field("caption_entities").unwrap().get_text().unwrap();
     assert_eq!(
         serde_json::from_str::<serde_json::Value>(caption_entities).unwrap(),
         serde_json::json!([{"type": "bold", "offset":0, "length": 10}])
     );
 
     method = method.parse_mode(ParseMode::Markdown);
-    assert!(!method.form.fields.contains_key("caption_entities"));
+    assert!(!method.form.has_field("caption_entities"));
 }

@@ -80,12 +80,22 @@ impl From<InputFile> for FormValue {
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct Form {
-    pub(crate) fields: HashMap<String, FormValue>,
+    fields: HashMap<String, FormValue>,
 }
 
 impl Form {
     pub(crate) fn new() -> Self {
         Self { fields: HashMap::new() }
+    }
+
+    #[cfg(test)]
+    pub(crate) fn get_field(&self, name: &str) -> Option<&FormValue> {
+        self.fields.get(name)
+    }
+
+    #[cfg(test)]
+    pub(crate) fn has_field(&self, name: &str) -> bool {
+        self.fields.contains_key(name)
     }
 
     pub(crate) fn insert_field<N, V>(&mut self, name: N, value: V)

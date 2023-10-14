@@ -1,10 +1,8 @@
-use serde_json::json;
-
 use crate::types::{Message, MessageData, TextEntities, TextEntity, TextEntityPosition, User};
 
 #[test]
-fn deserialize_message_entities() {
-    let input = json!({
+fn deserialize() {
+    let input = serde_json::json!({
         "message_id": 1, "date": 0,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
         "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
@@ -91,14 +89,14 @@ fn deserialize_message_entities() {
 }
 
 #[test]
-fn deserialize_bad_entities() {
+fn deserialize_failed() {
     for (input, error) in [
         (
-            json!([{"type": "text_link", "offset": 0, "length": 2}]),
+            serde_json::json!([{"type": "text_link", "offset": 0, "length": 2}]),
             "URL is required for text_link entity",
         ),
         (
-            json!([{"type": "text_mention", "offset": 0, "length": 2}]),
+            serde_json::json!([{"type": "text_mention", "offset": 0, "length": 2}]),
             "user is required for text_mention entity",
         ),
     ] {
@@ -108,7 +106,7 @@ fn deserialize_bad_entities() {
 }
 
 #[test]
-fn serialize_text_entity() {
+fn serialize() {
     for (entity, expected) in vec![
         (
             TextEntity::Bold(TextEntityPosition { offset: 0, length: 10 }),

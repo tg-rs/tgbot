@@ -1,4 +1,4 @@
-use crate::types::Message;
+use crate::types::{Message, Text};
 
 #[test]
 fn get_bot_commands() {
@@ -22,4 +22,12 @@ fn get_bot_commands() {
     assert!(commands[1].bot_name.is_none());
     assert_eq!(commands[2].command, "/command3");
     assert_eq!(commands[2].bot_name.as_ref().unwrap(), "botname");
+}
+
+#[test]
+fn traits() {
+    let text = Text::from(String::from("test"));
+    assert_eq!(text, String::from("test"));
+    assert_eq!(text, *"test");
+    assert_eq!(text.as_ref(), "test");
 }

@@ -1,22 +1,20 @@
 use std::{
     convert::TryFrom,
+    error::Error,
+    fmt,
     ops::{Index, IndexMut, Range},
 };
 
 use serde::{Deserialize, Serialize};
+use serde_json::Error as JsonError;
 
 use crate::types::User;
-
-use super::{
-    error::TextEntityError,
-    raw::{RawTextEntity, RawTextEntityKind},
-};
 
 #[cfg(test)]
 mod tests;
 
 /// A collection of text entities
-#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(into = "Vec<TextEntity>", try_from = "Vec<RawTextEntity>")]
 pub struct TextEntities {
     items: Vec<TextEntity>,
@@ -111,7 +109,7 @@ pub enum TextEntity {
     BotCommand(TextEntityPosition),
     /// Cashtag
     Cashtag(TextEntityPosition),
-    /// Monowidth string
+    /// Monospace string
     Code(TextEntityPosition),
     /// E-Mail
     Email(TextEntityPosition),
@@ -123,7 +121,7 @@ pub enum TextEntity {
     Mention(TextEntityPosition),
     /// Phone number
     PhoneNumber(TextEntityPosition),
-    /// Monowidth block
+    /// Monospace block
     Pre {
         /// Position of entity in text
         position: TextEntityPosition,
@@ -225,6 +223,76 @@ impl TextEntity {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+struct RawTextEntity {
+    offset: u32,
+    length: u32,
+    #[serde(flatten)]
+    kind: RawTextEntityKind,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+#[serde(tag = "type")]
+enum RawTextEntityKind {
+    Bold,
+    BotCommand,
+    Cashtag,
+    Code,
+    Email,
+    Hashtag,
+    Italic,
+    Mention,
+    PhoneNumber,
+    Pre {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        language: Option<String>,
+    },
+    Spoiler,
+    Strikethrough,
+    TextLink {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        url: Option<String>,
+    },
+    TextMention {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        user: Option<User>,
+    },
+    Underline,
+    Url,
+}
+
+/// An error when parsing/serializing entities
+#[derive(Debug)]
+pub enum TextEntityError {
+    /// URL is required for text_link entity
+    NoUrl,
+    /// User is required for text_mention entity
+    NoUser,
+    /// Failed to serialize entities
+    Serialize(JsonError),
+}
+
+impl Error for TextEntityError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        match self {
+            Self::Serialize(err) => Some(err),
+            _ => None,
+        }
+    }
+}
+
+impl fmt::Display for TextEntityError {
+    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
+        use self::TextEntityError::*;
+        match self {
+            NoUrl => write!(out, "URL is required for text_link entity"),
+            NoUser => write!(out, "user is required for text_mention entity"),
+            Serialize(err) => write!(out, "failed to serialize text entities: {}", err),
+        }
+    }
+}
+
 impl TryFrom<RawTextEntity> for TextEntity {
     type Error = TextEntityError;
 
@@ -300,7 +368,7 @@ impl From<TextEntity> for RawTextEntity {
 pub struct TextEntityBotCommand {
     /// Actual command
     pub command: String,
-    /// Bot's username
+    /// Bot username
     pub bot_name: Option<String>,
 }
 

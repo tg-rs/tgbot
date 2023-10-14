@@ -2,17 +2,15 @@ use std::str::EncodeUtf16;
 
 use serde::{Deserialize, Serialize};
 
-pub use self::{entities::*, error::*};
+pub use self::entities::*;
 
 #[cfg(test)]
 mod tests;
 
 mod entities;
-mod error;
-mod raw;
 
 /// Text with entities
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Text {
     /// The actual UTF-8 text
     pub data: String,

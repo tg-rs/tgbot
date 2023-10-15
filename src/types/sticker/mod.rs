@@ -173,6 +173,9 @@ pub struct Sticker {
     /// For premium regular stickers, premium animation for the sticker
     #[serde(skip_serializing_if = "Option::is_none")]
     pub premium_animation: Option<File>,
+    /// For custom emoji stickers, unique identifier of the custom emoji
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_emoji_id: Option<String>,
 }
 
 /// Get information about custom emoji stickers by their identifiers

@@ -49,6 +49,7 @@ fn sticker() {
                 file_size: None,
                 file_path: None,
             }),
+            custom_emoji_id: Some(String::from("emoji-id")),
         },
         serde_json::json!({
             "file_id": "test file id",
@@ -76,7 +77,8 @@ fn sticker() {
             "premium_animation": {
                 "file_id": "file-id",
                 "file_unique_id": "file-unique-id"
-            }
+            },
+            "custom_emoji_id": "emoji-id"
         }),
     );
     assert_json_eq(
@@ -93,6 +95,7 @@ fn sticker() {
             is_animated: false,
             is_video: false,
             premium_animation: None,
+            custom_emoji_id: None,
         },
         serde_json::json!({
             "file_id": "test file id",

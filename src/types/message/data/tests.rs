@@ -29,6 +29,7 @@ use crate::types::{
     Video,
     VideoNote,
     Voice,
+    WebAppData,
 };
 
 fn create_message_struct() -> Message {
@@ -896,5 +897,21 @@ fn voice_chat_started() {
 
     expected_struct.data = MessageData::VoiceChatStarted;
     expected_value["voice_chat_started"] = serde_json::json!({});
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn web_app_data() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::WebAppData(WebAppData {
+        data: String::from("web-app-data"),
+        button_text: String::from("web-app-button-text"),
+    });
+    expected_value["web_app_data"] = serde_json::json!({
+        "data": "web-app-data",
+        "button_text": "web-app-button-text"
+    });
     assert_json_eq(expected_struct, expected_value);
 }

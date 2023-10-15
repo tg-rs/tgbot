@@ -2,7 +2,7 @@ use std::ops::Not;
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::{PollKind, True};
+use crate::types::{PollKind, True, WebAppInfo};
 
 #[cfg(test)]
 mod tests;
@@ -108,6 +108,7 @@ enum KeyboardButtonKind {
     RequestContact(True),
     RequestLocation(True),
     RequestPoll(KeyboardButtonPollType),
+    WebApp(WebAppInfo),
 }
 
 impl KeyboardButton {
@@ -153,6 +154,16 @@ impl KeyboardButton {
         T: Into<KeyboardButtonPollType>,
     {
         self.kind = Some(KeyboardButtonKind::RequestPoll(button_type.into()));
+        self
+    }
+
+    /// The described Web App will be launched when the button is pressed
+    ///
+    /// Available in private chats only.
+    ///
+    /// The Web App will be able to send a “web_app_data” service message.
+    pub fn web_app(mut self, web_app_info: WebAppInfo) -> Self {
+        self.kind = Some(KeyboardButtonKind::WebApp(web_app_info));
         self
     }
 }

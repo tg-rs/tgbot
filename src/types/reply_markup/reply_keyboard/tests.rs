@@ -5,6 +5,7 @@ use crate::types::{
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     ReplyMarkup,
+    WebAppInfo,
 };
 
 #[test]
@@ -16,6 +17,9 @@ fn reply_keyboard_markup() {
         KeyboardButton::new("request quiz").request_poll(PollKind::Quiz),
         KeyboardButton::new("request regular poll").request_poll(PollKind::Regular),
         KeyboardButton::new("request any poll").request_poll(None),
+        KeyboardButton::new("web app").web_app(WebAppInfo {
+            url: String::from("https://example.com"),
+        }),
     ];
 
     assert_json_eq(
@@ -35,6 +39,7 @@ fn reply_keyboard_markup() {
                     {"text": "request quiz", "request_poll": {"type": "quiz"}},
                     {"text": "request regular poll", "request_poll": {"type": "regular"}},
                     {"text": "request any poll", "request_poll": {}},
+                    {"text": "web app", "web_app": {"url": "https://example.com"}}
                 ]
             ],
             "resize_keyboard": true,
@@ -55,6 +60,7 @@ fn reply_keyboard_markup() {
                     {"text": "request quiz", "request_poll": {"type": "quiz"}},
                     {"text": "request regular poll", "request_poll": {"type": "regular"}},
                     {"text": "request any poll", "request_poll": {}},
+                    {"text": "web app", "web_app": {"url": "https://example.com"}}
                 ]
             ]
         }),

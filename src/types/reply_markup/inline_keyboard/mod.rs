@@ -3,6 +3,8 @@ use std::{convert::TryFrom, error::Error, fmt};
 use serde::{Deserialize, Serialize};
 use serde_json::{Error as JsonError, Value as JsonValue};
 
+use crate::types::WebAppInfo;
+
 #[cfg(test)]
 mod tests;
 
@@ -73,6 +75,11 @@ impl InlineKeyboardButton {
     /// HTTP or tg:// url to be opened when button is pressed
     pub fn with_url<T: Into<String>, D: Into<String>>(text: T, url: D) -> Self {
         Self::new(text, InlineKeyboardButtonKind::Url(url.into()))
+    }
+
+    /// Description of the Web App that will be launched when the user presses the button
+    pub fn with_web_app<T: Into<String>>(text: T, web_app_info: WebAppInfo) -> Self {
+        Self::new(text, InlineKeyboardButtonKind::WebApp(web_app_info))
     }
 
     /// Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes
@@ -159,6 +166,12 @@ impl InlineKeyboardButton {
 pub enum InlineKeyboardButtonKind {
     /// HTTP or tg:// url to be opened when button is pressed
     Url(String),
+    /// Description of the Web App that will be launched when the user presses the button
+    ///
+    /// The Web App will be able to send an arbitrary message on behalf
+    /// of the user using the method answerWebAppQuery.
+    /// Available only in private chats between a user and the bot.
+    WebApp(WebAppInfo),
     /// Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes
     CallbackData(String),
     /// Pressing the button will prompt the user to select one of their chats,
@@ -202,6 +215,8 @@ struct InlineKeyboardButtonKindRaw {
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    web_app: Option<WebAppInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     callback_data: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     switch_inline_query: Option<String>,
@@ -221,6 +236,7 @@ impl From<InlineKeyboardButtonKind> for InlineKeyboardButtonKindRaw {
         let mut raw = Self::default();
         match kind {
             Url(data) => raw.url = Some(data),
+            WebApp(data) => raw.web_app = Some(data),
             CallbackData(data) => raw.callback_data = Some(data),
             SwitchInlineQuery(data) => raw.switch_inline_query = Some(data),
             SwitchInlineQueryCurrentChat(data) => raw.switch_inline_query_current_chat = Some(data),
@@ -238,6 +254,8 @@ impl TryFrom<InlineKeyboardButtonKindRaw> for InlineKeyboardButtonKind {
     fn try_from(kind: InlineKeyboardButtonKindRaw) -> Result<Self, Self::Error> {
         Ok(if let Some(data) = kind.url {
             Self::Url(data)
+        } else if let Some(data) = kind.web_app {
+            Self::WebApp(data)
         } else if let Some(data) = kind.callback_data {
             Self::CallbackData(data)
         } else if let Some(data) = kind.switch_inline_query {

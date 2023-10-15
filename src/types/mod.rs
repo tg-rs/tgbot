@@ -24,6 +24,7 @@ pub use self::{
     update::*,
     user::*,
     venue::*,
+    web_app::*,
     webhook::*,
 };
 
@@ -50,6 +51,7 @@ mod text;
 mod update;
 mod user;
 mod venue;
+mod web_app;
 mod webhook;
 
 #[cfg(test)]

@@ -28,6 +28,7 @@ use crate::types::{
     Video,
     VideoNote,
     Voice,
+    WebAppData,
 };
 
 #[cfg(test)]
@@ -169,6 +170,8 @@ pub enum MessageData {
         /// New members that were invited to the voice chat
         users: Vec<User>,
     },
+    /// Service message: data sent by a Web App
+    WebAppData(WebAppData),
 }
 
 impl TryFrom<RawMessageData> for MessageData {
@@ -234,6 +237,7 @@ impl TryFrom<RawMessageData> for MessageData {
             } => MessageData::VoiceChatParticipantsInvited {
                 users: voice_chat_participants_invited.users.unwrap_or_default(),
             },
+            RawMessageData::WebAppData { web_app_data } => MessageData::WebAppData(web_app_data),
         })
     }
 }
@@ -308,6 +312,7 @@ impl From<MessageData> for RawMessageData {
                     users: if users.is_empty() { None } else { Some(users) },
                 },
             },
+            MessageData::WebAppData(web_app_data) => Self::WebAppData { web_app_data },
         }
     }
 }
@@ -489,6 +494,9 @@ enum RawMessageData {
     VoiceChatStarted {
         #[allow(dead_code)]
         voice_chat_started: RawVoiceChatStarted,
+    },
+    WebAppData {
+        web_app_data: WebAppData,
     },
     Empty {}, // must be last because all variants below won't be deserialized
 }

@@ -1,6 +1,13 @@
 use serde::Serialize;
 
-use crate::types::{tests::assert_json_eq, InlineKeyboardButton, InlineKeyboardMarkup, LoginUrl, ReplyMarkup};
+use crate::types::{
+    tests::assert_json_eq,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    LoginUrl,
+    ReplyMarkup,
+    WebAppInfo,
+};
 
 #[derive(Serialize)]
 struct CallbackData {
@@ -15,6 +22,12 @@ fn inline_keyboard() {
     assert_json_eq(
         ReplyMarkup::from(vec![vec![
             InlineKeyboardButton::with_url("url", "tg://user?id=1"),
+            InlineKeyboardButton::with_web_app(
+                "web app",
+                WebAppInfo {
+                    url: String::from("https://example.com"),
+                },
+            ),
             InlineKeyboardButton::with_callback_data("cd", "cd"),
             InlineKeyboardButton::with_callback_data_struct("cd", &callback_data).unwrap(),
             InlineKeyboardButton::with_switch_inline_query("siq", "siq"),
@@ -26,14 +39,15 @@ fn inline_keyboard() {
         serde_json::json!({
             "inline_keyboard": [
                 [
-                    {"text":"url","url":"tg://user?id=1"},
-                    {"text":"cd","callback_data":"cd"},
-                    {"text":"cd","callback_data":"{\"value\":\"cd-struct\"}"},
-                    {"text":"siq","switch_inline_query":"siq"},
-                    {"text":"siq_cc","switch_inline_query_current_chat":"siq_cc"},
-                    {"text":"cg","callback_game":{}},
-                    {"text":"pay","pay":true},
-                    {"text":"login url","login_url":{"url":"http://example.com"}}
+                    {"text": "url", "url": "tg://user?id=1"},
+                    {"text": "web app", "web_app": {"url": "https://example.com"}},
+                    {"text": "cd", "callback_data": "cd"},
+                    {"text": "cd","callback_data": "{\"value\":\"cd-struct\"}"},
+                    {"text": "siq","switch_inline_query": "siq"},
+                    {"text": "siq_cc","switch_inline_query_current_chat": "siq_cc"},
+                    {"text": "cg","callback_game": {}},
+                    {"text": "pay","pay": true},
+                    {"text": "login url","login_url": {"url": "http://example.com"}}
                 ]
             ]
         }),

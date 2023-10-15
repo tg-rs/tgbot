@@ -1,3 +1,5 @@
+use std::{fmt, fmt::Formatter};
+
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -20,6 +22,21 @@ pub enum StickerType {
     Mask,
     /// Regular sticker
     Regular,
+}
+
+impl fmt::Display for StickerType {
+    fn fmt(&self, out: &mut Formatter<'_>) -> fmt::Result {
+        use self::StickerType::*;
+        write!(
+            out,
+            "{}",
+            match self {
+                CustomEmoji => "custom_emoji",
+                Mask => "mask",
+                Regular => "regular",
+            },
+        )
+    }
 }
 
 /// Sticker set
@@ -205,6 +222,14 @@ impl CreateNewStickerSet {
     pub fn mask_position(mut self, value: MaskPosition) -> Result<Self, MaskPositionError> {
         self.form.insert_field("mask_position", value.serialize()?);
         Ok(self)
+    }
+
+    /// Type of stickers in the set, pass “regular”, “mask”, or “custom_emoji”
+    ///
+    /// By default, a regular sticker set is created.
+    pub fn sticker_type(mut self, value: StickerType) -> Self {
+        self.form.insert_field("sticker_type", value);
+        self
     }
 }
 

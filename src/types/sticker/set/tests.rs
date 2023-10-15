@@ -147,6 +147,7 @@ fn create_new_sticker_set() {
                 ("emojis", "^_^".into()),
                 ("mask_position", mask_position.serialize().unwrap().into()),
                 ("contains_masks", true.into()),
+                ("sticker_type", "regular".into()),
             ]),
         ),
         CreateNewStickerSet::new(
@@ -158,7 +159,8 @@ fn create_new_sticker_set() {
         )
         .contains_masks(true)
         .mask_position(mask_position)
-        .unwrap(),
+        .unwrap()
+        .sticker_type(StickerType::Regular),
     );
     assert_payload_eq(
         Payload::form(

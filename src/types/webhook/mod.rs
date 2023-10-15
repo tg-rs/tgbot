@@ -103,6 +103,8 @@ pub struct SetWebhook {
     allowed_updates: Option<HashSet<AllowedUpdate>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     drop_pending_updates: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    secret_token: Option<String>,
 }
 
 impl SetWebhook {
@@ -120,6 +122,7 @@ impl SetWebhook {
             max_connections: None,
             allowed_updates: None,
             drop_pending_updates: None,
+            secret_token: None,
         }
     }
 
@@ -177,6 +180,19 @@ impl SetWebhook {
     /// Pass true to drop all pending updates
     pub fn drop_pending_updates(mut self, drop_pending_updates: bool) -> Self {
         self.drop_pending_updates = Some(drop_pending_updates);
+        self
+    }
+
+    /// A secret token to be sent in a header
+    /// “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters
+    ///
+    /// Only characters A-Z, a-z, 0-9, _ and - are allowed.
+    /// The header is useful to ensure that the request comes from a webhook set by you.
+    pub fn secret_token<T>(mut self, secret_token: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.secret_token = Some(secret_token.into());
         self
     }
 }

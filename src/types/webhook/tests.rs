@@ -93,7 +93,8 @@ fn set_webhook() {
                 "ip_address": "127.0.0.1",
                 "max_connections": 10,
                 "drop_pending_updates": true,
-                "allowed_updates": ["message"]
+                "allowed_updates": ["message"],
+                "secret_token": "secret-token"
             }),
         ),
         SetWebhook::new("url")
@@ -102,6 +103,7 @@ fn set_webhook() {
             .max_connections(10)
             .allowed_updates(updates)
             .add_allowed_update(AllowedUpdate::Message)
-            .drop_pending_updates(true),
+            .drop_pending_updates(true)
+            .secret_token("secret-token"),
     );
 }

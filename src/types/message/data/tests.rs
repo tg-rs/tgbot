@@ -45,6 +45,7 @@ fn create_message_struct() -> Message {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         }),
         chat: Chat::Supergroup(SupergroupChat {
             id: 1,
@@ -344,6 +345,7 @@ fn left_chat_member() {
         username: None,
         language_code: None,
         is_premium: None,
+        added_to_attachment_menu: None,
     });
     expected_value["left_chat_member"] = serde_json::json!({
         "id": 1234,
@@ -406,6 +408,7 @@ fn new_chat_members() {
         username: None,
         language_code: None,
         is_premium: None,
+        added_to_attachment_menu: None,
     }]);
     expected_value["new_chat_members"] = serde_json::json!(
         [
@@ -600,6 +603,7 @@ fn proximity_alert_triggered() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         watcher: User {
             id: 2,
@@ -609,6 +613,7 @@ fn proximity_alert_triggered() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         distance: 100,
     });
@@ -875,6 +880,7 @@ fn video_chat_participants_invited() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         }],
     };
     expected_value["video_chat_participants_invited"] = serde_json::json!({

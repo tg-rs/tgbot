@@ -68,6 +68,7 @@ fn deserialize() {
                         username: None,
                         language_code: None,
                         is_premium: None,
+                        added_to_attachment_menu: None,
                     },
                 },
                 TextEntity::Url(TextEntityPosition { offset: 96, length: 3 }),
@@ -243,6 +244,7 @@ fn serialize() {
                     username: None,
                     language_code: None,
                     is_premium: None,
+                    added_to_attachment_menu: None,
                 },
             },
             serde_json::json!({

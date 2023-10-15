@@ -39,6 +39,7 @@ fn supergroup() {
                 username: None,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             }),
             chat: Chat::Supergroup(SupergroupChat {
                 id: 1,

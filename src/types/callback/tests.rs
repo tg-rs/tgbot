@@ -31,6 +31,7 @@ fn callback_query() {
         username: None,
         language_code: None,
         is_premium: None,
+        added_to_attachment_menu: None,
     };
 
     let expected_struct = CallbackQuery {
@@ -117,6 +118,7 @@ fn callback_query() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         message: None,
         inline_message_id: None,

@@ -25,6 +25,7 @@ fn create_message_struct() -> Message {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         }),
         chat: Chat::Supergroup(SupergroupChat {
             id: 1,
@@ -94,6 +95,7 @@ fn forward_from_user() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         }),
         date: 0,
     });

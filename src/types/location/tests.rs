@@ -51,6 +51,7 @@ fn proximity_alert_triggered() {
                 username: None,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             },
             watcher: User {
                 id: 2,
@@ -60,6 +61,7 @@ fn proximity_alert_triggered() {
                 username: None,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             },
             distance: 10,
         },

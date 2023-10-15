@@ -119,6 +119,7 @@ fn poll_answer() {
                 is_bot: false,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             },
             option_ids: vec![0],
         },

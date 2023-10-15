@@ -35,6 +35,7 @@ fn chat_member_admin() {
             username: Some(String::from("john_doe")),
             language_code: Some(String::from("RU")),
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         custom_title: Some(String::from("Alpha")),
         is_anonymous: false,
@@ -88,6 +89,7 @@ fn chat_member_admin() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         custom_title: None,
         is_anonymous: false,
@@ -138,6 +140,7 @@ fn chat_member_creator() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         is_anonymous: false,
         custom_title: Some(String::from("Alpha")),
@@ -167,6 +170,7 @@ fn chat_member_creator() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         is_anonymous: false,
         custom_title: None,
@@ -198,6 +202,7 @@ fn chat_member_kicked() {
             username: Some(String::from("john_doe")),
             language_code: Some(String::from("RU")),
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         until_date: 0,
     });
@@ -230,6 +235,7 @@ fn chat_member_left() {
         username: None,
         language_code: None,
         is_premium: None,
+        added_to_attachment_menu: None,
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(!expected_struct.is_member());
@@ -256,6 +262,7 @@ fn chat_member() {
         username: None,
         language_code: None,
         is_premium: None,
+        added_to_attachment_menu: None,
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
@@ -283,6 +290,7 @@ fn chat_member_restricted() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         until_date: 0,
         can_change_info: true,
@@ -327,6 +335,7 @@ fn chat_member_restricted() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         until_date: 0,
         can_change_info: true,
@@ -385,6 +394,7 @@ fn chat_member_updated() {
                 username: None,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             },
             date: 0,
             old_chat_member: ChatMember::Member(User {
@@ -395,6 +405,7 @@ fn chat_member_updated() {
                 username: None,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             }),
             new_chat_member: ChatMember::Kicked(ChatMemberKicked {
                 user: User {
@@ -405,6 +416,7 @@ fn chat_member_updated() {
                     username: None,
                     language_code: None,
                     is_premium: None,
+                    added_to_attachment_menu: None,
                 },
                 until_date: 0,
             }),
@@ -418,6 +430,7 @@ fn chat_member_updated() {
                     username: None,
                     language_code: None,
                     is_premium: None,
+                    added_to_attachment_menu: None,
                 },
                 creates_join_request: false,
                 is_primary: true,
@@ -490,6 +503,7 @@ fn chat_member_updated() {
                 username: None,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             },
             date: 0,
             old_chat_member: ChatMember::Member(User {
@@ -500,6 +514,7 @@ fn chat_member_updated() {
                 username: None,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             }),
             new_chat_member: ChatMember::Kicked(ChatMemberKicked {
                 user: User {
@@ -510,6 +525,7 @@ fn chat_member_updated() {
                     username: None,
                     language_code: None,
                     is_premium: None,
+                    added_to_attachment_menu: None,
                 },
                 until_date: 0,
             }),

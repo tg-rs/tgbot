@@ -16,6 +16,7 @@ fn user() {
             username: Some(String::from("zelenskiy")),
             language_code: Some(String::from("UA")),
             is_premium: Some(true),
+            added_to_attachment_menu: Some(true),
         },
         serde_json::json!({
             "id": 1,
@@ -25,6 +26,7 @@ fn user() {
             "username": "zelenskiy",
             "language_code": "UA",
             "is_premium": true,
+            "added_to_attachment_menu": true,
         }),
     );
     assert_json_eq(
@@ -36,6 +38,7 @@ fn user() {
             username: None,
             language_code: None,
             is_premium: None,
+            added_to_attachment_menu: None,
         },
         serde_json::json!({
             "id": 1,
@@ -55,6 +58,7 @@ fn user_get_full_name() {
         username: Some(String::from("zelenskiy")),
         language_code: Some(String::from("UA")),
         is_premium: None,
+        added_to_attachment_menu: None,
     };
     assert_eq!(full.get_full_name(), "Vladimir Zelenskiy");
 
@@ -66,6 +70,7 @@ fn user_get_full_name() {
         username: None,
         language_code: None,
         is_premium: None,
+        added_to_attachment_menu: None,
     };
     assert_eq!(partial.get_full_name(), "Vladimir");
 }
@@ -80,6 +85,7 @@ fn user_get_link() {
         username: None,
         language_code: None,
         is_premium: None,
+        added_to_attachment_menu: None,
     };
     assert_eq!(user.get_link(), "tg://user?id=1")
 }
@@ -94,6 +100,7 @@ fn user_get_mention() {
         is_bot: false,
         language_code: None,
         is_premium: None,
+        added_to_attachment_menu: None,
     };
     assert_eq!(
         user.get_mention(ParseMode::Html).unwrap(),

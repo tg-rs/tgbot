@@ -35,6 +35,7 @@ fn group_chat() {
                 username: None,
                 language_code: None,
                 is_premium: None,
+                added_to_attachment_menu: None,
             }),
             chat: Chat::Group(GroupChat {
                 id: 1,

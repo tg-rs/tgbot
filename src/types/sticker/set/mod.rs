@@ -212,12 +212,6 @@ impl CreateNewStickerSet {
         CreateNewStickerSet { form }
     }
 
-    /// Pass True, if a set of mask stickers should be created
-    pub fn contains_masks(mut self, value: bool) -> Self {
-        self.form.insert_field("contains_masks", value);
-        self
-    }
-
     /// Position where the mask should be placed on faces
     pub fn mask_position(mut self, value: MaskPosition) -> Result<Self, MaskPositionError> {
         self.form.insert_field("mask_position", value.serialize()?);

@@ -146,7 +146,6 @@ fn create_new_sticker_set() {
                 ("png_sticker", InputFile::file_id("sticker-id").into()),
                 ("emojis", "^_^".into()),
                 ("mask_position", mask_position.serialize().unwrap().into()),
-                ("contains_masks", true.into()),
                 ("sticker_type", "regular".into()),
             ]),
         ),
@@ -157,7 +156,6 @@ fn create_new_sticker_set() {
             NewSticker::png(InputFile::file_id("sticker-id")),
             "^_^",
         )
-        .contains_masks(true)
         .mask_position(mask_position)
         .unwrap()
         .sticker_type(StickerType::Regular),

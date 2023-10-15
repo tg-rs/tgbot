@@ -2,6 +2,7 @@ use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
     types::{
         tests::assert_json_eq,
+        File,
         ForceReply,
         InputFile,
         MaskPosition,
@@ -41,6 +42,12 @@ fn sticker() {
             file_size: Some(1234),
             is_animated: false,
             is_video: false,
+            premium_animation: Some(File {
+                file_id: String::from("file-id"),
+                file_unique_id: String::from("file-unique-id"),
+                file_size: None,
+                file_path: None,
+            }),
         },
         serde_json::json!({
             "file_id": "test file id",
@@ -64,7 +71,11 @@ fn sticker() {
             },
             "file_size": 1234,
             "is_animated": false,
-            "is_video": false
+            "is_video": false,
+            "premium_animation": {
+                "file_id": "file-id",
+                "file_unique_id": "file-unique-id"
+            }
         }),
     );
     assert_json_eq(
@@ -80,6 +91,7 @@ fn sticker() {
             file_size: None,
             is_animated: false,
             is_video: false,
+            premium_animation: None,
         },
         serde_json::json!({
             "file_id": "test file id",

@@ -170,6 +170,9 @@ pub struct Sticker {
     pub is_animated: bool,
     /// True, if the sticker is a video sticker
     pub is_video: bool,
+    /// For premium regular stickers, premium animation for the sticker
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub premium_animation: Option<File>,
 }
 
 /// Upload a .png file with a sticker for later use in createNewStickerSet and addStickerToSet methods

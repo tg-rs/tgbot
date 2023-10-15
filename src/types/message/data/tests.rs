@@ -645,6 +645,7 @@ fn sticker() {
         file_size: None,
         is_animated: true,
         is_video: false,
+        premium_animation: None,
     });
     expected_value["sticker"] = serde_json::json!({
         "file_id": "sticker-id",

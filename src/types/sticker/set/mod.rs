@@ -10,6 +10,18 @@ use super::NewStickerKind;
 #[cfg(test)]
 mod tests;
 
+/// Type of stickers in the set
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StickerType {
+    /// Sticker contains a custom emoji
+    CustomEmoji,
+    /// Sticker contains a mask
+    Mask,
+    /// Regular sticker
+    Regular,
+}
+
 /// Sticker set
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct StickerSet {
@@ -21,6 +33,8 @@ pub struct StickerSet {
     pub contains_masks: bool,
     /// List of all set stickers
     pub stickers: Vec<Sticker>,
+    /// Type of stickers in the set
+    pub sticker_type: StickerType,
     /// True, if the sticker set contains animated stickers
     pub is_animated: bool,
     /// True, if the sticker set contains video stickers

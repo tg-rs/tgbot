@@ -14,8 +14,20 @@ use crate::{
         SetStickerPositionInSet,
         SetStickerSetThumb,
         StickerSet,
+        StickerType,
     },
 };
+
+#[test]
+fn sticker_type() {
+    for (expected_struct, expected_value) in [
+        (StickerType::CustomEmoji, serde_json::json!("custom_emoji")),
+        (StickerType::Mask, serde_json::json!("mask")),
+        (StickerType::Regular, serde_json::json!("regular")),
+    ] {
+        assert_json_eq(expected_struct, expected_value);
+    }
+}
 
 #[test]
 fn sticker_set() {
@@ -25,6 +37,7 @@ fn sticker_set() {
             title: String::from("test"),
             contains_masks: false,
             stickers: vec![],
+            sticker_type: StickerType::Regular,
             is_animated: false,
             is_video: false,
             thumb: Some(PhotoSize {
@@ -40,6 +53,7 @@ fn sticker_set() {
             "title": "test",
             "contains_masks": false,
             "stickers": [],
+            "sticker_type": "regular",
             "is_animated": false,
             "is_video": false,
             "thumb": {

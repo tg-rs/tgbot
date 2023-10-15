@@ -844,21 +844,21 @@ fn voice() {
 }
 
 #[test]
-fn voice_chat_ended() {
+fn video_chat_ended() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::VoiceChatEnded { duration: 100 };
-    expected_value["voice_chat_ended"] = serde_json::json!({"duration": 100});
+    expected_struct.data = MessageData::VideoChatEnded { duration: 100 };
+    expected_value["video_chat_ended"] = serde_json::json!({"duration": 100});
     assert_json_eq(expected_struct, expected_value);
 }
 
 #[test]
-fn voice_chat_participants_invited() {
+fn video_chat_participants_invited() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::VoiceChatParticipantsInvited {
+    expected_struct.data = MessageData::VideoChatParticipantsInvited {
         users: vec![User {
             id: 1,
             is_bot: false,
@@ -868,7 +868,7 @@ fn voice_chat_participants_invited() {
             language_code: None,
         }],
     };
-    expected_value["voice_chat_participants_invited"] = serde_json::json!({
+    expected_value["video_chat_participants_invited"] = serde_json::json!({
         "users": [
             {
                 "id": 1,
@@ -881,22 +881,22 @@ fn voice_chat_participants_invited() {
 }
 
 #[test]
-fn voice_chat_scheduled() {
+fn video_chat_scheduled() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::VoiceChatScheduled { start_date: 100 };
-    expected_value["voice_chat_scheduled"] = serde_json::json!({"start_date": 100});
+    expected_struct.data = MessageData::VideoChatScheduled { start_date: 100 };
+    expected_value["video_chat_scheduled"] = serde_json::json!({"start_date": 100});
     assert_json_eq(expected_struct, expected_value);
 }
 
 #[test]
-fn voice_chat_started() {
+fn video_chat_started() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::VoiceChatStarted;
-    expected_value["voice_chat_started"] = serde_json::json!({});
+    expected_struct.data = MessageData::VideoChatStarted;
+    expected_value["video_chat_started"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
 

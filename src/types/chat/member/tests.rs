@@ -46,7 +46,7 @@ fn chat_member_admin() {
         can_restrict_members: true,
         can_pin_messages: Some(false),
         can_promote_members: true,
-        can_manage_voice_chats: false,
+        can_manage_video_chats: false,
         can_manage_chat: true,
     });
     assert_eq!(expected_struct.get_user().id, 1);
@@ -74,7 +74,7 @@ fn chat_member_admin() {
             "can_restrict_members": true,
             "can_pin_messages": false,
             "can_promote_members": true,
-            "can_manage_voice_chats": false,
+            "can_manage_video_chats": false,
             "can_manage_chat": true
         }),
     );
@@ -98,7 +98,7 @@ fn chat_member_admin() {
         can_restrict_members: true,
         can_pin_messages: None,
         can_promote_members: true,
-        can_manage_voice_chats: false,
+        can_manage_video_chats: false,
         can_manage_chat: true,
     });
     assert_eq!(expected_struct.get_user().id, 1);
@@ -119,7 +119,7 @@ fn chat_member_admin() {
             "can_invite_users": false,
             "can_restrict_members": true,
             "can_promote_members": true,
-            "can_manage_voice_chats": false,
+            "can_manage_video_chats": false,
             "can_manage_chat": true
         }),
     );
@@ -613,7 +613,7 @@ fn promote_chat_member() {
                 "can_edit_messages": true,
                 "can_invite_users": true,
                 "can_manage_chat": true,
-                "can_manage_voice_chats": true,
+                "can_manage_video_chats": true,
                 "can_pin_messages": true,
                 "can_post_messages": true,
                 "can_promote_members": true,
@@ -634,7 +634,7 @@ fn promote_chat_member() {
                 "can_edit_messages": false,
                 "can_invite_users": false,
                 "can_manage_chat": false,
-                "can_manage_voice_chats": false,
+                "can_manage_video_chats": false,
                 "can_pin_messages": false,
                 "can_post_messages": false,
                 "can_promote_members": false,
@@ -655,7 +655,7 @@ fn promote_chat_member() {
                 "can_edit_messages": true,
                 "can_invite_users": true,
                 "can_manage_chat": false,
-                "can_manage_voice_chats": true,
+                "can_manage_video_chats": true,
                 "can_pin_messages": true,
                 "can_post_messages": false,
                 "can_promote_members": false,
@@ -669,7 +669,7 @@ fn promote_chat_member() {
             .can_delete_messages(false)
             .can_invite_users(true)
             .can_manage_chat(false)
-            .can_manage_voice_chats(true)
+            .can_manage_video_chats(true)
             .can_pin_messages(true)
             .can_post_messages(false)
             .can_promote_members(false)

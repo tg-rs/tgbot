@@ -95,8 +95,8 @@ pub struct ChatMemberAdministrator {
     pub can_manage_chat: bool,
     /// True, if the administrator can delete messages of other users
     pub can_delete_messages: bool,
-    /// True, if the administrator can manage voice chats
-    pub can_manage_voice_chats: bool,
+    /// True, if the administrator can manage video chats
+    pub can_manage_video_chats: bool,
     /// True, if the administrator can restrict, ban or unban chat members
     pub can_restrict_members: bool,
     /// True, if the administrator can
@@ -374,7 +374,7 @@ pub struct PromoteChatMember {
     #[serde(skip_serializing_if = "Option::is_none")]
     can_manage_chat: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    can_manage_voice_chats: Option<bool>,
+    can_manage_video_chats: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_pin_messages: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -402,7 +402,7 @@ impl PromoteChatMember {
             can_edit_messages: None,
             can_invite_users: None,
             can_manage_chat: None,
-            can_manage_voice_chats: None,
+            can_manage_video_chats: None,
             can_pin_messages: None,
             can_post_messages: None,
             can_promote_members: None,
@@ -418,7 +418,7 @@ impl PromoteChatMember {
         self.can_edit_messages = Some(true);
         self.can_invite_users = Some(true);
         self.can_manage_chat = Some(true);
-        self.can_manage_voice_chats = Some(true);
+        self.can_manage_video_chats = Some(true);
         self.can_pin_messages = Some(true);
         self.can_post_messages = Some(true);
         self.can_promote_members = Some(true);
@@ -434,7 +434,7 @@ impl PromoteChatMember {
         self.can_edit_messages = Some(false);
         self.can_invite_users = Some(false);
         self.can_manage_chat = Some(false);
-        self.can_manage_voice_chats = Some(false);
+        self.can_manage_video_chats = Some(false);
         self.can_pin_messages = Some(false);
         self.can_post_messages = Some(false);
         self.can_promote_members = Some(false);
@@ -483,9 +483,9 @@ impl PromoteChatMember {
         self
     }
 
-    /// Administrator can manage voice chats, supergroups only
-    pub fn can_manage_voice_chats(mut self, can_manage_voice_chats: bool) -> Self {
-        self.can_manage_voice_chats = Some(can_manage_voice_chats);
+    /// Administrator can manage video chats, supergroups only
+    pub fn can_manage_video_chats(mut self, can_manage_video_chats: bool) -> Self {
+        self.can_manage_video_chats = Some(can_manage_video_chats);
         self
     }
 

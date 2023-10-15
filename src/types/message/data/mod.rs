@@ -153,20 +153,20 @@ pub enum MessageData {
         data: Voice,
     },
     /// A service message about a voice chat scheduled in the chat
-    VoiceChatScheduled {
+    VideoChatScheduled {
         /// Point in time (Unix timestamp) when the voice chat
         /// is supposed to be started by a chat administrator
         start_date: Integer,
     },
     /// A service message about a voice chat started in the chat
-    VoiceChatStarted,
+    VideoChatStarted,
     /// A service message about a voice chat ended in the chat
-    VoiceChatEnded {
+    VideoChatEnded {
         /// Voice chat duration; in seconds
         duration: Integer,
     },
     /// A service message about new members invited to a voice chat
-    VoiceChatParticipantsInvited {
+    VideoChatParticipantsInvited {
         /// New members that were invited to the voice chat
         users: Vec<User>,
     },
@@ -225,17 +225,17 @@ impl TryFrom<RawMessageData> for MessageData {
             RawMessageData::Video { caption, video: data } => MessageData::Video { caption, data },
             RawMessageData::VideoNote { video_note } => MessageData::VideoNote(video_note),
             RawMessageData::Voice { caption, voice: data } => MessageData::Voice { caption, data },
-            RawMessageData::VoiceChatScheduled { voice_chat_scheduled } => MessageData::VoiceChatScheduled {
-                start_date: voice_chat_scheduled.start_date,
+            RawMessageData::VideoChatScheduled { video_chat_scheduled } => MessageData::VideoChatScheduled {
+                start_date: video_chat_scheduled.start_date,
             },
-            RawMessageData::VoiceChatStarted { .. } => MessageData::VoiceChatStarted,
-            RawMessageData::VoiceChatEnded { voice_chat_ended } => MessageData::VoiceChatEnded {
-                duration: voice_chat_ended.duration,
+            RawMessageData::VideoChatStarted { .. } => MessageData::VideoChatStarted,
+            RawMessageData::VideoChatEnded { video_chat_ended } => MessageData::VideoChatEnded {
+                duration: video_chat_ended.duration,
             },
-            RawMessageData::VoiceChatParticipantsInvited {
-                voice_chat_participants_invited,
-            } => MessageData::VoiceChatParticipantsInvited {
-                users: voice_chat_participants_invited.users.unwrap_or_default(),
+            RawMessageData::VideoChatParticipantsInvited {
+                video_chat_participants_invited,
+            } => MessageData::VideoChatParticipantsInvited {
+                users: video_chat_participants_invited.users.unwrap_or_default(),
             },
             RawMessageData::WebAppData { web_app_data } => MessageData::WebAppData(web_app_data),
         })
@@ -298,17 +298,17 @@ impl From<MessageData> for RawMessageData {
             MessageData::Video { caption, data: video } => Self::Video { caption, video },
             MessageData::VideoNote(video_note) => Self::VideoNote { video_note },
             MessageData::Voice { caption, data: voice } => Self::Voice { caption, voice },
-            MessageData::VoiceChatScheduled { start_date } => Self::VoiceChatScheduled {
-                voice_chat_scheduled: RawVoiceChatScheduled { start_date },
+            MessageData::VideoChatScheduled { start_date } => Self::VideoChatScheduled {
+                video_chat_scheduled: RawVideoChatScheduled { start_date },
             },
-            MessageData::VoiceChatStarted => Self::VoiceChatStarted {
-                voice_chat_started: RawVoiceChatStarted {},
+            MessageData::VideoChatStarted => Self::VideoChatStarted {
+                video_chat_started: RawVideoChatStarted {},
             },
-            MessageData::VoiceChatEnded { duration } => Self::VoiceChatEnded {
-                voice_chat_ended: RawVoiceChatEnded { duration },
+            MessageData::VideoChatEnded { duration } => Self::VideoChatEnded {
+                video_chat_ended: RawVideoChatEnded { duration },
             },
-            MessageData::VoiceChatParticipantsInvited { users } => Self::VoiceChatParticipantsInvited {
-                voice_chat_participants_invited: RawVoiceChatParticipantsInvited {
+            MessageData::VideoChatParticipantsInvited { users } => Self::VideoChatParticipantsInvited {
+                video_chat_participants_invited: RawVideoChatParticipantsInvited {
                     users: if users.is_empty() { None } else { Some(users) },
                 },
             },
@@ -482,18 +482,18 @@ enum RawMessageData {
         caption: Option<Text>,
         voice: Voice,
     },
-    VoiceChatScheduled {
-        voice_chat_scheduled: RawVoiceChatScheduled,
+    VideoChatScheduled {
+        video_chat_scheduled: RawVideoChatScheduled,
     },
-    VoiceChatEnded {
-        voice_chat_ended: RawVoiceChatEnded,
+    VideoChatEnded {
+        video_chat_ended: RawVideoChatEnded,
     },
-    VoiceChatParticipantsInvited {
-        voice_chat_participants_invited: RawVoiceChatParticipantsInvited,
+    VideoChatParticipantsInvited {
+        video_chat_participants_invited: RawVideoChatParticipantsInvited,
     },
-    VoiceChatStarted {
+    VideoChatStarted {
         #[allow(dead_code)]
-        voice_chat_started: RawVoiceChatStarted,
+        video_chat_started: RawVideoChatStarted,
     },
     WebAppData {
         web_app_data: WebAppData,
@@ -507,23 +507,23 @@ struct RawMessageAutoDeleteTimerChanged {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct RawVoiceChatScheduled {
+struct RawVideoChatScheduled {
     start_date: Integer,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct RawVoiceChatEnded {
+struct RawVideoChatEnded {
     duration: Integer,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct RawVoiceChatParticipantsInvited {
+struct RawVideoChatParticipantsInvited {
     #[serde(skip_serializing_if = "Option::is_none")]
     users: Option<Vec<User>>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-struct RawVoiceChatStarted {}
+struct RawVideoChatStarted {}
 
 /// A message data error when parsing message data
 #[derive(Debug)]

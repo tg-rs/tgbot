@@ -48,6 +48,7 @@ fn private_chat() {
                 pinned_message: None,
                 has_private_forwards: None,
                 message_auto_delete_time: None,
+                has_restricted_voice_and_video_messages: None,
             }),
             author_signature: None,
             has_protected_content: false,
@@ -64,6 +65,7 @@ fn private_chat() {
         })),
         has_private_forwards: Some(true),
         message_auto_delete_time: Some(86400),
+        has_restricted_voice_and_video_messages: Some(true),
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "john_doe");
@@ -105,7 +107,8 @@ fn private_chat() {
                 "is_automatic_forward": false,
             },
             "has_private_forwards": true,
-            "message_auto_delete_time": 86400
+            "message_auto_delete_time": 86400,
+            "has_restricted_voice_and_video_messages": true
         }),
     );
     let expected_struct = Chat::Private(PrivateChat {
@@ -118,6 +121,7 @@ fn private_chat() {
         pinned_message: None,
         has_private_forwards: None,
         message_auto_delete_time: None,
+        has_restricted_voice_and_video_messages: None,
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());

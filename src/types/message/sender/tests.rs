@@ -134,6 +134,7 @@ fn private_chat() {
         pinned_message: None,
         has_private_forwards: None,
         message_auto_delete_time: None,
+        has_restricted_voice_and_video_messages: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.sender = MessageSender::User(User {

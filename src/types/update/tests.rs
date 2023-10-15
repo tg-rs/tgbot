@@ -445,6 +445,7 @@ fn edited_message() {
                 photo: None,
                 pinned_message: None,
                 username: Some(String::from("john_doe")),
+                has_restricted_voice_and_video_messages: None,
             }),
             data: MessageData::Text(Text {
                 data: String::from("Edited text"),
@@ -579,6 +580,7 @@ fn message() {
                 pinned_message: None,
                 has_private_forwards: None,
                 message_auto_delete_time: None,
+                has_restricted_voice_and_video_messages: None,
             }),
             author_signature: None,
             has_protected_content: false,

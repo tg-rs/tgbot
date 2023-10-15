@@ -45,4 +45,9 @@ pub struct PrivateChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_auto_delete_time: Option<Integer>,
+    /// True, if the privacy settings of the other party
+    /// restrict sending voice and video note messages in the private chat.
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_restricted_voice_and_video_messages: Option<bool>,
 }

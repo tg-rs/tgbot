@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{ChatId, Integer},
+    types::{ChatAdministratorRights, ChatId, Integer},
 };
 
 #[cfg(test)]
@@ -279,6 +279,32 @@ impl Method for GetBotCommands {
     }
 }
 
+/// Get the current default administrator rights of the bot
+#[derive(Clone, Copy, Debug, Default, Serialize)]
+pub struct GetBotDefaultAdministratorRights {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    for_channels: Option<bool>,
+}
+
+impl GetBotDefaultAdministratorRights {
+    /// Pass True to get default administrator rights of the bot in channels
+    ///
+    /// Otherwise, default administrator rights of the bot
+    /// for groups and supergroups will be returned
+    pub fn for_channels(mut self, for_channels: bool) -> Self {
+        self.for_channels = Some(for_channels);
+        self
+    }
+}
+
+impl Method for GetBotDefaultAdministratorRights {
+    type Response = ChatAdministratorRights;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getMyDefaultAdministratorRights", self)
+    }
+}
+
 /// Log out from the cloud Bot API
 ///
 /// You must log out the bot before running it locally,
@@ -346,5 +372,45 @@ impl Method for SetBotCommands {
 
     fn into_payload(self) -> Payload {
         Payload::json("setMyCommands", self)
+    }
+}
+
+/// Change the default administrator rights requested by the bot
+/// when it's added as an administrator to groups or channels
+///
+/// These rights will be suggested to users,
+/// but they are free to modify the list before adding the bot
+#[derive(Clone, Copy, Debug, Default, Serialize)]
+pub struct SetBotDefaultAdministratorRights {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rights: Option<ChatAdministratorRights>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    for_channels: Option<bool>,
+}
+
+impl SetBotDefaultAdministratorRights {
+    /// An object describing new default administrator rights
+    ///
+    /// If not specified, the default administrator rights will be cleared
+    pub fn rights(mut self, rights: ChatAdministratorRights) -> Self {
+        self.rights = Some(rights);
+        self
+    }
+
+    /// Pass True to change the default administrator rights of the bot in channels
+    ///
+    /// Otherwise, the default administrator rights of the bot
+    /// for groups and supergroups will be changed
+    pub fn for_channels(mut self, for_channels: bool) -> Self {
+        self.for_channels = Some(for_channels);
+        self
+    }
+}
+
+impl Method for SetBotDefaultAdministratorRights {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setMyDefaultAdministratorRights", self)
     }
 }

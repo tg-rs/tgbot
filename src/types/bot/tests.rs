@@ -5,12 +5,15 @@ use crate::{
         Bot,
         BotCommand,
         BotCommandScope,
+        ChatAdministratorRights,
         Close,
         DeleteBotCommands,
         GetBot,
         GetBotCommands,
+        GetBotDefaultAdministratorRights,
         LogOut,
         SetBotCommands,
+        SetBotDefaultAdministratorRights,
     },
 };
 
@@ -140,6 +143,24 @@ fn get_bot_commands() {
 }
 
 #[test]
+fn get_bot_default_administrator_rights() {
+    let method = GetBotDefaultAdministratorRights::default();
+    assert_payload_eq(
+        Payload::json("getMyDefaultAdministratorRights", serde_json::json!({})),
+        method,
+    );
+    assert_payload_eq(
+        Payload::json(
+            "getMyDefaultAdministratorRights",
+            serde_json::json!({
+                "for_channels": true
+            }),
+        ),
+        method.for_channels(true),
+    );
+}
+
+#[test]
 fn log_out() {
     assert_payload_eq(Payload::empty("logOut"), LogOut);
 }
@@ -178,5 +199,60 @@ fn set_bot_commands() {
             }),
         ),
         method.scope(BotCommandScope::AllPrivateChats).language_code("ru"),
+    );
+}
+
+#[test]
+fn set_bot_default_administrator_rights() {
+    let method = SetBotDefaultAdministratorRights::default();
+    assert_payload_eq(
+        Payload::json("setMyDefaultAdministratorRights", serde_json::json!({})),
+        method,
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setMyDefaultAdministratorRights",
+            serde_json::json!({
+                "rights": {
+                    "is_anonymous": false,
+                    "can_manage_chat": false,
+                    "can_delete_messages": false,
+                    "can_manage_video_chats": false,
+                    "can_restrict_members": false,
+                    "can_promote_members": false,
+                    "can_change_info": false,
+                    "can_invite_users": false,
+                }
+            }),
+        ),
+        method.rights(ChatAdministratorRights::default()),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setMyDefaultAdministratorRights",
+            serde_json::json!({
+                "for_channels": true
+            }),
+        ),
+        method.for_channels(true),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setMyDefaultAdministratorRights",
+            serde_json::json!({
+                "rights": {
+                    "is_anonymous": false,
+                    "can_manage_chat": false,
+                    "can_delete_messages": false,
+                    "can_manage_video_chats": false,
+                    "can_restrict_members": false,
+                    "can_promote_members": false,
+                    "can_change_info": false,
+                    "can_invite_users": false,
+                },
+                "for_channels": true
+            }),
+        ),
+        method.rights(ChatAdministratorRights::default()).for_channels(true),
     );
 }

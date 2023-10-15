@@ -122,6 +122,10 @@ pub struct ChatMemberAdministrator {
     /// True, if the administrator can pin messages; groups and supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
+    /// True, if the user is allowed to
+    /// create, rename, close, and reopen forum topics; supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_topics: Option<bool>,
     /// Custom title for this user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_title: Option<String>,
@@ -180,6 +184,8 @@ pub struct ChatMemberRestricted {
     /// True, if user may add web page previews
     /// to his messages, implies can_send_media_messages
     pub can_add_web_page_previews: bool,
+    /// True, if the user is allowed to create forum topics
+    pub can_manage_topics: bool,
     /// Date when restrictions will be lifted for this user, unix time
     pub until_date: Integer,
 }

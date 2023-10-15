@@ -80,7 +80,8 @@ fn chat_permissions() {
             .with_add_web_page_previews(true)
             .with_change_info(false)
             .with_invite_users(true)
-            .with_pin_messages(false),
+            .with_pin_messages(false)
+            .with_manage_topics(true),
         serde_json::json!({
             "can_send_messages": true,
             "can_send_media_messages": false,
@@ -90,6 +91,7 @@ fn chat_permissions() {
             "can_change_info": false,
             "can_invite_users": true,
             "can_pin_messages": false,
+            "can_manage_topics": true,
         }),
     );
     assert_json_eq(ChatPermissions::default(), serde_json::json!({}));
@@ -104,6 +106,7 @@ fn chat_permissions() {
             "can_change_info": true,
             "can_invite_users": true,
             "can_pin_messages": true,
+            "can_manage_topics": true,
         }),
     );
     assert_json_eq(
@@ -117,6 +120,7 @@ fn chat_permissions() {
             "can_change_info": false,
             "can_invite_users": false,
             "can_pin_messages": false,
+            "can_manage_topics": false,
         }),
     );
 }

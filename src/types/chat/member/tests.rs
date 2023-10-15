@@ -50,6 +50,7 @@ fn chat_member_admin() {
         can_promote_members: true,
         can_manage_video_chats: false,
         can_manage_chat: true,
+        can_manage_topics: Some(true),
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
@@ -77,7 +78,8 @@ fn chat_member_admin() {
             "can_pin_messages": false,
             "can_promote_members": true,
             "can_manage_video_chats": false,
-            "can_manage_chat": true
+            "can_manage_chat": true,
+            "can_manage_topics": true
         }),
     );
     let expected_struct = ChatMember::Administrator(ChatMemberAdministrator {
@@ -104,6 +106,7 @@ fn chat_member_admin() {
         can_promote_members: true,
         can_manage_video_chats: false,
         can_manage_chat: true,
+        can_manage_topics: None,
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
@@ -124,7 +127,7 @@ fn chat_member_admin() {
             "can_restrict_members": true,
             "can_promote_members": true,
             "can_manage_video_chats": false,
-            "can_manage_chat": true
+            "can_manage_chat": true,
         }),
     );
 }
@@ -301,6 +304,7 @@ fn chat_member_restricted() {
         can_send_media_messages: false,
         can_send_other_messages: true,
         can_add_web_page_previews: false,
+        can_manage_topics: false,
         is_member: true,
     });
     assert_eq!(expected_struct.get_user().id, 1);
@@ -323,6 +327,7 @@ fn chat_member_restricted() {
             "can_send_media_messages": false,
             "can_send_other_messages": true,
             "can_add_web_page_previews": false,
+            "can_manage_topics": false,
             "is_member": true
         }),
     );
@@ -347,6 +352,7 @@ fn chat_member_restricted() {
         can_send_other_messages: true,
         can_add_web_page_previews: false,
         is_member: false,
+        can_manage_topics: false,
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(!expected_struct.is_member());
@@ -367,6 +373,7 @@ fn chat_member_restricted() {
             "can_send_media_messages": false,
             "can_send_other_messages": true,
             "can_add_web_page_previews": false,
+            "can_manage_topics": false,
             "is_member": false
         }),
     );
@@ -761,6 +768,7 @@ fn restrict_chat_member() {
                     "can_change_info": true,
                     "can_invite_users": true,
                     "can_pin_messages": true,
+                    "can_manage_topics": true,
                 }
             }),
         ),
@@ -782,6 +790,7 @@ fn restrict_chat_member() {
                     "can_change_info": true,
                     "can_invite_users": true,
                     "can_pin_messages": true,
+                    "can_manage_topics": true,
                 }
             }),
         ),

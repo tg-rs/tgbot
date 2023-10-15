@@ -87,6 +87,7 @@ fn supergroup() {
             can_change_info: Some(true),
             can_invite_users: Some(true),
             can_pin_messages: Some(true),
+            can_manage_topics: None,
         }),
         slow_mode_delay: Some(10),
         message_auto_delete_time: Some(86400),

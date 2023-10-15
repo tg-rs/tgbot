@@ -163,6 +163,11 @@ pub struct ChatPermissions {
     /// Ignored in public supergroups
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
+    /// True, if the user is allowed to create forum topics.
+    ///
+    /// If omitted defaults to the value of can_pin_messages
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_topics: Option<bool>,
 }
 
 impl ChatPermissions {
@@ -177,6 +182,7 @@ impl ChatPermissions {
             can_change_info: Some(false),
             can_invite_users: Some(false),
             can_pin_messages: Some(false),
+            can_manage_topics: Some(false),
         }
     }
 
@@ -191,6 +197,7 @@ impl ChatPermissions {
             can_change_info: Some(true),
             can_invite_users: Some(true),
             can_pin_messages: Some(true),
+            can_manage_topics: Some(true),
         }
     }
 
@@ -239,6 +246,12 @@ impl ChatPermissions {
     /// Permission to pin messages
     pub fn with_pin_messages(mut self, flag: bool) -> Self {
         self.can_pin_messages = Some(flag);
+        self
+    }
+
+    /// Permission to manage topics
+    pub fn with_manage_topics(mut self, flag: bool) -> Self {
+        self.can_manage_topics = Some(flag);
         self
     }
 }

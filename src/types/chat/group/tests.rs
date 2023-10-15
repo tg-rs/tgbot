@@ -107,6 +107,7 @@ fn group_chat() {
                 "can_change_info": true,
                 "can_invite_users": true,
                 "can_pin_messages": true,
+                "can_manage_topics": true,
             },
             "has_protected_content": true,
             "message_auto_delete_time": 86400

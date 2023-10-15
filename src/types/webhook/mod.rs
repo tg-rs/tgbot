@@ -28,6 +28,10 @@ pub struct WebhookInfo {
     /// Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_error_message: Option<String>,
+    /// Unix time of the most recent error that happened
+    /// when trying to synchronize available updates with Telegram datacenters
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_synchronization_error_date: Option<Integer>,
     /// Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_connections: Option<Integer>,

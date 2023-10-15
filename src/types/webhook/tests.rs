@@ -15,6 +15,7 @@ fn webhook_info() {
             ip_address: Some(String::from("127.0.0.1")),
             last_error_date: Some(0),
             last_error_message: Some(String::from("error")),
+            last_synchronization_error_date: Some(0),
             max_connections: Some(10),
             allowed_updates: Some(vec![AllowedUpdate::Message, AllowedUpdate::Poll]),
         },
@@ -25,6 +26,7 @@ fn webhook_info() {
             "ip_address": "127.0.0.1",
             "last_error_date": 0,
             "last_error_message": "error",
+            "last_synchronization_error_date": 0,
             "max_connections": 10,
             "allowed_updates": ["message", "poll"]
         }),
@@ -37,6 +39,7 @@ fn webhook_info() {
             ip_address: None,
             last_error_date: None,
             last_error_message: None,
+            last_synchronization_error_date: None,
             max_connections: None,
             allowed_updates: None,
         },

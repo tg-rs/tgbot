@@ -175,6 +175,38 @@ pub struct Sticker {
     pub premium_animation: Option<File>,
 }
 
+/// Get information about custom emoji stickers by their identifiers
+#[derive(Clone, Debug, Serialize)]
+pub struct GetCustomEmojiStickers {
+    custom_emoji_ids: Vec<String>,
+}
+
+impl GetCustomEmojiStickers {
+    /// Creates a new GetCustomEmojiStickers
+    ///
+    /// # Arguments
+    ///
+    /// * custom_emoji_ids - List of custom emoji identifiers.
+    ///                      At most 200 custom emoji identifiers can be specified.
+    pub fn new<A, B>(custom_emoji_ids: A) -> Self
+    where
+        A: IntoIterator<Item = B>,
+        B: Into<String>,
+    {
+        Self {
+            custom_emoji_ids: custom_emoji_ids.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+impl Method for GetCustomEmojiStickers {
+    type Response = Vec<Sticker>;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getCustomEmojiStickers", self)
+    }
+}
+
 /// Upload a .png file with a sticker for later use in createNewStickerSet and addStickerToSet methods
 #[derive(Debug)]
 pub struct UploadStickerFile {

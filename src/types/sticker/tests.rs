@@ -4,6 +4,7 @@ use crate::{
         tests::assert_json_eq,
         File,
         ForceReply,
+        GetCustomEmojiStickers,
         InputFile,
         MaskPosition,
         MaskPositionPoint,
@@ -159,6 +160,19 @@ fn send_sticker() {
         ),
         SendSticker::new(1, InputFile::file_id("sticker-id")),
     );
+}
+
+#[test]
+fn get_custom_emoji_stickers() {
+    assert_payload_eq(
+        Payload::json(
+            "getCustomEmojiStickers",
+            serde_json::json!({
+                "custom_emoji_ids": ["emoji-id"]
+            }),
+        ),
+        GetCustomEmojiStickers::new(["emoji-id"]),
+    )
 }
 
 #[test]

@@ -1,5 +1,53 @@
 # Changelog
 
+## 0.19.0 (xx.yy.2023)
+
+- Updated project requirements.
+  - bytes 1.5
+  - tokio 1.33
+- `Api` struct renamed to `api::Client`.
+- `ApiError`, `DownloadFileError`, `ExecuteError` moved to `api` module.
+- Merged `UpdateHandler`, `longpoll` and `webhook` into `handler` module.
+- `methods` module was merged into `types` module.
+- `Deserialize` and `Serialize` implemented for all types.
+- Moved `mime` reexport to `types` module.
+- Added `Update::get_chat()` method.
+- Updated `Message` type.
+  - Removed `MessageKind` enum.
+  - Removed `Message::get_user()` method.
+  - Removed `Message::get_user_id()` method.
+  - Removed `Message::get_user_username()` method.
+  - Removed `Message::get_chat()` method.
+  - Removed `Message::get_chat_id()` method.
+  - Removed `Message::get_chat_username()` method.
+  - Added `MessageSender` enum and `Message.sender` field.
+  - Added `Message.chat` field.
+  - Added `Message.author_signature` field.
+- Updated `MediaGroup` type.
+  - `MediaGroup::add_item()` method is private now.
+  - Added `MediaGroup::new()` method.
+  - `MediaGroupItem` replaced by a new struct and documented.
+- Updated `InputFileInfo` type.
+  - Added `name()` method.
+  - `mime_type()` method now returns a MIME Type.
+  - Added `with_mime_type()` method to set a MIME type.
+- Updated Bot-related stuff. 
+  - `Me` struct renamed to `Bot`.
+  - `GetMe` method renamed to `GetBot`.
+  - `DeleteMyCommands` method renamed to `DeleteBotCommands`.
+  - `GetMyCommands` method renamed to `GetBotCommands`.
+  - `SetMyCommands` method renamed to `SetBotCommands`.
+- Updated `InputMedia` type.
+    - Added `default()` method.
+    - `InputMediaKind` replaced by a new enum and documented.
+- Updated `Text` type.
+  - Implement `PartialEq` and `PartialOrd` for `Text` struct. 
+  - `Vec<TextEntity>` and `Vec1<TextEntity>` replaced by a new `TextEntities` struct.
+  - Serialization/deserialization of text and text_entities implemented using `Text` struct.
+  - Removed `vec1` dependency.
+- Now you can create `InputMessageContent` from `Contact`, `Location`, `Venue`, `Text`, `String`, `&str` using `From` trait.
+- Renamed `InputMessageContentInvoice::is_flexible` method to `flexible`.
+
 ## 0.18.0 (10.02.2022)
 
 - Updated tokio version to 1.16.

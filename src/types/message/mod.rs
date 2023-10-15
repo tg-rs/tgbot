@@ -42,6 +42,12 @@ pub struct Message {
     /// True, if the message is a channel post that was automatically forwarded to the connected discussion group
     #[serde(default)]
     pub is_automatic_forward: bool,
+    /// True, if the message is sent to a forum topic
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_topic_message: Option<bool>,
+    /// Unique identifier of a message thread to which the message belongs; for supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<Integer>,
     /// For replies, the original message
     /// Note that the Message object in this field will not contain further
     /// reply_to fields even if it itself is a reply

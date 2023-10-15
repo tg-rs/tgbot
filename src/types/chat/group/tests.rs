@@ -51,6 +51,8 @@ fn group_chat() {
             has_protected_content: false,
             forward: None,
             is_automatic_forward: false,
+            is_topic_message: None,
+            message_thread_id: None,
             reply_to: None,
             via_bot: None,
             media_group_id: None,

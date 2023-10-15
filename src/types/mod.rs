@@ -12,6 +12,7 @@ pub use self::{
     input_media::*,
     location::*,
     media_group::*,
+    menu::*,
     message::*,
     passport::*,
     payment::*,
@@ -39,6 +40,7 @@ mod inline_mode;
 mod input_media;
 mod location;
 mod media_group;
+mod menu;
 mod message;
 mod passport;
 mod payment;

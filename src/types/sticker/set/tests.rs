@@ -35,7 +35,6 @@ fn sticker_set() {
         StickerSet {
             name: String::from("test"),
             title: String::from("test"),
-            contains_masks: false,
             stickers: vec![],
             sticker_type: StickerType::Regular,
             is_animated: false,
@@ -51,7 +50,6 @@ fn sticker_set() {
         serde_json::json!({
             "name": "test",
             "title": "test",
-            "contains_masks": false,
             "stickers": [],
             "sticker_type": "regular",
             "is_animated": false,

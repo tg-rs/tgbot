@@ -29,8 +29,6 @@ pub struct StickerSet {
     pub name: String,
     /// Sticker set title
     pub title: String,
-    /// True, if the sticker set contains masks
-    pub contains_masks: bool,
     /// List of all set stickers
     pub stickers: Vec<Sticker>,
     /// Type of stickers in the set

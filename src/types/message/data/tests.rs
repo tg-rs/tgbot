@@ -6,6 +6,9 @@ use crate::types::{
     Contact,
     Document,
     EncryptedCredentials,
+    ForumTopicClosed,
+    ForumTopicCreated,
+    ForumTopicReopened,
     Game,
     Invoice,
     Location,
@@ -280,6 +283,43 @@ fn document() {
             }
         ]
     );
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn forum_topic_closed() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::ForumTopicClosed(ForumTopicClosed::default());
+    expected_value["forum_topic_closed"] = serde_json::json!({});
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn forum_topic_created() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::ForumTopicCreated(ForumTopicCreated {
+        name: String::from("topic-name"),
+        icon_color: 0,
+        icon_custom_emoji_id: None,
+    });
+    expected_value["forum_topic_created"] = serde_json::json!({
+        "name": "topic-name",
+        "icon_color": 0,
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn forum_topic_reopened() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::ForumTopicReopened(ForumTopicReopened::default());
+    expected_value["forum_topic_reopened"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
 

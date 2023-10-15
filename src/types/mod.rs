@@ -7,6 +7,7 @@ pub use self::{
     contact::*,
     dice::*,
     file::*,
+    forum::*,
     game::*,
     inline_mode::*,
     input_media::*,
@@ -35,6 +36,7 @@ mod chat;
 mod contact;
 mod dice;
 mod file;
+mod forum;
 mod game;
 mod inline_mode;
 mod input_media;

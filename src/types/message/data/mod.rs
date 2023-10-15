@@ -8,6 +8,9 @@ use crate::types::{
     Contact,
     Dice,
     Document,
+    ForumTopicClosed,
+    ForumTopicCreated,
+    ForumTopicReopened,
     Game,
     Integer,
     Invoice,
@@ -78,6 +81,12 @@ pub enum MessageData {
     },
     /// Message has no data
     Empty,
+    /// Service message: forum topic closed
+    ForumTopicClosed(ForumTopicClosed),
+    /// Service message: forum topic created
+    ForumTopicCreated(ForumTopicCreated),
+    /// Service message: forum topic reopened
+    ForumTopicReopened(ForumTopicReopened),
     /// Message is a game, information about the game
     Game(Game),
     /// Service message: the group has been created
@@ -191,6 +200,15 @@ impl TryFrom<RawMessageData> for MessageData {
                 document: data,
             } => MessageData::Document { caption, data },
             RawMessageData::Empty {} => MessageData::Empty,
+            RawMessageData::ForumTopicClosed { forum_topic_closed } => {
+                MessageData::ForumTopicClosed(forum_topic_closed)
+            }
+            RawMessageData::ForumTopicCreated { forum_topic_created } => {
+                MessageData::ForumTopicCreated(forum_topic_created)
+            }
+            RawMessageData::ForumTopicReopened { forum_topic_reopened } => {
+                MessageData::ForumTopicReopened(forum_topic_reopened)
+            }
             RawMessageData::Game { game } => MessageData::Game(game),
             RawMessageData::GroupChatCreated { .. } => MessageData::GroupChatCreated,
             RawMessageData::Invoice { invoice } => MessageData::Invoice(invoice),
@@ -266,6 +284,9 @@ impl From<MessageData> for RawMessageData {
                 caption,
             } => Self::Document { caption, document },
             MessageData::Empty => Self::Empty {},
+            MessageData::ForumTopicClosed(forum_topic_closed) => Self::ForumTopicClosed { forum_topic_closed },
+            MessageData::ForumTopicCreated(forum_topic_created) => Self::ForumTopicCreated { forum_topic_created },
+            MessageData::ForumTopicReopened(forum_topic_reopened) => Self::ForumTopicReopened { forum_topic_reopened },
             MessageData::Game(game) => Self::Game { game },
             MessageData::GroupChatCreated => Self::GroupChatCreated {
                 group_chat_created: True,
@@ -390,6 +411,15 @@ enum RawMessageData {
         #[serde(skip_serializing_if = "Option::is_none")]
         caption: Option<Text>,
         document: Document,
+    },
+    ForumTopicClosed {
+        forum_topic_closed: ForumTopicClosed,
+    },
+    ForumTopicCreated {
+        forum_topic_created: ForumTopicCreated,
+    },
+    ForumTopicReopened {
+        forum_topic_reopened: ForumTopicReopened,
     },
     Game {
         game: Game,

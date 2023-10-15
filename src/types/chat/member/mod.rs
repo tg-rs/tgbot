@@ -389,6 +389,8 @@ pub struct PromoteChatMember {
     can_promote_members: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_restrict_members: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    can_manage_topics: Option<bool>,
 }
 
 impl PromoteChatMember {
@@ -413,6 +415,7 @@ impl PromoteChatMember {
             can_post_messages: None,
             can_promote_members: None,
             can_restrict_members: None,
+            can_manage_topics: None,
         }
     }
 
@@ -429,6 +432,7 @@ impl PromoteChatMember {
         self.can_post_messages = Some(true);
         self.can_promote_members = Some(true);
         self.can_restrict_members = Some(true);
+        self.can_manage_topics = Some(true);
         self
     }
 
@@ -445,6 +449,7 @@ impl PromoteChatMember {
         self.can_post_messages = Some(false);
         self.can_promote_members = Some(false);
         self.can_restrict_members = Some(false);
+        self.can_manage_topics = Some(false);
         self
     }
 
@@ -517,6 +522,12 @@ impl PromoteChatMember {
     /// Administrator can restrict, ban or unban chat members
     pub fn can_restrict_members(mut self, can_restrict_members: bool) -> Self {
         self.can_restrict_members = Some(can_restrict_members);
+        self
+    }
+
+    /// User is allowed to create, rename, close, and reopen forum topics, supergroups only
+    pub fn can_manage_topics(mut self, can_manage_topics: bool) -> Self {
+        self.can_manage_topics = Some(can_manage_topics);
         self
     }
 }

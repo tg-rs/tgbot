@@ -656,7 +656,8 @@ fn promote_chat_member() {
                 "can_pin_messages": true,
                 "can_post_messages": true,
                 "can_promote_members": true,
-                "can_restrict_members": true
+                "can_restrict_members": true,
+                "can_manage_topics": true,
             }),
         ),
         PromoteChatMember::new(1, 2).promote_all(),
@@ -677,7 +678,8 @@ fn promote_chat_member() {
                 "can_pin_messages": false,
                 "can_post_messages": false,
                 "can_promote_members": false,
-                "can_restrict_members": false
+                "can_restrict_members": false,
+                "can_manage_topics": false,
             }),
         ),
         PromoteChatMember::new(1, 2).demote_all(),
@@ -698,7 +700,8 @@ fn promote_chat_member() {
                 "can_pin_messages": true,
                 "can_post_messages": false,
                 "can_promote_members": false,
-                "can_restrict_members": false
+                "can_restrict_members": false,
+                "can_manage_topics": true,
             }),
         ),
         PromoteChatMember::new(1, 2)
@@ -712,7 +715,8 @@ fn promote_chat_member() {
             .can_pin_messages(true)
             .can_post_messages(false)
             .can_promote_members(false)
-            .can_restrict_members(false),
+            .can_restrict_members(false)
+            .can_manage_topics(true),
     );
     assert_payload_eq(
         Payload::json(

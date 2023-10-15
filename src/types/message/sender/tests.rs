@@ -176,6 +176,8 @@ fn supergroup_chat() {
         linked_chat_id: None,
         location: None,
         has_protected_content: None,
+        join_to_send_messages: None,
+        join_by_request: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.sender = MessageSender::User(User {

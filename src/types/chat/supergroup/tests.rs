@@ -55,6 +55,8 @@ fn supergroup() {
                 linked_chat_id: None,
                 location: None,
                 has_protected_content: None,
+                join_to_send_messages: None,
+                join_by_request: None,
             }),
             author_signature: None,
             has_protected_content: false,
@@ -96,6 +98,8 @@ fn supergroup() {
             address: String::from("Address"),
         }),
         has_protected_content: Some(true),
+        join_to_send_messages: Some(true),
+        join_by_request: Some(true),
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
@@ -154,7 +158,9 @@ fn supergroup() {
                 "address": "Address"
             },
             "has_protected_content": true,
-            "message_auto_delete_time": 86400
+            "message_auto_delete_time": 86400,
+            "join_to_send_messages": true,
+            "join_by_request": true
         }),
     );
 
@@ -174,6 +180,8 @@ fn supergroup() {
         linked_chat_id: None,
         location: None,
         has_protected_content: None,
+        join_to_send_messages: None,
+        join_by_request: None,
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());

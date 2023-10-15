@@ -234,6 +234,8 @@ fn edit_message_result() {
             linked_chat_id: None,
             location: None,
             has_protected_content: None,
+            join_to_send_messages: None,
+            join_by_request: None,
         }),
         author_signature: None,
         has_protected_content: false,

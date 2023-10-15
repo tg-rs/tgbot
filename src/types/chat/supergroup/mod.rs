@@ -75,4 +75,15 @@ pub struct SupergroupChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_protected_content: Option<bool>,
+    /// True, if users need to join the supergroup before they can send messages
+    ///
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub join_to_send_messages: Option<bool>,
+    /// True, if all users directly joining the supergroup
+    /// need to be approved by supergroup administrators
+    ///
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub join_by_request: Option<bool>,
 }

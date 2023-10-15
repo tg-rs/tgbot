@@ -111,6 +111,15 @@ pub enum TextEntity {
     Cashtag(TextEntityPosition),
     /// Monospace string
     Code(TextEntityPosition),
+    /// Inline custom emoji sticker
+    CustomEmoji {
+        /// Unique identifier of the custom emoji
+        ///
+        /// Use getCustomEmojiStickers to get full information about the sticker
+        custom_emoji_id: String,
+        /// Position of entity in text
+        position: TextEntityPosition,
+    },
     /// E-Mail
     Email(TextEntityPosition),
     /// Hashtag
@@ -159,7 +168,7 @@ macro_rules! text_entity_factory {
             ///
             /// # Arguments
             ///
-            /// * pos - position of TextEntity in UTF-16 code units
+            /// * pos - Position of TextEntity in UTF-16 code units
             pub fn $method_name<T: Into<TextEntityPosition>>(pos: T) -> TextEntity {
                 TextEntity::$enum_variant(pos.into())
             }
@@ -187,7 +196,20 @@ impl TextEntity {
     ///
     /// # Arguments
     ///
-    /// * pos - position of TextEntity in UTF-16 code units
+    /// * pos - Position of TextEntity in UTF-16 code units
+    /// * custom_emoji_id - Unique identifier of the custom emoji
+    pub fn custom_emoji<P: Into<TextEntityPosition>, I: Into<String>>(pos: P, custom_emoji_id: I) -> TextEntity {
+        TextEntity::CustomEmoji {
+            position: pos.into(),
+            custom_emoji_id: custom_emoji_id.into(),
+        }
+    }
+
+    /// Creates a new TextEntity
+    ///
+    /// # Arguments
+    ///
+    /// * pos - Position of TextEntity in UTF-16 code units
     /// * language - The programming language of the entity text
     pub fn pre<P: Into<TextEntityPosition>, L: Into<String>>(pos: P, language: Option<L>) -> TextEntity {
         TextEntity::Pre {
@@ -200,7 +222,7 @@ impl TextEntity {
     ///
     /// # Arguments
     ///
-    /// * pos - position of TextEntity in UTF-16 code units
+    /// * pos - Position of TextEntity in UTF-16 code units
     /// * url - URL that will be opened after user taps on the text
     pub fn text_link<P: Into<TextEntityPosition>, U: Into<String>>(pos: P, url: U) -> TextEntity {
         TextEntity::TextLink {
@@ -213,7 +235,7 @@ impl TextEntity {
     ///
     /// # Arguments
     ///
-    /// * pos - position of TextEntity in UTF-16 code units
+    /// * pos - Position of TextEntity in UTF-16 code units
     /// * user - User to be mentioned
     pub fn text_mention<P: Into<TextEntityPosition>>(pos: P, user: User) -> TextEntity {
         TextEntity::TextMention {
@@ -239,6 +261,10 @@ enum RawTextEntityKind {
     BotCommand,
     Cashtag,
     Code,
+    CustomEmoji {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        custom_emoji_id: Option<String>,
+    },
     Email,
     Hashtag,
     Italic,
@@ -265,6 +291,8 @@ enum RawTextEntityKind {
 /// An error when parsing/serializing entities
 #[derive(Debug)]
 pub enum TextEntityError {
+    /// Custom emoji is required for custom_emoji entity
+    NoCustomEmoji,
     /// URL is required for text_link entity
     NoUrl,
     /// User is required for text_mention entity
@@ -285,11 +313,16 @@ impl Error for TextEntityError {
 impl fmt::Display for TextEntityError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         use self::TextEntityError::*;
-        match self {
-            NoUrl => write!(out, "URL is required for text_link entity"),
-            NoUser => write!(out, "user is required for text_mention entity"),
-            Serialize(err) => write!(out, "failed to serialize text entities: {}", err),
-        }
+        write!(
+            out,
+            "{}",
+            match self {
+                NoCustomEmoji => String::from("Custom emoji is required for custom_emoji entity"),
+                NoUrl => String::from("URL is required for text_link entity"),
+                NoUser => String::from("user is required for text_mention entity"),
+                Serialize(err) => format!("failed to serialize text entities: {}", err),
+            }
+        )
     }
 }
 
@@ -307,6 +340,10 @@ impl TryFrom<RawTextEntity> for TextEntity {
             RawTextEntityKind::BotCommand => TextEntity::BotCommand(position),
             RawTextEntityKind::Cashtag => TextEntity::Cashtag(position),
             RawTextEntityKind::Code => TextEntity::Code(position),
+            RawTextEntityKind::CustomEmoji { custom_emoji_id } => TextEntity::CustomEmoji {
+                position,
+                custom_emoji_id: custom_emoji_id.ok_or(TextEntityError::NoCustomEmoji)?,
+            },
             RawTextEntityKind::Email => TextEntity::Email(position),
             RawTextEntityKind::Hashtag => TextEntity::Hashtag(position),
             RawTextEntityKind::Italic => TextEntity::Italic(position),
@@ -345,6 +382,10 @@ impl From<TextEntity> for RawTextEntity {
             TextEntity::BotCommand(p) => raw!(BotCommand(p)),
             TextEntity::Cashtag(p) => raw!(Cashtag(p)),
             TextEntity::Code(p) => raw!(Code(p)),
+            TextEntity::CustomEmoji {
+                position: p,
+                custom_emoji_id,
+            } => raw!(CustomEmoji(p, custom_emoji_id)),
             TextEntity::Email(p) => raw!(Email(p)),
             TextEntity::Hashtag(p) => raw!(Hashtag(p)),
             TextEntity::Italic(p) => raw!(Italic(p)),

@@ -6,7 +6,7 @@ fn deserialize() {
         "message_id": 1, "date": 0,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
         "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
-        "text": "bold /bot_command $cashtag code u@h.z #hashtag italic @mention phone pre text-link text-mention url underline spoiler strikethrough pre",
+        "text": "bold /bot_command $cashtag code u@h.z #hashtag italic @mention phone pre text-link text-mention url underline spoiler strikethrough pre 🤡",
         "entities": [
             {"type": "bold", "offset": 0, "length": 4},
             {"type": "bot_command", "offset": 5, "length": 12},
@@ -34,6 +34,7 @@ fn deserialize() {
             {"type": "spoiler", "offset": 110, "length": 7},
             {"type": "strikethrough", "offset": 118, "length": 13},
             {"type": "pre", "offset": 132, "length": 3, "language": "rust"},
+            {"type": "custom_emoji", "offset": 136, "length": 2, "custom_emoji_id": "emoji-id"}
         ]
     });
     let msg: Message = serde_json::from_value(input).unwrap();
@@ -82,6 +83,10 @@ fn deserialize() {
                     position: TextEntityPosition { offset: 132, length: 3 },
                     language: Some(String::from("rust")),
                 },
+                TextEntity::CustomEmoji {
+                    custom_emoji_id: String::from("emoji-id"),
+                    position: TextEntityPosition { offset: 136, length: 2 },
+                }
             ],
             entities
         );
@@ -140,6 +145,15 @@ fn serialize() {
                 "type": "code",
                 "offset": 0,
                 "length": 10
+            }),
+        ),
+        (
+            TextEntity::custom_emoji(0..2, "emoji-id"),
+            serde_json::json!({
+                "type": "custom_emoji",
+                "offset": 0,
+                "length": 2,
+                "custom_emoji_id": "emoji-id"
             }),
         ),
         (

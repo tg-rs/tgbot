@@ -100,6 +100,7 @@ fn game_high_score() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             },
             score: 3,
         },

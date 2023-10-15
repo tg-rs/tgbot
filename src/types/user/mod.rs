@@ -28,6 +28,9 @@ pub struct User {
     /// IETF language tag of the user's language
     #[serde(skip_serializing_if = "Option::is_none")]
     pub language_code: Option<String>,
+    /// True, if this user is a Telegram Premium user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_premium: Option<bool>,
 }
 
 impl User {

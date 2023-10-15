@@ -34,6 +34,7 @@ fn chat_member_admin() {
             last_name: Some(String::from("Doe")),
             username: Some(String::from("john_doe")),
             language_code: Some(String::from("RU")),
+            is_premium: None,
         },
         custom_title: Some(String::from("Alpha")),
         is_anonymous: false,
@@ -86,6 +87,7 @@ fn chat_member_admin() {
             last_name: None,
             username: None,
             language_code: None,
+            is_premium: None,
         },
         custom_title: None,
         is_anonymous: false,
@@ -135,6 +137,7 @@ fn chat_member_creator() {
             last_name: None,
             username: None,
             language_code: None,
+            is_premium: None,
         },
         is_anonymous: false,
         custom_title: Some(String::from("Alpha")),
@@ -163,6 +166,7 @@ fn chat_member_creator() {
             last_name: None,
             username: None,
             language_code: None,
+            is_premium: None,
         },
         is_anonymous: false,
         custom_title: None,
@@ -193,6 +197,7 @@ fn chat_member_kicked() {
             last_name: Some(String::from("Doe")),
             username: Some(String::from("john_doe")),
             language_code: Some(String::from("RU")),
+            is_premium: None,
         },
         until_date: 0,
     });
@@ -224,6 +229,7 @@ fn chat_member_left() {
         last_name: None,
         username: None,
         language_code: None,
+        is_premium: None,
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(!expected_struct.is_member());
@@ -249,6 +255,7 @@ fn chat_member() {
         last_name: None,
         username: None,
         language_code: None,
+        is_premium: None,
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
@@ -275,6 +282,7 @@ fn chat_member_restricted() {
             last_name: None,
             username: None,
             language_code: None,
+            is_premium: None,
         },
         until_date: 0,
         can_change_info: true,
@@ -318,6 +326,7 @@ fn chat_member_restricted() {
             last_name: None,
             username: None,
             language_code: None,
+            is_premium: None,
         },
         until_date: 0,
         can_change_info: true,
@@ -375,6 +384,7 @@ fn chat_member_updated() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             },
             date: 0,
             old_chat_member: ChatMember::Member(User {
@@ -384,6 +394,7 @@ fn chat_member_updated() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             }),
             new_chat_member: ChatMember::Kicked(ChatMemberKicked {
                 user: User {
@@ -393,6 +404,7 @@ fn chat_member_updated() {
                     last_name: None,
                     username: None,
                     language_code: None,
+                    is_premium: None,
                 },
                 until_date: 0,
             }),
@@ -405,6 +417,7 @@ fn chat_member_updated() {
                     last_name: None,
                     username: None,
                     language_code: None,
+                    is_premium: None,
                 },
                 creates_join_request: false,
                 is_primary: true,
@@ -476,6 +489,7 @@ fn chat_member_updated() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             },
             date: 0,
             old_chat_member: ChatMember::Member(User {
@@ -485,6 +499,7 @@ fn chat_member_updated() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             }),
             new_chat_member: ChatMember::Kicked(ChatMemberKicked {
                 user: User {
@@ -494,6 +509,7 @@ fn chat_member_updated() {
                     last_name: None,
                     username: None,
                     language_code: None,
+                    is_premium: None,
                 },
                 until_date: 0,
             }),

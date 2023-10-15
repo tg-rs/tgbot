@@ -15,6 +15,7 @@ fn user() {
             last_name: Some(String::from("Zelenskiy")),
             username: Some(String::from("zelenskiy")),
             language_code: Some(String::from("UA")),
+            is_premium: Some(true),
         },
         serde_json::json!({
             "id": 1,
@@ -22,7 +23,8 @@ fn user() {
             "last_name": "Zelenskiy",
             "is_bot": false,
             "username": "zelenskiy",
-            "language_code": "UA"
+            "language_code": "UA",
+            "is_premium": true,
         }),
     );
     assert_json_eq(
@@ -33,6 +35,7 @@ fn user() {
             last_name: None,
             username: None,
             language_code: None,
+            is_premium: None,
         },
         serde_json::json!({
             "id": 1,
@@ -51,6 +54,7 @@ fn user_get_full_name() {
         last_name: Some(String::from("Zelenskiy")),
         username: Some(String::from("zelenskiy")),
         language_code: Some(String::from("UA")),
+        is_premium: None,
     };
     assert_eq!(full.get_full_name(), "Vladimir Zelenskiy");
 
@@ -61,6 +65,7 @@ fn user_get_full_name() {
         last_name: None,
         username: None,
         language_code: None,
+        is_premium: None,
     };
     assert_eq!(partial.get_full_name(), "Vladimir");
 }
@@ -74,6 +79,7 @@ fn user_get_link() {
         last_name: None,
         username: None,
         language_code: None,
+        is_premium: None,
     };
     assert_eq!(user.get_link(), "tg://user?id=1")
 }
@@ -87,6 +93,7 @@ fn user_get_mention() {
         username: None,
         is_bot: false,
         language_code: None,
+        is_premium: None,
     };
     assert_eq!(
         user.get_mention(ParseMode::Html).unwrap(),

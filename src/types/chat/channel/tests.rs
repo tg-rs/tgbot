@@ -35,6 +35,7 @@ fn channel_chat() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             }),
             chat: Chat::Channel(ChannelChat {
                 id: 1,

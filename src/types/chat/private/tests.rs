@@ -35,6 +35,7 @@ fn private_chat() {
                 last_name: Some(String::from("Doe")),
                 username: Some(String::from("john_doe")),
                 language_code: None,
+                is_premium: None,
             }),
             chat: Chat::Private(PrivateChat {
                 id: 1,

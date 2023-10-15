@@ -82,6 +82,7 @@ fn chosen_inline_result() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             },
             location: Some(Location {
                 longitude: 1.0,
@@ -119,6 +120,7 @@ fn chosen_inline_result() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             },
             location: None,
             inline_message_id: None,

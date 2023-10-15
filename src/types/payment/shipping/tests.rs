@@ -54,6 +54,7 @@ fn shipping_query() {
                 last_name: None,
                 username: None,
                 language_code: None,
+                is_premium: None,
             },
             invoice_payload: String::from("payload"),
             shipping_address: ShippingAddress {

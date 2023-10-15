@@ -118,6 +118,7 @@ fn poll_answer() {
                 username: None,
                 is_bot: false,
                 language_code: None,
+                is_premium: None,
             },
             option_ids: vec![0],
         },

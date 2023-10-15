@@ -86,6 +86,7 @@ fn group_chat() {
         last_name: None,
         username: Some(String::from("test")),
         language_code: None,
+        is_premium: None,
     });
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());
@@ -141,6 +142,7 @@ fn private_chat() {
         last_name: None,
         username: None,
         language_code: None,
+        is_premium: None,
     });
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());
@@ -187,6 +189,7 @@ fn supergroup_chat() {
         last_name: None,
         username: None,
         language_code: None,
+        is_premium: None,
     });
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());

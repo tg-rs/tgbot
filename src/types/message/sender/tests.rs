@@ -183,6 +183,7 @@ fn supergroup_chat() {
         has_protected_content: None,
         join_to_send_messages: None,
         join_by_request: None,
+        is_forum: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.sender = MessageSender::User(User {

@@ -86,4 +86,7 @@ pub struct SupergroupChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub join_by_request: Option<bool>,
+    /// True, if the supergroup chat is a forum (has topics enabled)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_forum: Option<bool>,
 }

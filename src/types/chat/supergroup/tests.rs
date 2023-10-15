@@ -59,6 +59,7 @@ fn supergroup() {
                 has_protected_content: None,
                 join_to_send_messages: None,
                 join_by_request: None,
+                is_forum: None,
             }),
             author_signature: None,
             has_protected_content: false,
@@ -102,6 +103,7 @@ fn supergroup() {
         has_protected_content: Some(true),
         join_to_send_messages: Some(true),
         join_by_request: Some(true),
+        is_forum: Some(true),
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
@@ -162,7 +164,8 @@ fn supergroup() {
             "has_protected_content": true,
             "message_auto_delete_time": 86400,
             "join_to_send_messages": true,
-            "join_by_request": true
+            "join_by_request": true,
+            "is_forum": true
         }),
     );
 
@@ -184,6 +187,7 @@ fn supergroup() {
         has_protected_content: None,
         join_to_send_messages: None,
         join_by_request: None,
+        is_forum: None,
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());

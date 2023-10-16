@@ -50,4 +50,9 @@ pub struct PrivateChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_restricted_voice_and_video_messages: Option<bool>,
+    /// List of all active chat usernames
+    ///
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_usernames: Option<Vec<String>>,
 }

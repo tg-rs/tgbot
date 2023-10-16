@@ -50,4 +50,9 @@ pub struct ChannelChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_auto_delete_time: Option<Integer>,
+    /// List of all active chat usernames
+    ///
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_usernames: Option<Vec<String>>,
 }

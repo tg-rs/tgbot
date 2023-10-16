@@ -207,6 +207,7 @@ fn channel_post() {
         linked_chat_id: None,
         has_protected_content: None,
         message_auto_delete_time: None,
+        active_usernames: None,
     });
     let expected_struct = Update {
         id: 1,
@@ -376,6 +377,7 @@ fn edited_channel_post() {
         linked_chat_id: None,
         has_protected_content: None,
         message_auto_delete_time: None,
+        active_usernames: None,
     });
     let expected_struct = Update {
         id: 1,
@@ -450,6 +452,7 @@ fn edited_message() {
                 pinned_message: None,
                 username: Some(String::from("john_doe")),
                 has_restricted_voice_and_video_messages: None,
+                active_usernames: None,
             }),
             data: MessageData::Text(Text {
                 data: String::from("Edited text"),
@@ -587,6 +590,7 @@ fn message() {
                 has_private_forwards: None,
                 message_auto_delete_time: None,
                 has_restricted_voice_and_video_messages: None,
+                active_usernames: None,
             }),
             author_signature: None,
             has_protected_content: false,

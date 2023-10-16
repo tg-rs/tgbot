@@ -69,6 +69,7 @@ fn create_message_struct() -> Message {
             join_to_send_messages: None,
             join_by_request: None,
             is_forum: None,
+            active_usernames: None,
         }),
         author_signature: None,
         has_protected_content: false,

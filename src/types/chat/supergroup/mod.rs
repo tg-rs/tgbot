@@ -89,4 +89,9 @@ pub struct SupergroupChat {
     /// True, if the supergroup chat is a forum (has topics enabled)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_forum: Option<bool>,
+    /// List of all active chat usernames
+    ///
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_usernames: Option<Vec<String>>,
 }

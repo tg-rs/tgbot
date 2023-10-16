@@ -49,6 +49,7 @@ fn channel_chat() {
                 linked_chat_id: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                active_usernames: None,
             }),
             author_signature: None,
             has_protected_content: false,
@@ -68,6 +69,7 @@ fn channel_chat() {
         linked_chat_id: Some(2),
         has_protected_content: Some(true),
         message_auto_delete_time: Some(86400),
+        active_usernames: Some(vec![String::from("channel_username")]),
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(
@@ -109,7 +111,8 @@ fn channel_chat() {
             },
             "linked_chat_id": 2,
             "has_protected_content": true,
-            "message_auto_delete_time": 86400
+            "message_auto_delete_time": 86400,
+            "active_usernames": ["channel_username"]
         }),
     );
 
@@ -124,6 +127,7 @@ fn channel_chat() {
         linked_chat_id: None,
         has_protected_content: None,
         message_auto_delete_time: None,
+        active_usernames: None,
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());

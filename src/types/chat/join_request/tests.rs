@@ -27,6 +27,7 @@ fn chat_join_request() {
                 linked_chat_id: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                active_usernames: None,
             }),
             from: User {
                 id: 1,
@@ -100,6 +101,7 @@ fn chat_join_request() {
                 linked_chat_id: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                active_usernames: None,
             }),
             from: User {
                 id: 1,

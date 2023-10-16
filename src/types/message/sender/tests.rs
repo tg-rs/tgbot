@@ -45,6 +45,7 @@ fn channel_chat() {
         linked_chat_id: None,
         has_protected_content: None,
         message_auto_delete_time: None,
+        active_usernames: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.author_signature = Some(String::from("test"));
@@ -137,6 +138,7 @@ fn private_chat() {
         has_private_forwards: None,
         message_auto_delete_time: None,
         has_restricted_voice_and_video_messages: None,
+        active_usernames: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.sender = MessageSender::User(User {
@@ -186,6 +188,7 @@ fn supergroup_chat() {
         join_to_send_messages: None,
         join_by_request: None,
         is_forum: None,
+        active_usernames: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.sender = MessageSender::User(User {

@@ -137,6 +137,19 @@ fn poll_answer() {
 
 #[test]
 fn send_quiz() {
+    let method = SendQuiz::new(1, "Q");
+    assert_payload_eq(
+        Payload::json(
+            "sendPoll",
+            serde_json::json!({
+                "chat_id": 1,
+                "question": "Q",
+                "type": "quiz",
+                "options": [],
+            }),
+        ),
+        method.clone(),
+    );
     assert_payload_eq(
         Payload::json(
             "sendPoll",
@@ -154,10 +167,11 @@ fn send_quiz() {
                 "allow_sending_without_reply": true,
                 "reply_markup": {
                     "force_reply": true
-                }
+                },
+                "message_thread_id": 1,
             }),
         ),
-        SendQuiz::new(1, "Q")
+        method
             .option("O1")
             .option("O2")
             .is_anonymous(false)
@@ -167,12 +181,26 @@ fn send_quiz() {
             .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true)),
+            .reply_markup(ForceReply::new(true))
+            .message_thread_id(1),
     )
 }
 
 #[test]
 fn send_poll() {
+    let method = SendPoll::new(1, "Q");
+    assert_payload_eq(
+        Payload::json(
+            "sendPoll",
+            serde_json::json!({
+                "chat_id": 1,
+                "question": "Q",
+                "type": "regular",
+                "options": []
+            }),
+        ),
+        method.clone(),
+    );
     assert_payload_eq(
         Payload::json(
             "sendPoll",
@@ -190,10 +218,11 @@ fn send_poll() {
                 "allow_sending_without_reply": true,
                 "reply_markup": {
                     "force_reply": true
-                }
+                },
+                "message_thread_id": 1
             }),
         ),
-        SendPoll::new(1, "Q")
+        method
             .option("O1")
             .option("O2")
             .is_anonymous(false)
@@ -203,7 +232,8 @@ fn send_poll() {
             .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true)),
+            .reply_markup(ForceReply::new(true))
+            .message_thread_id(1),
     );
 }
 

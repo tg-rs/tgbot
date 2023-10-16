@@ -162,7 +162,8 @@ fn send_game() {
                     "inline_keyboard": [[
                         {"text": "text", "url": "example.com"}
                     ]]
-                }
+                },
+                "message_thread_id": 1
             }),
         ),
         method
@@ -170,7 +171,8 @@ fn send_game() {
             .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
-            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "example.com")]]),
+            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "example.com")]])
+            .message_thread_id(1),
     )
 }
 

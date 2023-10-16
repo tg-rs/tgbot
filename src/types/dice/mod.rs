@@ -109,6 +109,8 @@ pub struct SendDice {
     allow_sending_without_reply: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    message_thread_id: Option<Integer>,
 }
 
 impl SendDice {
@@ -130,6 +132,7 @@ impl SendDice {
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
+            message_thread_id: None,
         }
     }
 
@@ -163,6 +166,13 @@ impl SendDice {
     /// Additional interface options
     pub fn reply_markup<R: Into<ReplyMarkup>>(mut self, reply_markup: R) -> Self {
         self.reply_markup = Some(reply_markup.into());
+        self
+    }
+
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    pub fn message_thread_id(mut self, message_thread_id: Integer) -> Self {
+        self.message_thread_id = Some(message_thread_id);
         self
     }
 }

@@ -101,7 +101,8 @@ fn send_dice() {
                 "allow_sending_without_reply": true,
                 "reply_markup": {
                     "force_reply": true
-                }
+                },
+                "message_thread_id": 1
             }),
         ),
         method
@@ -109,6 +110,7 @@ fn send_dice() {
             .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true)),
+            .reply_markup(ForceReply::new(true))
+            .message_thread_id(1),
     );
 }

@@ -82,7 +82,8 @@ fn send_venue() {
                 "protect_content": true,
                 "reply_to_message_id": 1,
                 "allow_sending_without_reply": true,
-                "reply_markup": {"force_reply": true}
+                "reply_markup": {"force_reply": true},
+                "message_thread_id": 1,
             }),
         ),
         SendVenue::new(1, 2.0, 3.0, "title", "addr")
@@ -94,7 +95,8 @@ fn send_venue() {
             .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true)),
+            .reply_markup(ForceReply::new(true))
+            .message_thread_id(1),
     );
     assert_payload_eq(
         Payload::json(

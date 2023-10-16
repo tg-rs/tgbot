@@ -164,7 +164,8 @@ fn send_invoice() {
                     "inline_keyboard": [[
                         {"text": "text", "url": "url"}
                     ]]
-                }
+                },
+                "message_thread_id": 1,
             }),
         ),
         SendInvoice::new(1, "title", "description", "payload", "token", "RUB", vec![])
@@ -193,6 +194,7 @@ fn send_invoice() {
             .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
-            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
+            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
+            .message_thread_id(1),
     );
 }

@@ -143,6 +143,7 @@ fn send_sticker() {
                 ("reply_to_message_id", 1.into()),
                 ("allow_sending_without_reply", true.into()),
                 ("reply_markup", reply_markup.serialize().unwrap().into()),
+                ("message_thread_id", 1.into()),
             ]),
         ),
         SendSticker::new(1, InputFile::file_id("sticker-id"))
@@ -151,7 +152,8 @@ fn send_sticker() {
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
             .reply_markup(reply_markup)
-            .unwrap(),
+            .unwrap()
+            .message_thread_id(1),
     );
     assert_payload_eq(
         Payload::form(

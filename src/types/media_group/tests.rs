@@ -33,13 +33,15 @@ fn send_media_group() {
     form.insert_field("protect_content", true);
     form.insert_field("reply_to_message_id", 1);
     form.insert_field("allow_sending_without_reply", true);
+    form.insert_field("message_thread_id", 1);
     assert_payload_eq(
         Payload::form("sendMediaGroup", form),
         SendMediaGroup::new(1, create_media_group())
             .disable_notification(true)
             .protect_content(true)
             .reply_to_message_id(1)
-            .allow_sending_without_reply(true),
+            .allow_sending_without_reply(true)
+            .message_thread_id(1),
     );
 }
 

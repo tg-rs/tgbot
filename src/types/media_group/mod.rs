@@ -297,6 +297,13 @@ impl SendMediaGroup {
         self.form.insert_field("allow_sending_without_reply", value.to_string());
         self
     }
+
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    pub fn message_thread_id(mut self, value: Integer) -> Self {
+        self.form.insert_field("message_thread_id", value);
+        self
+    }
 }
 
 impl Method for SendMediaGroup {

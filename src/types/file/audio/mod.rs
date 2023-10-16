@@ -177,6 +177,13 @@ impl SendAudio {
         self.form.insert_field("reply_markup", value.serialize()?);
         Ok(self)
     }
+
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    pub fn message_thread_id(mut self, value: Integer) -> Self {
+        self.form.insert_field("message_thread_id", value);
+        self
+    }
 }
 
 impl Method for SendAudio {

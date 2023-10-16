@@ -49,7 +49,8 @@ fn copy_message() {
                 "protect_content": true,
                 "reply_to_message_id": 1,
                 "reply_markup": {"force_reply": true},
-                "allow_sending_without_reply": true
+                "allow_sending_without_reply": true,
+                "message_thread_id": 1
             }),
         ),
         method
@@ -60,7 +61,8 @@ fn copy_message() {
             .protect_content(true)
             .reply_to_message_id(1)
             .reply_markup(ForceReply::new(true))
-            .allow_sending_without_reply(true),
+            .allow_sending_without_reply(true)
+            .message_thread_id(1),
     );
     assert_payload_eq(
         Payload::json(
@@ -358,12 +360,14 @@ fn forward_message() {
                 "from_chat_id": 2,
                 "message_id": 3,
                 "disable_notification": true,
-                "protect_content": true
+                "protect_content": true,
+                "message_thread_id": 1
             }),
         ),
         ForwardMessage::new(1, 2, 3)
             .disable_notification(true)
-            .protect_content(true),
+            .protect_content(true)
+            .message_thread_id(1),
     );
 }
 
@@ -397,7 +401,8 @@ fn send_message() {
                 "allow_sending_without_reply": true,
                 "reply_markup": {
                     "force_reply": true
-                }
+                },
+                "message_thread_id": 1,
             }),
         ),
         SendMessage::new(1, "text")
@@ -408,7 +413,8 @@ fn send_message() {
             .protect_content(true)
             .reply_to_message_id(1)
             .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true)),
+            .reply_markup(ForceReply::new(true))
+            .message_thread_id(1),
     );
 }
 

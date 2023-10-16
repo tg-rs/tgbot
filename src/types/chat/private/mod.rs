@@ -55,4 +55,9 @@ pub struct PrivateChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active_usernames: Option<Vec<String>>,
+    /// Custom emoji identifier of emoji status of the other party in a private chat.
+    ///
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub emoji_status_custom_emoji_id: Option<String>,
 }

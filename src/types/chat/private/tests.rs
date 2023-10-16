@@ -50,6 +50,7 @@ fn private_chat() {
                 message_auto_delete_time: None,
                 has_restricted_voice_and_video_messages: None,
                 active_usernames: None,
+                emoji_status_custom_emoji_id: None,
             }),
             author_signature: None,
             has_protected_content: false,
@@ -70,6 +71,7 @@ fn private_chat() {
         message_auto_delete_time: Some(86400),
         has_restricted_voice_and_video_messages: Some(true),
         active_usernames: Some(vec![String::from("john_doe")]),
+        emoji_status_custom_emoji_id: Some(String::from("emoji-id")),
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "john_doe");
@@ -113,7 +115,8 @@ fn private_chat() {
             "has_private_forwards": true,
             "message_auto_delete_time": 86400,
             "has_restricted_voice_and_video_messages": true,
-            "active_usernames": ["john_doe"]
+            "active_usernames": ["john_doe"],
+            "emoji_status_custom_emoji_id": "emoji-id"
         }),
     );
     let expected_struct = Chat::Private(PrivateChat {
@@ -128,6 +131,7 @@ fn private_chat() {
         message_auto_delete_time: None,
         has_restricted_voice_and_video_messages: None,
         active_usernames: None,
+        emoji_status_custom_emoji_id: None,
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());

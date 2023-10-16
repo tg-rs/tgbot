@@ -453,6 +453,7 @@ fn edited_message() {
                 username: Some(String::from("john_doe")),
                 has_restricted_voice_and_video_messages: None,
                 active_usernames: None,
+                emoji_status_custom_emoji_id: None,
             }),
             data: MessageData::Text(Text {
                 data: String::from("Edited text"),
@@ -591,6 +592,7 @@ fn message() {
                 message_auto_delete_time: None,
                 has_restricted_voice_and_video_messages: None,
                 active_usernames: None,
+                emoji_status_custom_emoji_id: None,
             }),
             author_signature: None,
             has_protected_content: false,

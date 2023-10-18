@@ -301,11 +301,16 @@ fn chat_member_restricted() {
         can_send_polls: true,
         can_pin_messages: Some(false),
         can_send_messages: true,
-        can_send_media_messages: false,
+        can_send_audios: Some(true),
+        can_send_documents: Some(false),
+        can_send_photos: Some(true),
+        can_send_videos: Some(false),
+        can_send_video_notes: Some(true),
         can_send_other_messages: true,
         can_add_web_page_previews: false,
         can_manage_topics: false,
         is_member: true,
+        can_send_voice_notes: Some(false),
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
@@ -324,7 +329,12 @@ fn chat_member_restricted() {
             "can_send_polls": true,
             "can_pin_messages": false,
             "can_send_messages": true,
-            "can_send_media_messages": false,
+            "can_send_audios": true,
+            "can_send_documents": false,
+            "can_send_photos": true,
+            "can_send_videos": false,
+            "can_send_video_notes": true,
+            "can_send_voice_notes": false,
             "can_send_other_messages": true,
             "can_add_web_page_previews": false,
             "can_manage_topics": false,
@@ -348,11 +358,16 @@ fn chat_member_restricted() {
         can_send_polls: true,
         can_pin_messages: None,
         can_send_messages: true,
-        can_send_media_messages: false,
+        can_send_audios: None,
+        can_send_documents: None,
+        can_send_photos: None,
+        can_send_videos: None,
+        can_send_video_notes: None,
         can_send_other_messages: true,
         can_add_web_page_previews: false,
         is_member: false,
         can_manage_topics: false,
+        can_send_voice_notes: None,
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(!expected_struct.is_member());
@@ -370,7 +385,6 @@ fn chat_member_restricted() {
             "can_invite_users": false,
             "can_send_polls": true,
             "can_send_messages": true,
-            "can_send_media_messages": false,
             "can_send_other_messages": true,
             "can_add_web_page_previews": false,
             "can_manage_topics": false,
@@ -767,7 +781,12 @@ fn restrict_chat_member() {
                 "user_id": 2,
                 "permissions": {
                     "can_send_messages": true,
-                    "can_send_media_messages": true,
+                    "can_send_audios": true,
+                    "can_send_documents": true,
+                    "can_send_photos": true,
+                    "can_send_videos": true,
+                    "can_send_video_notes": true,
+                    "can_send_voice_notes": true,
                     "can_send_polls": true,
                     "can_send_other_messages": true,
                     "can_add_web_page_previews": true,
@@ -789,7 +808,12 @@ fn restrict_chat_member() {
                 "until_date": 100,
                 "permissions": {
                     "can_send_messages": true,
-                    "can_send_media_messages": true,
+                    "can_send_audios": true,
+                    "can_send_documents": true,
+                    "can_send_photos": true,
+                    "can_send_videos": true,
+                    "can_send_video_notes": true,
+                    "can_send_voice_notes": true,
                     "can_send_polls": true,
                     "can_send_other_messages": true,
                     "can_add_web_page_previews": true,
@@ -811,7 +835,6 @@ fn restrict_chat_member() {
                 "until_date": 100,
                 "permissions": {
                     "can_send_messages": true,
-                    "can_send_media_messages": false,
                     "can_send_other_messages": true,
                     "can_add_web_page_previews": false
                 }
@@ -821,7 +844,6 @@ fn restrict_chat_member() {
             .with_permissions(
                 ChatPermissions::default()
                     .with_send_messages(true)
-                    .with_send_media_messages(false)
                     .with_send_other_messages(true)
                     .with_add_web_page_previews(false),
             )

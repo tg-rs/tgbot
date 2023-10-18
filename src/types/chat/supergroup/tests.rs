@@ -84,7 +84,12 @@ fn supergroup() {
         can_set_sticker_set: Some(true),
         permissions: Some(ChatPermissions {
             can_send_messages: Some(true),
-            can_send_media_messages: Some(true),
+            can_send_audios: None,
+            can_send_documents: None,
+            can_send_photos: None,
+            can_send_videos: None,
+            can_send_video_notes: None,
+            can_send_voice_notes: None,
             can_send_polls: Some(true),
             can_send_other_messages: Some(true),
             can_add_web_page_previews: Some(true),
@@ -137,7 +142,6 @@ fn supergroup() {
             "slow_mode_delay": 10,
             "permissions": {
                 "can_send_messages": true,
-                "can_send_media_messages": true,
                 "can_send_polls": true,
                 "can_send_other_messages": true,
                 "can_add_web_page_previews": true,

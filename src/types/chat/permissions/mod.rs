@@ -135,10 +135,24 @@ pub struct ChatPermissions {
     /// True, if the user is allowed to send text messages, contacts, locations and venues
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_messages: Option<bool>,
-    /// True, if the user is allowed to send audios, documents,
-    /// photos, videos, video notes and voice notes, implies can_send_messages
+    /// True, if the user is allowed to send audios
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_media_messages: Option<bool>,
+    pub can_send_audios: Option<bool>,
+    /// True, if the user is allowed to send documents
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_documents: Option<bool>,
+    /// True, if the user is allowed to send photos
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_photos: Option<bool>,
+    /// True, if the user is allowed to send videos
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_videos: Option<bool>,
+    /// True, if the user is allowed to send video notes
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_video_notes: Option<bool>,
+    /// True, if the user is allowed to send voice notes
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_voice_notes: Option<bool>,
     /// True, if the user is allowed to send polls, implies can_send_messages
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_polls: Option<bool>,
@@ -175,7 +189,12 @@ impl ChatPermissions {
     pub fn restricted() -> Self {
         Self {
             can_send_messages: Some(false),
-            can_send_media_messages: Some(false),
+            can_send_audios: Some(false),
+            can_send_documents: Some(false),
+            can_send_photos: Some(false),
+            can_send_videos: Some(false),
+            can_send_video_notes: Some(false),
+            can_send_voice_notes: Some(false),
             can_send_polls: Some(false),
             can_send_other_messages: Some(false),
             can_add_web_page_previews: Some(false),
@@ -190,7 +209,12 @@ impl ChatPermissions {
     pub fn allowed() -> Self {
         Self {
             can_send_messages: Some(true),
-            can_send_media_messages: Some(true),
+            can_send_audios: Some(true),
+            can_send_documents: Some(true),
+            can_send_photos: Some(true),
+            can_send_videos: Some(true),
+            can_send_video_notes: Some(true),
+            can_send_voice_notes: Some(true),
             can_send_polls: Some(true),
             can_send_other_messages: Some(true),
             can_add_web_page_previews: Some(true),
@@ -207,9 +231,39 @@ impl ChatPermissions {
         self
     }
 
-    /// Permission to send audios, documents, photos, videos, video notes and voice notes
-    pub fn with_send_media_messages(mut self, flag: bool) -> Self {
-        self.can_send_media_messages = Some(flag);
+    /// Permission to send audios
+    pub fn with_send_audios(mut self, flag: bool) -> Self {
+        self.can_send_audios = Some(flag);
+        self
+    }
+
+    /// Permission to send documents
+    pub fn with_send_documents(mut self, flag: bool) -> Self {
+        self.can_send_documents = Some(flag);
+        self
+    }
+
+    /// Permission to send photos
+    pub fn with_send_photos(mut self, flag: bool) -> Self {
+        self.can_send_photos = Some(flag);
+        self
+    }
+
+    /// Permission to send videos
+    pub fn with_send_videos(mut self, flag: bool) -> Self {
+        self.can_send_videos = Some(flag);
+        self
+    }
+
+    /// Permission to send video notes
+    pub fn with_send_video_notes(mut self, flag: bool) -> Self {
+        self.can_send_video_notes = Some(flag);
+        self
+    }
+
+    /// Permission to send voice notes
+    pub fn with_send_voice_notes(mut self, flag: bool) -> Self {
+        self.can_send_voice_notes = Some(flag);
         self
     }
 

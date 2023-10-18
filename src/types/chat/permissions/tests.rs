@@ -74,7 +74,12 @@ fn chat_permissions() {
     assert_json_eq(
         ChatPermissions::default()
             .with_send_messages(true)
-            .with_send_media_messages(false)
+            .with_send_audios(false)
+            .with_send_documents(true)
+            .with_send_photos(false)
+            .with_send_videos(true)
+            .with_send_video_notes(false)
+            .with_send_voice_notes(true)
             .with_send_polls(true)
             .with_send_other_messages(false)
             .with_add_web_page_previews(true)
@@ -84,7 +89,12 @@ fn chat_permissions() {
             .with_manage_topics(true),
         serde_json::json!({
             "can_send_messages": true,
-            "can_send_media_messages": false,
+            "can_send_audios": false,
+            "can_send_documents": true,
+            "can_send_photos": false,
+            "can_send_videos": true,
+            "can_send_video_notes": false,
+            "can_send_voice_notes": true,
             "can_send_polls": true,
             "can_send_other_messages": false,
             "can_add_web_page_previews": true,
@@ -99,7 +109,12 @@ fn chat_permissions() {
         ChatPermissions::allowed(),
         serde_json::json!({
             "can_send_messages": true,
-            "can_send_media_messages": true,
+            "can_send_audios": true,
+            "can_send_documents": true,
+            "can_send_photos": true,
+            "can_send_videos": true,
+            "can_send_video_notes": true,
+            "can_send_voice_notes": true,
             "can_send_polls": true,
             "can_send_other_messages": true,
             "can_add_web_page_previews": true,
@@ -113,7 +128,12 @@ fn chat_permissions() {
         ChatPermissions::restricted(),
         serde_json::json!({
             "can_send_messages": false,
-            "can_send_media_messages": false,
+            "can_send_audios": false,
+            "can_send_documents": false,
+            "can_send_photos": false,
+            "can_send_videos": false,
+            "can_send_video_notes": false,
+            "can_send_voice_notes": false,
             "can_send_polls": false,
             "can_send_other_messages": false,
             "can_add_web_page_previews": false,

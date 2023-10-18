@@ -171,10 +171,24 @@ pub struct ChatMemberRestricted {
     /// True, if the user can send
     /// text messages, contacts, locations and venues
     pub can_send_messages: bool,
-    /// True, if the user can send
-    /// audios, documents, photos, videos,
-    /// video notes and voice notes, implies can_send_messages
-    pub can_send_media_messages: bool,
+    /// True, if the user is allowed to send audios
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_audios: Option<bool>,
+    /// True, if the user is allowed to send documents
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_documents: Option<bool>,
+    /// True, if the user is allowed to send photos
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_photos: Option<bool>,
+    /// True, if the user is allowed to send videos
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_videos: Option<bool>,
+    /// True, if the user is allowed to send video notes
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_video_notes: Option<bool>,
+    /// True, if the user is allowed to send voice notes
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_voice_notes: Option<bool>,
     /// True, if the user is allowed to send polls
     pub can_send_polls: bool,
     /// True, if the user can send

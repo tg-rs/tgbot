@@ -24,6 +24,7 @@ fn chat_action() {
 
 #[test]
 fn send_chat_action() {
+    let method = SendChatAction::new(1, ChatAction::Typing);
     assert_payload_eq(
         Payload::json(
             "sendChatAction",
@@ -32,6 +33,17 @@ fn send_chat_action() {
                 "action": "typing"
             }),
         ),
-        SendChatAction::new(1, ChatAction::Typing),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "sendChatAction",
+            serde_json::json!({
+                "chat_id": 1,
+                "action": "typing",
+                "message_thread_id": 1,
+            }),
+        ),
+        method.message_thread_id(1),
     );
 }

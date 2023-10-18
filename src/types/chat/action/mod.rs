@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::ChatId,
+    types::{ChatId, Integer},
 };
 
 #[cfg(test)]
@@ -51,6 +51,8 @@ pub enum ChatAction {
 pub struct SendChatAction {
     chat_id: ChatId,
     action: ChatAction,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    message_thread_id: Option<Integer>,
 }
 
 impl SendChatAction {
@@ -64,7 +66,14 @@ impl SendChatAction {
         SendChatAction {
             chat_id: chat_id.into(),
             action,
+            message_thread_id: None,
         }
+    }
+
+    /// Unique identifier for the target message thread; supergroups only
+    pub fn message_thread_id(mut self, value: Integer) -> Self {
+        self.message_thread_id = Some(value);
+        self
     }
 }
 

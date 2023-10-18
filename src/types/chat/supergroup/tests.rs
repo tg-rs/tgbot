@@ -62,6 +62,7 @@ fn supergroup() {
                 is_forum: None,
                 active_usernames: None,
                 has_hidden_members: None,
+                has_aggressive_anti_spam_enabled: None,
             }),
             author_signature: None,
             has_protected_content: false,
@@ -112,6 +113,7 @@ fn supergroup() {
         is_forum: Some(true),
         active_usernames: Some(vec![String::from("supergroup_chat")]),
         has_hidden_members: Some(true),
+        has_aggressive_anti_spam_enabled: Some(true),
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
@@ -176,6 +178,7 @@ fn supergroup() {
             "is_forum": true,
             "active_usernames": ["supergroup_chat"],
             "has_hidden_members": true,
+            "has_aggressive_anti_spam_enabled": true,
         }),
     );
 
@@ -200,6 +203,7 @@ fn supergroup() {
         is_forum: None,
         active_usernames: None,
         has_hidden_members: None,
+        has_aggressive_anti_spam_enabled: None,
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());

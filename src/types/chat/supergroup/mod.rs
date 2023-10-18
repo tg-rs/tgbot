@@ -99,4 +99,10 @@ pub struct SupergroupChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_hidden_members: Option<bool>,
+    /// True, if aggressive anti-spam checks are enabled in the supergroup.
+    ///
+    /// The field is only available to chat administrators.
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_aggressive_anti_spam_enabled: Option<bool>,
 }

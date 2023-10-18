@@ -193,6 +193,7 @@ fn supergroup_chat() {
         is_forum: None,
         active_usernames: None,
         has_hidden_members: None,
+        has_aggressive_anti_spam_enabled: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.sender = MessageSender::User(User {

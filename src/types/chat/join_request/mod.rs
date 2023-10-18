@@ -23,6 +23,13 @@ pub struct ChatJoinRequest {
     /// Chat invite link that was used by the user to send the join request
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<ChatInviteLink>,
+    /// Identifier of a private chat with the user who sent the join request
+    ///
+    /// The bot can use this identifier for 5 minutes to
+    /// send messages until the join request is processed,
+    /// assuming no other administrator contacted the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_chat_id: Option<Integer>,
 }
 
 /// Approve a chat join request

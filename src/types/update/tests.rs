@@ -296,6 +296,7 @@ fn chat_join_request() {
             date: 0,
             bio: None,
             invite_link: None,
+            user_chat_id: None,
         }),
     };
     assert_eq!(expected_struct.get_chat_id(), Some(1));

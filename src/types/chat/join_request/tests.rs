@@ -61,6 +61,7 @@ fn chat_join_request() {
                 member_limit: None,
                 pending_join_request_count: None,
             }),
+            user_chat_id: Some(1),
         },
         serde_json::json!({
             "chat": {
@@ -85,7 +86,8 @@ fn chat_join_request() {
                 "creates_join_request": false,
                 "is_primary": true,
                 "is_revoked": false
-            }
+            },
+            "user_chat_id": 1,
         }),
     );
     assert_json_eq(
@@ -116,6 +118,7 @@ fn chat_join_request() {
             date: 0,
             bio: None,
             invite_link: None,
+            user_chat_id: None,
         },
         serde_json::json!({
             "chat": {

@@ -28,6 +28,7 @@ fn create_message_struct(chat: Chat) -> Message {
         via_bot: None,
         media_group_id: None,
         reply_markup: None,
+        has_media_spoiler: None,
         data: MessageData::Empty,
     }
 }

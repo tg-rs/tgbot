@@ -63,6 +63,9 @@ pub struct Message {
     /// Inline keyboard attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
+    /// True, if the message media is covered by a spoiler animation
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_media_spoiler: Option<bool>,
     /// Contains message data
     #[serde(flatten)]
     pub data: MessageData,

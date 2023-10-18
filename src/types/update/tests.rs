@@ -227,6 +227,7 @@ fn channel_post() {
             via_bot: None,
             media_group_id: None,
             reply_markup: None,
+            has_media_spoiler: None,
             data: MessageData::Text(Text {
                 data: String::from("test message from channel"),
                 entities: None,
@@ -397,6 +398,7 @@ fn edited_channel_post() {
             via_bot: None,
             media_group_id: None,
             reply_markup: None,
+            has_media_spoiler: None,
             data: MessageData::Text(Text {
                 data: String::from("test message from channel"),
                 entities: None,
@@ -481,6 +483,7 @@ fn edited_message() {
             }),
             via_bot: None,
             message_thread_id: None,
+            has_media_spoiler: None,
         }),
     };
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1111);
@@ -604,6 +607,7 @@ fn message() {
             via_bot: None,
             media_group_id: None,
             reply_markup: None,
+            has_media_spoiler: None,
             data: MessageData::Text(Text {
                 data: String::from("message-text"),
                 entities: None,

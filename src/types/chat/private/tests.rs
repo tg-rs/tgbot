@@ -62,6 +62,7 @@ fn private_chat() {
             via_bot: None,
             media_group_id: None,
             reply_markup: None,
+            has_media_spoiler: None,
             data: MessageData::Text(Text {
                 data: String::from("message-text"),
                 entities: None,

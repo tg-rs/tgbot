@@ -176,6 +176,34 @@ impl BotCommandScope {
     }
 }
 
+/// Contains information about the chat
+/// whose identifier was shared with the bot
+/// using a KeyboardButtonRequestChat button.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct ChatShared {
+    /// Identifier of the request
+    pub request_id: Integer,
+    /// Identifier of the shared chat
+    ///
+    /// The bot may not have access to the chat and could be unable to use this identifier,
+    /// unless the chat is already known to the bot by some other means.
+    pub chat_id: Integer,
+}
+
+/// Contains information about the user
+/// whose identifier was shared with the bot
+/// using a KeyboardButtonRequestUser button
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct UserShared {
+    /// Identifier of the request
+    pub request_id: Integer,
+    /// Identifier of the shared user
+    ///
+    /// The bot may not have access to the user and could be unable to use this identifier,
+    /// unless the user is already known to the bot by some other means.
+    pub user_id: Integer,
+}
+
 /// Represents a service message about a user allowing a bot to write messages
 /// after adding it to the attachment menu,
 /// launching a Web App from a link,

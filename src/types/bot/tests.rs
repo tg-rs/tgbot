@@ -6,6 +6,7 @@ use crate::{
         BotCommand,
         BotCommandScope,
         ChatAdministratorRights,
+        ChatShared,
         Close,
         DeleteBotCommands,
         GetBot,
@@ -14,6 +15,7 @@ use crate::{
         LogOut,
         SetBotCommands,
         SetBotDefaultAdministratorRights,
+        UserShared,
         WriteAccessAllowed,
     },
 };
@@ -95,6 +97,34 @@ fn bot_command_scope() {
     ] {
         assert_json_eq(expected_struct, expected_value);
     }
+}
+
+#[test]
+fn chat_shared() {
+    assert_json_eq(
+        ChatShared {
+            request_id: 1,
+            chat_id: 1,
+        },
+        serde_json::json!({
+            "request_id": 1,
+            "chat_id": 1
+        }),
+    );
+}
+
+#[test]
+fn user_shared() {
+    assert_json_eq(
+        UserShared {
+            request_id: 1,
+            user_id: 1,
+        },
+        serde_json::json!({
+            "request_id": 1,
+            "user_id": 1
+        }),
+    );
 }
 
 #[test]

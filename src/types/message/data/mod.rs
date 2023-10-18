@@ -5,6 +5,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use crate::types::{
     Animation,
     Audio,
+    ChatShared,
     Contact,
     Dice,
     Document,
@@ -30,6 +31,7 @@ use crate::types::{
     TextEntityError,
     True,
     User,
+    UserShared,
     Venue,
     Video,
     VideoNote,
@@ -67,6 +69,8 @@ pub enum MessageData {
     /// because bot can’t be a member of a channel when it is created
     /// It can only be found in reply_to_message if someone replies to a very first message in a channel
     ChannelChatCreated,
+    /// Service message: a chat was shared with the bot
+    ChatShared(ChatShared),
     /// The domain name of the website on which the user has logged in
     ConnectedWebsite(String),
     /// Message is a shared contact, information about the contact
@@ -151,6 +155,8 @@ pub enum MessageData {
     SupergroupChatCreated,
     /// The actual UTF-8 text of the message, 0-4096 characters
     Text(Text),
+    /// Service message: a user was shared with the bot
+    UserShared(UserShared),
     /// Message is a venue, information about the venue
     Venue(Venue),
     /// Message is a video, information about the video
@@ -207,6 +213,7 @@ impl TryFrom<RawMessageData> for MessageData {
             RawMessageData::Animation { animation } => MessageData::Animation(animation),
             RawMessageData::Audio { caption, audio } => MessageData::Audio { caption, data: audio },
             RawMessageData::ChannelChatCreated { .. } => MessageData::ChannelChatCreated,
+            RawMessageData::ChatShared { chat_shared } => MessageData::ChatShared(chat_shared),
             RawMessageData::ConnectedWebsite { connected_website } => MessageData::ConnectedWebsite(connected_website),
             RawMessageData::Contact { contact } => MessageData::Contact(contact),
             RawMessageData::DeleteChatPhoto { .. } => MessageData::DeleteChatPhoto,
@@ -264,6 +271,7 @@ impl TryFrom<RawMessageData> for MessageData {
             }
             RawMessageData::SupergroupChatCreated { .. } => MessageData::SupergroupChatCreated,
             RawMessageData::Text { text: data, entities } => MessageData::Text(Text { data, entities }),
+            RawMessageData::UserShared { user_shared } => MessageData::UserShared(user_shared),
             RawMessageData::Venue { venue } => MessageData::Venue(venue),
             RawMessageData::Video { caption, video: data } => MessageData::Video { caption, data },
             RawMessageData::VideoNote { video_note } => MessageData::VideoNote(video_note),
@@ -301,6 +309,7 @@ impl From<MessageData> for RawMessageData {
             MessageData::ChannelChatCreated => Self::ChannelChatCreated {
                 channel_chat_created: True,
             },
+            MessageData::ChatShared(chat_shared) => Self::ChatShared { chat_shared },
             MessageData::ConnectedWebsite(connected_website) => Self::ConnectedWebsite { connected_website },
             MessageData::Contact(contact) => Self::Contact { contact },
             MessageData::DeleteChatPhoto => Self::DeleteChatPhoto {
@@ -350,6 +359,7 @@ impl From<MessageData> for RawMessageData {
                 text: text.data,
                 entities: text.entities,
             },
+            MessageData::UserShared(user_shared) => Self::UserShared { user_shared },
             MessageData::Venue(venue) => Self::Venue { venue },
             MessageData::Video { caption, data: video } => Self::Video { caption, video },
             MessageData::VideoNote(video_note) => Self::VideoNote { video_note },
@@ -426,6 +436,9 @@ enum RawMessageData {
     ChannelChatCreated {
         #[allow(dead_code)]
         channel_chat_created: True,
+    },
+    ChatShared {
+        chat_shared: ChatShared,
     },
     ConnectedWebsite {
         connected_website: String,
@@ -534,6 +547,9 @@ enum RawMessageData {
         text: String,
         #[serde(skip_serializing_if = "Option::is_none")]
         entities: Option<TextEntities>,
+    },
+    UserShared {
+        user_shared: UserShared,
     },
     Venue {
         venue: Venue,

@@ -3,6 +3,7 @@ use crate::types::{
     Animation,
     Audio,
     Chat,
+    ChatShared,
     Contact,
     Document,
     EncryptedCredentials,
@@ -31,6 +32,7 @@ use crate::types::{
     TextEntities,
     TextEntity,
     User,
+    UserShared,
     Venue,
     Video,
     VideoNote,
@@ -195,6 +197,22 @@ fn channel_chat_created() {
 
     expected_struct.data = MessageData::ChannelChatCreated;
     expected_value["channel_chat_created"] = serde_json::json!(true);
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn chat_shared() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::ChatShared(ChatShared {
+        request_id: 1,
+        chat_id: 1,
+    });
+    expected_value["chat_shared"] = serde_json::json!({
+        "request_id": 1,
+        "chat_id": 1,
+    });
     assert_json_eq(expected_struct, expected_value);
 }
 
@@ -795,6 +813,22 @@ fn text() {
         entities: None,
     });
     expected_value["text"] = serde_json::json!("text");
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn user_shared() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::UserShared(UserShared {
+        request_id: 1,
+        user_id: 1,
+    });
+    expected_value["user_shared"] = serde_json::json!({
+        "request_id": 1,
+        "user_id": 1,
+    });
     assert_json_eq(expected_struct, expected_value);
 }
 

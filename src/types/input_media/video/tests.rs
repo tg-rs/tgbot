@@ -9,14 +9,16 @@ fn input_media_video() {
             .width(200)
             .height(200)
             .duration(100)
-            .supports_streaming(true),
+            .supports_streaming(true)
+            .has_spoiler(true),
         serde_json::json!({
             "caption": "caption",
             "parse_mode": "Markdown",
             "width": 200,
             "height": 200,
             "duration": 100,
-            "supports_streaming": true
+            "supports_streaming": true,
+            "has_spoiler": true
         }),
     );
     assert_json_eq(InputMediaVideo::default(), serde_json::json!({}));

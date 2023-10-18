@@ -22,6 +22,8 @@ pub struct InputMediaVideo {
     duration: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     supports_streaming: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    has_spoiler: Option<bool>,
 }
 
 impl InputMediaVideo {
@@ -73,6 +75,12 @@ impl InputMediaVideo {
     /// Pass True, if the uploaded video is suitable for streaming
     pub fn supports_streaming(mut self, supports_streaming: bool) -> Self {
         self.supports_streaming = Some(supports_streaming);
+        self
+    }
+
+    /// Photo needs to be covered with a spoiler animation
+    pub fn has_spoiler(mut self, value: bool) -> Self {
+        self.has_spoiler = Some(value);
         self
     }
 }

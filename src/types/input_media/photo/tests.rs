@@ -5,10 +5,12 @@ fn input_media_photo() {
     assert_json_eq(
         InputMediaPhoto::default()
             .caption("caption")
-            .parse_mode(ParseMode::Markdown),
+            .parse_mode(ParseMode::Markdown)
+            .has_spoiler(true),
         serde_json::json!({
             "caption": "caption",
-            "parse_mode": "Markdown"
+            "parse_mode": "Markdown",
+            "has_spoiler": true,
         }),
     );
     assert_json_eq(InputMediaPhoto::default(), serde_json::json!({}));

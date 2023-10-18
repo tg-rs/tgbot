@@ -14,6 +14,8 @@ pub struct InputMediaPhoto {
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    has_spoiler: Option<bool>,
 }
 
 impl InputMediaPhoto {
@@ -41,6 +43,12 @@ impl InputMediaPhoto {
     pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
         self.caption_entities = None;
+        self
+    }
+
+    /// Photo needs to be covered with a spoiler animation
+    pub fn has_spoiler(mut self, value: bool) -> Self {
+        self.has_spoiler = Some(value);
         self
     }
 }

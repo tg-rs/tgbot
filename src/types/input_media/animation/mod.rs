@@ -22,6 +22,8 @@ pub struct InputMediaAnimation {
     height: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     duration: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    has_spoiler: Option<bool>,
 }
 
 impl InputMediaAnimation {
@@ -80,6 +82,12 @@ impl InputMediaAnimation {
     /// Set duration
     pub fn duration(mut self, duration: Integer) -> Self {
         self.duration = Some(duration);
+        self
+    }
+
+    /// Photo needs to be covered with a spoiler animation
+    pub fn has_spoiler(mut self, value: bool) -> Self {
+        self.has_spoiler = Some(value);
         self
     }
 }

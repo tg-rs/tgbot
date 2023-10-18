@@ -9,14 +9,16 @@ fn input_media_animation() {
             .parse_mode(ParseMode::Markdown)
             .width(200)
             .height(200)
-            .duration(10),
+            .duration(10)
+            .has_spoiler(true),
         serde_json::json!({
             "thumb": "attach://thumb.jpg",
             "caption": "caption",
             "parse_mode": "Markdown",
             "width": 200,
             "height": 200,
-            "duration": 10
+            "duration": 10,
+            "has_spoiler": true,
         }),
     );
     assert_json_eq(InputMediaAnimation::default(), serde_json::json!({}));

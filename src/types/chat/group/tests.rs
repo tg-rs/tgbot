@@ -46,6 +46,7 @@ fn group_chat() {
                 permissions: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                has_hidden_members: None,
             }),
             author_signature: None,
             has_protected_content: false,
@@ -66,6 +67,7 @@ fn group_chat() {
         permissions: Some(ChatPermissions::allowed()),
         has_protected_content: Some(true),
         message_auto_delete_time: Some(86400),
+        has_hidden_members: Some(true),
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());
@@ -111,7 +113,8 @@ fn group_chat() {
                 "can_manage_topics": true,
             },
             "has_protected_content": true,
-            "message_auto_delete_time": 86400
+            "message_auto_delete_time": 86400,
+            "has_hidden_members": true,
         }),
     );
     assert_json_eq(
@@ -124,6 +127,7 @@ fn group_chat() {
             permissions: None,
             has_protected_content: None,
             message_auto_delete_time: None,
+            has_hidden_members: None,
         }),
         serde_json::json!({
             "id": 1,

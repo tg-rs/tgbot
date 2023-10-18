@@ -81,6 +81,7 @@ fn group_chat() {
         permissions: None,
         has_protected_content: None,
         message_auto_delete_time: None,
+        has_hidden_members: None,
     });
     let mut expected_struct = create_message_struct(chat.clone());
     expected_struct.sender = MessageSender::User(User {
@@ -191,6 +192,7 @@ fn supergroup_chat() {
         join_by_request: None,
         is_forum: None,
         active_usernames: None,
+        has_hidden_members: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.sender = MessageSender::User(User {

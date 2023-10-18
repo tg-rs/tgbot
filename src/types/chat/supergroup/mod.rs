@@ -94,4 +94,9 @@ pub struct SupergroupChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active_usernames: Option<Vec<String>>,
+    /// True, if non-administrators can only get the list of bots
+    /// and administrators in the chat.
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_hidden_members: Option<bool>,
 }

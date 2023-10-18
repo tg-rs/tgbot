@@ -62,6 +62,7 @@ fn callback_query() {
                 join_by_request: None,
                 is_forum: None,
                 active_usernames: None,
+                has_hidden_members: None,
             }),
             author_signature: None,
             has_protected_content: false,

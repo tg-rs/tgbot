@@ -392,6 +392,7 @@ fn chat_member_updated() {
                 permissions: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                has_hidden_members: None,
             }),
             from: User {
                 id: 1,
@@ -501,6 +502,7 @@ fn chat_member_updated() {
                 permissions: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                has_hidden_members: None,
             }),
             from: User {
                 id: 1,

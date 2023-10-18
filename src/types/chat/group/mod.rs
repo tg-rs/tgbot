@@ -42,4 +42,9 @@ pub struct GroupChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_auto_delete_time: Option<Integer>,
+    /// True, if non-administrators can only get the list of bots
+    /// and administrators in the chat.
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_hidden_members: Option<bool>,
 }

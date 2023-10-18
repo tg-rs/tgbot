@@ -69,6 +69,7 @@ fn bot_status() {
                 permissions: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                has_hidden_members: None,
             }),
             from: User {
                 id: 1,
@@ -280,6 +281,7 @@ fn chat_join_request() {
                 permissions: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                has_hidden_members: None,
             }),
             from: User {
                 id: 1,
@@ -876,6 +878,7 @@ fn user_status() {
                 permissions: None,
                 has_protected_content: None,
                 message_auto_delete_time: None,
+                has_hidden_members: None,
             }),
             from: User {
                 id: 1,

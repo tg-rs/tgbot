@@ -61,6 +61,7 @@ fn supergroup() {
                 join_by_request: None,
                 is_forum: None,
                 active_usernames: None,
+                has_hidden_members: None,
             }),
             author_signature: None,
             has_protected_content: false,
@@ -110,6 +111,7 @@ fn supergroup() {
         join_by_request: Some(true),
         is_forum: Some(true),
         active_usernames: Some(vec![String::from("supergroup_chat")]),
+        has_hidden_members: Some(true),
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
@@ -172,7 +174,8 @@ fn supergroup() {
             "join_to_send_messages": true,
             "join_by_request": true,
             "is_forum": true,
-            "active_usernames": ["supergroup_chat"]
+            "active_usernames": ["supergroup_chat"],
+            "has_hidden_members": true,
         }),
     );
 
@@ -196,6 +199,7 @@ fn supergroup() {
         join_by_request: None,
         is_forum: None,
         active_usernames: None,
+        has_hidden_members: None,
     });
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());

@@ -12,6 +12,8 @@ mod tests;
 pub struct ReplyKeyboardMarkup {
     /// Array of button rows, each represented by an Array of KeyboardButton objects
     keyboard: Vec<Vec<KeyboardButton>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    is_persistent: Option<bool>,
     #[serde(default, skip_serializing_if = "Not::not")]
     resize_keyboard: bool,
     #[serde(default, skip_serializing_if = "Not::not")]
@@ -27,11 +29,21 @@ impl ReplyKeyboardMarkup {
     pub fn from_vec(keyboard: Vec<Vec<KeyboardButton>>) -> Self {
         ReplyKeyboardMarkup {
             keyboard,
+            is_persistent: None,
             resize_keyboard: false,
             one_time_keyboard: false,
             input_field_placeholder: None,
             selective: false,
         }
+    }
+
+    /// Requests clients to always show the keyboard when the regular keyboard is hidden.
+    ///
+    /// Defaults to false, in which case the custom keyboard can be hidden
+    /// and opened with a keyboard icon.
+    pub fn persistent(mut self, value: bool) -> Self {
+        self.is_persistent = Some(value);
+        self
     }
 
     /// Requests clients to resize the keyboard vertically for optimal fit

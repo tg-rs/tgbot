@@ -25,6 +25,7 @@ fn reply_keyboard_markup() {
     assert_json_eq(
         ReplyMarkup::from(
             ReplyKeyboardMarkup::from(vec![row.clone()])
+                .persistent(true)
                 .one_time_keyboard(true)
                 .selective(true)
                 .resize_keyboard(true)
@@ -42,6 +43,7 @@ fn reply_keyboard_markup() {
                     {"text": "web app", "web_app": {"url": "https://example.com"}}
                 ]
             ],
+            "is_persistent": true,
             "resize_keyboard": true,
             "one_time_keyboard": true,
             "input_field_placeholder": "placeholder",

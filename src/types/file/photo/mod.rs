@@ -133,6 +133,12 @@ impl SendPhoto {
         self.form.insert_field("message_thread_id", value);
         self
     }
+
+    /// Photo needs to be covered with a spoiler animation
+    pub fn has_spoiler(mut self, value: bool) -> Self {
+        self.form.insert_field("has_spoiler", value);
+        self
+    }
 }
 
 impl Method for SendPhoto {

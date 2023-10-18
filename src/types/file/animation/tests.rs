@@ -96,6 +96,7 @@ fn send_animation() {
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
                 ("message_thread_id", 1.into()),
+                ("has_spoiler", true.into()),
             ]),
         ),
         SendAnimation::new(1, InputFile::file_id("file-id"))
@@ -111,7 +112,8 @@ fn send_animation() {
             .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
             .unwrap()
-            .message_thread_id(1),
+            .message_thread_id(1)
+            .has_spoiler(true),
     );
 }
 

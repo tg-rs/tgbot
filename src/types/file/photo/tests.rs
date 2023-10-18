@@ -67,6 +67,7 @@ fn send_photo() {
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
                 ("message_thread_id", 1.into()),
+                ("has_spoiler", true.into()),
             ]),
         ),
         SendPhoto::new(1, InputFile::file_id("file-id"))
@@ -78,7 +79,8 @@ fn send_photo() {
             .allow_sending_without_reply(true)
             .reply_markup(ForceReply::new(true))
             .unwrap()
-            .message_thread_id(1),
+            .message_thread_id(1)
+            .has_spoiler(true),
     );
 }
 

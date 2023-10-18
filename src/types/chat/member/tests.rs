@@ -837,7 +837,8 @@ fn restrict_chat_member() {
                     "can_send_messages": true,
                     "can_send_other_messages": true,
                     "can_add_web_page_previews": false
-                }
+                },
+                "use_independent_chat_permissions": true
             }),
         ),
         RestrictChatMember::new(1, 2)
@@ -847,7 +848,8 @@ fn restrict_chat_member() {
                     .with_send_other_messages(true)
                     .with_add_web_page_previews(false),
             )
-            .until_date(100),
+            .until_date(100)
+            .use_independent_chat_permissions(true),
     );
     assert_payload_eq(
         Payload::json(

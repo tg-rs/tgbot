@@ -148,6 +148,7 @@ fn chat_permissions() {
 #[test]
 fn set_chat_permissions() {
     let permissions = ChatPermissions::default().with_send_messages(true);
+    let method = SetChatPermissions::new(1, permissions);
     assert_payload_eq(
         Payload::json(
             "setChatPermissions",
@@ -158,6 +159,19 @@ fn set_chat_permissions() {
                 }
             }),
         ),
-        SetChatPermissions::new(1, permissions),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setChatPermissions",
+            serde_json::json!({
+                "chat_id": 1,
+                "permissions": {
+                    "can_send_messages": true
+                },
+                "use_independent_chat_permissions": true
+            }),
+        ),
+        method.use_independent_chat_permissions(true),
     );
 }

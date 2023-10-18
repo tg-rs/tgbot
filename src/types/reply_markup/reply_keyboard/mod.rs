@@ -2,7 +2,7 @@ use std::ops::Not;
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::{PollKind, True, WebAppInfo};
+use crate::types::{ChatAdministratorRights, Integer, PollKind, True, WebAppInfo};
 
 #[cfg(test)]
 mod tests;
@@ -117,9 +117,11 @@ pub struct KeyboardButton {
 #[allow(clippy::enum_variant_names)]
 #[serde(rename_all = "snake_case")]
 enum KeyboardButtonKind {
+    RequestChat(KeyboardButtonRequestChat),
     RequestContact(True),
     RequestLocation(True),
     RequestPoll(KeyboardButtonPollType),
+    RequestUser(KeyboardButtonRequestUser),
     WebApp(WebAppInfo),
 }
 
@@ -136,6 +138,15 @@ impl KeyboardButton {
             text: text.into(),
             kind: None,
         }
+    }
+
+    /// If specified, pressing the button will open a list of suitable chats
+    ///
+    /// Tapping on a chat will send its identifier to the bot in a “chat_shared” service message.
+    /// Available in private chats only.
+    pub fn request_chat(mut self, value: KeyboardButtonRequestChat) -> Self {
+        self.kind = Some(KeyboardButtonKind::RequestChat(value));
+        self
     }
 
     /// The user's phone number will be sent as a contact when the button is pressed
@@ -169,6 +180,16 @@ impl KeyboardButton {
         self
     }
 
+    /// If specified, pressing the button will open a list of suitable users
+    ///
+    /// Tapping on any user will send their identifier
+    /// to the bot in a “user_shared” service message.
+    /// Available in private chats only.
+    pub fn request_user(mut self, value: KeyboardButtonRequestUser) -> Self {
+        self.kind = Some(KeyboardButtonKind::RequestUser(value));
+        self
+    }
+
     /// The described Web App will be launched when the button is pressed
     ///
     /// Available in private chats only.
@@ -198,6 +219,154 @@ impl From<PollKind> for KeyboardButtonPollType {
 impl From<Option<PollKind>> for KeyboardButtonPollType {
     fn from(kind: Option<PollKind>) -> Self {
         KeyboardButtonPollType { kind }
+    }
+}
+
+/// Defines the criteria used to request a suitable chat
+///
+/// The identifier of the selected chat will be shared with
+/// the bot when the corresponding button is pressed.
+///
+/// [More about requesting chats](https://core.telegram.org/bots/features#chat-and-user-selection)
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct KeyboardButtonRequestChat {
+    request_id: Integer,
+    chat_is_channel: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    chat_is_forum: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    chat_has_username: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    chat_is_created: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    user_administrator_rights: Option<ChatAdministratorRights>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bot_administrator_rights: Option<ChatAdministratorRights>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bot_is_member: Option<bool>,
+}
+
+impl KeyboardButtonRequestChat {
+    /// Creates a new KeyboardButtonRequestChat
+    ///
+    /// # Arguments
+    ///
+    /// * request_id - Signed 32-bit identifier of the request,
+    ///                which will be received back in the ChatShared object.
+    ///                Must be unique within the message
+    /// * chat_is_channel - Pass True to request a channel chat,
+    ///                     pass False to request a group or a supergroup chat.
+    pub fn new(request_id: Integer, chat_is_channel: bool) -> Self {
+        Self {
+            request_id,
+            chat_is_channel,
+            chat_is_forum: None,
+            chat_has_username: None,
+            chat_is_created: None,
+            user_administrator_rights: None,
+            bot_administrator_rights: None,
+            bot_is_member: None,
+        }
+    }
+
+    /// Pass True to request a forum supergroup,
+    /// pass False to request a non - forum chat
+    ///
+    /// If not specified, no additional restrictions are applied.
+    pub fn chat_is_forum(mut self, value: bool) -> Self {
+        self.chat_is_forum = Some(value);
+        self
+    }
+
+    /// Pass True to request a supergroup or a channel with a username,
+    /// pass False to request a chat without a username
+    ///
+    /// If not specified, no additional restrictions are applied.
+    pub fn chat_has_username(mut self, value: bool) -> Self {
+        self.chat_has_username = Some(value);
+        self
+    }
+
+    /// Pass True to request a chat owned by the user
+    ///
+    /// Otherwise, no additional restrictions are applied.
+    pub fn chat_is_created(mut self, value: bool) -> Self {
+        self.chat_is_created = Some(value);
+        self
+    }
+
+    /// An object listing the required administrator rights of the user in the chat
+    ///
+    /// The rights must be a superset of bot_administrator_rights.
+    /// If not specified, no additional restrictions are applied.
+    pub fn user_administrator_rights(mut self, value: ChatAdministratorRights) -> Self {
+        self.user_administrator_rights = Some(value);
+        self
+    }
+
+    /// An object listing the required administrator rights of the bot in the chat
+    ///
+    /// The rights must be a subset of user_administrator_rights.
+    /// If not specified, no additional restrictions are applied.
+    pub fn bot_administrator_rights(mut self, value: ChatAdministratorRights) -> Self {
+        self.bot_administrator_rights = Some(value);
+        self
+    }
+
+    /// Pass True to request a chat with the bot as a member
+    ///
+    /// Otherwise, no additional restrictions are applied.
+    pub fn bot_is_member(mut self, value: bool) -> Self {
+        self.bot_is_member = Some(value);
+        self
+    }
+}
+
+/// Defines the criteria used to request a suitable user
+///
+/// The identifier of the selected user will be shared with
+/// the bot when the corresponding button is pressed.
+///
+/// [More about requesting users](https://core.telegram.org/bots/features#chat-and-user-selection)
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct KeyboardButtonRequestUser {
+    request_id: Integer,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    user_is_bot: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    user_is_premium: Option<bool>,
+}
+
+impl KeyboardButtonRequestUser {
+    /// Creates a new KeyboardButtonRequestUser
+    ///
+    /// # Arguments
+    ///
+    /// * request_id - Signed 32-bit identifier of the request,
+    ///                which will be received back in the UserShared object.
+    ///                Must be unique within the message
+    pub fn new(request_id: Integer) -> Self {
+        Self {
+            request_id,
+            user_is_bot: None,
+            user_is_premium: None,
+        }
+    }
+
+    /// Pass True to request a bot, pass False to request a regular user
+    ///
+    /// If not specified, no additional restrictions are applied.
+    pub fn user_is_bot(mut self, value: bool) -> Self {
+        self.user_is_bot = Some(value);
+        self
+    }
+
+    /// Pass True to request a premium user, pass False to request a non-premium user
+    ///
+    /// If not specified, no additional restrictions are applied.
+    pub fn user_is_premium(mut self, value: bool) -> Self {
+        self.user_is_premium = Some(value);
+        self
     }
 }
 

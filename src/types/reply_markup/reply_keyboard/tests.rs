@@ -1,6 +1,9 @@
 use crate::types::{
     tests::assert_json_eq,
+    ChatAdministratorRights,
     KeyboardButton,
+    KeyboardButtonRequestChat,
+    KeyboardButtonRequestUser,
     PollKind,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
@@ -13,10 +16,26 @@ fn reply_keyboard_markup() {
     let row = vec![
         KeyboardButton::new("test"),
         KeyboardButton::new("request contact").request_contact(),
+        KeyboardButton::new("request chat 1").request_chat(KeyboardButtonRequestChat::new(1, true)),
+        KeyboardButton::new("request chat 2").request_chat(
+            KeyboardButtonRequestChat::new(1, false)
+                .chat_is_forum(true)
+                .chat_has_username(true)
+                .chat_is_created(true)
+                .user_administrator_rights(ChatAdministratorRights::all())
+                .bot_administrator_rights(ChatAdministratorRights::all())
+                .bot_is_member(true),
+        ),
         KeyboardButton::new("request location").request_location(),
         KeyboardButton::new("request quiz").request_poll(PollKind::Quiz),
         KeyboardButton::new("request regular poll").request_poll(PollKind::Regular),
         KeyboardButton::new("request any poll").request_poll(None),
+        KeyboardButton::new("request user 1").request_user(KeyboardButtonRequestUser::new(1)),
+        KeyboardButton::new("request user 2").request_user(
+            KeyboardButtonRequestUser::new(1)
+                .user_is_bot(true)
+                .user_is_premium(true),
+        ),
         KeyboardButton::new("web app").web_app(WebAppInfo {
             url: String::from("https://example.com"),
         }),
@@ -36,10 +55,62 @@ fn reply_keyboard_markup() {
                 [
                     {"text": "test"},
                     {"text": "request contact", "request_contact": true},
+                    {"text": "request chat 1", "request_chat": {
+                        "request_id": 1,
+                        "chat_is_channel": true,
+                    }},
+                    {"text": "request chat 2", "request_chat": {
+                        "request_id": 1,
+                        "chat_is_channel": false,
+                        "chat_is_forum": true,
+                        "chat_has_username": true,
+                        "chat_is_created": true,
+                        "user_administrator_rights": {
+                            "is_anonymous": true,
+                            "can_manage_chat": true,
+                            "can_delete_messages": true,
+                            "can_manage_video_chats": true,
+                            "can_restrict_members": true,
+                            "can_promote_members": true,
+                            "can_change_info": true,
+                            "can_invite_users": true,
+                            "can_post_messages": true,
+                            "can_edit_messages": true,
+                            "can_pin_messages": true,
+                            "can_post_stories": true,
+                            "can_edit_stories": true,
+                            "can_delete_stories": true,
+                            "can_manage_topics": true,
+                        },
+                        "bot_administrator_rights": {
+                            "is_anonymous": true,
+                            "can_manage_chat": true,
+                            "can_delete_messages": true,
+                            "can_manage_video_chats": true,
+                            "can_restrict_members": true,
+                            "can_promote_members": true,
+                            "can_change_info": true,
+                            "can_invite_users": true,
+                            "can_post_messages": true,
+                            "can_edit_messages": true,
+                            "can_pin_messages": true,
+                            "can_post_stories": true,
+                            "can_edit_stories": true,
+                            "can_delete_stories": true,
+                            "can_manage_topics": true,
+                        },
+                        "bot_is_member": true,
+                    }},
                     {"text": "request location", "request_location": true},
                     {"text": "request quiz", "request_poll": {"type": "quiz"}},
                     {"text": "request regular poll", "request_poll": {"type": "regular"}},
                     {"text": "request any poll", "request_poll": {}},
+                    {"text": "request user 1", "request_user": {"request_id": 1}},
+                    {"text": "request user 2", "request_user": {
+                        "request_id": 1,
+                        "user_is_bot": true,
+                        "user_is_premium": true
+                    }},
                     {"text": "web app", "web_app": {"url": "https://example.com"}}
                 ]
             ],
@@ -57,11 +128,63 @@ fn reply_keyboard_markup() {
             "keyboard": [
                 [
                     {"text": "test"},
-                    {"text": "request contact","request_contact":true},
-                    {"text": "request location","request_location":true},
+                    {"text": "request contact", "request_contact": true},
+                    {"text": "request chat 1", "request_chat": {
+                        "request_id": 1,
+                        "chat_is_channel": true,
+                    }},
+                    {"text": "request chat 2", "request_chat": {
+                        "request_id": 1,
+                        "chat_is_channel": false,
+                        "chat_is_forum": true,
+                        "chat_has_username": true,
+                        "chat_is_created": true,
+                        "user_administrator_rights": {
+                            "is_anonymous": true,
+                            "can_manage_chat": true,
+                            "can_delete_messages": true,
+                            "can_manage_video_chats": true,
+                            "can_restrict_members": true,
+                            "can_promote_members": true,
+                            "can_change_info": true,
+                            "can_invite_users": true,
+                            "can_post_messages": true,
+                            "can_edit_messages": true,
+                            "can_pin_messages": true,
+                            "can_post_stories": true,
+                            "can_edit_stories": true,
+                            "can_delete_stories": true,
+                            "can_manage_topics": true,
+                        },
+                        "bot_administrator_rights": {
+                            "is_anonymous": true,
+                            "can_manage_chat": true,
+                            "can_delete_messages": true,
+                            "can_manage_video_chats": true,
+                            "can_restrict_members": true,
+                            "can_promote_members": true,
+                            "can_change_info": true,
+                            "can_invite_users": true,
+                            "can_post_messages": true,
+                            "can_edit_messages": true,
+                            "can_pin_messages": true,
+                            "can_post_stories": true,
+                            "can_edit_stories": true,
+                            "can_delete_stories": true,
+                            "can_manage_topics": true,
+                        },
+                        "bot_is_member": true,
+                    }},
+                    {"text": "request location", "request_location": true},
                     {"text": "request quiz", "request_poll": {"type": "quiz"}},
                     {"text": "request regular poll", "request_poll": {"type": "regular"}},
                     {"text": "request any poll", "request_poll": {}},
+                    {"text": "request user 1", "request_user": {"request_id": 1}},
+                    {"text": "request user 2", "request_user": {
+                        "request_id": 1,
+                        "user_is_bot": true,
+                        "user_is_premium": true
+                    }},
                     {"text": "web app", "web_app": {"url": "https://example.com"}}
                 ]
             ]

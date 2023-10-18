@@ -166,6 +166,39 @@ impl Method for CreateForumTopic {
     }
 }
 
+/// Close an open 'General' topic in a forum supergroup chat
+///
+/// The bot must be an administrator in the chat for this to work
+/// and must have the can_manage_topics administrator rights.
+#[derive(Clone, Debug, Serialize)]
+pub struct CloseGeneralForumTopic {
+    chat_id: ChatId,
+}
+
+impl CloseGeneralForumTopic {
+    /// Creates a new CloseGeneralForumTopic
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Unique identifier for the target chat
+    pub fn new<C>(chat_id: C) -> Self
+    where
+        C: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+        }
+    }
+}
+
+impl Method for CloseGeneralForumTopic {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("closeGeneralForumTopic", self)
+    }
+}
+
 /// Delete a forum topic along with all its messages in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
@@ -269,6 +302,43 @@ impl Method for EditForumTopic {
     }
 }
 
+/// Edit the name of the 'General' topic in a forum supergroup chat
+///
+/// The bot must be an administrator in the chat for this to work
+/// and must have can_manage_topics administrator rights.
+#[derive(Clone, Debug, Serialize)]
+pub struct EditGeneralForumTopic {
+    chat_id: ChatId,
+    name: String,
+}
+
+impl EditGeneralForumTopic {
+    /// Creates a new EditGeneralForumTopic
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Unique identifier for the target chat
+    /// * name - New topic name, 1-128 characters
+    pub fn new<C, N>(chat_id: C, name: N) -> Self
+    where
+        C: Into<ChatId>,
+        N: Into<String>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+            name: name.into(),
+        }
+    }
+}
+
+impl Method for EditGeneralForumTopic {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("editGeneralForumTopic", self)
+    }
+}
+
 /// Get custom emoji stickers, which can be used as a forum topic icon by any user
 #[derive(Clone, Copy, Debug)]
 pub struct GetForumTopicIconStickers;
@@ -278,6 +348,40 @@ impl Method for GetForumTopicIconStickers {
 
     fn into_payload(self) -> Payload {
         Payload::empty("getForumTopicIconStickers")
+    }
+}
+
+/// Hide the 'General' topic in a forum supergroup chat
+///
+/// The bot must be an administrator in the chat for this to work
+/// and must have the can_manage_topics administrator rights.
+/// The topic will be automatically closed if it was open.
+#[derive(Clone, Debug, Serialize)]
+pub struct HideGeneralForumTopic {
+    chat_id: ChatId,
+}
+
+impl HideGeneralForumTopic {
+    /// Creates a new HideGeneralForumTopic
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Unique identifier for the target chat
+    pub fn new<C>(chat_id: C) -> Self
+    where
+        C: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+        }
+    }
+}
+
+impl Method for HideGeneralForumTopic {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("hideGeneralForumTopic", self)
     }
 }
 
@@ -314,6 +418,73 @@ impl Method for ReopenForumTopic {
 
     fn into_payload(self) -> Payload {
         Payload::json("reopenForumTopic", self)
+    }
+}
+
+/// Reopen a closed 'General' topic in a forum supergroup chat
+///
+/// The bot must be an administrator in the chat for this to work
+/// and must have the can_manage_topics administrator rights.
+/// The topic will be automatically unhidden if it was hidden.
+#[derive(Clone, Debug, Serialize)]
+pub struct ReopenGeneralForumTopic {
+    chat_id: ChatId,
+}
+
+impl ReopenGeneralForumTopic {
+    /// Creates a new ReopenGeneralForumTopic
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Unique identifier for the target chat
+    pub fn new<C>(chat_id: C) -> Self
+    where
+        C: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+        }
+    }
+}
+
+impl Method for ReopenGeneralForumTopic {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("reopenGeneralForumTopic", self)
+    }
+}
+
+/// Unhide the 'General' topic in a forum supergroup chat
+///
+/// The bot must be an administrator in the chat for this to work
+/// and must have the can_manage_topics administrator rights.
+#[derive(Clone, Debug, Serialize)]
+pub struct UnhideGeneralForumTopic {
+    chat_id: ChatId,
+}
+
+impl UnhideGeneralForumTopic {
+    /// Creates a new UnhideGeneralForumTopic
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Unique identifier for the target chat
+    pub fn new<C>(chat_id: C) -> Self
+    where
+        C: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+        }
+    }
+}
+
+impl Method for UnhideGeneralForumTopic {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("unhideGeneralForumTopic", self)
     }
 }
 

@@ -3,9 +3,11 @@ use crate::{
     types::{
         tests::assert_json_eq,
         CloseForumTopic,
+        CloseGeneralForumTopic,
         CreateForumTopic,
         DeleteForumTopic,
         EditForumTopic,
+        EditGeneralForumTopic,
         ForumTopic,
         ForumTopicClosed,
         ForumTopicCreated,
@@ -14,7 +16,10 @@ use crate::{
         GeneralForumTopicHidden,
         GeneralForumTopicUnhidden,
         GetForumTopicIconStickers,
+        HideGeneralForumTopic,
         ReopenForumTopic,
+        ReopenGeneralForumTopic,
+        UnhideGeneralForumTopic,
         UnpinAllForumTopicMessages,
     },
 };
@@ -114,6 +119,19 @@ fn close_forum_topic() {
 }
 
 #[test]
+fn close_general_forum_topic() {
+    assert_payload_eq(
+        Payload::json(
+            "closeGeneralForumTopic",
+            serde_json::json!({
+                "chat_id": 1
+            }),
+        ),
+        CloseGeneralForumTopic::new(1),
+    );
+}
+
+#[test]
 fn create_forum_topic() {
     let method = CreateForumTopic::new(1, "topic-name");
     assert_payload_eq(
@@ -182,8 +200,35 @@ fn edit_forum_topic() {
 }
 
 #[test]
+fn edit_general_forum_topic() {
+    assert_payload_eq(
+        Payload::json(
+            "editGeneralForumTopic",
+            serde_json::json!({
+                "chat_id": 1,
+                "name": "new-name"
+            }),
+        ),
+        EditGeneralForumTopic::new(1, "new-name"),
+    );
+}
+
+#[test]
 fn get_forum_topic_icon_stickers() {
     assert_payload_eq(Payload::empty("getForumTopicIconStickers"), GetForumTopicIconStickers);
+}
+
+#[test]
+fn hide_general_forum_topic() {
+    assert_payload_eq(
+        Payload::json(
+            "hideGeneralForumTopic",
+            serde_json::json!({
+                "chat_id": 1
+            }),
+        ),
+        HideGeneralForumTopic::new(1),
+    );
 }
 
 #[test]
@@ -197,6 +242,32 @@ fn reopen_forum_topic() {
             }),
         ),
         ReopenForumTopic::new(1, 1),
+    );
+}
+
+#[test]
+fn reopen_general_forum_topic() {
+    assert_payload_eq(
+        Payload::json(
+            "reopenGeneralForumTopic",
+            serde_json::json!({
+                "chat_id": 1
+            }),
+        ),
+        ReopenGeneralForumTopic::new(1),
+    );
+}
+
+#[test]
+fn unhide_general_forum_topic() {
+    assert_payload_eq(
+        Payload::json(
+            "unhideGeneralForumTopic",
+            serde_json::json!({
+                "chat_id": 1
+            }),
+        ),
+        UnhideGeneralForumTopic::new(1),
     );
 }
 

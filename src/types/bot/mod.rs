@@ -176,6 +176,27 @@ impl BotCommandScope {
     }
 }
 
+/// Represents a service message about a user allowing a bot to write messages
+/// after adding it to the attachment menu,
+/// launching a Web App from a link,
+/// or accepting an explicit request from a Web App
+/// sent by the method requestWriteAccess.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct WriteAccessAllowed {
+    /// True, if the access was granted after
+    /// the user accepted an explicit request
+    /// from a Web App sent by the method requestWriteAccess
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from_request: Option<bool>,
+    /// Name of the Web App,
+    /// if the access was granted when the Web App was launched from a link
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub web_app_name: Option<String>,
+    /// True, if the access was granted when the bot was added to the attachment or side menu
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from_attachment_menu: Option<bool>,
+}
+
 /// Close the bot instance before moving it from one local server to another
 ///
 /// You need to delete the webhook before calling this method to ensure

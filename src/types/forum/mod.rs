@@ -38,9 +38,29 @@ pub struct ForumTopicCreated {
     pub icon_custom_emoji_id: Option<String>,
 }
 
+/// Represents a service message about an edited forum topic.
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct ForumTopicEdited {
+    /// New name of the topic, if it was edited
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// New identifier of the custom emoji shown as the topic icon,
+    /// if it was edited; an empty string if the icon was removed
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icon_custom_emoji_id: Option<String>,
+}
+
 /// Represents a service message about a forum topic closed in the chat
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ForumTopicReopened {}
+
+/// Represents a service message about General forum topic hidden in the chat
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct GeneralForumTopicHidden {}
+
+/// Represents a service message about General forum topic unhidden in the chat
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct GeneralForumTopicUnhidden {}
 
 /// Close an open topic in a forum supergroup chat
 ///

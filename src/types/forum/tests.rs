@@ -9,7 +9,10 @@ use crate::{
         ForumTopic,
         ForumTopicClosed,
         ForumTopicCreated,
+        ForumTopicEdited,
         ForumTopicReopened,
+        GeneralForumTopicHidden,
+        GeneralForumTopicUnhidden,
         GetForumTopicIconStickers,
         ReopenForumTopic,
         UnpinAllForumTopicMessages,
@@ -67,8 +70,33 @@ fn forum_topic_created() {
 }
 
 #[test]
+fn forum_topic_edited() {
+    assert_json_eq(ForumTopicEdited::default(), serde_json::json!({}));
+    assert_json_eq(
+        ForumTopicEdited {
+            name: Some(String::from("new-name")),
+            icon_custom_emoji_id: Some(String::from("new-emoji-id")),
+        },
+        serde_json::json!({
+            "name": "new-name",
+            "icon_custom_emoji_id": "new-emoji-id"
+        }),
+    );
+}
+
+#[test]
 fn forum_topic_reopened() {
     assert_json_eq(ForumTopicReopened::default(), serde_json::json!({}));
+}
+
+#[test]
+fn general_forum_topic_hidden() {
+    assert_json_eq(GeneralForumTopicHidden::default(), serde_json::json!({}));
+}
+
+#[test]
+fn general_forum_topic_unhidden() {
+    assert_json_eq(GeneralForumTopicUnhidden::default(), serde_json::json!({}));
 }
 
 #[test]

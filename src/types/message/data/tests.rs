@@ -8,8 +8,11 @@ use crate::types::{
     EncryptedCredentials,
     ForumTopicClosed,
     ForumTopicCreated,
+    ForumTopicEdited,
     ForumTopicReopened,
     Game,
+    GeneralForumTopicHidden,
+    GeneralForumTopicUnhidden,
     Invoice,
     Location,
     Message,
@@ -33,6 +36,7 @@ use crate::types::{
     VideoNote,
     Voice,
     WebAppData,
+    WriteAccessAllowed,
 };
 
 fn create_message_struct() -> Message {
@@ -316,6 +320,22 @@ fn forum_topic_created() {
 }
 
 #[test]
+fn forum_topic_edited() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::ForumTopicEdited(ForumTopicEdited {
+        name: Some(String::from("new-name")),
+        icon_custom_emoji_id: None,
+    });
+    expected_value["forum_topic_edited"] = serde_json::json!({
+        "name": "new-name"
+    });
+
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
 fn forum_topic_reopened() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
@@ -342,6 +362,26 @@ fn game() {
         "description": "description",
         "photo": []
     });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn general_forum_topic_hidden() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::GeneralForumTopicHidden(GeneralForumTopicHidden::default());
+    expected_value["general_forum_topic_hidden"] = serde_json::json!({});
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn general_forum_topic_unhidden() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::GeneralForumTopicUnhidden(GeneralForumTopicUnhidden::default());
+    expected_value["general_forum_topic_unhidden"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
 
@@ -973,6 +1013,22 @@ fn web_app_data() {
     expected_value["web_app_data"] = serde_json::json!({
         "data": "web-app-data",
         "button_text": "web-app-button-text"
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn write_access_allowed() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::WriteAccessAllowed(WriteAccessAllowed {
+        from_request: None,
+        web_app_name: None,
+        from_attachment_menu: Some(true),
+    });
+    expected_value["write_access_allowed"] = serde_json::json!({
+        "from_attachment_menu": true
     });
     assert_json_eq(expected_struct, expected_value);
 }

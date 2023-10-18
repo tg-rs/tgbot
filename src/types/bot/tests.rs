@@ -14,6 +14,7 @@ use crate::{
         LogOut,
         SetBotCommands,
         SetBotDefaultAdministratorRights,
+        WriteAccessAllowed,
     },
 };
 
@@ -97,6 +98,30 @@ fn bot_command_scope() {
 }
 
 #[test]
+fn write_access_allowed() {
+    assert_json_eq(
+        WriteAccessAllowed {
+            from_request: None,
+            web_app_name: None,
+            from_attachment_menu: None,
+        },
+        serde_json::json!({}),
+    );
+    assert_json_eq(
+        WriteAccessAllowed {
+            from_request: Some(true),
+            web_app_name: Some(String::from("web-app")),
+            from_attachment_menu: Some(false),
+        },
+        serde_json::json!({
+            "from_request": true,
+            "web_app_name": "web-app",
+            "from_attachment_menu": false
+        }),
+    );
+}
+
+#[test]
 fn close() {
     assert_payload_eq(Payload::empty("close"), Close);
 }
@@ -120,7 +145,7 @@ fn delete_bot_commands() {
 }
 
 #[test]
-fn get_me() {
+fn get_bot() {
     assert_payload_eq(Payload::empty("getMe"), GetBot);
 }
 

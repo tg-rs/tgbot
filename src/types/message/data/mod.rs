@@ -10,8 +10,11 @@ use crate::types::{
     Document,
     ForumTopicClosed,
     ForumTopicCreated,
+    ForumTopicEdited,
     ForumTopicReopened,
     Game,
+    GeneralForumTopicHidden,
+    GeneralForumTopicUnhidden,
     Integer,
     Invoice,
     Location,
@@ -32,6 +35,7 @@ use crate::types::{
     VideoNote,
     Voice,
     WebAppData,
+    WriteAccessAllowed,
 };
 
 #[cfg(test)]
@@ -85,10 +89,16 @@ pub enum MessageData {
     ForumTopicClosed(ForumTopicClosed),
     /// Service message: forum topic created
     ForumTopicCreated(ForumTopicCreated),
+    /// Service message: forum topic edited
+    ForumTopicEdited(ForumTopicEdited),
     /// Service message: forum topic reopened
     ForumTopicReopened(ForumTopicReopened),
     /// Message is a game, information about the game
     Game(Game),
+    /// Service message: the 'General' forum topic hidden
+    GeneralForumTopicHidden(GeneralForumTopicHidden),
+    /// Service message: the 'General' forum topic unhidden
+    GeneralForumTopicUnhidden(GeneralForumTopicUnhidden),
     /// Service message: the group has been created
     GroupChatCreated,
     /// Message is an invoice for a payment, information about the invoice
@@ -181,6 +191,12 @@ pub enum MessageData {
     },
     /// Service message: data sent by a Web App
     WebAppData(WebAppData),
+    /// Service message: the user allowed the bot to write messages
+    /// after adding it to the attachment or side menu,
+    /// launching a Web App from a link,
+    /// or accepting an explicit request from a Web App
+    /// sent by the method requestWriteAccess
+    WriteAccessAllowed(WriteAccessAllowed),
 }
 
 impl TryFrom<RawMessageData> for MessageData {
@@ -206,10 +222,19 @@ impl TryFrom<RawMessageData> for MessageData {
             RawMessageData::ForumTopicCreated { forum_topic_created } => {
                 MessageData::ForumTopicCreated(forum_topic_created)
             }
+            RawMessageData::ForumTopicEdited { forum_topic_edited } => {
+                MessageData::ForumTopicEdited(forum_topic_edited)
+            }
             RawMessageData::ForumTopicReopened { forum_topic_reopened } => {
                 MessageData::ForumTopicReopened(forum_topic_reopened)
             }
             RawMessageData::Game { game } => MessageData::Game(game),
+            RawMessageData::GeneralForumTopicHidden {
+                general_forum_topic_hidden,
+            } => MessageData::GeneralForumTopicHidden(general_forum_topic_hidden),
+            RawMessageData::GeneralForumTopicUnhidden {
+                general_forum_topic_unhidden,
+            } => MessageData::GeneralForumTopicUnhidden(general_forum_topic_unhidden),
             RawMessageData::GroupChatCreated { .. } => MessageData::GroupChatCreated,
             RawMessageData::Invoice { invoice } => MessageData::Invoice(invoice),
             RawMessageData::LeftChatMember { left_chat_member } => MessageData::LeftChatMember(left_chat_member),
@@ -256,6 +281,9 @@ impl TryFrom<RawMessageData> for MessageData {
                 users: video_chat_participants_invited.users.unwrap_or_default(),
             },
             RawMessageData::WebAppData { web_app_data } => MessageData::WebAppData(web_app_data),
+            RawMessageData::WriteAccessAllowed { write_access_allowed } => {
+                MessageData::WriteAccessAllowed(write_access_allowed)
+            }
         })
     }
 }
@@ -286,8 +314,15 @@ impl From<MessageData> for RawMessageData {
             MessageData::Empty => Self::Empty {},
             MessageData::ForumTopicClosed(forum_topic_closed) => Self::ForumTopicClosed { forum_topic_closed },
             MessageData::ForumTopicCreated(forum_topic_created) => Self::ForumTopicCreated { forum_topic_created },
+            MessageData::ForumTopicEdited(forum_topic_edited) => Self::ForumTopicEdited { forum_topic_edited },
             MessageData::ForumTopicReopened(forum_topic_reopened) => Self::ForumTopicReopened { forum_topic_reopened },
             MessageData::Game(game) => Self::Game { game },
+            MessageData::GeneralForumTopicHidden(general_forum_topic_hidden) => Self::GeneralForumTopicHidden {
+                general_forum_topic_hidden,
+            },
+            MessageData::GeneralForumTopicUnhidden(general_forum_topic_unhidden) => Self::GeneralForumTopicUnhidden {
+                general_forum_topic_unhidden,
+            },
             MessageData::GroupChatCreated => Self::GroupChatCreated {
                 group_chat_created: True,
             },
@@ -334,6 +369,7 @@ impl From<MessageData> for RawMessageData {
                 },
             },
             MessageData::WebAppData(web_app_data) => Self::WebAppData { web_app_data },
+            MessageData::WriteAccessAllowed(write_access_allowed) => Self::WriteAccessAllowed { write_access_allowed },
         }
     }
 }
@@ -418,11 +454,20 @@ enum RawMessageData {
     ForumTopicCreated {
         forum_topic_created: ForumTopicCreated,
     },
+    ForumTopicEdited {
+        forum_topic_edited: ForumTopicEdited,
+    },
     ForumTopicReopened {
         forum_topic_reopened: ForumTopicReopened,
     },
     Game {
         game: Game,
+    },
+    GeneralForumTopicHidden {
+        general_forum_topic_hidden: GeneralForumTopicHidden,
+    },
+    GeneralForumTopicUnhidden {
+        general_forum_topic_unhidden: GeneralForumTopicUnhidden,
     },
     GroupChatCreated {
         #[allow(dead_code)]
@@ -527,6 +572,9 @@ enum RawMessageData {
     },
     WebAppData {
         web_app_data: WebAppData,
+    },
+    WriteAccessAllowed {
+        write_access_allowed: WriteAccessAllowed,
     },
     Empty {}, // must be last because all variants below won't be deserialized
 }

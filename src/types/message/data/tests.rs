@@ -26,6 +26,7 @@ use crate::types::{
     ProximityAlertTriggered,
     RegularPoll,
     Sticker,
+    StickerType,
     SuccessfulPayment,
     SupergroupChat,
     Text,
@@ -746,9 +747,10 @@ fn sticker() {
     expected_struct.data = MessageData::Sticker(Sticker {
         file_id: String::from("sticker-id"),
         file_unique_id: String::from("unique-id"),
+        sticker_type: StickerType::Regular,
         width: 512,
         height: 512,
-        thumb: None,
+        thumbnail: None,
         emoji: None,
         set_name: None,
         mask_position: None,
@@ -757,10 +759,12 @@ fn sticker() {
         is_video: false,
         premium_animation: None,
         custom_emoji_id: None,
+        needs_repainting: None,
     });
     expected_value["sticker"] = serde_json::json!({
         "file_id": "sticker-id",
         "file_unique_id": "unique-id",
+        "type": "regular",
         "width": 512,
         "height": 512,
         "is_animated": true,

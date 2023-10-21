@@ -8,11 +8,12 @@ use crate::{
         InputFile,
         MaskPosition,
         MaskPositionPoint,
-        NewSticker,
         PhotoSize,
         ReplyMarkup,
         SendSticker,
         Sticker,
+        StickerFormat,
+        StickerType,
         UploadStickerFile,
     },
 };
@@ -23,9 +24,10 @@ fn sticker() {
         Sticker {
             file_id: String::from("test file id"),
             file_unique_id: String::from("unique-id"),
+            sticker_type: StickerType::Regular,
             width: 512,
             height: 512,
-            thumb: Some(PhotoSize {
+            thumbnail: Some(PhotoSize {
                 file_id: String::from("file-id"),
                 file_unique_id: String::from("unique-thumb-id"),
                 width: 24,
@@ -50,13 +52,15 @@ fn sticker() {
                 file_path: None,
             }),
             custom_emoji_id: Some(String::from("emoji-id")),
+            needs_repainting: Some(true),
         },
         serde_json::json!({
             "file_id": "test file id",
             "file_unique_id": "unique-id",
+            "type": "regular",
             "width": 512,
             "height": 512,
-            "thumb": {
+            "thumbnail": {
                 "file_id": "file-id",
                 "file_unique_id": "unique-thumb-id",
                 "width": 24,
@@ -78,16 +82,18 @@ fn sticker() {
                 "file_id": "file-id",
                 "file_unique_id": "file-unique-id"
             },
-            "custom_emoji_id": "emoji-id"
+            "custom_emoji_id": "emoji-id",
+            "needs_repainting": true,
         }),
     );
     assert_json_eq(
         Sticker {
             file_id: String::from("test file id"),
             file_unique_id: String::from("unique-id"),
+            sticker_type: StickerType::Regular,
             width: 512,
             height: 512,
-            thumb: None,
+            thumbnail: None,
             emoji: None,
             set_name: None,
             mask_position: None,
@@ -96,10 +102,12 @@ fn sticker() {
             is_video: false,
             premium_animation: None,
             custom_emoji_id: None,
+            needs_repainting: None,
         },
         serde_json::json!({
             "file_id": "test file id",
             "file_unique_id": "unique-id",
+            "type": "regular",
             "width": 512,
             "height": 512,
             "is_animated": false,
@@ -109,62 +117,29 @@ fn sticker() {
 }
 
 #[test]
-fn new_sticker_png() {
-    let data = NewSticker::png(InputFile::file_id("id"));
-    let repr = format!("{:?}", data);
-    assert_eq!(repr, "NewSticker { kind: Png(InputFile { kind: Id(\"id\") }) }");
+fn sticker_format() {
+    for (expected_struct, str_value) in [
+        (StickerFormat::Animated, "animated"),
+        (StickerFormat::Static, "static"),
+        (StickerFormat::Video, "video"),
+    ] {
+        let expected_value = serde_json::json!(str_value);
+        assert_json_eq(expected_struct, expected_value);
+        assert_eq!(expected_struct.as_ref(), str_value);
+    }
 }
 
 #[test]
-fn new_sticker_tgs() {
-    let data = NewSticker::tgs(InputFile::file_id("id"));
-    let repr = format!("{:?}", data);
-    assert_eq!(repr, "NewSticker { kind: Tgs(InputFile { kind: Id(\"id\") }) }");
-}
-
-#[test]
-fn new_sticker_video() {
-    let data = NewSticker::video(InputFile::file_id("id"));
-    let repr = format!("{:?}", data);
-    assert_eq!(repr, "NewSticker { kind: Video(InputFile { kind: Id(\"id\") }) }");
-}
-
-#[test]
-fn send_sticker() {
-    let reply_markup = ReplyMarkup::from(ForceReply::new(true));
-    assert_payload_eq(
-        Payload::form(
-            "sendSticker",
-            Form::from([
-                ("chat_id", FormValue::from(1)),
-                ("sticker", InputFile::file_id("sticker-id").into()),
-                ("disable_notification", true.into()),
-                ("protect_content", true.into()),
-                ("reply_to_message_id", 1.into()),
-                ("allow_sending_without_reply", true.into()),
-                ("reply_markup", reply_markup.serialize().unwrap().into()),
-                ("message_thread_id", 1.into()),
-            ]),
-        ),
-        SendSticker::new(1, InputFile::file_id("sticker-id"))
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(reply_markup)
-            .unwrap()
-            .message_thread_id(1),
-    );
-    assert_payload_eq(
-        Payload::form(
-            "sendSticker",
-            Form::from([
-                ("chat_id", FormValue::from(1)),
-                ("sticker", InputFile::file_id("sticker-id").into()),
-            ]),
-        ),
-        SendSticker::new(1, InputFile::file_id("sticker-id")),
-    );
+fn sticker_type() {
+    for (expected_struct, str_value) in [
+        (StickerType::CustomEmoji, "custom_emoji"),
+        (StickerType::Mask, "mask"),
+        (StickerType::Regular, "regular"),
+    ] {
+        let expected_value = serde_json::json!(str_value);
+        assert_json_eq(expected_struct, expected_value);
+        assert_eq!(expected_struct.as_ref(), str_value);
+    }
 }
 
 #[test]
@@ -181,15 +156,56 @@ fn get_custom_emoji_stickers() {
 }
 
 #[test]
+fn send_sticker() {
+    let reply_markup = ReplyMarkup::from(ForceReply::new(true));
+    assert_payload_eq(
+        Payload::form(
+            "sendSticker",
+            Form::from([
+                ("chat_id", FormValue::from(1)),
+                ("sticker", InputFile::file_id("sticker-id").into()),
+                ("allow_sending_without_reply", true.into()),
+                ("disable_notification", true.into()),
+                ("emoji", "😱".into()),
+                ("message_thread_id", 1.into()),
+                ("protect_content", true.into()),
+                ("reply_markup", reply_markup.serialize().unwrap().into()),
+                ("reply_to_message_id", 1.into()),
+            ]),
+        ),
+        SendSticker::new(1, InputFile::file_id("sticker-id"))
+            .allow_sending_without_reply(true)
+            .disable_notification(true)
+            .emoji("😱")
+            .message_thread_id(1)
+            .protect_content(true)
+            .reply_markup(reply_markup)
+            .unwrap()
+            .reply_to_message_id(1),
+    );
+    assert_payload_eq(
+        Payload::form(
+            "sendSticker",
+            Form::from([
+                ("chat_id", FormValue::from(1)),
+                ("sticker", InputFile::file_id("sticker-id").into()),
+            ]),
+        ),
+        SendSticker::new(1, InputFile::file_id("sticker-id")),
+    );
+}
+
+#[test]
 fn upload_sticker_file() {
     assert_payload_eq(
         Payload::form(
             "uploadStickerFile",
             Form::from([
                 ("user_id", FormValue::from(1)),
-                ("png_sticker", InputFile::file_id("sticker-id").into()),
+                ("sticker", InputFile::file_id("sticker-id").into()),
+                ("sticker_format", "static".into()),
             ]),
         ),
-        UploadStickerFile::new(1, InputFile::file_id("sticker-id")),
+        UploadStickerFile::new(1, InputFile::file_id("sticker-id"), StickerFormat::Static),
     );
 }

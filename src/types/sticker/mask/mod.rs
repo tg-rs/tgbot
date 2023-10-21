@@ -1,7 +1,4 @@
-use std::{error::Error, fmt};
-
 use serde::{Deserialize, Serialize};
-use serde_json::Error as JsonError;
 
 use crate::types::Float;
 
@@ -30,35 +27,6 @@ pub struct MaskPosition {
     /// Mask scaling coefficient.
     /// For example, 2.0 means double size
     pub scale: Float,
-}
-
-impl MaskPosition {
-    pub(crate) fn serialize(&self) -> Result<String, MaskPositionError> {
-        serde_json::to_string(self).map_err(MaskPositionError::Serialize)
-    }
-}
-
-/// An error occurred with mask position
-#[derive(Debug)]
-pub enum MaskPositionError {
-    /// Failed to serialize mask position
-    Serialize(JsonError),
-}
-
-impl Error for MaskPositionError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        match self {
-            MaskPositionError::Serialize(err) => Some(err),
-        }
-    }
-}
-
-impl fmt::Display for MaskPositionError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            MaskPositionError::Serialize(err) => write!(out, "can not serialize mask position: {}", err),
-        }
-    }
 }
 
 /// The part of the face relative to which the mask should be placed

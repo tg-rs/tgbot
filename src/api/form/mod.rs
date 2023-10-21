@@ -81,7 +81,7 @@ impl From<InputFile> for FormValue {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Default, PartialEq)]
 pub(crate) struct Form {
     fields: HashMap<String, FormValue>,
 }

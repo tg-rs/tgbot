@@ -176,6 +176,20 @@ impl BotCommandScope {
     }
 }
 
+/// Represents the bot description
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct BotDescription {
+    /// The bot description
+    pub description: String,
+}
+
+/// Represents the bot short description
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct BotShortDescription {
+    /// The bot short description
+    short_description: String,
+}
+
 /// Contains information about the chat
 /// whose identifier was shared with the bot
 /// using a KeyboardButtonRequestChat button.
@@ -354,6 +368,58 @@ impl Method for GetBotDefaultAdministratorRights {
     }
 }
 
+/// Get the current bot description for the given user language
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct GetBotDescription {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    language_code: Option<String>,
+}
+
+impl GetBotDescription {
+    /// A two-letter ISO 639-1 language code or an empty string
+    pub fn language_code<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.language_code = Some(value.into());
+        self
+    }
+}
+
+impl Method for GetBotDescription {
+    type Response = BotDescription;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getMyDescription", self)
+    }
+}
+
+/// Get the current bot short description for the given user language
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct GetBotShortDescription {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    language_code: Option<String>,
+}
+
+impl GetBotShortDescription {
+    /// A two-letter ISO 639-1 language code or an empty string
+    pub fn language_code<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.language_code = Some(value.into());
+        self
+    }
+}
+
+impl Method for GetBotShortDescription {
+    type Response = BotShortDescription;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getMyShortDescription", self)
+    }
+}
+
 /// Log out from the cloud Bot API
 ///
 /// You must log out the bot before running it locally,
@@ -461,5 +527,92 @@ impl Method for SetBotDefaultAdministratorRights {
 
     fn into_payload(self) -> Payload {
         Payload::json("setMyDefaultAdministratorRights", self)
+    }
+}
+
+/// Change the bot description,
+/// which is shown in the chat with
+/// the bot if the chat is empty.
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct SetBotDescription {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    language_code: Option<String>,
+}
+
+impl SetBotDescription {
+    /// New bot description; 0-512 characters
+    ///
+    /// Pass an empty string to remove the dedicated description for the given language.
+    pub fn description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(value.into());
+        self
+    }
+
+    /// A two-letter ISO 639-1 language code
+    ///
+    /// If empty, the description will be applied to all users
+    /// for whose language there is no dedicated description.
+    pub fn language_code<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.language_code = Some(value.into());
+        self
+    }
+}
+
+impl Method for SetBotDescription {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setMyDescription", self)
+    }
+}
+
+/// Change the bot short description, which is shown on the bot profile page
+/// and is sent together with the link when users share the bot
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct SetBotShortDescription {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    short_description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    language_code: Option<String>,
+}
+
+impl SetBotShortDescription {
+    /// New short description for the bot; 0-120 characters
+    ///
+    /// Pass an empty string to remove the dedicated short description for the given language.
+    pub fn short_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.short_description = Some(value.into());
+        self
+    }
+
+    /// A two-letter ISO 639-1 language code
+    ///
+    /// If empty, the short description will be applied
+    /// to all users for whose language there is no dedicated short description.
+    pub fn language_code<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.language_code = Some(value.into());
+        self
+    }
+}
+
+impl Method for SetBotShortDescription {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setMyShortDescription", self)
     }
 }

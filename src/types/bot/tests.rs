@@ -5,6 +5,8 @@ use crate::{
         Bot,
         BotCommand,
         BotCommandScope,
+        BotDescription,
+        BotShortDescription,
         ChatAdministratorRights,
         ChatShared,
         Close,
@@ -12,9 +14,13 @@ use crate::{
         GetBot,
         GetBotCommands,
         GetBotDefaultAdministratorRights,
+        GetBotDescription,
+        GetBotShortDescription,
         LogOut,
         SetBotCommands,
         SetBotDefaultAdministratorRights,
+        SetBotDescription,
+        SetBotShortDescription,
         UserShared,
         WriteAccessAllowed,
     },
@@ -97,6 +103,30 @@ fn bot_command_scope() {
     ] {
         assert_json_eq(expected_struct, expected_value);
     }
+}
+
+#[test]
+fn bot_description() {
+    assert_json_eq(
+        BotDescription {
+            description: String::from("test-description"),
+        },
+        serde_json::json!({
+            "description": "test-description"
+        }),
+    );
+}
+
+#[test]
+fn bot_short_description() {
+    assert_json_eq(
+        BotShortDescription {
+            short_description: String::from("test-short-description"),
+        },
+        serde_json::json!({
+            "short_description": "test-short-description"
+        }),
+    );
 }
 
 #[test]
@@ -216,6 +246,39 @@ fn get_bot_default_administrator_rights() {
 }
 
 #[test]
+fn get_bot_description() {
+    let method = GetBotDescription::default();
+    assert_payload_eq(Payload::json("getMyDescription", serde_json::json!({})), method.clone());
+    assert_payload_eq(
+        Payload::json(
+            "getMyDescription",
+            serde_json::json!({
+                "language_code": "RU"
+            }),
+        ),
+        method.language_code("RU"),
+    );
+}
+
+#[test]
+fn get_bot_short_description() {
+    let method = GetBotShortDescription::default();
+    assert_payload_eq(
+        Payload::json("getMyShortDescription", serde_json::json!({})),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "getMyShortDescription",
+            serde_json::json!({
+                "language_code": "RU"
+            }),
+        ),
+        method.language_code("RU"),
+    );
+}
+
+#[test]
 fn log_out() {
     assert_payload_eq(Payload::empty("logOut"), LogOut);
 }
@@ -309,5 +372,40 @@ fn set_bot_default_administrator_rights() {
             }),
         ),
         method.rights(ChatAdministratorRights::default()).for_channels(true),
+    );
+}
+
+#[test]
+fn set_bot_description() {
+    let method = SetBotDescription::default();
+    assert_payload_eq(Payload::json("setMyDescription", serde_json::json!({})), method.clone());
+    assert_payload_eq(
+        Payload::json(
+            "setMyDescription",
+            serde_json::json!({
+                "description": "test-description",
+                "language_code": "RU"
+            }),
+        ),
+        method.description("test-description").language_code("RU"),
+    );
+}
+
+#[test]
+fn set_bot_short_description() {
+    let method = SetBotShortDescription::default();
+    assert_payload_eq(
+        Payload::json("setMyShortDescription", serde_json::json!({})),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setMyShortDescription",
+            serde_json::json!({
+                "short_description": "test-short-description",
+                "language_code": "RU"
+            }),
+        ),
+        method.short_description("test-short-description").language_code("RU"),
     );
 }

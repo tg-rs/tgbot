@@ -47,10 +47,13 @@ fn chat_member_admin() {
         can_invite_users: false,
         can_restrict_members: true,
         can_pin_messages: Some(false),
+        can_post_stories: Some(true),
+        can_edit_stories: Some(true),
         can_promote_members: true,
         can_manage_video_chats: false,
         can_manage_chat: true,
         can_manage_topics: Some(true),
+        can_delete_stories: Some(true),
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
@@ -79,7 +82,10 @@ fn chat_member_admin() {
             "can_promote_members": true,
             "can_manage_video_chats": false,
             "can_manage_chat": true,
-            "can_manage_topics": true
+            "can_manage_topics": true,
+            "can_post_stories": true,
+            "can_edit_stories": true,
+            "can_delete_stories": true,
         }),
     );
     let expected_struct = ChatMember::Administrator(ChatMemberAdministrator {
@@ -103,10 +109,13 @@ fn chat_member_admin() {
         can_invite_users: false,
         can_restrict_members: true,
         can_pin_messages: None,
+        can_post_stories: None,
+        can_edit_stories: None,
         can_promote_members: true,
         can_manage_video_chats: false,
         can_manage_chat: true,
         can_manage_topics: None,
+        can_delete_stories: None,
     });
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
@@ -677,6 +686,9 @@ fn promote_chat_member() {
                 "can_promote_members": true,
                 "can_restrict_members": true,
                 "can_manage_topics": true,
+                "can_post_stories": true,
+                "can_edit_stories": true,
+                "can_delete_stories": true
             }),
         ),
         PromoteChatMember::new(1, 2).promote_all(),
@@ -699,6 +711,9 @@ fn promote_chat_member() {
                 "can_promote_members": false,
                 "can_restrict_members": false,
                 "can_manage_topics": false,
+                "can_post_stories": false,
+                "can_edit_stories": false,
+                "can_delete_stories": false
             }),
         ),
         PromoteChatMember::new(1, 2).demote_all(),
@@ -721,6 +736,9 @@ fn promote_chat_member() {
                 "can_promote_members": false,
                 "can_restrict_members": false,
                 "can_manage_topics": true,
+                "can_post_stories": true,
+                "can_edit_stories": true,
+                "can_delete_stories": true
             }),
         ),
         PromoteChatMember::new(1, 2)
@@ -735,7 +753,10 @@ fn promote_chat_member() {
             .can_post_messages(false)
             .can_promote_members(false)
             .can_restrict_members(false)
-            .can_manage_topics(true),
+            .can_manage_topics(true)
+            .can_post_stories(true)
+            .can_edit_stories(true)
+            .can_delete_stories(true),
     );
     assert_payload_eq(
         Payload::json(

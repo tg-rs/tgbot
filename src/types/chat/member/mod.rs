@@ -122,6 +122,15 @@ pub struct ChatMemberAdministrator {
     /// True, if the administrator can pin messages; groups and supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
+    /// True, if the administrator can post stories in the channel; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_post_stories: Option<bool>,
+    /// True, if the administrator can edit stories posted by other users; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_stories: Option<bool>,
+    /// True, if the administrator can delete stories posted by other users; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_delete_stories: Option<bool>,
     /// True, if the user is allowed to
     /// create, rename, close, and reopen forum topics; supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -408,6 +417,12 @@ pub struct PromoteChatMember {
     can_restrict_members: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_manage_topics: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    can_post_stories: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    can_edit_stories: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    can_delete_stories: Option<bool>,
 }
 
 impl PromoteChatMember {
@@ -433,6 +448,9 @@ impl PromoteChatMember {
             can_promote_members: None,
             can_restrict_members: None,
             can_manage_topics: None,
+            can_post_stories: None,
+            can_edit_stories: None,
+            can_delete_stories: None,
         }
     }
 
@@ -450,6 +468,9 @@ impl PromoteChatMember {
         self.can_promote_members = Some(true);
         self.can_restrict_members = Some(true);
         self.can_manage_topics = Some(true);
+        self.can_post_stories = Some(true);
+        self.can_edit_stories = Some(true);
+        self.can_delete_stories = Some(true);
         self
     }
 
@@ -467,6 +488,9 @@ impl PromoteChatMember {
         self.can_promote_members = Some(false);
         self.can_restrict_members = Some(false);
         self.can_manage_topics = Some(false);
+        self.can_post_stories = Some(false);
+        self.can_edit_stories = Some(false);
+        self.can_delete_stories = Some(false);
         self
     }
 
@@ -545,6 +569,24 @@ impl PromoteChatMember {
     /// User is allowed to create, rename, close, and reopen forum topics, supergroups only
     pub fn can_manage_topics(mut self, can_manage_topics: bool) -> Self {
         self.can_manage_topics = Some(can_manage_topics);
+        self
+    }
+
+    /// Administrator can post stories in the channel; channels only
+    pub fn can_post_stories(mut self, can_post_stories: bool) -> Self {
+        self.can_post_stories = Some(can_post_stories);
+        self
+    }
+
+    /// Administrator can edit stories posted by other users; channels only
+    pub fn can_edit_stories(mut self, can_edit_stories: bool) -> Self {
+        self.can_edit_stories = Some(can_edit_stories);
+        self
+    }
+
+    /// Administrator can delete stories posted by other users; channels only
+    pub fn can_delete_stories(mut self, can_delete_stories: bool) -> Self {
+        self.can_delete_stories = Some(can_delete_stories);
         self
     }
 }

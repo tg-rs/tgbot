@@ -171,6 +171,34 @@ impl Method for DeleteStickerFromSet {
     }
 }
 
+/// Delete a sticker set that was created by the bot
+#[derive(Clone, Debug, Serialize)]
+pub struct DeleteStickerSet {
+    name: String,
+}
+
+impl DeleteStickerSet {
+    /// Creates a new DeleteStickerSet
+    ///
+    /// # Arguments
+    ///
+    /// * name - Sticker set name
+    pub fn new<T>(name: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self { name: name.into() }
+    }
+}
+
+impl Method for DeleteStickerSet {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteStickerSet", self)
+    }
+}
+
 /// Get a sticker set
 #[derive(Clone, Debug, Serialize)]
 pub struct GetStickerSet {
@@ -193,6 +221,50 @@ impl Method for GetStickerSet {
 
     fn into_payload(self) -> Payload {
         Payload::json("getStickerSet", self)
+    }
+}
+
+/// Set the thumbnail of a custom emoji sticker set
+#[derive(Clone, Debug, Serialize)]
+pub struct SetCustomEmojiStickerSetThumbnail {
+    name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    custom_emoji_id: Option<String>,
+}
+
+impl SetCustomEmojiStickerSetThumbnail {
+    /// Creates a new SetCustomEmojiStickerSetThumbnail
+    ///
+    /// # Arguments
+    ///
+    /// * name - Sticker set name
+    pub fn new<T>(name: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            name: name.into(),
+            custom_emoji_id: None,
+        }
+    }
+
+    /// Custom emoji identifier of a sticker from the sticker set
+    ///
+    /// Pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.
+    pub fn custom_emoji_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.custom_emoji_id = Some(value.into());
+        self
+    }
+}
+
+impl Method for SetCustomEmojiStickerSetThumbnail {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setCustomEmojiStickerSetThumbnail", self)
     }
 }
 
@@ -223,6 +295,40 @@ impl Method for SetStickerPositionInSet {
 
     fn into_payload(self) -> Payload {
         Payload::json("setStickerPositionInSet", self)
+    }
+}
+
+/// Set the title of a created sticker set
+#[derive(Clone, Debug, Serialize)]
+pub struct SetStickerSetTitle {
+    name: String,
+    title: String,
+}
+
+impl SetStickerSetTitle {
+    /// Creates a new SetStickerSetTitle
+    ///
+    /// # Arguments
+    ///
+    /// * name - Sticker set name
+    /// * title - Sticker set title, 1-64 characters
+    pub fn new<A, B>(name: A, title: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            name: name.into(),
+            title: title.into(),
+        }
+    }
+}
+
+impl Method for SetStickerSetTitle {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setStickerSetTitle", self)
     }
 }
 

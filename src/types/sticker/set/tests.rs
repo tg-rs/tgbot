@@ -5,13 +5,16 @@ use crate::{
         AddStickerToSet,
         CreateNewStickerSet,
         DeleteStickerFromSet,
+        DeleteStickerSet,
         GetStickerSet,
         InputFile,
         InputSticker,
         InputStickers,
         PhotoSize,
+        SetCustomEmojiStickerSetThumbnail,
         SetStickerPositionInSet,
         SetStickerSetThumb,
+        SetStickerSetTitle,
         StickerFormat,
         StickerSet,
         StickerType,
@@ -128,6 +131,19 @@ fn delete_sticker_from_set() {
 }
 
 #[test]
+fn delete_sticker_set() {
+    assert_payload_eq(
+        Payload::json(
+            "deleteStickerSet",
+            serde_json::json!({
+                "name": "test"
+            }),
+        ),
+        DeleteStickerSet::new("test"),
+    );
+}
+
+#[test]
 fn get_sticker_set() {
     assert_payload_eq(
         Payload::json(
@@ -137,6 +153,30 @@ fn get_sticker_set() {
             }),
         ),
         GetStickerSet::new("name"),
+    );
+}
+
+#[test]
+fn set_custom_emoji_sticker_set_thumbnail() {
+    let method = SetCustomEmojiStickerSetThumbnail::new("test");
+    assert_payload_eq(
+        Payload::json(
+            "setCustomEmojiStickerSetThumbnail",
+            serde_json::json!({
+                "name": "test"
+            }),
+        ),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setCustomEmojiStickerSetThumbnail",
+            serde_json::json!({
+                "name": "test",
+                "custom_emoji_id": "emoji-id"
+            }),
+        ),
+        method.custom_emoji_id("emoji-id"),
     );
 }
 
@@ -151,6 +191,20 @@ fn set_sticker_position_in_set() {
             }),
         ),
         SetStickerPositionInSet::new("sticker", 1),
+    );
+}
+
+#[test]
+fn set_sticker_set_title() {
+    assert_payload_eq(
+        Payload::json(
+            "setStickerSetTitle",
+            serde_json::json!({
+                "name": "test-name",
+                "title": "test-title"
+            }),
+        ),
+        SetStickerSetTitle::new("test-name", "test-title"),
     );
 }
 

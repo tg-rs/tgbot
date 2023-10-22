@@ -11,6 +11,9 @@ use crate::{
         PhotoSize,
         ReplyMarkup,
         SendSticker,
+        SetStickerEmojiList,
+        SetStickerKeywords,
+        SetStickerMaskPosition,
         Sticker,
         StickerFormat,
         StickerType,
@@ -193,6 +196,68 @@ fn send_sticker() {
         ),
         SendSticker::new(1, InputFile::file_id("sticker-id")),
     );
+}
+
+#[test]
+fn set_sticker_emoji_list() {
+    assert_payload_eq(
+        Payload::json(
+            "setStickerEmojiList",
+            serde_json::json!({
+                "sticker": "file-id",
+                "emoji_list": ["✌️"]
+            }),
+        ),
+        SetStickerEmojiList::new("file-id", ["✌️"]),
+    );
+}
+
+#[test]
+fn set_sticker_keywords() {
+    assert_payload_eq(
+        Payload::json(
+            "setStickerKeywords",
+            serde_json::json!({
+                "sticker": "file-id",
+                "keywords": ["kw"]
+            }),
+        ),
+        SetStickerKeywords::new("file-id", ["kw"]),
+    );
+}
+
+#[test]
+fn set_sticker_mask_position() {
+    let method = SetStickerMaskPosition::new("file-id");
+    assert_payload_eq(
+        Payload::json(
+            "setStickerMaskPosition",
+            serde_json::json!({
+                "sticker": "file-id",
+            }),
+        ),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setStickerMaskPosition",
+            serde_json::json!({
+                "sticker": "file-id",
+                "mask_position": {
+                    "point": "forehead",
+                    "x_shift": 0.0,
+                    "y_shift": 0.0,
+                    "scale": 0.0
+                }
+            }),
+        ),
+        method.mask_position(MaskPosition {
+            point: MaskPositionPoint::Forehead,
+            x_shift: 0.0,
+            y_shift: 0.0,
+            scale: 0.0,
+        }),
+    )
 }
 
 #[test]

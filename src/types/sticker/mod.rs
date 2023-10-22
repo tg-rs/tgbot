@@ -228,6 +228,118 @@ impl Method for SendSticker {
     }
 }
 
+/// Change the list of emoji assigned to a regular or custom emoji sticker
+///
+/// The sticker must belong to a sticker set created by the bot
+#[derive(Clone, Debug, Serialize)]
+pub struct SetStickerEmojiList {
+    sticker: String,
+    emoji_list: Vec<String>,
+}
+
+impl SetStickerEmojiList {
+    /// Creates a new SetStickerEmojiList
+    ///
+    /// * sticker - File identifier of the sticker
+    /// * emoji_list - A list of 1-20 emoji associated with the sticker
+    pub fn new<A, B, C>(sticker: A, emoji_list: B) -> Self
+    where
+        A: Into<String>,
+        B: IntoIterator<Item = C>,
+        C: Into<String>,
+    {
+        Self {
+            sticker: sticker.into(),
+            emoji_list: emoji_list.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+impl Method for SetStickerEmojiList {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setStickerEmojiList", self)
+    }
+}
+
+/// Change search keywords assigned to a regular or custom emoji sticker
+///
+/// The sticker must belong to a sticker set created by the bot.
+#[derive(Clone, Debug, Serialize)]
+pub struct SetStickerKeywords {
+    sticker: String,
+    keywords: Vec<String>,
+}
+
+impl SetStickerKeywords {
+    /// Creates a new SetStickerKeywords
+    ///
+    /// * sticker - File identifier of the sticker
+    /// * keywords - A list of 0-20 search keywords for the sticker
+    ///              with total length of up to 64 characters
+    pub fn new<A, B, C>(sticker: A, keywords: B) -> Self
+    where
+        A: Into<String>,
+        B: IntoIterator<Item = C>,
+        C: Into<String>,
+    {
+        Self {
+            sticker: sticker.into(),
+            keywords: keywords.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
+impl Method for SetStickerKeywords {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setStickerKeywords", self)
+    }
+}
+
+/// Change the mask position of a mask sticker
+///
+/// The sticker must belong to a sticker set created by the bot.
+#[derive(Clone, Debug, Serialize)]
+pub struct SetStickerMaskPosition {
+    sticker: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mask_position: Option<MaskPosition>,
+}
+
+impl SetStickerMaskPosition {
+    /// Creates a new SetStickerMaskPosition
+    ///
+    /// * sticker - File identifier of the sticker
+    pub fn new<T>(sticker: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            sticker: sticker.into(),
+            mask_position: None,
+        }
+    }
+
+    /// Position where the mask should be placed on faces
+    ///
+    /// Omit the parameter to remove the mask position.
+    pub fn mask_position(mut self, value: MaskPosition) -> Self {
+        self.mask_position = Some(value);
+        self
+    }
+}
+
+impl Method for SetStickerMaskPosition {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setStickerMaskPosition", self)
+    }
+}
+
 /// Upload a file with a sticker for later use in
 /// the createNewStickerSet and addStickerToSet methods
 /// (the file can be used multiple times).

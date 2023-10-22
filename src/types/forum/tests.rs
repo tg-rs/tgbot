@@ -21,6 +21,7 @@ use crate::{
         ReopenGeneralForumTopic,
         UnhideGeneralForumTopic,
         UnpinAllForumTopicMessages,
+        UnpinAllGeneralForumTopicMessages,
     },
 };
 
@@ -282,5 +283,18 @@ fn unpin_all_forum_topic_messages() {
             }),
         ),
         UnpinAllForumTopicMessages::new(1, 1),
+    );
+}
+
+#[test]
+fn unpin_all_general_forum_topic_messages() {
+    assert_payload_eq(
+        Payload::json(
+            "unpinAllGeneralForumTopicMessages",
+            serde_json::json!({
+                "chat_id": 1
+            }),
+        ),
+        UnpinAllGeneralForumTopicMessages::new(1),
     );
 }

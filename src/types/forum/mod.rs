@@ -523,3 +523,36 @@ impl Method for UnpinAllForumTopicMessages {
         Payload::json("unpinAllForumTopicMessages", self)
     }
 }
+
+/// Clear the list of pinned messages in a General forum topic
+///
+/// The bot must be an administrator in the chat for this to work
+/// and must have the can_pin_messages administrator right in the supergroup.
+#[derive(Clone, Debug, Serialize)]
+pub struct UnpinAllGeneralForumTopicMessages {
+    chat_id: ChatId,
+}
+
+impl UnpinAllGeneralForumTopicMessages {
+    /// Creates a new UnpinAllGeneralForumTopicMessages
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+        }
+    }
+}
+
+impl Method for UnpinAllGeneralForumTopicMessages {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("unpinAllGeneralForumTopicMessages", self)
+    }
+}

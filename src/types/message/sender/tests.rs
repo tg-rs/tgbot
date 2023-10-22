@@ -142,6 +142,7 @@ fn private_chat() {
         has_restricted_voice_and_video_messages: None,
         active_usernames: None,
         emoji_status_custom_emoji_id: None,
+        emoji_status_expiration_date: None,
     });
     let mut expected_struct = create_message_struct(chat);
     expected_struct.sender = MessageSender::User(User {

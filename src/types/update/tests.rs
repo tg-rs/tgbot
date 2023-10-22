@@ -461,6 +461,7 @@ fn edited_message() {
                 has_restricted_voice_and_video_messages: None,
                 active_usernames: None,
                 emoji_status_custom_emoji_id: None,
+                emoji_status_expiration_date: None,
             }),
             data: MessageData::Text(Text {
                 data: String::from("Edited text"),
@@ -601,6 +602,7 @@ fn message() {
                 has_restricted_voice_and_video_messages: None,
                 active_usernames: None,
                 emoji_status_custom_emoji_id: None,
+                emoji_status_expiration_date: None,
             }),
             author_signature: None,
             has_protected_content: false,

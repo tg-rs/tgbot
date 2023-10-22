@@ -60,4 +60,10 @@ pub struct PrivateChat {
     /// Returned only in getChat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub emoji_status_custom_emoji_id: Option<String>,
+    /// Expiration date of the emoji status of
+    /// the other party in a private chat in Unix time, if any
+    ///
+    /// Returned only in getChat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub emoji_status_expiration_date: Option<Integer>,
 }

@@ -6,6 +6,7 @@ use crate::types::{
     InlineKeyboardMarkup,
     LoginUrl,
     ReplyMarkup,
+    SwitchInlineQueryChosenChat,
     WebAppInfo,
 };
 
@@ -32,6 +33,10 @@ fn inline_keyboard() {
             InlineKeyboardButton::with_callback_data_struct("cd", &callback_data).unwrap(),
             InlineKeyboardButton::with_switch_inline_query("siq", "siq"),
             InlineKeyboardButton::with_switch_inline_query_current_chat("siq_cc", "siq_cc"),
+            InlineKeyboardButton::with_switch_inline_query_chosen_chat(
+                "siq_chc",
+                SwitchInlineQueryChosenChat::new("query"),
+            ),
             InlineKeyboardButton::with_callback_game("cg"),
             InlineKeyboardButton::with_pay("pay"),
             InlineKeyboardButton::with_login_url("login url", "http://example.com"),
@@ -42,12 +47,15 @@ fn inline_keyboard() {
                     {"text": "url", "url": "tg://user?id=1"},
                     {"text": "web app", "web_app": {"url": "https://example.com"}},
                     {"text": "cd", "callback_data": "cd"},
-                    {"text": "cd","callback_data": "{\"value\":\"cd-struct\"}"},
-                    {"text": "siq","switch_inline_query": "siq"},
-                    {"text": "siq_cc","switch_inline_query_current_chat": "siq_cc"},
-                    {"text": "cg","callback_game": {}},
-                    {"text": "pay","pay": true},
-                    {"text": "login url","login_url": {"url": "http://example.com"}}
+                    {"text": "cd", "callback_data": "{\"value\":\"cd-struct\"}"},
+                    {"text": "siq", "switch_inline_query": "siq"},
+                    {"text": "siq_cc", "switch_inline_query_current_chat": "siq_cc"},
+                    {"text": "siq_chc", "switch_inline_query_chosen_chat": {
+                        "query": "query"
+                    }},
+                    {"text": "cg", "callback_game": {}},
+                    {"text": "pay", "pay": true},
+                    {"text": "login url", "login_url": {"url": "http://example.com"}}
                 ]
             ]
         }),
@@ -91,6 +99,31 @@ fn login_url() {
             "forward_text": "forward text",
             "bot_username": "bot_username",
             "request_write_access": true
+        }),
+    );
+}
+
+#[test]
+fn switch_inline_query_chosen_chat() {
+    let expected_struct = SwitchInlineQueryChosenChat::new("query");
+    assert_json_eq(
+        expected_struct.clone(),
+        serde_json::json!({
+            "query": "query"
+        }),
+    );
+    assert_json_eq(
+        expected_struct
+            .allow_bot_chats(true)
+            .allow_channel_chats(true)
+            .allow_group_chats(true)
+            .allow_user_chats(true),
+        serde_json::json!({
+            "query": "query",
+            "allow_bot_chats": true,
+            "allow_channel_chats": true,
+            "allow_group_chats": true,
+            "allow_user_chats": true,
         }),
     );
 }

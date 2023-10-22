@@ -127,6 +127,15 @@ impl InlineKeyboardButton {
         )
     }
 
+    /// Pressing the button will prompt the user to select one of their chats of the specified type,
+    /// open that chat and insert the bot username and the specified inline query in the input field
+    pub fn with_switch_inline_query_chosen_chat<T>(text: T, value: SwitchInlineQueryChosenChat) -> Self
+    where
+        T: Into<String>,
+    {
+        Self::new(text, InlineKeyboardButtonKind::SwitchInlineQueryChosenChat(value))
+    }
+
     /// Description of the game that will be launched when the user presses the button
     ///
     /// NOTE: This type of button must always be the first button in the first row
@@ -187,13 +196,16 @@ pub enum InlineKeyboardButtonKind {
     /// will be automatically returned to the chat they switched from,
     /// skipping the chat selection screen
     SwitchInlineQuery(String),
-    /// If set, pressing the button will insert the bot‘s username and
+    /// Pressing the button will insert the bot‘s username and
     /// the specified inline query in the current chat's input field
     ///
     /// Can be empty, in which case only the bot’s username will be inserted
     /// This offers a quick way for the user to open your bot in
     /// inline mode in the same chat – good for selecting something from multiple options
     SwitchInlineQueryCurrentChat(String),
+    /// Pressing the button will prompt the user to select one of their chats of the specified type,
+    /// open that chat and insert the bot username and the specified inline query in the input field
+    SwitchInlineQueryChosenChat(SwitchInlineQueryChosenChat),
     /// Description of the game that will be launched when the user presses the button
     ///
     /// NOTE: This type of button must always be the first button in the first row
@@ -223,6 +235,8 @@ struct InlineKeyboardButtonKindRaw {
     #[serde(skip_serializing_if = "Option::is_none")]
     switch_inline_query_current_chat: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    switch_inline_query_chosen_chat: Option<SwitchInlineQueryChosenChat>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     callback_game: Option<JsonValue>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pay: Option<bool>,
@@ -240,6 +254,7 @@ impl From<InlineKeyboardButtonKind> for InlineKeyboardButtonKindRaw {
             CallbackData(data) => raw.callback_data = Some(data),
             SwitchInlineQuery(data) => raw.switch_inline_query = Some(data),
             SwitchInlineQueryCurrentChat(data) => raw.switch_inline_query_current_chat = Some(data),
+            SwitchInlineQueryChosenChat(data) => raw.switch_inline_query_chosen_chat = Some(data),
             CallbackGame => raw.callback_game = Some(serde_json::json!({})),
             Pay => raw.pay = Some(true),
             LoginUrl(data) => raw.login_url = Some(data),
@@ -262,6 +277,8 @@ impl TryFrom<InlineKeyboardButtonKindRaw> for InlineKeyboardButtonKind {
             Self::SwitchInlineQuery(data)
         } else if let Some(data) = kind.switch_inline_query_current_chat {
             Self::SwitchInlineQueryCurrentChat(data)
+        } else if let Some(data) = kind.switch_inline_query_chosen_chat {
+            Self::SwitchInlineQueryChosenChat(data)
         } else if kind.callback_game.is_some() {
             Self::CallbackGame
         } else if kind.pay.is_some() {
@@ -389,5 +406,65 @@ where
 {
     fn from(url: S) -> Self {
         Self::new(url)
+    }
+}
+
+/// Represents an inline button that switches the current user
+/// to inline mode in a chosen chat, with an optional default inline query
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct SwitchInlineQueryChosenChat {
+    query: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    allow_bot_chats: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    allow_channel_chats: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    allow_group_chats: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    allow_user_chats: Option<bool>,
+}
+
+impl SwitchInlineQueryChosenChat {
+    /// Creates a new SwitchInlineQueryChosenChat
+    ///
+    /// # Arguments
+    ///
+    /// * query - The default inline query to be inserted in the input field.
+    ///           If left empty, only the bot username will be inserted.
+    pub fn new<T>(query: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            query: query.into(),
+            allow_bot_chats: None,
+            allow_channel_chats: None,
+            allow_group_chats: None,
+            allow_user_chats: None,
+        }
+    }
+
+    /// True, if private chats with users can be chosen
+    pub fn allow_bot_chats(mut self, value: bool) -> Self {
+        self.allow_bot_chats = Some(value);
+        self
+    }
+
+    /// True, if private chats with bots can be chosen
+    pub fn allow_channel_chats(mut self, value: bool) -> Self {
+        self.allow_channel_chats = Some(value);
+        self
+    }
+
+    /// True, if group and supergroup chats can be chosen
+    pub fn allow_group_chats(mut self, value: bool) -> Self {
+        self.allow_group_chats = Some(value);
+        self
+    }
+
+    /// True, if channel chats can be chosen
+    pub fn allow_user_chats(mut self, value: bool) -> Self {
+        self.allow_user_chats = Some(value);
+        self
     }
 }

@@ -106,6 +106,7 @@ fn bot_status() {
                 until_date: 0,
             }),
             invite_link: None,
+            via_chat_folder_invite_link: None,
         }),
     };
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
@@ -916,6 +917,7 @@ fn user_status() {
                 until_date: 0,
             }),
             invite_link: None,
+            via_chat_folder_invite_link: None,
         }),
     };
     assert_eq!(expected_struct.get_chat_id(), Some(1));

@@ -462,6 +462,7 @@ fn chat_member_updated() {
                 member_limit: None,
                 pending_join_request_count: None,
             }),
+            via_chat_folder_invite_link: Some(true),
         },
         serde_json::json!({
             "chat": {
@@ -502,7 +503,8 @@ fn chat_member_updated() {
                 "creates_join_request": false,
                 "is_primary": true,
                 "is_revoked": false
-            }
+            },
+            "via_chat_folder_invite_link": true
         }),
     );
     assert_json_eq(
@@ -553,6 +555,7 @@ fn chat_member_updated() {
                 until_date: 0,
             }),
             invite_link: None,
+            via_chat_folder_invite_link: None,
         },
         serde_json::json!({
             "chat": {

@@ -221,6 +221,9 @@ pub struct ChatMemberUpdated {
     /// for joining by invite link events only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<ChatInviteLink>,
+    /// True, if the user joined the chat via a chat folder invite link
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub via_chat_folder_invite_link: Option<bool>,
 }
 
 /// Ban a user in a group, a supergroup or a channel

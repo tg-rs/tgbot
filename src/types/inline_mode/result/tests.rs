@@ -6,10 +6,12 @@ use crate::{
         ChosenInlineResult,
         InlineQueryResult,
         InlineQueryResultArticle,
+        InlineQueryResultsButton,
         InputMessageContent,
         InputMessageContentText,
         Location,
         User,
+        WebAppInfo,
     },
 };
 
@@ -57,16 +59,17 @@ fn answer_inline_query() {
                 "cache_time": 300,
                 "is_personal": true,
                 "next_offset": "offset",
-                "switch_pm_text": "text",
-                "switch_pm_parameter": "param"
+                "button": {
+                    "text": "text",
+                    "start_parameter": "param"
+                }
             }),
         ),
         method
             .cache_time(300)
             .personal(true)
             .next_offset("offset")
-            .switch_pm_text("text")
-            .switch_pm_parameter("param"),
+            .button(InlineQueryResultsButton::with_start_parameter("text", "param")),
     );
 }
 
@@ -136,6 +139,31 @@ fn chosen_inline_result() {
                 "is_bot": false
             },
             "query": "q",
+        }),
+    );
+}
+
+#[test]
+fn inline_query_results_button() {
+    assert_json_eq(
+        InlineQueryResultsButton::with_start_parameter("text", "param"),
+        serde_json::json!({
+            "text": "text",
+            "start_parameter": "param"
+        }),
+    );
+    assert_json_eq(
+        InlineQueryResultsButton::with_web_app(
+            "text",
+            WebAppInfo {
+                url: String::from("https://example.com"),
+            },
+        ),
+        serde_json::json!({
+            "text": "text",
+            "web_app": {
+                "url": "https://example.com"
+            }
         }),
     );
 }

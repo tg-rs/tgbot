@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Integer, Location, User},
+    types::{Integer, Location, User, WebAppInfo},
 };
 
 use self::raw::RawInlineQueryResult;
@@ -88,6 +88,61 @@ pub enum InlineQueryResult {
     Voice(InlineQueryResultVoice),
 }
 
+/// Represents a button to be shown above inline query results
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct InlineQueryResultsButton {
+    text: String,
+    #[serde(flatten)]
+    button_type: InlineQueryResultsButtonType,
+}
+
+impl InlineQueryResultsButton {
+    /// Creates a new InlineQueryResultsButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Label text on the button
+    /// * web_app_info - Description of the Web App that will be launched
+    ///                  when the user presses the button.
+    ///                  The Web App will be able to switch back to the inline mode
+    ///                  using the method switchInlineQuery inside the Web App.
+    pub fn with_web_app<T>(text: T, web_app_info: WebAppInfo) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            text: text.into(),
+            button_type: InlineQueryResultsButtonType::WebApp(web_app_info),
+        }
+    }
+
+    /// Creates a new InlineQueryResultsButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Label text on the button
+    /// * start_parameter - Deep-linking parameter for the /start message
+    ///                     sent to the bot when a user presses the button.
+    ///                     1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.
+    pub fn with_start_parameter<A, B>(text: A, start_parameter: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            text: text.into(),
+            button_type: InlineQueryResultsButtonType::StartParameter(start_parameter.into()),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum InlineQueryResultsButtonType {
+    WebApp(WebAppInfo),
+    StartParameter(String),
+}
+
 /// Result of an inline query that was chosen by the user and sent to their chat partner
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChosenInlineResult {
@@ -121,9 +176,7 @@ pub struct AnswerInlineQuery {
     #[serde(skip_serializing_if = "Option::is_none")]
     next_offset: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    switch_pm_text: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    switch_pm_parameter: Option<String>,
+    button: Option<InlineQueryResultsButton>,
 }
 
 impl AnswerInlineQuery {
@@ -140,8 +193,7 @@ impl AnswerInlineQuery {
             cache_time: None,
             is_personal: None,
             next_offset: None,
-            switch_pm_text: None,
-            switch_pm_parameter: None,
+            button: None,
         }
     }
 
@@ -170,28 +222,9 @@ impl AnswerInlineQuery {
         self
     }
 
-    /// Clients will display a button with specified text that switches the user
-    /// to a private chat with the bot and sends the bot a
-    /// start message with the parameter switch_pm_parameter
-    pub fn switch_pm_text<S: Into<String>>(mut self, switch_pm_text: S) -> Self {
-        self.switch_pm_text = Some(switch_pm_text.into());
-        self
-    }
-
-    /// Deep-linking parameter for the /start message sent to the bot when user presses the switch button
-    ///
-    /// 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed
-    ///
-    /// Example: An inline bot that sends YouTube videos can ask the user to connect the bot to
-    /// their YouTube account to adapt search results accordingly
-    /// To do this, it displays a ‘Connect your YouTube account’
-    /// button above the results, or even before showing any
-    /// The user presses the button, switches to a private chat with the bot and, in doing so,
-    /// passes a start parameter that instructs the bot to return an oauth link
-    /// Once done, the bot can offer a switch_inline button so that the user can easily
-    /// return to the chat where they wanted to use the bot inline capabilities
-    pub fn switch_pm_parameter<S: Into<String>>(mut self, switch_pm_parameter: S) -> Self {
-        self.switch_pm_parameter = Some(switch_pm_parameter.into());
+    /// An object describing a button to be shown above inline query results
+    pub fn button(mut self, value: InlineQueryResultsButton) -> Self {
+        self.button = Some(value);
         self
     }
 }

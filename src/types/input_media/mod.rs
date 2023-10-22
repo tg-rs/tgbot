@@ -38,16 +38,16 @@ impl InputMedia {
     /// Creates a new input media with thumbnail
     ///
     /// Note that photo can not have a thumbnail
-    pub fn with_thumb<F, T, K>(file: F, thumb: T, kind: K) -> Result<InputMedia, InputMediaError>
+    pub fn with_thumbnail<F, T, K>(file: F, thumbnail: T, kind: K) -> Result<InputMedia, InputMediaError>
     where
         F: Into<InputFile>,
         T: Into<InputFile>,
         K: Into<InputMediaKind>,
     {
-        Self::create(file, Some(thumb), kind)
+        Self::create(file, Some(thumbnail), kind)
     }
 
-    fn create<K, F, T>(media: F, thumb: Option<T>, kind: K) -> Result<Self, InputMediaError>
+    fn create<K, F, T>(media: F, thumbnail: Option<T>, kind: K) -> Result<Self, InputMediaError>
     where
         K: Into<InputMediaKind>,
         F: Into<InputFile>,
@@ -66,13 +66,13 @@ impl InputMedia {
         };
 
         let media = add_file(&mut form, "tgbot_im_file", media.into());
-        let thumb = thumb.map(|thumb| add_file(&mut form, "tgbot_im_thumb", thumb.into()));
+        let thumbnail = thumbnail.map(|thumb| add_file(&mut form, "tgbot_im_thumb", thumb.into()));
         let data = match kind.into() {
-            InputMediaKind::Animation(info) => InputMediaData::Animation { media, thumb, info },
-            InputMediaKind::Audio(info) => InputMediaData::Audio { media, thumb, info },
-            InputMediaKind::Document(info) => InputMediaData::Document { media, thumb, info },
+            InputMediaKind::Animation(info) => InputMediaData::Animation { media, thumbnail, info },
+            InputMediaKind::Audio(info) => InputMediaData::Audio { media, thumbnail, info },
+            InputMediaKind::Document(info) => InputMediaData::Document { media, thumbnail, info },
             InputMediaKind::Photo(info) => InputMediaData::Photo { media, info },
-            InputMediaKind::Video(info) => InputMediaData::Video { media, thumb, info },
+            InputMediaKind::Video(info) => InputMediaData::Video { media, thumbnail, info },
         };
         let info = serde_json::to_string(&data).map_err(InputMediaError::SerializeInfo)?;
         form.insert_field("media", info);
@@ -108,21 +108,21 @@ enum InputMediaData {
     Animation {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
-        thumb: Option<String>,
+        thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaAnimation,
     },
     Audio {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
-        thumb: Option<String>,
+        thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaAudio,
     },
     Document {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
-        thumb: Option<String>,
+        thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaDocument,
     },
@@ -134,7 +134,7 @@ enum InputMediaData {
     Video {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
-        thumb: Option<String>,
+        thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaVideo,
     },

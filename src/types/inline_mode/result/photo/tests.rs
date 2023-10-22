@@ -28,7 +28,7 @@ fn inline_query_result_photo() {
             "type": "photo",
             "id": "id",
             "photo_url": "url",
-            "thumb_url": "thumb-url",
+            "thumbnail_url": "thumb-url",
             "photo_width": 200,
             "photo_height": 300,
             "title": "title",
@@ -45,7 +45,7 @@ fn inline_query_result_photo() {
             "type": "photo",
             "id": "id",
             "photo_url": "url",
-            "thumb_url": "thumb-url"
+            "thumbnail_url": "thumb-url"
         }),
     );
 }

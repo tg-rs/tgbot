@@ -48,7 +48,7 @@ impl UpdateHandler for Handler {
                     match reply_to.data {
                         // Change animation to document
                         MessageData::Animation(_) => {
-                            let input_media = InputMedia::with_thumb(
+                            let input_media = InputMedia::with_thumbnail(
                                 InputFileReader::new(Cursor::new(b"Hello World!"))
                                     .info(("hello.txt", mime::TEXT_PLAIN)),
                                 InputFile::path(this.document_thumb_path).await.unwrap(),
@@ -125,7 +125,7 @@ impl UpdateHandler for Handler {
                             let document = Cursor::new(b"Hello World!");
                             let reader = InputFileReader::new(document).info(("hello.txt", mime::TEXT_PLAIN));
                             let method = SendDocument::new(chat_id, reader)
-                                .thumb(InputFile::path(this.document_thumb_path).await.unwrap());
+                                .thumbnail(InputFile::path(this.document_thumb_path).await.unwrap());
                             this.client.execute(method).await.unwrap();
                         }
                         "/video" => {

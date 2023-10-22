@@ -22,9 +22,9 @@ mod tests;
 pub struct InlineQueryResultGif {
     id: String,
     gif_url: String,
-    thumb_url: String,
+    thumbnail_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumb_mime_type: Option<String>,
+    thumbnail_mime_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     gif_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -52,8 +52,8 @@ impl InlineQueryResultGif {
     ///
     /// * id - Unique identifier for this result, 1-64 bytes
     /// * gif_url - A valid URL for the GIF file. File size must not exceed 1MB
-    /// * thumb_url - URL of the static thumbnail for the result (jpeg or gif)
-    pub fn new<I, U, T>(id: I, gif_url: U, thumb_url: T) -> Self
+    /// * thumbnail_url - URL of the static thumbnail for the result (jpeg or gif)
+    pub fn new<I, U, T>(id: I, gif_url: U, thumbnail_url: T) -> Self
     where
         I: Into<String>,
         U: Into<String>,
@@ -65,8 +65,8 @@ impl InlineQueryResultGif {
             gif_width: None,
             gif_height: None,
             gif_duration: None,
-            thumb_url: thumb_url.into(),
-            thumb_mime_type: None,
+            thumbnail_url: thumbnail_url.into(),
+            thumbnail_mime_type: None,
             title: None,
             caption: None,
             caption_entities: None,
@@ -81,8 +81,8 @@ impl InlineQueryResultGif {
     /// Must be one of “image/jpeg”, “image/gif”, or “video/mp4”
     ///
     /// Defaults to “image/jpeg”
-    pub fn thumb_mime_type<S: Into<String>>(mut self, mime_type: S) -> Self {
-        self.thumb_mime_type = Some(mime_type.into());
+    pub fn thumbnail_mime_type<S: Into<String>>(mut self, mime_type: S) -> Self {
+        self.thumbnail_mime_type = Some(mime_type.into());
         self
     }
 
@@ -247,8 +247,8 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultGif {
         Ok(Self {
             id: value.id,
             gif_url: value.data.gif_url.ok_or(MissingField("gif_url"))?,
-            thumb_url: value.data.thumb_url.ok_or(MissingField("thumb_url"))?,
-            thumb_mime_type: value.data.thumb_mime_type,
+            thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
+            thumbnail_mime_type: value.data.thumbnail_mime_type,
             gif_width: value.data.gif_width,
             gif_height: value.data.gif_height,
             gif_duration: value.data.gif_duration,
@@ -267,8 +267,8 @@ impl From<InlineQueryResultGif> for RawInlineQueryResult {
         Self {
             data: RawInlineQueryResultData {
                 gif_url: Some(value.gif_url),
-                thumb_url: Some(value.thumb_url),
-                thumb_mime_type: value.thumb_mime_type,
+                thumbnail_url: Some(value.thumbnail_url),
+                thumbnail_mime_type: value.thumbnail_mime_type,
                 gif_width: value.gif_width,
                 gif_height: value.gif_height,
                 gif_duration: value.gif_duration,

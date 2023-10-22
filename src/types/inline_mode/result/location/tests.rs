@@ -16,9 +16,9 @@ fn inline_query_result_location() {
                 .live_period(100)
                 .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
                 .input_message_content(InputMessageContentText::new("text"))
-                .thumb_url("thumb-url")
-                .thumb_width(200)
-                .thumb_height(300),
+                .thumbnail_url("thumb-url")
+                .thumbnail_width(200)
+                .thumbnail_height(300),
         ),
         serde_json::json!({
             "type": "location",
@@ -29,9 +29,9 @@ fn inline_query_result_location() {
             "live_period": 100,
             "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
             "input_message_content": {"message_text": "text"},
-            "thumb_url": "thumb-url",
-            "thumb_width": 200,
-            "thumb_height": 300
+            "thumbnail_url": "thumb-url",
+            "thumbnail_width": 200,
+            "thumbnail_height": 300
         }),
     );
     assert_json_eq(

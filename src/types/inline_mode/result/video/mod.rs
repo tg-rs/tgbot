@@ -24,7 +24,7 @@ pub struct InlineQueryResultVideo {
     id: String,
     video_url: String,
     mime_type: String,
-    thumb_url: String,
+    thumbnail_url: String,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
@@ -54,9 +54,9 @@ impl InlineQueryResultVideo {
     /// * id - Unique identifier for this result, 1-64 bytes
     /// * video_url - A valid URL for the embedded video player or video file
     /// * mime_type - Mime type of the content of video url, “text/html” or “video/mp4”
-    /// * thumb_url - URL of the thumbnail (jpeg only) for the video
+    /// * thumbnail_url - URL of the thumbnail (jpeg only) for the video
     /// * title - Title for the result
-    pub fn new<A, B, C, D, E>(id: A, video_url: B, mime_type: C, thumb_url: D, title: E) -> Self
+    pub fn new<A, B, C, D, E>(id: A, video_url: B, mime_type: C, thumbnail_url: D, title: E) -> Self
     where
         A: Into<String>,
         B: Into<String>,
@@ -68,7 +68,7 @@ impl InlineQueryResultVideo {
             id: id.into(),
             video_url: video_url.into(),
             mime_type: mime_type.into(),
-            thumb_url: thumb_url.into(),
+            thumbnail_url: thumbnail_url.into(),
             title: title.into(),
             caption: None,
             parse_mode: None,
@@ -254,7 +254,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultVideo {
             id: value.id,
             video_url: value.data.video_url.ok_or(MissingField("video_url"))?,
             mime_type: value.data.mime_type.ok_or(MissingField("mime_type"))?,
-            thumb_url: value.data.thumb_url.ok_or(MissingField("thumb_url"))?,
+            thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
             title: value.data.title.ok_or(MissingField("title"))?,
             caption: value.data.caption,
             parse_mode: value.data.parse_mode,
@@ -275,7 +275,7 @@ impl From<InlineQueryResultVideo> for RawInlineQueryResult {
             data: RawInlineQueryResultData {
                 video_url: Some(value.video_url),
                 mime_type: Some(value.mime_type),
-                thumb_url: Some(value.thumb_url),
+                thumbnail_url: Some(value.thumbnail_url),
                 title: Some(value.title),
                 caption: value.caption,
                 parse_mode: value.parse_mode,

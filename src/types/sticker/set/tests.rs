@@ -13,7 +13,7 @@ use crate::{
         PhotoSize,
         SetCustomEmojiStickerSetThumbnail,
         SetStickerPositionInSet,
-        SetStickerSetThumb,
+        SetStickerSetThumbnail,
         SetStickerSetTitle,
         StickerFormat,
         StickerSet,
@@ -31,7 +31,7 @@ fn sticker_set() {
             sticker_type: StickerType::Regular,
             is_animated: false,
             is_video: false,
-            thumb: Some(PhotoSize {
+            thumbnail: Some(PhotoSize {
                 file_id: String::from("thumb-file-id"),
                 file_unique_id: String::from("thumb-file-unique-id"),
                 width: 512,
@@ -46,7 +46,7 @@ fn sticker_set() {
             "sticker_type": "regular",
             "is_animated": false,
             "is_video": false,
-            "thumb": {
+            "thumbnail": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-file-unique-id",
                 "width": 512,
@@ -209,16 +209,16 @@ fn set_sticker_set_title() {
 }
 
 #[test]
-fn set_sticker_set_thumb() {
+fn set_sticker_set_thumbnail() {
     assert_payload_eq(
         Payload::form(
-            "setStickerSetThumb",
+            "setStickerSetThumbnail",
             Form::from([
                 ("name", FormValue::from("name")),
                 ("user_id", 1.into()),
-                ("thumb", InputFile::file_id("file-id").into()),
+                ("thumbnail", InputFile::file_id("file-id").into()),
             ]),
         ),
-        SetStickerSetThumb::new("name", 1).thumb(InputFile::file_id("file-id")),
+        SetStickerSetThumbnail::new("name", 1).thumbnail(InputFile::file_id("file-id")),
     );
 }

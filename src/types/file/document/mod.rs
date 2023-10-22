@@ -32,7 +32,7 @@ pub struct Document {
     pub file_unique_id: String,
     /// Document thumbnail as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
     /// Original filename as defined by sender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
@@ -79,11 +79,11 @@ impl SendDocument {
     /// Thumbnails can’t be reused and can be only uploaded as a new file,
     /// so you can pass “attach://<file_attach_name>”
     /// if the thumbnail was uploaded using multipart/form-data under <file_attach_name>
-    pub fn thumb<V>(mut self, value: V) -> Self
+    pub fn thumbnail<V>(mut self, value: V) -> Self
     where
         V: Into<InputFile>,
     {
-        self.form.insert_field("thumb", value.into());
+        self.form.insert_field("thumbnail", value.into());
         self
     }
 

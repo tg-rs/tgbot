@@ -35,7 +35,7 @@ pub struct StickerSet {
     pub is_video: bool,
     /// Sticker set thumbnail in the .WEBP or .TGS format
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
 }
 
 /// Add a new sticker to a set created by the bot
@@ -334,12 +334,12 @@ impl Method for SetStickerSetTitle {
 
 /// Use this method to set the thumbnail of a sticker set
 #[derive(Debug)]
-pub struct SetStickerSetThumb {
+pub struct SetStickerSetThumbnail {
     form: Form,
 }
 
-impl SetStickerSetThumb {
-    /// Creates a new SetStickerSetThumb
+impl SetStickerSetThumbnail {
+    /// Creates a new SetStickerSetThumbnail
     ///
     /// # Arguments
     ///
@@ -355,20 +355,30 @@ impl SetStickerSetThumb {
         Self { form }
     }
 
-    /// Set a PNG image or TGS animation with the thumbnail
-    pub fn thumb<T>(mut self, thumb: T) -> Self
+    /// A .WEBP or .PNG image with the thumbnail
+    ///
+    /// Must be up to 128 kilobytes in size and have a width and height of exactly 100px,
+    /// or a .TGS animation with a thumbnail up to 32 kilobytes in size
+    /// (see https://core.telegram.org/stickers#animated-sticker-requirements for animated sticker
+    /// technical requirements), or a WEBM video with the thumbnail up to 32 kilobytes in size;
+    /// see https://core.telegram.org/stickers#video-sticker-requirements for video sticker
+    /// technical requirements.
+    ///
+    /// Animated and video sticker set thumbnails can't be uploaded via HTTP URL.
+    /// If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
+    pub fn thumbnail<T>(mut self, thumb: T) -> Self
     where
         T: Into<InputFile>,
     {
-        self.form.insert_field("thumb", thumb.into());
+        self.form.insert_field("thumbnail", thumb.into());
         self
     }
 }
 
-impl Method for SetStickerSetThumb {
+impl Method for SetStickerSetThumbnail {
     type Response = bool;
 
     fn into_payload(self) -> Payload {
-        Payload::form("setStickerSetThumb", self.form)
+        Payload::form("setStickerSetThumbnail", self.form)
     }
 }

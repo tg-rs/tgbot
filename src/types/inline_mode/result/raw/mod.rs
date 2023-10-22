@@ -159,13 +159,13 @@ pub(super) struct RawInlineQueryResultData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) sticker_file_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) thumb_height: Option<Integer>,
+    pub(super) thumbnail_height: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) thumb_mime_type: Option<String>,
+    pub(super) thumbnail_mime_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) thumb_url: Option<String>,
+    pub(super) thumbnail_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) thumb_width: Option<Integer>,
+    pub(super) thumbnail_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

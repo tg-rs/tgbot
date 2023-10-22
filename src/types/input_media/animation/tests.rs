@@ -4,7 +4,6 @@ use crate::types::{tests::assert_json_eq, InputMediaAnimation, ParseMode, TextEn
 fn input_media_animation() {
     assert_json_eq(
         InputMediaAnimation::default()
-            .thumb("attach://thumb.jpg")
             .caption("caption")
             .parse_mode(ParseMode::Markdown)
             .width(200)
@@ -12,7 +11,6 @@ fn input_media_animation() {
             .duration(10)
             .has_spoiler(true),
         serde_json::json!({
-            "thumb": "attach://thumb.jpg",
             "caption": "caption",
             "parse_mode": "Markdown",
             "width": 200,

@@ -12,7 +12,7 @@ fn animation() {
             width: 200,
             height: 200,
             duration: 243,
-            thumb: Some(PhotoSize {
+            thumbnail: Some(PhotoSize {
                 file_id: String::from("thumb-file-id"),
                 file_unique_id: String::from("thumb-file-unique-id"),
                 width: 24,
@@ -29,7 +29,7 @@ fn animation() {
             "width": 200,
             "height": 200,
             "duration": 243,
-            "thumb": {
+            "thumbnail": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-file-unique-id",
                 "width": 24,
@@ -48,7 +48,7 @@ fn animation() {
             width: 200,
             height: 200,
             duration: 30,
-            thumb: None,
+            thumbnail: None,
             file_name: None,
             mime_type: None,
             file_size: None,
@@ -84,7 +84,7 @@ fn send_animation() {
                 ("duration", 100.into()),
                 ("width", 200.into()),
                 ("height", 300.into()),
-                ("thumb", InputFile::file_id("thumb-file-id").into()),
+                ("thumbnail", InputFile::file_id("thumb-file-id").into()),
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("disable_notification", true.into()),
@@ -103,7 +103,7 @@ fn send_animation() {
             .duration(100)
             .width(200)
             .height(300)
-            .thumb(InputFile::file_id("thumb-file-id"))
+            .thumbnail(InputFile::file_id("thumb-file-id"))
             .caption("Caption")
             .parse_mode(ParseMode::Markdown)
             .disable_notification(true)

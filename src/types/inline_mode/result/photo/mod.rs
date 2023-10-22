@@ -21,7 +21,7 @@ mod tests;
 pub struct InlineQueryResultPhoto {
     id: String,
     photo_url: String,
-    thumb_url: String,
+    thumbnail_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     photo_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -49,8 +49,8 @@ impl InlineQueryResultPhoto {
     ///
     /// * id - Unique identifier for this result, 1-64 bytes
     /// * photo_url - A valid URL of the photo, must be in jpeg format, size must not exceed 5MB
-    /// * thumb_url - URL of the thumbnail for the photo
-    pub fn new<I, U, T>(id: I, photo_url: U, thumb_url: T) -> Self
+    /// * thumbnail_url - URL of the thumbnail for the photo
+    pub fn new<I, U, T>(id: I, photo_url: U, thumbnail_url: T) -> Self
     where
         I: Into<String>,
         U: Into<String>,
@@ -59,7 +59,7 @@ impl InlineQueryResultPhoto {
         InlineQueryResultPhoto {
             id: id.into(),
             photo_url: photo_url.into(),
-            thumb_url: thumb_url.into(),
+            thumbnail_url: thumbnail_url.into(),
             photo_width: None,
             photo_height: None,
             title: None,
@@ -245,7 +245,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultPhoto {
         Ok(Self {
             id: value.id,
             photo_url: value.data.photo_url.ok_or(MissingField("photo_url"))?,
-            thumb_url: value.data.thumb_url.ok_or(MissingField("thumb_url"))?,
+            thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
             photo_width: value.data.photo_width,
             photo_height: value.data.photo_height,
             title: value.data.title,
@@ -264,7 +264,7 @@ impl From<InlineQueryResultPhoto> for RawInlineQueryResult {
         Self {
             data: RawInlineQueryResultData {
                 photo_url: Some(value.photo_url),
-                thumb_url: Some(value.thumb_url),
+                thumbnail_url: Some(value.thumbnail_url),
                 photo_width: value.photo_width,
                 photo_height: value.photo_height,
                 title: value.title,

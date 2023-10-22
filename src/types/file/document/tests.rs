@@ -9,7 +9,7 @@ fn document() {
         Document {
             file_id: String::from("file-id"),
             file_unique_id: String::from("file-unique-id"),
-            thumb: Some(PhotoSize {
+            thumbnail: Some(PhotoSize {
                 file_id: String::from("thumb-file-id"),
                 file_unique_id: String::from("thumb-file-unique-id"),
                 width: 24,
@@ -23,7 +23,7 @@ fn document() {
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
-            "thumb": {
+            "thumbnail": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-file-unique-id",
                 "width": 24,
@@ -39,7 +39,7 @@ fn document() {
         Document {
             file_id: String::from("file-id"),
             file_unique_id: String::from("file-unique-id"),
-            thumb: None,
+            thumbnail: None,
             file_name: None,
             mime_type: None,
             file_size: None,
@@ -69,7 +69,7 @@ fn send_document() {
             Form::from([
                 ("chat_id", FormValue::from(1)),
                 ("document", InputFile::file_id("file-id").into()),
-                ("thumb", InputFile::file_id("file-id").into()),
+                ("thumbnail", InputFile::file_id("file-id").into()),
                 ("caption", "Caption".into()),
                 ("disable_content_type_detection", true.into()),
                 ("parse_mode", ParseMode::Markdown.into()),
@@ -85,7 +85,7 @@ fn send_document() {
             ]),
         ),
         SendDocument::new(1, InputFile::file_id("file-id"))
-            .thumb(InputFile::file_id("file-id"))
+            .thumbnail(InputFile::file_id("file-id"))
             .caption("Caption")
             .parse_mode(ParseMode::Markdown)
             .disable_content_type_detection(true)

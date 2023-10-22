@@ -40,7 +40,7 @@ fn game() {
                 width: 200,
                 height: 200,
                 duration: 24,
-                thumb: None,
+                thumbnail: None,
                 file_name: None,
                 mime_type: None,
                 file_size: None,

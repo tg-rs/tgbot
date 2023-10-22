@@ -15,7 +15,7 @@ fn audio() {
             file_name: Some(String::from("File Name")),
             mime_type: Some(String::from("audio/mpeg")),
             file_size: Some(10240),
-            thumb: Some(PhotoSize {
+            thumbnail: Some(PhotoSize {
                 file_id: String::from("thumb-file-id"),
                 file_unique_id: String::from("thumb-unique-file-id"),
                 width: 24,
@@ -32,7 +32,7 @@ fn audio() {
             "file_name": "File Name",
             "mime_type": "audio/mpeg",
             "file_size": 10240,
-            "thumb": {
+            "thumbnail": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-unique-file-id",
                 "width": 24,
@@ -51,7 +51,7 @@ fn audio() {
             file_name: None,
             mime_type: None,
             file_size: None,
-            thumb: None,
+            thumbnail: None,
         },
         serde_json::json!({
             "file_id": "file-id",
@@ -84,7 +84,7 @@ fn send_audio() {
                 ("duration", 100.into()),
                 ("performer", "Performer".into()),
                 ("title", "Title".into()),
-                ("thumb", InputFile::file_id("thumb-id").into()),
+                ("thumbnail", InputFile::file_id("thumb-id").into()),
                 ("disable_notification", true.into()),
                 ("protect_content", true.into()),
                 ("reply_to_message_id", 1.into()),
@@ -102,7 +102,7 @@ fn send_audio() {
             .duration(100)
             .performer("Performer")
             .title("Title")
-            .thumb(InputFile::file_id("thumb-id"))
+            .thumbnail(InputFile::file_id("thumb-id"))
             .disable_notification(true)
             .protect_content(true)
             .reply_to_message_id(1)

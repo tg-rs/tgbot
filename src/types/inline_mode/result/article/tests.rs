@@ -17,9 +17,9 @@ fn inline_query_result_article() {
                 .url("URL")
                 .hide_url(true)
                 .description("desc")
-                .thumb_url("thumb-url")
-                .thumb_width(200)
-                .thumb_height(200),
+                .thumbnail_url("thumb-url")
+                .thumbnail_width(200)
+                .thumbnail_height(200),
         ),
         serde_json::json!({
             "type": "article",
@@ -30,9 +30,9 @@ fn inline_query_result_article() {
             "url": "URL",
             "hide_url": true,
             "description": "desc",
-            "thumb_url": "thumb-url",
-            "thumb_width": 200,
-            "thumb_height": 200
+            "thumbnail_url": "thumb-url",
+            "thumbnail_width": 200,
+            "thumbnail_height": 200
         }),
     );
     assert_json_eq(

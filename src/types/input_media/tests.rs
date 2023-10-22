@@ -24,7 +24,7 @@ fn input_media_form() {
     .into();
     assert!(data.has_field("media"));
 
-    let data: Form = InputMedia::with_thumb(
+    let data: Form = InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("animation-file-data")),
         InputFileReader::from(Cursor::new("animation-thumb-data")),
         InputMediaAnimation::default(),
@@ -44,7 +44,7 @@ fn create_input_media() {
     )
     .unwrap();
 
-    InputMedia::with_thumb(
+    InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("animation-file-data")),
         InputFileReader::from(Cursor::new("animation-thumb-data")),
         InputMediaAnimation::default(),
@@ -57,7 +57,7 @@ fn create_input_media() {
     )
     .unwrap();
 
-    InputMedia::with_thumb(
+    InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("audio-file-data")),
         InputFileReader::from(Cursor::new("audio-thumb-data")),
         InputMediaAudio::default(),
@@ -70,7 +70,7 @@ fn create_input_media() {
     )
     .unwrap();
 
-    InputMedia::with_thumb(
+    InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("document-file-data")),
         InputFileReader::from(Cursor::new("document-thumb-data")),
         InputMediaDocument::default(),
@@ -89,7 +89,7 @@ fn create_input_media() {
     )
     .unwrap();
 
-    InputMedia::with_thumb(
+    InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("video-file-data")),
         InputFileReader::from(Cursor::new("video-thumb-data")),
         InputMediaVideo::default(),

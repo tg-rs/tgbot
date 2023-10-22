@@ -20,7 +20,7 @@ fn create_media_group() -> MediaGroup {
         MediaGroupItem::photo(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default()),
         MediaGroupItem::video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
         MediaGroupItem::video(InputFile::file_id("file-id"), InputMediaVideo::default())
-            .with_thumb(InputFile::url("thumb-url")),
+            .with_thumbnail(InputFile::url("thumb-url")),
     ])
     .unwrap()
 }
@@ -59,11 +59,11 @@ fn media_group_new() {
         ),
         MediaGroupItem::video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
         MediaGroupItem::audio(InputFile::file_id("file-id"), InputMediaAudio::default())
-            .with_thumb(InputFile::url("thumb-url")),
+            .with_thumbnail(InputFile::url("thumb-url")),
         MediaGroupItem::document(InputFile::file_id("file-id"), InputMediaDocument::default())
-            .with_thumb(InputFile::url("thumb-url")),
+            .with_thumbnail(InputFile::url("thumb-url")),
         MediaGroupItem::video(InputFile::file_id("file-id"), InputMediaVideo::default())
-            .with_thumb(InputFile::url("thumb-url")),
+            .with_thumbnail(InputFile::url("thumb-url")),
     ])
     .unwrap();
 }

@@ -27,11 +27,11 @@ pub struct InlineQueryResultArticle {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumb_url: Option<String>,
+    thumbnail_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumb_width: Option<Integer>,
+    thumbnail_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumb_height: Option<Integer>,
+    thumbnail_height: Option<Integer>,
 }
 
 impl InlineQueryResultArticle {
@@ -56,9 +56,9 @@ impl InlineQueryResultArticle {
             url: None,
             hide_url: None,
             description: None,
-            thumb_url: None,
-            thumb_width: None,
-            thumb_height: None,
+            thumbnail_url: None,
+            thumbnail_width: None,
+            thumbnail_height: None,
         }
     }
 
@@ -87,20 +87,20 @@ impl InlineQueryResultArticle {
     }
 
     /// Url of the thumbnail for the result
-    pub fn thumb_url<S: Into<String>>(mut self, thumb_url: S) -> Self {
-        self.thumb_url = Some(thumb_url.into());
+    pub fn thumbnail_url<S: Into<String>>(mut self, thumbnail_url: S) -> Self {
+        self.thumbnail_url = Some(thumbnail_url.into());
         self
     }
 
     /// Thumbnail width
-    pub fn thumb_width(mut self, thumb_width: Integer) -> Self {
-        self.thumb_width = Some(thumb_width);
+    pub fn thumbnail_width(mut self, thumbnail_width: Integer) -> Self {
+        self.thumbnail_width = Some(thumbnail_width);
         self
     }
 
     /// Thumbnail height
-    pub fn thumb_height(mut self, thumb_height: Integer) -> Self {
-        self.thumb_height = Some(thumb_height);
+    pub fn thumbnail_height(mut self, thumbnail_height: Integer) -> Self {
+        self.thumbnail_height = Some(thumbnail_height);
         self
     }
 }
@@ -117,9 +117,9 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultArticle {
             url: value.data.url,
             hide_url: value.data.hide_url,
             description: value.data.description,
-            thumb_url: value.data.thumb_url,
-            thumb_width: value.data.thumb_width,
-            thumb_height: value.data.thumb_height,
+            thumbnail_url: value.data.thumbnail_url,
+            thumbnail_width: value.data.thumbnail_width,
+            thumbnail_height: value.data.thumbnail_height,
         })
     }
 }
@@ -134,9 +134,9 @@ impl From<InlineQueryResultArticle> for RawInlineQueryResult {
                 url: value.url,
                 hide_url: value.hide_url,
                 description: value.description,
-                thumb_url: value.thumb_url,
-                thumb_width: value.thumb_width,
-                thumb_height: value.thumb_height,
+                thumbnail_url: value.thumbnail_url,
+                thumbnail_width: value.thumbnail_width,
+                thumbnail_height: value.thumbnail_height,
                 ..Default::default()
             },
             id: value.id,

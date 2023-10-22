@@ -65,14 +65,14 @@ impl MediaGroup {
         let mut info = Vec::new();
         for (idx, item) in items {
             let media = add_file(format!("tgbot_im_file_{}", idx), item.file);
-            let thumb = item
-                .thumb
-                .map(|thumb| add_file(format!("tgbot_im_thumb_{}", idx), thumb));
+            let thumbnail = item
+                .thumbnail
+                .map(|thumbnail| add_file(format!("tgbot_im_thumb_{}", idx), thumbnail));
             let data = match item.kind {
-                MediaGroupItemKind::Audio(info) => MediaGroupItemData::Audio { media, thumb, info },
-                MediaGroupItemKind::Document(info) => MediaGroupItemData::Document { media, thumb, info },
+                MediaGroupItemKind::Audio(info) => MediaGroupItemData::Audio { media, thumbnail, info },
+                MediaGroupItemKind::Document(info) => MediaGroupItemData::Document { media, thumbnail, info },
                 MediaGroupItemKind::Photo(info) => MediaGroupItemData::Photo { media, info },
-                MediaGroupItemKind::Video(info) => MediaGroupItemData::Video { media, thumb, info },
+                MediaGroupItemKind::Video(info) => MediaGroupItemData::Video { media, thumbnail, info },
             };
             info.push(data);
         }
@@ -97,7 +97,7 @@ impl From<MediaGroup> for Form {
 pub struct MediaGroupItem {
     kind: MediaGroupItemKind,
     file: InputFile,
-    thumb: Option<InputFile>,
+    thumbnail: Option<InputFile>,
 }
 
 impl MediaGroupItem {
@@ -160,11 +160,11 @@ impl MediaGroupItem {
     /// * file - Thumbnail file
     ///
     /// Note that photo can not have thumbnail and it will be ignored
-    pub fn with_thumb<F>(mut self, file: F) -> Self
+    pub fn with_thumbnail<F>(mut self, file: F) -> Self
     where
         F: Into<InputFile>,
     {
-        self.thumb = Some(file.into());
+        self.thumbnail = Some(file.into());
         self
     }
 
@@ -175,7 +175,7 @@ impl MediaGroupItem {
         Self {
             kind,
             file: file.into(),
-            thumb: None,
+            thumbnail: None,
         }
     }
 }
@@ -195,14 +195,14 @@ enum MediaGroupItemData {
     Audio {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
-        thumb: Option<String>,
+        thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaAudio,
     },
     Document {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
-        thumb: Option<String>,
+        thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaDocument,
     },
@@ -214,7 +214,7 @@ enum MediaGroupItemData {
     Video {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
-        thumb: Option<String>,
+        thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaVideo,
     },

@@ -15,7 +15,7 @@ fn inline_query_result_mpeg4_gif() {
         InlineQueryResult::from(
             result
                 .clone()
-                .thumb_mime_type("video/mp4")
+                .thumbnail_mime_type("video/mp4")
                 .mpeg4_width(200)
                 .mpeg4_height(300)
                 .mpeg4_duration(400)
@@ -29,8 +29,8 @@ fn inline_query_result_mpeg4_gif() {
             "type": "mpeg4_gif",
             "id": "id",
             "mpeg4_url": "url",
-            "thumb_url": "thumb-url",
-            "thumb_mime_type": "video/mp4",
+            "thumbnail_url": "thumb-url",
+            "thumbnail_mime_type": "video/mp4",
             "mpeg4_width": 200,
             "mpeg4_height": 300,
             "mpeg4_duration": 400,
@@ -47,7 +47,7 @@ fn inline_query_result_mpeg4_gif() {
             "type": "mpeg4_gif",
             "id": "id",
             "mpeg4_url": "url",
-            "thumb_url": "thumb-url"
+            "thumbnail_url": "thumb-url"
         }),
     );
 }

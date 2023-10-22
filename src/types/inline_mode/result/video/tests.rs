@@ -29,7 +29,7 @@ fn inline_query_result_video() {
             "id": "id",
             "video_url": "url",
             "mime_type": "mime",
-            "thumb_url": "thumb-url",
+            "thumbnail_url": "thumb-url",
             "title": "title",
             "caption": "caption",
             "parse_mode": "Markdown",
@@ -48,7 +48,7 @@ fn inline_query_result_video() {
             "id": "id",
             "video_url": "url",
             "mime_type": "mime",
-            "thumb_url": "thumb-url",
+            "thumbnail_url": "thumb-url",
             "title": "title"
         }),
     );

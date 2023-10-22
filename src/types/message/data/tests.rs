@@ -117,7 +117,7 @@ fn animation() {
         width: 200,
         height: 200,
         duration: 243,
-        thumb: None,
+        thumbnail: None,
         file_name: None,
         mime_type: None,
         file_size: None,
@@ -146,7 +146,7 @@ fn audio() {
         file_name: None,
         mime_type: None,
         file_size: None,
-        thumb: None,
+        thumbnail: None,
     };
     expected_struct.data = MessageData::Audio {
         caption: None,
@@ -278,7 +278,7 @@ fn document() {
     let document = Document {
         file_id: String::from("file-id"),
         file_unique_id: String::from("unique-id"),
-        thumb: None,
+        thumbnail: None,
         file_name: None,
         mime_type: None,
         file_size: None,
@@ -879,7 +879,7 @@ fn video() {
         width: 1,
         height: 2,
         duration: 3,
-        thumb: None,
+        thumbnail: None,
         file_name: None,
         mime_type: None,
         file_size: None,
@@ -927,7 +927,7 @@ fn video_note() {
         file_unique_id: String::from("unique-id"),
         length: 124,
         duration: 1234,
-        thumb: None,
+        thumbnail: None,
         file_size: None,
     });
     expected_value["video_note"] = serde_json::json!({

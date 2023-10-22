@@ -12,7 +12,7 @@ fn video() {
             width: 1,
             height: 2,
             duration: 3,
-            thumb: Some(PhotoSize {
+            thumbnail: Some(PhotoSize {
                 file_id: String::from("thumb-file-id"),
                 file_unique_id: String::from("thumb-file-unique-id"),
                 width: 24,
@@ -29,7 +29,7 @@ fn video() {
             "width": 1,
             "height": 2,
             "duration": 3,
-            "thumb": {
+            "thumbnail": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-file-unique-id",
                 "width": 24,
@@ -48,7 +48,7 @@ fn video() {
             width: 1,
             height: 2,
             duration: 3,
-            thumb: None,
+            thumbnail: None,
             file_name: None,
             mime_type: None,
             file_size: None,
@@ -84,7 +84,7 @@ fn send_video() {
                 ("duration", 100.into()),
                 ("width", 200.into()),
                 ("height", 300.into()),
-                ("thumb", InputFile::file_id("thumb-id").into()),
+                ("thumbnail", InputFile::file_id("thumb-id").into()),
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("supports_streaming", true.into()),
@@ -104,7 +104,7 @@ fn send_video() {
             .duration(100)
             .width(200)
             .height(300)
-            .thumb(InputFile::file_id("thumb-id"))
+            .thumbnail(InputFile::file_id("thumb-id"))
             .caption("Caption")
             .parse_mode(ParseMode::Markdown)
             .supports_streaming(true)

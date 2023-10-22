@@ -21,9 +21,9 @@ mod tests;
 pub struct InlineQueryResultMpeg4Gif {
     id: String,
     mpeg4_url: String,
-    thumb_url: String,
+    thumbnail_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumb_mime_type: Option<String>,
+    thumbnail_mime_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mpeg4_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -51,8 +51,8 @@ impl InlineQueryResultMpeg4Gif {
     ///
     /// * id - Unique identifier for this result, 1-64 bytes
     /// * mpeg4_url - A valid URL for the MP4 file. File size must not exceed 1MB
-    /// * thumb_url - URL of the static thumbnail (jpeg or gif) for the result
-    pub fn new<I, U, T>(id: I, mpeg4_url: U, thumb_url: T) -> Self
+    /// * thumbnail_url - URL of the static thumbnail (jpeg or gif) for the result
+    pub fn new<I, U, T>(id: I, mpeg4_url: U, thumbnail_url: T) -> Self
     where
         I: Into<String>,
         U: Into<String>,
@@ -64,8 +64,8 @@ impl InlineQueryResultMpeg4Gif {
             mpeg4_width: None,
             mpeg4_height: None,
             mpeg4_duration: None,
-            thumb_url: thumb_url.into(),
-            thumb_mime_type: None,
+            thumbnail_url: thumbnail_url.into(),
+            thumbnail_mime_type: None,
             title: None,
             caption: None,
             caption_entities: None,
@@ -80,8 +80,8 @@ impl InlineQueryResultMpeg4Gif {
     /// Must be one of “image/jpeg”, “image/gif”, or “video/mp4”
     ///
     /// Defaults to “image/jpeg”
-    pub fn thumb_mime_type<S: Into<String>>(mut self, mime_type: S) -> Self {
-        self.thumb_mime_type = Some(mime_type.into());
+    pub fn thumbnail_mime_type<S: Into<String>>(mut self, mime_type: S) -> Self {
+        self.thumbnail_mime_type = Some(mime_type.into());
         self
     }
 
@@ -250,8 +250,8 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultMpeg4Gif {
         Ok(Self {
             id: value.id,
             mpeg4_url: value.data.mpeg4_url.ok_or(MissingField("mpeg4_url"))?,
-            thumb_url: value.data.thumb_url.ok_or(MissingField("thumb_url"))?,
-            thumb_mime_type: value.data.thumb_mime_type,
+            thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
+            thumbnail_mime_type: value.data.thumbnail_mime_type,
             mpeg4_width: value.data.mpeg4_width,
             mpeg4_height: value.data.mpeg4_height,
             mpeg4_duration: value.data.mpeg4_duration,
@@ -270,8 +270,8 @@ impl From<InlineQueryResultMpeg4Gif> for RawInlineQueryResult {
         Self {
             data: RawInlineQueryResultData {
                 mpeg4_url: Some(value.mpeg4_url),
-                thumb_url: Some(value.thumb_url),
-                thumb_mime_type: value.thumb_mime_type,
+                thumbnail_url: Some(value.thumbnail_url),
+                thumbnail_mime_type: value.thumbnail_mime_type,
                 mpeg4_width: value.mpeg4_width,
                 mpeg4_height: value.mpeg4_height,
                 mpeg4_duration: value.mpeg4_duration,

@@ -11,7 +11,7 @@ fn video_note() {
             file_unique_id: String::from("file-unique-id"),
             length: 124,
             duration: 1234,
-            thumb: Some(PhotoSize {
+            thumbnail: Some(PhotoSize {
                 file_id: String::from("thumb-file-id"),
                 file_unique_id: String::from("thumb-file-unique-id"),
                 width: 24,
@@ -25,7 +25,7 @@ fn video_note() {
             "file_unique_id": "file-unique-id",
             "length": 124,
             "duration": 1234,
-            "thumb": {
+            "thumbnail": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-file-unique-id",
                 "width": 24,
@@ -41,7 +41,7 @@ fn video_note() {
             file_unique_id: String::from("file-unique-id"),
             length: 50,
             duration: 60,
-            thumb: None,
+            thumbnail: None,
             file_size: None,
         },
         serde_json::json!({
@@ -73,7 +73,7 @@ fn send_video_note() {
                 ("video_note", InputFile::file_id("file-id").into()),
                 ("duration", 50.into()),
                 ("length", 100.into()),
-                ("thumb", InputFile::file_id("thumb-file-id").into()),
+                ("thumbnail", InputFile::file_id("thumb-file-id").into()),
                 ("disable_notification", true.into()),
                 ("protect_content", true.into()),
                 ("reply_to_message_id", 1.into()),
@@ -88,7 +88,7 @@ fn send_video_note() {
         SendVideoNote::new(1, InputFile::file_id("file-id"))
             .duration(50)
             .length(100)
-            .thumb(InputFile::file_id("thumb-file-id"))
+            .thumbnail(InputFile::file_id("thumb-file-id"))
             .disable_notification(true)
             .protect_content(true)
             .reply_to_message_id(1)

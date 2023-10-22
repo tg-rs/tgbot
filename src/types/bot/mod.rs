@@ -183,6 +183,13 @@ pub struct BotDescription {
     pub description: String,
 }
 
+/// Represents the bot name
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct BotName {
+    /// The bot name
+    pub name: String,
+}
+
 /// Represents the bot short description
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BotShortDescription {
@@ -394,6 +401,32 @@ impl Method for GetBotDescription {
     }
 }
 
+/// Get the current bot name for the given user language
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct GetBotName {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    language_code: Option<String>,
+}
+
+impl GetBotName {
+    /// A two-letter ISO 639-1 language code or an empty string
+    pub fn language_code<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.language_code = Some(value.into());
+        self
+    }
+}
+
+impl Method for GetBotName {
+    type Response = BotName;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getMyName", self)
+    }
+}
+
 /// Get the current bot short description for the given user language
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotShortDescription {
@@ -571,6 +604,47 @@ impl Method for SetBotDescription {
 
     fn into_payload(self) -> Payload {
         Payload::json("setMyDescription", self)
+    }
+}
+
+/// Change the bot name
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct SetBotName {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    language_code: Option<String>,
+}
+
+impl SetBotName {
+    /// New bot name; 0-64 characters
+    ///
+    /// Pass an empty string to remove the dedicated name for the given language.
+    pub fn name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.name = Some(value.into());
+        self
+    }
+
+    /// A two-letter ISO 639-1 language code
+    ///
+    /// If empty, the name will be shown to all users for whose language there is no dedicated name.
+    pub fn language_code<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.language_code = Some(value.into());
+        self
+    }
+}
+
+impl Method for SetBotName {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setMyName", self)
     }
 }
 

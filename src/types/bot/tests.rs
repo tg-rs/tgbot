@@ -6,6 +6,7 @@ use crate::{
         BotCommand,
         BotCommandScope,
         BotDescription,
+        BotName,
         BotShortDescription,
         ChatAdministratorRights,
         ChatShared,
@@ -15,11 +16,13 @@ use crate::{
         GetBotCommands,
         GetBotDefaultAdministratorRights,
         GetBotDescription,
+        GetBotName,
         GetBotShortDescription,
         LogOut,
         SetBotCommands,
         SetBotDefaultAdministratorRights,
         SetBotDescription,
+        SetBotName,
         SetBotShortDescription,
         UserShared,
         WriteAccessAllowed,
@@ -113,6 +116,18 @@ fn bot_description() {
         },
         serde_json::json!({
             "description": "test-description"
+        }),
+    );
+}
+
+#[test]
+fn bot_name() {
+    assert_json_eq(
+        BotName {
+            name: String::from("test_bot"),
+        },
+        serde_json::json!({
+            "name": "test_bot"
         }),
     );
 }
@@ -261,6 +276,21 @@ fn get_bot_description() {
 }
 
 #[test]
+fn get_bot_name() {
+    let method = GetBotName::default();
+    assert_payload_eq(Payload::json("getMyName", serde_json::json!({})), method.clone());
+    assert_payload_eq(
+        Payload::json(
+            "getMyName",
+            serde_json::json!({
+                "language_code": "RU"
+            }),
+        ),
+        method.language_code("RU"),
+    );
+}
+
+#[test]
 fn get_bot_short_description() {
     let method = GetBotShortDescription::default();
     assert_payload_eq(
@@ -388,6 +418,22 @@ fn set_bot_description() {
             }),
         ),
         method.description("test-description").language_code("RU"),
+    );
+}
+
+#[test]
+fn set_bot_name() {
+    let method = SetBotName::default();
+    assert_payload_eq(Payload::json("setMyName", serde_json::json!({})), method.clone());
+    assert_payload_eq(
+        Payload::json(
+            "setMyName",
+            serde_json::json!({
+                "name": "test_bot_name",
+                "language_code": "RU"
+            }),
+        ),
+        method.name("test_bot_name").language_code("RU"),
     );
 }
 

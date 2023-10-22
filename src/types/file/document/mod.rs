@@ -65,10 +65,9 @@ impl SendDocument {
         C: Into<ChatId>,
         D: Into<InputFile>,
     {
-        let mut form = Form::new();
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("document", document.into());
-        SendDocument { form }
+        SendDocument {
+            form: Form::from([("chat_id", chat_id.into().into()), ("document", document.into().into())]),
+        }
     }
 
     /// Thumbnail of the file sent

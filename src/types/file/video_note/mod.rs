@@ -50,10 +50,12 @@ impl SendVideoNote {
         C: Into<ChatId>,
         V: Into<InputFile>,
     {
-        let mut form = Form::new();
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("video_note", video_note.into());
-        SendVideoNote { form }
+        SendVideoNote {
+            form: Form::from([
+                ("chat_id", chat_id.into().into()),
+                ("video_note", video_note.into().into()),
+            ]),
+        }
     }
 
     /// Duration of sent video in seconds

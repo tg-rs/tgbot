@@ -87,10 +87,6 @@ pub(crate) struct Form {
 }
 
 impl Form {
-    pub(crate) fn new() -> Self {
-        Self { fields: HashMap::new() }
-    }
-
     #[cfg(test)]
     pub(crate) fn get_field(&self, name: &str) -> Option<&FormValue> {
         self.fields.get(name)
@@ -132,7 +128,7 @@ where
     K: Into<String>,
 {
     fn from(fields: I) -> Form {
-        let mut form = Form::new();
+        let mut form = Form::default();
         for (name, value) in fields {
             form.insert_field(name, value);
         }

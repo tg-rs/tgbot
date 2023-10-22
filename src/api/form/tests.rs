@@ -15,10 +15,12 @@ fn form_value() {
 
 #[test]
 fn form() {
-    let mut form = Form::new();
-    form.insert_field("id", 1);
-    form.insert_field("file-id", InputFile::file_id("file-id"));
-    form.insert_field("file-url", InputFile::url("url"));
-    form.insert_field("file-reader", InputFile::from(Cursor::new(b"test")));
-    form.into_multipart().unwrap();
+    Form::from([
+        ("id", 1.into()),
+        ("file-id", InputFile::file_id("file-id").into()),
+        ("file-url", InputFile::url("url").into()),
+        ("file-reader", InputFile::from(Cursor::new(b"test")).into()),
+    ])
+    .into_multipart()
+    .unwrap();
 }

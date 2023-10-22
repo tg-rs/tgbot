@@ -163,10 +163,9 @@ impl SendSticker {
         C: Into<ChatId>,
         S: Into<InputFile>,
     {
-        let mut form = Form::new();
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("sticker", sticker.into());
-        SendSticker { form }
+        SendSticker {
+            form: Form::from([("chat_id", chat_id.into().into()), ("sticker", sticker.into().into())]),
+        }
     }
 
     /// Pass True, if the message should be sent even

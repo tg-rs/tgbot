@@ -62,10 +62,9 @@ impl SendVoice {
         C: Into<ChatId>,
         V: Into<InputFile>,
     {
-        let mut form = Form::new();
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("voice", voice.into());
-        SendVoice { form }
+        SendVoice {
+            form: Form::from([("chat_id", chat_id.into().into()), ("voice", voice.into().into())]),
+        }
     }
 
     /// Voice message caption, 0-1024 characters

@@ -349,10 +349,9 @@ impl SetStickerSetThumbnail {
     where
         N: Into<String>,
     {
-        let mut form = Form::new();
-        form.insert_field("name", name.into());
-        form.insert_field("user_id", user_id);
-        Self { form }
+        Self {
+            form: Form::from([("name", name.into().into()), ("user_id", user_id.into())]),
+        }
     }
 
     /// A .WEBP or .PNG image with the thumbnail

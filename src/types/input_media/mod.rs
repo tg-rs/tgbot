@@ -53,7 +53,7 @@ impl InputMedia {
         F: Into<InputFile>,
         T: Into<InputFile>,
     {
-        let mut form = Form::new();
+        let mut form = Form::default();
 
         let add_file = |form: &mut Form, key: &str, file: InputFile| -> String {
             match file.kind {

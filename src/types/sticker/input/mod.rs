@@ -70,7 +70,7 @@ impl TryFrom<InputSticker> for Form {
             mask_position,
             keywords,
         } = value;
-        let mut form = Form::new();
+        let mut form = Form::default();
         let sticker = match sticker.kind {
             InputFileKind::Id(x) | InputFileKind::Url(x) => x,
             _ => {

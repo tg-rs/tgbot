@@ -92,10 +92,9 @@ impl SetChatPhoto {
         C: Into<ChatId>,
         P: Into<InputFile>,
     {
-        let mut form = Form::new();
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("photo", photo.into());
-        SetChatPhoto { form }
+        SetChatPhoto {
+            form: Form::from([("chat_id", chat_id.into().into()), ("photo", photo.into().into())]),
+        }
     }
 }
 

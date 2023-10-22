@@ -50,7 +50,7 @@ impl MediaGroup {
             return Err(MediaGroupError::TooManyAttachments(MAX_GROUP_ATTACHMENTS));
         }
 
-        let mut form = Form::new();
+        let mut form = Form::default();
 
         let mut add_file = |key: String, file: InputFile| -> String {
             match &file.kind {

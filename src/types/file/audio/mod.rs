@@ -75,10 +75,9 @@ impl SendAudio {
         C: Into<ChatId>,
         A: Into<InputFile>,
     {
-        let mut form = Form::new();
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("audio", audio.into());
-        SendAudio { form }
+        SendAudio {
+            form: Form::from([("chat_id", chat_id.into().into()), ("audio", audio.into().into())]),
+        }
     }
 
     /// Sets audio caption (0-1024 characters)

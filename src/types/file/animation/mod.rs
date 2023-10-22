@@ -70,10 +70,12 @@ impl SendAnimation {
         C: Into<ChatId>,
         A: Into<InputFile>,
     {
-        let mut form = Form::new();
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("animation", animation.into());
-        SendAnimation { form }
+        SendAnimation {
+            form: Form::from([
+                ("chat_id", chat_id.into().into()),
+                ("animation", animation.into().into()),
+            ]),
+        }
     }
 
     /// Sets duration of sent animation in seconds

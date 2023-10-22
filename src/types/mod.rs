@@ -22,6 +22,7 @@ pub use self::{
     reply_markup::*,
     response::*,
     sticker::*,
+    story::*,
     text::*,
     update::*,
     user::*,
@@ -51,6 +52,7 @@ mod primitive;
 mod reply_markup;
 mod response;
 mod sticker;
+mod story;
 mod text;
 mod update;
 mod user;

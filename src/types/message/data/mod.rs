@@ -25,6 +25,7 @@ use crate::types::{
     Poll,
     ProximityAlertTriggered,
     Sticker,
+    Story,
     SuccessfulPayment,
     Text,
     TextEntities,
@@ -145,6 +146,8 @@ pub enum MessageData {
     ProximityAlertTriggered(ProximityAlertTriggered),
     /// Message is a sticker, information about the sticker
     Sticker(Sticker),
+    /// Message is a forwarded story
+    Story(Story),
     /// Message is a service message about a successful payment, information about the payment
     SuccessfulPayment(SuccessfulPayment),
     /// Service message: the supergroup has been created
@@ -266,6 +269,7 @@ impl TryFrom<RawMessageData> for MessageData {
                 proximity_alert_triggered,
             } => MessageData::ProximityAlertTriggered(proximity_alert_triggered),
             RawMessageData::Sticker { sticker } => MessageData::Sticker(sticker),
+            RawMessageData::Story { story } => MessageData::Story(story),
             RawMessageData::SuccessfulPayment { successful_payment } => {
                 MessageData::SuccessfulPayment(successful_payment)
             }
@@ -351,6 +355,7 @@ impl From<MessageData> for RawMessageData {
                 proximity_alert_triggered,
             },
             MessageData::Sticker(sticker) => Self::Sticker { sticker },
+            MessageData::Story(story) => Self::Story { story },
             MessageData::SuccessfulPayment(successful_payment) => Self::SuccessfulPayment { successful_payment },
             MessageData::SupergroupChatCreated => Self::SupergroupChatCreated {
                 supergroup_chat_created: True,
@@ -535,6 +540,9 @@ enum RawMessageData {
     },
     Sticker {
         sticker: Sticker,
+    },
+    Story {
+        story: Story,
     },
     SuccessfulPayment {
         successful_payment: SuccessfulPayment,

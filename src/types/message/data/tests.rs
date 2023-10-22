@@ -27,6 +27,7 @@ use crate::types::{
     RegularPoll,
     Sticker,
     StickerType,
+    Story,
     SuccessfulPayment,
     SupergroupChat,
     Text,
@@ -770,6 +771,16 @@ fn sticker() {
         "is_animated": true,
         "is_video": false
     });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn story() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::Story(Story {});
+    expected_value["story"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
 

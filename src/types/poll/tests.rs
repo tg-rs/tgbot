@@ -2,10 +2,13 @@ use crate::{
     api::{assert_payload_eq, Payload},
     types::{
         tests::assert_json_eq,
+        ChannelChat,
+        Chat,
         ForceReply,
         InlineKeyboardButton,
         Poll,
         PollAnswer,
+        PollAnswerVoter,
         PollOption,
         Quiz,
         RegularPoll,
@@ -111,7 +114,7 @@ fn poll_answer() {
     assert_json_eq(
         PollAnswer {
             poll_id: String::from("poll-id"),
-            user: User {
+            voter: PollAnswerVoter::User(User {
                 id: 1,
                 first_name: String::from("Jamie"),
                 last_name: None,
@@ -120,7 +123,7 @@ fn poll_answer() {
                 language_code: None,
                 is_premium: None,
                 added_to_attachment_menu: None,
-            },
+            }),
             option_ids: vec![0],
         },
         serde_json::json!({
@@ -131,6 +134,52 @@ fn poll_answer() {
                 "is_bot": false
             },
             "option_ids": [0],
+        }),
+    );
+}
+
+#[test]
+fn poll_answer_voter() {
+    assert_json_eq(
+        PollAnswerVoter::User(User {
+            id: 1,
+            first_name: String::from("Jamie"),
+            last_name: None,
+            username: None,
+            is_bot: false,
+            language_code: None,
+            is_premium: None,
+            added_to_attachment_menu: None,
+        }),
+        serde_json::json!({
+            "user": {
+                "id": 1,
+                "first_name": "Jamie",
+                "is_bot": false
+            }
+        }),
+    );
+    assert_json_eq(
+        PollAnswerVoter::Chat(Chat::Channel(ChannelChat {
+            id: 1,
+            title: String::from("test-channel"),
+            username: Some(String::from("test_channel")),
+            photo: None,
+            description: None,
+            invite_link: None,
+            pinned_message: None,
+            linked_chat_id: None,
+            has_protected_content: None,
+            message_auto_delete_time: None,
+            active_usernames: None,
+        })),
+        serde_json::json!({
+            "chat": {
+                "id": 1,
+                "type": "channel",
+                "title": "test-channel",
+                "username": "test_channel"
+            }
         }),
     );
 }

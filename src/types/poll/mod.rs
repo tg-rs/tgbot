@@ -4,6 +4,7 @@ use crate::{
     api::{Method, Payload},
     types::{
         text::Text,
+        Chat,
         ChatId,
         InlineKeyboardMarkup,
         Integer,
@@ -143,16 +144,27 @@ pub struct PollOption {
 }
 
 /// An answer of a user in a non-anonymous poll
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PollAnswer {
     /// Unique poll identifier
     pub poll_id: String,
-    /// The user, who changed the answer to the poll
-    pub user: User,
     /// 0-based identifiers of answer options, chosen by the user
     ///
     /// May be empty if the user retracted their vote.
     pub option_ids: Vec<Integer>,
+    /// The chat or the user that changed answer to the poll
+    #[serde(flatten)]
+    pub voter: PollAnswerVoter,
+}
+
+/// Represents the chat or the user that changed answer to the poll
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PollAnswerVoter {
+    /// The chat that changed the answer to the poll, if the voter is anonymous
+    Chat(Chat),
+    /// The user that changed the answer to the poll, if the voter isn't anonymous
+    User(User),
 }
 
 #[derive(Clone, Debug, Serialize)]

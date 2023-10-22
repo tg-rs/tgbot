@@ -21,6 +21,7 @@ use crate::{
         MessageSender,
         Poll,
         PollAnswer,
+        PollAnswerVoter,
         PollOption,
         PreCheckoutQuery,
         PrivateChat,
@@ -705,7 +706,7 @@ fn poll_answer() {
         id: 1,
         kind: UpdateKind::PollAnswer(PollAnswer {
             poll_id: String::from("poll-id"),
-            user: User {
+            voter: PollAnswerVoter::User(User {
                 id: 1,
                 is_bot: false,
                 first_name: String::from("Jamie"),
@@ -714,7 +715,7 @@ fn poll_answer() {
                 language_code: None,
                 is_premium: None,
                 added_to_attachment_menu: None,
-            },
+            }),
             option_ids: vec![0],
         }),
     };

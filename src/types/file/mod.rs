@@ -9,7 +9,7 @@ use tokio::{
 use tokio_util::codec::{BytesCodec, FramedRead};
 
 use crate::{
-    api::{Method, Payload},
+    api::{FormValue, Method, Payload},
     types::Integer,
 };
 
@@ -149,8 +149,8 @@ impl From<(String, Mime)> for InputFileInfo {
 
 /// File reader to upload
 pub struct InputFileReader {
-    pub(crate) info: Option<InputFileInfo>,
-    pub(crate) reader: FramedRead<Box<dyn AsyncRead + Send + Sync + Unpin>, BytesCodec>,
+    info: Option<InputFileInfo>,
+    reader: FramedRead<Box<dyn AsyncRead + Send + Sync + Unpin>, BytesCodec>,
 }
 
 impl PartialEq for InputFileReader {
@@ -261,5 +261,24 @@ where
 {
     fn from(reader: R) -> Self {
         InputFile::reader(InputFileReader::new(reader))
+    }
+}
+
+impl From<InputFile> for FormValue {
+    fn from(value: InputFile) -> Self {
+        match value.kind {
+            InputFileKind::Id(value) | InputFileKind::Url(value) => FormValue::Text(value),
+            InputFileKind::Reader(InputFileReader { info, reader }) => {
+                let (name, mime_type) = match info {
+                    Some(info) => (Some(info.name), info.mime_type),
+                    None => (None, None),
+                };
+                FormValue::File {
+                    name,
+                    mime_type,
+                    reader,
+                }
+            }
+        }
     }
 }

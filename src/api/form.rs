@@ -1,17 +1,55 @@
-use std::{collections::HashMap, error::Error, fmt};
+use std::{collections::HashMap, error::Error, fmt, fmt::Formatter};
 
+use mime::Mime;
 use reqwest::{
     multipart::{Form as MultipartForm, Part},
     Body,
     Error as ReqwestError,
 };
+use tokio::io::AsyncRead;
+use tokio_util::codec::{BytesCodec, FramedRead};
 
-use crate::types::{InputFile, InputFileKind, InputFileReader};
-
-#[derive(Debug, PartialEq)]
 pub(crate) enum FormValue {
     Text(String),
-    File(InputFile),
+    File {
+        name: Option<String>,
+        mime_type: Option<Mime>,
+        reader: FramedRead<Box<dyn AsyncRead + Send + Sync + Unpin>, BytesCodec>,
+    },
+}
+
+impl fmt::Debug for FormValue {
+    fn fmt(&self, out: &mut Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Text(value) => out.debug_tuple("FormValue::Text").field(value).finish(),
+            Self::File { name, mime_type, .. } => out
+                .debug_struct("FormValue::File")
+                .field("name", name)
+                .field("mime_type", mime_type)
+                .finish(),
+        }
+    }
+}
+
+impl PartialEq for FormValue {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Self::Text(a), Self::Text(b)) => a.eq(b),
+            (
+                Self::File {
+                    name: a_name,
+                    mime_type: a_mime_type,
+                    ..
+                },
+                Self::File {
+                    name: b_name,
+                    mime_type: b_mime_type,
+                    ..
+                },
+            ) => a_name.eq(b_name) && a_mime_type.eq(b_mime_type),
+            _ => false,
+        }
+    }
 }
 
 impl<T> From<T> for FormValue
@@ -23,43 +61,30 @@ where
     }
 }
 
-impl From<InputFile> for FormValue {
-    fn from(value: InputFile) -> Self {
-        FormValue::File(value)
-    }
-}
-
 impl TryFrom<FormValue> for Part {
     type Error = FormError;
 
     fn try_from(value: FormValue) -> Result<Self, Self::Error> {
         Ok(match value {
             FormValue::Text(text) => Part::text(text),
-            FormValue::File(file) => match file.kind {
-                InputFileKind::Reader(InputFileReader {
-                    reader,
-                    info: file_info,
-                }) => {
-                    let body = Body::wrap_stream(reader);
-                    let part = Part::stream(body);
-                    match file_info {
-                        Some(info) => {
-                            let file_name = String::from(info.name());
-                            let mime_type = info.mime_type();
-                            match mime_type {
-                                Some(mime_type) => part
-                                    .file_name(file_name)
-                                    .mime_str(mime_type.as_ref())
-                                    .map_err(FormError::Mime)?,
-                                None => part.file_name(file_name),
-                            }
-                        }
-                        None => part,
-                    }
+            FormValue::File {
+                reader,
+                name,
+                mime_type,
+            } => {
+                let body = Body::wrap_stream(reader);
+                let part = Part::stream(body);
+                match (name, mime_type) {
+                    (Some(name), mime_type) => match mime_type {
+                        Some(mime_type) => part
+                            .file_name(name)
+                            .mime_str(mime_type.as_ref())
+                            .map_err(FormError::Mime)?,
+                        None => part.file_name(name),
+                    },
+                    _ => part,
                 }
-                InputFileKind::Id(file_id) => Part::text(file_id),
-                InputFileKind::Url(url) => Part::text(url),
-            },
+            }
         })
     }
 }

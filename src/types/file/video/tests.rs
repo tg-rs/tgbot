@@ -121,23 +121,32 @@ fn send_video() {
 
 #[test]
 fn send_video_caption_entities_vs_parse_mode() {
-    let mut method = SendVideo::new(1, InputFile::file_id("file-id"));
-
-    method = method.parse_mode(ParseMode::Markdown);
-    assert_eq!(
-        method.form.get_field("parse_mode").unwrap().get_text().unwrap(),
-        "Markdown"
+    assert_payload_eq(
+        Payload::form(
+            "sendVideo",
+            Form::from([
+                ("chat_id", FormValue::from(1)),
+                ("video", InputFile::file_id("file-id").into()),
+                ("parse_mode", "Markdown".into()),
+            ]),
+        ),
+        SendVideo::new(1, InputFile::file_id("file-id"))
+            .caption_entities(vec![TextEntity::bold(0..10)])
+            .unwrap()
+            .parse_mode(ParseMode::Markdown),
     );
-
-    method = method.caption_entities(vec![TextEntity::bold(0..10)]).unwrap();
-    assert!(!method.form.has_field("parse_mode"));
-
-    let caption_entities = method.form.get_field("caption_entities").unwrap().get_text().unwrap();
-    assert_eq!(
-        serde_json::from_str::<serde_json::Value>(caption_entities).unwrap(),
-        serde_json::json!([{"type": "bold", "offset":0, "length": 10}])
+    assert_payload_eq(
+        Payload::form(
+            "sendVideo",
+            Form::from([
+                ("chat_id", FormValue::from(1)),
+                ("video", InputFile::file_id("file-id").into()),
+                ("caption_entities", r#"[{"offset":0,"length":10,"type":"bold"}]"#.into()),
+            ]),
+        ),
+        SendVideo::new(1, InputFile::file_id("file-id"))
+            .parse_mode(ParseMode::Markdown)
+            .caption_entities(vec![TextEntity::bold(0..10)])
+            .unwrap(),
     );
-
-    method = method.parse_mode(ParseMode::Markdown);
-    assert!(!method.form.has_field("caption_entities"));
 }

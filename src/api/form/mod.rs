@@ -87,16 +87,6 @@ pub(crate) struct Form {
 }
 
 impl Form {
-    #[cfg(test)]
-    pub(crate) fn get_field(&self, name: &str) -> Option<&FormValue> {
-        self.fields.get(name)
-    }
-
-    #[cfg(test)]
-    pub(crate) fn has_field(&self, name: &str) -> bool {
-        self.fields.contains_key(name)
-    }
-
     pub(crate) fn insert_field<N, V>(&mut self, name: N, value: V)
     where
         N: Into<String>,

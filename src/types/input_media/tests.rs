@@ -22,7 +22,13 @@ fn input_media_form() {
     )
     .unwrap()
     .into();
-    assert!(data.has_field("media"));
+    assert_eq!(
+        Form::from([(
+            "media",
+            r#"{"type":"animation","media":"animation-file-id","caption":"test"}"#.into()
+        )]),
+        data
+    );
 
     let data: Form = InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("animation-file-data")),
@@ -31,9 +37,23 @@ fn input_media_form() {
     )
     .unwrap()
     .into();
-    assert!(data.has_field("tgbot_im_file"));
-    assert!(data.has_field("tgbot_im_thumb"));
-    assert!(data.has_field("media"));
+    assert_eq!(
+        Form::from([
+            (
+                "tgbot_im_thumb",
+                InputFile::reader(Cursor::new("animation-thumb-data")).into()
+            ),
+            (
+                "tgbot_im_file",
+                InputFile::reader(Cursor::new("animation-file-data")).into()
+            ),
+            (
+                "media",
+                r#"{"type":"animation","media":"attach://tgbot_im_file","thumbnail":"attach://tgbot_im_thumb"}"#.into()
+            )
+        ]),
+        data
+    );
 }
 
 #[test]

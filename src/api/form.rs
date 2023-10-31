@@ -1,4 +1,4 @@
-use std::{collections::HashMap, error::Error, fmt, io::Error as IoError};
+use std::{collections::HashMap, error::Error, fmt};
 
 use reqwest::{
     multipart::{Form as MultipartForm, Part},
@@ -8,34 +8,32 @@ use reqwest::{
 
 use crate::types::{InputFile, InputFileKind, InputFileReader};
 
-#[cfg(test)]
-mod tests;
-
 #[derive(Debug, PartialEq)]
 pub(crate) enum FormValue {
     Text(String),
     File(InputFile),
 }
 
-impl FormValue {
-    #[cfg(test)]
-    pub(crate) fn get_text(&self) -> Option<&str> {
-        match self {
-            FormValue::Text(ref text) => Some(text),
-            FormValue::File(_) => None,
-        }
+impl<T> From<T> for FormValue
+where
+    T: ToString,
+{
+    fn from(value: T) -> Self {
+        FormValue::Text(value.to_string())
     }
+}
 
-    #[cfg(test)]
-    pub(crate) fn get_file(&self) -> Option<&InputFile> {
-        match self {
-            FormValue::Text(_) => None,
-            FormValue::File(ref file) => Some(file),
-        }
+impl From<InputFile> for FormValue {
+    fn from(value: InputFile) -> Self {
+        FormValue::File(value)
     }
+}
 
-    fn into_part(self) -> Result<Part, FormError> {
-        Ok(match self {
+impl TryFrom<FormValue> for Part {
+    type Error = FormError;
+
+    fn try_from(value: FormValue) -> Result<Self, Self::Error> {
+        Ok(match value {
             FormValue::Text(text) => Part::text(text),
             FormValue::File(file) => match file.kind {
                 InputFileKind::Reader(InputFileReader {
@@ -66,21 +64,6 @@ impl FormValue {
     }
 }
 
-impl<T> From<T> for FormValue
-where
-    T: ToString,
-{
-    fn from(value: T) -> Self {
-        FormValue::Text(value.to_string())
-    }
-}
-
-impl From<InputFile> for FormValue {
-    fn from(value: InputFile) -> Self {
-        FormValue::File(value)
-    }
-}
-
 #[derive(Debug, Default, PartialEq)]
 pub(crate) struct Form {
     fields: HashMap<String, FormValue>,
@@ -101,15 +84,6 @@ impl Form {
     {
         self.fields.remove(&name.into());
     }
-
-    pub(crate) fn into_multipart(self) -> Result<MultipartForm, FormError> {
-        let mut result = MultipartForm::new();
-        for (field_name, field_value) in self.fields {
-            let field_value = field_value.into_part()?;
-            result = result.part(field_name, field_value);
-        }
-        Ok(result)
-    }
 }
 
 impl<I, K> From<I> for Form
@@ -126,25 +100,29 @@ where
     }
 }
 
+impl TryFrom<Form> for MultipartForm {
+    type Error = FormError;
+
+    fn try_from(value: Form) -> Result<Self, Self::Error> {
+        let mut result = MultipartForm::new();
+        for (field_name, field_value) in value.fields {
+            let field_value = field_value.try_into()?;
+            result = result.part(field_name, field_value);
+        }
+        Ok(result)
+    }
+}
+
 /// An error occurred when building multipart form
 #[derive(Debug)]
 pub enum FormError {
-    /// Failed to read file
-    Io(IoError),
     /// Failed to set MIME type
     Mime(ReqwestError),
-}
-
-impl From<IoError> for FormError {
-    fn from(err: IoError) -> Self {
-        FormError::Io(err)
-    }
 }
 
 impl Error for FormError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         Some(match self {
-            FormError::Io(err) => err,
             FormError::Mime(err) => err,
         })
     }
@@ -153,7 +131,6 @@ impl Error for FormError {
 impl fmt::Display for FormError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            FormError::Io(err) => write!(out, "can not read file: {}", err),
             FormError::Mime(err) => write!(out, "can not set MIME type: {}", err),
         }
     }

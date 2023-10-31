@@ -67,7 +67,7 @@ impl Payload {
         let builder = http_client.request(self.http_method, url);
         Ok(match self.payload_data {
             PayloadData::Form(form) => {
-                let form = form.into_multipart()?;
+                let form = form.try_into()?;
                 debug!("Sending multipart body: {:?}", form);
                 builder.multipart(form)
             }

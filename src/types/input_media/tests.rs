@@ -41,11 +41,11 @@ fn input_media_form() {
         Form::from([
             (
                 "tgbot_im_thumb",
-                InputFile::reader(Cursor::new("animation-thumb-data")).into()
+                InputFile::from(Cursor::new("animation-thumb-data")).into()
             ),
             (
                 "tgbot_im_file",
-                InputFile::reader(Cursor::new("animation-file-data")).into()
+                InputFile::from(Cursor::new("animation-file-data")).into()
             ),
             (
                 "media",

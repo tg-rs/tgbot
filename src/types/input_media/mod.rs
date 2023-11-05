@@ -3,10 +3,7 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
-use crate::{
-    api::Form,
-    types::{InputFile, InputFileKind},
-};
+use crate::{api::Form, types::InputFile};
 
 pub use self::{animation::*, audio::*, document::*, photo::*, video::*};
 
@@ -56,8 +53,8 @@ impl InputMedia {
         let mut form = Form::default();
 
         let add_file = |form: &mut Form, key: &str, file: InputFile| -> String {
-            match file.kind {
-                InputFileKind::Id(text) | InputFileKind::Url(text) => text,
+            match file {
+                InputFile::Id(text) | InputFile::Url(text) => text,
                 _ => {
                     form.insert_field(key, file);
                     format!("attach://{}", key)

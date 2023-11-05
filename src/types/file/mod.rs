@@ -97,21 +97,6 @@ pub struct InputFileReader {
     reader: FramedRead<Box<dyn AsyncRead + Send + Sync + Unpin>, BytesCodec>,
 }
 
-impl PartialEq for InputFileReader {
-    fn eq(&self, other: &Self) -> bool {
-        self.file_name.eq(&other.file_name) && self.mime_type.eq(&other.mime_type)
-    }
-}
-
-impl fmt::Debug for InputFileReader {
-    fn fmt(&self, out: &mut fmt::Formatter<'_>) -> fmt::Result {
-        out.debug_struct("InputFileReader")
-            .field("file_name", &self.file_name)
-            .field("mime_type", &self.mime_type)
-            .finish()
-    }
-}
-
 impl InputFileReader {
     /// Creates a new file reader
     pub fn new<R>(reader: R) -> Self
@@ -168,27 +153,43 @@ where
     }
 }
 
+impl PartialEq for InputFileReader {
+    fn eq(&self, other: &Self) -> bool {
+        self.file_name.eq(&other.file_name) && self.mime_type.eq(&other.mime_type)
+    }
+}
+
+impl fmt::Debug for InputFileReader {
+    fn fmt(&self, out: &mut fmt::Formatter<'_>) -> fmt::Result {
+        out.debug_struct("InputFileReader")
+            .field("file_name", &self.file_name)
+            .field("mime_type", &self.mime_type)
+            .finish()
+    }
+}
+
 /// File to upload
 #[derive(Debug, PartialEq)]
-pub struct InputFile {
-    pub(crate) kind: InputFileKind,
+pub enum InputFile {
+    /// A file_id that exists on the Telegram servers
+    Id(String),
+    /// An HTTP URL to get a file from the Internet
+    Url(String),
+    /// A file to upload using multipart/form-data
+    Reader(InputFileReader),
 }
 
 impl InputFile {
     /// Send a file_id that exists on the Telegram servers
     pub fn file_id<S: Into<String>>(file_id: S) -> Self {
-        Self {
-            kind: InputFileKind::Id(file_id.into()),
-        }
+        Self::Id(file_id.into())
     }
 
     /// Send an HTTP URL to get a file from the Internet
     ///
     /// Telegram will download a file from that URL
     pub fn url<S: Into<String>>(url: S) -> Self {
-        Self {
-            kind: InputFileKind::Url(url.into()),
-        }
+        Self::Url(url.into())
     }
 
     /// Path to file in FS (will be uploaded using multipart/form-data)
@@ -204,46 +205,24 @@ impl InputFile {
                 .unwrap_or(APPLICATION_OCTET_STREAM);
             reader = reader.with_file_name(file_name).with_mime_type(mime_type);
         }
-        Ok(Self {
-            kind: InputFileKind::Reader(reader),
-        })
-    }
-
-    /// A reader (file will be uploaded using multipart/form-data)
-    pub fn reader<R: Into<InputFileReader>>(reader: R) -> Self {
-        Self {
-            kind: InputFileKind::Reader(reader.into()),
-        }
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub(crate) enum InputFileKind {
-    Id(String),
-    Url(String),
-    Reader(InputFileReader),
-}
-
-impl From<InputFileReader> for InputFile {
-    fn from(reader: InputFileReader) -> Self {
-        Self::reader(reader)
+        Ok(reader.into())
     }
 }
 
 impl<R> From<R> for InputFile
 where
-    R: AsyncRead + Send + Sync + Unpin + 'static,
+    R: Into<InputFileReader>,
 {
     fn from(reader: R) -> Self {
-        InputFile::reader(InputFileReader::new(reader))
+        InputFile::Reader(reader.into())
     }
 }
 
 impl From<InputFile> for FormValue {
     fn from(value: InputFile) -> Self {
-        match value.kind {
-            InputFileKind::Id(value) | InputFileKind::Url(value) => FormValue::Text(value),
-            InputFileKind::Reader(InputFileReader {
+        match value {
+            InputFile::Id(value) | InputFile::Url(value) => FormValue::Text(value),
+            InputFile::Reader(InputFileReader {
                 file_name: name,
                 mime_type,
                 reader,

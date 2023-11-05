@@ -40,7 +40,7 @@ fn input_sticker() {
     let form: Form = value.try_into().unwrap();
     assert_eq!(
         Form::from([
-            ("tgbot_input_sticker", InputFile::reader(Cursor::new("test")).into()),
+            ("tgbot_input_sticker", InputFile::from(Cursor::new("test")).into()),
             (
                 "sticker",
                 r#"{"sticker":"attach://tgbot_input_sticker","emoji_list":["😻"]}"#.into()

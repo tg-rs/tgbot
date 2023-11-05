@@ -8,7 +8,6 @@ use crate::{
     types::{
         ChatId,
         InputFile,
-        InputFileKind,
         InputMediaAudio,
         InputMediaDocument,
         InputMediaPhoto,
@@ -53,8 +52,8 @@ impl MediaGroup {
         let mut form = Form::default();
 
         let mut add_file = |key: String, file: InputFile| -> String {
-            match &file.kind {
-                InputFileKind::Id(text) | InputFileKind::Url(text) => text.clone(),
+            match &file {
+                InputFile::Id(text) | InputFile::Url(text) => text.clone(),
                 _ => {
                     form.insert_field(&key, file);
                     format!("attach://{}", key)

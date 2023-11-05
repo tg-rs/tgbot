@@ -5,7 +5,7 @@ use serde_json::Error as JsonError;
 
 use crate::{
     api::Form,
-    types::{InputFile, InputFileKind, MaskPosition},
+    types::{InputFile, MaskPosition},
 };
 
 #[cfg(test)]
@@ -71,8 +71,8 @@ impl TryFrom<InputSticker> for Form {
             keywords,
         } = value;
         let mut form = Form::default();
-        let sticker = match sticker.kind {
-            InputFileKind::Id(x) | InputFileKind::Url(x) => x,
+        let sticker = match sticker {
+            InputFile::Id(x) | InputFile::Url(x) => x,
             _ => {
                 let name = "tgbot_input_sticker";
                 form.insert_field(name, sticker);
@@ -109,8 +109,8 @@ impl InputStickers {
             mask_position,
             keywords,
         } = value;
-        let sticker = match sticker.kind {
-            InputFileKind::Id(x) | InputFileKind::Url(x) => x,
+        let sticker = match sticker {
+            InputFile::Id(x) | InputFile::Url(x) => x,
             _ => {
                 let idx = self.metadata.len() + 1;
                 let name = format!("tgbot_input_sticker_{}", idx);

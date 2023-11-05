@@ -1,4 +1,19 @@
-use crate::types::{tests::assert_json_eq, InlineQuery, InlineQueryChatType, Location, User};
+use crate::{
+    api::{assert_payload_eq, Payload},
+    types::{
+        tests::assert_json_eq,
+        AnswerInlineQuery,
+        InlineQuery,
+        InlineQueryChatType,
+        InlineQueryResult,
+        InlineQueryResultArticle,
+        InlineQueryResultsButton,
+        InputMessageContent,
+        InputMessageContentText,
+        Location,
+        User,
+    },
+};
 
 #[test]
 fn inline_query() {
@@ -86,4 +101,62 @@ fn inline_query_chat_type() {
     ] {
         assert_json_eq(expected_struct, expected_value);
     }
+}
+
+#[test]
+fn answer_inline_query() {
+    let text = InputMessageContent::Text(InputMessageContentText::new("text"));
+    let article = InlineQueryResult::Article(InlineQueryResultArticle::new("id", "title", text));
+    let method = AnswerInlineQuery::new("id", vec![article]);
+
+    assert_payload_eq(
+        Payload::json(
+            "answerInlineQuery",
+            serde_json::json!({
+                "inline_query_id": "id",
+                "results": [
+                    {
+                        "type": "article",
+                        "id": "id",
+                        "title": "title",
+                        "input_message_content": {
+                            "message_text": "text"
+                        }
+                    }
+                ]
+            }),
+        ),
+        method.clone(),
+    );
+
+    assert_payload_eq(
+        Payload::json(
+            "answerInlineQuery",
+            serde_json::json!({
+                "inline_query_id": "id",
+                "results": [
+                    {
+                        "type": "article",
+                        "id": "id",
+                        "title": "title",
+                        "input_message_content": {
+                            "message_text": "text"
+                        }
+                    }
+                ],
+                "cache_time": 300,
+                "is_personal": true,
+                "next_offset": "offset",
+                "button": {
+                    "text": "text",
+                    "start_parameter": "param"
+                }
+            }),
+        ),
+        method
+            .cache_time(300)
+            .personal(true)
+            .next_offset("offset")
+            .button(InlineQueryResultsButton::with_start_parameter("text", "param")),
+    );
 }

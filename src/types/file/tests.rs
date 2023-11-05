@@ -2,7 +2,7 @@ use std::io::Cursor;
 
 use crate::{
     api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, File, GetFile, InputFile, InputFileInfo, InputFileReader},
+    types::{tests::assert_json_eq, File, GetFile, InputFile, InputFileReader},
 };
 
 #[test]
@@ -64,37 +64,23 @@ async fn input_file() {
     let path = InputFile::path("LICENSE").await.unwrap();
     assert_eq!(
         format!("{:?}", path),
-        r#"InputFile { kind: Reader(InputFileReader(reader: ..., info: Some(InputFileInfo { name: "LICENSE", mime_type: Some("application/octet-stream") }))) }"#,
+        r#"InputFile { kind: Reader(InputFileReader { file_name: Some("LICENSE"), mime_type: Some("application/octet-stream") }) }"#,
     );
 
-    let reader = InputFile::from(InputFileReader::from(Cursor::new(b"data")).info(("name", mime::TEXT_PLAIN)));
+    let reader = InputFileReader::from(Cursor::new(b"data"))
+        .with_file_name("name")
+        .with_mime_type(mime::TEXT_PLAIN);
+    assert_eq!(reader.file_name().unwrap(), "name");
+    assert_eq!(reader.mime_type().unwrap(), &mime::TEXT_PLAIN);
+    let reader = InputFile::from(reader);
     assert_eq!(
         format!("{:?}", reader),
-        r#"InputFile { kind: Reader(InputFileReader(reader: ..., info: Some(InputFileInfo { name: "name", mime_type: Some("text/plain") }))) }"#,
+        r#"InputFile { kind: Reader(InputFileReader { file_name: Some("name"), mime_type: Some("text/plain") }) }"#,
     );
 
     let reader = InputFile::from(Cursor::new(b"data"));
     assert_eq!(
         format!("{:?}", reader),
-        "InputFile { kind: Reader(InputFileReader(reader: ..., info: None)) }",
+        "InputFile { kind: Reader(InputFileReader { file_name: None, mime_type: None }) }",
     );
-}
-
-#[test]
-fn input_file_info() {
-    let info = InputFileInfo::from("name");
-    assert_eq!(info.name(), "name");
-    assert!(info.mime_type().is_none());
-
-    let info = InputFileInfo::from(("name", mime::TEXT_PLAIN));
-    assert_eq!(info.name(), "name");
-    assert_eq!(info.mime_type().unwrap(), &mime::TEXT_PLAIN);
-
-    let info = InputFileInfo::from(String::from("name"));
-    assert_eq!(info.name(), "name");
-    assert!(info.mime_type().is_none());
-
-    let info = InputFileInfo::from((String::from("name"), mime::TEXT_PLAIN));
-    assert_eq!(info.name(), "name");
-    assert_eq!(info.mime_type().unwrap(), &mime::TEXT_PLAIN);
 }

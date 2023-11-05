@@ -90,78 +90,25 @@ impl Method for GetFile {
     }
 }
 
-/// Information about a file for reader
-#[derive(Clone, Debug, PartialEq)]
-pub struct InputFileInfo {
-    name: String,
-    mime_type: Option<Mime>,
-}
-
-impl InputFileInfo {
-    /// Creates a new info object with given file name
-    pub fn new<S: Into<String>>(name: S) -> Self {
-        Self {
-            name: name.into(),
-            mime_type: None,
-        }
-    }
-
-    /// Sets mime type of a file
-    pub fn with_mime_type(mut self, mime_type: Mime) -> Self {
-        self.mime_type = Some(mime_type);
-        self
-    }
-
-    /// Returns a file name
-    pub fn name(&self) -> &str {
-        &self.name
-    }
-
-    /// Returns a mime type of a file
-    pub fn mime_type(&self) -> Option<&Mime> {
-        self.mime_type.as_ref()
-    }
-}
-
-impl From<&str> for InputFileInfo {
-    fn from(name: &str) -> Self {
-        InputFileInfo::new(name)
-    }
-}
-
-impl From<(&str, Mime)> for InputFileInfo {
-    fn from((name, mime_type): (&str, Mime)) -> Self {
-        InputFileInfo::new(name).with_mime_type(mime_type)
-    }
-}
-
-impl From<String> for InputFileInfo {
-    fn from(name: String) -> Self {
-        InputFileInfo::new(name)
-    }
-}
-
-impl From<(String, Mime)> for InputFileInfo {
-    fn from((name, mime_type): (String, Mime)) -> Self {
-        InputFileInfo::new(name).with_mime_type(mime_type)
-    }
-}
-
 /// File reader to upload
 pub struct InputFileReader {
-    info: Option<InputFileInfo>,
+    file_name: Option<String>,
+    mime_type: Option<Mime>,
     reader: FramedRead<Box<dyn AsyncRead + Send + Sync + Unpin>, BytesCodec>,
 }
 
 impl PartialEq for InputFileReader {
     fn eq(&self, other: &Self) -> bool {
-        self.info.eq(&other.info)
+        self.file_name.eq(&other.file_name) && self.mime_type.eq(&other.mime_type)
     }
 }
 
 impl fmt::Debug for InputFileReader {
     fn fmt(&self, out: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(out, "InputFileReader(reader: ..., info: {:?})", self.info)
+        out.debug_struct("InputFileReader")
+            .field("file_name", &self.file_name)
+            .field("mime_type", &self.mime_type)
+            .finish()
     }
 }
 
@@ -173,14 +120,42 @@ impl InputFileReader {
     {
         InputFileReader {
             reader: FramedRead::new(Box::new(reader), BytesCodec::new()),
-            info: None,
+            file_name: None,
+            mime_type: None,
         }
     }
 
-    /// Sets a file info
-    pub fn info<I: Into<InputFileInfo>>(mut self, info: I) -> Self {
-        self.info = Some(info.into());
+    /// Sets a name of the file
+    ///
+    /// # Arguments
+    ///
+    /// * value - The file name to set
+    pub fn with_file_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.file_name = Some(value.into());
         self
+    }
+
+    /// Returns a file name
+    pub fn file_name(&self) -> Option<&str> {
+        self.file_name.as_deref()
+    }
+
+    /// Sets a mime type of the file
+    ///
+    /// # Arguments
+    ///
+    /// * value - The mime type to set
+    pub fn with_mime_type(mut self, value: Mime) -> Self {
+        self.mime_type = Some(value);
+        self
+    }
+
+    /// Returns a mime type
+    pub fn mime_type(&self) -> Option<&Mime> {
+        self.mime_type.as_ref()
     }
 }
 
@@ -227,7 +202,7 @@ impl InputFile {
                 .and_then(|x| x.to_str())
                 .and_then(|x| mime_guess::from_ext(x).first())
                 .unwrap_or(APPLICATION_OCTET_STREAM);
-            reader = reader.info(InputFileInfo::new(file_name).with_mime_type(mime_type));
+            reader = reader.with_file_name(file_name).with_mime_type(mime_type);
         }
         Ok(Self {
             kind: InputFileKind::Reader(reader),
@@ -268,17 +243,15 @@ impl From<InputFile> for FormValue {
     fn from(value: InputFile) -> Self {
         match value.kind {
             InputFileKind::Id(value) | InputFileKind::Url(value) => FormValue::Text(value),
-            InputFileKind::Reader(InputFileReader { info, reader }) => {
-                let (name, mime_type) = match info {
-                    Some(info) => (Some(info.name), info.mime_type),
-                    None => (None, None),
-                };
-                FormValue::File {
-                    name,
-                    mime_type,
-                    reader,
-                }
-            }
+            InputFileKind::Reader(InputFileReader {
+                file_name: name,
+                mime_type,
+                reader,
+            }) => FormValue::File {
+                name,
+                mime_type,
+                reader,
+            },
         }
     }
 }

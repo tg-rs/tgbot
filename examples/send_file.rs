@@ -50,7 +50,8 @@ impl UpdateHandler for Handler {
                         MessageData::Animation(_) => {
                             let input_media = InputMedia::with_thumbnail(
                                 InputFileReader::new(Cursor::new(b"Hello World!"))
-                                    .info(("hello.txt", mime::TEXT_PLAIN)),
+                                    .with_file_name("hello.txt")
+                                    .with_mime_type(mime::TEXT_PLAIN),
                                 InputFile::path(this.document_thumb_path).await.unwrap(),
                                 InputMediaAnimation::default().caption("test"),
                             )
@@ -123,7 +124,9 @@ impl UpdateHandler for Handler {
                         }
                         "/text" => {
                             let document = Cursor::new(b"Hello World!");
-                            let reader = InputFileReader::new(document).info(("hello.txt", mime::TEXT_PLAIN));
+                            let reader = InputFileReader::new(document)
+                                .with_file_name("hello.txt")
+                                .with_mime_type(mime::TEXT_PLAIN);
                             let method = SendDocument::new(chat_id, reader)
                                 .thumbnail(InputFile::path(this.document_thumb_path).await.unwrap());
                             this.client.execute(method).await.unwrap();

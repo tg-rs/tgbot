@@ -92,7 +92,7 @@ fn create_message_struct() -> Message {
         media_group_id: None,
         reply_markup: None,
         has_media_spoiler: None,
-        data: MessageData::Empty,
+        data: MessageData::Unknown(serde_json::json!({})),
     }
 }
 
@@ -832,6 +832,19 @@ fn text() {
 }
 
 #[test]
+fn unknown() {
+    let expected_struct = create_message_struct();
+    let expected_value = create_message_value();
+    assert_json_eq(expected_struct, expected_value);
+
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::Unknown(serde_json::json!({"unknown_value": {"key": "value"}}));
+    let mut expected_value = create_message_value();
+    expected_value["unknown_value"] = serde_json::json!({"key": "value"});
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
 fn user_shared() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
@@ -1009,7 +1022,7 @@ fn video_chat_participants_invited() {
     let mut expected_value = create_message_value();
 
     expected_struct.data = MessageData::VideoChatParticipantsInvited {
-        users: vec![User {
+        users: Some(vec![User {
             id: 1,
             is_bot: false,
             first_name: String::from("firstname"),
@@ -1018,7 +1031,7 @@ fn video_chat_participants_invited() {
             language_code: None,
             is_premium: None,
             added_to_attachment_menu: None,
-        }],
+        }]),
     };
     expected_value["video_chat_participants_invited"] = serde_json::json!({
         "users": [

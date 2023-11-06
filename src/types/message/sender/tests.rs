@@ -29,7 +29,7 @@ fn create_message_struct(chat: Chat) -> Message {
         media_group_id: None,
         reply_markup: None,
         has_media_spoiler: None,
-        data: MessageData::Empty,
+        data: MessageData::Unknown(serde_json::json!({})),
     }
 }
 

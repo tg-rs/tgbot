@@ -254,7 +254,7 @@ fn edit_message_result() {
         media_group_id: None,
         reply_markup: None,
         has_media_spoiler: None,
-        data: MessageData::Empty,
+        data: MessageData::Unknown(serde_json::json!({})),
     });
     let expected_value = serde_json::json!({
         "message_id": 1,

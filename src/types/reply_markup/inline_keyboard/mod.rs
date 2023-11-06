@@ -1,9 +1,9 @@
-use std::{convert::TryFrom, error::Error, fmt};
+use std::{error::Error, fmt};
 
-use serde::{Deserialize, Serialize};
-use serde_json::{Error as JsonError, Value as JsonValue};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde_json::Error as JsonError;
 
-use crate::types::WebAppInfo;
+use crate::types::{True, WebAppInfo};
 
 #[cfg(test)]
 mod tests;
@@ -55,7 +55,7 @@ impl From<InlineKeyboardMarkup> for Vec<Vec<InlineKeyboardButton>> {
 pub struct InlineKeyboardButton {
     text: String,
     #[serde(flatten)]
-    kind: InlineKeyboardButtonKindRaw,
+    button_type: InlineKeyboardButtonType,
 }
 
 impl InlineKeyboardButton {
@@ -65,26 +65,26 @@ impl InlineKeyboardButton {
     ///
     /// * text - Text of the button
     /// * kind - Data for the button
-    pub fn new<S: Into<String>>(text: S, kind: InlineKeyboardButtonKind) -> Self {
+    pub fn new<S: Into<String>>(text: S, button_type: InlineKeyboardButtonType) -> Self {
         Self {
             text: text.into(),
-            kind: InlineKeyboardButtonKindRaw::from(kind),
+            button_type,
         }
     }
 
     /// HTTP or tg:// url to be opened when button is pressed
     pub fn with_url<T: Into<String>, D: Into<String>>(text: T, url: D) -> Self {
-        Self::new(text, InlineKeyboardButtonKind::Url(url.into()))
+        Self::new(text, InlineKeyboardButtonType::Url(url.into()))
     }
 
     /// Description of the Web App that will be launched when the user presses the button
     pub fn with_web_app<T: Into<String>>(text: T, web_app_info: WebAppInfo) -> Self {
-        Self::new(text, InlineKeyboardButtonKind::WebApp(web_app_info))
+        Self::new(text, InlineKeyboardButtonType::WebApp(web_app_info))
     }
 
     /// Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes
     pub fn with_callback_data<T: Into<String>, D: Into<String>>(text: T, data: D) -> Self {
-        Self::new(text, InlineKeyboardButtonKind::CallbackData(data.into()))
+        Self::new(text, InlineKeyboardButtonType::CallbackData(data.into()))
     }
 
     /// Same as with_callback_data, but takes a serializable type
@@ -95,7 +95,7 @@ impl InlineKeyboardButton {
         data: &D,
     ) -> Result<Self, InlineKeyboardError> {
         let data = serde_json::to_string(data).map_err(InlineKeyboardError::SerializeCallbackData)?;
-        Ok(Self::new(text, InlineKeyboardButtonKind::CallbackData(data)))
+        Ok(Self::new(text, InlineKeyboardButtonType::CallbackData(data)))
     }
 
     /// Pressing the button will prompt the user to select one of their chats,
@@ -111,7 +111,7 @@ impl InlineKeyboardButton {
     /// will be automatically returned to the chat they switched from,
     /// skipping the chat selection screen
     pub fn with_switch_inline_query<T: Into<String>, D: Into<String>>(text: T, data: D) -> Self {
-        Self::new(text, InlineKeyboardButtonKind::SwitchInlineQuery(data.into()))
+        Self::new(text, InlineKeyboardButtonType::SwitchInlineQuery(data.into()))
     }
 
     /// If set, pressing the button will insert the bot‘s username and
@@ -123,7 +123,7 @@ impl InlineKeyboardButton {
     pub fn with_switch_inline_query_current_chat<T: Into<String>, D: Into<String>>(text: T, data: D) -> Self {
         Self::new(
             text,
-            InlineKeyboardButtonKind::SwitchInlineQueryCurrentChat(data.into()),
+            InlineKeyboardButtonType::SwitchInlineQueryCurrentChat(data.into()),
         )
     }
 
@@ -133,21 +133,21 @@ impl InlineKeyboardButton {
     where
         T: Into<String>,
     {
-        Self::new(text, InlineKeyboardButtonKind::SwitchInlineQueryChosenChat(value))
+        Self::new(text, InlineKeyboardButtonType::SwitchInlineQueryChosenChat(value))
     }
 
     /// Description of the game that will be launched when the user presses the button
     ///
     /// NOTE: This type of button must always be the first button in the first row
     pub fn with_callback_game<T: Into<String>>(text: T) -> Self {
-        Self::new(text, InlineKeyboardButtonKind::CallbackGame)
+        Self::new(text, InlineKeyboardButtonType::CallbackGame)
     }
 
     /// Send a Pay button
     ///
     /// NOTE: This type of button must always be the first button in the first row
     pub fn with_pay<T: Into<String>>(text: T) -> Self {
-        Self::new(text, InlineKeyboardButtonKind::Pay)
+        Self::new(text, InlineKeyboardButtonType::Pay)
     }
 
     /// An HTTP URL used to automatically authorize the user
@@ -156,7 +156,7 @@ impl InlineKeyboardButton {
     ///
     /// [1]: https://core.telegram.org/widgets/login
     pub fn with_login_url<T: Into<String>, D: Into<LoginUrl>>(text: T, data: D) -> Self {
-        Self::new(text, InlineKeyboardButtonKind::LoginUrl(data.into()))
+        Self::new(text, InlineKeyboardButtonType::LoginUrl(data.into()))
     }
 
     /// Returns a text of the button
@@ -165,24 +165,39 @@ impl InlineKeyboardButton {
     }
 
     /// Returns a data for the button
-    pub fn kind(&self) -> Result<InlineKeyboardButtonKind, InlineKeyboardError> {
-        InlineKeyboardButtonKind::try_from(self.kind.clone())
+    pub fn button_type(&self) -> &InlineKeyboardButtonType {
+        &self.button_type
     }
 }
 
 /// Variant of inline keyboard button
-#[derive(Clone, Debug)]
-pub enum InlineKeyboardButtonKind {
-    /// HTTP or tg:// url to be opened when button is pressed
-    Url(String),
-    /// Description of the Web App that will be launched when the user presses the button
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InlineKeyboardButtonType {
+    /// Description of the game that will be launched when the user presses the button
     ///
-    /// The Web App will be able to send an arbitrary message on behalf
-    /// of the user using the method answerWebAppQuery.
-    /// Available only in private chats between a user and the bot.
-    WebApp(WebAppInfo),
+    /// NOTE: This type of button must always be the first button in the first row
+    #[serde(
+        deserialize_with = "RawButtonEmpty::deserialize_value",
+        serialize_with = "RawButtonEmpty::serialize_value"
+    )]
+    CallbackGame,
     /// Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes
     CallbackData(String),
+    /// An HTTP URL used to automatically authorize the user
+    ///
+    /// Can be used as a replacement for the [Telegram Login Widget][1]
+    ///
+    /// [1]: https://core.telegram.org/widgets/login
+    LoginUrl(LoginUrl),
+    /// Send a Pay button
+    ///
+    /// NOTE: This type of button must always be the first button in the first row
+    #[serde(
+        deserialize_with = "RawButtonFlag::deserialize_value",
+        serialize_with = "RawButtonFlag::serialize_value"
+    )]
+    Pay,
     /// Pressing the button will prompt the user to select one of their chats,
     /// open that chat and insert the bot‘s username and
     /// the specified inline query in the input field
@@ -196,6 +211,9 @@ pub enum InlineKeyboardButtonKind {
     /// will be automatically returned to the chat they switched from,
     /// skipping the chat selection screen
     SwitchInlineQuery(String),
+    /// Pressing the button will prompt the user to select one of their chats of the specified type,
+    /// open that chat and insert the bot username and the specified inline query in the input field
+    SwitchInlineQueryChosenChat(SwitchInlineQueryChosenChat),
     /// Pressing the button will insert the bot‘s username and
     /// the specified inline query in the current chat's input field
     ///
@@ -203,91 +221,51 @@ pub enum InlineKeyboardButtonKind {
     /// This offers a quick way for the user to open your bot in
     /// inline mode in the same chat – good for selecting something from multiple options
     SwitchInlineQueryCurrentChat(String),
-    /// Pressing the button will prompt the user to select one of their chats of the specified type,
-    /// open that chat and insert the bot username and the specified inline query in the input field
-    SwitchInlineQueryChosenChat(SwitchInlineQueryChosenChat),
-    /// Description of the game that will be launched when the user presses the button
+    /// HTTP or tg:// url to be opened when button is pressed
+    Url(String),
+    /// Description of the Web App that will be launched when the user presses the button
     ///
-    /// NOTE: This type of button must always be the first button in the first row
-    CallbackGame,
-    /// Send a Pay button
-    ///
-    /// NOTE: This type of button must always be the first button in the first row
-    Pay,
-    /// An HTTP URL used to automatically authorize the user
-    ///
-    /// Can be used as a replacement for the [Telegram Login Widget][1]
-    ///
-    /// [1]: https://core.telegram.org/widgets/login
-    LoginUrl(LoginUrl),
+    /// The Web App will be able to send an arbitrary message on behalf
+    /// of the user using the method answerWebAppQuery.
+    /// Available only in private chats between a user and the bot.
+    WebApp(WebAppInfo),
 }
 
-#[derive(Default, Clone, Debug, Deserialize, PartialEq, Serialize)]
-struct InlineKeyboardButtonKindRaw {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    web_app: Option<WebAppInfo>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    callback_data: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    switch_inline_query: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    switch_inline_query_current_chat: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    switch_inline_query_chosen_chat: Option<SwitchInlineQueryChosenChat>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    callback_game: Option<JsonValue>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pay: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    login_url: Option<LoginUrl>,
-}
+#[derive(Debug, Deserialize, Serialize)]
+struct RawButtonEmpty {}
 
-impl From<InlineKeyboardButtonKind> for InlineKeyboardButtonKindRaw {
-    fn from(kind: InlineKeyboardButtonKind) -> Self {
-        use self::InlineKeyboardButtonKind::*;
-        let mut raw = Self::default();
-        match kind {
-            Url(data) => raw.url = Some(data),
-            WebApp(data) => raw.web_app = Some(data),
-            CallbackData(data) => raw.callback_data = Some(data),
-            SwitchInlineQuery(data) => raw.switch_inline_query = Some(data),
-            SwitchInlineQueryCurrentChat(data) => raw.switch_inline_query_current_chat = Some(data),
-            SwitchInlineQueryChosenChat(data) => raw.switch_inline_query_chosen_chat = Some(data),
-            CallbackGame => raw.callback_game = Some(serde_json::json!({})),
-            Pay => raw.pay = Some(true),
-            LoginUrl(data) => raw.login_url = Some(data),
-        }
-        raw
+impl RawButtonEmpty {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<(), D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        RawButtonEmpty::deserialize(deserializer).map(|_| ())
+    }
+
+    fn serialize_value<S>(serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        RawButtonEmpty {}.serialize(serializer)
     }
 }
 
-impl TryFrom<InlineKeyboardButtonKindRaw> for InlineKeyboardButtonKind {
-    type Error = InlineKeyboardError;
+#[derive(Deserialize, Serialize)]
+struct RawButtonFlag;
 
-    fn try_from(kind: InlineKeyboardButtonKindRaw) -> Result<Self, Self::Error> {
-        Ok(if let Some(data) = kind.url {
-            Self::Url(data)
-        } else if let Some(data) = kind.web_app {
-            Self::WebApp(data)
-        } else if let Some(data) = kind.callback_data {
-            Self::CallbackData(data)
-        } else if let Some(data) = kind.switch_inline_query {
-            Self::SwitchInlineQuery(data)
-        } else if let Some(data) = kind.switch_inline_query_current_chat {
-            Self::SwitchInlineQueryCurrentChat(data)
-        } else if let Some(data) = kind.switch_inline_query_chosen_chat {
-            Self::SwitchInlineQueryChosenChat(data)
-        } else if kind.callback_game.is_some() {
-            Self::CallbackGame
-        } else if kind.pay.is_some() {
-            Self::Pay
-        } else if let Some(data) = kind.login_url {
-            Self::LoginUrl(data)
-        } else {
-            return Err(InlineKeyboardError::UnexpectedButtonKind);
-        })
+impl RawButtonFlag {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<(), D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        True::deserialize(deserializer).map(|_| ())
+    }
+
+    fn serialize_value<S>(serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        True.serialize(serializer)
     }
 }
 
@@ -298,8 +276,6 @@ pub enum InlineKeyboardError {
     SerializeCallbackData(JsonError),
     /// Can not serialize markup
     SerializeMarkup(JsonError),
-    /// Can not detect button kind when deserializing keyboard
-    UnexpectedButtonKind,
 }
 
 impl Error for InlineKeyboardError {
@@ -308,7 +284,6 @@ impl Error for InlineKeyboardError {
         match self {
             SerializeCallbackData(err) => Some(err),
             SerializeMarkup(err) => Some(err),
-            UnexpectedButtonKind => None,
         }
     }
 }
@@ -319,7 +294,6 @@ impl fmt::Display for InlineKeyboardError {
         match self {
             SerializeCallbackData(err) => write!(out, "failed to serialize callback data: {}", err),
             SerializeMarkup(err) => write!(out, "failed to serialize markup: {}", err),
-            UnexpectedButtonKind => write!(out, "can not detect button kind"),
         }
     }
 }

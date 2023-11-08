@@ -6,234 +6,328 @@ use super::raw::{
     RawInlineQueryResult,
     RawInlineQueryResultData,
     RawInlineQueryResultDataError::{self, MissingField},
-    RawInlineQueryResultKind,
+    RawInlineQueryResultType,
 };
 
 #[cfg(test)]
 mod tests;
 
-/// Link to a photo
+/// Represents a link to a photo
 ///
-/// By default, this photo will be sent by the user with optional caption
-/// Alternatively, you can use input_message_content
-/// to send a message with the specified content instead of the photo
+/// By default, a photo will be sent by the user with optional caption.
+/// Alternatively, you can use [`Self::with_input_message_content`]
+/// to send a message with the specified content instead of the photo.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultPhoto {
     id: String,
     photo_url: String,
     thumbnail_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    photo_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    photo_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    title: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    input_message_content: Option<InputMessageContent>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    photo_height: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    photo_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent>,
+    title: Option<String>,
 }
 
 impl InlineQueryResultPhoto {
-    /// Creates a new InlineQueryResultPhoto with empty optional parameters
+    /// Creates a new InlineQueryResultPhoto
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
-    /// * photo_url - A valid URL of the photo, must be in jpeg format, size must not exceed 5MB
-    /// * thumbnail_url - URL of the thumbnail for the photo
-    pub fn new<I, U, T>(id: I, photo_url: U, thumbnail_url: T) -> Self
+    /// * id - Unique identifier of the result; 1-64 bytes
+    /// * photo_url - A valid URL of the photo; must be in jpeg format; size must not exceed 5MB
+    /// * thumbnail_url - URL of the thumbnail of the photo
+    pub fn new<A, B, C>(id: A, photo_url: B, thumbnail_url: C) -> Self
     where
-        I: Into<String>,
-        U: Into<String>,
-        T: Into<String>,
+        A: Into<String>,
+        B: Into<String>,
+        C: Into<String>,
     {
-        InlineQueryResultPhoto {
+        Self {
             id: id.into(),
             photo_url: photo_url.into(),
             thumbnail_url: thumbnail_url.into(),
-            photo_width: None,
-            photo_height: None,
-            title: None,
-            description: None,
             caption: None,
             caption_entities: None,
+            description: None,
+            input_message_content: None,
+            photo_height: None,
+            photo_width: None,
             parse_mode: None,
             reply_markup: None,
-            input_message_content: None,
+            title: None,
         }
     }
 
-    /// Width of the photo
-    pub fn photo_width(mut self, photo_width: Integer) -> Self {
-        self.photo_width = Some(photo_width);
-        self
-    }
-
-    /// Height of the photo
-    pub fn photo_height(mut self, photo_height: Integer) -> Self {
-        self.photo_height = Some(photo_height);
-        self
-    }
-
-    /// Title for the result
-    pub fn title<S: Into<String>>(mut self, title: S) -> Self {
-        self.title = Some(title.into());
-        self
-    }
-
-    /// Short description of the result
-    pub fn description<S: Into<String>>(mut self, description: S) -> Self {
-        self.description = Some(description.into());
-        self
-    }
-
-    /// Caption of the photo to be sent, 0-1024 characters
-    pub fn caption<S: Into<String>>(mut self, caption: S) -> Self {
-        self.caption = Some(caption.into());
-        self
-    }
-
-    /// List of special entities that appear in the caption
+    /// Sets a new caption
     ///
-    /// Parse mode will be set to None when this method is called
-    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - Caption of the photo to be sent, 0-1024 characters
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.caption = Some(value.into());
+        self
+    }
+
+    /// Sets a new caption entities
+    ///
+    /// # Arguments
+    ///
+    /// * value - List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to [`None`] when this method is called.
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.caption_entities = Some(caption_entities.into_iter().collect());
+        self.caption_entities = Some(value.into_iter().collect());
         self.parse_mode = None;
         self
     }
 
-    /// Sets parse mode
+    /// Sets a new caption parse mode
     ///
-    /// Caption entities will be set to None when this method is called
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+    /// # Arguments
+    ///
+    /// * value - Parse mode
+    ///
+    /// Caption entities will be set to [`None`] when this method is called.
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
+        self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Short description of the result
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(value.into());
         self
     }
 
-    /// Content of the message to be sent instead of the photo
-    pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
-        self.input_message_content = Some(input_message_content.into());
+    /// Sets a new input message content
+    ///
+    /// # Arguments
+    ///
+    /// * value - Content of the message to be sent instead of the photo
+    pub fn with_input_message_content<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputMessageContent>,
+    {
+        self.input_message_content = Some(value.into());
+        self
+    }
+
+    /// Sets a new photo height
+    ///
+    /// # Arguments
+    ///
+    /// * value - Height of the photo
+    pub fn with_photo_height(mut self, value: Integer) -> Self {
+        self.photo_height = Some(value);
+        self
+    }
+
+    /// Sets a new photo width
+    ///
+    /// # Arguments
+    ///
+    /// * value - Width of the photo
+    pub fn with_photo_width(mut self, value: Integer) -> Self {
+        self.photo_width = Some(value);
+        self
+    }
+
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new title
+    ///
+    /// # Arguments
+    ///
+    /// * value - Title of the result
+    pub fn with_title<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.title = Some(value.into());
         self
     }
 }
 
-/// Link to a photo stored on the Telegram servers
+/// Represents a link to a photo stored on the Telegram servers
 ///
-/// By default, this photo will be sent by the user with an optional caption
-/// Alternatively, you can use input_message_content to send
-/// a message with the specified content instead of the photo
+/// By default, this photo will be sent by the user with an optional caption.
+/// Alternatively, you can use [`Self::with_input_message_content`] to send
+/// a message with the specified content instead of the photo.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedPhoto {
     id: String,
     photo_file_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    title: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    input_message_content: Option<InputMessageContent>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent>,
+    title: Option<String>,
 }
 
 impl InlineQueryResultCachedPhoto {
-    /// Creates a new InlineQueryResultCachedPhoto with empty optional parameters
+    /// Creates a new InlineQueryResultCachedPhoto
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
+    /// * id - Unique identifier of the result; 1-64 bytes
     /// * photo_file_id - A valid file identifier of the photo
-    pub fn new<I, F>(id: I, photo_file_id: F) -> Self
+    pub fn new<A, B>(id: A, photo_file_id: B) -> Self
     where
-        I: Into<String>,
-        F: Into<String>,
+        A: Into<String>,
+        B: Into<String>,
     {
-        InlineQueryResultCachedPhoto {
+        Self {
             id: id.into(),
             photo_file_id: photo_file_id.into(),
-            title: None,
-            description: None,
             caption: None,
             caption_entities: None,
+            description: None,
+            input_message_content: None,
             parse_mode: None,
             reply_markup: None,
-            input_message_content: None,
+            title: None,
         }
     }
 
-    /// Title for the result
-    pub fn title<S: Into<String>>(mut self, title: S) -> Self {
-        self.title = Some(title.into());
-        self
-    }
-
-    /// Short description of the result
-    pub fn description<S: Into<String>>(mut self, description: S) -> Self {
-        self.description = Some(description.into());
-        self
-    }
-
-    /// Caption of the photo to be sent, 0-1024 characters
-    pub fn caption<S: Into<String>>(mut self, caption: S) -> Self {
-        self.caption = Some(caption.into());
-        self
-    }
-
-    /// List of special entities that appear in the caption
+    /// Sets a new caption
     ///
-    /// Parse mode will be set to None when this method is called
-    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - Caption of the photo to be sent; 0-1024 characters
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.caption = Some(value.into());
+        self
+    }
+
+    /// Sets a new caption entities
+    ///
+    /// # Arguments
+    ///
+    /// * value - List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to [`None`] when this method is called
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.caption_entities = Some(caption_entities.into_iter().collect());
+        self.caption_entities = Some(value.into_iter().collect());
         self.parse_mode = None;
         self
     }
 
-    /// Sets parse mode
+    /// Sets a new caption parse mode
     ///
-    /// Caption entities will be set to None when this method is called
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+    /// # Arguments
+    ///
+    /// * value - Parse mode
+    ///
+    /// Caption entities will be set to [`None`] when this method is called
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
+        self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Short description of the result
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(value.into());
         self
     }
 
-    /// Content of the message to be sent instead of the photo
-    pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
-        self.input_message_content = Some(input_message_content.into());
+    /// Sets a new input message content
+    ///
+    /// # Arguments
+    ///
+    /// * value - Content of the message to be sent instead of the photo
+    pub fn with_input_message_content<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputMessageContent>,
+    {
+        self.input_message_content = Some(value.into());
+        self
+    }
+
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new title
+    ///
+    /// # Arguments
+    ///
+    /// * value - Title for the result
+    pub fn with_title<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.title = Some(value.into());
         self
     }
 }
@@ -243,18 +337,18 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultPhoto {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
-            id: value.id,
-            photo_url: value.data.photo_url.ok_or(MissingField("photo_url"))?,
-            thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
-            photo_width: value.data.photo_width,
-            photo_height: value.data.photo_height,
-            title: value.data.title,
-            description: value.data.description,
             caption: value.data.caption,
             caption_entities: value.data.caption_entities,
-            parse_mode: value.data.parse_mode,
-            reply_markup: value.data.reply_markup,
+            description: value.data.description,
+            id: value.id,
             input_message_content: value.data.input_message_content,
+            parse_mode: value.data.parse_mode,
+            photo_height: value.data.photo_height,
+            photo_width: value.data.photo_width,
+            photo_url: value.data.photo_url.ok_or(MissingField("photo_url"))?,
+            reply_markup: value.data.reply_markup,
+            thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
+            title: value.data.title,
         })
     }
 }
@@ -263,21 +357,21 @@ impl From<InlineQueryResultPhoto> for RawInlineQueryResult {
     fn from(value: InlineQueryResultPhoto) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                photo_url: Some(value.photo_url),
-                thumbnail_url: Some(value.thumbnail_url),
-                photo_width: value.photo_width,
-                photo_height: value.photo_height,
-                title: value.title,
-                description: value.description,
                 caption: value.caption,
                 caption_entities: value.caption_entities,
-                parse_mode: value.parse_mode,
-                reply_markup: value.reply_markup,
+                description: value.description,
                 input_message_content: value.input_message_content,
+                parse_mode: value.parse_mode,
+                photo_height: value.photo_height,
+                photo_url: Some(value.photo_url),
+                photo_width: value.photo_width,
+                reply_markup: value.reply_markup,
+                thumbnail_url: Some(value.thumbnail_url),
+                title: value.title,
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::Photo,
+            result_type: RawInlineQueryResultType::Photo,
         }
     }
 }
@@ -287,15 +381,15 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedPhoto {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
-            id: value.id,
-            photo_file_id: value.data.photo_file_id.ok_or(MissingField("photo_file_id"))?,
-            title: value.data.title,
-            description: value.data.description,
             caption: value.data.caption,
             caption_entities: value.data.caption_entities,
-            parse_mode: value.data.parse_mode,
-            reply_markup: value.data.reply_markup,
+            description: value.data.description,
+            id: value.id,
             input_message_content: value.data.input_message_content,
+            parse_mode: value.data.parse_mode,
+            photo_file_id: value.data.photo_file_id.ok_or(MissingField("photo_file_id"))?,
+            title: value.data.title,
+            reply_markup: value.data.reply_markup,
         })
     }
 }
@@ -304,18 +398,18 @@ impl From<InlineQueryResultCachedPhoto> for RawInlineQueryResult {
     fn from(value: InlineQueryResultCachedPhoto) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                photo_file_id: Some(value.photo_file_id),
-                title: value.title,
-                description: value.description,
                 caption: value.caption,
                 caption_entities: value.caption_entities,
-                parse_mode: value.parse_mode,
-                reply_markup: value.reply_markup,
+                description: value.description,
                 input_message_content: value.input_message_content,
+                parse_mode: value.parse_mode,
+                photo_file_id: Some(value.photo_file_id),
+                reply_markup: value.reply_markup,
+                title: value.title,
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::CachedPhoto,
+            result_type: RawInlineQueryResultType::CachedPhoto,
         }
     }
 }

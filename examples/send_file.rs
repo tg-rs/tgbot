@@ -22,7 +22,7 @@ use tgbot::{
         SendPhoto,
         SendVideo,
         Update,
-        UpdateKind,
+        UpdateType,
     },
 };
 
@@ -42,7 +42,7 @@ impl UpdateHandler for Handler {
         let this = self.clone();
         Box::pin(async move {
             log::info!("got an update: {:?}\n", update);
-            if let UpdateKind::Message(message) = update.kind {
+            if let UpdateType::Message(message) = update.update_type {
                 let chat_id = message.chat.get_id();
                 if let Some(reply_to) = message.reply_to {
                     match reply_to.data {
@@ -52,24 +52,24 @@ impl UpdateHandler for Handler {
                                 InputFileReader::new(Cursor::new(b"Hello World!"))
                                     .with_file_name("hello.txt")
                                     .with_mime_type(mime::TEXT_PLAIN),
+                                InputMediaAnimation::default().with_caption("test"),
                                 InputFile::path(this.document_thumb_path).await.unwrap(),
-                                InputMediaAnimation::default().caption("test"),
                             )
                             .unwrap();
                             this.client
-                                .execute(EditMessageMedia::new(chat_id, reply_to.id, input_media))
+                                .execute(EditMessageMedia::for_chat_message(chat_id, reply_to.id, input_media))
                                 .await
                                 .unwrap();
                         }
                         // Change document to animation
                         MessageData::Document { .. } => {
                             this.client
-                                .execute(EditMessageMedia::new(
+                                .execute(EditMessageMedia::for_chat_message(
                                     chat_id,
                                     reply_to.id,
                                     InputMedia::new(
                                         InputFile::url(this.gif_url),
-                                        InputMediaAnimation::default().caption("test"),
+                                        InputMediaAnimation::default().with_caption("test"),
                                     )
                                     .unwrap(),
                                 ))
@@ -84,7 +84,7 @@ impl UpdateHandler for Handler {
                             )
                             .unwrap();
                             this.client
-                                .execute(EditMessageMedia::new(chat_id, reply_to.id, input_media))
+                                .execute(EditMessageMedia::for_chat_message(chat_id, reply_to.id, input_media))
                                 .await
                                 .unwrap();
                         }
@@ -96,29 +96,29 @@ impl UpdateHandler for Handler {
                             )
                             .unwrap();
                             this.client
-                                .execute(EditMessageMedia::new(chat_id, reply_to.id, input_media))
+                                .execute(EditMessageMedia::for_chat_message(chat_id, reply_to.id, input_media))
                                 .await
                                 .unwrap();
                         }
                         _ => {}
                     }
-                } else if let MessageData::Document { data, .. } = message.data {
+                } else if let MessageData::Document(document) = message.data {
                     // Resend document by file id (you also can send a document using URL)
                     this.client
-                        .execute(SendDocument::new(chat_id, InputFile::file_id(data.file_id)))
+                        .execute(SendDocument::new(chat_id, InputFile::file_id(document.data.file_id)))
                         .await
                         .unwrap();
                 } else if let Some(text) = message.get_text() {
                     match text.data.as_str() {
                         // Send animation by URL (you also can send animation using a file_id)
                         "/gif" => {
-                            let method = SendAnimation::new(chat_id, InputFile::url(this.gif_url));
+                            let method = SendAnimation::new(InputFile::url(this.gif_url), chat_id);
                             this.client.execute(method).await.unwrap();
                         }
                         "/photo" => {
-                            let markup = vec![vec![InlineKeyboardButton::with_callback_data("test", "cb-data")]];
+                            let markup = [[InlineKeyboardButton::for_callback_data("test", "cb-data")]];
                             let method = SendPhoto::new(chat_id, InputFile::path(this.photo_path).await.unwrap())
-                                .reply_markup(markup)
+                                .with_reply_markup(markup)
                                 .unwrap();
                             this.client.execute(method).await.unwrap();
                         }
@@ -128,7 +128,8 @@ impl UpdateHandler for Handler {
                                 .with_file_name("hello.txt")
                                 .with_mime_type(mime::TEXT_PLAIN);
                             let method = SendDocument::new(chat_id, reader)
-                                .thumbnail(InputFile::path(this.document_thumb_path).await.unwrap());
+                                .with_thumbnail(InputFile::path(this.document_thumb_path).await.unwrap())
+                                .unwrap();
                             this.client.execute(method).await.unwrap();
                         }
                         "/video" => {

@@ -10,19 +10,19 @@ use crate::types::{
 
 #[test]
 fn inline_query_result_document() {
-    let result = InlineQueryResultDocument::new("id", "title", "url", "mime");
+    let result = InlineQueryResultDocument::new("url", "id", "mime", "title");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .description("desc")
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text"))
-                .thumbnail_url("thumb-url")
-                .thumbnail_width(200)
-                .thumbnail_height(200),
+                .with_caption("caption")
+                .with_description("desc")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_thumbnail_height(200)
+                .with_thumbnail_url("thumb-url")
+                .with_thumbnail_width(200),
         ),
         serde_json::json!({
             "type": "document",
@@ -54,16 +54,16 @@ fn inline_query_result_document() {
 
 #[test]
 fn inline_query_result_cached_document() {
-    let result = InlineQueryResultCachedDocument::new("id", "title", "file-id");
+    let result = InlineQueryResultCachedDocument::new("file-id", "id", "title");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .description("desc")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_description("desc")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "document",

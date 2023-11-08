@@ -1,6 +1,6 @@
 use crate::{
     api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, EncryptedPassportElementKind, PassportElementError, SetPassportDataErrors},
+    types::{tests::assert_json_eq, EncryptedPassportElementType, PassportElementError, SetPassportDataErrors},
 };
 
 #[test]
@@ -8,7 +8,7 @@ fn passport_element_error() {
     for (expected_struct, expected_value) in [
         (
             PassportElementError::data_field(
-                EncryptedPassportElementKind::Address,
+                EncryptedPassportElementType::Address,
                 "address",
                 "data_hash",
                 "bad address",
@@ -22,7 +22,7 @@ fn passport_element_error() {
             }),
         ),
         (
-            PassportElementError::front_side(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file"),
+            PassportElementError::front_side(EncryptedPassportElementType::DriverLicense, "file_hash", "bad file"),
             serde_json::json!({
                 "source": "front_side",
                 "type": "driver_license",
@@ -31,7 +31,7 @@ fn passport_element_error() {
             }),
         ),
         (
-            PassportElementError::reverse_side(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file"),
+            PassportElementError::reverse_side(EncryptedPassportElementType::DriverLicense, "file_hash", "bad file"),
             serde_json::json!({
                 "source": "reverse_side",
                 "type": "driver_license",
@@ -40,7 +40,7 @@ fn passport_element_error() {
             }),
         ),
         (
-            PassportElementError::selfie(EncryptedPassportElementKind::DriverLicense, "file_hash", "bad file"),
+            PassportElementError::selfie(EncryptedPassportElementType::DriverLicense, "file_hash", "bad file"),
             serde_json::json!({
                 "source": "selfie",
                 "type": "driver_license",
@@ -49,7 +49,7 @@ fn passport_element_error() {
             }),
         ),
         (
-            PassportElementError::file(EncryptedPassportElementKind::BankStatement, "file_hash", "bad file"),
+            PassportElementError::file(EncryptedPassportElementType::BankStatement, "file_hash", "bad file"),
             serde_json::json!({
                 "source": "file",
                 "type": "bank_statement",
@@ -59,7 +59,7 @@ fn passport_element_error() {
         ),
         (
             PassportElementError::files(
-                EncryptedPassportElementKind::BankStatement,
+                EncryptedPassportElementType::BankStatement,
                 vec![String::from("file_hash")],
                 "bad file",
             ),
@@ -72,7 +72,7 @@ fn passport_element_error() {
         ),
         (
             PassportElementError::translation_file(
-                EncryptedPassportElementKind::BankStatement,
+                EncryptedPassportElementType::BankStatement,
                 "file_hash",
                 "bad file",
             ),
@@ -85,7 +85,7 @@ fn passport_element_error() {
         ),
         (
             PassportElementError::translation_files(
-                EncryptedPassportElementKind::BankStatement,
+                EncryptedPassportElementType::BankStatement,
                 vec![String::from("file_hash")],
                 "bad file",
             ),
@@ -101,7 +101,7 @@ fn passport_element_error() {
     }
 
     assert_json_eq(
-        PassportElementError::unspecified(EncryptedPassportElementKind::BankStatement, "element_hash", "bad file"),
+        PassportElementError::unspecified(EncryptedPassportElementType::BankStatement, "element_hash", "bad file"),
         serde_json::json!({
             "source": "unspecified",
             "type": "bank_statement",
@@ -112,9 +112,9 @@ fn passport_element_error() {
 }
 
 #[test]
-fn create_error_accepts_kind() {
-    use self::EncryptedPassportElementKind::*;
-    for (kind, flag) in &[
+fn create_error_accepts_type() {
+    use self::EncryptedPassportElementType::*;
+    for (element_type, flag) in &[
         (Address, true),
         (BankStatement, false),
         (DriverLicense, true),
@@ -129,11 +129,11 @@ fn create_error_accepts_kind() {
         (TemporaryRegistration, false),
         (UtilityBill, false),
     ] {
-        let err = PassportElementError::data_field(*kind, "address", "data_hash", "bad address");
+        let err = PassportElementError::data_field(*element_type, "address", "data_hash", "bad address");
         assert!(if *flag { err.is_ok() } else { err.is_err() });
     }
 
-    for (kind, flag) in &[
+    for (element_type, flag) in &[
         (Address, false),
         (BankStatement, false),
         (DriverLicense, true),
@@ -148,11 +148,11 @@ fn create_error_accepts_kind() {
         (TemporaryRegistration, false),
         (UtilityBill, false),
     ] {
-        let err = PassportElementError::front_side(*kind, "file_hash", "bad file");
+        let err = PassportElementError::front_side(*element_type, "file_hash", "bad file");
         assert!(if *flag { err.is_ok() } else { err.is_err() });
     }
 
-    for (kind, flag) in &[
+    for (element_type, flag) in &[
         (Address, false),
         (BankStatement, false),
         (DriverLicense, true),
@@ -167,11 +167,11 @@ fn create_error_accepts_kind() {
         (TemporaryRegistration, false),
         (UtilityBill, false),
     ] {
-        let err = PassportElementError::reverse_side(*kind, "file_hash", "bad file");
+        let err = PassportElementError::reverse_side(*element_type, "file_hash", "bad file");
         assert!(if *flag { err.is_ok() } else { err.is_err() });
     }
 
-    for (kind, flag) in &[
+    for (element_type, flag) in &[
         (Address, false),
         (BankStatement, false),
         (DriverLicense, true),
@@ -186,11 +186,11 @@ fn create_error_accepts_kind() {
         (TemporaryRegistration, false),
         (UtilityBill, false),
     ] {
-        let err = PassportElementError::selfie(*kind, "file_hash", "bad file");
+        let err = PassportElementError::selfie(*element_type, "file_hash", "bad file");
         assert!(if *flag { err.is_ok() } else { err.is_err() });
     }
 
-    for (kind, flag) in &[
+    for (element_type, flag) in &[
         (Address, false),
         (BankStatement, true),
         (DriverLicense, false),
@@ -205,11 +205,11 @@ fn create_error_accepts_kind() {
         (TemporaryRegistration, true),
         (UtilityBill, true),
     ] {
-        let err = PassportElementError::file(*kind, "file_hash", "bad file");
+        let err = PassportElementError::file(*element_type, "file_hash", "bad file");
         assert!(if *flag { err.is_ok() } else { err.is_err() });
     }
 
-    for (kind, flag) in &[
+    for (element_type, flag) in &[
         (Address, false),
         (BankStatement, true),
         (DriverLicense, false),
@@ -224,11 +224,11 @@ fn create_error_accepts_kind() {
         (TemporaryRegistration, true),
         (UtilityBill, true),
     ] {
-        let err = PassportElementError::files(*kind, vec![String::from("file_hash")], "bad file");
+        let err = PassportElementError::files(*element_type, vec![String::from("file_hash")], "bad file");
         assert!(if *flag { err.is_ok() } else { err.is_err() });
     }
 
-    for (kind, flag) in &[
+    for (element_type, flag) in &[
         (Address, false),
         (BankStatement, true),
         (DriverLicense, true),
@@ -243,11 +243,11 @@ fn create_error_accepts_kind() {
         (TemporaryRegistration, true),
         (UtilityBill, true),
     ] {
-        let err = PassportElementError::translation_file(*kind, "file_hash", "bad file");
+        let err = PassportElementError::translation_file(*element_type, "file_hash", "bad file");
         assert!(if *flag { err.is_ok() } else { err.is_err() });
     }
 
-    for (kind, flag) in &[
+    for (element_type, flag) in &[
         (Address, false),
         (BankStatement, true),
         (DriverLicense, true),
@@ -262,7 +262,7 @@ fn create_error_accepts_kind() {
         (TemporaryRegistration, true),
         (UtilityBill, true),
     ] {
-        let err = PassportElementError::translation_files(*kind, vec![String::from("file_hash")], "bad file");
+        let err = PassportElementError::translation_files(*element_type, vec![String::from("file_hash")], "bad file");
         assert!(if *flag { err.is_ok() } else { err.is_err() });
     }
 }

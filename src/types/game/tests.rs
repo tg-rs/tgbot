@@ -20,32 +20,19 @@ use crate::{
 #[test]
 fn game() {
     assert_json_eq(
-        Game {
-            title: String::from("Game"),
-            description: String::from("Description"),
-            photo: vec![PhotoSize {
-                file_id: String::from("photo-file-id"),
-                file_unique_id: String::from("photo-file-unique-id"),
-                width: 200,
-                height: 200,
-                file_size: None,
-            }],
-            text: Some(Text {
-                data: String::from("text"),
-                entities: Some(TextEntities::from_iter(vec![TextEntity::bold(0..2)])),
-            }),
-            animation: Some(Animation {
-                file_id: String::from("animation-file-id"),
-                file_unique_id: String::from("animation-file-unique-id"),
-                width: 200,
-                height: 200,
-                duration: 24,
-                thumbnail: None,
-                file_name: None,
-                mime_type: None,
-                file_size: None,
-            }),
-        },
+        Game::new(
+            "Description",
+            [PhotoSize::new("photo-file-id", "photo-file-unique-id", 200, 200)],
+            "Game",
+        )
+        .with_animation(Animation::new(
+            24,
+            "animation-file-id",
+            "animation-file-unique-id",
+            200,
+            200,
+        ))
+        .with_text(Text::from("text").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..2)]))),
         serde_json::json!({
             "title": "Game",
             "description": "Description",
@@ -73,13 +60,7 @@ fn game() {
         }),
     );
     assert_json_eq(
-        Game {
-            title: String::from("Game"),
-            description: String::from("Description"),
-            photo: vec![],
-            text: None,
-            animation: None,
-        },
+        Game::new("Description", [], "Game"),
         serde_json::json!({
             "title": "Game",
             "description": "Description",
@@ -91,20 +72,7 @@ fn game() {
 #[test]
 fn game_high_score() {
     assert_json_eq(
-        GameHighScore {
-            position: 1,
-            user: User {
-                id: 2,
-                is_bot: false,
-                first_name: String::from("John"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            score: 3,
-        },
+        GameHighScore::new(1, 3, User::new(2, "John", false)),
         serde_json::json!({
             "position": 1,
             "user": {
@@ -124,14 +92,14 @@ fn get_game_high_scores() {
             "getGameHighScores",
             serde_json::json!({"user_id": 1, "chat_id": 2, "message_id": 3}),
         ),
-        GetGameHighScores::new(1, 2, 3),
+        GetGameHighScores::for_chat_message(1, 2, 3),
     );
     assert_payload_eq(
         Payload::json(
             "getGameHighScores",
             serde_json::json!({"user_id": 1, "inline_message_id": "inline-message-id"}),
         ),
-        GetGameHighScores::with_inline_message_id(1, "inline-message-id"),
+        GetGameHighScores::for_inline_message(1, "inline-message-id"),
     );
 }
 
@@ -167,18 +135,18 @@ fn send_game() {
             }),
         ),
         method
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "example.com")]])
-            .message_thread_id(1),
+            .with_allow_sending_without_reply(true)
+            .with_disable_notification(true)
+            .with_message_thread_id(1)
+            .with_protect_content(true)
+            .with_reply_markup([[InlineKeyboardButton::for_url("text", "example.com")]])
+            .with_reply_to_message_id(1),
     )
 }
 
 #[test]
 fn set_game_score() {
-    let method = SetGameScore::new(1, 2, 3, 100);
+    let method = SetGameScore::for_chat_message(1, 2, 3, 100);
     assert_payload_eq(
         Payload::json(
             "setGameScore",
@@ -203,10 +171,10 @@ fn set_game_score() {
                 "disable_edit_message": true
             }),
         ),
-        method.force(true).disable_edit_message(true),
+        method.with_disable_edit_message(true).with_force(true),
     );
 
-    let method = SetGameScore::with_inline_message_id("inline-message-id", 3, 100);
+    let method = SetGameScore::for_inline_message("inline-message-id", 3, 100);
     assert_payload_eq(
         Payload::json(
             "setGameScore",
@@ -229,6 +197,6 @@ fn set_game_score() {
                 "disable_edit_message": true
             }),
         ),
-        method.force(true).disable_edit_message(true),
+        method.with_disable_edit_message(true).with_force(true),
     )
 }

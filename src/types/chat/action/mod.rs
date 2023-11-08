@@ -39,18 +39,19 @@ pub enum ChatAction {
 /// Tell the user that something is happening on the bot side
 ///
 /// The status is set for 5 seconds or less
-/// (when a message arrives from your bot, Telegram clients clear its typing status)
+/// (when a message arrives from your bot, Telegram clients clear its typing status).
 ///
-/// Example: The ImageBot needs some time to process a request and upload the image
+/// Example: The ImageBot needs some time to process a request and upload the image.
 /// Instead of sending a text message along the lines of “Retrieving image, please wait…”,
-/// the bot may use sendChatAction with action = upload_photo
-/// The user will see a “sending photo” status for the bot
+/// the bot may use `sendChatAction` with `action = upload_photo`.
+/// The user will see a “sending photo” status for the bot.
+///
 /// We only recommend using this method when a response from the bot
-/// will take a noticeable amount of time to arrive
+/// will take a noticeable amount of time to arrive.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendChatAction {
-    chat_id: ChatId,
     action: ChatAction,
+    chat_id: ChatId,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
 }
@@ -60,18 +61,25 @@ impl SendChatAction {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * action - Type of action to broadcast
-    pub fn new<C: Into<ChatId>>(chat_id: C, action: ChatAction) -> Self {
+    /// * chat_id - The unique identifier of the target chat
+    /// * action - The type of action to broadcast
+    pub fn new<T>(chat_id: T, action: ChatAction) -> Self
+    where
+        T: Into<ChatId>,
+    {
         SendChatAction {
-            chat_id: chat_id.into(),
             action,
+            chat_id: chat_id.into(),
             message_thread_id: None,
         }
     }
 
-    /// Unique identifier for the target message thread; supergroups only
-    pub fn message_thread_id(mut self, value: Integer) -> Self {
+    /// Sets a new message thread ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the target message thread; supergroups only
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }

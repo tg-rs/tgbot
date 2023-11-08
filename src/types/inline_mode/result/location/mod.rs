@@ -6,17 +6,17 @@ use super::raw::{
     RawInlineQueryResult,
     RawInlineQueryResultData,
     RawInlineQueryResultDataError::{self, MissingField},
-    RawInlineQueryResultKind,
+    RawInlineQueryResultType,
 };
 
 #[cfg(test)]
 mod tests;
 
-/// Location on a map
+/// Represents a location on a map
 ///
-/// By default, the location will be sent by the user
-/// Alternatively, you can use input_message_content
-/// to send a message with the specified content instead of the location
+/// By default, the location will be sent by the user.
+/// Alternatively, you can use [`Self::with_input_message_content`]
+/// to send a message with the specified content instead of the location.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultLocation {
     id: String,
@@ -24,27 +24,27 @@ pub struct InlineQueryResultLocation {
     longitude: Float,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    heading: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     horizontal_accuracy: Option<Float>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    live_period: Option<Integer>,
+    input_message_content: Option<InputMessageContent>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    heading: Option<Integer>,
+    live_period: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proximity_alert_radius: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent>,
+    thumbnail_height: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    thumbnail_height: Option<Integer>,
 }
 
 impl InlineQueryResultLocation {
-    /// Creates a new InlineQueryResultLocation with empty optional parameters
+    /// Creates a new InlineQueryResultLocation
     ///
     /// # Arguments
     ///
@@ -52,12 +52,12 @@ impl InlineQueryResultLocation {
     /// * latitude - Location latitude in degrees
     /// * longitude - Location longitude in degrees
     /// * title - Location title
-    pub fn new<I, T>(id: I, latitude: Float, longitude: Float, title: T) -> Self
+    pub fn new<A, B>(id: A, latitude: Float, longitude: Float, title: B) -> Self
     where
-        I: Into<String>,
-        T: Into<String>,
+        A: Into<String>,
+        B: Into<String>,
     {
-        InlineQueryResultLocation {
+        Self {
             id: id.into(),
             latitude,
             longitude,
@@ -74,62 +74,103 @@ impl InlineQueryResultLocation {
         }
     }
 
-    /// The radius of uncertainty for the location, measured in meters; 0-1500
-    pub fn horizontal_accuracy(mut self, horizontal_accuracy: Float) -> Self {
-        self.horizontal_accuracy = Some(horizontal_accuracy);
-        self
-    }
-
-    /// Period in seconds for which the location can be updated, should be between 60 and 86400
-    pub fn live_period(mut self, live_period: Integer) -> Self {
-        self.live_period = Some(live_period);
-        self
-    }
-
-    /// For live locations, a direction in which the user is moving, in degrees
+    /// Sets a new heading
     ///
-    /// Must be between 1 and 360 if specified
-    pub fn heading(mut self, heading: Integer) -> Self {
-        self.heading = Some(heading);
-        self
-    }
-
-    /// For live locations, a maximum distance for proximity alerts about
-    /// approaching another chat member, in meters
+    /// # Arguments
     ///
-    /// Must be between 1 and 100000 if specified
-    pub fn proximity_alert_radius(mut self, proximity_alert_radius: Integer) -> Self {
-        self.proximity_alert_radius = Some(proximity_alert_radius);
+    /// * value - Direction in which the user is moving, in degrees; 1-360
+    pub fn with_heading(mut self, value: Integer) -> Self {
+        self.heading = Some(value);
         self
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new horizontal accuracy
+    ///
+    /// # Arguments
+    ///
+    /// * value - The radius of uncertainty for the location, measured in meters; 0-1500
+    pub fn with_horizontal_accuracy(mut self, value: Float) -> Self {
+        self.horizontal_accuracy = Some(value);
         self
     }
 
-    /// Content of the message to be sent instead of the location
-    pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
-        self.input_message_content = Some(input_message_content.into());
+    /// Sets a new input message content
+    ///
+    /// # Arguments
+    ///
+    /// * value - Content of the message to be sent instead of the location
+    pub fn with_input_message_content<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputMessageContent>,
+    {
+        self.input_message_content = Some(value.into());
         self
     }
 
-    /// Url of the thumbnail for the result
-    pub fn thumbnail_url<S: Into<String>>(mut self, thumbnail_url: S) -> Self {
-        self.thumbnail_url = Some(thumbnail_url.into());
+    /// Sets a new live period
+    ///
+    /// # Arguments
+    ///
+    /// * value - Period in seconds for which the location can be updated; 60-86400
+    pub fn with_live_period(mut self, value: Integer) -> Self {
+        self.live_period = Some(value);
         self
     }
 
-    /// Thumbnail width
-    pub fn thumbnail_width(mut self, thumbnail_width: Integer) -> Self {
-        self.thumbnail_width = Some(thumbnail_width);
+    /// Sets a new proximity alert radius
+    ///
+    /// # Arguments
+    ///
+    /// * value - A maximum distance for proximity alerts about
+    ///           approaching another chat member, in meters; 1-100000
+    pub fn with_proximity_alert_radius(mut self, value: Integer) -> Self {
+        self.proximity_alert_radius = Some(value);
         self
     }
 
-    /// Thumbnail height
-    pub fn thumbnail_height(mut self, thumbnail_height: Integer) -> Self {
-        self.thumbnail_height = Some(thumbnail_height);
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new thumbnail height
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail height
+    pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
+        self.thumbnail_height = Some(value);
+        self
+    }
+
+    /// Sets a new thumbnail URL
+    ///
+    /// # Arguments
+    ///
+    /// * value - URL of the thumbnail for the result
+    pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.thumbnail_url = Some(value.into());
+        self
+    }
+
+    /// Sets a new thumbnail width
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail width
+    pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
+        self.thumbnail_width = Some(value);
         self
     }
 }
@@ -139,19 +180,19 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultLocation {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
-            id: value.id,
-            latitude: value.data.latitude.ok_or(MissingField("latitude"))?,
-            longitude: value.data.longitude.ok_or(MissingField("longitude"))?,
-            title: value.data.title.ok_or(MissingField("title"))?,
-            horizontal_accuracy: value.data.horizontal_accuracy,
-            live_period: value.data.live_period,
             heading: value.data.heading,
+            horizontal_accuracy: value.data.horizontal_accuracy,
+            id: value.id,
+            input_message_content: value.data.input_message_content,
+            latitude: value.data.latitude.ok_or(MissingField("latitude"))?,
+            live_period: value.data.live_period,
+            longitude: value.data.longitude.ok_or(MissingField("longitude"))?,
             proximity_alert_radius: value.data.proximity_alert_radius,
             reply_markup: value.data.reply_markup,
-            input_message_content: value.data.input_message_content,
+            thumbnail_height: value.data.thumbnail_height,
             thumbnail_url: value.data.thumbnail_url,
             thumbnail_width: value.data.thumbnail_width,
-            thumbnail_height: value.data.thumbnail_height,
+            title: value.data.title.ok_or(MissingField("title"))?,
         })
     }
 }
@@ -160,22 +201,22 @@ impl From<InlineQueryResultLocation> for RawInlineQueryResult {
     fn from(value: InlineQueryResultLocation) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                latitude: Some(value.latitude),
-                longitude: Some(value.longitude),
-                title: Some(value.title),
                 horizontal_accuracy: value.horizontal_accuracy,
+                latitude: Some(value.latitude),
                 live_period: value.live_period,
+                longitude: Some(value.longitude),
                 heading: value.heading,
+                input_message_content: value.input_message_content,
                 proximity_alert_radius: value.proximity_alert_radius,
                 reply_markup: value.reply_markup,
-                input_message_content: value.input_message_content,
+                thumbnail_height: value.thumbnail_height,
                 thumbnail_url: value.thumbnail_url,
                 thumbnail_width: value.thumbnail_width,
-                thumbnail_height: value.thumbnail_height,
+                title: Some(value.title),
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::Location,
+            result_type: RawInlineQueryResultType::Location,
         }
     }
 }

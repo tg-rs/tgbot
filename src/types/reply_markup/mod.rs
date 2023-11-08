@@ -29,9 +29,21 @@ impl ReplyMarkup {
     }
 }
 
+impl<const A: usize, const B: usize> From<[[InlineKeyboardButton; B]; A]> for ReplyMarkup {
+    fn from(value: [[InlineKeyboardButton; B]; A]) -> Self {
+        ReplyMarkup::InlineKeyboardMarkup(value.into())
+    }
+}
+
 impl From<Vec<Vec<InlineKeyboardButton>>> for ReplyMarkup {
     fn from(markup: Vec<Vec<InlineKeyboardButton>>) -> ReplyMarkup {
         ReplyMarkup::InlineKeyboardMarkup(markup.into())
+    }
+}
+
+impl<const A: usize, const B: usize> From<[[KeyboardButton; B]; A]> for ReplyMarkup {
+    fn from(value: [[KeyboardButton; B]; A]) -> Self {
+        ReplyMarkup::ReplyKeyboardMarkup(value.into())
     }
 }
 

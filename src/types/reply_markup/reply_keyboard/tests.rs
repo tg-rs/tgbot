@@ -4,7 +4,7 @@ use crate::types::{
     KeyboardButton,
     KeyboardButtonRequestChat,
     KeyboardButtonRequestUser,
-    PollKind,
+    PollType,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     ReplyMarkup,
@@ -15,40 +15,38 @@ use crate::types::{
 fn reply_keyboard_markup() {
     let row = vec![
         KeyboardButton::new("test"),
-        KeyboardButton::new("request contact").request_contact(),
-        KeyboardButton::new("request chat 1").request_chat(KeyboardButtonRequestChat::new(1, true)),
-        KeyboardButton::new("request chat 2").request_chat(
+        KeyboardButton::new("request contact").with_request_contact(),
+        KeyboardButton::new("request chat 1").with_request_chat(KeyboardButtonRequestChat::new(1, true)),
+        KeyboardButton::new("request chat 2").with_request_chat(
             KeyboardButtonRequestChat::new(1, false)
-                .chat_is_forum(true)
-                .chat_has_username(true)
-                .chat_is_created(true)
-                .user_administrator_rights(ChatAdministratorRights::all())
-                .bot_administrator_rights(ChatAdministratorRights::all())
-                .bot_is_member(true),
+                .with_chat_is_forum(true)
+                .with_chat_has_username(true)
+                .with_chat_is_created(true)
+                .with_user_administrator_rights(ChatAdministratorRights::all())
+                .with_bot_administrator_rights(ChatAdministratorRights::all())
+                .with_bot_is_member(true),
         ),
-        KeyboardButton::new("request location").request_location(),
-        KeyboardButton::new("request quiz").request_poll(PollKind::Quiz),
-        KeyboardButton::new("request regular poll").request_poll(PollKind::Regular),
-        KeyboardButton::new("request any poll").request_poll(None),
-        KeyboardButton::new("request user 1").request_user(KeyboardButtonRequestUser::new(1)),
-        KeyboardButton::new("request user 2").request_user(
+        KeyboardButton::new("request location").with_request_location(),
+        KeyboardButton::new("request quiz").with_request_poll(PollType::Quiz),
+        KeyboardButton::new("request regular poll").with_request_poll(PollType::Regular),
+        KeyboardButton::new("request any poll").with_request_poll(None),
+        KeyboardButton::new("request user 1").with_request_user(KeyboardButtonRequestUser::new(1)),
+        KeyboardButton::new("request user 2").with_request_user(
             KeyboardButtonRequestUser::new(1)
-                .user_is_bot(true)
-                .user_is_premium(true),
+                .with_user_is_bot(true)
+                .with_user_is_premium(true),
         ),
-        KeyboardButton::new("web app").web_app(WebAppInfo {
-            url: String::from("https://example.com"),
-        }),
+        KeyboardButton::new("web app").with_web_app(WebAppInfo::from("https://example.com")),
     ];
 
     assert_json_eq(
         ReplyMarkup::from(
             ReplyKeyboardMarkup::from(vec![row.clone()])
-                .persistent(true)
-                .one_time_keyboard(true)
-                .selective(true)
-                .resize_keyboard(true)
-                .input_field_placeholder("placeholder"),
+                .with_is_persistent(true)
+                .with_one_time_keyboard(true)
+                .with_selective(true)
+                .with_resize_keyboard(true)
+                .with_input_field_placeholder("placeholder"),
         ),
         serde_json::json!({
             "keyboard": [
@@ -123,7 +121,7 @@ fn reply_keyboard_markup() {
     );
 
     assert_json_eq(
-        ReplyMarkup::from(ReplyKeyboardMarkup::default().row(row)),
+        ReplyMarkup::from(ReplyKeyboardMarkup::default().add_row(row)),
         serde_json::json!({
             "keyboard": [
                 [
@@ -195,7 +193,7 @@ fn reply_keyboard_markup() {
 #[test]
 fn reply_keyboard_remove() {
     assert_json_eq(
-        ReplyMarkup::from(ReplyKeyboardRemove::default().selective(true)),
+        ReplyMarkup::from(ReplyKeyboardRemove::default().with_selective(true)),
         serde_json::json!({
             "remove_keyboard": true,
             "selective": true

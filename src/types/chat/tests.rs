@@ -49,7 +49,7 @@ fn set_chat_description() {
                 "description": "Description"
             }),
         ),
-        method.description("Description"),
+        method.with_description("Description"),
     );
 }
 

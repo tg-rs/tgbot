@@ -16,7 +16,7 @@ use crate::types::{
 };
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-pub(super) enum RawInlineQueryResultKind {
+pub(super) enum RawInlineQueryResultType {
     #[serde(rename = "article")]
     Article,
     #[serde(rename = "audio")]
@@ -65,7 +65,7 @@ pub(super) struct RawInlineQueryResult {
     pub(super) data: RawInlineQueryResultData,
     pub(super) id: String,
     #[serde(rename = "type")]
-    pub(super) kind: RawInlineQueryResultKind,
+    pub(super) result_type: RawInlineQueryResultType,
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]
@@ -194,56 +194,56 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResult {
     type Error = RawInlineQueryResultDataError;
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
-        Ok(match value.kind {
-            RawInlineQueryResultKind::Article => InlineQueryResult::Article(value.try_into()?),
-            RawInlineQueryResultKind::Audio | RawInlineQueryResultKind::CachedAudio => {
+        Ok(match value.result_type {
+            RawInlineQueryResultType::Article => InlineQueryResult::Article(value.try_into()?),
+            RawInlineQueryResultType::Audio | RawInlineQueryResultType::CachedAudio => {
                 if value.data.audio_file_id.is_some() {
                     InlineQueryResult::CachedAudio(value.try_into()?)
                 } else {
                     InlineQueryResult::Audio(value.try_into()?)
                 }
             }
-            RawInlineQueryResultKind::CachedSticker => InlineQueryResult::CachedSticker(value.try_into()?),
-            RawInlineQueryResultKind::Contact => InlineQueryResult::Contact(value.try_into()?),
-            RawInlineQueryResultKind::Document | RawInlineQueryResultKind::CachedDocument => {
+            RawInlineQueryResultType::CachedSticker => InlineQueryResult::CachedSticker(value.try_into()?),
+            RawInlineQueryResultType::Contact => InlineQueryResult::Contact(value.try_into()?),
+            RawInlineQueryResultType::Document | RawInlineQueryResultType::CachedDocument => {
                 if value.data.document_file_id.is_some() {
                     InlineQueryResult::CachedDocument(value.try_into()?)
                 } else {
                     InlineQueryResult::Document(value.try_into()?)
                 }
             }
-            RawInlineQueryResultKind::Game => InlineQueryResult::Game(value.try_into()?),
-            RawInlineQueryResultKind::Gif | RawInlineQueryResultKind::CachedGif => {
+            RawInlineQueryResultType::Game => InlineQueryResult::Game(value.try_into()?),
+            RawInlineQueryResultType::Gif | RawInlineQueryResultType::CachedGif => {
                 if value.data.gif_file_id.is_some() {
                     InlineQueryResult::CachedGif(value.try_into()?)
                 } else {
                     InlineQueryResult::Gif(value.try_into()?)
                 }
             }
-            RawInlineQueryResultKind::Location => InlineQueryResult::Location(value.try_into()?),
-            RawInlineQueryResultKind::Mpeg4Gif | RawInlineQueryResultKind::CachedMpeg4Gif => {
+            RawInlineQueryResultType::Location => InlineQueryResult::Location(value.try_into()?),
+            RawInlineQueryResultType::Mpeg4Gif | RawInlineQueryResultType::CachedMpeg4Gif => {
                 if value.data.mpeg4_file_id.is_some() {
                     InlineQueryResult::CachedMpeg4Gif(value.try_into()?)
                 } else {
                     InlineQueryResult::Mpeg4Gif(value.try_into()?)
                 }
             }
-            RawInlineQueryResultKind::Photo | RawInlineQueryResultKind::CachedPhoto => {
+            RawInlineQueryResultType::Photo | RawInlineQueryResultType::CachedPhoto => {
                 if value.data.photo_file_id.is_some() {
                     InlineQueryResult::CachedPhoto(value.try_into()?)
                 } else {
                     InlineQueryResult::Photo(value.try_into()?)
                 }
             }
-            RawInlineQueryResultKind::Venue => InlineQueryResult::Venue(value.try_into()?),
-            RawInlineQueryResultKind::Video | RawInlineQueryResultKind::CachedVideo => {
+            RawInlineQueryResultType::Venue => InlineQueryResult::Venue(value.try_into()?),
+            RawInlineQueryResultType::Video | RawInlineQueryResultType::CachedVideo => {
                 if value.data.video_file_id.is_some() {
                     InlineQueryResult::CachedVideo(value.try_into()?)
                 } else {
                     InlineQueryResult::Video(value.try_into()?)
                 }
             }
-            RawInlineQueryResultKind::Voice | RawInlineQueryResultKind::CachedVoice => {
+            RawInlineQueryResultType::Voice | RawInlineQueryResultType::CachedVoice => {
                 if value.data.voice_file_id.is_some() {
                     InlineQueryResult::CachedVoice(value.try_into()?)
                 } else {

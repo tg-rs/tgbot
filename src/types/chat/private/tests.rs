@@ -1,81 +1,39 @@
-use crate::types::{
-    tests::assert_json_eq,
-    Chat,
-    ChatPhoto,
-    Message,
-    MessageData,
-    MessageSender,
-    PrivateChat,
-    Text,
-    User,
-};
+use crate::types::{tests::assert_json_eq, Chat, ChatPhoto, Message, MessageData, PrivateChat, Text, User};
 
 #[test]
 fn private_chat() {
-    let expected_struct = Chat::Private(PrivateChat {
-        id: 1,
-        first_name: String::from("John"),
-        last_name: Some(String::from("Doe")),
-        username: Some(String::from("john_doe")),
-        photo: Some(ChatPhoto {
-            small_file_id: String::from("small-file-id"),
-            small_file_unique_id: String::from("small-file-unique-id"),
-            big_file_id: String::from("big-file-id"),
-            big_file_unique_id: String::from("big-file-unique-id"),
-        }),
-        bio: Some(String::from("Bio")),
-        pinned_message: Some(Box::new(Message {
-            id: 1,
-            date: 0,
-            edit_date: Some(0),
-            sender: MessageSender::User(User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("John"),
-                last_name: Some(String::from("Doe")),
-                username: Some(String::from("john_doe")),
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            }),
-            chat: Chat::Private(PrivateChat {
-                id: 1,
-                first_name: String::from("John"),
-                last_name: Some(String::from("Doe")),
-                username: Some(String::from("john_doe")),
-                photo: None,
-                bio: None,
-                pinned_message: None,
-                has_private_forwards: None,
-                message_auto_delete_time: None,
-                has_restricted_voice_and_video_messages: None,
-                active_usernames: None,
-                emoji_status_custom_emoji_id: None,
-                emoji_status_expiration_date: None,
-            }),
-            author_signature: None,
-            has_protected_content: false,
-            forward: None,
-            is_automatic_forward: false,
-            is_topic_message: None,
-            message_thread_id: None,
-            reply_to: None,
-            via_bot: None,
-            media_group_id: None,
-            reply_markup: None,
-            has_media_spoiler: None,
-            data: MessageData::Text(Text {
-                data: String::from("message-text"),
-                entities: None,
-            }),
-        })),
-        has_private_forwards: Some(true),
-        message_auto_delete_time: Some(86400),
-        has_restricted_voice_and_video_messages: Some(true),
-        active_usernames: Some(vec![String::from("john_doe")]),
-        emoji_status_custom_emoji_id: Some(String::from("emoji-id")),
-        emoji_status_expiration_date: Some(0),
-    });
+    let expected_struct = Chat::Private(
+        PrivateChat::new(1, "John")
+            .with_last_name("Doe")
+            .with_username("john_doe")
+            .with_photo(ChatPhoto::new(
+                "big-file-id",
+                "big-file-unique-id",
+                "small-file-id",
+                "small-file-unique-id",
+            ))
+            .with_bio("Bio")
+            .with_pinned_message(
+                Message::new(
+                    1,
+                    0,
+                    PrivateChat::new(1, "John")
+                        .with_last_name("Doe")
+                        .with_username("john_doe"),
+                    MessageData::Text(Text::from("message-text")),
+                    User::new(1, "John", false)
+                        .with_last_name("Doe")
+                        .with_username("john_doe"),
+                )
+                .with_edit_date(0),
+            )
+            .with_has_private_forwards(true)
+            .with_message_auto_delete_time(86400)
+            .with_has_restricted_voice_and_video_messages(true)
+            .with_active_usernames(["john_doe"])
+            .with_emoji_status_custom_emoji_id("emoji-id")
+            .with_emoji_status_expiration_date(0),
+    );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "john_doe");
     assert_json_eq(
@@ -123,21 +81,7 @@ fn private_chat() {
             "emoji_status_expiration_date": 0
         }),
     );
-    let expected_struct = Chat::Private(PrivateChat {
-        id: 1,
-        first_name: String::from("John"),
-        last_name: None,
-        username: None,
-        photo: None,
-        bio: None,
-        pinned_message: None,
-        has_private_forwards: None,
-        message_auto_delete_time: None,
-        has_restricted_voice_and_video_messages: None,
-        active_usernames: None,
-        emoji_status_custom_emoji_id: None,
-        emoji_status_expiration_date: None,
-    });
+    let expected_struct = Chat::Private(PrivateChat::new(1, "John"));
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());
     assert_json_eq(

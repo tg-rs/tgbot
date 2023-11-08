@@ -6,57 +6,57 @@ use super::raw::{
     RawInlineQueryResult,
     RawInlineQueryResultData,
     RawInlineQueryResultDataError::{self, MissingField},
-    RawInlineQueryResultKind,
+    RawInlineQueryResultType,
 };
 
 #[cfg(test)]
 mod tests;
 
-/// Link to a page containing an embedded video player or a video file
+/// Represents a link to a page containing an embedded video player or a video file
 ///
-/// By default, this video file will be sent by the user with an optional caption
-/// Alternatively, you can use input_message_content to send a message with
-/// the specified content instead of the video
-/// If an InlineQueryResultVideo message contains an embedded video (e.g., YouTube),
-/// you must replace its content using input_message_content
+/// By default, this video file will be sent by the user with an optional caption.
+/// Alternatively, you can use [`Self::with_input_message_content`] to send a message with
+/// the specified content instead of the video.
+/// If an [`InlineQueryResultVideo`] message contains an embedded video (e.g., YouTube),
+/// you must replace its content using [`Self::with_input_message_content`].
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultVideo {
     id: String,
-    video_url: String,
     mime_type: String,
     thumbnail_url: String,
     title: String,
+    video_url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    video_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    video_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    video_duration: Option<Integer>,
+    caption_entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption_entities: Option<TextEntities>,
+    input_message_content: Option<InputMessageContent>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent>,
+    video_duration: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    video_height: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    video_width: Option<Integer>,
 }
 
 impl InlineQueryResultVideo {
-    /// Creates a new InlineQueryResultVideo with empty optional parameters
+    /// Creates a new InlineQueryResultVideo
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
-    /// * video_url - A valid URL for the embedded video player or video file
-    /// * mime_type - Mime type of the content of video url, “text/html” or “video/mp4”
-    /// * thumbnail_url - URL of the thumbnail (jpeg only) for the video
-    /// * title - Title for the result
-    pub fn new<A, B, C, D, E>(id: A, video_url: B, mime_type: C, thumbnail_url: D, title: E) -> Self
+    /// * id - Unique identifier of the result, 1-64 bytes
+    /// * mime_type - MIME type of the content of video url: “text/html” or “video/mp4”
+    /// * thumbnail_url - URL of the thumbnail for the video; JPEG only
+    /// * title - Title of the result
+    /// * video_url - A valid URL of the embedded video player or video file
+    pub fn new<A, B, C, D, E>(id: A, mime_type: B, thumbnail_url: C, title: D, video_url: E) -> Self
     where
         A: Into<String>,
         B: Into<String>,
@@ -64,7 +64,7 @@ impl InlineQueryResultVideo {
         D: Into<String>,
         E: Into<String>,
     {
-        InlineQueryResultVideo {
+        Self {
             id: id.into(),
             video_url: video_url.into(),
             mime_type: mime_type.into(),
@@ -82,78 +82,126 @@ impl InlineQueryResultVideo {
         }
     }
 
-    /// Caption of the video to be sent, 0-1024 characters
-    pub fn caption<S: Into<String>>(mut self, caption: S) -> Self {
-        self.caption = Some(caption.into());
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - Caption of the video to be sent, 0-1024 characters
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.caption = Some(value.into());
         self
     }
 
-    /// List of special entities that appear in the caption
+    /// Sets a new caption entities
     ///
-    /// Parse mode will be set to None when this method is called
-    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to [`None`] when this method is called
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.caption_entities = Some(caption_entities.into_iter().collect());
+        self.caption_entities = Some(value.into_iter().collect());
         self.parse_mode = None;
         self
     }
 
-    /// Sets parse mode
+    /// Sets a new caption parse mode
     ///
-    /// Caption entities will be set to None when this method is called
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+    /// # Arguments
+    ///
+    /// * value - Parse mode
+    ///
+    /// Caption entities will be set to [`None`] when this method is called
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
+        self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Video width
-    pub fn video_width(mut self, video_width: Integer) -> Self {
-        self.video_width = Some(video_width);
-        self
-    }
-
-    /// Video height
-    pub fn video_height(mut self, video_height: Integer) -> Self {
-        self.video_height = Some(video_height);
-        self
-    }
-
-    /// Video duration in seconds
-    pub fn video_duration(mut self, video_duration: Integer) -> Self {
-        self.video_duration = Some(video_duration);
-        self
-    }
-
-    /// Short description of the result
-    pub fn description<S: Into<String>>(mut self, description: S) -> Self {
-        self.description = Some(description.into());
-        self
-    }
-
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
-        self
-    }
-
-    /// Content of the message to be sent instead of the video
+    /// Sets a new description
     ///
-    /// This field is required if InlineQueryResultVideo is used
-    /// to send an HTML-page as a result (e.g., a YouTube video)
-    pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
-        self.input_message_content = Some(input_message_content.into());
+    /// # Arguments
+    ///
+    /// * value - Short description of the result
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(value.into());
+        self
+    }
+
+    /// Sets a new input message content
+    ///
+    /// # Arguments
+    ///
+    /// * value - Content of the message to be sent instead of the video
+    ///
+    /// This field is required if [`InlineQueryResultVideo`] is used
+    /// to send an HTML-page as a result (e.g., a YouTube video).
+    pub fn with_input_message_content<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputMessageContent>,
+    {
+        self.input_message_content = Some(value.into());
+        self
+    }
+
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new video duration
+    ///
+    /// # Arguments
+    ///
+    /// * value - Video duration in seconds
+    pub fn with_video_duration(mut self, value: Integer) -> Self {
+        self.video_duration = Some(value);
+        self
+    }
+
+    /// Sets a new video height
+    ///
+    /// # Arguments
+    ///
+    /// * value - Video height
+    pub fn with_video_height(mut self, value: Integer) -> Self {
+        self.video_height = Some(value);
+        self
+    }
+
+    /// Sets a new vide width
+    ///
+    /// # Arguments
+    ///
+    /// * value - Video width
+    pub fn with_video_width(mut self, value: Integer) -> Self {
+        self.video_width = Some(value);
         self
     }
 }
 
-/// Link to a video file stored on the Telegram servers
+/// Represents a link to a video file stored on the Telegram servers
 ///
-/// By default, this video file will be sent by the user with an optional caption
-/// Alternatively, you can use input_message_content
-/// to send a message with the specified content instead of the video
+/// By default, this video file will be sent by the user with an optional caption.
+/// Alternatively, you can use [`Self::with_input_message_content`]
+/// to send a message with the specified content instead of the video.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedVideo {
     id: String,
@@ -174,74 +222,110 @@ pub struct InlineQueryResultCachedVideo {
 }
 
 impl InlineQueryResultCachedVideo {
-    /// Creates a new InlineQueryResultCachedVideo with empty optional parameters
+    /// Creates a new InlineQueryResultCachedVideo
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
+    /// * id - Unique identifier of the result; 1-64 bytes
+    /// * title - Title of the result
     /// * video_file_id - A valid file identifier of the video
-    /// * title - Title for the result
-    pub fn new<I, F, T>(id: I, video_file_id: F, title: T) -> Self
+    pub fn new<A, B, C>(id: A, title: B, video_file_id: C) -> Self
     where
-        I: Into<String>,
-        F: Into<String>,
-        T: Into<String>,
+        A: Into<String>,
+        B: Into<String>,
+        C: Into<String>,
     {
-        InlineQueryResultCachedVideo {
+        Self {
             id: id.into(),
-            video_file_id: video_file_id.into(),
             title: title.into(),
-            description: None,
+            video_file_id: video_file_id.into(),
             caption: None,
             caption_entities: None,
+            description: None,
+            input_message_content: None,
             parse_mode: None,
             reply_markup: None,
-            input_message_content: None,
         }
     }
 
-    /// Short description of the result
-    pub fn description<S: Into<String>>(mut self, description: S) -> Self {
-        self.description = Some(description.into());
-        self
-    }
-
-    /// Caption of the video to be sent, 0-1024 characters
-    pub fn caption<S: Into<String>>(mut self, caption: S) -> Self {
-        self.caption = Some(caption.into());
-        self
-    }
-
-    /// List of special entities that appear in the caption
+    /// Sets a new caption
     ///
-    /// Parse mode will be set to None when this method is called
-    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - Caption of the video to be sent, 0-1024 characters
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.caption = Some(value.into());
+        self
+    }
+
+    /// Sets a new caption entities
+    ///
+    /// # Arguments
+    ///
+    /// * value - List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to [`None`] when this method is called.
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.caption_entities = Some(caption_entities.into_iter().collect());
+        self.caption_entities = Some(value.into_iter().collect());
         self.parse_mode = None;
         self
     }
 
-    /// Sets parse mode
+    /// Sets a new caption parse mode
     ///
-    /// Caption entities will be set to None when this method is called
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+    /// # Arguments
+    ///
+    /// * value - Parse mode
+    ///
+    /// Caption entities will be set to [`None`] when this method is called
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
+        self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Short description of the result
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(value.into());
         self
     }
 
-    /// Content of the message to be sent instead of the video
-    pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
-        self.input_message_content = Some(input_message_content.into());
+    /// Sets a new input message content
+    ///
+    /// # Arguments
+    ///
+    /// * value - Content of the message to be sent instead of the video
+    pub fn with_input_message_content<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputMessageContent>,
+    {
+        self.input_message_content = Some(value.into());
+        self
+    }
+
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
         self
     }
 }
@@ -251,20 +335,20 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultVideo {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
+            caption: value.data.caption,
+            caption_entities: value.data.caption_entities,
+            description: value.data.description,
             id: value.id,
-            video_url: value.data.video_url.ok_or(MissingField("video_url"))?,
+            input_message_content: value.data.input_message_content,
             mime_type: value.data.mime_type.ok_or(MissingField("mime_type"))?,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
             thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
             title: value.data.title.ok_or(MissingField("title"))?,
-            caption: value.data.caption,
-            parse_mode: value.data.parse_mode,
-            video_width: value.data.video_width,
-            video_height: value.data.video_height,
             video_duration: value.data.video_duration,
-            description: value.data.description,
-            caption_entities: value.data.caption_entities,
-            reply_markup: value.data.reply_markup,
-            input_message_content: value.data.input_message_content,
+            video_height: value.data.video_height,
+            video_url: value.data.video_url.ok_or(MissingField("video_url"))?,
+            video_width: value.data.video_width,
         })
     }
 }
@@ -273,23 +357,23 @@ impl From<InlineQueryResultVideo> for RawInlineQueryResult {
     fn from(value: InlineQueryResultVideo) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                video_url: Some(value.video_url),
+                caption: value.caption,
+                caption_entities: value.caption_entities,
+                description: value.description,
+                input_message_content: value.input_message_content,
                 mime_type: Some(value.mime_type),
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
                 thumbnail_url: Some(value.thumbnail_url),
                 title: Some(value.title),
-                caption: value.caption,
-                parse_mode: value.parse_mode,
-                video_width: value.video_width,
-                video_height: value.video_height,
                 video_duration: value.video_duration,
-                description: value.description,
-                caption_entities: value.caption_entities,
-                reply_markup: value.reply_markup,
-                input_message_content: value.input_message_content,
+                video_height: value.video_height,
+                video_url: Some(value.video_url),
+                video_width: value.video_width,
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::Video,
+            result_type: RawInlineQueryResultType::Video,
         }
     }
 }
@@ -300,14 +384,14 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedVideo {
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
             id: value.id,
-            video_file_id: value.data.video_file_id.ok_or(MissingField("video_file_id"))?,
-            title: value.data.title.ok_or(MissingField("title"))?,
-            description: value.data.description,
             caption: value.data.caption,
             caption_entities: value.data.caption_entities,
+            description: value.data.description,
+            input_message_content: value.data.input_message_content,
             parse_mode: value.data.parse_mode,
             reply_markup: value.data.reply_markup,
-            input_message_content: value.data.input_message_content,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            video_file_id: value.data.video_file_id.ok_or(MissingField("video_file_id"))?,
         })
     }
 }
@@ -316,18 +400,18 @@ impl From<InlineQueryResultCachedVideo> for RawInlineQueryResult {
     fn from(value: InlineQueryResultCachedVideo) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                video_file_id: Some(value.video_file_id),
-                title: Some(value.title),
-                description: value.description,
                 caption: value.caption,
                 caption_entities: value.caption_entities,
+                description: value.description,
+                input_message_content: value.input_message_content,
                 parse_mode: value.parse_mode,
                 reply_markup: value.reply_markup,
-                input_message_content: value.input_message_content,
+                title: Some(value.title),
+                video_file_id: Some(value.video_file_id),
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::CachedVideo,
+            result_type: RawInlineQueryResultType::CachedVideo,
         }
     }
 }

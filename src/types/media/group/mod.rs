@@ -23,21 +23,21 @@ mod tests;
 const MIN_GROUP_ATTACHMENTS: usize = 2;
 const MAX_GROUP_ATTACHMENTS: usize = 10;
 
-/// Group of input media to be sent
+/// Represents a group of input media to be sent
 #[derive(Debug)]
 pub struct MediaGroup {
     form: Form,
 }
 
 impl MediaGroup {
-    /// Creates a new group
+    /// Creates a new MediaGroup
     ///
     /// # Arguments
     ///
     /// * items - Items of the group
-    pub fn new<I>(items: I) -> Result<Self, MediaGroupError>
+    pub fn new<T>(items: T) -> Result<Self, MediaGroupError>
     where
-        I: IntoIterator<Item = MediaGroupItem>,
+        T: IntoIterator<Item = MediaGroupItem>,
     {
         let items: Vec<(usize, MediaGroupItem)> = items.into_iter().enumerate().collect();
 
@@ -67,11 +67,11 @@ impl MediaGroup {
             let thumbnail = item
                 .thumbnail
                 .map(|thumbnail| add_file(format!("tgbot_im_thumb_{}", idx), thumbnail));
-            let data = match item.kind {
-                MediaGroupItemKind::Audio(info) => MediaGroupItemData::Audio { media, thumbnail, info },
-                MediaGroupItemKind::Document(info) => MediaGroupItemData::Document { media, thumbnail, info },
-                MediaGroupItemKind::Photo(info) => MediaGroupItemData::Photo { media, info },
-                MediaGroupItemKind::Video(info) => MediaGroupItemData::Video { media, thumbnail, info },
+            let data = match item.item_type {
+                MediaGroupItemType::Audio(info) => MediaGroupItemData::Audio { media, thumbnail, info },
+                MediaGroupItemType::Document(info) => MediaGroupItemData::Document { media, thumbnail, info },
+                MediaGroupItemType::Photo(info) => MediaGroupItemData::Photo { media, info },
+                MediaGroupItemType::Video(info) => MediaGroupItemData::Video { media, thumbnail, info },
             };
             info.push(data);
         }
@@ -91,88 +91,88 @@ impl From<MediaGroup> for Form {
     }
 }
 
-/// A media group item
+/// Represents a media group item
 #[derive(Debug)]
 pub struct MediaGroupItem {
-    kind: MediaGroupItemKind,
     file: InputFile,
+    item_type: MediaGroupItemType,
     thumbnail: Option<InputFile>,
 }
 
 impl MediaGroupItem {
-    /// Creates an audio item
+    /// Creates a MediaGroupItem for audio
     ///
     /// # Arguments
     ///
     /// * file - File to attach
-    /// * info - Item metadata
-    pub fn audio<F>(file: F, info: InputMediaAudio) -> Self
+    /// * metadata - Metadata
+    pub fn for_audio<T>(file: T, metadata: InputMediaAudio) -> Self
     where
-        F: Into<InputFile>,
+        T: Into<InputFile>,
     {
-        Self::new(file, MediaGroupItemKind::Audio(info))
+        Self::new(file, MediaGroupItemType::Audio(metadata))
     }
 
-    /// Creates a document item
+    /// Creates a MediaGroupItem for document
     ///
     /// # Arguments
     ///
     /// * file - File to attach
-    /// * info - Item metadata
-    pub fn document<F>(file: F, info: InputMediaDocument) -> Self
+    /// * metadata - Metadata
+    pub fn for_document<T>(file: T, metadata: InputMediaDocument) -> Self
     where
-        F: Into<InputFile>,
+        T: Into<InputFile>,
     {
-        Self::new(file, MediaGroupItemKind::Document(info))
+        Self::new(file, MediaGroupItemType::Document(metadata))
     }
 
-    /// Creates a photo item
+    /// Creates a MediaGroupItem for photo
     ///
     /// # Arguments
     ///
     /// * file - File to attach
-    /// * info - Item metadata
-    pub fn photo<F>(file: F, info: InputMediaPhoto) -> Self
+    /// * metadata - Metadata
+    pub fn for_photo<T>(file: T, metadata: InputMediaPhoto) -> Self
     where
-        F: Into<InputFile>,
+        T: Into<InputFile>,
     {
-        Self::new(file, MediaGroupItemKind::Photo(info))
+        Self::new(file, MediaGroupItemType::Photo(metadata))
     }
 
-    /// Creates a video item
+    /// Creates a MediaGroupItem for video
     ///
     /// # Arguments
     ///
     /// * file - File to attach
-    /// * info - Item metadata
-    pub fn video<F>(file: F, info: InputMediaVideo) -> Self
+    /// * metadata - Metadata
+    pub fn for_video<T>(file: T, metadata: InputMediaVideo) -> Self
     where
-        F: Into<InputFile>,
+        T: Into<InputFile>,
     {
-        Self::new(file, MediaGroupItemKind::Video(info))
+        Self::new(file, MediaGroupItemType::Video(metadata))
     }
 
-    /// Adds a thumbnail to the item
+    /// Sets a new thumbnail
     ///
     /// # Arguments
     ///
     /// * file - Thumbnail file
     ///
-    /// Note that photo can not have thumbnail and it will be ignored
-    pub fn with_thumbnail<F>(mut self, file: F) -> Self
+    /// Note that photo can not have thumbnail and it will be ignored.
+    pub fn with_thumbnail<T>(mut self, file: T) -> Self
     where
-        F: Into<InputFile>,
+        T: Into<InputFile>,
     {
         self.thumbnail = Some(file.into());
         self
     }
 
-    fn new<F>(file: F, kind: MediaGroupItemKind) -> Self
+    fn new<T>(file: T, item_type: MediaGroupItemType) -> Self
     where
-        F: Into<InputFile>,
+        T: Into<InputFile>,
     {
         Self {
-            kind,
+            item_type,
             file: file.into(),
             thumbnail: None,
         }
@@ -180,7 +180,7 @@ impl MediaGroupItem {
 }
 
 #[derive(Debug)]
-enum MediaGroupItemKind {
+enum MediaGroupItemType {
     Audio(InputMediaAudio),
     Document(InputMediaDocument),
     Photo(InputMediaPhoto),
@@ -253,54 +253,77 @@ impl fmt::Display for MediaGroupError {
     }
 }
 
-/// Send a group of photos or videos as an album
+/// Sends a group of photos or videos as an album
 #[derive(Debug)]
 pub struct SendMediaGroup {
     form: Form,
 }
 
 impl SendMediaGroup {
-    /// Creates a new SendMediaGroup with empty optional parameters
+    /// Creates a new SendMediaGroup
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * media - Photos and videos to be sent, must include 2–10 items
-    pub fn new<C: Into<ChatId>>(chat_id: C, media: MediaGroup) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    /// * media - Photos and videos to be sent; 2–10 items
+    pub fn new<T>(chat_id: T, media: MediaGroup) -> Self
+    where
+        T: Into<ChatId>,
+    {
         let mut form: Form = media.into();
         form.insert_field("chat_id", chat_id.into());
-        SendMediaGroup { form }
+        Self { form }
     }
 
-    /// Sends the messages silently
+    /// Sets a new value for the `allow_sending_without_reply` flag
     ///
-    /// Users will receive a notification with no sound
-    pub fn disable_notification(mut self, value: bool) -> Self {
-        self.form.insert_field("disable_notification", value);
-        self
-    }
-
-    /// Protects the contents of the sent messages from forwarding and saving
-    pub fn protect_content(mut self, value: bool) -> Self {
-        self.form.insert_field("protect_content", value);
-        self
-    }
-
-    /// If the messages are a reply, ID of the original message
-    pub fn reply_to_message_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("reply_to_message_id", value);
-        self
-    }
-
-    /// Pass True, if the message should be sent even
-    /// if the specified replied-to message is not found
-    pub fn allow_sending_without_reply(mut self, value: bool) -> Self {
+    /// # Arguments
+    ///
+    /// * value - Whether the message should be sent even
+    ///           if the specified replied-to message is not found
+    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.form.insert_field("allow_sending_without_reply", value.to_string());
         self
     }
 
-    /// Unique identifier for the target message thread (topic) of the forum;
-    /// for forum supergroups only
-    pub fn message_thread_id(mut self, value: Integer) -> Self {
+    /// Sets a new value for the `disable_notification` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to send the messages silently
+    ///
+    /// Users will receive a notification with no sound.
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
+        self.form.insert_field("disable_notification", value);
+        self
+    }
+
+    /// Sets a new message thread ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the target message thread (topic) of the forum;
+    ///           for forum supergroups only
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.form.insert_field("message_thread_id", value);
+        self
+    }
+
+    /// Sets a new value for the `protect_content` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to protect the contents of the sent messages from forwarding and saving
+    pub fn with_protect_content(mut self, value: bool) -> Self {
+        self.form.insert_field("protect_content", value);
+        self
+    }
+
+    /// Sets a new message ID for a reply
+    ///
+    /// # Arguments
+    ///
+    /// * value - ID of the original message
+    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
+        self.form.insert_field("reply_to_message_id", value);
         self
     }
 }

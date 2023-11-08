@@ -13,7 +13,7 @@ use crate::types::User;
 #[cfg(test)]
 mod tests;
 
-/// A collection of text entities
+/// Represents a collection of text entities
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(into = "Vec<TextEntity>", try_from = "Vec<RawTextEntity>")]
 pub struct TextEntities {
@@ -22,11 +22,15 @@ pub struct TextEntities {
 
 impl TextEntities {
     /// Pushes a new item into the collection
-    pub fn push(&mut self, item: TextEntity) {
-        self.items.push(item);
+    ///
+    /// # Arguments
+    ///
+    /// * value - An entity to push
+    pub fn push(&mut self, value: TextEntity) {
+        self.items.push(value);
     }
 
-    /// Serializes text entities into JSON string
+    /// Serializes text entities into a JSON string
     pub fn serialize(&self) -> Result<String, TextEntityError> {
         serde_json::to_string(self).map_err(TextEntityError::Serialize)
     }
@@ -250,13 +254,13 @@ struct RawTextEntity {
     offset: u32,
     length: u32,
     #[serde(flatten)]
-    kind: RawTextEntityKind,
+    entity_type: RawTextEntityType,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "type")]
-enum RawTextEntityKind {
+enum RawTextEntityType {
     Bold,
     BotCommand,
     Cashtag,
@@ -335,33 +339,33 @@ impl TryFrom<RawTextEntity> for TextEntity {
             length: raw.length,
         };
 
-        Ok(match raw.kind {
-            RawTextEntityKind::Bold => TextEntity::Bold(position),
-            RawTextEntityKind::BotCommand => TextEntity::BotCommand(position),
-            RawTextEntityKind::Cashtag => TextEntity::Cashtag(position),
-            RawTextEntityKind::Code => TextEntity::Code(position),
-            RawTextEntityKind::CustomEmoji { custom_emoji_id } => TextEntity::CustomEmoji {
+        Ok(match raw.entity_type {
+            RawTextEntityType::Bold => TextEntity::Bold(position),
+            RawTextEntityType::BotCommand => TextEntity::BotCommand(position),
+            RawTextEntityType::Cashtag => TextEntity::Cashtag(position),
+            RawTextEntityType::Code => TextEntity::Code(position),
+            RawTextEntityType::CustomEmoji { custom_emoji_id } => TextEntity::CustomEmoji {
                 position,
                 custom_emoji_id: custom_emoji_id.ok_or(TextEntityError::NoCustomEmoji)?,
             },
-            RawTextEntityKind::Email => TextEntity::Email(position),
-            RawTextEntityKind::Hashtag => TextEntity::Hashtag(position),
-            RawTextEntityKind::Italic => TextEntity::Italic(position),
-            RawTextEntityKind::Mention => TextEntity::Mention(position),
-            RawTextEntityKind::PhoneNumber => TextEntity::PhoneNumber(position),
-            RawTextEntityKind::Pre { language } => TextEntity::Pre { position, language },
-            RawTextEntityKind::Spoiler => TextEntity::Spoiler(position),
-            RawTextEntityKind::Strikethrough => TextEntity::Strikethrough(position),
-            RawTextEntityKind::TextLink { url } => TextEntity::TextLink {
+            RawTextEntityType::Email => TextEntity::Email(position),
+            RawTextEntityType::Hashtag => TextEntity::Hashtag(position),
+            RawTextEntityType::Italic => TextEntity::Italic(position),
+            RawTextEntityType::Mention => TextEntity::Mention(position),
+            RawTextEntityType::PhoneNumber => TextEntity::PhoneNumber(position),
+            RawTextEntityType::Pre { language } => TextEntity::Pre { position, language },
+            RawTextEntityType::Spoiler => TextEntity::Spoiler(position),
+            RawTextEntityType::Strikethrough => TextEntity::Strikethrough(position),
+            RawTextEntityType::TextLink { url } => TextEntity::TextLink {
                 position,
                 url: url.ok_or(TextEntityError::NoUrl)?,
             },
-            RawTextEntityKind::TextMention { user } => TextEntity::TextMention {
+            RawTextEntityType::TextMention { user } => TextEntity::TextMention {
                 position,
                 user: user.ok_or(TextEntityError::NoUser)?,
             },
-            RawTextEntityKind::Underline => TextEntity::Underline(position),
-            RawTextEntityKind::Url => TextEntity::Url(position),
+            RawTextEntityType::Underline => TextEntity::Underline(position),
+            RawTextEntityType::Url => TextEntity::Url(position),
         })
     }
 }
@@ -369,9 +373,9 @@ impl TryFrom<RawTextEntity> for TextEntity {
 impl From<TextEntity> for RawTextEntity {
     fn from(entity: TextEntity) -> Self {
         macro_rules! raw {
-            ($kind:ident($position:ident $( , $item:ident )?)) => {
+            ($entity_type:ident($position:ident $( , $item:ident )?)) => {
                 RawTextEntity {
-                    kind: RawTextEntityKind::$kind $( { $item: $item.into() } )?,
+                    entity_type: RawTextEntityType::$entity_type $( { $item: $item.into() } )?,
                     offset: $position.offset as _,
                     length: $position.length as _,
                 }
@@ -402,14 +406,14 @@ impl From<TextEntity> for RawTextEntity {
     }
 }
 
-/// Describes a bot command found in text
+/// Represents a bot command found in text
 ///
-/// Use TextEntity::BotCommand in order to get command position
+/// Use [`TextEntity::BotCommand`] to get a position of the command
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct TextEntityBotCommand {
     /// Actual command
     pub command: String,
-    /// Bot username
+    /// Username of a bot
     pub bot_name: Option<String>,
 }
 

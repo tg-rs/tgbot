@@ -24,21 +24,10 @@ use crate::{
 #[test]
 fn sticker_set() {
     assert_json_eq(
-        StickerSet {
-            name: String::from("test"),
-            title: String::from("test"),
-            stickers: vec![],
-            sticker_type: StickerType::Regular,
-            is_animated: false,
-            is_video: false,
-            thumbnail: Some(PhotoSize {
-                file_id: String::from("thumb-file-id"),
-                file_unique_id: String::from("thumb-file-unique-id"),
-                width: 512,
-                height: 512,
-                file_size: Some(2048),
-            }),
-        },
+        StickerSet::new("test", StickerType::Regular, vec![], "test")
+            .with_is_animated(false)
+            .with_is_video(false)
+            .with_thumbnail(PhotoSize::new("thumb-file-id", "thumb-file-unique-id", 512, 512).with_file_size(2048)),
         serde_json::json!({
             "name": "test",
             "title": "test",
@@ -73,7 +62,7 @@ fn add_sticker_to_set() {
 }
 
 fn create_input_stickers() -> InputStickers {
-    InputStickers::default().with(InputSticker::new(InputFile::file_id("sticker-file-id"), ["😻"]))
+    InputStickers::default().add_sticker(InputSticker::new(InputFile::file_id("sticker-file-id"), ["😻"]))
 }
 
 #[test]
@@ -96,8 +85,8 @@ fn create_new_sticker_set() {
         ),
         CreateNewStickerSet::new(1, "name", "title", create_input_stickers(), StickerFormat::Static)
             .unwrap()
-            .needs_repainting(true)
-            .sticker_type(StickerType::Regular),
+            .with_needs_repainting(true)
+            .with_sticker_type(StickerType::Regular),
     );
     assert_payload_eq(
         Payload::form(
@@ -176,7 +165,7 @@ fn set_custom_emoji_sticker_set_thumbnail() {
                 "custom_emoji_id": "emoji-id"
             }),
         ),
-        method.custom_emoji_id("emoji-id"),
+        method.with_custom_emoji_id("emoji-id"),
     );
 }
 
@@ -190,7 +179,7 @@ fn set_sticker_position_in_set() {
                 "position": 1
             }),
         ),
-        SetStickerPositionInSet::new("sticker", 1),
+        SetStickerPositionInSet::new(1, "sticker"),
     );
 }
 
@@ -219,6 +208,6 @@ fn set_sticker_set_thumbnail() {
                 ("thumbnail", InputFile::file_id("file-id").into()),
             ]),
         ),
-        SetStickerSetThumbnail::new("name", 1).thumbnail(InputFile::file_id("file-id")),
+        SetStickerSetThumbnail::new("name", 1).with_thumbnail(InputFile::file_id("file-id")),
     );
 }

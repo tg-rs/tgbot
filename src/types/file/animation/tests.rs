@@ -1,28 +1,26 @@
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, Animation, ForceReply, InputFile, ParseMode, PhotoSize, SendAnimation, TextEntity},
+    types::{
+        tests::assert_json_eq,
+        Animation,
+        ForceReply,
+        InputFile,
+        ParseMode,
+        PhotoSize,
+        SendAnimation,
+        SendAnimationError,
+        TextEntity,
+    },
 };
 
 #[test]
 fn animation() {
     assert_json_eq(
-        Animation {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            width: 200,
-            height: 200,
-            duration: 243,
-            thumbnail: Some(PhotoSize {
-                file_id: String::from("thumb-file-id"),
-                file_unique_id: String::from("thumb-file-unique-id"),
-                width: 24,
-                height: 24,
-                file_size: Some(1024),
-            }),
-            file_name: Some(String::from("File Name")),
-            mime_type: Some(String::from("image/gif")),
-            file_size: Some(20480),
-        },
+        Animation::new(243, "file-id", "file-unique-id", 200, 200)
+            .with_file_name("File Name")
+            .with_file_size(20480)
+            .with_mime_type("image/gif")
+            .with_thumbnail(PhotoSize::new("thumb-file-id", "thumb-file-unique-id", 24, 24).with_file_size(1024)),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -42,17 +40,7 @@ fn animation() {
         }),
     );
     assert_json_eq(
-        Animation {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            width: 200,
-            height: 200,
-            duration: 30,
-            thumbnail: None,
-            file_name: None,
-            mime_type: None,
-            file_size: None,
-        },
+        Animation::new(30, "file-id", "file-unique-id", 200, 200),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -69,11 +57,11 @@ fn send_animation() {
         Payload::form(
             "sendAnimation",
             Form::from([
-                ("chat_id", FormValue::from(1)),
                 ("animation", InputFile::file_id("file-id").into()),
+                ("chat_id", FormValue::from(1)),
             ]),
         ),
-        SendAnimation::new(1, InputFile::file_id("file-id")),
+        SendAnimation::new(InputFile::file_id("file-id"), 1),
     );
     assert_payload_eq(
         Payload::form(
@@ -84,7 +72,7 @@ fn send_animation() {
                 ("duration", 100.into()),
                 ("width", 200.into()),
                 ("height", 300.into()),
-                ("thumbnail", InputFile::file_id("thumb-file-id").into()),
+                ("thumbnail", InputFile::url("https://google.com/favicon.ico").into()),
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("disable_notification", true.into()),
@@ -99,26 +87,35 @@ fn send_animation() {
                 ("has_spoiler", true.into()),
             ]),
         ),
-        SendAnimation::new(1, InputFile::file_id("file-id"))
-            .duration(100)
-            .width(200)
-            .height(300)
-            .thumbnail(InputFile::file_id("thumb-file-id"))
-            .caption("Caption")
-            .parse_mode(ParseMode::Markdown)
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
+        SendAnimation::new(InputFile::file_id("file-id"), 1)
+            .with_duration(100)
+            .with_width(200)
+            .with_height(300)
+            .with_thumbnail(InputFile::url("https://google.com/favicon.ico"))
             .unwrap()
-            .message_thread_id(1)
-            .has_spoiler(true),
+            .with_caption("Caption")
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_disable_notification(true)
+            .with_protect_content(true)
+            .with_reply_to_message_id(1)
+            .with_allow_sending_without_reply(true)
+            .with_reply_markup(ForceReply::new(true))
+            .unwrap()
+            .with_message_thread_id(1)
+            .with_has_spoiler(true),
     );
 }
 
 #[test]
-fn send_animation_caption_entities_vs_parse_mode() {
+fn send_animation_with_thumbnail() {
+    let err = SendAnimation::new(InputFile::file_id("file-id"), 1)
+        .with_thumbnail(InputFile::file_id("file-id"))
+        .unwrap_err();
+    assert!(matches!(err, SendAnimationError::InvalidThumbnail));
+}
+
+#[test]
+fn send_animation_entities_vs_parse_mode() {
     assert_payload_eq(
         Payload::form(
             "sendAnimation",
@@ -128,9 +125,9 @@ fn send_animation_caption_entities_vs_parse_mode() {
                 ("caption_entities", r#"[{"offset":0,"length":10,"type":"bold"}]"#.into()),
             ]),
         ),
-        SendAnimation::new(1, InputFile::file_id("file-id"))
-            .parse_mode(ParseMode::Markdown)
-            .caption_entities(vec![TextEntity::bold(0..10)])
+        SendAnimation::new(InputFile::file_id("file-id"), 1)
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap(),
     );
     assert_payload_eq(
@@ -142,9 +139,9 @@ fn send_animation_caption_entities_vs_parse_mode() {
                 ("parse_mode", "Markdown".into()),
             ]),
         ),
-        SendAnimation::new(1, InputFile::file_id("file-id"))
-            .caption_entities(vec![TextEntity::bold(0..10)])
+        SendAnimation::new(InputFile::file_id("file-id"), 1)
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap()
-            .parse_mode(ParseMode::Markdown),
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
 }

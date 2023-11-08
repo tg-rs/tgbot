@@ -10,10 +10,11 @@ const ESCAPE_MARKDOWN_V2: [char; 18] = [
     '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!',
 ];
 
-/// Send Markdown or HTML,
-/// if you want Telegram apps to show
-/// bold, italic, fixed-width text or
-/// inline URLs in the media caption.
+/// Represents a mode for parsing entities in a text
+///
+/// See [formatting options][1] for more details.
+///
+/// [1]: https://core.telegram.org/bots/api#formatting-options
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum ParseMode {
     /// HTML
@@ -26,7 +27,11 @@ pub enum ParseMode {
 }
 
 impl ParseMode {
-    /// Escape HTML or Markdown special characters
+    /// Escapes HTML or Markdown special characters
+    ///
+    /// # Arguments
+    ///
+    /// * input - String that will be escaped
     ///
     /// For MarkdownV2 you must escape characters with `\` by yourself in the following cases:
     ///

@@ -24,39 +24,17 @@ use crate::{
 #[test]
 fn sticker() {
     assert_json_eq(
-        Sticker {
-            file_id: String::from("test file id"),
-            file_unique_id: String::from("unique-id"),
-            sticker_type: StickerType::Regular,
-            width: 512,
-            height: 512,
-            thumbnail: Some(PhotoSize {
-                file_id: String::from("file-id"),
-                file_unique_id: String::from("unique-thumb-id"),
-                width: 24,
-                height: 24,
-                file_size: Some(12324),
-            }),
-            emoji: Some(String::from(":D")),
-            set_name: Some(String::from("sticker set name")),
-            mask_position: Some(MaskPosition {
-                point: MaskPositionPoint::Forehead,
-                x_shift: 3.0,
-                y_shift: 2.0,
-                scale: 3.0,
-            }),
-            file_size: Some(1234),
-            is_animated: false,
-            is_video: false,
-            premium_animation: Some(File {
-                file_id: String::from("file-id"),
-                file_unique_id: String::from("file-unique-id"),
-                file_size: None,
-                file_path: None,
-            }),
-            custom_emoji_id: Some(String::from("emoji-id")),
-            needs_repainting: Some(true),
-        },
+        Sticker::new("test file id", "unique-id", StickerType::Regular, 512, 512)
+            .with_thumbnail(PhotoSize::new("file-id", "unique-thumb-id", 24, 24).with_file_size(12324))
+            .with_emoji(":D")
+            .with_set_name("sticker set name")
+            .with_mask_position(MaskPosition::new(MaskPositionPoint::Forehead, 3.0, 3.0, 2.0))
+            .with_file_size(1234)
+            .with_is_animated(false)
+            .with_is_video(false)
+            .with_premium_animation(File::new("file-id", "file-unique-id"))
+            .with_custom_emoji_id(String::from("emoji-id"))
+            .with_needs_repainting(true),
         serde_json::json!({
             "file_id": "test file id",
             "file_unique_id": "unique-id",
@@ -90,23 +68,7 @@ fn sticker() {
         }),
     );
     assert_json_eq(
-        Sticker {
-            file_id: String::from("test file id"),
-            file_unique_id: String::from("unique-id"),
-            sticker_type: StickerType::Regular,
-            width: 512,
-            height: 512,
-            thumbnail: None,
-            emoji: None,
-            set_name: None,
-            mask_position: None,
-            file_size: None,
-            is_animated: false,
-            is_video: false,
-            premium_animation: None,
-            custom_emoji_id: None,
-            needs_repainting: None,
-        },
+        Sticker::new("test file id", "unique-id", StickerType::Regular, 512, 512),
         serde_json::json!({
             "file_id": "test file id",
             "file_unique_id": "unique-id",
@@ -177,14 +139,14 @@ fn send_sticker() {
             ]),
         ),
         SendSticker::new(1, InputFile::file_id("sticker-id"))
-            .allow_sending_without_reply(true)
-            .disable_notification(true)
-            .emoji("😱")
-            .message_thread_id(1)
-            .protect_content(true)
-            .reply_markup(reply_markup)
+            .with_allow_sending_without_reply(true)
+            .with_disable_notification(true)
+            .with_emoji("😱")
+            .with_message_thread_id(1)
+            .with_protect_content(true)
+            .with_reply_markup(reply_markup)
             .unwrap()
-            .reply_to_message_id(1),
+            .with_reply_to_message_id(1),
     );
     assert_payload_eq(
         Payload::form(
@@ -251,12 +213,7 @@ fn set_sticker_mask_position() {
                 }
             }),
         ),
-        method.mask_position(MaskPosition {
-            point: MaskPositionPoint::Forehead,
-            x_shift: 0.0,
-            y_shift: 0.0,
-            scale: 0.0,
-        }),
+        method.with_mask_position(MaskPosition::new(MaskPositionPoint::Forehead, 0.0, 0.0, 0.0)),
     )
 }
 

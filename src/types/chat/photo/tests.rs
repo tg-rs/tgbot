@@ -6,12 +6,12 @@ use crate::{
 #[test]
 fn chat_photo() {
     assert_json_eq(
-        ChatPhoto {
-            small_file_id: String::from("small-file-id"),
-            small_file_unique_id: String::from("small-file-unique-id"),
-            big_file_id: String::from("big-file-id"),
-            big_file_unique_id: String::from("big-file-unique-id"),
-        },
+        ChatPhoto::new(
+            "big-file-id",
+            "big-file-unique-id",
+            "small-file-id",
+            "small-file-unique-id",
+        ),
         serde_json::json!({
             "small_file_id": "small-file-id",
             "big_file_id": "big-file-id",

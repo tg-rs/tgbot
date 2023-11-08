@@ -4,13 +4,13 @@ use crate::types::{tests::assert_json_eq, ForceReply, ReplyMarkup};
 fn force_reply() {
     for (expected_struct, expected_value) in [
         (
-            ReplyMarkup::from(ForceReply::new(true)),
+            ReplyMarkup::from(ForceReply::from(true)),
             serde_json::json!({"force_reply": true}),
         ),
         (
             ForceReply::new(true)
-                .selective(true)
-                .input_field_placeholder("placeholder")
+                .with_input_field_placeholder("placeholder")
+                .with_selective(true)
                 .into(),
             serde_json::json!({
                 "force_reply": true,
@@ -19,7 +19,7 @@ fn force_reply() {
             }),
         ),
         (
-            ForceReply::new(true).selective(false).into(),
+            ForceReply::new(true).with_selective(false).into(),
             serde_json::json!({
                 "force_reply": true,
                 "selective": false

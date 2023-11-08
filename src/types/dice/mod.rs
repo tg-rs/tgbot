@@ -14,61 +14,49 @@ mod tests;
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize)]
 pub struct Dice {
     #[serde(rename = "emoji")]
-    kind: DiceKind,
+    dice_type: DiceType,
     value: Integer,
 }
 
 impl Dice {
-    /// Kind of the dice
-    pub fn kind(&self) -> DiceKind {
-        self.kind
+    /// Returns a type of a dice
+    pub fn dice_type(&self) -> DiceType {
+        self.dice_type
     }
 
-    /// Value of the dice
+    /// Returns a value of a dice
     pub fn value(&self) -> Integer {
         self.value
     }
 }
 
-/// Kind of the dice
+/// Represents a type of a dice
 #[derive(Debug, Copy, Clone, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[non_exhaustive]
-pub enum DiceKind {
-    /// Basketball
-    ///
-    /// Value of the dice: 1-5
+pub enum DiceType {
+    /// Basketball; range: 1-5
     #[serde(rename = "🏀")]
     Basketball,
-    /// Bones
-    ///
-    /// Value of the dice: 1-6
+    /// Bones; range: 1-6
     #[serde(rename = "🎲")]
     Bones,
-    /// Bowling
-    ///
-    /// Value of the dice: 1-6
+    /// Bowling; range: 1-6
     #[serde(rename = "🎳")]
     Bowling,
-    /// Darts
-    ///
-    /// Value of the dice: 1-6
+    /// Darts; range: 1-6
     #[serde(rename = "🎯")]
     Darts,
-    /// Football
-    ///
-    /// Value of the dice: 1-5
+    /// Football; range: 1-5
     #[serde(rename = "⚽")]
     Football,
-    /// Slot machine
-    ///
-    /// Value of the dice: 1-64
+    /// Slot machine; range: 1-64
     #[serde(rename = "🎰")]
     SlotMachine,
 }
 
-impl DiceKind {
+impl DiceType {
     fn as_char(self) -> char {
-        use super::DiceKind::*;
+        use super::DiceType::*;
         match self {
             Basketball => '🏀',
             Bones => '🎲',
@@ -80,99 +68,123 @@ impl DiceKind {
     }
 }
 
-impl From<DiceKind> for char {
-    fn from(kind: DiceKind) -> Self {
-        kind.as_char()
+impl From<DiceType> for char {
+    fn from(value: DiceType) -> Self {
+        value.as_char()
     }
 }
 
-impl fmt::Display for DiceKind {
+impl fmt::Display for DiceType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(&self.as_char(), f)
     }
 }
 
-/// Use this method to send a dice
-///
-/// Dice will have a random value from 1 to 6
+/// Send a dice
 #[derive(Clone, Debug, Serialize)]
 pub struct SendDice {
     chat_id: ChatId,
-    emoji: DiceKind,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
+    emoji: DiceType,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<ReplyMarkup>,
+    disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_markup: Option<ReplyMarkup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_to_message_id: Option<Integer>,
 }
 
 impl SendDice {
-    /// Creates a new SendDice with empty optional parameters
+    /// Creates a new SendDice
     ///
     /// # Arguments
     ///
     /// * chat_id - Unique identifier for the target chat
-    /// * kind - Kind of dice
-    pub fn new<C>(chat_id: C, kind: DiceKind) -> Self
+    /// * dice_type - Type of a dice
+    pub fn new<C>(chat_id: C, dice_type: DiceType) -> Self
     where
         C: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
-            emoji: kind,
-            disable_notification: None,
-            protect_content: None,
-            reply_to_message_id: None,
+            emoji: dice_type,
             allow_sending_without_reply: None,
-            reply_markup: None,
+            disable_notification: None,
             message_thread_id: None,
+            protect_content: None,
+            reply_markup: None,
+            reply_to_message_id: None,
         }
     }
 
-    /// Sends the message silently
+    /// Sets a new value for the `allow_sending_without_reply` flag
     ///
-    /// Users will receive a notification with no sound
-    pub fn disable_notification(mut self, disable_notification: bool) -> Self {
-        self.disable_notification = Some(disable_notification);
+    /// # Arguments
+    ///
+    /// * value - Whether the message should be sent even
+    ///           if the specified replied-to message is not found
+    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
+        self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Protects the contents of the sent message from forwarding
-    pub fn protect_content(mut self, protect_content: bool) -> Self {
-        self.protect_content = Some(protect_content);
+    /// Sets a new value for the `disable_notification` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to sends the message silently;
+    ///           a user will receive a notification without sound
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
+        self.disable_notification = Some(value);
         self
     }
 
-    /// If the message is a reply, ID of the original message
-    pub fn reply_to_message_id(mut self, reply_to_message_id: Integer) -> Self {
-        self.reply_to_message_id = Some(reply_to_message_id);
+    /// Sets a new message thread ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the target message thread (topic) of the forum;
+    ///           for forum supergroups only
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.message_thread_id = Some(value);
         self
     }
 
-    /// Pass True, if the message should be sent even
-    /// if the specified replied-to message is not found
-    pub fn allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
-        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+    /// Sets a new value for the `protect_content` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to protects the contents of the sent message from forwarding
+    pub fn with_protect_content(mut self, value: bool) -> Self {
+        self.protect_content = Some(value);
         self
     }
 
-    /// Additional interface options
-    pub fn reply_markup<R: Into<ReplyMarkup>>(mut self, reply_markup: R) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Markup
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<ReplyMarkup>,
+    {
+        self.reply_markup = Some(value.into());
         self
     }
 
-    /// Unique identifier for the target message thread (topic) of the forum;
-    /// for forum supergroups only
-    pub fn message_thread_id(mut self, message_thread_id: Integer) -> Self {
-        self.message_thread_id = Some(message_thread_id);
+    /// Sets a new message ID for a reply
+    ///
+    /// # Arguments
+    ///
+    /// * value - ID of the original message
+    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
+        self.reply_to_message_id = Some(value);
         self
     }
 }

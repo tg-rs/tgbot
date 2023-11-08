@@ -19,61 +19,118 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Size of a photo or a file / sticker thumbnail
+/// Represents a size of a photo or a file / sticker thumbnail
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PhotoSize {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier
+    ///
+    /// Can be used to download or reuse the file.
     pub file_id: String,
-    /// Unique identifier for this file
+    /// Unique identifier
     ///
     /// It is supposed to be the same over time and for different bots.
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Photo width
-    pub width: Integer,
-    /// Photo height
+    /// Height
     pub height: Integer,
-    /// File size
+    /// Width
+    pub width: Integer,
+    /// File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
 }
 
-/// Send photo
+impl PhotoSize {
+    /// Creates a new PhotoSize
+    ///
+    /// # Arguments
+    ///
+    /// * file_id - Identifier
+    /// * file_unique_id - Unique identifier
+    /// * height - Height
+    /// * width - Width
+    pub fn new<A, B>(file_id: A, file_unique_id: B, height: Integer, width: Integer) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            file_id: file_id.into(),
+            file_unique_id: file_unique_id.into(),
+            height,
+            width,
+            file_size: None,
+        }
+    }
+
+    /// Sets a new file size
+    ///
+    /// # Arguments
+    ///
+    /// * value - File size in bytes
+    pub fn with_file_size(mut self, value: Integer) -> Self {
+        self.file_size = Some(value);
+        self
+    }
+}
+
+/// Send a photo
 #[derive(Debug)]
 pub struct SendPhoto {
     form: Form,
 }
 
 impl SendPhoto {
-    /// Creates a new SendPhoto with empty optional parameters
+    /// Creates a new SendPhoto
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * photo - Photo to send
-    pub fn new<C, P>(chat_id: C, photo: P) -> Self
+    pub fn new<A, B>(chat_id: A, photo: B) -> Self
     where
-        C: Into<ChatId>,
-        P: Into<InputFile>,
+        A: Into<ChatId>,
+        B: Into<InputFile>,
     {
         Self {
             form: Form::from([("chat_id", chat_id.into().into()), ("photo", photo.into().into())]),
         }
     }
 
-    /// Photo caption
+    /// Sets a new value for the `allow_sending_without_reply` flag
     ///
-    /// May also be used when resending photos by file_id
-    /// 0-1024 characters
-    pub fn caption<S: Into<String>>(mut self, value: S) -> Self {
+    /// # Arguments
+    ///
+    /// * value - Whether the message should be sent even
+    ///           if the specified replied-to message is not found
+    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
+        self.form.insert_field("allow_sending_without_reply", value.to_string());
+        self
+    }
+
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - (0-1024 characters)
+    ///
+    /// May also be used when resending documents by `file_id`.
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
         self.form.insert_field("caption", value.into());
         self
     }
 
-    /// List of special entities that appear in the caption
+    /// Sets a new caption entities
     ///
-    /// Parse mode will be set to None when this method is called
-    pub fn caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    /// # Arguments
+    ///
+    /// * value - List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to [`None`] when this method is called.
+    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
     where
         T: IntoIterator<Item = TextEntity>,
     {
@@ -83,59 +140,82 @@ impl SendPhoto {
         Ok(self)
     }
 
-    /// Sets parse mode
+    /// Sets a new caption parse mode
     ///
-    /// Caption entities will be set to None when this method is called
-    pub fn parse_mode(mut self, value: ParseMode) -> Self {
+    /// # Arguments
+    ///
+    /// * value - Parse mode
+    ///
+    /// Caption entities will be set to [`None`] when this method is called.
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
         self.form.insert_field("parse_mode", value);
         self.form.remove_field("caption_entities");
         self
     }
 
-    /// Sends the message silently
+    /// Sets a new value for the `disable_notification` flag
     ///
-    /// Users will receive a notification with no sound
-    pub fn disable_notification(mut self, value: bool) -> Self {
+    /// # Arguments
+    ///
+    /// * value - Whether to send the message silently;
+    ///           a user will receive a notification without sound
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.form.insert_field("disable_notification", value.to_string());
         self
     }
 
-    /// Protects the contents of the sent message from forwarding and saving
-    pub fn protect_content(mut self, value: bool) -> Self {
+    /// Sets a new value for the `has_spoiler` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to cover with a spoiler animation
+    pub fn with_has_spoiler(mut self, value: bool) -> Self {
+        self.form.insert_field("has_spoiler", value);
+        self
+    }
+
+    /// Sets a new message thread ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the target message thread (topic) of the forum;
+    ///           for forum supergroups only
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.form.insert_field("message_thread_id", value);
+        self
+    }
+
+    /// Sets a new value for the `protect_content` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    pub fn with_protect_content(mut self, value: bool) -> Self {
         self.form.insert_field("protect_content", value.to_string());
         self
     }
 
-    /// If the message is a reply, ID of the original message
-    pub fn reply_to_message_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("reply_to_message_id", value.to_string());
-        self
-    }
-
-    /// Pass True, if the message should be sent even
-    /// if the specified replied-to message is not found
-    pub fn allow_sending_without_reply(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_sending_without_reply", value.to_string());
-        self
-    }
-
-    /// Additional interface options
-    pub fn reply_markup<R: Into<ReplyMarkup>>(mut self, value: R) -> Result<Self, ReplyMarkupError> {
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Markup
+    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
+    where
+        T: Into<ReplyMarkup>,
+    {
         let value = value.into();
         self.form.insert_field("reply_markup", value.serialize()?);
         Ok(self)
     }
 
-    /// Unique identifier for the target message thread (topic) of the forum;
-    /// for forum supergroups only
-    pub fn message_thread_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("message_thread_id", value);
-        self
-    }
-
-    /// Photo needs to be covered with a spoiler animation
-    pub fn has_spoiler(mut self, value: bool) -> Self {
-        self.form.insert_field("has_spoiler", value);
+    /// Sets a new message ID for a reply
+    ///
+    /// # Arguments
+    ///
+    /// * value - ID of the original message
+    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
+        self.form.insert_field("reply_to_message_id", value.to_string());
         self
     }
 }

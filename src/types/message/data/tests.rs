@@ -2,98 +2,58 @@ use crate::types::{
     tests::assert_json_eq,
     Animation,
     Audio,
-    Chat,
-    ChatShared,
     Contact,
     Document,
     EncryptedCredentials,
-    ForumTopicClosed,
-    ForumTopicCreated,
-    ForumTopicEdited,
-    ForumTopicReopened,
+    ForumTopicIconColor,
     Game,
-    GeneralForumTopicHidden,
-    GeneralForumTopicUnhidden,
     Invoice,
     Location,
     Message,
     MessageData,
-    MessageSender,
+    MessageDataAudio,
+    MessageDataAutoDeleteTimer,
+    MessageDataChatShared,
+    MessageDataDocument,
+    MessageDataForumTopicCreated,
+    MessageDataForumTopicEdited,
+    MessageDataPhoto,
+    MessageDataProximityAlert,
+    MessageDataUserShared,
+    MessageDataVideo,
+    MessageDataVideoChatEnded,
+    MessageDataVideoChatParticipantsInvited,
+    MessageDataVideoChatScheduled,
+    MessageDataVoice,
+    MessageDataWriteAccess,
     PassportData,
     PhotoSize,
     Poll,
     PollOption,
-    ProximityAlertTriggered,
     RegularPoll,
     Sticker,
     StickerType,
-    Story,
     SuccessfulPayment,
     SupergroupChat,
     Text,
     TextEntities,
     TextEntity,
     User,
-    UserShared,
     Venue,
     Video,
     VideoNote,
     Voice,
     WebAppData,
-    WriteAccessAllowed,
 };
 
 fn create_message_struct() -> Message {
-    Message {
-        id: 1,
-        date: 0,
-        edit_date: None,
-        sender: MessageSender::User(User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("User"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        }),
-        chat: Chat::Supergroup(SupergroupChat {
-            id: 1,
-            title: String::from("Chat"),
-            username: None,
-            photo: None,
-            description: None,
-            invite_link: None,
-            pinned_message: None,
-            sticker_set_name: None,
-            can_set_sticker_set: None,
-            permissions: None,
-            slow_mode_delay: None,
-            message_auto_delete_time: None,
-            linked_chat_id: None,
-            location: None,
-            has_protected_content: None,
-            join_to_send_messages: None,
-            join_by_request: None,
-            is_forum: None,
-            active_usernames: None,
-            has_hidden_members: None,
-            has_aggressive_anti_spam_enabled: None,
-        }),
-        author_signature: None,
-        has_protected_content: false,
-        forward: None,
-        is_automatic_forward: false,
-        is_topic_message: None,
-        message_thread_id: None,
-        reply_to: None,
-        via_bot: None,
-        media_group_id: None,
-        reply_markup: None,
-        has_media_spoiler: None,
-        data: MessageData::Unknown(serde_json::json!({})),
-    }
+    Message::new(
+        1,
+        0,
+        SupergroupChat::new(1, "Chat"),
+        MessageData::Unknown(serde_json::json!({})),
+        User::new(1, "User", false),
+    )
 }
 
 fn create_message_value() -> serde_json::Value {
@@ -112,17 +72,7 @@ fn animation() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Animation(Animation {
-        file_id: String::from("file-id"),
-        file_unique_id: String::from("unique-id"),
-        width: 200,
-        height: 200,
-        duration: 243,
-        thumbnail: None,
-        file_name: None,
-        mime_type: None,
-        file_size: None,
-    });
+    expected_struct.data = MessageData::Animation(Animation::new(243, "file-id", "unique-id", 200, 200));
     expected_value["animation"] = serde_json::json!({
         "file_id": "file-id",
         "file_unique_id": "unique-id",
@@ -138,21 +88,8 @@ fn audio() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    let audio = Audio {
-        file_id: String::from("file-id"),
-        file_unique_id: String::from("unique-id"),
-        duration: 243,
-        performer: None,
-        title: None,
-        file_name: None,
-        mime_type: None,
-        file_size: None,
-        thumbnail: None,
-    };
-    expected_struct.data = MessageData::Audio {
-        caption: None,
-        data: audio.clone(),
-    };
+    let audio = MessageDataAudio::from(Audio::new(243, "file-id", "unique-id"));
+    expected_struct.data = MessageData::Audio(audio.clone());
     expected_value["audio"] = serde_json::json!({
         "file_id": "file-id",
         "file_unique_id": "unique-id",
@@ -160,13 +97,9 @@ fn audio() {
     });
     assert_json_eq(expected_struct.clone(), expected_value.clone());
 
-    expected_struct.data = MessageData::Audio {
-        caption: Some(Text {
-            data: String::from("test audio caption"),
-            entities: Some(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
-        }),
-        data: audio,
-    };
+    expected_struct.data = MessageData::Audio(audio.with_caption(
+        Text::from("test audio caption").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
+    ));
     expected_value["caption"] = serde_json::json!("test audio caption");
     expected_value["caption_entities"] = serde_json::json!(
         [
@@ -185,7 +118,7 @@ fn auto_delete_timer_changed() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::AutoDeleteTimerChanged { time: 10000 };
+    expected_struct.data = MessageData::AutoDeleteTimerChanged(MessageDataAutoDeleteTimer::new(10000));
     expected_value["message_auto_delete_timer_changed"] = serde_json::json!({
         "message_auto_delete_time": 10000,
     });
@@ -207,7 +140,7 @@ fn chat_shared() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::ChatShared(ChatShared {
+    expected_struct.data = MessageData::ChatShared(MessageDataChatShared {
         request_id: 1,
         chat_id: 1,
     });
@@ -233,13 +166,7 @@ fn contact() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Contact(Contact {
-        phone_number: String::from("+79001231212"),
-        first_name: String::from("User"),
-        last_name: None,
-        user_id: None,
-        vcard: None,
-    });
+    expected_struct.data = MessageData::Contact(Contact::new("User", "+79001231212"));
     expected_value["contact"] = serde_json::json!({
         "phone_number": "+79001231212",
         "first_name": "User"
@@ -276,31 +203,17 @@ fn document() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    let document = Document {
-        file_id: String::from("file-id"),
-        file_unique_id: String::from("unique-id"),
-        thumbnail: None,
-        file_name: None,
-        mime_type: None,
-        file_size: None,
-    };
-    expected_struct.data = MessageData::Document {
-        caption: None,
-        data: document.clone(),
-    };
+    let document = MessageDataDocument::from(Document::new("file-id", "unique-id"));
+    expected_struct.data = MessageData::Document(document.clone());
     expected_value["document"] = serde_json::json!({
         "file_id": "file-id",
         "file_unique_id": "unique-id",
     });
     assert_json_eq(expected_struct.clone(), expected_value.clone());
 
-    expected_struct.data = MessageData::Document {
-        caption: Some(Text {
-            data: String::from("test document caption"),
-            entities: Some(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
-        }),
-        data: document,
-    };
+    expected_struct.data = MessageData::Document(document.with_caption(
+        Text::from("test document caption").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
+    ));
     expected_value["caption"] = serde_json::json!("test document caption");
     expected_value["caption_entities"] = serde_json::json!(
         [
@@ -319,7 +232,7 @@ fn forum_topic_closed() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::ForumTopicClosed(ForumTopicClosed::default());
+    expected_struct.data = MessageData::ForumTopicClosed;
     expected_value["forum_topic_closed"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
@@ -329,14 +242,13 @@ fn forum_topic_created() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::ForumTopicCreated(ForumTopicCreated {
-        name: String::from("topic-name"),
-        icon_color: 0,
-        icon_custom_emoji_id: None,
-    });
+    expected_struct.data = MessageData::ForumTopicCreated(MessageDataForumTopicCreated::new(
+        ForumTopicIconColor::LightGreen,
+        "topic-name",
+    ));
     expected_value["forum_topic_created"] = serde_json::json!({
         "name": "topic-name",
-        "icon_color": 0,
+        "icon_color": 9367192,
     });
     assert_json_eq(expected_struct, expected_value);
 }
@@ -346,10 +258,7 @@ fn forum_topic_edited() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::ForumTopicEdited(ForumTopicEdited {
-        name: Some(String::from("new-name")),
-        icon_custom_emoji_id: None,
-    });
+    expected_struct.data = MessageData::ForumTopicEdited(MessageDataForumTopicEdited::default().with_name("new-name"));
     expected_value["forum_topic_edited"] = serde_json::json!({
         "name": "new-name"
     });
@@ -362,7 +271,7 @@ fn forum_topic_reopened() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::ForumTopicReopened(ForumTopicReopened::default());
+    expected_struct.data = MessageData::ForumTopicReopened;
     expected_value["forum_topic_reopened"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
@@ -372,16 +281,10 @@ fn game() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Game(Game {
-        title: String::from("game"),
-        description: String::from("description"),
-        photo: vec![],
-        text: None,
-        animation: None,
-    });
+    expected_struct.data = MessageData::Game(Game::new("Description", [], "Game"));
     expected_value["game"] = serde_json::json!({
-        "title": "game",
-        "description": "description",
+        "title": "Game",
+        "description": "Description",
         "photo": []
     });
     assert_json_eq(expected_struct, expected_value);
@@ -392,7 +295,7 @@ fn general_forum_topic_hidden() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::GeneralForumTopicHidden(GeneralForumTopicHidden::default());
+    expected_struct.data = MessageData::GeneralForumTopicHidden;
     expected_value["general_forum_topic_hidden"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
@@ -402,7 +305,7 @@ fn general_forum_topic_unhidden() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::GeneralForumTopicUnhidden(GeneralForumTopicUnhidden::default());
+    expected_struct.data = MessageData::GeneralForumTopicUnhidden;
     expected_value["general_forum_topic_unhidden"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
@@ -422,13 +325,13 @@ fn invoice() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Invoice(Invoice {
-        title: String::from("invoice title"),
-        description: String::from("invoice description"),
-        start_parameter: String::from("invoice start parameter"),
-        currency: String::from("RUB"),
-        total_amount: 100,
-    });
+    expected_struct.data = MessageData::Invoice(Invoice::new(
+        "RUB",
+        "invoice description",
+        "invoice start parameter",
+        "invoice title",
+        100,
+    ));
     expected_value["invoice"] = serde_json::json!({
         "title": "invoice title",
         "description": "invoice description",
@@ -444,19 +347,10 @@ fn left_chat_member() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::LeftChatMember(User {
-        id: 1234,
-        is_bot: false,
-        first_name: String::from("test"),
-        last_name: None,
-        username: None,
-        language_code: None,
-        is_premium: None,
-        added_to_attachment_menu: None,
-    });
+    expected_struct.data = MessageData::LeftChatMember(User::new(1, "User", false));
     expected_value["left_chat_member"] = serde_json::json!({
-        "id": 1234,
-        "first_name": "test",
+        "id": 1,
+        "first_name": "User",
         "is_bot": false
     });
     assert_json_eq(expected_struct, expected_value);
@@ -507,21 +401,12 @@ fn new_chat_members() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::NewChatMembers(vec![User {
-        id: 1234,
-        is_bot: false,
-        first_name: String::from("test"),
-        last_name: None,
-        username: None,
-        language_code: None,
-        is_premium: None,
-        added_to_attachment_menu: None,
-    }]);
+    expected_struct.data = MessageData::NewChatMembers(vec![User::new(1, "User", false)]);
     expected_value["new_chat_members"] = serde_json::json!(
         [
             {
-                "id": 1234,
-                "first_name": "test",
+                "id": 1,
+                "first_name": "User",
                 "is_bot": false
             }
         ]
@@ -534,13 +419,7 @@ fn new_chat_photo() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::NewChatPhoto(vec![PhotoSize {
-        file_id: String::from("photo file id"),
-        file_unique_id: String::from("unique-id"),
-        width: 200,
-        height: 300,
-        file_size: None,
-    }]);
+    expected_struct.data = MessageData::NewChatPhoto(vec![PhotoSize::new("photo file id", "unique-id", 300, 200)]);
     expected_value["new_chat_photo"] = serde_json::json!(
         [
             {
@@ -593,17 +472,9 @@ fn photo() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    let photos = vec![PhotoSize {
-        file_id: String::from("photo-id"),
-        file_unique_id: String::from("unique-id"),
-        width: 200,
-        height: 300,
-        file_size: None,
-    }];
-    expected_struct.data = MessageData::Photo {
-        caption: None,
-        data: photos.clone(),
-    };
+    let photos = MessageDataPhoto::from([PhotoSize::new("photo-id", "unique-id", 300, 200)]);
+
+    expected_struct.data = MessageData::Photo(photos.clone());
     expected_value["photo"] = serde_json::json!([{
         "file_id": "photo-id",
         "file_unique_id": "unique-id",
@@ -612,13 +483,9 @@ fn photo() {
     }]);
     assert_json_eq(expected_struct.clone(), expected_value.clone());
 
-    expected_struct.data = MessageData::Photo {
-        caption: Some(Text {
-            data: String::from("test photo caption"),
-            entities: Some(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
-        }),
-        data: photos.clone(),
-    };
+    expected_struct.data = MessageData::Photo(photos.with_caption(
+        Text::from("test photo caption").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
+    ));
     expected_value["caption"] = serde_json::json!("test photo caption");
     expected_value["caption_entities"] = serde_json::json!(
         [
@@ -638,10 +505,7 @@ fn pinned_message() {
     let mut expected_value = create_message_value();
 
     let mut pinned_message = create_message_struct();
-    pinned_message.data = MessageData::Text(Text {
-        data: String::from("text"),
-        entities: None,
-    });
+    pinned_message.data = MessageData::Text(Text::from("text"));
     expected_struct.data = MessageData::PinnedMessage(Box::new(pinned_message));
     expected_value["pinned_message"] = serde_json::json!({
         "message_id": 1,
@@ -701,38 +565,20 @@ fn proximity_alert_triggered() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::ProximityAlertTriggered(ProximityAlertTriggered {
-        traveler: User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("firstname1"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        watcher: User {
-            id: 2,
-            is_bot: false,
-            first_name: String::from("firstname2"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        distance: 100,
-    });
+    expected_struct.data = MessageData::ProximityAlertTriggered(MessageDataProximityAlert::new(
+        100,
+        User::new(1, "User 1", false),
+        User::new(2, "User 2", false),
+    ));
     expected_value["proximity_alert_triggered"] = serde_json::json!({
         "traveler": {
             "id": 1,
-            "first_name": "firstname1",
+            "first_name": "User 1",
             "is_bot": false
         },
         "watcher": {
             "id": 2,
-            "first_name": "firstname2",
+            "first_name": "User 2",
             "is_bot": false
         },
         "distance": 100,
@@ -745,23 +591,9 @@ fn sticker() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Sticker(Sticker {
-        file_id: String::from("sticker-id"),
-        file_unique_id: String::from("unique-id"),
-        sticker_type: StickerType::Regular,
-        width: 512,
-        height: 512,
-        thumbnail: None,
-        emoji: None,
-        set_name: None,
-        mask_position: None,
-        file_size: None,
-        is_animated: true,
-        is_video: false,
-        premium_animation: None,
-        custom_emoji_id: None,
-        needs_repainting: None,
-    });
+    expected_struct.data = MessageData::Sticker(
+        Sticker::new("sticker-id", "unique-id", StickerType::Regular, 512, 512).with_is_animated(true),
+    );
     expected_value["sticker"] = serde_json::json!({
         "file_id": "sticker-id",
         "file_unique_id": "unique-id",
@@ -779,7 +611,7 @@ fn story() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Story(Story {});
+    expected_struct.data = MessageData::Story;
     expected_value["story"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
@@ -789,15 +621,13 @@ fn successful_payment() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::SuccessfulPayment(SuccessfulPayment {
-        currency: String::from("RUB"),
-        total_amount: 145,
-        invoice_payload: String::from("invoice payload"),
-        shipping_option_id: None,
-        order_info: None,
-        telegram_payment_charge_id: String::from("tg-charge-id"),
-        provider_payment_charge_id: String::from("provider-charge-id"),
-    });
+    expected_struct.data = MessageData::SuccessfulPayment(SuccessfulPayment::new(
+        "RUB",
+        "invoice payload",
+        "provider-charge-id",
+        "tg-charge-id",
+        145,
+    ));
     expected_value["successful_payment"] = serde_json::json!({
         "currency": "RUB",
         "total_amount": 145,
@@ -823,10 +653,7 @@ fn text() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Text(Text {
-        data: String::from("text"),
-        entities: None,
-    });
+    expected_struct.data = MessageData::Text(Text::from("text"));
     expected_value["text"] = serde_json::json!("text");
     assert_json_eq(expected_struct, expected_value);
 }
@@ -849,10 +676,7 @@ fn user_shared() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::UserShared(UserShared {
-        request_id: 1,
-        user_id: 1,
-    });
+    expected_struct.data = MessageData::UserShared(MessageDataUserShared::new(1, 1));
     expected_value["user_shared"] = serde_json::json!({
         "request_id": 1,
         "user_id": 1,
@@ -865,22 +689,7 @@ fn venue() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Venue(Venue {
-        location: Location {
-            longitude: 1.0,
-            latitude: 2.0,
-            horizontal_accuracy: None,
-            live_period: None,
-            heading: None,
-            proximity_alert_radius: None,
-        },
-        title: String::from("venue title"),
-        address: String::from("venue address"),
-        foursquare_id: None,
-        foursquare_type: None,
-        google_place_id: None,
-        google_place_type: None,
-    });
+    expected_struct.data = MessageData::Venue(Venue::new("venue title", "venue address", Location::new(2.0, 1.0)));
     expected_value["venue"] = serde_json::json!({
         "location": {
             "latitude": 2.0,
@@ -897,21 +706,8 @@ fn video() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    let video = Video {
-        file_id: String::from("video-id"),
-        file_unique_id: String::from("unique-id"),
-        width: 1,
-        height: 2,
-        duration: 3,
-        thumbnail: None,
-        file_name: None,
-        mime_type: None,
-        file_size: None,
-    };
-    expected_struct.data = MessageData::Video {
-        caption: None,
-        data: video.clone(),
-    };
+    let video = MessageDataVideo::from(Video::new(3, "video-id", "unique-id", 2, 1));
+    expected_struct.data = MessageData::Video(video.clone());
     expected_value["video"] = serde_json::json!({
         "file_id": "video-id",
         "file_unique_id": "unique-id",
@@ -921,13 +717,9 @@ fn video() {
     });
     assert_json_eq(expected_struct.clone(), expected_value.clone());
 
-    expected_struct.data = MessageData::Video {
-        caption: Some(Text {
-            data: String::from("test video caption"),
-            entities: Some(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
-        }),
-        data: video,
-    };
+    expected_struct.data = MessageData::Video(video.with_caption(
+        Text::from("test video caption").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
+    ));
     expected_value["caption"] = serde_json::json!("test video caption");
     expected_value["caption_entities"] = serde_json::json!(
         [
@@ -946,14 +738,7 @@ fn video_note() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::VideoNote(VideoNote {
-        file_id: String::from("video-note-id"),
-        file_unique_id: String::from("unique-id"),
-        length: 124,
-        duration: 1234,
-        thumbnail: None,
-        file_size: None,
-    });
+    expected_struct.data = MessageData::VideoNote(VideoNote::new(1234, "video-note-id", "unique-id", 124));
     expected_value["video_note"] = serde_json::json!({
         "file_id": "video-note-id",
         "file_unique_id": "unique-id",
@@ -968,17 +753,8 @@ fn voice() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    let voice = Voice {
-        file_id: String::from("voice-id"),
-        file_unique_id: String::from("unique-id"),
-        duration: 123,
-        mime_type: None,
-        file_size: None,
-    };
-    expected_struct.data = MessageData::Voice {
-        caption: None,
-        data: voice.clone(),
-    };
+    let voice = MessageDataVoice::from(Voice::new(123, "voice-id", "unique-id"));
+    expected_struct.data = MessageData::Voice(voice.clone());
     expected_value["voice"] = serde_json::json!({
         "file_id": "voice-id",
         "file_unique_id": "unique-id",
@@ -986,13 +762,9 @@ fn voice() {
     });
     assert_json_eq(expected_struct.clone(), expected_value.clone());
 
-    expected_struct.data = MessageData::Voice {
-        caption: Some(Text {
-            data: String::from("test voice caption"),
-            entities: Some(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
-        }),
-        data: voice.clone(),
-    };
+    expected_struct.data = MessageData::Voice(voice.with_caption(
+        Text::from("test voice caption").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
+    ));
     expected_value["caption"] = serde_json::json!("test voice caption");
     expected_value["caption_entities"] = serde_json::json!(
         [
@@ -1011,7 +783,7 @@ fn video_chat_ended() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::VideoChatEnded { duration: 100 };
+    expected_struct.data = MessageData::VideoChatEnded(MessageDataVideoChatEnded::new(100));
     expected_value["video_chat_ended"] = serde_json::json!({"duration": 100});
     assert_json_eq(expected_struct, expected_value);
 }
@@ -1021,23 +793,15 @@ fn video_chat_participants_invited() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::VideoChatParticipantsInvited {
-        users: Some(vec![User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("firstname"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        }]),
-    };
+    expected_struct.data =
+        MessageData::VideoChatParticipantsInvited(MessageDataVideoChatParticipantsInvited::from([User::new(
+            1, "User", false,
+        )]));
     expected_value["video_chat_participants_invited"] = serde_json::json!({
         "users": [
             {
                 "id": 1,
-                "first_name": "firstname",
+                "first_name": "User",
                 "is_bot": false
             }
         ]
@@ -1050,7 +814,7 @@ fn video_chat_scheduled() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::VideoChatScheduled { start_date: 100 };
+    expected_struct.data = MessageData::VideoChatScheduled(MessageDataVideoChatScheduled::new(100));
     expected_value["video_chat_scheduled"] = serde_json::json!({"start_date": 100});
     assert_json_eq(expected_struct, expected_value);
 }
@@ -1070,10 +834,7 @@ fn web_app_data() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::WebAppData(WebAppData {
-        data: String::from("web-app-data"),
-        button_text: String::from("web-app-button-text"),
-    });
+    expected_struct.data = MessageData::WebAppData(WebAppData::new("web-app-data", "web-app-button-text"));
     expected_value["web_app_data"] = serde_json::json!({
         "data": "web-app-data",
         "button_text": "web-app-button-text"
@@ -1086,11 +847,8 @@ fn write_access_allowed() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::WriteAccessAllowed(WriteAccessAllowed {
-        from_request: None,
-        web_app_name: None,
-        from_attachment_menu: Some(true),
-    });
+    expected_struct.data =
+        MessageData::WriteAccessAllowed(MessageDataWriteAccess::default().with_from_attachment_menu(true));
     expected_value["write_access_allowed"] = serde_json::json!({
         "from_attachment_menu": true
     });

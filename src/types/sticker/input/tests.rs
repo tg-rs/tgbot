@@ -16,19 +16,14 @@ fn input_sticker() {
 
     let value = InputSticker::new(InputFile::url("https://google.com/favicon.ico"), ["😻"])
         .with_keywords(["kw"])
-        .with_mask_position(MaskPosition {
-            point: MaskPositionPoint::Forehead,
-            x_shift: 1.0,
-            y_shift: 2.0,
-            scale: 3.0,
-        });
+        .with_mask_position(MaskPosition::new(MaskPositionPoint::Forehead, 3.0, 1.0, 2.0));
     let form: Form = value.try_into().unwrap();
     assert_eq!(
         Form::from([(
             "sticker",
             concat!(
                 r#"{"sticker":"https://google.com/favicon.ico","emoji_list":["😻"],"#,
-                r#""mask_position":{"point":"forehead","x_shift":1.0,"y_shift":2.0,"scale":3.0},"#,
+                r#""mask_position":{"point":"forehead","scale":3.0,"x_shift":1.0,"y_shift":2.0},"#,
                 r#""keywords":["kw"]}"#
             )
             .into()
@@ -53,8 +48,8 @@ fn input_sticker() {
 #[test]
 fn input_stickers() {
     let value = InputStickers::default()
-        .with(InputSticker::new(InputFile::file_id("file-id"), ["😻"]))
-        .with(InputSticker::new(
+        .add_sticker(InputSticker::new(InputFile::file_id("file-id"), ["😻"]))
+        .add_sticker(InputSticker::new(
             InputFile::url("https://google.com/favicon.ico"),
             ["😻"],
         ));

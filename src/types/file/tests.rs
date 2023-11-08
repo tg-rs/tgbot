@@ -8,12 +8,9 @@ use crate::{
 #[test]
 fn file() {
     assert_json_eq(
-        File {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            file_size: Some(1024),
-            file_path: Some(String::from("file-path")),
-        },
+        File::new("file-id", "file-unique-id")
+            .with_file_path("file-path")
+            .with_file_size(1024),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -22,12 +19,7 @@ fn file() {
         }),
     );
     assert_json_eq(
-        File {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            file_size: None,
-            file_path: None,
-        },
+        File::new("file-id", "file-unique-id"),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",

@@ -9,7 +9,6 @@ use crate::{
         BotName,
         BotShortDescription,
         ChatAdministratorRights,
-        ChatShared,
         Close,
         DeleteBotCommands,
         GetBot,
@@ -24,23 +23,17 @@ use crate::{
         SetBotDescription,
         SetBotName,
         SetBotShortDescription,
-        UserShared,
-        WriteAccessAllowed,
     },
 };
 
 #[test]
 fn bot() {
     assert_json_eq(
-        Bot {
-            can_join_groups: true,
-            can_read_all_group_messages: true,
-            first_name: String::from("Loo"),
-            id: 1,
-            last_name: Some(String::from("Maclin")),
-            supports_inline_queries: false,
-            username: String::from("loo_maclin_bot"),
-        },
+        Bot::new(1, "loo_maclin_bot", "Loo")
+            .with_last_name("Maclin")
+            .with_can_join_groups(true)
+            .with_can_read_all_group_messages(true)
+            .with_supports_inline_queries(false),
         serde_json::json!({
             "can_join_groups": true,
             "can_read_all_group_messages": true,
@@ -111,9 +104,7 @@ fn bot_command_scope() {
 #[test]
 fn bot_description() {
     assert_json_eq(
-        BotDescription {
-            description: String::from("test-description"),
-        },
+        BotDescription::new("test-description"),
         serde_json::json!({
             "description": "test-description"
         }),
@@ -123,9 +114,7 @@ fn bot_description() {
 #[test]
 fn bot_name() {
     assert_json_eq(
-        BotName {
-            name: String::from("test_bot"),
-        },
+        BotName::new("test_bot"),
         serde_json::json!({
             "name": "test_bot"
         }),
@@ -135,63 +124,9 @@ fn bot_name() {
 #[test]
 fn bot_short_description() {
     assert_json_eq(
-        BotShortDescription {
-            short_description: String::from("test-short-description"),
-        },
+        BotShortDescription::new("test-short-description"),
         serde_json::json!({
             "short_description": "test-short-description"
-        }),
-    );
-}
-
-#[test]
-fn chat_shared() {
-    assert_json_eq(
-        ChatShared {
-            request_id: 1,
-            chat_id: 1,
-        },
-        serde_json::json!({
-            "request_id": 1,
-            "chat_id": 1
-        }),
-    );
-}
-
-#[test]
-fn user_shared() {
-    assert_json_eq(
-        UserShared {
-            request_id: 1,
-            user_id: 1,
-        },
-        serde_json::json!({
-            "request_id": 1,
-            "user_id": 1
-        }),
-    );
-}
-
-#[test]
-fn write_access_allowed() {
-    assert_json_eq(
-        WriteAccessAllowed {
-            from_request: None,
-            web_app_name: None,
-            from_attachment_menu: None,
-        },
-        serde_json::json!({}),
-    );
-    assert_json_eq(
-        WriteAccessAllowed {
-            from_request: Some(true),
-            web_app_name: Some(String::from("web-app")),
-            from_attachment_menu: Some(false),
-        },
-        serde_json::json!({
-            "from_request": true,
-            "web_app_name": "web-app",
-            "from_attachment_menu": false
         }),
     );
 }
@@ -215,7 +150,7 @@ fn delete_bot_commands() {
                 "language_code": "ru"
             }),
         ),
-        method.scope(BotCommandScope::Default).language_code("ru"),
+        method.with_scope(BotCommandScope::Default).with_language_code("ru"),
     );
 }
 
@@ -238,7 +173,7 @@ fn get_bot_commands() {
                 "language_code": "ru"
             }),
         ),
-        method.scope(BotCommandScope::Default).language_code("ru"),
+        method.with_scope(BotCommandScope::Default).with_language_code("ru"),
     );
 }
 
@@ -256,7 +191,7 @@ fn get_bot_default_administrator_rights() {
                 "for_channels": true
             }),
         ),
-        method.for_channels(true),
+        method.with_for_channels(true),
     );
 }
 
@@ -271,7 +206,7 @@ fn get_bot_description() {
                 "language_code": "RU"
             }),
         ),
-        method.language_code("RU"),
+        method.with_language_code("RU"),
     );
 }
 
@@ -286,7 +221,7 @@ fn get_bot_name() {
                 "language_code": "RU"
             }),
         ),
-        method.language_code("RU"),
+        method.with_language_code("RU"),
     );
 }
 
@@ -304,7 +239,7 @@ fn get_bot_short_description() {
                 "language_code": "RU"
             }),
         ),
-        method.language_code("RU"),
+        method.with_language_code("RU"),
     );
 }
 
@@ -346,7 +281,9 @@ fn set_bot_commands() {
                 "language_code": "ru"
             }),
         ),
-        method.scope(BotCommandScope::AllPrivateChats).language_code("ru"),
+        method
+            .with_scope(BotCommandScope::AllPrivateChats)
+            .with_language_code("ru"),
     );
 }
 
@@ -373,7 +310,7 @@ fn set_bot_default_administrator_rights() {
                 }
             }),
         ),
-        method.rights(ChatAdministratorRights::default()),
+        method.with_rights(ChatAdministratorRights::default()),
     );
     assert_payload_eq(
         Payload::json(
@@ -382,7 +319,7 @@ fn set_bot_default_administrator_rights() {
                 "for_channels": true
             }),
         ),
-        method.for_channels(true),
+        method.with_for_channels(true),
     );
     assert_payload_eq(
         Payload::json(
@@ -401,7 +338,9 @@ fn set_bot_default_administrator_rights() {
                 "for_channels": true
             }),
         ),
-        method.rights(ChatAdministratorRights::default()).for_channels(true),
+        method
+            .with_rights(ChatAdministratorRights::default())
+            .with_for_channels(true),
     );
 }
 
@@ -417,7 +356,7 @@ fn set_bot_description() {
                 "language_code": "RU"
             }),
         ),
-        method.description("test-description").language_code("RU"),
+        method.with_description("test-description").with_language_code("RU"),
     );
 }
 
@@ -433,7 +372,7 @@ fn set_bot_name() {
                 "language_code": "RU"
             }),
         ),
-        method.name("test_bot_name").language_code("RU"),
+        method.with_name("test_bot_name").with_language_code("RU"),
     );
 }
 
@@ -452,6 +391,8 @@ fn set_bot_short_description() {
                 "language_code": "RU"
             }),
         ),
-        method.short_description("test-short-description").language_code("RU"),
+        method
+            .with_short_description("test-short-description")
+            .with_language_code("RU"),
     );
 }

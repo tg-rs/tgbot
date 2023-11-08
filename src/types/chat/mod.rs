@@ -42,8 +42,8 @@ mod sender_chat;
 mod sticker_set;
 mod supergroup;
 
-/// Chat
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+/// Represents a chat
+#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum Chat {
@@ -91,8 +91,11 @@ impl GetChat {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
         GetChat {
             chat_id: chat_id.into(),
         }
@@ -118,8 +121,11 @@ impl LeaveChat {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
         LeaveChat {
             chat_id: chat_id.into(),
         }
@@ -137,7 +143,7 @@ impl Method for LeaveChat {
 /// Change the description of a group, a supergroup or a channel
 ///
 /// The bot must be an administrator in the chat for this to work
-/// and must have the appropriate admin rights
+/// and must have the appropriate admin rights.
 #[derive(Clone, Debug, Serialize)]
 pub struct SetChatDescription {
     chat_id: ChatId,
@@ -150,17 +156,27 @@ impl SetChatDescription {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
         SetChatDescription {
             chat_id: chat_id.into(),
             description: None,
         }
     }
 
-    /// New chat description, 0-255 characters
-    pub fn description<S: Into<String>>(mut self, description: S) -> Self {
-        self.description = Some(description.into());
+    /// Sets a new chat description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Description, 0-255 characters
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(value.into());
         self
     }
 }
@@ -175,12 +191,12 @@ impl Method for SetChatDescription {
 
 /// Change the title of a chat
 ///
-/// Titles can't be changed for private chats
+/// Titles can't be changed for private chats.
 /// The bot must be an administrator in the chat for this to work
-/// and must have the appropriate admin rights
+/// and must have the appropriate admin rights.
 ///
 /// Note: In regular groups (non-supergroups), this method will only work
-/// if the ‘All Members Are Admins’ setting is off in the target group
+/// if the ‘All Members Are Admins’ setting is off in the target group.
 #[derive(Clone, Debug, Serialize)]
 pub struct SetChatTitle {
     chat_id: ChatId,
@@ -192,9 +208,13 @@ impl SetChatTitle {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * title - New chat title, 1-255 characters
-    pub fn new<C: Into<ChatId>, S: Into<String>>(chat_id: C, title: S) -> Self {
+    pub fn new<A, B>(chat_id: A, title: B) -> Self
+    where
+        A: Into<ChatId>,
+        B: Into<String>,
+    {
         SetChatTitle {
             chat_id: chat_id.into(),
             title: title.into(),

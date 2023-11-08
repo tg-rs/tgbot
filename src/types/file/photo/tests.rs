@@ -6,13 +6,7 @@ use crate::{
 #[test]
 fn photo_size() {
     assert_json_eq(
-        PhotoSize {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            width: 200,
-            height: 200,
-            file_size: Some(1024),
-        },
+        PhotoSize::new("file-id", "file-unique-id", 200, 200).with_file_size(1024),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -22,13 +16,7 @@ fn photo_size() {
         }),
     );
     assert_json_eq(
-        PhotoSize {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            width: 200,
-            height: 200,
-            file_size: None,
-        },
+        PhotoSize::new("file-id", "file-unique-id", 200, 200),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -71,21 +59,21 @@ fn send_photo() {
             ]),
         ),
         SendPhoto::new(1, InputFile::file_id("file-id"))
-            .caption("Caption")
-            .parse_mode(ParseMode::Markdown)
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
+            .with_allow_sending_without_reply(true)
+            .with_caption("Caption")
+            .with_disable_notification(true)
+            .with_has_spoiler(true)
+            .with_message_thread_id(1)
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_protect_content(true)
+            .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .message_thread_id(1)
-            .has_spoiler(true),
+            .with_reply_to_message_id(1),
     );
 }
 
 #[test]
-fn send_photo_caption_entities_vs_parse_mode() {
+fn send_photo_entities_vs_parse_mode() {
     assert_payload_eq(
         Payload::form(
             "sendPhoto",
@@ -96,9 +84,9 @@ fn send_photo_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendPhoto::new(1, InputFile::file_id("file-id"))
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap()
-            .parse_mode(ParseMode::Markdown),
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
     assert_payload_eq(
         Payload::form(
@@ -110,8 +98,8 @@ fn send_photo_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendPhoto::new(1, InputFile::file_id("file-id"))
-            .parse_mode(ParseMode::Markdown)
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap(),
     );
 }

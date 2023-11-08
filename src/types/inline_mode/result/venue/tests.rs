@@ -8,20 +8,20 @@ use crate::types::{
 
 #[test]
 fn inline_query_result_venue() {
-    let result = InlineQueryResultVenue::new("id", 1.0, 2.0, "title", "addr");
+    let result = InlineQueryResultVenue::new("addr", "id", 1.0, 2.0, "title");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .foursquare_id("f-id")
-                .foursquare_type("f-type")
-                .google_place_id("g-id")
-                .google_place_type("g-type")
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text"))
-                .thumbnail_url("thumb-url")
-                .thumbnail_width(200)
-                .thumbnail_height(300),
+                .with_foursquare_id("f-id")
+                .with_foursquare_type("f-type")
+                .with_google_place_id("g-id")
+                .with_google_place_type("g-type")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_thumbnail_height(300)
+                .with_thumbnail_url("thumb-url")
+                .with_thumbnail_width(200),
         ),
         serde_json::json!({
             "type": "venue",

@@ -15,14 +15,14 @@ fn inline_query_result_photo() {
         InlineQueryResult::from(
             result
                 .clone()
-                .photo_width(200)
-                .photo_height(300)
-                .title("title")
-                .description("desc")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_description("desc")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_photo_height(300)
+                .with_photo_width(200)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_title("title"),
         ),
         serde_json::json!({
             "type": "photo",
@@ -57,12 +57,12 @@ fn inline_query_result_cached_photo() {
         InlineQueryResult::from(
             result
                 .clone()
-                .title("title")
-                .description("desc")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_description("desc")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_title("title"),
         ),
         serde_json::json!({
             "type": "photo",

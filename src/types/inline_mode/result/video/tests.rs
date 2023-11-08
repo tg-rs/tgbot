@@ -10,19 +10,19 @@ use crate::types::{
 
 #[test]
 fn inline_query_result_video() {
-    let result = InlineQueryResultVideo::new("id", "url", "mime", "thumb-url", "title");
+    let result = InlineQueryResultVideo::new("id", "mime", "thumb-url", "title", "url");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .video_width(200)
-                .video_height(300)
-                .video_duration(400)
-                .description("desc")
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_description("desc")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_video_duration(400)
+                .with_video_width(200)
+                .with_video_height(300),
         ),
         serde_json::json!({
             "type": "video",
@@ -56,16 +56,16 @@ fn inline_query_result_video() {
 
 #[test]
 fn inline_query_result_cached_video() {
-    let result = InlineQueryResultCachedVideo::new("id", "file-id", "title");
+    let result = InlineQueryResultCachedVideo::new("id", "title", "file-id");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .description("desc")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_description("desc")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "video",

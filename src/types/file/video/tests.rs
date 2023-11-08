@@ -1,28 +1,26 @@
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, ForceReply, InputFile, ParseMode, PhotoSize, SendVideo, TextEntity, Video},
+    types::{
+        tests::assert_json_eq,
+        ForceReply,
+        InputFile,
+        ParseMode,
+        PhotoSize,
+        SendVideo,
+        SendVideoError,
+        TextEntity,
+        Video,
+    },
 };
 
 #[test]
 fn video() {
     assert_json_eq(
-        Video {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            width: 1,
-            height: 2,
-            duration: 3,
-            thumbnail: Some(PhotoSize {
-                file_id: String::from("thumb-file-id"),
-                file_unique_id: String::from("thumb-file-unique-id"),
-                width: 24,
-                height: 24,
-                file_size: Some(1024),
-            }),
-            file_name: Some(String::from("File Name")),
-            mime_type: Some(String::from("video/mpeg")),
-            file_size: Some(10240),
-        },
+        Video::new(3, "file-id", "file-unique-id", 2, 1)
+            .with_thumbnail(PhotoSize::new("thumb-file-id", "thumb-file-unique-id", 24, 24).with_file_size(1024))
+            .with_file_name("File Name")
+            .with_mime_type("video/mpeg")
+            .with_file_size(10240),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -42,17 +40,7 @@ fn video() {
         }),
     );
     assert_json_eq(
-        Video {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            width: 1,
-            height: 2,
-            duration: 3,
-            thumbnail: None,
-            file_name: None,
-            mime_type: None,
-            file_size: None,
-        },
+        Video::new(3, "file-id", "file-unique-id", 2, 1),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -84,7 +72,7 @@ fn send_video() {
                 ("duration", 100.into()),
                 ("width", 200.into()),
                 ("height", 300.into()),
-                ("thumbnail", InputFile::file_id("thumb-id").into()),
+                ("thumbnail", InputFile::url("https://example.com/image.jpg").into()),
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("supports_streaming", true.into()),
@@ -101,26 +89,35 @@ fn send_video() {
             ]),
         ),
         SendVideo::new(1, InputFile::file_id("file-id"))
-            .duration(100)
-            .width(200)
-            .height(300)
-            .thumbnail(InputFile::file_id("thumb-id"))
-            .caption("Caption")
-            .parse_mode(ParseMode::Markdown)
-            .supports_streaming(true)
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
+            .with_allow_sending_without_reply(true)
+            .with_caption("Caption")
+            .with_disable_notification(true)
+            .with_duration(100)
+            .with_has_spoiler(true)
+            .with_height(300)
+            .with_message_thread_id(1)
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_protect_content(true)
+            .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .message_thread_id(1)
-            .has_spoiler(true),
+            .with_reply_to_message_id(1)
+            .with_supports_streaming(true)
+            .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
+            .unwrap()
+            .with_width(200),
     );
 }
 
 #[test]
-fn send_video_caption_entities_vs_parse_mode() {
+fn send_video_with_thumbnail() {
+    let err = SendVideo::new(1, InputFile::file_id("file-id"))
+        .with_thumbnail(InputFile::file_id("file-id"))
+        .unwrap_err();
+    assert!(matches!(err, SendVideoError::InvalidThumbnail));
+}
+
+#[test]
+fn send_video_entities_vs_parse_mode() {
     assert_payload_eq(
         Payload::form(
             "sendVideo",
@@ -131,9 +128,9 @@ fn send_video_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendVideo::new(1, InputFile::file_id("file-id"))
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap()
-            .parse_mode(ParseMode::Markdown),
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
     assert_payload_eq(
         Payload::form(
@@ -145,8 +142,8 @@ fn send_video_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendVideo::new(1, InputFile::file_id("file-id"))
-            .parse_mode(ParseMode::Markdown)
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap(),
     );
 }

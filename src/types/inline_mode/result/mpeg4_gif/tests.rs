@@ -15,15 +15,15 @@ fn inline_query_result_mpeg4_gif() {
         InlineQueryResult::from(
             result
                 .clone()
-                .thumbnail_mime_type("video/mp4")
-                .mpeg4_width(200)
-                .mpeg4_height(300)
-                .mpeg4_duration(400)
-                .title("title")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_mpeg4_width(200)
+                .with_mpeg4_height(300)
+                .with_mpeg4_duration(400)
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_thumbnail_mime_type("video/mp4")
+                .with_title("title")
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "mpeg4_gif",
@@ -59,11 +59,11 @@ fn inline_query_result_cached_mpeg4_gif() {
         InlineQueryResult::from(
             result
                 .clone()
-                .title("title")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_title("title"),
         ),
         serde_json::json!({
             "type": "mpeg4_gif",

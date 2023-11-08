@@ -5,65 +5,77 @@ use crate::types::{Float, Integer, Location};
 #[cfg(test)]
 mod tests;
 
-/// Location message to be sent as the result of an inline query
+/// Represents a location message to be sent as the result of an inline query
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentLocation {
     latitude: Float,
     longitude: Float,
     #[serde(skip_serializing_if = "Option::is_none")]
+    heading: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     horizontal_accuracy: Option<Float>,
     #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    heading: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proximity_alert_radius: Option<Integer>,
 }
 
 impl InputMessageContentLocation {
-    /// Creates a new InputMessageContentLocation with empty optional parameters
+    /// Creates a new InputMessageContentLocation
     ///
     /// # Arguments
     ///
-    /// * latitude - Latitude of the location in degrees
-    /// * longitude - Longitude of the location in degrees
+    /// * latitude - Latitude in degrees
+    /// * longitude - Longitude in degrees
     pub fn new(latitude: Float, longitude: Float) -> Self {
-        InputMessageContentLocation {
+        Self {
             latitude,
             longitude,
+            heading: None,
             horizontal_accuracy: None,
             live_period: None,
-            heading: None,
             proximity_alert_radius: None,
         }
     }
 
-    /// The radius of uncertainty for the location, measured in meters; 0-1500
-    pub fn horizontal_accuracy(mut self, horizontal_accuracy: Float) -> Self {
-        self.horizontal_accuracy = Some(horizontal_accuracy);
-        self
-    }
-
-    /// Period in seconds for which the location can be updated, should be between 60 and 86400
-    pub fn live_period(mut self, live_period: Integer) -> Self {
-        self.live_period = Some(live_period);
-        self
-    }
-
-    /// For live locations, a direction in which the user is moving, in degrees
+    /// Sets a new heading
     ///
-    /// Must be between 1 and 360 if specified
-    pub fn heading(mut self, heading: Integer) -> Self {
-        self.heading = Some(heading);
+    /// # Arguments
+    ///
+    /// * value - A direction in which the user is moving, in degrees; 1-360
+    pub fn with_heading(mut self, value: Integer) -> Self {
+        self.heading = Some(value);
         self
     }
 
-    /// For live locations, a maximum distance for proximity alerts
-    /// about approaching another chat member, in meters
+    /// Sets a new horizontal accuracy
     ///
-    /// Must be between 1 and 100000 if specified
-    pub fn proximity_alert_radius(mut self, proximity_alert_radius: Integer) -> Self {
-        self.proximity_alert_radius = Some(proximity_alert_radius);
+    /// # Arguments
+    ///
+    /// * value - Radius of uncertainty for the location, measured in meters; 0-1500
+    pub fn with_horizontal_accuracy(mut self, value: Float) -> Self {
+        self.horizontal_accuracy = Some(value);
+        self
+    }
+
+    /// Sets a new live period
+    ///
+    /// # Arguments
+    ///
+    /// * value - Period in seconds for which the location can be updated; 60-86400
+    pub fn with_live_period(mut self, value: Integer) -> Self {
+        self.live_period = Some(value);
+        self
+    }
+
+    /// Sets a new proximity alert radius
+    ///
+    /// # Arguments
+    ///
+    /// * value - A maximum distance for proximity alerts
+    ///           about approaching another chat member, in meters; 1-100000
+    pub fn with_proximity_alert_radius(mut self, value: Integer) -> Self {
+        self.proximity_alert_radius = Some(value);
         self
     }
 }
@@ -73,9 +85,9 @@ impl From<Location> for InputMessageContentLocation {
         Self {
             latitude: value.latitude,
             longitude: value.longitude,
+            heading: value.heading,
             horizontal_accuracy: value.horizontal_accuracy,
             live_period: value.live_period,
-            heading: value.heading,
             proximity_alert_radius: value.proximity_alert_radius,
         }
     }

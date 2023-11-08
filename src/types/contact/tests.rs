@@ -6,13 +6,10 @@ use crate::{
 #[test]
 fn concat() {
     assert_json_eq(
-        Contact {
-            phone_number: String::from("+79001231212"),
-            first_name: String::from("John"),
-            last_name: Some(String::from("Doe")),
-            user_id: Some(1),
-            vcard: Some(String::from("BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD")),
-        },
+        Contact::new("John", "+79001231212")
+            .with_last_name("Doe")
+            .with_user_id(1)
+            .with_vcard("BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD"),
         serde_json::json!({
             "phone_number": "+79001231212",
             "first_name": "John",
@@ -22,13 +19,7 @@ fn concat() {
         }),
     );
     assert_json_eq(
-        Contact {
-            phone_number: String::from("+79001231212"),
-            first_name: String::from("John"),
-            last_name: None,
-            user_id: None,
-            vcard: None,
-        },
+        Contact::new("John", "+79001231212"),
         serde_json::json!({
             "phone_number": "+79001231212",
             "first_name": "John"
@@ -38,7 +29,7 @@ fn concat() {
 
 #[test]
 fn send_contact() {
-    let method = SendContact::new(1, "+79001231212", "John");
+    let method = SendContact::new(1, "John", "+79001231212");
     assert_payload_eq(
         Payload::json(
             "sendContact",
@@ -70,13 +61,13 @@ fn send_contact() {
             }),
         ),
         method
-            .last_name("Doe")
-            .vcard("BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD")
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
-            .message_thread_id(1),
+            .with_allow_sending_without_reply(true)
+            .with_disable_notification(true)
+            .with_last_name("Doe")
+            .with_message_thread_id(1)
+            .with_protect_content(true)
+            .with_reply_markup(ForceReply::new(true))
+            .with_reply_to_message_id(1)
+            .with_vcard("BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD"),
     );
 }

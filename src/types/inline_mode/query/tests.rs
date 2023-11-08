@@ -17,31 +17,12 @@ use crate::{
 
 #[test]
 fn inline_query() {
+    let expected_struct = InlineQuery::new(User::new(1, "test", false), "query id", "query offset", "query string");
     assert_json_eq(
-        InlineQuery {
-            id: String::from("query id"),
-            from: User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("test"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            query: String::from("query string"),
-            offset: String::from("query offset"),
-            chat_type: Some(InlineQueryChatType::Private),
-            location: Some(Location {
-                longitude: 2.0,
-                latitude: 1.0,
-                horizontal_accuracy: None,
-                live_period: None,
-                heading: None,
-                proximity_alert_radius: None,
-            }),
-        },
+        expected_struct
+            .clone()
+            .with_chat_type(InlineQueryChatType::Private)
+            .with_location(Location::new(1.0, 2.0)),
         serde_json::json!({
             "id": "query id",
             "from": {
@@ -59,23 +40,7 @@ fn inline_query() {
         }),
     );
     assert_json_eq(
-        InlineQuery {
-            id: String::from("query id"),
-            from: User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("test"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            query: String::from("query string"),
-            offset: String::from("query offset"),
-            chat_type: None,
-            location: None,
-        },
+        expected_struct,
         serde_json::json!({
             "id": "query id",
             "from": {
@@ -106,8 +71,8 @@ fn inline_query_chat_type() {
 #[test]
 fn answer_inline_query() {
     let text = InputMessageContent::Text(InputMessageContentText::new("text"));
-    let article = InlineQueryResult::Article(InlineQueryResultArticle::new("id", "title", text));
-    let method = AnswerInlineQuery::new("id", vec![article]);
+    let article = InlineQueryResult::Article(InlineQueryResultArticle::new("id", text, "title"));
+    let method = AnswerInlineQuery::new("id", [article]);
 
     assert_payload_eq(
         Payload::json(
@@ -154,9 +119,9 @@ fn answer_inline_query() {
             }),
         ),
         method
-            .cache_time(300)
-            .personal(true)
-            .next_offset("offset")
-            .button(InlineQueryResultsButton::with_start_parameter("text", "param")),
+            .with_button(InlineQueryResultsButton::for_start_parameter("text", "param"))
+            .with_cache_time(300)
+            .with_is_personal(true)
+            .with_next_offset("offset"),
     );
 }

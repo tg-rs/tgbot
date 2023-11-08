@@ -11,7 +11,7 @@ use tokio::{fs::File, io::AsyncWriteExt};
 use tgbot::{
     api::Client,
     handler::{LongPoll, UpdateHandler},
-    types::{Document, GetFile, MessageData, Update, UpdateKind},
+    types::{Document, GetFile, MessageData, Update, UpdateType},
 };
 
 #[derive(Clone)]
@@ -42,9 +42,9 @@ impl UpdateHandler for Handler {
         let this = self.clone();
         Box::pin(async move {
             log::info!("got an update: {:?}\n", update);
-            if let UpdateKind::Message(message) = update.kind {
-                if let MessageData::Document { data, .. } = message.data {
-                    handle_document(&this.client, &this.tmpdir, data).await;
+            if let UpdateType::Message(message) = update.update_type {
+                if let MessageData::Document(document) = message.data {
+                    handle_document(&this.client, &this.tmpdir, document.data).await;
                 }
             }
         })

@@ -11,58 +11,103 @@ mod tests;
 /// Represents a forum topic
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ForumTopic {
-    /// Unique identifier of the forum topic
+    /// Color of the icon
+    pub icon_color: ForumTopicIconColor,
+    /// Unique identifier
     pub message_thread_id: Integer,
-    /// Name of the topic
+    /// Name
     pub name: String,
-    /// Color of the topic icon in RGB format
-    pub icon_color: Integer,
     /// Unique identifier of the custom emoji shown as the topic icon
     #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_custom_emoji_id: Option<String>,
 }
 
-/// Represents a service message about a forum topic closed in the chat
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct ForumTopicClosed {}
+impl ForumTopic {
+    /// Creates a new ForumTopic
+    ///
+    /// # Arguments
+    ///
+    /// * icon_color - Color of the icon
+    /// * message_thread_id - Unique identifier
+    /// * name - Name
+    pub fn new<A, B>(icon_color: A, message_thread_id: Integer, name: B) -> Self
+    where
+        A: Into<ForumTopicIconColor>,
+        B: Into<String>,
+    {
+        Self {
+            icon_color: icon_color.into(),
+            message_thread_id,
+            name: name.into(),
+            icon_custom_emoji_id: None,
+        }
+    }
 
-/// Represents a service message about a new forum topic created in the chat.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct ForumTopicCreated {
-    /// Name of the topic
-    pub name: String,
-    /// Color of the topic icon in RGB format
-    pub icon_color: Integer,
-    /// Unique identifier of the custom emoji shown as the topic icon
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub icon_custom_emoji_id: Option<String>,
+    /// Sets a new icon custom emoji ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Emoji ID
+    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.icon_custom_emoji_id = Some(value.into());
+        self
+    }
 }
 
-/// Represents a service message about an edited forum topic.
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct ForumTopicEdited {
-    /// New name of the topic, if it was edited
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// New identifier of the custom emoji shown as the topic icon,
-    /// if it was edited; an empty string if the icon was removed
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub icon_custom_emoji_id: Option<String>,
+/// Represents a color of a forum topic icon
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Hash, Serialize)]
+#[serde(into = "Integer", from = "Integer")]
+pub enum ForumTopicIconColor {
+    /// `#FF93B2`
+    BakerMillerPink,
+    /// `#FB6F5F`
+    Bittersweet,
+    /// `#CB86DB`
+    BrightLavender,
+    /// `#FFD67E`
+    Jasmine,
+    /// `#8EEE98`
+    LightGreen,
+    /// `#6FB9F0`
+    VeryLightAzure,
+    /// An unknown color in RGB format
+    Unknown(Integer),
 }
 
-/// Represents a service message about a forum topic closed in the chat
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct ForumTopicReopened {}
+impl From<Integer> for ForumTopicIconColor {
+    fn from(value: Integer) -> Self {
+        use self::ForumTopicIconColor::*;
+        match value {
+            16749490 => BakerMillerPink,
+            16478047 => Bittersweet,
+            13338331 => BrightLavender,
+            16766590 => Jasmine,
+            9367192 => LightGreen,
+            7322096 => VeryLightAzure,
+            value => Unknown(value),
+        }
+    }
+}
 
-/// Represents a service message about General forum topic hidden in the chat
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct GeneralForumTopicHidden {}
+impl From<ForumTopicIconColor> for Integer {
+    fn from(value: ForumTopicIconColor) -> Self {
+        use self::ForumTopicIconColor::*;
+        match value {
+            BakerMillerPink => 16749490,
+            Bittersweet => 16478047,
+            BrightLavender => 13338331,
+            Jasmine => 16766590,
+            LightGreen => 9367192,
+            VeryLightAzure => 7322096,
+            Unknown(value) => value,
+        }
+    }
+}
 
-/// Represents a service message about General forum topic unhidden in the chat
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct GeneralForumTopicUnhidden {}
-
-/// Close an open topic in a forum supergroup chat
+/// Closes an open topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_manage_topics administrator rights, unless it is the creator of the topic.
@@ -77,11 +122,11 @@ impl CloseForumTopic {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * message_thread_id - Unique identifier for the target message thread of the forum topic
-    pub fn new<C>(chat_id: C, message_thread_id: Integer) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    /// * message_thread_id - Unique identifier of the target message thread of the forum topic
+    pub fn new<T>(chat_id: T, message_thread_id: Integer) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -98,7 +143,7 @@ impl Method for CloseForumTopic {
     }
 }
 
-/// Create a topic in a forum supergroup chat
+/// Creates a topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_manage_topics administrator rights.
@@ -107,7 +152,7 @@ pub struct CreateForumTopic {
     chat_id: ChatId,
     name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    icon_color: Option<Integer>,
+    icon_color: Option<ForumTopicIconColor>,
     #[serde(skip_serializing_if = "Option::is_none")]
     icon_custom_emoji_id: Option<String>,
 }
@@ -117,12 +162,12 @@ impl CreateForumTopic {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * name - Topic name, 1 - 128 characters
-    pub fn new<C, N>(chat_id: C, name: N) -> Self
+    pub fn new<A, B>(chat_id: A, name: B) -> Self
     where
-        C: Into<ChatId>,
-        N: Into<String>,
+        A: Into<ChatId>,
+        B: Into<String>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -132,24 +177,24 @@ impl CreateForumTopic {
         }
     }
 
-    /// Color of the topic icon in RGB format
+    /// Sets a new color of the topic icon
     ///
-    /// Currently, must be one of
-    /// 7322096 (0x6FB9F0),
-    /// 16766590 (0xFFD67E),
-    /// 13338331 (0xCB86DB),
-    /// 9367192 (0x8EEE98),
-    /// 16749490 (0xFF93B2),
-    /// 16478047 (0xFB6F5F)
-    pub fn icon_color(mut self, value: Integer) -> Self {
+    /// # Arguments
+    ///
+    /// * value - Color
+    pub fn with_icon_color(mut self, value: ForumTopicIconColor) -> Self {
         self.icon_color = Some(value);
         self
     }
 
-    /// Unique identifier of the custom emoji shown as the topic icon
+    /// Sets a new icon custom emoji ID
     ///
-    /// Use getForumTopicIconStickers to get all allowed custom emoji identifiers
-    pub fn icon_custom_emoji_id<T>(mut self, value: T) -> Self
+    /// # Arguments
+    ///
+    /// * value Unique identifier of the custom emoji shown as the topic icon
+    ///
+    /// Use `GetForumTopicIconStickers` to get all allowed custom emoji identifiers.
+    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
@@ -166,7 +211,7 @@ impl Method for CreateForumTopic {
     }
 }
 
-/// Close an open 'General' topic in a forum supergroup chat
+/// Closes an opened 'General' topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_manage_topics administrator rights.
@@ -180,10 +225,10 @@ impl CloseGeneralForumTopic {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C>(chat_id: C) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -199,7 +244,7 @@ impl Method for CloseGeneralForumTopic {
     }
 }
 
-/// Delete a forum topic along with all its messages in a forum supergroup chat
+/// Deletes a forum topic along with all its messages in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_delete_messages administrator rights.
@@ -214,11 +259,11 @@ impl DeleteForumTopic {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * message_thread_id - Unique identifier for the target message thread of the forum topic
-    pub fn new<C>(chat_id: C, message_thread_id: Integer) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    /// * message_thread_id - Unique identifier of the target message thread of the forum topic
+    pub fn new<T>(chat_id: T, message_thread_id: Integer) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -235,7 +280,7 @@ impl Method for DeleteForumTopic {
     }
 }
 
-/// Edit name and icon of a topic in a forum supergroup chat
+/// Changes name and icon of a topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have can_manage_topics administrator rights,
@@ -245,9 +290,9 @@ pub struct EditForumTopic {
     chat_id: ChatId,
     message_thread_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     icon_custom_emoji_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
 }
 
 impl EditForumTopic {
@@ -255,8 +300,8 @@ impl EditForumTopic {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target
-    /// * message_thread_id - Unique identifier for the target message thread of the forum topic
+    /// * chat_id - Unique identifier of the target
+    /// * message_thread_id - Unique identifier of the target message thread of the forum topic
     pub fn new<C>(chat_id: C, message_thread_id: Integer) -> Self
     where
         C: Into<ChatId>,
@@ -264,32 +309,40 @@ impl EditForumTopic {
         Self {
             chat_id: chat_id.into(),
             message_thread_id,
-            name: None,
             icon_custom_emoji_id: None,
+            name: None,
         }
     }
 
-    /// New topic name, 0-128 characters
+    /// Sets a new icon custom emoji ID
     ///
-    /// If not specified or empty, the current name of the topic will be kept
-    pub fn name<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.name = Some(value.into());
-        self
-    }
-
-    /// New unique identifier of the custom emoji shown as the topic icon
+    /// # Arguments
     ///
-    /// Use getForumTopicIconStickers to get all allowed custom emoji identifiers.
+    /// * value - New unique identifier of the custom emoji shown as the topic icon
+    ///
+    /// Use `GetForumTopicIconStickers` to get all allowed custom emoji identifiers.
     /// Pass an empty string to remove the icon.
     /// If not specified, the current icon will be kept.
-    pub fn icon_custom_emoji_id<T>(mut self, value: T) -> Self
+    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
         self.icon_custom_emoji_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new name
+    ///
+    /// # Arguments
+    ///
+    /// * value - New topic name; 0-128 characters
+    ///
+    /// If not specified or empty, the current name of the topic will be kept.
+    pub fn with_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.name = Some(value.into());
         self
     }
 }
@@ -302,7 +355,7 @@ impl Method for EditForumTopic {
     }
 }
 
-/// Edit the name of the 'General' topic in a forum supergroup chat
+/// Changes the name of the 'General' topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have can_manage_topics administrator rights.
@@ -319,10 +372,10 @@ impl EditGeneralForumTopic {
     ///
     /// * chat_id - Unique identifier for the target chat
     /// * name - New topic name, 1-128 characters
-    pub fn new<C, N>(chat_id: C, name: N) -> Self
+    pub fn new<A, B>(chat_id: A, name: B) -> Self
     where
-        C: Into<ChatId>,
-        N: Into<String>,
+        A: Into<ChatId>,
+        B: Into<String>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -339,7 +392,7 @@ impl Method for EditGeneralForumTopic {
     }
 }
 
-/// Get custom emoji stickers, which can be used as a forum topic icon by any user
+/// Returns custom emoji stickers, which can be used as a forum topic icon by any user
 #[derive(Clone, Copy, Debug)]
 pub struct GetForumTopicIconStickers;
 
@@ -351,7 +404,7 @@ impl Method for GetForumTopicIconStickers {
     }
 }
 
-/// Hide the 'General' topic in a forum supergroup chat
+/// Hides the 'General' topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_manage_topics administrator rights.
@@ -367,9 +420,9 @@ impl HideGeneralForumTopic {
     /// # Arguments
     ///
     /// * chat_id - Unique identifier for the target chat
-    pub fn new<C>(chat_id: C) -> Self
+    pub fn new<T>(chat_id: T) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -385,7 +438,7 @@ impl Method for HideGeneralForumTopic {
     }
 }
 
-/// Reopen a closed topic in a forum supergroup chat
+/// Reopens a closed topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_manage_topics administrator rights, unless it is the creator of the topic.
@@ -400,11 +453,11 @@ impl ReopenForumTopic {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * message_thread_id - Unique identifier for the target message thread of the forum topic
-    pub fn new<C>(chat_id: C, message_thread_id: Integer) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    /// * message_thread_id - Unique identifier of the target message thread of the forum topic
+    pub fn new<T>(chat_id: T, message_thread_id: Integer) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -421,7 +474,7 @@ impl Method for ReopenForumTopic {
     }
 }
 
-/// Reopen a closed 'General' topic in a forum supergroup chat
+/// Reopens a closed 'General' topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_manage_topics administrator rights.
@@ -436,10 +489,10 @@ impl ReopenGeneralForumTopic {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C>(chat_id: C) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -455,7 +508,7 @@ impl Method for ReopenGeneralForumTopic {
     }
 }
 
-/// Unhide the 'General' topic in a forum supergroup chat
+/// Reveals the 'General' topic in a forum supergroup chat
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_manage_topics administrator rights.
@@ -469,10 +522,10 @@ impl UnhideGeneralForumTopic {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C>(chat_id: C) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -488,10 +541,10 @@ impl Method for UnhideGeneralForumTopic {
     }
 }
 
-/// Clear the list of pinned messages in a forum topic
+/// Clears the list of pinned messages in a forum topic
 ///
 /// The bot must be an administrator in the chat for this to work
-/// and must have the can_pin_messages administrator right in the supergroup
+/// and must have the can_pin_messages administrator right in the supergroup.
 #[derive(Clone, Debug, Serialize)]
 pub struct UnpinAllForumTopicMessages {
     chat_id: ChatId,
@@ -503,11 +556,11 @@ impl UnpinAllForumTopicMessages {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * message_thread_id - Unique identifier for the target message thread of the forum topic
-    pub fn new<C>(chat_id: C, message_thread_id: Integer) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    /// * message_thread_id - Unique identifier of the target message thread of the forum topic
+    pub fn new<T>(chat_id: T, message_thread_id: Integer) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -524,7 +577,7 @@ impl Method for UnpinAllForumTopicMessages {
     }
 }
 
-/// Clear the list of pinned messages in a General forum topic
+/// Clears the list of pinned messages in a General forum topic
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_pin_messages administrator right in the supergroup.

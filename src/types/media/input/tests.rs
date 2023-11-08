@@ -18,7 +18,7 @@ use crate::{
 fn input_media_form() {
     let data: Form = InputMedia::new(
         InputFile::file_id("animation-file-id"),
-        InputMediaAnimation::default().caption("test"),
+        InputMediaAnimation::default().with_caption("test"),
     )
     .unwrap()
     .into();
@@ -32,8 +32,8 @@ fn input_media_form() {
 
     let data: Form = InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("animation-file-data")),
-        InputFileReader::from(Cursor::new("animation-thumb-data")),
         InputMediaAnimation::default(),
+        InputFileReader::from(Cursor::new("animation-thumb-data")),
     )
     .unwrap()
     .into();
@@ -60,59 +60,59 @@ fn input_media_form() {
 fn create_input_media() {
     InputMedia::new(
         InputFile::file_id("animation-file-id"),
-        InputMediaAnimation::default().caption("test"),
+        InputMediaAnimation::default().with_caption("test"),
     )
     .unwrap();
 
     InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("animation-file-data")),
-        InputFileReader::from(Cursor::new("animation-thumb-data")),
         InputMediaAnimation::default(),
+        InputFileReader::from(Cursor::new("animation-thumb-data")),
     )
     .unwrap();
 
     InputMedia::new(
         InputFile::file_id("audio-file-id"),
-        InputMediaAudio::default().caption("test"),
+        InputMediaAudio::default().with_caption("test"),
     )
     .unwrap();
 
     InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("audio-file-data")),
-        InputFileReader::from(Cursor::new("audio-thumb-data")),
         InputMediaAudio::default(),
+        InputFileReader::from(Cursor::new("audio-thumb-data")),
     )
     .unwrap();
 
     InputMedia::new(
         InputFile::file_id("audio-file-id"),
-        InputMediaDocument::default().caption("test"),
+        InputMediaDocument::default().with_caption("test"),
     )
     .unwrap();
 
     InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("document-file-data")),
-        InputFileReader::from(Cursor::new("document-thumb-data")),
         InputMediaDocument::default(),
+        InputFileReader::from(Cursor::new("document-thumb-data")),
     )
     .unwrap();
 
     InputMedia::new(
         InputFile::file_id("photo-file-id"),
-        InputMediaPhoto::default().caption("test"),
+        InputMediaPhoto::default().with_caption("test"),
     )
     .unwrap();
 
     InputMedia::new(
         InputFile::file_id("video-file-id"),
-        InputMediaVideo::default().caption("test"),
+        InputMediaVideo::default().with_caption("test"),
     )
     .unwrap();
 
     InputMedia::with_thumbnail(
         InputFileReader::from(Cursor::new("video-file-data")),
-        InputFileReader::from(Cursor::new("video-thumb-data")),
         InputMediaVideo::default(),
+        InputFileReader::from(Cursor::new("video-thumb-data")),
     )
     .unwrap();
 }

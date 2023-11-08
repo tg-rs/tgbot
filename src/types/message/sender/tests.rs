@@ -12,42 +12,18 @@ use crate::types::{
 };
 
 fn create_message_struct(chat: Chat) -> Message {
-    Message {
-        id: 1,
-        date: 0,
-        edit_date: None,
-        sender: MessageSender::Unknown,
+    Message::new(
+        1,
+        0,
         chat,
-        author_signature: None,
-        has_protected_content: false,
-        forward: None,
-        is_automatic_forward: false,
-        is_topic_message: None,
-        message_thread_id: None,
-        reply_to: None,
-        via_bot: None,
-        media_group_id: None,
-        reply_markup: None,
-        has_media_spoiler: None,
-        data: MessageData::Unknown(serde_json::json!({})),
-    }
+        MessageData::Unknown(serde_json::json!({})),
+        MessageSender::Unknown,
+    )
 }
 
 #[test]
 fn channel_chat() {
-    let chat = Chat::Channel(ChannelChat {
-        id: 1,
-        title: String::from("Channel"),
-        username: None,
-        photo: None,
-        description: None,
-        invite_link: None,
-        pinned_message: None,
-        linked_chat_id: None,
-        has_protected_content: None,
-        message_auto_delete_time: None,
-        active_usernames: None,
-    });
+    let chat = Chat::Channel(ChannelChat::new(1, "Channel"));
     let mut expected_struct = create_message_struct(chat);
     expected_struct.author_signature = Some(String::from("test"));
     assert_eq!(expected_struct.chat.get_id(), 1);
@@ -72,28 +48,9 @@ fn channel_chat() {
 
 #[test]
 fn group_chat() {
-    let chat = Chat::Group(GroupChat {
-        id: 1,
-        title: String::from("Group"),
-        photo: None,
-        invite_link: None,
-        pinned_message: None,
-        permissions: None,
-        has_protected_content: None,
-        message_auto_delete_time: None,
-        has_hidden_members: None,
-    });
+    let chat = Chat::Group(GroupChat::new(1, "Group"));
     let mut expected_struct = create_message_struct(chat.clone());
-    expected_struct.sender = MessageSender::User(User {
-        id: 1,
-        is_bot: false,
-        first_name: String::from("User"),
-        last_name: None,
-        username: Some(String::from("test")),
-        language_code: None,
-        is_premium: None,
-        added_to_attachment_menu: None,
-    });
+    expected_struct.sender = User::new(1, "User", false).with_username("test").into();
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());
     assert!(expected_struct.sender.get_user().is_some());
@@ -110,7 +67,7 @@ fn group_chat() {
     });
     assert_json_eq(expected_struct.clone(), expected_value.clone());
 
-    expected_struct.sender = MessageSender::Chat(chat.clone());
+    expected_struct.sender = chat.clone().into();
     assert_eq!(expected_struct.sender.get_chat().unwrap(), &chat);
     let expected_value = serde_json::json!({
         "message_id": 1,
@@ -129,32 +86,9 @@ fn group_chat() {
 
 #[test]
 fn private_chat() {
-    let chat = Chat::Private(PrivateChat {
-        id: 1,
-        first_name: String::from("Target"),
-        last_name: None,
-        username: None,
-        photo: None,
-        bio: None,
-        pinned_message: None,
-        has_private_forwards: None,
-        message_auto_delete_time: None,
-        has_restricted_voice_and_video_messages: None,
-        active_usernames: None,
-        emoji_status_custom_emoji_id: None,
-        emoji_status_expiration_date: None,
-    });
+    let chat = Chat::Private(PrivateChat::new(1, "Target"));
     let mut expected_struct = create_message_struct(chat);
-    expected_struct.sender = MessageSender::User(User {
-        id: 1,
-        is_bot: false,
-        first_name: String::from("Target"),
-        last_name: None,
-        username: None,
-        language_code: None,
-        is_premium: None,
-        added_to_attachment_menu: None,
-    });
+    expected_struct.sender = User::new(1, "Target", false).into();
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());
     assert!(expected_struct.sender.get_user().is_some());
@@ -173,40 +107,9 @@ fn private_chat() {
 
 #[test]
 fn supergroup_chat() {
-    let chat = Chat::Supergroup(SupergroupChat {
-        id: 1,
-        title: String::from("Chat"),
-        username: None,
-        photo: None,
-        description: None,
-        invite_link: None,
-        pinned_message: None,
-        sticker_set_name: None,
-        can_set_sticker_set: None,
-        permissions: None,
-        slow_mode_delay: None,
-        message_auto_delete_time: None,
-        linked_chat_id: None,
-        location: None,
-        has_protected_content: None,
-        join_to_send_messages: None,
-        join_by_request: None,
-        is_forum: None,
-        active_usernames: None,
-        has_hidden_members: None,
-        has_aggressive_anti_spam_enabled: None,
-    });
+    let chat = Chat::Supergroup(SupergroupChat::new(1, "Chat"));
     let mut expected_struct = create_message_struct(chat);
-    expected_struct.sender = MessageSender::User(User {
-        id: 1,
-        is_bot: false,
-        first_name: String::from("User"),
-        last_name: None,
-        username: None,
-        language_code: None,
-        is_premium: None,
-        added_to_attachment_menu: None,
-    });
+    expected_struct.sender = User::new(1, "User", false).into();
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());
     assert!(expected_struct.sender.get_user().is_some());

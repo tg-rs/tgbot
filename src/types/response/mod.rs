@@ -7,7 +7,7 @@ use crate::types::{False, Integer, True};
 #[cfg(test)]
 mod tests;
 
-/// API Response
+/// Represents an API Response
 #[derive(Clone, Debug, Deserialize)]
 #[serde(from = "RawResponse<T>")]
 pub enum Response<T> {
@@ -54,7 +54,7 @@ impl<T> From<RawResponse<T>> for Response<T> {
     }
 }
 
-/// Response error
+/// Represents a response error
 #[derive(Clone, Debug)]
 pub struct ResponseError {
     description: String,
@@ -64,27 +64,27 @@ pub struct ResponseError {
 }
 
 impl ResponseError {
-    /// Human-readable description of the error
+    /// Returns a human-readable description of the error
     pub fn description(&self) -> &str {
         &self.description
     }
 
-    /// Error code
+    /// Returns an error code
     pub fn error_code(&self) -> Option<Integer> {
         self.error_code
     }
 
-    /// Whether request can be repeated
+    /// Returns a flag describing whether a request can be repeated
     pub fn can_retry(&self) -> bool {
         self.retry_after.is_some()
     }
 
-    /// Number of seconds left to wait before the request can be repeated
+    /// Returns a number of seconds left to wait before the request can be repeated
     pub fn retry_after(&self) -> Option<u64> {
         self.retry_after.and_then(|x| x.try_into().ok())
     }
 
-    /// The group has been migrated to a supergroup with the specified identifier
+    /// Returns a new identifier of a group which has been migrated to a supergroup
     pub fn migrate_to_chat_id(&self) -> Option<Integer> {
         self.migrate_to_chat_id
     }

@@ -10,46 +10,116 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// A Bot info returned in getMe
+/// Represents a bot info returned in `GetBot`
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Bot {
-    /// Unique identifier of this bot
-    pub id: Integer,
-    /// Bots username
-    pub username: String,
-    /// Bots first name
+    /// First name
     pub first_name: String,
-    /// Bots last name
+    /// Unique identifier
+    pub id: Integer,
+    /// Username
+    pub username: String,
+    /// Whether bot can be invited to groups
+    pub can_join_groups: bool,
+    /// Whether privacy mode is disabled
+    pub can_read_all_group_messages: bool,
+    /// Last name
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
-    /// True, if the bot can be invited to groups
-    pub can_join_groups: bool,
-    /// True, if privacy mode is disabled for the bot
-    pub can_read_all_group_messages: bool,
-    /// True, if the bot supports inline queries
+    /// Whether bot supports inline queries
     pub supports_inline_queries: bool,
 }
 
-const MIN_NAME_LEN: usize = 1;
-const MAX_NAME_LEN: usize = 32;
-const MIN_DESCRIPTION_LEN: usize = 3;
-const MAX_DESCRIPTION_LEN: usize = 256;
+impl Bot {
+    /// Creates a new Bot
+    ///
+    /// # Arguments
+    ///
+    /// * id - Unique identifier
+    /// * username - Username
+    /// * first_name - First name
+    ///
+    /// Last name is `None` and all other flags are `false` by default.
+    pub fn new<A, B>(id: Integer, username: A, first_name: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            first_name: first_name.into(),
+            id,
+            username: username.into(),
+            can_join_groups: false,
+            can_read_all_group_messages: false,
+            last_name: None,
+            supports_inline_queries: false,
+        }
+    }
 
-/// This object represents a bot command
+    /// Sets a new value of the `can_join_groups` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_join_groups(mut self, value: bool) -> Self {
+        self.can_join_groups = value;
+        self
+    }
+
+    /// Sets a new value of the `can_read_all_group_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_read_all_group_messages(mut self, value: bool) -> Self {
+        self.can_read_all_group_messages = value;
+        self
+    }
+
+    /// Sets a new last name
+    ///
+    /// # Arguments
+    ///
+    /// * value - Last name
+    pub fn with_last_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.last_name = Some(value.into());
+        self
+    }
+
+    /// Sets a new value of the `supports_inline_queries` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_supports_inline_queries(mut self, value: bool) -> Self {
+        self.supports_inline_queries = value;
+        self
+    }
+}
+
+/// Represents a command of the bot
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BotCommand {
-    command: String,
+    #[serde(rename = "command")]
+    name: String,
     description: String,
 }
 
 impl BotCommand {
+    const MIN_NAME_LEN: usize = 1;
+    const MAX_NAME_LEN: usize = 32;
+    const MIN_DESCRIPTION_LEN: usize = 3;
+    const MAX_DESCRIPTION_LEN: usize = 256;
+
     /// Creates a new BotCommand
     ///
     /// # Arguments
     ///
-    /// * name - Name of the command, 1-32 characters
-    ///          Can contain only lowercase English letters, digits and underscores
-    /// * description - Description of the command, 3-256 characters
+    /// * name - Name; 1-32 characters; can contain only lowercase English letters, digits and underscores
+    /// * description - Description; 3-256 characters
     pub fn new<C, D>(name: C, description: D) -> Result<Self, BotCommandError>
     where
         C: Into<String>,
@@ -59,30 +129,53 @@ impl BotCommand {
         let description = description.into();
         let name_len = name.len();
         let description_len = description.len();
-        if !(MIN_NAME_LEN..=MAX_NAME_LEN).contains(&name_len) {
+        if !(Self::MIN_NAME_LEN..=Self::MAX_NAME_LEN).contains(&name_len) {
             Err(BotCommandError::BadNameLen(name_len))
-        } else if !(MIN_DESCRIPTION_LEN..=MAX_DESCRIPTION_LEN).contains(&description_len) {
+        } else if !(Self::MIN_DESCRIPTION_LEN..=Self::MAX_DESCRIPTION_LEN).contains(&description_len) {
             Err(BotCommandError::BadDescriptionLen(description_len))
         } else {
-            Ok(Self {
-                command: name,
-                description,
-            })
+            Ok(Self { name, description })
         }
     }
 
-    /// Returns the command name
+    /// Returns the name
     pub fn name(&self) -> &str {
-        &self.command
+        &self.name
     }
 
-    /// Returns the command description
+    /// Sets a new name
+    ///
+    /// # Arguments
+    ///
+    /// * value - Name
+    pub fn with_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.name = value.into();
+        self
+    }
+
+    /// Returns the description
     pub fn description(&self) -> &str {
         &self.description
     }
+
+    /// Sets a new description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Description
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = value.into();
+        self
+    }
 }
 
-/// An error when creating a new BotCommand
+/// Represents an error when creating a new `BotCommand`
 #[derive(Debug)]
 pub enum BotCommandError {
     /// Got a name with invalid length
@@ -100,55 +193,61 @@ impl fmt::Display for BotCommandError {
             BadNameLen(len) => write!(
                 out,
                 "command name can have a length of {} up to {} characters, got {}",
-                MIN_NAME_LEN, MAX_NAME_LEN, len
+                BotCommand::MIN_NAME_LEN,
+                BotCommand::MAX_NAME_LEN,
+                len
             ),
             BadDescriptionLen(len) => write!(
                 out,
                 "command description can have a length of {} up to {} characters, got {}",
-                MIN_DESCRIPTION_LEN, MAX_DESCRIPTION_LEN, len
+                BotCommand::MIN_DESCRIPTION_LEN,
+                BotCommand::MAX_DESCRIPTION_LEN,
+                len
             ),
         }
     }
 }
 
-/// Represents the scope to which bot commands are applied
+/// Represents a scope to which bot commands are applied
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum BotCommandScope {
-    /// Represents the default scope of bot commands
-    ///
-    /// Default commands are used if no commands with a narrower scope are specified for the user
-    Default,
-    /// Represents the scope of bot commands, covering all private chats
-    AllPrivateChats,
-    /// Represents the scope of bot commands, covering all group and supergroup chats
-    AllGroupChats,
-    /// Represents the scope of bot commands, covering all group and supergroup chat administrators.
+    /// All group and supergroup chat administrators
     AllChatAdministrators,
-    /// Represents the scope of bot commands, covering a specific chat.
+    /// All group and supergroup chats
+    AllGroupChats,
+    /// All private chats
+    AllPrivateChats,
+    /// A specific chat
     Chat {
-        /// Unique identifier for the target chat or username of the target supergroup
+        /// Unique identifier of the target chat or username of the target supergroup
         chat_id: ChatId,
     },
-    /// Represents the scope of bot commands, covering all administrators
-    /// of a specific group or supergroup chat.
+    /// All administrators of a specific group or supergroup chat
     ChatAdministrators {
-        /// Unique identifier for the target chat or username of the target supergroup
+        /// Unique identifier of the target chat or username of the target supergroup
         chat_id: ChatId,
     },
-    /// Represents the scope of bot commands, covering a specific member
-    /// of a group or supergroup chat.
+    /// A specific member of a group or supergroup chat
     ChatMember {
-        /// Unique identifier for the target chat or username of the target supergroup
+        /// Unique identifier of the target chat or username of the target supergroup
         chat_id: ChatId,
         /// Unique identifier of the target user
         user_id: Integer,
     },
+    /// Default scope
+    ///
+    /// Default commands are used if no commands with a narrower scope are specified of the user.
+    Default,
 }
 
 impl BotCommandScope {
-    /// Creates a new scope covering a specific chat
+    /// Creates a new BotCommandScope covering a specific chat
+    ///
+    /// # Arguments
+    ///
+    /// * value - Chat ID
     pub fn chat<T>(value: T) -> Self
     where
         T: Into<ChatId>,
@@ -156,7 +255,12 @@ impl BotCommandScope {
         Self::Chat { chat_id: value.into() }
     }
 
-    /// Creates a new scope covering all administrators of a specific group or supergroup chat
+    /// Creates a new BotCommandScope covering all administrators
+    /// of a specific group or supergroup chat
+    ///
+    /// # Arguments
+    ///
+    /// * value - Chat ID
     pub fn chat_administrators<T>(value: T) -> Self
     where
         T: Into<ChatId>,
@@ -164,7 +268,12 @@ impl BotCommandScope {
         Self::ChatAdministrators { chat_id: value.into() }
     }
 
-    /// Creates a new scope covering a specific member of a group or supergroup chat
+    /// Creates a new BotCommandScope covering a specific member of a group or supergroup chat
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Chat ID
+    /// * user_id - User ID
     pub fn chat_member<A>(chat_id: A, user_id: Integer) -> Self
     where
         A: Into<ChatId>,
@@ -176,74 +285,71 @@ impl BotCommandScope {
     }
 }
 
-/// Represents the bot description
+/// Represents a description of the bot
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BotDescription {
-    /// The bot description
+    /// The description of the bot
     pub description: String,
 }
 
-/// Represents the bot name
+impl BotDescription {
+    /// Creates a new BotDescription
+    ///
+    /// # Arguments
+    ///
+    /// * value - Description
+    pub fn new<T>(value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            description: value.into(),
+        }
+    }
+}
+
+/// Represents a name of the bot
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BotName {
-    /// The bot name
+    /// The name of the bot
     pub name: String,
 }
 
-/// Represents the bot short description
+impl BotName {
+    /// Creates a new BotName
+    ///
+    /// # Arguments
+    ///
+    /// * value - Name
+    pub fn new<T>(value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self { name: value.into() }
+    }
+}
+
+/// Represents a short description of the bot
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BotShortDescription {
-    /// The bot short description
-    short_description: String,
+    /// The short description of the bot
+    pub short_description: String,
 }
 
-/// Contains information about the chat
-/// whose identifier was shared with the bot
-/// using a KeyboardButtonRequestChat button.
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct ChatShared {
-    /// Identifier of the request
-    pub request_id: Integer,
-    /// Identifier of the shared chat
+impl BotShortDescription {
+    /// Creates a new BotShortDescription
     ///
-    /// The bot may not have access to the chat and could be unable to use this identifier,
-    /// unless the chat is already known to the bot by some other means.
-    pub chat_id: Integer,
-}
-
-/// Contains information about the user
-/// whose identifier was shared with the bot
-/// using a KeyboardButtonRequestUser button
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct UserShared {
-    /// Identifier of the request
-    pub request_id: Integer,
-    /// Identifier of the shared user
+    /// # Arguments
     ///
-    /// The bot may not have access to the user and could be unable to use this identifier,
-    /// unless the user is already known to the bot by some other means.
-    pub user_id: Integer,
-}
-
-/// Represents a service message about a user allowing a bot to write messages
-/// after adding it to the attachment menu,
-/// launching a Web App from a link,
-/// or accepting an explicit request from a Web App
-/// sent by the method requestWriteAccess.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct WriteAccessAllowed {
-    /// True, if the access was granted after
-    /// the user accepted an explicit request
-    /// from a Web App sent by the method requestWriteAccess
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub from_request: Option<bool>,
-    /// Name of the Web App,
-    /// if the access was granted when the Web App was launched from a link
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub web_app_name: Option<String>,
-    /// True, if the access was granted when the bot was added to the attachment or side menu
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub from_attachment_menu: Option<bool>,
+    /// * value - Short description
+    pub fn new<T>(value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            short_description: value.into(),
+        }
+    }
 }
 
 /// Close the bot instance before moving it from one local server to another
@@ -263,32 +369,40 @@ impl Method for Close {
     }
 }
 
-/// Use this method to delete the list of the bot commands for the given scope and user language
+/// Delete the list of the bot commands of the given scope and user language
 ///
-///  After deletion, higher level commands will be shown to affected users
+/// After deletion, higher level commands will be shown to affected users.
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct DeleteBotCommands {
     #[serde(skip_serializing_if = "Option::is_none")]
-    scope: Option<BotCommandScope>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    scope: Option<BotCommandScope>,
 }
 
 impl DeleteBotCommands {
-    /// An object, describing scope of users
+    /// Sets a language code
     ///
-    /// Defaults to BotCommandScopeDefault
-    pub fn scope(mut self, value: BotCommandScope) -> Self {
-        self.scope = Some(value);
-        self
-    }
-
-    /// A two-letter ISO 639-1 language code or an empty string
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - Two-letter ISO 639-1 language code or an empty string
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
         self.language_code = Some(value.into());
+        self
+    }
+
+    /// Sets a scope of users
+    ///
+    /// # Arguments
+    ///
+    /// * value - Scope
+    ///
+    /// Defaults to `BotCommandScope::Default`
+    pub fn with_scope(mut self, value: BotCommandScope) -> Self {
+        self.scope = Some(value);
         self
     }
 }
@@ -313,30 +427,36 @@ impl Method for GetBot {
     }
 }
 
-/// Use this method to get the current list of the bot commands
+/// Get the current list of the bot commands
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotCommands {
     #[serde(skip_serializing_if = "Option::is_none")]
-    scope: Option<BotCommandScope>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    scope: Option<BotCommandScope>,
 }
 
 impl GetBotCommands {
-    /// An object, describing scope of users
+    /// Sets a new language code
     ///
-    /// Defaults to BotCommandScopeDefault
-    pub fn scope(mut self, value: BotCommandScope) -> Self {
-        self.scope = Some(value);
-        self
-    }
-
-    /// A two-letter ISO 639-1 language code or an empty string
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - Two-letter ISO 639-1 language code or an empty string
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
         self.language_code = Some(value.into());
+        self
+    }
+
+    /// Sets a new scope
+    ///
+    /// # Arguments
+    ///
+    /// * value - Scope of users; defaults to ``BotCommandScope::Default``
+    pub fn with_scope(mut self, value: BotCommandScope) -> Self {
+        self.scope = Some(value);
         self
     }
 }
@@ -357,11 +477,12 @@ pub struct GetBotDefaultAdministratorRights {
 }
 
 impl GetBotDefaultAdministratorRights {
-    /// Pass True to get default administrator rights of the bot in channels
+    /// Sets a new value of the `for_channels` flag
     ///
-    /// Otherwise, default administrator rights of the bot
-    /// for groups and supergroups will be returned
-    pub fn for_channels(mut self, for_channels: bool) -> Self {
+    /// # Arguments
+    ///
+    /// * value - For channels - `true`; for groups and supergroups - `false`.
+    pub fn with_for_channels(mut self, for_channels: bool) -> Self {
         self.for_channels = Some(for_channels);
         self
     }
@@ -375,7 +496,7 @@ impl Method for GetBotDefaultAdministratorRights {
     }
 }
 
-/// Get the current bot description for the given user language
+/// Get the current bot description of the given user language
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotDescription {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -383,8 +504,12 @@ pub struct GetBotDescription {
 }
 
 impl GetBotDescription {
-    /// A two-letter ISO 639-1 language code or an empty string
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// Sets a new language code
+    ///
+    /// # Arguments
+    ///
+    /// * value - Two-letter ISO 639-1 language code or an empty string
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
@@ -401,7 +526,7 @@ impl Method for GetBotDescription {
     }
 }
 
-/// Get the current bot name for the given user language
+/// Get the current bot name of the given user language
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotName {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -409,8 +534,12 @@ pub struct GetBotName {
 }
 
 impl GetBotName {
-    /// A two-letter ISO 639-1 language code or an empty string
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// Sets a new language code
+    ///
+    /// # Arguments
+    ///
+    /// * value - Two-letter ISO 639-1 language code or an empty string
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
@@ -427,7 +556,7 @@ impl Method for GetBotName {
     }
 }
 
-/// Get the current bot short description for the given user language
+/// Get the current bot short description of the given user language
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotShortDescription {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -435,8 +564,12 @@ pub struct GetBotShortDescription {
 }
 
 impl GetBotShortDescription {
-    /// A two-letter ISO 639-1 language code or an empty string
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// Sets a new language code
+    ///
+    /// # Arguments
+    ///
+    /// * value - Two-letter ISO 639-1 language code or an empty string
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
@@ -457,6 +590,7 @@ impl Method for GetBotShortDescription {
 ///
 /// You must log out the bot before running it locally,
 /// otherwise there is no guarantee that the bot will receive updates.
+///
 /// After a successful call, you can immediately log in on a local server,
 /// but will not be able to log in back to the cloud Bot API server for 10 minutes.
 #[derive(Clone, Copy, Debug)]
@@ -470,14 +604,14 @@ impl Method for LogOut {
     }
 }
 
-/// Use this method to change the list of the bot commands
+/// Change the list of the bot commands
 #[derive(Clone, Debug, Serialize)]
 pub struct SetBotCommands {
     commands: Vec<BotCommand>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    scope: Option<BotCommandScope>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    scope: Option<BotCommandScope>,
 }
 
 impl SetBotCommands {
@@ -489,28 +623,34 @@ impl SetBotCommands {
     pub fn new(commands: impl IntoIterator<Item = BotCommand>) -> Self {
         Self {
             commands: commands.into_iter().collect(),
-            scope: None,
             language_code: None,
+            scope: None,
         }
     }
 
-    /// Sets a scope of users for which the commands are relevant
+    /// Sets a new language code
     ///
-    /// Defaults to BotCommandScopeDefault
-    pub fn scope(mut self, value: BotCommandScope) -> Self {
-        self.scope = Some(value);
-        self
-    }
-
-    /// A two-letter ISO 639-1 language code
+    /// # Arguments
     ///
-    /// If empty, commands will be applied to all users from the given scope,
-    /// for whose language there are no dedicated commands
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// * value - Two-letter ISO 639-1 language code;
+    ///           if empty, commands will be applied to all users from the given scope,
+    ///           for whose language there are no dedicated commands
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
         self.language_code = Some(value.into());
+        self
+    }
+
+    /// Sets a new scope
+    ///
+    /// # Arguments
+    ///
+    /// * value - Scope of users for which the commands are relevant;
+    ///           defaults to `BotCommandScope::Default`
+    pub fn with_scope(mut self, value: BotCommandScope) -> Self {
+        self.scope = Some(value);
         self
     }
 }
@@ -527,30 +667,34 @@ impl Method for SetBotCommands {
 /// when it's added as an administrator to groups or channels
 ///
 /// These rights will be suggested to users,
-/// but they are free to modify the list before adding the bot
+/// but they are free to modify the list before adding the bot.
 #[derive(Clone, Copy, Debug, Default, Serialize)]
 pub struct SetBotDefaultAdministratorRights {
     #[serde(skip_serializing_if = "Option::is_none")]
-    rights: Option<ChatAdministratorRights>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     for_channels: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rights: Option<ChatAdministratorRights>,
 }
 
 impl SetBotDefaultAdministratorRights {
-    /// An object describing new default administrator rights
+    /// Sets a new value of the for_channels flag
     ///
-    /// If not specified, the default administrator rights will be cleared
-    pub fn rights(mut self, rights: ChatAdministratorRights) -> Self {
-        self.rights = Some(rights);
+    /// # Arguments
+    ///
+    /// * value - For channels - `true`; for groups and supergroups - `false`
+    pub fn with_for_channels(mut self, for_channels: bool) -> Self {
+        self.for_channels = Some(for_channels);
         self
     }
 
-    /// Pass True to change the default administrator rights of the bot in channels
+    /// Sets a new rights
     ///
-    /// Otherwise, the default administrator rights of the bot
-    /// for groups and supergroups will be changed
-    pub fn for_channels(mut self, for_channels: bool) -> Self {
-        self.for_channels = Some(for_channels);
+    /// # Arguments
+    ///
+    /// * value - Default administrator rights;
+    ///           if not specified, the default administrator rights will be cleared
+    pub fn with_rights(mut self, rights: ChatAdministratorRights) -> Self {
+        self.rights = Some(rights);
         self
     }
 }
@@ -563,9 +707,7 @@ impl Method for SetBotDefaultAdministratorRights {
     }
 }
 
-/// Change the bot description,
-/// which is shown in the chat with
-/// the bot if the chat is empty.
+/// Change the bot description, which is shown in the chat with the bot if the chat is empty
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct SetBotDescription {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -575,10 +717,14 @@ pub struct SetBotDescription {
 }
 
 impl SetBotDescription {
-    /// New bot description; 0-512 characters
+    /// Sets a new bot description
     ///
-    /// Pass an empty string to remove the dedicated description for the given language.
-    pub fn description<T>(mut self, value: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - Description of the bot; 0-512 characters;
+    ///           pass an empty string to remove the dedicated description
+    ///           of the given language
+    pub fn with_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
@@ -586,11 +732,14 @@ impl SetBotDescription {
         self
     }
 
-    /// A two-letter ISO 639-1 language code
+    /// Sets a new language code
     ///
-    /// If empty, the description will be applied to all users
-    /// for whose language there is no dedicated description.
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - Two-letter ISO 639-1 language code;
+    ///           if empty, the description will be applied to all users
+    ///           for whose language there is no dedicated description
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
@@ -611,31 +760,39 @@ impl Method for SetBotDescription {
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct SetBotName {
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
 }
 
 impl SetBotName {
-    /// New bot name; 0-64 characters
+    /// Sets a new language code
     ///
-    /// Pass an empty string to remove the dedicated name for the given language.
-    pub fn name<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.name = Some(value.into());
-        self
-    }
-
-    /// A two-letter ISO 639-1 language code
+    /// # Arguments
     ///
-    /// If empty, the name will be shown to all users for whose language there is no dedicated name.
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// * value - Two-letter ISO 639-1 language code;
+    ///           if empty, the name will be shown to all users
+    ///           for whose language there is no dedicated name
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
         self.language_code = Some(value.into());
+        self
+    }
+
+    /// Sets a new name of the bot
+    ///
+    /// # Arguments
+    ///
+    /// * value - New name of the bot; 0-64 characters;
+    ///           pass an empty string to remove the dedicated name
+    ///           of the given language
+    pub fn with_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.name = Some(value.into());
         self
     }
 }
@@ -648,37 +805,44 @@ impl Method for SetBotName {
     }
 }
 
-/// Change the bot short description, which is shown on the bot profile page
+/// Change the short description of the bot, which is shown on the bot profile page
 /// and is sent together with the link when users share the bot
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct SetBotShortDescription {
     #[serde(skip_serializing_if = "Option::is_none")]
-    short_description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    short_description: Option<String>,
 }
 
 impl SetBotShortDescription {
-    /// New short description for the bot; 0-120 characters
+    /// Sets a new language code
     ///
-    /// Pass an empty string to remove the dedicated short description for the given language.
-    pub fn short_description<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.short_description = Some(value.into());
-        self
-    }
-
-    /// A two-letter ISO 639-1 language code
+    /// # Arguments
     ///
-    /// If empty, the short description will be applied
-    /// to all users for whose language there is no dedicated short description.
-    pub fn language_code<T>(mut self, value: T) -> Self
+    /// * value - Two-letter ISO 639-1 language code;
+    ///           if empty, the short description will be applied
+    ///           to all users for whose language there is no dedicated short description
+    pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
         self.language_code = Some(value.into());
+        self
+    }
+
+    /// Sets a new short description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Short description of the bot; 0-120 characters;
+    ///           pass an empty string to remove the dedicated short description
+    ///           of the given language
+    pub fn with_short_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.short_description = Some(value.into());
         self
     }
 }

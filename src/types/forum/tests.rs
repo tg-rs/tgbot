@@ -9,14 +9,10 @@ use crate::{
         EditForumTopic,
         EditGeneralForumTopic,
         ForumTopic,
-        ForumTopicClosed,
-        ForumTopicCreated,
-        ForumTopicEdited,
-        ForumTopicReopened,
-        GeneralForumTopicHidden,
-        GeneralForumTopicUnhidden,
+        ForumTopicIconColor,
         GetForumTopicIconStickers,
         HideGeneralForumTopic,
+        Integer,
         ReopenForumTopic,
         ReopenGeneralForumTopic,
         UnhideGeneralForumTopic,
@@ -27,82 +23,41 @@ use crate::{
 
 #[test]
 fn forum_topic() {
+    let expected_struct = ForumTopic::new(ForumTopicIconColor::Bittersweet, 1, "topic-name");
     assert_json_eq(
-        ForumTopic {
-            message_thread_id: 1,
-            name: String::from("topic-name"),
-            icon_color: 0,
-            icon_custom_emoji_id: Some(String::from("emoji-id")),
-        },
+        expected_struct.clone(),
         serde_json::json!({
             "message_thread_id": 1,
             "name": "topic-name",
-            "icon_color": 0,
+            "icon_color": 16478047,
+        }),
+    );
+    assert_json_eq(
+        expected_struct.with_icon_custom_emoji_id("emoji-id"),
+        serde_json::json!({
+            "message_thread_id": 1,
+            "name": "topic-name",
+            "icon_color": 16478047,
             "icon_custom_emoji_id": "emoji-id",
         }),
     );
 }
 
 #[test]
-fn forum_topic_closed() {
-    assert_json_eq(ForumTopicClosed::default(), serde_json::json!({}));
-}
-
-#[test]
-fn forum_topic_created() {
-    assert_json_eq(
-        ForumTopicCreated {
-            name: String::from("topic-name"),
-            icon_color: 0,
-            icon_custom_emoji_id: Some(String::from("emoji-id")),
-        },
-        serde_json::json!({
-            "name": "topic-name",
-            "icon_color": 0,
-            "icon_custom_emoji_id": "emoji-id"
-        }),
-    );
-    assert_json_eq(
-        ForumTopicCreated {
-            name: String::from("topic-name"),
-            icon_color: 0,
-            icon_custom_emoji_id: None,
-        },
-        serde_json::json!({
-            "name": "topic-name",
-            "icon_color": 0,
-        }),
-    );
-}
-
-#[test]
-fn forum_topic_edited() {
-    assert_json_eq(ForumTopicEdited::default(), serde_json::json!({}));
-    assert_json_eq(
-        ForumTopicEdited {
-            name: Some(String::from("new-name")),
-            icon_custom_emoji_id: Some(String::from("new-emoji-id")),
-        },
-        serde_json::json!({
-            "name": "new-name",
-            "icon_custom_emoji_id": "new-emoji-id"
-        }),
-    );
-}
-
-#[test]
-fn forum_topic_reopened() {
-    assert_json_eq(ForumTopicReopened::default(), serde_json::json!({}));
-}
-
-#[test]
-fn general_forum_topic_hidden() {
-    assert_json_eq(GeneralForumTopicHidden::default(), serde_json::json!({}));
-}
-
-#[test]
-fn general_forum_topic_unhidden() {
-    assert_json_eq(GeneralForumTopicUnhidden::default(), serde_json::json!({}));
+fn forum_topic_icon_color() {
+    for (expected_struct, expected_value) in [
+        (ForumTopicIconColor::BakerMillerPink, 16749490),
+        (ForumTopicIconColor::Bittersweet, 16478047),
+        (ForumTopicIconColor::BrightLavender, 13338331),
+        (ForumTopicIconColor::Jasmine, 16766590),
+        (ForumTopicIconColor::LightGreen, 9367192),
+        (ForumTopicIconColor::VeryLightAzure, 7322096),
+        (ForumTopicIconColor::Unknown(0), 0),
+    ] {
+        assert_eq!(Integer::from(expected_struct), expected_value);
+        assert_eq!(ForumTopicIconColor::from(expected_value), expected_struct);
+        assert_json_eq(expected_struct, serde_json::json!(expected_value));
+    }
 }
 
 #[test]
@@ -151,11 +106,13 @@ fn create_forum_topic() {
             serde_json::json!({
                 "chat_id": 1,
                 "name": "topic-name",
-                "icon_color": 0,
+                "icon_color": 13338331,
                 "icon_custom_emoji_id": "emoji-id"
             }),
         ),
-        method.icon_color(0).icon_custom_emoji_id("emoji-id"),
+        method
+            .with_icon_color(ForumTopicIconColor::BrightLavender)
+            .with_icon_custom_emoji_id("emoji-id"),
     );
 }
 
@@ -196,7 +153,7 @@ fn edit_forum_topic() {
                 "icon_custom_emoji_id": "emoji-id"
             }),
         ),
-        method.name("topic-name").icon_custom_emoji_id("emoji-id"),
+        method.with_icon_custom_emoji_id("emoji-id").with_name("topic-name"),
     );
 }
 

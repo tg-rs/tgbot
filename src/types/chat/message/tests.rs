@@ -25,7 +25,7 @@ fn pin_chat_message() {
                 "disable_notification": true
             }),
         ),
-        method.disable_notification(true),
+        method.with_disable_notification(true),
     );
 }
 
@@ -49,7 +49,7 @@ fn unpin_chat_message() {
                 "message_id": 2
             }),
         ),
-        method.message_id(2),
+        method.with_message_id(2),
     );
 }
 

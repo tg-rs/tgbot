@@ -27,7 +27,7 @@ use futures_util::future::BoxFuture;
 use std::env;
 use tgbot::api::Client;
 use tgbot::handler::{LongPoll, UpdateHandler};
-use tgbot::types::{SendMessage, Update, UpdateKind};
+use tgbot::types::{SendMessage, Update, UpdateType};
 
 struct Handler {
     client: Client,
@@ -40,7 +40,7 @@ impl UpdateHandler for Handler {
         println!("got an update: {:?}\n", update);
         let client = self.client.clone();
         Box::pin(async move {
-            if let UpdateKind::Message(message) = update.kind {
+            if let UpdateType::Message(message) = update.update_type {
                 if let Some(text) = message.get_text() {
                     let chat_id = message.chat.get_id();
                     let method = SendMessage::new(chat_id, text.data.clone());

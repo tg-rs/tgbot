@@ -6,101 +6,139 @@ use super::raw::{
     RawInlineQueryResult,
     RawInlineQueryResultData,
     RawInlineQueryResultDataError::{self, MissingField},
-    RawInlineQueryResultKind,
+    RawInlineQueryResultType,
 };
 
 #[cfg(test)]
 mod tests;
 
-/// Link to an article or web page
+/// Represents a link to an article or a web page
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultArticle {
     id: String,
     title: String,
     input_message_content: InputMessageContent,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    url: Option<String>,
+    description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     hide_url: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<String>,
+    reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumbnail_url: Option<String>,
+    thumbnail_height: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumbnail_height: Option<Integer>,
+    thumbnail_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    url: Option<String>,
 }
 
 impl InlineQueryResultArticle {
-    /// Creates a new InlineQueryResultArticle with empty optional parameters
+    /// Creates a new InlineQueryResultArticle
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 Bytes
+    /// * id - Unique identifier, 1-64 Bytes
+    /// * input_message_content - Content of the message
     /// * title - Title of the result
-    /// * input_message_content - Content of the message to be sent
-    pub fn new<I, T, C>(id: I, title: T, input_message_content: C) -> Self
+    pub fn new<A, B, C>(id: A, input_message_content: B, title: C) -> Self
     where
-        I: Into<String>,
-        T: Into<String>,
-        C: Into<InputMessageContent>,
+        A: Into<String>,
+        B: Into<InputMessageContent>,
+        C: Into<String>,
     {
-        InlineQueryResultArticle {
+        Self {
             id: id.into(),
-            title: title.into(),
             input_message_content: input_message_content.into(),
-            reply_markup: None,
-            url: None,
-            hide_url: None,
+            title: title.into(),
             description: None,
+            hide_url: None,
+            reply_markup: None,
             thumbnail_url: None,
             thumbnail_width: None,
             thumbnail_height: None,
+            url: None,
         }
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Short description of the result
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(value.into());
         self
     }
 
-    /// URL of the result
-    pub fn url<S: Into<String>>(mut self, url: S) -> Self {
-        self.url = Some(url.into());
+    /// Sets a new value for the `hide_url` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the URL must to be shown in the message
+    pub fn with_hide_url(mut self, value: bool) -> Self {
+        self.hide_url = Some(value);
         self
     }
 
-    /// Pass True, if you don't want the URL to be shown in the message
-    pub fn hide_url(mut self, hide_url: bool) -> Self {
-        self.hide_url = Some(hide_url);
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
         self
     }
 
-    /// Short description of the result
-    pub fn description<S: Into<String>>(mut self, description: S) -> Self {
-        self.description = Some(description.into());
+    /// Sets a new thumbnail height
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail height
+    pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
+        self.thumbnail_height = Some(value);
         self
     }
 
-    /// Url of the thumbnail for the result
-    pub fn thumbnail_url<S: Into<String>>(mut self, thumbnail_url: S) -> Self {
-        self.thumbnail_url = Some(thumbnail_url.into());
+    /// Sets a new thumbnail width
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail width
+    pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
+        self.thumbnail_width = Some(value);
         self
     }
 
-    /// Thumbnail width
-    pub fn thumbnail_width(mut self, thumbnail_width: Integer) -> Self {
-        self.thumbnail_width = Some(thumbnail_width);
+    /// Sets a new thumbnail URL
+    ///
+    /// # Arguments
+    ///
+    /// * value - Url of the thumbnail for the result
+    pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.thumbnail_url = Some(value.into());
         self
     }
 
-    /// Thumbnail height
-    pub fn thumbnail_height(mut self, thumbnail_height: Integer) -> Self {
-        self.thumbnail_height = Some(thumbnail_height);
+    /// Sets a new URL
+    ///
+    /// * value - URL of the result
+    pub fn with_url<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.url = Some(value.into());
         self
     }
 }
@@ -110,16 +148,16 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultArticle {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
+            description: value.data.description,
+            hide_url: value.data.hide_url,
             id: value.id,
-            title: value.data.title.ok_or(MissingField("title"))?,
             input_message_content: value.data.input_message_content.ok_or(MissingField("content"))?,
             reply_markup: value.data.reply_markup,
-            url: value.data.url,
-            hide_url: value.data.hide_url,
-            description: value.data.description,
             thumbnail_url: value.data.thumbnail_url,
             thumbnail_width: value.data.thumbnail_width,
             thumbnail_height: value.data.thumbnail_height,
+            title: value.data.title.ok_or(MissingField("title"))?,
+            url: value.data.url,
         })
     }
 }
@@ -128,19 +166,19 @@ impl From<InlineQueryResultArticle> for RawInlineQueryResult {
     fn from(value: InlineQueryResultArticle) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                title: Some(value.title),
+                description: value.description,
+                hide_url: value.hide_url,
                 input_message_content: Some(value.input_message_content),
                 reply_markup: value.reply_markup,
-                url: value.url,
-                hide_url: value.hide_url,
-                description: value.description,
                 thumbnail_url: value.thumbnail_url,
                 thumbnail_width: value.thumbnail_width,
                 thumbnail_height: value.thumbnail_height,
+                title: Some(value.title),
+                url: value.url,
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::Article,
+            result_type: RawInlineQueryResultType::Article,
         }
     }
 }

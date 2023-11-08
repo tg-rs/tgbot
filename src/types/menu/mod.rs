@@ -8,45 +8,21 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Describes the bot menu button in a private chat
+/// Represents a menu button of the bot in a private chat
 ///
-/// If a menu button other than [`MenuButtonDefault`] is set for a private chat,
-/// then it is applied in the chat.
+/// If a menu button other than default is set for a private chat, then it is applied in the chat.
 /// Otherwise the default menu button is applied.
 /// By default, the menu button opens the list of bot commands.
-///
-/// [`MenuButtonDefault`]: MenuButtonDefault
-#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
-#[serde(rename_all = "snake_case", tag = "type")]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(from = "MenuButtonRaw", into = "MenuButtonRaw")]
 pub enum MenuButton {
-    /// Represents a menu button, which opens the list of bot commands
-    Commands(MenuButtonCommands),
-    /// Describes that no specific value for the menu button was set
-    Default(MenuButtonDefault),
-    /// Represents a menu button, which launches a Web App
+    /// Opens the list of bot commands
+    Commands,
+    /// Default behaviour
+    Default,
+    /// Launches a web app
     WebApp(MenuButtonWebApp),
 }
-
-impl Default for MenuButton {
-    fn default() -> Self {
-        Self::Default(MenuButtonDefault {})
-    }
-}
-
-impl MenuButton {
-    /// Creates a new commands menu button
-    pub fn commands() -> Self {
-        Self::Commands(MenuButtonCommands {})
-    }
-}
-
-/// Represents a menu button, which opens the list of bot commands
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct MenuButtonCommands {}
-
-/// Describes that no specific value for the menu button was set
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct MenuButtonDefault {}
 
 /// Represents a menu button, which launches a Web App
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -60,7 +36,53 @@ pub struct MenuButtonWebApp {
     pub web_app: WebAppInfo,
 }
 
-/// Get the current value of the bot menu button in a private chat, or the default menu button
+impl MenuButtonWebApp {
+    /// Creates a new MenuButtonWebApp
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * web_app - Web app to launch
+    pub fn new<T>(text: T, web_app: WebAppInfo) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            text: text.into(),
+            web_app,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case", tag = "type")]
+enum MenuButtonRaw {
+    Commands {},
+    Default {},
+    WebApp(MenuButtonWebApp),
+}
+
+impl From<MenuButtonRaw> for MenuButton {
+    fn from(value: MenuButtonRaw) -> Self {
+        match value {
+            MenuButtonRaw::Commands {} => Self::Commands,
+            MenuButtonRaw::Default {} => Self::Default,
+            MenuButtonRaw::WebApp(value) => Self::WebApp(value),
+        }
+    }
+}
+
+impl From<MenuButton> for MenuButtonRaw {
+    fn from(value: MenuButton) -> Self {
+        match value {
+            MenuButton::Commands => Self::Commands {},
+            MenuButton::Default => Self::Default {},
+            MenuButton::WebApp(value) => Self::WebApp(value),
+        }
+    }
+}
+
+/// Returns the current value of the bot menu button in a private chat, or the default menu button
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetChatMenuButton {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,11 +90,15 @@ pub struct GetChatMenuButton {
 }
 
 impl GetChatMenuButton {
-    /// Unique identifier for the target private chat
+    /// Sets a new chat ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the target private chat
     ///
     /// If not specified, default bot menu button will be returned
-    pub fn chat_id(mut self, chat_id: Integer) -> Self {
-        self.chat_id = Some(chat_id);
+    pub fn with_chat_id(mut self, value: Integer) -> Self {
+        self.chat_id = Some(value);
         self
     }
 }

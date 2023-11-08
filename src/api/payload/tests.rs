@@ -1,3 +1,4 @@
+use pretty_assertions::assert_eq;
 use serde_json::Value as JsonValue;
 
 use crate::api::Method;

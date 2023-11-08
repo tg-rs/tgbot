@@ -13,12 +13,12 @@ fn inline_query_result_location() {
         InlineQueryResult::from(
             result
                 .clone()
-                .live_period(100)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text"))
-                .thumbnail_url("thumb-url")
-                .thumbnail_width(200)
-                .thumbnail_height(300),
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_live_period(100)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_thumbnail_url("thumb-url")
+                .with_thumbnail_width(200)
+                .with_thumbnail_height(300),
         ),
         serde_json::json!({
             "type": "location",

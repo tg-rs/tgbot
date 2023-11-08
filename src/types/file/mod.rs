@@ -26,44 +26,91 @@ mod video;
 mod video_note;
 mod voice;
 
-/// File ready to be downloaded
+/// Represents a file ready to be downloaded
 ///
-/// The file can be downloaded via the link `https://api.telegram.org/file/bot<token>/<file_path>`
-/// It is guaranteed that the link will be valid for at least 1 hour
-/// When the link expires, a new one can be requested by calling getFile
-/// Maximum file size to download is 20 MB
+/// The file can be downloaded via the link `https://api.telegram.org/file/bot<token>/<file_path>`.
+/// It is guaranteed that the link will be valid for at least 1 hour.
+/// When the link expires, a new one can be requested by calling `GetFile`.
+/// Maximum file size to download is 20 MB.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct File {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier
+    ///
+    /// Can be used to download or reuse the file.
     pub file_id: String,
-    /// Unique identifier for this file
+    /// Unique identifier
     ///
     /// It is supposed to be the same over time and for different bots.
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// File size, if known
+    /// File size in bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// File path
-    /// Use `https://api.telegram.org/file/bot<token>/<file_path>` to get the file
+    ///
+    /// Use `https://api.telegram.org/file/bot<token>/<file_path>` to get the file.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_path: Option<String>,
 }
 
-/// Get basic info about a file and prepare it for downloading
+impl File {
+    /// Creates a new File
+    ///
+    /// # Arguments
+    ///
+    /// * file_id - Identifier
+    /// * file_unique_id - Unique identifier
+    pub fn new<A, B>(file_id: A, file_unique_id: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            file_id: file_id.into(),
+            file_unique_id: file_unique_id.into(),
+            file_size: None,
+            file_path: None,
+        }
+    }
+
+    /// Sets a new file size
+    ///
+    /// # Arguments
+    ///
+    /// * value - File size in bytes
+    pub fn with_file_size(mut self, value: Integer) -> Self {
+        self.file_size = Some(value);
+        self
+    }
+
+    /// Sets a new file path
+    ///
+    /// # Arguments
+    ///
+    /// * value - File path
+    pub fn with_file_path<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.file_path = Some(value.into());
+        self
+    }
+}
+
+/// Returns a basic information about a file and prepares it for downloading
 ///
-/// For the moment, bots can download files of up to 20MB in size
+/// For the moment, bots can download files of up to 20MB in size.
 ///
 /// The file can then be downloaded via the link
 /// `https://api.telegram.org/file/bot<token>/<file_path>`,
-/// where `<file_path>` is taken from the response
+/// where `<file_path>` is taken from the response.
 ///
-/// It is guaranteed that the link will be valid for at least 1 hour
+/// It is guaranteed that the link will be valid for at least 1 hour.
 ///
-/// When the link expires, a new one can be requested by calling getFile again
+/// When the link expires, a new one can be requested by calling `GetFile` again.
 ///
-/// Note: This function may not preserve the original file name and MIME type
-/// You should save the file's MIME type and name (if available) when the File object is received
+/// Note: This function may not preserve the original file name and MIME type.
+/// You should save the file's MIME type and name (if available) when the `File` object is received.
 #[derive(Clone, Debug, Serialize)]
 pub struct GetFile {
     file_id: String,
@@ -75,7 +122,10 @@ impl GetFile {
     /// # Arguments
     ///
     /// * file_id - File identifier to get info about
-    pub fn new<S: Into<String>>(file_id: S) -> Self {
+    pub fn new<T>(file_id: T) -> Self
+    where
+        T: Into<String>,
+    {
         GetFile {
             file_id: file_id.into(),
         }
@@ -90,7 +140,7 @@ impl Method for GetFile {
     }
 }
 
-/// File reader to upload
+/// A file reader for uploading files
 pub struct InputFileReader {
     file_name: Option<String>,
     mime_type: Option<Mime>,
@@ -99,9 +149,13 @@ pub struct InputFileReader {
 
 impl InputFileReader {
     /// Creates a new file reader
-    pub fn new<R>(reader: R) -> Self
+    ///
+    /// # Arguments
+    ///
+    /// * value - Actual reader
+    pub fn new<T>(reader: T) -> Self
     where
-        R: AsyncRead + Send + Sync + Unpin + 'static,
+        T: AsyncRead + Send + Sync + Unpin + 'static,
     {
         InputFileReader {
             reader: FramedRead::new(Box::new(reader), BytesCodec::new()),
@@ -110,11 +164,11 @@ impl InputFileReader {
         }
     }
 
-    /// Sets a name of the file
+    /// Sets a file name
     ///
     /// # Arguments
     ///
-    /// * value - The file name to set
+    /// * value - File name
     pub fn with_file_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -128,7 +182,7 @@ impl InputFileReader {
         self.file_name.as_deref()
     }
 
-    /// Sets a mime type of the file
+    /// Sets a MIME type of the file
     ///
     /// # Arguments
     ///
@@ -138,17 +192,17 @@ impl InputFileReader {
         self
     }
 
-    /// Returns a mime type
+    /// Returns a MIME type
     pub fn mime_type(&self) -> Option<&Mime> {
         self.mime_type.as_ref()
     }
 }
 
-impl<R> From<R> for InputFileReader
+impl<T> From<T> for InputFileReader
 where
-    R: AsyncRead + Send + Sync + Unpin + 'static,
+    T: AsyncRead + Send + Sync + Unpin + 'static,
 {
-    fn from(reader: R) -> Self {
+    fn from(reader: T) -> Self {
         InputFileReader::new(reader)
     }
 }
@@ -171,28 +225,44 @@ impl fmt::Debug for InputFileReader {
 /// File to upload
 #[derive(Debug, PartialEq)]
 pub enum InputFile {
-    /// A file_id that exists on the Telegram servers
+    /// A `file_id` that exists on the Telegram servers
     Id(String),
     /// An HTTP URL to get a file from the Internet
     Url(String),
-    /// A file to upload using multipart/form-data
+    /// A file to upload using `multipart/form-data`
     Reader(InputFileReader),
 }
 
 impl InputFile {
-    /// Send a file_id that exists on the Telegram servers
-    pub fn file_id<S: Into<String>>(file_id: S) -> Self {
+    /// Creates an InputFile
+    ///
+    /// # Arguments
+    ///
+    /// * value - File ID
+    pub fn file_id<T>(file_id: T) -> Self
+    where
+        T: Into<String>,
+    {
         Self::Id(file_id.into())
     }
 
-    /// Send an HTTP URL to get a file from the Internet
+    /// Creates an InputFile
     ///
-    /// Telegram will download a file from that URL
-    pub fn url<S: Into<String>>(url: S) -> Self {
+    /// # Arguments
+    ///
+    /// * value - HTTP URL to get a file from the Internet
+    pub fn url<T>(url: T) -> Self
+    where
+        T: Into<String>,
+    {
         Self::Url(url.into())
     }
 
-    /// Path to file in FS (will be uploaded using multipart/form-data)
+    /// Creates an InputFile
+    ///
+    /// # Arguments
+    ///
+    /// * value - Path to file in FS
     pub async fn path(path: impl AsRef<Path>) -> IoResult<Self> {
         let path = path.as_ref();
         let file = fs::File::open(path).await?;
@@ -209,11 +279,11 @@ impl InputFile {
     }
 }
 
-impl<R> From<R> for InputFile
+impl<T> From<T> for InputFile
 where
-    R: Into<InputFileReader>,
+    T: Into<InputFileReader>,
 {
-    fn from(reader: R) -> Self {
+    fn from(reader: T) -> Self {
         InputFile::Reader(reader.into())
     }
 }

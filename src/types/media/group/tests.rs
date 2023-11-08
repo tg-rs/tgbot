@@ -17,9 +17,9 @@ use crate::{
 
 fn create_media_group() -> MediaGroup {
     MediaGroup::new(vec![
-        MediaGroupItem::photo(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default()),
-        MediaGroupItem::video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
-        MediaGroupItem::video(InputFile::file_id("file-id"), InputMediaVideo::default())
+        MediaGroupItem::for_photo(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default()),
+        MediaGroupItem::for_video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
+        MediaGroupItem::for_video(InputFile::file_id("file-id"), InputMediaVideo::default())
             .with_thumbnail(InputFile::url("thumb-url")),
     ])
     .unwrap()
@@ -37,32 +37,32 @@ fn send_media_group() {
     assert_payload_eq(
         Payload::form("sendMediaGroup", form),
         SendMediaGroup::new(1, create_media_group())
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .message_thread_id(1),
+            .with_allow_sending_without_reply(true)
+            .with_disable_notification(true)
+            .with_message_thread_id(1)
+            .with_protect_content(true)
+            .with_reply_to_message_id(1),
     );
 }
 
 #[test]
 fn media_group_new() {
     MediaGroup::new(vec![
-        MediaGroupItem::audio(InputFileReader::from(Cursor::new("test")), InputMediaAudio::default()),
-        MediaGroupItem::document(
+        MediaGroupItem::for_audio(InputFileReader::from(Cursor::new("test")), InputMediaAudio::default()),
+        MediaGroupItem::for_document(
             InputFileReader::from(Cursor::new("test")),
             InputMediaDocument::default(),
         ),
-        MediaGroupItem::photo(
+        MediaGroupItem::for_photo(
             InputFileReader::from(Cursor::new("test")),
-            InputMediaPhoto::default().caption("caption"),
+            InputMediaPhoto::default().with_caption("caption"),
         ),
-        MediaGroupItem::video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
-        MediaGroupItem::audio(InputFile::file_id("file-id"), InputMediaAudio::default())
+        MediaGroupItem::for_video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
+        MediaGroupItem::for_audio(InputFile::file_id("file-id"), InputMediaAudio::default())
             .with_thumbnail(InputFile::url("thumb-url")),
-        MediaGroupItem::document(InputFile::file_id("file-id"), InputMediaDocument::default())
+        MediaGroupItem::for_document(InputFile::file_id("file-id"), InputMediaDocument::default())
             .with_thumbnail(InputFile::url("thumb-url")),
-        MediaGroupItem::video(InputFile::file_id("file-id"), InputMediaVideo::default())
+        MediaGroupItem::for_video(InputFile::file_id("file-id"), InputMediaVideo::default())
             .with_thumbnail(InputFile::url("thumb-url")),
     ])
     .unwrap();

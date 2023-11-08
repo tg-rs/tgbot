@@ -55,14 +55,14 @@ fn copy_message() {
         ),
         method
             .clone()
-            .caption("caption")
-            .parse_mode(ParseMode::Markdown)
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .reply_markup(ForceReply::new(true))
-            .allow_sending_without_reply(true)
-            .message_thread_id(1),
+            .with_allow_sending_without_reply(true)
+            .with_caption("caption")
+            .with_disable_notification(true)
+            .with_message_thread_id(1)
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_protect_content(true)
+            .with_reply_markup(ForceReply::new(true))
+            .with_reply_to_message_id(1),
     );
     assert_payload_eq(
         Payload::json(
@@ -80,7 +80,7 @@ fn copy_message() {
                 ]
             }),
         ),
-        method.caption_entities(vec![TextEntity::bold(1..2)]),
+        method.with_caption_entities([TextEntity::bold(1..2)]),
     );
 }
 
@@ -108,7 +108,7 @@ fn edit_message_caption() {
                 "message_id": 2
             }),
         ),
-        EditMessageCaption::new(1, 2),
+        EditMessageCaption::for_chat_message(1, 2),
     );
     assert_payload_eq(
         Payload::json(
@@ -127,10 +127,10 @@ fn edit_message_caption() {
                 }
             }),
         ),
-        EditMessageCaption::new(1, 2)
-            .caption("caption")
-            .parse_mode(ParseMode::Markdown)
-            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
+        EditMessageCaption::for_chat_message(1, 2)
+            .with_caption("caption")
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
     );
 
     assert_payload_eq(
@@ -140,7 +140,7 @@ fn edit_message_caption() {
                 "inline_message_id": "msg-id"
             }),
         ),
-        EditMessageCaption::with_inline_message_id("msg-id"),
+        EditMessageCaption::for_inline_message("msg-id"),
     );
     assert_payload_eq(
         Payload::json(
@@ -150,7 +150,7 @@ fn edit_message_caption() {
                 "caption_entities": [{"type": "bold", "offset": 0, "length": 10}]
             }),
         ),
-        EditMessageCaption::with_inline_message_id("msg-id").caption_entities(vec![TextEntity::bold(0..10)]),
+        EditMessageCaption::for_inline_message("msg-id").with_caption_entities([TextEntity::bold(0..10)]),
     );
 }
 
@@ -166,7 +166,7 @@ fn edit_message_live_location() {
                 "longitude": 4.0
             }),
         ),
-        EditMessageLiveLocation::new(1, 2, 3.0, 4.0),
+        EditMessageLiveLocation::for_chat_message(1, 2, 3.0, 4.0),
     );
     assert_payload_eq(
         Payload::json(
@@ -182,11 +182,11 @@ fn edit_message_live_location() {
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]}
             }),
         ),
-        EditMessageLiveLocation::new(1, 2, 3.0, 4.0)
-            .horizontal_accuracy(5.0)
-            .heading(100)
-            .proximity_alert_radius(200)
-            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
+        EditMessageLiveLocation::for_chat_message(1, 2, 3.0, 4.0)
+            .with_heading(100)
+            .with_horizontal_accuracy(5.0)
+            .with_proximity_alert_radius(200)
+            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
     );
 
     assert_payload_eq(
@@ -198,7 +198,7 @@ fn edit_message_live_location() {
                 "longitude": 4.0
             }),
         ),
-        EditMessageLiveLocation::with_inline_message_id("msg-id", 3.0, 4.0),
+        EditMessageLiveLocation::for_inline_message("msg-id", 3.0, 4.0),
     );
 }
 
@@ -208,13 +208,15 @@ fn edit_message_media() {
     let mut form: Form = InputMedia::new(InputFile::file_id("file-id"), InputMediaPhoto::default())
         .unwrap()
         .into();
-    let markup: InlineKeyboardMarkup = vec![vec![InlineKeyboardButton::with_url("text", "url")]].into();
+    let markup: InlineKeyboardMarkup = [[InlineKeyboardButton::for_url("text", "url")]].into();
     form.insert_field("chat_id", 1);
     form.insert_field("message_id", 2);
     form.insert_field("reply_markup", markup.serialize().unwrap());
     assert_payload_eq(
         Payload::form("editMessageMedia", form),
-        EditMessageMedia::new(1, 2, input_media).reply_markup(markup).unwrap(),
+        EditMessageMedia::for_chat_message(1, 2, input_media)
+            .with_reply_markup(markup)
+            .unwrap(),
     );
     let input_media = InputMedia::new(InputFile::file_id("file-id"), InputMediaPhoto::default()).unwrap();
     let mut form: Form = InputMedia::new(InputFile::file_id("file-id"), InputMediaPhoto::default())
@@ -223,13 +225,13 @@ fn edit_message_media() {
     form.insert_field("inline_message_id", "msg-id");
     assert_payload_eq(
         Payload::form("editMessageMedia", form),
-        EditMessageMedia::with_inline_message_id("msg-id", input_media),
+        EditMessageMedia::for_inline_message("msg-id", input_media),
     );
 }
 
 #[test]
 fn edit_message_reply_markup() {
-    let markup = vec![vec![InlineKeyboardButton::with_url("text", "url")]];
+    let markup = [[InlineKeyboardButton::for_url("text", "url")]];
     assert_payload_eq(
         Payload::json(
             "editMessageReplyMarkup",
@@ -238,7 +240,7 @@ fn edit_message_reply_markup() {
                 "message_id": 2
             }),
         ),
-        EditMessageReplyMarkup::new(1, 2),
+        EditMessageReplyMarkup::for_chat_message(1, 2),
     );
     assert_payload_eq(
         Payload::json(
@@ -249,14 +251,14 @@ fn edit_message_reply_markup() {
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]}
             }),
         ),
-        EditMessageReplyMarkup::new(1, 2).reply_markup(markup.clone()),
+        EditMessageReplyMarkup::for_chat_message(1, 2).with_reply_markup(markup.clone()),
     );
     assert_payload_eq(
         Payload::json(
             "editMessageReplyMarkup",
             serde_json::json!({"inline_message_id": "msg-id"}),
         ),
-        EditMessageReplyMarkup::with_inline_message_id("msg-id"),
+        EditMessageReplyMarkup::for_inline_message("msg-id"),
     );
     assert_payload_eq(
         Payload::json(
@@ -266,7 +268,7 @@ fn edit_message_reply_markup() {
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]}
             }),
         ),
-        EditMessageReplyMarkup::with_inline_message_id("msg-id").reply_markup(markup),
+        EditMessageReplyMarkup::for_inline_message("msg-id").with_reply_markup(markup),
     );
 }
 
@@ -281,7 +283,7 @@ fn edit_message_text() {
                 "text": "text"
             }),
         ),
-        EditMessageText::new(1, 2, "text"),
+        EditMessageText::for_chat_message(1, 2, "text"),
     );
     assert_payload_eq(
         Payload::json(
@@ -304,10 +306,10 @@ fn edit_message_text() {
                 }
             }),
         ),
-        EditMessageText::new(1, 2, "text")
-            .parse_mode(ParseMode::Markdown)
-            .disable_web_page_preview(true)
-            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
+        EditMessageText::for_chat_message(1, 2, "text")
+            .with_disable_web_page_preview(true)
+            .with_parse_mode(ParseMode::Markdown)
+            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
     );
 
     assert_payload_eq(
@@ -318,7 +320,7 @@ fn edit_message_text() {
                 "text": "text"
             }),
         ),
-        EditMessageText::with_inline_message_id("msg-id", "text"),
+        EditMessageText::for_inline_message("msg-id", "text"),
     );
     assert_payload_eq(
         Payload::json(
@@ -335,7 +337,7 @@ fn edit_message_text() {
                 ]
             }),
         ),
-        EditMessageText::with_inline_message_id("msg-id", "text").entities(vec![TextEntity::bold(0..4)]),
+        EditMessageText::for_inline_message("msg-id", "text").with_entities([TextEntity::bold(0..4)]),
     );
 }
 
@@ -365,9 +367,9 @@ fn forward_message() {
             }),
         ),
         ForwardMessage::new(1, 2, 3)
-            .disable_notification(true)
-            .protect_content(true)
-            .message_thread_id(1),
+            .with_disable_notification(true)
+            .with_message_thread_id(1)
+            .with_protect_content(true),
     );
 }
 
@@ -406,15 +408,15 @@ fn send_message() {
             }),
         ),
         SendMessage::new(1, "text")
-            .parse_mode(ParseMode::Markdown)
-            .entities(vec![TextEntity::bold(0..2)])
-            .disable_web_page_preview(true)
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
-            .message_thread_id(1),
+            .with_allow_sending_without_reply(true)
+            .with_disable_notification(true)
+            .with_disable_web_page_preview(true)
+            .with_message_thread_id(1)
+            .with_parse_mode(ParseMode::Markdown)
+            .with_entities(vec![TextEntity::bold(0..2)])
+            .with_protect_content(true)
+            .with_reply_to_message_id(1)
+            .with_reply_markup(ForceReply::new(true)),
     );
 }
 
@@ -428,7 +430,7 @@ fn stop_message_live_location() {
                 "message_id": 2
             }),
         ),
-        StopMessageLiveLocation::new(1, 2),
+        StopMessageLiveLocation::for_chat_message(1, 2),
     );
     assert_payload_eq(
         Payload::json(
@@ -439,13 +441,14 @@ fn stop_message_live_location() {
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]}
             }),
         ),
-        StopMessageLiveLocation::new(1, 2).reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
+        StopMessageLiveLocation::for_chat_message(1, 2)
+            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
     );
     assert_payload_eq(
         Payload::json(
             "stopMessageLiveLocation",
             serde_json::json!({"inline_message_id": "msg-id"}),
         ),
-        StopMessageLiveLocation::with_inline_message_id("msg-id"),
+        StopMessageLiveLocation::for_inline_message("msg-id"),
     );
 }

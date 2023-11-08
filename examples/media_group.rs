@@ -29,9 +29,9 @@ impl UpdateHandler for Handler {
                 let photo_path = InputFile::path(this.photo_path).await.unwrap();
                 let video_path = InputFile::path(this.video_path).await.unwrap();
                 let media = MediaGroup::new(vec![
-                    MediaGroupItem::photo(photo_url, InputMediaPhoto::default().caption("Photo 01")),
-                    MediaGroupItem::photo(photo_path, InputMediaPhoto::default().caption("Photo 02")),
-                    MediaGroupItem::video(video_path, InputMediaVideo::default().caption("Video 01")),
+                    MediaGroupItem::for_photo(photo_url, InputMediaPhoto::default().with_caption("Photo 01")),
+                    MediaGroupItem::for_photo(photo_path, InputMediaPhoto::default().with_caption("Photo 02")),
+                    MediaGroupItem::for_video(video_path, InputMediaVideo::default().with_caption("Video 01")),
                 ])
                 .unwrap();
 

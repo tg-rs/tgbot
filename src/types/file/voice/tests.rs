@@ -6,13 +6,9 @@ use crate::{
 #[test]
 fn voice() {
     assert_json_eq(
-        Voice {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            duration: 500,
-            mime_type: Some(String::from("audio/ogg")),
-            file_size: Some(40960),
-        },
+        Voice::new(500, "file-id", "file-unique-id")
+            .with_mime_type("audio/ogg")
+            .with_file_size(40960),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -22,13 +18,7 @@ fn voice() {
         }),
     );
     assert_json_eq(
-        Voice {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            duration: 500,
-            mime_type: None,
-            file_size: None,
-        },
+        Voice::new(500, "file-id", "file-unique-id"),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -70,21 +60,21 @@ fn send_voice() {
             ]),
         ),
         SendVoice::new(1, InputFile::file_id("file-id"))
-            .caption("Caption")
-            .parse_mode(ParseMode::Markdown)
-            .duration(100)
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
+            .with_allow_sending_without_reply(true)
+            .with_caption("Caption")
+            .with_disable_notification(true)
+            .with_duration(100)
+            .with_message_thread_id(1)
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_protect_content(true)
+            .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .message_thread_id(1),
+            .with_reply_to_message_id(1),
     );
 }
 
 #[test]
-fn send_voice_caption_entities_vs_parse_mode() {
+fn send_voice_entities_vs_parse_mode() {
     assert_payload_eq(
         Payload::form(
             "sendVoice",
@@ -95,9 +85,9 @@ fn send_voice_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendVoice::new(1, InputFile::file_id("file-id"))
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap()
-            .parse_mode(ParseMode::Markdown),
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
     assert_payload_eq(
         Payload::form(
@@ -109,8 +99,8 @@ fn send_voice_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendVoice::new(1, InputFile::file_id("file-id"))
-            .parse_mode(ParseMode::Markdown)
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap(),
     );
 }

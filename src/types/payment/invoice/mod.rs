@@ -9,30 +9,59 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Basic information about an invoice
+/// Represents an invoice
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Invoice {
-    /// Product name
-    pub title: String,
+    /// Three-letter ISO 4217 currency code
+    pub currency: String,
     /// Product description
     pub description: String,
     /// Unique bot deep-linking parameter that can be used to generate this invoice
     pub start_parameter: String,
-    /// Three-letter ISO 4217 currency code
-    pub currency: String,
+    /// Product name
+    pub title: String,
     /// Total price in the smallest units of the currency (integer, not float/double)
     ///
-    /// For example, for a price of US$ 1.45 pass amount = 145
-    /// See the exp parameter in currencies.json, it shows the number of digits past
-    /// the decimal point for each currency (2 for the majority of currencies)
+    /// For example, for a price of US$ 1.45 pass amount = 145.
+    /// See the exp parameter in [currencies.json][1], it shows the number of digits past
+    /// the decimal point for each currency (2 for the majority of currencies).
+    ///
+    /// [1]: https://core.telegram.org/bots/payments/currencies.json
     pub total_amount: Integer,
 }
 
-/// Portion of the price for goods or services
+impl Invoice {
+    /// Creates a new Invoice
+    ///
+    /// # Arguments
+    ///
+    /// * currency - ISO 4217 currency code
+    /// * description - Product description
+    /// * start_parameter - Unique bot deep-linking parameter
+    /// * title - Product name
+    /// * total_amount - Total price
+    pub fn new<A, B, C, D>(currency: A, description: B, start_parameter: C, title: D, total_amount: Integer) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+        C: Into<String>,
+        D: Into<String>,
+    {
+        Self {
+            currency: currency.into(),
+            description: description.into(),
+            start_parameter: start_parameter.into(),
+            title: title.into(),
+            total_amount,
+        }
+    }
+}
+
+/// Represents a portion of the price for goods or services
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct LabeledPrice {
-    label: String,
     amount: Integer,
+    label: String,
 }
 
 impl LabeledPrice {
@@ -40,118 +69,203 @@ impl LabeledPrice {
     ///
     /// # Arguments
     ///
+    /// * amount - Price of the product in the smallest units of the currency
     /// * label - Portion label
-    /// * amount - For example, for a price of US$ 1.45 pass amount = 145
-    ///            See the exp parameter in currencies.json, it shows the number of digits past the
-    ///            decimal point for each currency (2 for the majority of currencies)
-    pub fn new<S: Into<String>>(label: S, amount: Integer) -> Self {
+    pub fn new<T>(amount: Integer, label: T) -> Self
+    where
+        T: Into<String>,
+    {
         Self {
-            label: label.into(),
             amount,
+            label: label.into(),
         }
-    }
-
-    /// Returns a portion label
-    pub fn label(&self) -> &str {
-        &self.label
     }
 
     /// Returns an amount
     pub fn amount(&self) -> Integer {
         self.amount
     }
+
+    /// Returns a portion label
+    pub fn label(&self) -> &str {
+        &self.label
+    }
 }
 
-/// Invoice parameters used in CreateInvoiceLink and SendInvoice
+/// Represents an invoice parameters used in [`CreateInvoiceLink`] and [`SendInvoice`]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InvoiceParameters {
+    /// Whether the final price depends on the shipping method
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_flexible: Option<bool>,
     /// The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double)
     ///
     /// For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145.
-    /// See the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
+    /// See the exp parameter in [currencies.json][1],
     /// it shows the number of digits past the decimal point for each currency
     /// (2 for the majority of currencies).
     ///
     /// Defaults to 0
+    ///
+    /// [1]: (https://core.telegram.org/bots/payments/currencies.json)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_tip_amount: Option<Integer>,
-    /// An array of suggested amounts of tips in the smallest units of the currency
-    /// (integer, not float/double)
-    ///
-    /// At most 4 suggested tip amounts can be specified.
-    /// The suggested tip amounts must be positive,
-    /// passed in a strictly increased order and must not exceed max_tip_amount.
+    /// Whether the user's email address is required to complete the order
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub suggested_tip_amounts: Option<Vec<Integer>>,
-    /// Data about the invoice, which will be shared with the payment provider
-    ///
-    /// A detailed description of required fields should be provided by the payment provider.
+    pub need_email: Option<bool>,
+    /// Whether the user's full name is required to complete the order
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub provider_data: Option<String>,
+    pub need_name: Option<bool>,
+    /// Whether the user's phone number is required to complete the order
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_phone_number: Option<bool>,
+    /// Whether the user's shipping address is required to complete the order
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_shipping_address: Option<bool>,
+    /// Photo height
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_height: Option<Integer>,
+    /// Photo size in bytes
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo_size: Option<Integer>,
     /// URL of the product photo for the invoice
     ///
     /// Can be a photo of the goods or a marketing image for a service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_url: Option<String>,
-    /// Photo size in bytes
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub photo_size: Option<Integer>,
     /// Photo width
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_width: Option<Integer>,
-    /// Photo height
+    /// Data about the invoice, which will be shared with the payment provider
+    ///
+    /// A detailed description of required fields should be provided by the payment provider.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub photo_height: Option<Integer>,
-    /// Pass True if you require the user's full name to complete the order
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub need_name: Option<bool>,
-    /// Pass True if you require the user's phone number to complete the order
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub need_phone_number: Option<bool>,
-    /// Pass True if you require the user's email address to complete the order
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub need_email: Option<bool>,
-    /// Pass True if you require the user's shipping address to complete the order
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub need_shipping_address: Option<bool>,
-    /// Pass True if the user's phone number should be sent to the provider
+    pub provider_data: Option<String>,
+    /// Whether the user's phone number should be sent to the provider
     #[serde(skip_serializing_if = "Option::is_none")]
     pub send_phone_number_to_provider: Option<bool>,
-    /// Pass True if the user's email address should be sent to the provider
+    /// Whether the user's email address should be sent to the provider
     #[serde(skip_serializing_if = "Option::is_none")]
     pub send_email_to_provider: Option<bool>,
-    /// Pass True if the final price depends on the shipping method
+    /// An array of suggested amounts of tips in the smallest units of the currency
+    /// (integer, not float/double)
+    ///
+    /// At most 4 suggested tip amounts can be specified.
+    /// The suggested tip amounts must be positive,
+    /// passed in a strictly increased order and must not exceed `max_tip_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_flexible: Option<bool>,
+    pub suggested_tip_amounts: Option<Vec<Integer>>,
 }
 
 impl InvoiceParameters {
-    /// The maximum accepted amount for tips in the smallest units of the currency
+    /// Sets a new value for the `is_flexible` flag
     ///
-    /// For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145.
-    /// See the exp parameter in currencies.json, it shows the number of digits
-    /// past the decimal point for each currency
-    /// (2 for the majority of currencies). Defaults to 0
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_flexible(mut self, value: bool) -> Self {
+        self.is_flexible = Some(value);
+        self
+    }
+
+    /// Sets a new max tip amount
+    ///
+    /// # Arguments
+    ///
+    /// * value - Max tip amount
     pub fn with_max_tip_amount(mut self, value: Integer) -> Self {
         self.max_tip_amount = Some(value);
         self
     }
 
-    /// An array of suggested amounts of tips in the smallest units of the currency
+    /// Sets a new value for the `need_email` flag
     ///
-    /// At most 4 suggested tip amounts can be specified. The suggested tip amounts
-    /// must be positive, passed in a strictly increased order and must not exceed max_tip_amount.
-    pub fn with_suggested_tip_amounts<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = Integer>,
-    {
-        self.suggested_tip_amounts = Some(value.into_iter().collect());
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_need_email(mut self, value: bool) -> Self {
+        self.need_email = Some(value);
         self
     }
 
-    /// JSON-encoded data about the invoice, which will be shared with the payment provider
+    /// Sets a new value for the `need_name` flag
     ///
-    /// A detailed description of required fields should be provided by the payment provider
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_need_name(mut self, value: bool) -> Self {
+        self.need_name = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `need_phone_number` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_need_phone_number(mut self, value: bool) -> Self {
+        self.need_phone_number = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `need_shipping_address` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_need_shipping_address(mut self, value: bool) -> Self {
+        self.need_shipping_address = Some(value);
+        self
+    }
+
+    /// Sets a new photo height
+    ///
+    /// # Arguments
+    ///
+    /// * value - Photo height
+    pub fn with_photo_height(mut self, value: Integer) -> Self {
+        self.photo_height = Some(value);
+        self
+    }
+
+    /// Sets a new photo size
+    ///
+    /// # Arguments
+    ///
+    /// * value - Photo size in bytes
+    pub fn with_photo_size(mut self, value: Integer) -> Self {
+        self.photo_size = Some(value);
+        self
+    }
+
+    /// Sets a new photo URL
+    ///
+    /// # Arguments
+    ///
+    /// * value - Photo URL
+    pub fn with_photo_url<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.photo_url = Some(value.into());
+        self
+    }
+
+    /// Sets a new photo width
+    ///
+    /// # Arguments
+    ///
+    /// * value - Photo width
+    pub fn with_photo_width(mut self, value: Integer) -> Self {
+        self.photo_width = Some(value);
+        self
+    }
+
+    /// Sets a new provider data
+    ///
+    /// # Arguments
+    ///
+    /// * value - Provider data
     pub fn with_provider_data<T>(mut self, value: &T) -> Result<Self, JsonError>
     where
         T: Serialize,
@@ -160,87 +274,51 @@ impl InvoiceParameters {
         Ok(self)
     }
 
-    /// URL of the product photo for the invoice
+    /// Sets a new value for the `send_phone_number_to_provider` flag
     ///
-    /// Can be a photo of the goods or a marketing image for a service
-    /// People like it better when they see what they are paying for
-    pub fn with_photo_url<S: Into<String>>(mut self, photo_url: S) -> Self {
-        self.photo_url = Some(photo_url.into());
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_send_phone_number_to_provider(mut self, value: bool) -> Self {
+        self.send_phone_number_to_provider = Some(value);
         self
     }
 
-    /// Photo size
-    pub fn with_photo_size(mut self, photo_size: Integer) -> Self {
-        self.photo_size = Some(photo_size);
+    /// Sets a new value for the `send_email_to_provider` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_send_email_to_provider(mut self, value: bool) -> Self {
+        self.send_email_to_provider = Some(value);
         self
     }
 
-    /// Photo width
-    pub fn with_photo_width(mut self, photo_width: Integer) -> Self {
-        self.photo_width = Some(photo_width);
-        self
-    }
-
-    /// Photo height
-    pub fn with_photo_height(mut self, photo_height: Integer) -> Self {
-        self.photo_height = Some(photo_height);
-        self
-    }
-
-    /// Pass True, if you require the user's full name to complete the order
-    pub fn with_need_name(mut self, need_name: bool) -> Self {
-        self.need_name = Some(need_name);
-        self
-    }
-
-    /// Pass True, if you require the user's phone number to complete the order
-    pub fn with_need_phone_number(mut self, need_phone_number: bool) -> Self {
-        self.need_phone_number = Some(need_phone_number);
-        self
-    }
-
-    /// Pass True, if you require the user's email address to complete the order
-    pub fn with_need_email(mut self, need_email: bool) -> Self {
-        self.need_email = Some(need_email);
-        self
-    }
-
-    /// Pass True, if you require the user's shipping address to complete the order
-    pub fn with_need_shipping_address(mut self, need_shipping_address: bool) -> Self {
-        self.need_shipping_address = Some(need_shipping_address);
-        self
-    }
-
-    /// Pass True, if user's phone number should be sent to provider
-    pub fn with_send_phone_number_to_provider(mut self, send_phone_number_to_provider: bool) -> Self {
-        self.send_phone_number_to_provider = Some(send_phone_number_to_provider);
-        self
-    }
-
-    /// Pass True, if user's email address should be sent to provider
-    pub fn with_send_email_to_provider(mut self, send_email_to_provider: bool) -> Self {
-        self.send_email_to_provider = Some(send_email_to_provider);
-        self
-    }
-
-    /// Pass True, if the final price depends on the shipping method
-    pub fn with_flexible(mut self, is_flexible: bool) -> Self {
-        self.is_flexible = Some(is_flexible);
+    /// Sets a new list of max tip amounts
+    ///
+    /// # Arguments
+    ///
+    /// * value - List of max tip amounts
+    pub fn with_suggested_tip_amounts<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = Integer>,
+    {
+        self.suggested_tip_amounts = Some(value.into_iter().collect());
         self
     }
 }
 
-/// Create a link for an invoice
+/// Creates a link for an invoice
 ///
 /// Returns the created invoice link as String on success.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoiceLink {
-    title: String,
+    currency: String,
     description: String,
     payload: String,
-    provider_token: String,
-    currency: String,
     prices: Vec<LabeledPrice>,
+    provider_token: String,
+    title: String,
     #[serde(flatten)]
     parameters: Option<InvoiceParameters>,
 }
@@ -250,10 +328,11 @@ impl CreateInvoiceLink {
     ///
     /// # Arguments
     ///
-    /// * title - Product name, 1-32 characters
-    /// * description - Product description, 1-255 characters
-    /// * payload - Bot-defined invoice payload, 1-128 bytes.
-    ///             This will not be displayed to the user, use for your internal processes.
+    /// * title - Product name; 1-32 characters
+    /// * description - Product description; 1-255 characters
+    /// * payload - Bot-defined invoice payload; 1-128 bytes;
+    ///             this will not be displayed to the user;
+    ///             use for your internal processes
     /// * provider_token - Payment provider token, obtained via BotFather
     /// * currency - Three-letter ISO 4217 currency code, see more on currencies
     /// * prices - Price breakdown (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
@@ -266,19 +345,23 @@ impl CreateInvoiceLink {
         E: IntoIterator<Item = LabeledPrice>,
     {
         Self {
-            title: title.into(),
+            currency: currency.into(),
             description: description.into(),
             payload: payload.into(),
             provider_token: provider_token.into(),
-            currency: currency.into(),
             prices: prices.into_iter().collect(),
+            title: title.into(),
             parameters: None,
         }
     }
 
-    /// Sets invoice parameters
-    pub fn parameters(mut self, parameters: InvoiceParameters) -> Self {
-        self.parameters = Some(parameters);
+    /// Sets a new invoice parameters
+    ///
+    /// # Arguments
+    ///
+    /// * value - Invoice parameters
+    pub fn with_parameters(mut self, value: InvoiceParameters) -> Self {
+        self.parameters = Some(value);
         self
     }
 }
@@ -291,49 +374,49 @@ impl Method for CreateInvoiceLink {
     }
 }
 
-/// Send invoice
+/// Sends an invoice
 #[derive(Clone, Debug, Serialize)]
 pub struct SendInvoice {
     chat_id: ChatId,
-    title: String,
+    currency: String,
     description: String,
     payload: String,
-    provider_token: String,
-    currency: String,
     prices: Vec<LabeledPrice>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    start_parameter: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
+    provider_token: String,
+    title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<InlineKeyboardMarkup>,
+    disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    message_thread_id: Option<Integer>,
     #[serde(flatten)]
     parameters: Option<InvoiceParameters>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    message_thread_id: Option<Integer>,
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_markup: Option<InlineKeyboardMarkup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_to_message_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    start_parameter: Option<String>,
 }
 
 impl SendInvoice {
-    /// Creates a new SendInvoice with empty optional parameters
+    /// Creates a new SendInvoice
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat or username of the target channel (in the format @channel_username)
-    /// * title - Product name, 1-32 characters
-    /// * description - Product description, 1-255 characters
-    /// * payload - Bot-defined invoice payload, 1-128 bytes
-    ///             This will not be displayed to the user, use for your internal processes
+    /// * chat_id - Unique identifier of the target chat
+    /// * title - Product name; 1-32 characters
+    /// * description - Product description; 1-255 characters
+    /// * payload - Bot-defined invoice payload; 1-128 bytes
+    ///             this will not be displayed to the user;
+    ///             use for your internal processes
     /// * provider_token - Payments provider token, obtained via Bot Father
     /// * currency - Three-letter ISO 4217 currency code, see more on currencies
     /// * prices - Price breakdown, a list of components
     ///            (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
-    #[allow(clippy::too_many_arguments)]
     pub fn new<A, B, C, D, E, F, G>(
         chat_id: A,
         title: B,
@@ -371,67 +454,102 @@ impl SendInvoice {
         }
     }
 
-    /// Sets an Unique deep-linking parameter
+    /// Sets a new value for the `allow_sending_without_reply` flag
     ///
-    ///  If left empty, forwarded copies of the sent message will have a Pay button,
+    /// # Arguments
+    ///
+    /// * value - Whether the message should be sent even
+    ///           if the specified replied-to message is not found
+    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
+        self.allow_sending_without_reply = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `disable_notification` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to send the message silently
+    ///
+    /// Users will receive a notification with no sound.
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
+        self.disable_notification = Some(value);
+        self
+    }
+
+    /// Sets a new message thread ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the target message thread (topic) of the forum;
+    ///           for forum supergroups only
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.message_thread_id = Some(value);
+        self
+    }
+
+    /// Sets a new invoice parameters
+    ///
+    /// # Arguments
+    ///
+    /// * value - Invoice parameters
+    pub fn with_parameters(mut self, value: InvoiceParameters) -> Self {
+        self.parameters = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `protect_content` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    pub fn with_protect_content(mut self, value: bool) -> Self {
+        self.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard
+    ///
+    /// If empty, one 'Pay total price' button will be shown.
+    /// If not empty, the first button must be a Pay button.
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new message ID for a reply
+    ///
+    /// # Arguments
+    ///
+    /// * value - ID of the original message
+    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
+        self.reply_to_message_id = Some(value);
+        self
+    }
+
+    /// Sets a new unique deep-linking parameter
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the parameter
+    ///
+    /// If left empty, forwarded copies of the sent message will have a Pay button,
     /// allowing multiple users to pay directly from the forwarded message, using the same invoice.
     /// If non-empty, forwarded copies of the sent message will have a URL button
     /// with a deep link to the bot (instead of a Pay button),
-    /// with the value used as the start parameter
-    pub fn start_parameter<T>(mut self, value: T) -> Self
+    /// with the value used as the start parameter.
+    pub fn with_start_parameter<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
         self.start_parameter = Some(value.into());
-        self
-    }
-
-    /// Sets invoice parameters
-    pub fn parameters(mut self, parameters: InvoiceParameters) -> Self {
-        self.parameters = Some(parameters);
-        self
-    }
-
-    /// Sends the message silently
-    ///
-    /// Users will receive a notification with no sound
-    pub fn disable_notification(mut self, disable_notification: bool) -> Self {
-        self.disable_notification = Some(disable_notification);
-        self
-    }
-
-    /// Protects the contents of the sent message from forwarding and saving
-    pub fn protect_content(mut self, protect_content: bool) -> Self {
-        self.protect_content = Some(protect_content);
-        self
-    }
-
-    /// If the message is a reply, ID of the original message
-    pub fn reply_to_message_id(mut self, reply_to_message_id: Integer) -> Self {
-        self.reply_to_message_id = Some(reply_to_message_id);
-        self
-    }
-
-    /// Pass True, if the message should be sent even
-    /// if the specified replied-to message is not found
-    pub fn allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
-        self.allow_sending_without_reply = Some(allow_sending_without_reply);
-        self
-    }
-
-    /// Inline keyboard
-    ///
-    /// If empty, one 'Pay total price' button will be shown
-    /// If not empty, the first button must be a Pay button
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
-        self
-    }
-
-    /// Unique identifier for the target message thread (topic) of the forum;
-    /// for forum supergroups only
-    pub fn message_thread_id(mut self, message_thread_id: Integer) -> Self {
-        self.message_thread_id = Some(message_thread_id);
         self
     }
 }

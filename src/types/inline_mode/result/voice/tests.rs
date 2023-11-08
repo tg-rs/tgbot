@@ -10,19 +10,16 @@ use crate::types::{
 
 #[test]
 fn inline_query_result_voice() {
-    let result = InlineQueryResultVoice::new("voice-id", "voice-url", "voice-title");
+    let result = InlineQueryResultVoice::new("voice-id", "voice-title", "voice-url");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .caption("voice-caption")
-                .parse_mode(ParseMode::Markdown)
-                .voice_duration(100)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url(
-                    "voice-kb-text",
-                    "voice-kb-url",
-                )]])
-                .input_message_content(InputMessageContentText::new("voice-content-text")),
+                .with_caption("voice-caption")
+                .with_input_message_content(InputMessageContentText::new("voice-content-text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("voice-kb-text", "voice-kb-url")]])
+                .with_voice_duration(100),
         ),
         serde_json::json!({
             "type": "voice",
@@ -49,15 +46,15 @@ fn inline_query_result_voice() {
 
 #[test]
 fn inline_query_result_cached_voice() {
-    let result = InlineQueryResultCachedVoice::new("id", "file-id", "title");
+    let result = InlineQueryResultCachedVoice::new("id", "title", "file-id");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "voice",

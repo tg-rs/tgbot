@@ -6,43 +6,50 @@ use super::raw::{
     RawInlineQueryResult,
     RawInlineQueryResultData,
     RawInlineQueryResultDataError::{self, MissingField},
-    RawInlineQueryResultKind,
+    RawInlineQueryResultType,
 };
 
 #[cfg(test)]
 mod tests;
 
-/// Game
+/// Represents a game
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultGame {
-    id: String,
     game_short_name: String,
+    id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl InlineQueryResultGame {
-    /// Creates a new InlineQueryResultGame with empty optional parameters
+    /// Creates a new InlineQueryResultGame
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
     /// * game_short_name - Short name of the game
-    pub fn new<I, N>(id: I, game_short_name: N) -> Self
+    /// * id - Unique identifier of the result, 1-64 bytes
+    pub fn new<A, B>(game_short_name: A, id: B) -> Self
     where
-        I: Into<String>,
-        N: Into<String>,
+        A: Into<String>,
+        B: Into<String>,
     {
-        InlineQueryResultGame {
-            id: id.into(),
+        Self {
             game_short_name: game_short_name.into(),
+            id: id.into(),
             reply_markup: None,
         }
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
         self
     }
 }
@@ -52,8 +59,8 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultGame {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
-            id: value.id,
             game_short_name: value.data.game_short_name.ok_or(MissingField("game_short_name"))?,
+            id: value.id,
             reply_markup: value.data.reply_markup,
         })
     }
@@ -68,7 +75,7 @@ impl From<InlineQueryResultGame> for RawInlineQueryResult {
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::Game,
+            result_type: RawInlineQueryResultType::Game,
         }
     }
 }

@@ -61,16 +61,7 @@ fn deserialize() {
                 },
                 TextEntity::TextMention {
                     position: TextEntityPosition { offset: 83, length: 12 },
-                    user: User {
-                        id: 1,
-                        is_bot: false,
-                        first_name: String::from("test"),
-                        last_name: None,
-                        username: None,
-                        language_code: None,
-                        is_premium: None,
-                        added_to_attachment_menu: None,
-                    },
+                    user: User::new(1, "test", false),
                 },
                 TextEntity::Url(TextEntityPosition { offset: 96, length: 3 }),
                 TextEntity::Underline(TextEntityPosition { offset: 100, length: 9 }),
@@ -250,16 +241,7 @@ fn serialize() {
         (
             TextEntity::TextMention {
                 position: TextEntityPosition { offset: 0, length: 4 },
-                user: User {
-                    id: 1,
-                    is_bot: false,
-                    first_name: String::from("test"),
-                    last_name: None,
-                    username: None,
-                    language_code: None,
-                    is_premium: None,
-                    added_to_attachment_menu: None,
-                },
+                user: User::new(1, "test", false),
             },
             serde_json::json!({
                 "type": "text_mention",

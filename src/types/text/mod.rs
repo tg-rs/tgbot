@@ -9,7 +9,7 @@ mod tests;
 
 mod entities;
 
-/// Text with entities
+/// Represents a text with entities
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Text {
     /// The actual UTF-8 text
@@ -19,6 +19,16 @@ pub struct Text {
 }
 
 impl Text {
+    /// Sets a new list of entities
+    ///
+    /// # Arguments
+    ///
+    /// * value - Entities to set
+    pub fn with_entities(mut self, value: TextEntities) -> Self {
+        self.entities = Some(value);
+        self
+    }
+
     /// Returns a list of bot commands found in text
     pub fn get_bot_commands(&self) -> Option<Vec<TextEntityBotCommand>> {
         self.entities
@@ -68,6 +78,15 @@ impl From<String> for Text {
     fn from(s: String) -> Self {
         Self {
             data: s,
+            entities: None,
+        }
+    }
+}
+
+impl<'a> From<&'a str> for Text {
+    fn from(value: &'a str) -> Self {
+        Self {
+            data: String::from(value),
             entities: None,
         }
     }

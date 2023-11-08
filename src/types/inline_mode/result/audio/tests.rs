@@ -10,17 +10,17 @@ use crate::types::{
 
 #[test]
 fn inline_query_result_audio() {
-    let result = InlineQueryResultAudio::new("id", "url", "title");
+    let result = InlineQueryResultAudio::new("url", "id", "title");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .caption("caption")
-                .parse_mode(ParseMode::Html)
-                .performer("performer")
-                .audio_duration(100)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_audio_duration(100)
+                .with_caption("caption")
+                .with_caption_parse_mode(ParseMode::Html)
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_performer("performer")
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "audio",
@@ -48,15 +48,15 @@ fn inline_query_result_audio() {
 
 #[test]
 fn inline_query_result_cached_audio() {
-    let result = InlineQueryResultCachedAudio::new("id", "file-id");
+    let result = InlineQueryResultCachedAudio::new("file-id", "id");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .caption("test")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("test")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "audio",

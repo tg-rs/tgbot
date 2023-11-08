@@ -4,9 +4,9 @@ use crate::types::{tests::assert_json_eq, InputMediaPhoto, ParseMode, TextEntity
 fn input_media_photo() {
     assert_json_eq(
         InputMediaPhoto::default()
-            .caption("caption")
-            .parse_mode(ParseMode::Markdown)
-            .has_spoiler(true),
+            .with_caption("caption")
+            .with_has_spoiler(true)
+            .with_caption_parse_mode(ParseMode::Markdown),
         serde_json::json!({
             "caption": "caption",
             "parse_mode": "Markdown",
@@ -17,14 +17,14 @@ fn input_media_photo() {
 }
 
 #[test]
-fn input_media_photo_caption_entities_vs_parse_mode() {
+fn input_media_photo_entities_vs_parse_mode() {
     let mut method = InputMediaPhoto::default();
-    method = method.parse_mode(ParseMode::Markdown);
+    method = method.with_caption_parse_mode(ParseMode::Markdown);
     assert_eq!(
         serde_json::to_value(&method).unwrap(),
         serde_json::json!({"parse_mode": "Markdown"})
     );
-    method = method.caption_entities(vec![TextEntity::bold(0..10)]);
+    method = method.with_caption_entities(vec![TextEntity::bold(0..10)]);
     assert_eq!(
         serde_json::to_value(method).unwrap(),
         serde_json::json!({"caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]})

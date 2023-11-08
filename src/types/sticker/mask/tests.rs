@@ -3,12 +3,7 @@ use crate::types::{tests::assert_json_eq, MaskPosition, MaskPositionPoint};
 #[test]
 fn mask_position() {
     assert_json_eq(
-        MaskPosition {
-            point: MaskPositionPoint::Forehead,
-            x_shift: 0.0,
-            y_shift: 1.0,
-            scale: 1.0,
-        },
+        MaskPosition::new(MaskPositionPoint::Forehead, 1.0, 0.0, 1.0),
         serde_json::json!({
             "point": "forehead",
             "x_shift": 0.0,

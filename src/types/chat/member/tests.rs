@@ -26,35 +26,31 @@ use crate::{
 
 #[test]
 fn chat_member_admin() {
-    let expected_struct = ChatMember::Administrator(ChatMemberAdministrator {
-        user: User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("John"),
-            last_name: Some(String::from("Doe")),
-            username: Some(String::from("john_doe")),
-            language_code: Some(String::from("RU")),
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        custom_title: Some(String::from("Alpha")),
-        is_anonymous: false,
-        can_be_edited: true,
-        can_change_info: false,
-        can_post_messages: Some(true),
-        can_edit_messages: Some(false),
-        can_delete_messages: true,
-        can_invite_users: false,
-        can_restrict_members: true,
-        can_pin_messages: Some(false),
-        can_post_stories: Some(true),
-        can_edit_stories: Some(true),
-        can_promote_members: true,
-        can_manage_video_chats: false,
-        can_manage_chat: true,
-        can_manage_topics: Some(true),
-        can_delete_stories: Some(true),
-    });
+    let expected_struct = ChatMember::Administrator(
+        ChatMemberAdministrator::new(
+            User::new(1, "John", false)
+                .with_last_name("Doe")
+                .with_username("john_doe")
+                .with_language_code("RU"),
+        )
+        .with_custom_title("Alpha")
+        .with_is_anonymous(false)
+        .with_can_be_edited(true)
+        .with_can_change_info(false)
+        .with_can_post_messages(true)
+        .with_can_edit_messages(false)
+        .with_can_delete_messages(true)
+        .with_can_invite_users(false)
+        .with_can_restrict_members(true)
+        .with_can_pin_messages(false)
+        .with_can_post_stories(true)
+        .with_can_edit_stories(true)
+        .with_can_promote_members(true)
+        .with_can_manage_video_chats(false)
+        .with_can_manage_chat(true)
+        .with_can_manage_topics(true)
+        .with_can_delete_stories(true),
+    );
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
     assert_json_eq(
@@ -88,35 +84,14 @@ fn chat_member_admin() {
             "can_delete_stories": true,
         }),
     );
-    let expected_struct = ChatMember::Administrator(ChatMemberAdministrator {
-        user: User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("John"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        custom_title: None,
-        is_anonymous: false,
-        can_be_edited: true,
-        can_change_info: false,
-        can_post_messages: None,
-        can_edit_messages: None,
-        can_delete_messages: true,
-        can_invite_users: false,
-        can_restrict_members: true,
-        can_pin_messages: None,
-        can_post_stories: None,
-        can_edit_stories: None,
-        can_promote_members: true,
-        can_manage_video_chats: false,
-        can_manage_chat: true,
-        can_manage_topics: None,
-        can_delete_stories: None,
-    });
+    let expected_struct = ChatMember::Administrator(
+        ChatMemberAdministrator::new(User::new(1, "John", false))
+            .with_can_be_edited(true)
+            .with_can_delete_messages(true)
+            .with_can_restrict_members(true)
+            .with_can_promote_members(true)
+            .with_can_manage_chat(true),
+    );
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
     assert_json_eq(
@@ -143,20 +118,11 @@ fn chat_member_admin() {
 
 #[test]
 fn chat_member_creator() {
-    let expected_struct = ChatMember::Creator(ChatMemberCreator {
-        user: User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("John"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        is_anonymous: false,
-        custom_title: Some(String::from("Alpha")),
-    });
+    let expected_struct = ChatMember::Creator(
+        ChatMemberCreator::new(User::new(1, "John", false))
+            .with_is_anonymous(false)
+            .with_custom_title("Alpha"),
+    );
 
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
@@ -173,20 +139,7 @@ fn chat_member_creator() {
             }
         }),
     );
-    let expected_struct = ChatMember::Creator(ChatMemberCreator {
-        user: User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("John"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        is_anonymous: false,
-        custom_title: None,
-    });
+    let expected_struct = ChatMember::Creator(ChatMemberCreator::new(User::new(1, "John", false)));
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
     assert_json_eq(
@@ -205,19 +158,13 @@ fn chat_member_creator() {
 
 #[test]
 fn chat_member_kicked() {
-    let expected_struct = ChatMember::Kicked(ChatMemberKicked {
-        user: User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("John"),
-            last_name: Some(String::from("Doe")),
-            username: Some(String::from("john_doe")),
-            language_code: Some(String::from("RU")),
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        until_date: 0,
-    });
+    let expected_struct = ChatMember::Kicked(ChatMemberKicked::new(
+        0,
+        User::new(1, "John", false)
+            .with_last_name("Doe")
+            .with_language_code("RU")
+            .with_username("john_doe"),
+    ));
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(!expected_struct.is_member());
     assert_json_eq(
@@ -239,16 +186,7 @@ fn chat_member_kicked() {
 
 #[test]
 fn chat_member_left() {
-    let expected_struct = ChatMember::Left(User {
-        id: 1,
-        is_bot: true,
-        first_name: String::from("John"),
-        last_name: None,
-        username: None,
-        language_code: None,
-        is_premium: None,
-        added_to_attachment_menu: None,
-    });
+    let expected_struct = ChatMember::Left(User::new(1, "John", true));
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(!expected_struct.is_member());
     assert_json_eq(
@@ -266,16 +204,7 @@ fn chat_member_left() {
 
 #[test]
 fn chat_member() {
-    let expected_struct = ChatMember::Member(User {
-        id: 1,
-        is_bot: false,
-        first_name: String::from("John"),
-        last_name: None,
-        username: None,
-        language_code: None,
-        is_premium: None,
-        added_to_attachment_menu: None,
-    });
+    let expected_struct = ChatMember::Member(User::new(1, "John", false));
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
     assert_json_eq(
@@ -293,34 +222,24 @@ fn chat_member() {
 
 #[test]
 fn chat_member_restricted() {
-    let expected_struct = ChatMember::Restricted(ChatMemberRestricted {
-        user: User {
-            id: 1,
-            is_bot: true,
-            first_name: String::from("John"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        until_date: 0,
-        can_change_info: true,
-        can_invite_users: false,
-        can_send_polls: true,
-        can_pin_messages: Some(false),
-        can_send_messages: true,
-        can_send_audios: Some(true),
-        can_send_documents: Some(false),
-        can_send_photos: Some(true),
-        can_send_videos: Some(false),
-        can_send_video_notes: Some(true),
-        can_send_other_messages: true,
-        can_add_web_page_previews: false,
-        can_manage_topics: false,
-        is_member: true,
-        can_send_voice_notes: Some(false),
-    });
+    let expected_struct = ChatMember::Restricted(
+        ChatMemberRestricted::new(User::new(1, "John", false), 0)
+            .with_can_change_info(true)
+            .with_can_invite_users(false)
+            .with_can_send_polls(true)
+            .with_can_pin_messages(false)
+            .with_can_send_messages(true)
+            .with_can_send_audios(true)
+            .with_can_send_documents(false)
+            .with_can_send_photos(true)
+            .with_can_send_videos(false)
+            .with_can_send_video_notes(true)
+            .with_can_send_other_messages(true)
+            .with_can_add_web_page_previews(false)
+            .with_can_manage_topics(false)
+            .with_is_member(true)
+            .with_can_send_voice_notes(false),
+    );
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
     assert_json_eq(
@@ -329,7 +248,7 @@ fn chat_member_restricted() {
             "status": "restricted",
             "user": {
                 "id": 1,
-                "is_bot": true,
+                "is_bot": false,
                 "first_name": "John"
             },
             "until_date": 0,
@@ -350,34 +269,13 @@ fn chat_member_restricted() {
             "is_member": true
         }),
     );
-    let expected_struct = ChatMember::Restricted(ChatMemberRestricted {
-        user: User {
-            id: 1,
-            is_bot: true,
-            first_name: String::from("John"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        },
-        until_date: 0,
-        can_change_info: true,
-        can_invite_users: false,
-        can_send_polls: true,
-        can_pin_messages: None,
-        can_send_messages: true,
-        can_send_audios: None,
-        can_send_documents: None,
-        can_send_photos: None,
-        can_send_videos: None,
-        can_send_video_notes: None,
-        can_send_other_messages: true,
-        can_add_web_page_previews: false,
-        is_member: false,
-        can_manage_topics: false,
-        can_send_voice_notes: None,
-    });
+    let expected_struct = ChatMember::Restricted(
+        ChatMemberRestricted::new(User::new(1, "John", true), 0)
+            .with_can_change_info(true)
+            .with_can_send_polls(true)
+            .with_can_send_messages(true)
+            .with_can_send_other_messages(true),
+    );
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(!expected_struct.is_member());
     assert_json_eq(
@@ -405,74 +303,18 @@ fn chat_member_restricted() {
 #[test]
 fn chat_member_updated() {
     assert_json_eq(
-        ChatMemberUpdated {
-            chat: Chat::Group(GroupChat {
-                id: 1,
-                title: String::from("group-title"),
-                photo: None,
-                invite_link: None,
-                pinned_message: None,
-                permissions: None,
-                has_protected_content: None,
-                message_auto_delete_time: None,
-                has_hidden_members: None,
-            }),
-            from: User {
-                id: 1,
-                is_bot: true,
-                first_name: String::from("John"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            date: 0,
-            old_chat_member: ChatMember::Member(User {
-                id: 2,
-                is_bot: false,
-                first_name: String::from("John"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            }),
-            new_chat_member: ChatMember::Kicked(ChatMemberKicked {
-                user: User {
-                    id: 2,
-                    is_bot: true,
-                    first_name: String::from("John"),
-                    last_name: None,
-                    username: None,
-                    language_code: None,
-                    is_premium: None,
-                    added_to_attachment_menu: None,
-                },
-                until_date: 0,
-            }),
-            invite_link: Some(ChatInviteLink {
-                invite_link: String::from("https://t.me/joinchat/o8oIBrbCI3U2OGJi"),
-                creator: User {
-                    id: 1,
-                    is_bot: false,
-                    first_name: String::from("John"),
-                    last_name: None,
-                    username: None,
-                    language_code: None,
-                    is_premium: None,
-                    added_to_attachment_menu: None,
-                },
-                creates_join_request: false,
-                is_primary: true,
-                is_revoked: false,
-                name: None,
-                expire_date: None,
-                member_limit: None,
-                pending_join_request_count: None,
-            }),
-            via_chat_folder_invite_link: Some(true),
-        },
+        ChatMemberUpdated::new(
+            Chat::Group(GroupChat::new(1, "group-title")),
+            0,
+            User::new(1, "John", true),
+            ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", false))),
+            ChatMember::Member(User::new(2, "John", false)),
+        )
+        .with_invite_link(
+            ChatInviteLink::new("https://t.me/joinchat/o8oIBrbCI3U2OGJi", User::new(1, "John", false))
+                .with_is_primary(true),
+        )
+        .with_via_chat_folder_invite_link(true),
         serde_json::json!({
             "chat": {
                 "id": 1,
@@ -497,7 +339,7 @@ fn chat_member_updated() {
                 "status": "kicked",
                 "user": {
                     "id": 2,
-                    "is_bot": true,
+                    "is_bot": false,
                     "first_name": "John",
                 },
                 "until_date": 0
@@ -517,55 +359,13 @@ fn chat_member_updated() {
         }),
     );
     assert_json_eq(
-        ChatMemberUpdated {
-            chat: Chat::Group(GroupChat {
-                id: 1,
-                title: String::from("group-title"),
-                photo: None,
-                invite_link: None,
-                pinned_message: None,
-                permissions: None,
-                has_protected_content: None,
-                message_auto_delete_time: None,
-                has_hidden_members: None,
-            }),
-            from: User {
-                id: 1,
-                is_bot: true,
-                first_name: String::from("John"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            date: 0,
-            old_chat_member: ChatMember::Member(User {
-                id: 2,
-                is_bot: false,
-                first_name: String::from("John"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            }),
-            new_chat_member: ChatMember::Kicked(ChatMemberKicked {
-                user: User {
-                    id: 2,
-                    is_bot: true,
-                    first_name: String::from("John"),
-                    last_name: None,
-                    username: None,
-                    language_code: None,
-                    is_premium: None,
-                    added_to_attachment_menu: None,
-                },
-                until_date: 0,
-            }),
-            invite_link: None,
-            via_chat_folder_invite_link: None,
-        },
+        ChatMemberUpdated::new(
+            Chat::Group(GroupChat::new(1, "group-title")),
+            0,
+            User::new(1, "John", true),
+            ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", false))),
+            ChatMember::Member(User::new(2, "John", false)),
+        ),
         serde_json::json!({
             "chat": {
                 "id": 1,
@@ -590,7 +390,7 @@ fn chat_member_updated() {
                 "status": "kicked",
                 "user": {
                     "id": 2,
-                    "is_bot": true,
+                    "is_bot": false,
                     "first_name": "John",
                 },
                 "until_date": 0
@@ -622,7 +422,7 @@ fn ban_chat_member() {
                 "revoke_messages": true,
             }),
         ),
-        method.until_date(3).revoke_messages(true),
+        method.with_until_date(3).with_revoke_messages(true),
     );
 }
 
@@ -742,21 +542,21 @@ fn promote_chat_member() {
             }),
         ),
         PromoteChatMember::new(1, 2)
-            .is_anonymous(false)
-            .can_change_info(true)
-            .can_edit_messages(true)
-            .can_delete_messages(false)
-            .can_invite_users(true)
-            .can_manage_chat(false)
-            .can_manage_video_chats(true)
-            .can_pin_messages(true)
-            .can_post_messages(false)
-            .can_promote_members(false)
-            .can_restrict_members(false)
-            .can_manage_topics(true)
-            .can_post_stories(true)
-            .can_edit_stories(true)
-            .can_delete_stories(true),
+            .with_is_anonymous(false)
+            .with_can_change_info(true)
+            .with_can_edit_messages(true)
+            .with_can_delete_messages(false)
+            .with_can_invite_users(true)
+            .with_can_manage_chat(false)
+            .with_can_manage_video_chats(true)
+            .with_can_pin_messages(true)
+            .with_can_post_messages(false)
+            .with_can_promote_members(false)
+            .with_can_restrict_members(false)
+            .with_can_manage_topics(true)
+            .with_can_post_stories(true)
+            .with_can_edit_stories(true)
+            .with_can_delete_stories(true),
     );
     assert_payload_eq(
         Payload::json(
@@ -794,7 +594,7 @@ fn restrict_chat_member() {
                 "permissions": {}
             }),
         ),
-        method.until_date(100),
+        method.with_until_date(100),
     );
     let method = RestrictChatMember::new(1, 2).allow_all();
     assert_payload_eq(
@@ -848,7 +648,7 @@ fn restrict_chat_member() {
                 }
             }),
         ),
-        method.until_date(100),
+        method.with_until_date(100),
     );
     assert_payload_eq(
         Payload::json(
@@ -868,12 +668,12 @@ fn restrict_chat_member() {
         RestrictChatMember::new(1, 2)
             .with_permissions(
                 ChatPermissions::default()
-                    .with_send_messages(true)
-                    .with_send_other_messages(true)
-                    .with_add_web_page_previews(false),
+                    .with_can_send_messages(true)
+                    .with_can_send_other_messages(true)
+                    .with_can_add_web_page_previews(false),
             )
-            .until_date(100)
-            .use_independent_chat_permissions(true),
+            .with_until_date(100)
+            .with_use_independent_chat_permissions(true),
     );
     assert_payload_eq(
         Payload::json(
@@ -899,7 +699,7 @@ fn set_chat_administrator_custom_title() {
                 "custom_title": "Alpha"
             }),
         ),
-        SetChatAdministratorCustomTitle::new(1, 1, "Alpha"),
+        SetChatAdministratorCustomTitle::new(1, "Alpha", 1),
     );
 }
 
@@ -925,6 +725,6 @@ fn unban_chat_member() {
                 "only_if_banned": true
             }),
         ),
-        method.only_if_banned(true),
+        method.with_only_if_banned(true),
     );
 }

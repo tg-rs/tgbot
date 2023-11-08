@@ -16,7 +16,7 @@ mod document;
 mod photo;
 mod video;
 
-/// Content of a media message to be sent
+/// Represents a content of a media message to be sent
 #[derive(Debug)]
 pub struct InputMedia {
     form: Form,
@@ -24,31 +24,42 @@ pub struct InputMedia {
 
 impl InputMedia {
     /// Creates a new input media
-    pub fn new<F, K>(file: F, kind: K) -> Result<InputMedia, InputMediaError>
+    ///
+    /// # Arguments
+    ///
+    /// * file - File to send
+    /// * media_type - Metadata of the media
+    pub fn new<A, B>(file: A, media_type: B) -> Result<InputMedia, InputMediaError>
     where
-        F: Into<InputFile>,
-        K: Into<InputMediaKind>,
+        A: Into<InputFile>,
+        B: Into<InputMediaType>,
     {
-        Self::create(file, None::<InputFile>, kind)
+        Self::create(file, media_type, None::<InputFile>)
     }
 
     /// Creates a new input media with thumbnail
     ///
+    /// # Arguments
+    ///
+    /// * file - File to send
+    /// * media_type - Metadata of the media
+    /// * thumbnail - Thumbnail file
+    ///
     /// Note that photo can not have a thumbnail
-    pub fn with_thumbnail<F, T, K>(file: F, thumbnail: T, kind: K) -> Result<InputMedia, InputMediaError>
+    pub fn with_thumbnail<A, B, C>(file: A, media_type: B, thumbnail: C) -> Result<InputMedia, InputMediaError>
     where
-        F: Into<InputFile>,
-        T: Into<InputFile>,
-        K: Into<InputMediaKind>,
+        A: Into<InputFile>,
+        B: Into<InputMediaType>,
+        C: Into<InputFile>,
     {
-        Self::create(file, Some(thumbnail), kind)
+        Self::create(file, media_type, Some(thumbnail))
     }
 
-    fn create<K, F, T>(media: F, thumbnail: Option<T>, kind: K) -> Result<Self, InputMediaError>
+    fn create<A, B, C>(media: A, media_type: B, thumbnail: Option<C>) -> Result<Self, InputMediaError>
     where
-        K: Into<InputMediaKind>,
-        F: Into<InputFile>,
-        T: Into<InputFile>,
+        A: Into<InputFile>,
+        B: Into<InputMediaType>,
+        C: Into<InputFile>,
     {
         let mut form = Form::default();
 
@@ -64,12 +75,12 @@ impl InputMedia {
 
         let media = add_file(&mut form, "tgbot_im_file", media.into());
         let thumbnail = thumbnail.map(|thumb| add_file(&mut form, "tgbot_im_thumb", thumb.into()));
-        let data = match kind.into() {
-            InputMediaKind::Animation(info) => InputMediaData::Animation { media, thumbnail, info },
-            InputMediaKind::Audio(info) => InputMediaData::Audio { media, thumbnail, info },
-            InputMediaKind::Document(info) => InputMediaData::Document { media, thumbnail, info },
-            InputMediaKind::Photo(info) => InputMediaData::Photo { media, info },
-            InputMediaKind::Video(info) => InputMediaData::Video { media, thumbnail, info },
+        let data = match media_type.into() {
+            InputMediaType::Animation(info) => InputMediaData::Animation { media, thumbnail, info },
+            InputMediaType::Audio(info) => InputMediaData::Audio { media, thumbnail, info },
+            InputMediaType::Document(info) => InputMediaData::Document { media, thumbnail, info },
+            InputMediaType::Photo(info) => InputMediaData::Photo { media, info },
+            InputMediaType::Video(info) => InputMediaData::Video { media, thumbnail, info },
         };
         let info = serde_json::to_string(&data).map_err(InputMediaError::SerializeInfo)?;
         form.insert_field("media", info);
@@ -83,9 +94,9 @@ impl From<InputMedia> for Form {
     }
 }
 
-/// Metadata of the input media
+/// Represents a metadata of the input media
 #[derive(Debug, derive_more::From)]
-pub enum InputMediaKind {
+pub enum InputMediaType {
     /// An animation file
     Animation(InputMediaAnimation),
     /// An audio file
@@ -137,7 +148,7 @@ enum InputMediaData {
     },
 }
 
-/// An error occurred with InputMedia
+/// An error occurred with [`InputMedia`]
 #[derive(Debug)]
 pub enum InputMediaError {
     /// Can not serialize media info

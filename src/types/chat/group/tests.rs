@@ -6,69 +6,33 @@ use crate::types::{
     GroupChat,
     Message,
     MessageData,
-    MessageSender,
     Text,
     User,
 };
 
 #[test]
 fn group_chat() {
-    let expected_struct = Chat::Group(GroupChat {
-        id: 1,
-        title: String::from("Group"),
-        photo: Some(ChatPhoto {
-            small_file_id: String::from("small-file-id"),
-            small_file_unique_id: String::from("small-file-unique-id"),
-            big_file_id: String::from("big-file-id"),
-            big_file_unique_id: String::from("big-file-unique-id"),
-        }),
-        invite_link: Some(String::from("example.com/join/group")),
-        pinned_message: Some(Box::new(Message {
-            id: 1,
-            date: 0,
-            edit_date: None,
-            sender: MessageSender::User(User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("User"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            }),
-            chat: Chat::Group(GroupChat {
-                id: 1,
-                title: String::from("Group"),
-                photo: None,
-                invite_link: None,
-                pinned_message: None,
-                permissions: None,
-                has_protected_content: None,
-                message_auto_delete_time: None,
-                has_hidden_members: None,
-            }),
-            author_signature: None,
-            has_protected_content: false,
-            forward: None,
-            is_automatic_forward: false,
-            is_topic_message: None,
-            message_thread_id: None,
-            reply_to: None,
-            via_bot: None,
-            media_group_id: None,
-            reply_markup: None,
-            has_media_spoiler: None,
-            data: MessageData::Text(Text {
-                data: String::from("text"),
-                entities: None,
-            }),
-        })),
-        permissions: Some(ChatPermissions::allowed()),
-        has_protected_content: Some(true),
-        message_auto_delete_time: Some(86400),
-        has_hidden_members: Some(true),
-    });
+    let expected_struct = Chat::Group(
+        GroupChat::new(1, "Group")
+            .with_photo(ChatPhoto::new(
+                "big-file-id",
+                "big-file-unique-id",
+                "small-file-id",
+                "small-file-unique-id",
+            ))
+            .with_invite_link("example.com/join/group")
+            .with_pinned_message(Message::new(
+                1,
+                0,
+                GroupChat::new(1, "Group"),
+                MessageData::Text(Text::from("text")),
+                User::new(1, "User", false),
+            ))
+            .with_permissions(ChatPermissions::allowed())
+            .with_has_protected_content(true)
+            .with_message_auto_delete_time(86400)
+            .with_has_hidden_members(true),
+    );
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());
     assert_json_eq(
@@ -123,17 +87,7 @@ fn group_chat() {
         }),
     );
     assert_json_eq(
-        Chat::Group(GroupChat {
-            id: 1,
-            title: String::from("Group"),
-            photo: None,
-            invite_link: None,
-            pinned_message: None,
-            permissions: None,
-            has_protected_content: None,
-            message_auto_delete_time: None,
-            has_hidden_members: None,
-        }),
+        Chat::Group(GroupChat::new(1, "Group")),
         serde_json::json!({
             "id": 1,
             "type": "group",

@@ -6,146 +6,197 @@ use super::raw::{
     RawInlineQueryResult,
     RawInlineQueryResultData,
     RawInlineQueryResultDataError::{self, MissingField},
-    RawInlineQueryResultKind,
+    RawInlineQueryResultType,
 };
 
 #[cfg(test)]
 mod tests;
 
-/// Link to a file
+/// Represents a link to a file
 ///
-/// By default, this file will be sent by the user with an optional caption
-/// Alternatively, you can use input_message_content to send a message
-/// with the specified content instead of the file
-/// Currently, only .PDF and .ZIP files can be sent using this method
+/// By default, this file will be sent by the user with an optional caption.
+/// Alternatively, you can use [`Self::with_input_message_content`] to send a message
+/// with the specified content instead of the file.
+/// Currently, only .PDF and .ZIP files can be sent using this method.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultDocument {
-    id: String,
-    title: String,
     document_url: String,
+    id: String,
     mime_type: String,
+    title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    input_message_content: Option<InputMessageContent>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent>,
+    thumbnail_height: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    thumbnail_height: Option<Integer>,
 }
 
 impl InlineQueryResultDocument {
-    /// Creates a new InlineQueryResultDocument with empty optional parameters
+    /// Creates a new InlineQueryResultDocument
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
-    /// * title - Title for the result
     /// * document_url - A valid URL for the file
+    /// * id - Unique identifier of the result, 1-64 bytes
     /// * mime_type - Mime type of the content of the file, either “application/pdf” or “application/zip”
-    pub fn new<I, T, U, M>(id: I, title: T, document_url: U, mime_type: M) -> Self
+    /// * title - Title of the result
+    pub fn new<A, B, C, D>(document_url: A, id: B, mime_type: C, title: D) -> Self
     where
-        I: Into<String>,
-        T: Into<String>,
-        U: Into<String>,
-        M: Into<String>,
+        A: Into<String>,
+        B: Into<String>,
+        C: Into<String>,
+        D: Into<String>,
     {
-        InlineQueryResultDocument {
+        Self {
+            document_url: document_url.into(),
             id: id.into(),
+            mime_type: mime_type.into(),
             title: title.into(),
             caption: None,
             caption_entities: None,
-            parse_mode: None,
-            document_url: document_url.into(),
-            mime_type: mime_type.into(),
             description: None,
-            reply_markup: None,
             input_message_content: None,
+            parse_mode: None,
+            reply_markup: None,
+            thumbnail_height: None,
             thumbnail_url: None,
             thumbnail_width: None,
-            thumbnail_height: None,
         }
     }
 
-    /// Caption of the document to be sent, 0-1024 characters
-    pub fn caption<S: Into<String>>(mut self, caption: S) -> Self {
-        self.caption = Some(caption.into());
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - Caption of the document to be sent, 0-1024 characters
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.caption = Some(value.into());
         self
     }
 
-    /// List of special entities that appear in the caption
+    /// Sets a new caption entities
     ///
-    /// Parse mode will be set to None when this method is called
-    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to [`None`] when this method is called.
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.caption_entities = Some(caption_entities.into_iter().collect());
+        self.caption_entities = Some(value.into_iter().collect());
         self.parse_mode = None;
         self
     }
 
-    /// Sets parse mode
+    /// Sets a new caption parse mode
     ///
-    /// Caption entities will be set to None when this method is called
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+    /// # Arguments
+    ///
+    /// * value - Parse mode
+    ///
+    /// Caption entities will be set to [`None`] when this method is called.
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
+        self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Short description of the result
-    pub fn description<S: Into<String>>(mut self, description: S) -> Self {
-        self.description = Some(description.into());
+    /// Sets a new description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Short description of the result
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(value.into());
         self
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new input message content
+    ///
+    /// # Arguments
+    ///
+    /// * value - Content of the message to be sent instead of the file
+    pub fn with_input_message_content<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputMessageContent>,
+    {
+        self.input_message_content = Some(value.into());
         self
     }
 
-    /// Content of the message to be sent instead of the file
-    pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
-        self.input_message_content = Some(input_message_content.into());
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
         self
     }
 
-    /// URL of the thumbnail (jpeg only) for the file
-    pub fn thumbnail_url<S: Into<String>>(mut self, thumbnail_url: S) -> Self {
-        self.thumbnail_url = Some(thumbnail_url.into());
+    /// Sets a new thumbnail height
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail height
+    pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
+        self.thumbnail_height = Some(value);
         self
     }
 
-    /// Thumbnail width
-    pub fn thumbnail_width(mut self, thumbnail_width: Integer) -> Self {
-        self.thumbnail_width = Some(thumbnail_width);
+    /// Sets a new thumbnail width
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail width
+    pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
+        self.thumbnail_width = Some(value);
         self
     }
 
-    /// Thumbnail height
-    pub fn thumbnail_height(mut self, thumbnail_height: Integer) -> Self {
-        self.thumbnail_height = Some(thumbnail_height);
+    /// Sets a new thumbnail URL
+    ///
+    /// # Arguments
+    ///
+    /// * value - URL of the thumbnail (jpeg only) for the file
+    pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.thumbnail_url = Some(value.into());
         self
     }
 }
 
-/// Link to a file stored on the Telegram servers
+/// Represents a link to a file stored on the Telegram servers
 ///
-/// By default, this file will be sent by the user with an optional caption
-/// Alternatively, you can use input_message_content
-/// to send a message with the specified content instead of the file
+/// By default, this file will be sent by the user with an optional caption.
+/// Alternatively, you can use [Self::with_input_message_content]
+/// to send a message with the specified content instead of the file.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedDocument {
     id: String,
@@ -166,48 +217,53 @@ pub struct InlineQueryResultCachedDocument {
 }
 
 impl InlineQueryResultCachedDocument {
-    /// Creates a new InlineQueryResultCachedDocument with empty optional parameters
+    /// Creates a new InlineQueryResultCachedDocument
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
-    /// * title - Title for the result
-    /// * document_file_id - A valid file identifier for the file
-    pub fn new<I, T, F>(id: I, title: T, document_file_id: F) -> Self
+    /// * document_file_id - A valid file identifier of the file
+    /// * id - Unique identifier of the result, 1-64 bytes
+    /// * title - Title of the result
+    pub fn new<A, B, C>(document_file_id: A, id: B, title: C) -> Self
     where
-        I: Into<String>,
-        T: Into<String>,
-        F: Into<String>,
+        A: Into<String>,
+        B: Into<String>,
+        C: Into<String>,
     {
-        InlineQueryResultCachedDocument {
+        Self {
+            document_file_id: document_file_id.into(),
             id: id.into(),
             title: title.into(),
-            document_file_id: document_file_id.into(),
-            description: None,
             caption: None,
             caption_entities: None,
+            description: None,
+            input_message_content: None,
             parse_mode: None,
             reply_markup: None,
-            input_message_content: None,
         }
     }
 
-    /// Short description of the result
-    pub fn description<S: Into<String>>(mut self, description: S) -> Self {
-        self.description = Some(description.into());
-        self
-    }
-
-    /// Caption of the document to be sent, 0-1024 characters
-    pub fn caption<S: Into<String>>(mut self, caption: S) -> Self {
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - Caption of the document to be sent, 0-1024 characters
+    pub fn with_caption<T>(mut self, caption: T) -> Self
+    where
+        T: Into<String>,
+    {
         self.caption = Some(caption.into());
         self
     }
 
-    /// List of special entities that appear in the caption
+    /// Sets a new caption entities
     ///
-    /// Parse mode will be set to None when this method is called
-    pub fn caption_entities<T>(mut self, caption_entities: T) -> Self
+    /// # Arguments
+    ///
+    /// * value - List of special entities that appear in the caption
+    ///
+    /// Parse mode will be set to [`None`] when this method is called.
+    pub fn with_caption_entities<T>(mut self, caption_entities: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
@@ -216,24 +272,55 @@ impl InlineQueryResultCachedDocument {
         self
     }
 
-    /// Sets parse mode
+    /// Sets a new caption parse mode
     ///
-    /// Caption entities will be set to None when this method is called
-    pub fn parse_mode(mut self, parse_mode: ParseMode) -> Self {
+    /// # Arguments
+    ///
+    /// * value - Parse mode
+    ///
+    /// Caption entities will be set to [`None`] when this method is called.
+    pub fn with_caption_parse_mode(mut self, parse_mode: ParseMode) -> Self {
         self.parse_mode = Some(parse_mode);
         self.caption_entities = None;
         self
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new description
+    ///
+    /// # Arguments
+    ///
+    /// * value - Short description of the result
+    pub fn with_description<T>(mut self, description: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.description = Some(description.into());
         self
     }
 
-    /// Content of the message to be sent instead of the file
-    pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
+    /// Sets a new input message content
+    ///
+    /// # Arguments
+    ///
+    /// * value - Content of the message to be sent instead of the file
+    pub fn with_input_message_content<T>(mut self, input_message_content: T) -> Self
+    where
+        T: Into<InputMessageContent>,
+    {
         self.input_message_content = Some(input_message_content.into());
+        self
+    }
+
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, reply_markup: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(reply_markup.into());
         self
     }
 }
@@ -243,19 +330,19 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultDocument {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
-            id: value.id,
-            title: value.data.title.ok_or(MissingField("title"))?,
-            document_url: value.data.document_url.ok_or(MissingField("document_url"))?,
-            mime_type: value.data.mime_type.ok_or(MissingField("mime_type"))?,
             caption: value.data.caption,
             caption_entities: value.data.caption_entities,
-            parse_mode: value.data.parse_mode,
             description: value.data.description,
-            reply_markup: value.data.reply_markup,
+            document_url: value.data.document_url.ok_or(MissingField("document_url"))?,
+            id: value.id,
             input_message_content: value.data.input_message_content,
+            mime_type: value.data.mime_type.ok_or(MissingField("mime_type"))?,
+            parse_mode: value.data.parse_mode,
+            reply_markup: value.data.reply_markup,
+            thumbnail_height: value.data.thumbnail_height,
             thumbnail_url: value.data.thumbnail_url,
             thumbnail_width: value.data.thumbnail_width,
-            thumbnail_height: value.data.thumbnail_height,
+            title: value.data.title.ok_or(MissingField("title"))?,
         })
     }
 }
@@ -264,22 +351,22 @@ impl From<InlineQueryResultDocument> for RawInlineQueryResult {
     fn from(value: InlineQueryResultDocument) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                title: Some(value.title),
-                document_url: Some(value.document_url),
-                mime_type: Some(value.mime_type),
                 caption: value.caption,
                 caption_entities: value.caption_entities,
-                parse_mode: value.parse_mode,
                 description: value.description,
-                reply_markup: value.reply_markup,
+                document_url: Some(value.document_url),
                 input_message_content: value.input_message_content,
+                mime_type: Some(value.mime_type),
+                parse_mode: value.parse_mode,
+                reply_markup: value.reply_markup,
+                thumbnail_height: value.thumbnail_height,
                 thumbnail_url: value.thumbnail_url,
                 thumbnail_width: value.thumbnail_width,
-                thumbnail_height: value.thumbnail_height,
+                title: Some(value.title),
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::Document,
+            result_type: RawInlineQueryResultType::Document,
         }
     }
 }
@@ -289,15 +376,15 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedDocument {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
-            id: value.id,
-            title: value.data.title.ok_or(MissingField("title"))?,
-            document_file_id: value.data.document_file_id.ok_or(MissingField("document_file_id"))?,
-            description: value.data.description,
             caption: value.data.caption,
             caption_entities: value.data.caption_entities,
+            description: value.data.description,
+            document_file_id: value.data.document_file_id.ok_or(MissingField("document_file_id"))?,
+            id: value.id,
+            input_message_content: value.data.input_message_content,
             parse_mode: value.data.parse_mode,
             reply_markup: value.data.reply_markup,
-            input_message_content: value.data.input_message_content,
+            title: value.data.title.ok_or(MissingField("title"))?,
         })
     }
 }
@@ -306,18 +393,18 @@ impl From<InlineQueryResultCachedDocument> for RawInlineQueryResult {
     fn from(value: InlineQueryResultCachedDocument) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                title: Some(value.title),
-                document_file_id: Some(value.document_file_id),
-                description: value.description,
                 caption: value.caption,
                 caption_entities: value.caption_entities,
+                description: value.description,
+                document_file_id: Some(value.document_file_id),
+                input_message_content: value.input_message_content,
                 parse_mode: value.parse_mode,
                 reply_markup: value.reply_markup,
-                input_message_content: value.input_message_content,
+                title: Some(value.title),
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::CachedDocument,
+            result_type: RawInlineQueryResultType::CachedDocument,
         }
     }
 }

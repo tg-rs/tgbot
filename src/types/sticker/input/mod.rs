@@ -11,17 +11,17 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// A metadata of a sticker to be added to a sticker set
+/// Represents a metadata of a sticker to be added to a sticker set
 #[derive(Debug)]
 pub struct InputSticker {
     emoji_list: Vec<String>,
+    sticker: InputFile,
     keywords: Option<Vec<String>>,
     mask_position: Option<MaskPosition>,
-    sticker: InputFile,
 }
 
 impl InputSticker {
-    /// Creates a new InputStickerMetadata
+    /// Creates a new InputSticker
     ///
     /// # Arguments
     ///
@@ -35,15 +35,19 @@ impl InputSticker {
     {
         Self {
             emoji_list: emoji_list.into_iter().map(Into::into).collect(),
+            sticker: sticker.into(),
             keywords: None,
             mask_position: None,
-            sticker: sticker.into(),
         }
     }
 
-    /// List of 0-20 search keywords for the sticker with total length of up to 64 characters
+    /// Sets a new list of keywords
     ///
-    /// For “regular” and “custom_emoji” stickers only.
+    /// # Arguments
+    ///
+    /// * value - List of 0-20 search keywords for the sticker
+    ///           with total length of up to 64 characters;
+    ///           for “regular” and “custom_emoji” stickers only
     pub fn with_keywords<A, B>(mut self, value: A) -> Self
     where
         A: IntoIterator<Item = B>,
@@ -53,7 +57,12 @@ impl InputSticker {
         self
     }
 
-    /// Position where the mask should be placed on faces. For “mask” stickers only.
+    /// Sets a new mask position
+    ///
+    /// # Arguments
+    ///
+    /// * value - Position where the mask should be placed on faces;
+    ///           for “mask” stickers only
     pub fn with_mask_position(mut self, value: MaskPosition) -> Self {
         self.mask_position = Some(value);
         self
@@ -93,7 +102,7 @@ impl TryFrom<InputSticker> for Form {
     }
 }
 
-/// A collection of stickers to be added to a sticker set
+/// Represents a collection of stickers to be added to a sticker set
 #[derive(Debug, Default)]
 pub struct InputStickers {
     form: Form,
@@ -101,8 +110,12 @@ pub struct InputStickers {
 }
 
 impl InputStickers {
-    /// Add a sticker to the collection
-    pub fn with(mut self, value: InputSticker) -> Self {
+    /// Adds a sticker to the collection
+    ///
+    /// # Arguments
+    ///
+    /// * value - Sticker to add
+    pub fn add_sticker(mut self, value: InputSticker) -> Self {
         let InputSticker {
             sticker,
             emoji_list,

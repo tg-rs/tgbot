@@ -11,8 +11,8 @@ mod tests;
 /// Add a message to the list of pinned messages in a chat
 ///
 /// If the chat is not a private chat, the bot must be an administrator
-/// in the chat for this to work and must have the 'can_pin_messages'
-/// admin right in a supergroup or 'can_edit_messages' admin right in a channel.
+/// in the chat for this to work and must have the `can_pin_messages`
+/// admin right in a supergroup or `can_edit_messages` admin right in a channel.
 #[derive(Clone, Debug, Serialize)]
 pub struct PinChatMessage {
     chat_id: ChatId,
@@ -26,9 +26,12 @@ impl PinChatMessage {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * message_id - Identifier of a message to pin
-    pub fn new<C: Into<ChatId>>(chat_id: C, message_id: Integer) -> Self {
+    pub fn new<T>(chat_id: T, message_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
         PinChatMessage {
             chat_id: chat_id.into(),
             message_id,
@@ -36,11 +39,17 @@ impl PinChatMessage {
         }
     }
 
-    /// Pass True, if it is not necessary to send a notification to all chat members about the new pinned message
+    /// Sets a new value for the `disable_notification` flag
     ///
-    /// Notifications are always disabled in channels
-    pub fn disable_notification(mut self, disable_notification: bool) -> Self {
-        self.disable_notification = Some(disable_notification);
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    ///
+    /// Pass True, if it is not necessary to send a notification to all chat members about the new pinned message.
+    ///
+    /// Notifications are always disabled in channels.
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
+        self.disable_notification = Some(value);
         self
     }
 }
@@ -56,8 +65,8 @@ impl Method for PinChatMessage {
 /// Remove a message from the list of pinned messages in a chat
 ///
 /// If the chat is not a private chat, the bot must be an administrator
-/// in the chat for this to work and must have the 'can_pin_messages'
-/// admin right in a supergroup or 'can_edit_messages' admin right in a channel
+/// in the chat for this to work and must have the `can_pin_messages`
+/// admin right in a supergroup or `can_edit_messages` admin right in a channel.
 #[derive(Clone, Debug, Serialize)]
 pub struct UnpinChatMessage {
     chat_id: ChatId,
@@ -70,19 +79,26 @@ impl UnpinChatMessage {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
         UnpinChatMessage {
             chat_id: chat_id.into(),
             message_id: None,
         }
     }
 
-    /// Identifier of a message to unpin
+    /// Sets a new value for the `message_id` parameter
     ///
-    /// If not specified, the most recent pinned message (by sending date) will be unpinned
-    pub fn message_id(mut self, message_id: Integer) -> Self {
-        self.message_id = Some(message_id);
+    /// # Arguments
+    ///
+    /// * value - Identifier of a message to unpin
+    ///
+    /// If not specified, the most recent pinned message (by sending date) will be unpinned.
+    pub fn with_message_id(mut self, value: Integer) -> Self {
+        self.message_id = Some(value);
         self
     }
 }
@@ -98,8 +114,8 @@ impl Method for UnpinChatMessage {
 /// Clear the list of pinned messages in a chat
 ///
 /// If the chat is not a private chat, the bot must be an administrator
-/// in the chat for this to work and must have the 'can_pin_messages'
-/// admin right in a supergroup or 'can_edit_messages' admin right in a channel
+/// in the chat for this to work and must have the `can_pin_messages`
+/// admin right in a supergroup or `can_edit_messages` admin right in a channel.
 #[derive(Clone, Debug, Serialize)]
 pub struct UnpinAllChatMessages {
     chat_id: ChatId,
@@ -110,8 +126,11 @@ impl UnpinAllChatMessages {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
         UnpinAllChatMessages {
             chat_id: chat_id.into(),
         }

@@ -7,7 +7,6 @@ use crate::types::{
     Location,
     Message,
     MessageData,
-    MessageSender,
     SupergroupChat,
     Text,
     User,
@@ -15,111 +14,48 @@ use crate::types::{
 
 #[test]
 fn supergroup() {
-    let expected_struct = Chat::Supergroup(SupergroupChat {
-        id: 1,
-        title: String::from("Supergroup Chat"),
-        username: Some(String::from("supergroup_chat")),
-        photo: Some(ChatPhoto {
-            small_file_id: String::from("small-file-id"),
-            small_file_unique_id: String::from("small-file-unique-id"),
-            big_file_id: String::from("big-file-id"),
-            big_file_unique_id: String::from("big-file-unique-id"),
-        }),
-        description: Some(String::from("Description")),
-        invite_link: Some(String::from("example.com/join/supergroup")),
-        pinned_message: Some(Box::new(Message {
-            id: 1,
-            date: 0,
-            edit_date: None,
-            sender: MessageSender::User(User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("User"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            }),
-            chat: Chat::Supergroup(SupergroupChat {
-                id: 1,
-                title: String::from("Supergroup Chat"),
-                username: Some(String::from("supergroup_chat")),
-                photo: None,
-                description: None,
-                invite_link: None,
-                pinned_message: None,
-                sticker_set_name: None,
-                can_set_sticker_set: None,
-                permissions: None,
-                slow_mode_delay: None,
-                message_auto_delete_time: None,
-                linked_chat_id: None,
-                location: None,
-                has_protected_content: None,
-                join_to_send_messages: None,
-                join_by_request: None,
-                is_forum: None,
-                active_usernames: None,
-                has_hidden_members: None,
-                has_aggressive_anti_spam_enabled: None,
-            }),
-            author_signature: None,
-            has_protected_content: false,
-            forward: None,
-            is_automatic_forward: false,
-            is_topic_message: None,
-            message_thread_id: None,
-            reply_to: None,
-            via_bot: None,
-            media_group_id: None,
-            reply_markup: None,
-            has_media_spoiler: None,
-            data: MessageData::Text(Text {
-                data: String::from("message-text"),
-                entities: None,
-            }),
-        })),
-        sticker_set_name: Some(String::from("Sticker Set")),
-        can_set_sticker_set: Some(true),
-        permissions: Some(ChatPermissions {
-            can_send_messages: Some(true),
-            can_send_audios: None,
-            can_send_documents: None,
-            can_send_photos: None,
-            can_send_videos: None,
-            can_send_video_notes: None,
-            can_send_voice_notes: None,
-            can_send_polls: Some(true),
-            can_send_other_messages: Some(true),
-            can_add_web_page_previews: Some(true),
-            can_change_info: Some(true),
-            can_invite_users: Some(true),
-            can_pin_messages: Some(true),
-            can_manage_topics: None,
-        }),
-        slow_mode_delay: Some(10),
-        message_auto_delete_time: Some(86400),
-        linked_chat_id: Some(2),
-        location: Some(ChatLocation {
-            location: Location {
-                longitude: 0.0,
-                latitude: 1.0,
-                horizontal_accuracy: None,
-                live_period: None,
-                heading: None,
-                proximity_alert_radius: None,
-            },
-            address: String::from("Address"),
-        }),
-        has_protected_content: Some(true),
-        join_to_send_messages: Some(true),
-        join_by_request: Some(true),
-        is_forum: Some(true),
-        active_usernames: Some(vec![String::from("supergroup_chat")]),
-        has_hidden_members: Some(true),
-        has_aggressive_anti_spam_enabled: Some(true),
-    });
+    let expected_struct = Chat::Supergroup(
+        SupergroupChat::new(1, "Supergroup Chat")
+            .with_username("supergroup_chat")
+            .with_photo(ChatPhoto::new(
+                "big-file-id",
+                "big-file-unique-id",
+                "small-file-id",
+                "small-file-unique-id",
+            ))
+            .with_description("Description")
+            .with_invite_link("example.com/join/supergroup")
+            .with_pinned_message(Message::new(
+                1,
+                0,
+                SupergroupChat::new(1, "Supergroup Chat").with_username("supergroup_chat"),
+                MessageData::Text(Text::from("message-text")),
+                User::new(1, "User", false),
+            ))
+            .with_sticker_set_name("Sticker Set")
+            .with_can_set_sticker_set(true)
+            .with_permissions(
+                ChatPermissions::default()
+                    .with_can_send_messages(true)
+                    .with_can_send_polls(true)
+                    .with_can_send_other_messages(true)
+                    .with_can_add_web_page_previews(true)
+                    .with_can_change_info(true)
+                    .with_can_invite_users(true)
+                    .with_can_pin_messages(true),
+            )
+            .with_slow_mode_delay(10)
+            .with_message_auto_delete_time(86400)
+            .with_linked_chat_id(2)
+            .with_location(ChatLocation::new("Address", Location::new(1.0, 0.0)))
+            .with_has_protected_content(true)
+            .with_join_to_send_messages(true)
+            .with_join_by_request(true)
+            .with_is_forum(true)
+            .with_active_usernames(vec!["supergroup_chat"])
+            .with_has_hidden_members(true)
+            .with_has_aggressive_anti_spam_enabled(true),
+    );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
     assert_json_eq(
@@ -186,29 +122,7 @@ fn supergroup() {
         }),
     );
 
-    let expected_struct = Chat::Supergroup(SupergroupChat {
-        id: 1,
-        title: String::from("Supergroup Chat"),
-        username: None,
-        photo: None,
-        description: None,
-        invite_link: None,
-        pinned_message: None,
-        sticker_set_name: None,
-        can_set_sticker_set: None,
-        permissions: None,
-        slow_mode_delay: None,
-        message_auto_delete_time: None,
-        linked_chat_id: None,
-        location: None,
-        has_protected_content: None,
-        join_to_send_messages: None,
-        join_by_request: None,
-        is_forum: None,
-        active_usernames: None,
-        has_hidden_members: None,
-        has_aggressive_anti_spam_enabled: None,
-    });
+    let expected_struct = Chat::Supergroup(SupergroupChat::new(1, "Supergroup Chat"));
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());
     assert_json_eq(

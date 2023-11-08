@@ -5,7 +5,7 @@ use crate::types::{Chat, Integer, User};
 #[cfg(test)]
 mod tests;
 
-/// Sender of the message
+/// Represents a sender of a message
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(untagged, from = "RawMessageSender", into = "RawMessageSender")]
@@ -22,6 +22,18 @@ pub enum MessageSender {
     Unknown,
 }
 
+impl From<Chat> for MessageSender {
+    fn from(value: Chat) -> Self {
+        Self::Chat(value)
+    }
+}
+
+impl From<User> for MessageSender {
+    fn from(value: User) -> Self {
+        Self::User(value)
+    }
+}
+
 impl MessageSender {
     /// Returns a sender user
     pub fn get_user(&self) -> Option<&User> {
@@ -31,12 +43,12 @@ impl MessageSender {
         }
     }
 
-    /// Returns ID of sender user
+    /// Returns ID of a sender user
     pub fn get_user_id(&self) -> Option<Integer> {
         self.get_user().map(|user| user.id)
     }
 
-    /// Returns username of sender user
+    /// Returns username of a sender user
     pub fn get_user_username(&self) -> Option<&str> {
         self.get_user()
             .and_then(|user| user.username.as_ref())
@@ -51,12 +63,12 @@ impl MessageSender {
         }
     }
 
-    /// Returns ID of sender chat
+    /// Returns ID of a sender chat
     pub fn get_chat_id(&self) -> Option<Integer> {
         self.get_chat().map(|chat| chat.get_id())
     }
 
-    /// Returns username of sender chat
+    /// Returns username of a sender chat
     pub fn get_chat_username(&self) -> Option<&str> {
         self.get_chat().and_then(|chat| chat.get_username())
     }

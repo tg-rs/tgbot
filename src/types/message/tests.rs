@@ -1,13 +1,4 @@
-use crate::types::{
-    tests::assert_json_eq,
-    Chat,
-    EditMessageResult,
-    Message,
-    MessageData,
-    MessageSender,
-    SupergroupChat,
-    User,
-};
+use crate::types::{tests::assert_json_eq, EditMessageResult, Message, MessageData, SupergroupChat, User};
 
 #[test]
 fn get_text() {
@@ -206,56 +197,13 @@ fn via_bot() {
 
 #[test]
 fn edit_message_result() {
-    let expected_struct = EditMessageResult::Message(Message {
-        id: 1,
-        date: 0,
-        edit_date: None,
-        sender: MessageSender::User(User {
-            id: 1,
-            is_bot: false,
-            first_name: String::from("test"),
-            last_name: None,
-            username: None,
-            language_code: None,
-            is_premium: None,
-            added_to_attachment_menu: None,
-        }),
-        chat: Chat::Supergroup(SupergroupChat {
-            id: 1,
-            title: String::from("test"),
-            username: None,
-            photo: None,
-            description: None,
-            invite_link: None,
-            pinned_message: None,
-            sticker_set_name: None,
-            can_set_sticker_set: None,
-            permissions: None,
-            slow_mode_delay: None,
-            message_auto_delete_time: None,
-            linked_chat_id: None,
-            location: None,
-            has_protected_content: None,
-            join_to_send_messages: None,
-            join_by_request: None,
-            is_forum: None,
-            active_usernames: None,
-            has_hidden_members: None,
-            has_aggressive_anti_spam_enabled: None,
-        }),
-        author_signature: None,
-        has_protected_content: false,
-        forward: None,
-        is_automatic_forward: false,
-        is_topic_message: None,
-        message_thread_id: None,
-        reply_to: None,
-        via_bot: None,
-        media_group_id: None,
-        reply_markup: None,
-        has_media_spoiler: None,
-        data: MessageData::Unknown(serde_json::json!({})),
-    });
+    let expected_struct = EditMessageResult::Message(Message::new(
+        1,
+        0,
+        SupergroupChat::new(1, "test"),
+        MessageData::Unknown(serde_json::json!({})),
+        User::new(1, "test", false),
+    ));
     let expected_value = serde_json::json!({
         "message_id": 1,
         "date": 0,

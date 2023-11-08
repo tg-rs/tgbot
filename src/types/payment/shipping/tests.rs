@@ -6,14 +6,7 @@ use crate::{
 #[test]
 fn shipping_address() {
     assert_json_eq(
-        ShippingAddress {
-            country_code: String::from("RU"),
-            state: String::from("Chechen Republic"),
-            city: String::from("Gudermes"),
-            street_line1: String::from("Nuradilov st., 12"),
-            street_line2: String::from(""),
-            post_code: String::from("366200"),
-        },
+        ShippingAddress::new("Gudermes", "RU", "366200", "Chechen Republic", "Nuradilov st., 12", ""),
         serde_json::json!({
             "country_code": "RU",
             "state": "Chechen Republic",
@@ -45,33 +38,17 @@ fn shipping_option() {
 #[test]
 fn shipping_query() {
     assert_json_eq(
-        ShippingQuery {
-            id: String::from("query-id"),
-            from: User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("test"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            invoice_payload: String::from("payload"),
-            shipping_address: ShippingAddress {
-                country_code: String::from("RU"),
-                state: String::from("Chechen Republic"),
-                city: String::from("Gudermes"),
-                street_line1: String::from("Nuradilov st., 12"),
-                street_line2: String::from(""),
-                post_code: String::from("366200"),
-            },
-        },
+        ShippingQuery::new(
+            "query-id",
+            User::new(1, "User", false),
+            "payload",
+            ShippingAddress::new("Gudermes", "RU", "366200", "Chechen Republic", "Nuradilov st., 12", ""),
+        ),
         serde_json::json!({
             "id": "query-id",
             "from": {
                 "id": 1,
-                "first_name": "test",
+                "first_name": "User",
                 "is_bot": false
             },
             "invoice_payload": "payload",

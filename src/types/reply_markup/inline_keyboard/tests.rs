@@ -22,24 +22,19 @@ fn inline_keyboard() {
     };
     assert_json_eq(
         ReplyMarkup::from(vec![vec![
-            InlineKeyboardButton::with_url("url", "tg://user?id=1"),
-            InlineKeyboardButton::with_web_app(
-                "web app",
-                WebAppInfo {
-                    url: String::from("https://example.com"),
-                },
-            ),
-            InlineKeyboardButton::with_callback_data("cd", "cd"),
-            InlineKeyboardButton::with_callback_data_struct("cd", &callback_data).unwrap(),
-            InlineKeyboardButton::with_switch_inline_query("siq", "siq"),
-            InlineKeyboardButton::with_switch_inline_query_current_chat("siq_cc", "siq_cc"),
-            InlineKeyboardButton::with_switch_inline_query_chosen_chat(
+            InlineKeyboardButton::for_url("url", "tg://user?id=1"),
+            InlineKeyboardButton::for_web_app("web app", WebAppInfo::from("https://example.com")),
+            InlineKeyboardButton::for_callback_data("cd", "cd"),
+            InlineKeyboardButton::for_callback_data_struct("cd", &callback_data).unwrap(),
+            InlineKeyboardButton::for_switch_inline_query("siq", "siq"),
+            InlineKeyboardButton::for_switch_inline_query_current_chat("siq_cc", "siq_cc"),
+            InlineKeyboardButton::for_switch_inline_query_chosen_chat(
                 "siq_chc",
                 SwitchInlineQueryChosenChat::new("query"),
             ),
-            InlineKeyboardButton::with_callback_game("cg"),
-            InlineKeyboardButton::with_pay("pay"),
-            InlineKeyboardButton::with_login_url("login url", "http://example.com"),
+            InlineKeyboardButton::for_callback_game("cg"),
+            InlineKeyboardButton::for_pay("pay"),
+            InlineKeyboardButton::for_login_url("login url", "http://example.com"),
         ]]),
         serde_json::json!({
             "inline_keyboard": [
@@ -64,7 +59,7 @@ fn inline_keyboard() {
 
 #[test]
 fn inline_keyboard_markup_convert() {
-    let a = vec![vec![InlineKeyboardButton::with_url("url", "tg://user?id=1")]];
+    let a = vec![vec![InlineKeyboardButton::for_url("url", "tg://user?id=1")]];
     let b: Vec<Vec<InlineKeyboardButton>> = InlineKeyboardMarkup::from(a.clone()).into();
     assert_eq!(a.len(), b.len())
 }
@@ -73,7 +68,7 @@ fn inline_keyboard_markup_convert() {
 fn login_url() {
     let mut url = LoginUrl::from("url");
     assert_json_eq(url.clone(), serde_json::json!({"url": "url"}));
-    url = url.forward_text("forward text");
+    url = url.with_forward_text("forward text");
     assert_json_eq(
         url.clone(),
         serde_json::json!({
@@ -81,7 +76,7 @@ fn login_url() {
             "forward_text": "forward text"
         }),
     );
-    url = url.bot_username("bot_username");
+    url = url.with_bot_username("bot_username");
     assert_json_eq(
         url.clone(),
         serde_json::json!({
@@ -91,7 +86,7 @@ fn login_url() {
         }),
     );
 
-    url = url.request_write_access(true);
+    url = url.with_request_write_access(true);
     assert_json_eq(
         url,
         serde_json::json!({
@@ -114,10 +109,10 @@ fn switch_inline_query_chosen_chat() {
     );
     assert_json_eq(
         expected_struct
-            .allow_bot_chats(true)
-            .allow_channel_chats(true)
-            .allow_group_chats(true)
-            .allow_user_chats(true),
+            .with_allow_bot_chats(true)
+            .with_allow_channel_chats(true)
+            .with_allow_group_chats(true)
+            .with_allow_user_chats(true),
         serde_json::json!({
             "query": "query",
             "allow_bot_chats": true,

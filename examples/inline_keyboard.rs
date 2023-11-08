@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use tgbot::{
     api::Client,
     handler::{LongPoll, UpdateHandler},
-    types::{InlineKeyboardButton, Message, SendMessage, Update, UpdateKind},
+    types::{InlineKeyboardButton, Message, SendMessage, Update, UpdateType},
 };
 
 struct Handler {
@@ -26,22 +26,22 @@ impl CallbackData {
 }
 
 async fn handle_update(client: &Client, update: Update) -> Option<Message> {
-    match update.kind {
-        UpdateKind::Message(message) => {
+    match update.update_type {
+        UpdateType::Message(message) => {
             let chat_id = message.chat.get_id();
             if let Some(commands) = message.get_text().and_then(|text| text.get_bot_commands()) {
                 let command = &commands[0];
                 if command.command == "/start" {
                     let callback_data = CallbackData::new("hello!");
-                    let method = SendMessage::new(chat_id, "keyboard example").reply_markup(vec![vec![
+                    let method = SendMessage::new(chat_id, "keyboard example").with_reply_markup([[
                         // You also can use with_callback_data in order to pass a plain string
-                        InlineKeyboardButton::with_callback_data_struct("button", &callback_data).unwrap(),
+                        InlineKeyboardButton::for_callback_data_struct("button", &callback_data).unwrap(),
                     ]]);
                     return Some(client.execute(method).await.unwrap());
                 }
             }
         }
-        UpdateKind::CallbackQuery(query) => {
+        UpdateType::CallbackQuery(query) => {
             if let Some(ref message) = query.message {
                 let chat_id = message.chat.get_id();
                 // or query.data if you have passed a plain string

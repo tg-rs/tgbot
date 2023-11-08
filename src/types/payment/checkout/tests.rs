@@ -5,35 +5,17 @@ use crate::{
 
 #[test]
 fn pre_checkout_query() {
+    let expected_struct = PreCheckoutQuery::new("GEL", User::new(1, "User", false), "query id", "invoice payload", 100);
     assert_json_eq(
-        PreCheckoutQuery {
-            id: String::from("query id"),
-            from: User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("test"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            currency: String::from("GEL"),
-            total_amount: 100,
-            invoice_payload: String::from("invoice payload"),
-            shipping_option_id: Some(String::from("option id")),
-            order_info: Some(OrderInfo {
-                name: None,
-                phone_number: None,
-                email: None,
-                shipping_address: None,
-            }),
-        },
+        expected_struct
+            .clone()
+            .with_shipping_option_id("option id")
+            .with_order_info(OrderInfo::default()),
         serde_json::json!({
             "id": "query id",
             "from": {
                 "id": 1,
-                "first_name": "test",
+                "first_name": "User",
                 "is_bot": false
             },
             "currency": "GEL",
@@ -44,29 +26,12 @@ fn pre_checkout_query() {
         }),
     );
     assert_json_eq(
-        PreCheckoutQuery {
-            id: String::from("query id"),
-            from: User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("test"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            currency: String::from("GEL"),
-            total_amount: 100,
-            invoice_payload: String::from("invoice payload"),
-            shipping_option_id: None,
-            order_info: None,
-        },
+        expected_struct,
         serde_json::json!({
             "id": "query id",
             "from": {
                 "id": 1,
-                "first_name": "test",
+                "first_name": "User",
                 "is_bot": false
             },
             "currency": "GEL",

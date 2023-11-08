@@ -10,20 +10,20 @@ use crate::types::{
 
 #[test]
 fn inline_query_result_gif() {
-    let result = InlineQueryResultGif::new("id", "url", "thumb-url");
+    let result = InlineQueryResultGif::new("url", "id", "thumb-url");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .thumbnail_mime_type("video/mp4")
-                .gif_width(200)
-                .gif_height(300)
-                .gif_duration(400)
-                .title("title")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_gif_width(200)
+                .with_gif_height(300)
+                .with_gif_duration(400)
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_thumbnail_mime_type("video/mp4")
+                .with_title("title"),
         ),
         serde_json::json!({
             "type": "gif",
@@ -54,16 +54,16 @@ fn inline_query_result_gif() {
 
 #[test]
 fn inline_query_result_cached_gif() {
-    let result = InlineQueryResultCachedGif::new("id", "file-id");
+    let result = InlineQueryResultCachedGif::new("file-id", "id");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .title("title")
-                .caption("caption")
-                .parse_mode(ParseMode::Markdown)
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_caption("caption")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_title("title")
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "gif",

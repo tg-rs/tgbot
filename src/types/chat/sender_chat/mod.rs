@@ -24,9 +24,12 @@ impl BanChatSenderChat {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target
+    /// * chat_id - Unique identifier of the target chat
     /// * sender_chat_id - Unique identifier of the target sender chat
-    pub fn new<C: Into<ChatId>>(chat_id: C, sender_chat_id: Integer) -> Self {
+    pub fn new<T>(chat_id: T, sender_chat_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
         Self {
             chat_id: chat_id.into(),
             sender_chat_id,
@@ -57,9 +60,12 @@ impl UnbanChatSenderChat {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target
+    /// * chat_id - Unique identifier of the target chat
     /// * sender_chat_id - Unique identifier of the target sender chat
-    pub fn new<C: Into<ChatId>>(chat_id: C, sender_chat_id: Integer) -> Self {
+    pub fn new<T>(chat_id: T, sender_chat_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
         Self {
             chat_id: chat_id.into(),
             sender_chat_id,

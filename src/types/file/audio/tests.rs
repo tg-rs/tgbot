@@ -1,28 +1,28 @@
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, Audio, ForceReply, InputFile, ParseMode, PhotoSize, SendAudio, TextEntity},
+    types::{
+        tests::assert_json_eq,
+        Audio,
+        ForceReply,
+        InputFile,
+        ParseMode,
+        PhotoSize,
+        SendAudio,
+        SendAudioError,
+        TextEntity,
+    },
 };
 
 #[test]
 fn audio() {
     assert_json_eq(
-        Audio {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            duration: 243,
-            performer: Some(String::from("Performer")),
-            title: Some(String::from("Title")),
-            file_name: Some(String::from("File Name")),
-            mime_type: Some(String::from("audio/mpeg")),
-            file_size: Some(10240),
-            thumbnail: Some(PhotoSize {
-                file_id: String::from("thumb-file-id"),
-                file_unique_id: String::from("thumb-unique-file-id"),
-                width: 24,
-                height: 24,
-                file_size: Some(1024),
-            }),
-        },
+        Audio::new(243, "file-id", "file-unique-id")
+            .with_file_name("File Name")
+            .with_file_size(10240)
+            .with_mime_type("audio/mpeg")
+            .with_performer("Performer")
+            .with_title("Title")
+            .with_thumbnail(PhotoSize::new("thumb-file-id", "thumb-unique-file-id", 24, 24).with_file_size(1024)),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -42,17 +42,7 @@ fn audio() {
         }),
     );
     assert_json_eq(
-        Audio {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            duration: 243,
-            performer: None,
-            title: None,
-            file_name: None,
-            mime_type: None,
-            file_size: None,
-            thumbnail: None,
-        },
+        Audio::new(243, "file-id", "file-unique-id"),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -84,7 +74,7 @@ fn send_audio() {
                 ("duration", 100.into()),
                 ("performer", "Performer".into()),
                 ("title", "Title".into()),
-                ("thumbnail", InputFile::file_id("thumb-id").into()),
+                ("thumbnail", InputFile::url("https://google.com/favicon.ico").into()),
                 ("disable_notification", true.into()),
                 ("protect_content", true.into()),
                 ("reply_to_message_id", 1.into()),
@@ -97,24 +87,33 @@ fn send_audio() {
             ]),
         ),
         SendAudio::new(1, InputFile::file_id("file-id"))
-            .caption("Caption")
-            .parse_mode(ParseMode::Markdown)
-            .duration(100)
-            .performer("Performer")
-            .title("Title")
-            .thumbnail(InputFile::file_id("thumb-id"))
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
+            .with_allow_sending_without_reply(true)
+            .with_caption("Caption")
+            .with_disable_notification(true)
+            .with_duration(100)
+            .with_message_thread_id(1)
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_performer("Performer")
+            .with_protect_content(true)
+            .with_title("Title")
+            .with_thumbnail(InputFile::url("https://google.com/favicon.ico"))
             .unwrap()
-            .message_thread_id(1),
+            .with_reply_markup(ForceReply::new(true))
+            .unwrap()
+            .with_reply_to_message_id(1),
     );
 }
 
 #[test]
-fn send_audio_caption_entities_vs_parse_mode() {
+fn send_audio_with_thumbnail() {
+    let err = SendAudio::new(1, InputFile::file_id("file-id"))
+        .with_thumbnail(InputFile::file_id("thumb-id"))
+        .unwrap_err();
+    assert!(matches!(err, SendAudioError::InvalidThumbnail));
+}
+
+#[test]
+fn send_audio_entities_vs_parse_mode() {
     assert_payload_eq(
         Payload::form(
             "sendAudio",
@@ -125,9 +124,9 @@ fn send_audio_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendAudio::new(1, InputFile::file_id("file-id"))
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap()
-            .parse_mode(ParseMode::Markdown),
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
 
     assert_payload_eq(
@@ -140,8 +139,8 @@ fn send_audio_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendAudio::new(1, InputFile::file_id("file-id"))
-            .parse_mode(ParseMode::Markdown)
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap(),
     );
 }

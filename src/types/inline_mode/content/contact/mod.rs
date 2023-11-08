@@ -5,11 +5,11 @@ use crate::types::Contact;
 #[cfg(test)]
 mod tests;
 
-/// Contact message to be sent as the result of an inline query
+/// Represents a contact message to be sent as the result of an inline query
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentContact {
-    phone_number: String,
     first_name: String,
+    phone_number: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     last_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,14 +17,18 @@ pub struct InputMessageContentContact {
 }
 
 impl InputMessageContentContact {
-    /// Creates a new InputMessageContentContact with empty optional parameters
+    /// Creates a new InputMessageContentContact
     ///
     /// # Arguments
     ///
-    /// * phone_numer - Contact's phone number
     /// * first_name - Contact's first name
-    pub fn new<S: Into<String>>(phone_number: S, first_name: S) -> Self {
-        InputMessageContentContact {
+    /// * phone_numer - Contact's phone number
+    pub fn new<A, B>(first_name: A, phone_number: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
             phone_number: phone_number.into(),
             first_name: first_name.into(),
             last_name: None,
@@ -32,14 +36,28 @@ impl InputMessageContentContact {
         }
     }
 
-    /// Contact's last name
-    pub fn last_name<S: Into<String>>(mut self, last_name: S) -> Self {
+    /// Sets a new last name
+    ///
+    /// # Arguments
+    ///
+    /// * value - Last name
+    pub fn with_last_name<T>(mut self, last_name: T) -> Self
+    where
+        T: Into<String>,
+    {
         self.last_name = Some(last_name.into());
         self
     }
 
-    /// Additional data about the contact in the form of a vCard, 0-2048 bytes
-    pub fn vcard<S: Into<String>>(mut self, vcard: S) -> Self {
+    /// Sets a new vCard
+    ///
+    /// # Arguments
+    ///
+    /// * value - Additional data about the contact in the form of a vCard; 0-2048 bytes
+    pub fn with_vcard<T>(mut self, vcard: T) -> Self
+    where
+        T: Into<String>,
+    {
         self.vcard = Some(vcard.into());
         self
     }
@@ -48,8 +66,8 @@ impl InputMessageContentContact {
 impl From<Contact> for InputMessageContentContact {
     fn from(value: Contact) -> Self {
         Self {
-            phone_number: value.phone_number,
             first_name: value.first_name,
+            phone_number: value.phone_number,
             last_name: value.last_name,
             vcard: value.vcard,
         }

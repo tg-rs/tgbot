@@ -10,9 +10,8 @@ pub use self::{
     forum::*,
     game::*,
     inline_mode::*,
-    input_media::*,
     location::*,
-    media_group::*,
+    media::*,
     menu::*,
     message::*,
     passport::*,
@@ -22,7 +21,6 @@ pub use self::{
     reply_markup::*,
     response::*,
     sticker::*,
-    story::*,
     text::*,
     update::*,
     user::*,
@@ -40,9 +38,8 @@ mod file;
 mod forum;
 mod game;
 mod inline_mode;
-mod input_media;
 mod location;
-mod media_group;
+mod media;
 mod menu;
 mod message;
 mod passport;
@@ -52,7 +49,6 @@ mod primitive;
 mod reply_markup;
 mod response;
 mod sticker;
-mod story;
 mod text;
 mod update;
 mod user;

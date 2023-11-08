@@ -1,25 +1,26 @@
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, Document, ForceReply, InputFile, ParseMode, PhotoSize, SendDocument, TextEntity},
+    types::{
+        tests::assert_json_eq,
+        Document,
+        ForceReply,
+        InputFile,
+        ParseMode,
+        PhotoSize,
+        SendDocument,
+        SendDocumentError,
+        TextEntity,
+    },
 };
 
 #[test]
 fn document() {
     assert_json_eq(
-        Document {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            thumbnail: Some(PhotoSize {
-                file_id: String::from("thumb-file-id"),
-                file_unique_id: String::from("thumb-file-unique-id"),
-                width: 24,
-                height: 24,
-                file_size: Some(1024),
-            }),
-            file_name: Some(String::from("File Name")),
-            mime_type: Some(String::from("image/jpeg")),
-            file_size: Some(10240),
-        },
+        Document::new("file-id", "file-unique-id")
+            .with_thumbnail(PhotoSize::new("thumb-file-id", "thumb-file-unique-id", 24, 24).with_file_size(1024))
+            .with_file_name("File Name")
+            .with_mime_type("image/jpeg")
+            .with_file_size(10240),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -36,14 +37,7 @@ fn document() {
         }),
     );
     assert_json_eq(
-        Document {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            thumbnail: None,
-            file_name: None,
-            mime_type: None,
-            file_size: None,
-        },
+        Document::new("file-id", "file-unique-id"),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id"
@@ -69,7 +63,7 @@ fn send_document() {
             Form::from([
                 ("chat_id", FormValue::from(1)),
                 ("document", InputFile::file_id("file-id").into()),
-                ("thumbnail", InputFile::file_id("file-id").into()),
+                ("thumbnail", InputFile::url("https://example.com/image.jpg").into()),
                 ("caption", "Caption".into()),
                 ("disable_content_type_detection", true.into()),
                 ("parse_mode", ParseMode::Markdown.into()),
@@ -85,22 +79,31 @@ fn send_document() {
             ]),
         ),
         SendDocument::new(1, InputFile::file_id("file-id"))
-            .thumbnail(InputFile::file_id("file-id"))
-            .caption("Caption")
-            .parse_mode(ParseMode::Markdown)
-            .disable_content_type_detection(true)
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
+            .with_allow_sending_without_reply(true)
+            .with_caption("Caption")
+            .with_disable_content_type_detection(true)
+            .with_disable_notification(true)
+            .with_message_thread_id(1)
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_protect_content(true)
+            .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .message_thread_id(1),
+            .with_reply_to_message_id(1)
+            .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
+            .unwrap(),
     );
 }
 
 #[test]
-fn send_document_caption_entities_vs_parse_mode() {
+fn send_document_with_thumbnail() {
+    let err = SendDocument::new(1, InputFile::file_id("file-id"))
+        .with_thumbnail(InputFile::file_id("file-id"))
+        .unwrap_err();
+    assert!(matches!(err, SendDocumentError::InvalidThumbnail));
+}
+
+#[test]
+fn send_document_entities_vs_parse_mode() {
     assert_payload_eq(
         Payload::form(
             "sendDocument",
@@ -111,9 +114,9 @@ fn send_document_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendDocument::new(1, InputFile::file_id("file-id"))
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap()
-            .parse_mode(ParseMode::Markdown),
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
 
     assert_payload_eq(
@@ -126,8 +129,8 @@ fn send_document_caption_entities_vs_parse_mode() {
             ]),
         ),
         SendDocument::new(1, InputFile::file_id("file-id"))
-            .parse_mode(ParseMode::Markdown)
-            .caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
             .unwrap(),
     );
 }

@@ -11,9 +11,10 @@ mod tests;
 /// Delete a group sticker set from a supergroup
 ///
 /// The bot must be an administrator in the chat
-/// for this to work and must have the appropriate admin rights
-/// Use the field can_set_sticker_set optionally returned
-/// in getChat requests to check if the bot can use this method
+/// for this to work and must have the appropriate admin rights.
+///
+/// Use the field `can_set_sticker_set` optionally returned
+/// in `GetChat` requests to check if the bot can use this method.
 #[derive(Clone, Debug, Serialize)]
 pub struct DeleteChatStickerSet {
     chat_id: ChatId,
@@ -24,8 +25,11 @@ impl DeleteChatStickerSet {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
         DeleteChatStickerSet {
             chat_id: chat_id.into(),
         }
@@ -43,10 +47,10 @@ impl Method for DeleteChatStickerSet {
 /// Set a new group sticker set for a supergroup
 ///
 /// The bot must be an administrator in the chat for this to work
-/// and must have the appropriate admin rights
+/// and must have the appropriate admin rights.
 ///
-/// Use the field can_set_sticker_set optionally returned in getChat requests
-/// to check if the bot can use this method
+/// Use the field `can_set_sticker_set` optionally returned in `GetChat` requests
+/// to check if the bot can use this method.
 #[derive(Clone, Debug, Serialize)]
 pub struct SetChatStickerSet {
     chat_id: ChatId,
@@ -58,9 +62,13 @@ impl SetChatStickerSet {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * sticker_set_name - Name of the sticker set to be set as the group sticker set
-    pub fn new<C: Into<ChatId>, S: Into<String>>(chat_id: C, sticker_set_name: S) -> Self {
+    pub fn new<A, B>(chat_id: A, sticker_set_name: B) -> Self
+    where
+        A: Into<ChatId>,
+        B: Into<String>,
+    {
         SetChatStickerSet {
             chat_id: chat_id.into(),
             sticker_set_name: sticker_set_name.into(),

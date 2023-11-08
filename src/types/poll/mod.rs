@@ -20,8 +20,8 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Contains information about a poll
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+/// Represents a poll
+#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum Poll {
@@ -31,75 +31,291 @@ pub enum Poll {
     Quiz(Quiz),
 }
 
-/// Kind of a poll
+/// Represents a type of a poll
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "lowercase")]
-pub enum PollKind {
+pub enum PollType {
     /// A quiz
     Quiz,
     /// A regular poll
     Regular,
 }
 
-/// A regular poll
+/// Represents a regular poll
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct RegularPoll {
-    /// Unique poll identifier
+    /// Whether the poll allows multiple answers
+    pub allows_multiple_answers: bool,
+    /// Unique identifier
     pub id: String,
-    /// Poll question, 1-255 characters
-    pub question: String,
-    /// List of poll options
+    /// Whether the poll is anonymous
+    pub is_anonymous: bool,
+    /// Whether the poll is closed
+    pub is_closed: bool,
+    /// List of options
     pub options: Vec<PollOption>,
+    /// Question; 1-255 characters
+    pub question: String,
     /// Total number of users that voted in the poll
     pub total_voter_count: Integer,
-    /// True, if the poll is closed
-    pub is_closed: bool,
-    /// True, if the poll is anonymous
-    pub is_anonymous: bool,
-    /// True, if the poll allows multiple answers
-    pub allows_multiple_answers: bool,
-    /// Amount of time in seconds the poll will be active after creation
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub open_period: Option<Integer>,
     /// Point in time (Unix timestamp) when the poll will be automatically closed
     #[serde(skip_serializing_if = "Option::is_none")]
     pub close_date: Option<Integer>,
+    /// Amount of time in seconds the poll will be active after creation
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub open_period: Option<Integer>,
 }
 
-/// A quiz
+impl RegularPoll {
+    /// Creates a new RegularPoll
+    ///
+    /// # Arguments
+    ///
+    /// * id - Unique identifier
+    /// * question - Question; 1-255 characters
+    pub fn new<A, B>(id: A, question: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            allows_multiple_answers: false,
+            id: id.into(),
+            is_anonymous: false,
+            is_closed: false,
+            options: vec![],
+            question: question.into(),
+            total_voter_count: 0,
+            close_date: None,
+            open_period: None,
+        }
+    }
+
+    /// Sets a new value for the `allows_multiple_answers` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the poll allows multiple answers
+    pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
+        self.allows_multiple_answers = value;
+        self
+    }
+
+    /// Sets a new close date
+    ///
+    /// # Arguments
+    ///
+    /// * value - Point in time (Unix timestamp) when the poll will be automatically closed
+    pub fn with_close_date(mut self, value: Integer) -> Self {
+        self.close_date = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_anonymous` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the quiz is anonymous
+    pub fn with_is_anonymous(mut self, value: bool) -> Self {
+        self.is_anonymous = value;
+        self
+    }
+
+    /// Sets a new value for the `is_closed` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the quiz is closed
+    pub fn with_is_closed(mut self, value: bool) -> Self {
+        self.is_closed = value;
+        self
+    }
+
+    /// Sets a new open period
+    ///
+    /// # Arguments
+    ///
+    /// * value - Amount of time in seconds the poll will be active after creation
+    pub fn with_open_period(mut self, value: Integer) -> Self {
+        self.open_period = Some(value);
+        self
+    }
+
+    /// Sets a new list of option
+    ///
+    /// # Arguments
+    ///
+    /// * value - Options
+    pub fn with_options<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = PollOption>,
+    {
+        self.options = value.into_iter().collect();
+        self
+    }
+
+    /// Sets a new correct total voter count
+    ///
+    /// # Arguments
+    ///
+    /// * value - Total number of users that answered to the quiz
+    pub fn with_total_voter_count(mut self, value: Integer) -> Self {
+        self.total_voter_count = value;
+        self
+    }
+}
+
+/// Represents a quiz
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Quiz {
-    /// Unique quiz identifier
-    pub id: String,
-    /// Quiz question, 1-255 characters
-    pub question: String,
-    /// List of quiz options
-    pub options: Vec<PollOption>,
-    /// Total number of users that answered to the quiz
-    pub total_voter_count: Integer,
-    /// True, if the quiz is closed
-    pub is_closed: bool,
-    /// True, if the quiz is anonymous
-    pub is_anonymous: bool,
     /// 0-based identifier of the correct answer option
     ///
     /// Available only for a closed quiz,
     /// or was sent (not forwarded) by the bot or
-    /// to the private chat with the bot
+    /// to the private chat with the bot.
     pub correct_option_id: Integer,
-    /// Text that is shown when a user chooses an incorrect answer or
-    /// taps on the lamp icon in a quiz-style poll, 0-200 characters
-    #[serde(flatten)]
-    #[serde(deserialize_with = "QuizExplanation::deserialize_value")]
-    #[serde(serialize_with = "QuizExplanation::serialize_value")]
+    /// Unique identifier
+    pub id: String,
+    /// Whether the quiz is anonymous
+    pub is_anonymous: bool,
+    /// Whether the quiz is closed
+    pub is_closed: bool,
+    /// List of options
+    pub options: Vec<PollOption>,
+    /// Question; 1-255 characters
+    pub question: String,
+    /// Total number of users that answered to the quiz
+    pub total_voter_count: Integer,
+    /// Point in time (Unix timestamp) when the quiz will be automatically closed
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub close_date: Option<Integer>,
+    /// Text that is shown when a user chooses an incorrect answer or
+    /// taps on the lamp icon; 0-200 characters
+    #[serde(
+        flatten,
+        deserialize_with = "QuizExplanation::deserialize_value",
+        serialize_with = "QuizExplanation::serialize_value",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub explanation: Option<Text>,
     /// Amount of time in seconds the quiz will be active after creation
     #[serde(skip_serializing_if = "Option::is_none")]
     pub open_period: Option<Integer>,
-    /// Point in time (Unix timestamp) when the quiz will be automatically closed
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub close_date: Option<Integer>,
+}
+
+impl Quiz {
+    /// Creates a new Quiz
+    ///
+    /// # Arguments
+    ///
+    /// * id - Unique identifier
+    /// * question - Question; 1-255 characters
+    pub fn new<A, B>(id: A, question: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            correct_option_id: 0,
+            id: id.into(),
+            is_anonymous: false,
+            is_closed: false,
+            options: vec![],
+            question: question.into(),
+            total_voter_count: 0,
+            close_date: None,
+            explanation: None,
+            open_period: None,
+        }
+    }
+
+    /// Sets a new close date
+    ///
+    /// # Arguments
+    ///
+    /// * value - Point in time (Unix timestamp) when the quiz will be automatically closed
+    pub fn with_close_date(mut self, value: Integer) -> Self {
+        self.close_date = Some(value);
+        self
+    }
+
+    /// Sets a new correct option ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - 0-based identifier of the correct answer option
+    pub fn with_correct_option_id(mut self, value: Integer) -> Self {
+        self.correct_option_id = value;
+        self
+    }
+
+    /// Sets a new explanation
+    ///
+    /// # Arguments
+    ///
+    /// * value Text that is shown when a user chooses
+    ///         an incorrect answer or
+    ///         taps on the lamp icon; 0-200 characters
+    pub fn with_explanation<T>(mut self, value: T) -> Self
+    where
+        T: Into<Text>,
+    {
+        self.explanation = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `is_anonymous` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the quiz is anonymous
+    pub fn with_is_anonymous(mut self, value: bool) -> Self {
+        self.is_anonymous = value;
+        self
+    }
+
+    /// Sets a new value for the `is_closed` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the quiz is closed
+    pub fn with_is_closed(mut self, value: bool) -> Self {
+        self.is_closed = value;
+        self
+    }
+
+    /// Sets a new open period
+    ///
+    /// # Arguments
+    ///
+    /// * value - Amount of time in seconds the quiz will be active after creation
+    pub fn with_open_period(mut self, value: Integer) -> Self {
+        self.open_period = Some(value);
+        self
+    }
+
+    /// Sets a new list of option
+    ///
+    /// # Arguments
+    ///
+    /// * value - Options
+    pub fn with_options<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = PollOption>,
+    {
+        self.options = value.into_iter().collect();
+        self
+    }
+
+    /// Sets a new correct total voter count
+    ///
+    /// # Arguments
+    ///
+    /// * value - Total number of users that answered to the quiz
+    pub fn with_total_voter_count(mut self, value: Integer) -> Self {
+        self.total_voter_count = value;
+        self
+    }
 }
 
 #[derive(Deserialize, Serialize)]
@@ -134,31 +350,71 @@ impl QuizExplanation {
     }
 }
 
-/// Contains information about one answer option in a poll
+/// Represents an answer option in a poll
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PollOption {
-    /// Option text, 1-100 characters
+    /// Option text; 1-100 characters
     pub text: String,
     /// Number of users that voted for this option
     pub voter_count: Integer,
 }
 
-/// An answer of a user in a non-anonymous poll
+impl PollOption {
+    /// Creates a new PollOption
+    ///
+    /// # Arguments
+    ///
+    /// * text - Option text; 1-100 characters
+    /// * voter_count - Number of users that voted for this option
+    pub fn new<T>(text: T, voter_count: Integer) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            text: text.into(),
+            voter_count,
+        }
+    }
+}
+
+/// Represents an answer of a user in a non-anonymous poll
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PollAnswer {
-    /// Unique poll identifier
-    pub poll_id: String,
     /// 0-based identifiers of answer options, chosen by the user
     ///
     /// May be empty if the user retracted their vote.
     pub option_ids: Vec<Integer>,
+    /// Unique poll identifier
+    pub poll_id: String,
     /// The chat or the user that changed answer to the poll
     #[serde(flatten)]
     pub voter: PollAnswerVoter,
 }
 
+impl PollAnswer {
+    /// Creates a new PollAnswer
+    ///
+    /// # Arguments
+    ///
+    /// * option_ids - 0-based identifiers of answer options, chosen by the user
+    /// * poll_id - Unique poll identifier
+    /// * voter - The chat or the user that changed answer to the poll
+    pub fn new<A, B, C>(option_ids: A, poll_id: B, voter: C) -> Self
+    where
+        A: IntoIterator<Item = Integer>,
+        B: Into<String>,
+        C: Into<PollAnswerVoter>,
+    {
+        Self {
+            option_ids: option_ids.into_iter().collect(),
+            poll_id: poll_id.into(),
+            voter: voter.into(),
+        }
+    }
+}
+
 /// Represents the chat or the user that changed answer to the poll
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PollAnswerVoter {
     /// The chat that changed the answer to the poll, if the voter is anonymous
@@ -170,70 +426,74 @@ pub enum PollAnswerVoter {
 #[derive(Clone, Debug, Serialize)]
 struct PollParameters {
     chat_id: ChatId,
-    question: String,
     options: Vec<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    is_anonymous: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(rename = "type")]
-    kind: Option<PollKind>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    allows_multiple_answers: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    correct_option_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    explanation: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    explanation_parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    explanation_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    open_period: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    close_date: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    is_closed: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
+    question: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<ReplyMarkup>,
+    allows_multiple_answers: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    close_date: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    correct_option_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    explanation: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    explanation_entities: Option<TextEntities>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    explanation_parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    is_anonymous: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    is_closed: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    open_period: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "type")]
+    poll_type: Option<PollType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_markup: Option<ReplyMarkup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_to_message_id: Option<Integer>,
 }
 
 impl PollParameters {
-    fn new(chat_id: ChatId, question: String, kind: PollKind) -> Self {
+    fn new<A, B>(chat_id: ChatId, question: String, poll_type: PollType, options: A) -> Self
+    where
+        A: IntoIterator<Item = B>,
+        B: Into<String>,
+    {
         Self {
             chat_id,
+            options: options.into_iter().map(Into::into).collect(),
             question,
-            options: Vec::new(),
-            is_anonymous: None,
-            kind: Some(kind),
-            allows_multiple_answers: None,
-            correct_option_id: None,
-            explanation: None,
-            explanation_parse_mode: None,
-            explanation_entities: None,
-            open_period: None,
-            close_date: None,
-            is_closed: None,
-            disable_notification: None,
-            protect_content: None,
-            reply_to_message_id: None,
             allow_sending_without_reply: None,
-            reply_markup: None,
+            allows_multiple_answers: None,
+            close_date: None,
+            correct_option_id: None,
+            disable_notification: None,
+            explanation: None,
+            explanation_entities: None,
+            explanation_parse_mode: None,
+            is_anonymous: None,
+            is_closed: None,
             message_thread_id: None,
+            open_period: None,
+            poll_type: Some(poll_type),
+            protect_content: None,
+            reply_markup: None,
+            reply_to_message_id: None,
         }
     }
 }
 
-/// Use this method to send a quiz
+/// Sends a quiz
 ///
 /// On success, the sent Message is returned
 #[derive(Clone, Debug, Serialize)]
@@ -247,135 +507,176 @@ impl SendQuiz {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * question - Quiz question, 1-300 characters
-    pub fn new<C, Q>(chat_id: C, question: Q) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    /// * question - Question; 1-300 characters
+    /// * correct_option_id - 0-based identifier of the correct answer option
+    /// * options - Answer options; 2-10 strings 1-100 characters each
+    pub fn new<A, B, C, D>(chat_id: A, question: B, correct_option_id: Integer, options: C) -> Self
     where
-        C: Into<ChatId>,
-        Q: Into<String>,
+        A: Into<ChatId>,
+        B: Into<String>,
+        C: IntoIterator<Item = D>,
+        D: Into<String>,
     {
-        Self {
-            inner: PollParameters::new(chat_id.into(), question.into(), PollKind::Quiz),
-        }
+        let mut parameters = PollParameters::new(chat_id.into(), question.into(), PollType::Quiz, options);
+        parameters.correct_option_id = Some(correct_option_id);
+        Self { inner: parameters }
     }
 
-    /// Adds an answer option (1-100 characters)
-    pub fn option<O>(mut self, option: O) -> Self
-    where
-        O: Into<String>,
-    {
-        self.inner.options.push(option.into());
-        self
-    }
-
-    /// True, if the quiz needs to be anonymous, defaults to True
-    #[allow(clippy::wrong_self_convention)]
-    pub fn is_anonymous(mut self, is_anonymous: bool) -> Self {
-        self.inner.is_anonymous = Some(is_anonymous);
-        self
-    }
-
-    /// 0-based identifier of the correct answer option, required for polls in quiz mode
-    pub fn correct_option_id(mut self, correct_option_id: Integer) -> Self {
-        self.inner.correct_option_id = Some(correct_option_id);
-        self
-    }
-
-    /// Text that is shown when a user chooses an incorrect answer or taps on the lamp icon
+    /// Sets a new value for the `allow_sending_without_reply` flag
     ///
-    /// 0-200 characters with at most 2 line feeds after entities parsing
-    pub fn explanation<E: Into<String>>(mut self, explanation: E) -> Self {
-        self.inner.explanation = Some(explanation.into());
-        self
-    }
-
-    /// Mode for parsing entities in the explanation
+    /// # Arguments
     ///
-    /// Explanation entities will be set to None when this method is called
-    pub fn explanation_parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.inner.explanation_parse_mode = Some(parse_mode);
-        self.inner.explanation_entities = None;
+    /// * value - Whether the message should be sent even
+    ///           if the specified replied-to message is not found
+    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
+        self.inner.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// List of special entities that appear in the poll explanation
+    /// Sets a new close date
     ///
-    /// Explanation parse mode will be set to None when this method is called
-    pub fn explanation_entities<T>(mut self, entities: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.inner.explanation_entities = Some(entities.into_iter().collect());
-        self.inner.explanation_parse_mode = None;
-        self
-    }
-
-    /// Amount of time in seconds the poll will be active after creation, 5-600
+    /// # Arguments
     ///
-    /// Can't be used together with close_date (close_date will be set to None)
-    pub fn open_period(mut self, period: Integer) -> Self {
-        self.inner.open_period = Some(period);
-        self.inner.close_date = None;
-        self
-    }
-
-    /// Point in time (Unix timestamp) when the poll will be automatically closed
+    /// * value - Point in time (Unix timestamp) when the quiz will be automatically closed
     ///
     /// Must be at least 5 and no more than 600 seconds in the future.
-    /// Can't be used together with open_period (open_period will be set to None)
-    pub fn close_date(mut self, close_date: Integer) -> Self {
-        self.inner.close_date = Some(close_date);
+    /// Can't be used together with `open_period` (`open_period` will be set to [`None`]).
+    pub fn with_close_date(mut self, value: Integer) -> Self {
+        self.inner.close_date = Some(value);
         self.inner.open_period = None;
         self
     }
 
-    /// Pass True, if the poll needs to be immediately closed
-    #[allow(clippy::wrong_self_convention)]
-    pub fn is_closed(mut self, is_closed: bool) -> Self {
-        self.inner.is_closed = Some(is_closed);
-        self
-    }
-
-    /// Sends the message silently
+    /// Sets a new value for the `disable_notification` flag
     ///
-    /// Users will receive a notification with no sound
-    pub fn disable_notification(mut self, disable_notification: bool) -> Self {
-        self.inner.disable_notification = Some(disable_notification);
+    /// # Arguments
+    ///
+    /// * value - Send the message silently or not;
+    ///           a user will receive a notification without sound
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
+        self.inner.disable_notification = Some(value);
         self
     }
 
-    /// Protects the contents of the sent message from forwarding and saving
-    pub fn protect_content(mut self, protect_content: bool) -> Self {
-        self.inner.protect_content = Some(protect_content);
-        self
-    }
-
-    /// If the message is a reply, ID of the original message
-    pub fn reply_to_message_id(mut self, reply_to_message_id: Integer) -> Self {
-        self.inner.reply_to_message_id = Some(reply_to_message_id);
-        self
-    }
-
-    /// Pass True, if the message should be sent even
-    /// if the specified replied-to message is not found
-    pub fn allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
-        self.inner.allow_sending_without_reply = Some(allow_sending_without_reply);
-        self
-    }
-
-    /// Additional interface options
-    pub fn reply_markup<R>(mut self, reply_markup: R) -> Self
+    /// Sets a new explanation
+    ///
+    /// # Arguments
+    ///
+    /// * value - Text that is shown when a user chooses
+    ///           an incorrect answer or taps on the lamp icon;
+    ///           0-200 characters with at most 2 line feeds after entities parsing
+    pub fn with_explanation<T>(mut self, value: T) -> Self
     where
-        R: Into<ReplyMarkup>,
+        T: Into<String>,
     {
-        self.inner.reply_markup = Some(reply_markup.into());
+        self.inner.explanation = Some(value.into());
         self
     }
 
-    /// Unique identifier for the target message thread (topic) of the forum;
-    /// for forum supergroups only
-    pub fn message_thread_id(mut self, message_thread_id: Integer) -> Self {
-        self.inner.message_thread_id = Some(message_thread_id);
+    /// Sets a new list of explanation entities
+    ///
+    /// # Arguments
+    ///
+    /// * value - List of special entities that appear in the quiz explanation
+    ///
+    /// Explanation parse mode will be set to [`None`] when this method is called.
+    pub fn with_explanation_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.inner.explanation_entities = Some(value.into_iter().collect());
+        self.inner.explanation_parse_mode = None;
+        self
+    }
+
+    /// Sets a new explanation parse mode
+    ///
+    /// # Arguments
+    ///
+    /// * value - Mode for parsing entities in the explanation
+    ///
+    /// Explanation entities will be set to [`None`] when this method is called.
+    pub fn with_explanation_parse_mode(mut self, value: ParseMode) -> Self {
+        self.inner.explanation_parse_mode = Some(value);
+        self.inner.explanation_entities = None;
+        self
+    }
+
+    /// Sets a new value for the `is_anonymous` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the quiz needs to be anonymous; defaults to true
+    pub fn with_is_anonymous(mut self, value: bool) -> Self {
+        self.inner.is_anonymous = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_closed` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the quiz needs to be immediately closed
+    pub fn with_is_closed(mut self, value: bool) -> Self {
+        self.inner.is_closed = Some(value);
+        self
+    }
+
+    /// Sets a new message thread ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier for the target message thread (topic) of the forum;
+    ///           for forum supergroups only
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.inner.message_thread_id = Some(value);
+        self
+    }
+
+    /// Sets a new open period
+    ///
+    /// # Arguments
+    ///
+    /// * value - Amount of time in seconds the quiz will be active after creation; 5-600
+    ///
+    /// Can't be used together with `close_date` (`close_date` will be set to [`None`]).
+    pub fn with_open_period(mut self, value: Integer) -> Self {
+        self.inner.open_period = Some(value);
+        self.inner.close_date = None;
+        self
+    }
+
+    /// Sets a new value for the `protect_content` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    pub fn with_protect_content(mut self, value: bool) -> Self {
+        self.inner.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Reply markup
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<ReplyMarkup>,
+    {
+        self.inner.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new message ID for a reply
+    ///
+    /// # Arguments
+    ///
+    /// * value - ID of the original message
+    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
+        self.inner.reply_to_message_id = Some(value);
         self
     }
 }
@@ -388,7 +689,7 @@ impl Method for SendQuiz {
     }
 }
 
-/// Use this method to send a native poll
+/// Sends a native poll
 ///
 /// On success, the sent Message is returned
 #[derive(Clone, Debug, Serialize)]
@@ -402,106 +703,140 @@ impl SendPoll {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * question - Poll question, 1-300 characters
-    pub fn new<C, Q>(chat_id: C, question: Q) -> Self
+    /// * chat_id - Unique identifier of the target chat
+    /// * question - Question; 1-300 characters
+    /// * options - Answer options; 2-10 strings 1-100 characters each
+    pub fn new<A, B, C, D>(chat_id: A, question: B, options: C) -> Self
     where
-        C: Into<ChatId>,
-        Q: Into<String>,
+        A: Into<ChatId>,
+        B: Into<String>,
+        C: IntoIterator<Item = D>,
+        D: Into<String>,
     {
         Self {
-            inner: PollParameters::new(chat_id.into(), question.into(), PollKind::Regular),
+            inner: PollParameters::new(chat_id.into(), question.into(), PollType::Regular, options),
         }
     }
 
-    /// Adds an answer option (1-100 characters)
-    pub fn option<O>(mut self, option: O) -> Self
-    where
-        O: Into<String>,
-    {
-        self.inner.options.push(option.into());
-        self
-    }
-
-    /// True, if the poll needs to be anonymous, defaults to True
-    #[allow(clippy::wrong_self_convention)]
-    pub fn is_anonymous(mut self, is_anonymous: bool) -> Self {
-        self.inner.is_anonymous = Some(is_anonymous);
-        self
-    }
-
-    /// True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False
-    pub fn allows_multiple_answers(mut self, allows_multiple_answers: bool) -> Self {
-        self.inner.allows_multiple_answers = Some(allows_multiple_answers);
-        self
-    }
-
-    /// Amount of time in seconds the poll will be active after creation, 5-600
+    /// Sets a new value for the `allow_sending_without_reply` flag
     ///
-    /// Can't be used together with close_date (close_date will be set to None)
-    pub fn open_period(mut self, period: Integer) -> Self {
-        self.inner.open_period = Some(period);
-        self.inner.close_date = None;
+    /// # Arguments
+    ///
+    /// * value - Whether the message should be sent even
+    ///           if the specified replied-to message is not found
+    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
+        self.inner.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Point in time (Unix timestamp) when the poll will be automatically closed
+    /// Sets a new value for the `allows_multiple_answers` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the poll allows multiple answers; defaults to false
+    pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
+        self.inner.allows_multiple_answers = Some(value);
+        self
+    }
+
+    /// Sets a new close date
+    ///
+    /// # Arguments
+    ///
+    /// * value - Point in time (Unix timestamp) when the poll will be automatically closed
     ///
     /// Must be at least 5 and no more than 600 seconds in the future.
-    /// Can't be used together with open_period (open_period will be set to None)
-    pub fn close_date(mut self, close_date: Integer) -> Self {
-        self.inner.close_date = Some(close_date);
+    /// Can't be used together with `open_period` (`open_period` will be set to [`None`])
+    pub fn with_close_date(mut self, value: Integer) -> Self {
+        self.inner.close_date = Some(value);
         self.inner.open_period = None;
         self
     }
 
-    /// Pass True, if the poll needs to be immediately closed
-    #[allow(clippy::wrong_self_convention)]
-    pub fn is_closed(mut self, is_closed: bool) -> Self {
-        self.inner.is_closed = Some(is_closed);
-        self
-    }
-
-    /// Sends the message silently
+    /// Sets a new value for the `disable_notification` flag
     ///
-    /// Users will receive a notification with no sound
-    pub fn disable_notification(mut self, disable_notification: bool) -> Self {
-        self.inner.disable_notification = Some(disable_notification);
+    /// # Arguments
+    ///
+    /// * value - Send the message silently or not; a user will receive a notification without sound
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
+        self.inner.disable_notification = Some(value);
         self
     }
 
-    /// Protects the contents of the sent message from forwarding and saving
-    pub fn protect_content(mut self, protect_content: bool) -> Self {
-        self.inner.protect_content = Some(protect_content);
+    /// Sets a new value for the `is_anonymous` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the poll needs to be anonymous; defaults to true
+    pub fn with_is_anonymous(mut self, value: bool) -> Self {
+        self.inner.is_anonymous = Some(value);
         self
     }
 
-    /// If the message is a reply, ID of the original message
-    pub fn reply_to_message_id(mut self, reply_to_message_id: Integer) -> Self {
-        self.inner.reply_to_message_id = Some(reply_to_message_id);
+    /// Sets a new value for the `is_closed` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the poll needs to be immediately closed
+    pub fn with_is_closed(mut self, value: bool) -> Self {
+        self.inner.is_closed = Some(value);
         self
     }
 
-    /// Pass True, if the message should be sent even
-    /// if the specified replied-to message is not found
-    pub fn allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
-        self.inner.allow_sending_without_reply = Some(allow_sending_without_reply);
+    /// Sets a new message thread ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier for the target message thread (topic) of the forum;
+    ///           for forum supergroups only
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.inner.message_thread_id = Some(value);
         self
     }
 
-    /// Additional interface options
-    pub fn reply_markup<R>(mut self, reply_markup: R) -> Self
+    /// Sets a new open period
+    ///
+    /// # Arguments
+    ///
+    /// * value - Amount of time in seconds the poll will be active after creation; 5-600
+    ///
+    /// Can't be used together with `close_date` (`close_date` will be set to [`None`]).
+    pub fn with_open_period(mut self, value: Integer) -> Self {
+        self.inner.open_period = Some(value);
+        self.inner.close_date = None;
+        self
+    }
+
+    /// Sets a new value for the `protect_content` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    pub fn with_protect_content(mut self, value: bool) -> Self {
+        self.inner.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Reply markup
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
-        R: Into<ReplyMarkup>,
+        T: Into<ReplyMarkup>,
     {
-        self.inner.reply_markup = Some(reply_markup.into());
+        self.inner.reply_markup = Some(value.into());
         self
     }
 
-    /// Unique identifier for the target message thread (topic) of the forum;
-    /// for forum supergroups only
-    pub fn message_thread_id(mut self, message_thread_id: Integer) -> Self {
-        self.inner.message_thread_id = Some(message_thread_id);
+    /// Sets a new message ID for a reply
+    ///
+    /// # Arguments
+    ///
+    /// * value - ID of the original message
+    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
+        self.inner.reply_to_message_id = Some(value);
         self
     }
 }
@@ -514,7 +849,7 @@ impl Method for SendPoll {
     }
 }
 
-/// Use this method to stop a poll which was sent by the bot
+/// Stops a poll which was sent by the bot
 ///
 /// On success, the stopped Poll with the final results is returned
 #[derive(Clone, Debug, Serialize)]
@@ -525,7 +860,7 @@ pub struct StopPoll {
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-/// Use this method to stop a quiz which was sent by the bot
+/// Stops a quiz which was sent by the bot
 ///
 /// On success, the stopped Quiz with the final results is returned
 pub type StopQuiz = StopPoll;
@@ -535,11 +870,11 @@ impl StopPoll {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * message_id - Identifier of the original message with the poll
-    pub fn new<C>(chat_id: C, message_id: Integer) -> Self
+    pub fn new<T>(chat_id: T, message_id: Integer) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -548,9 +883,16 @@ impl StopPoll {
         }
     }
 
-    /// A JSON-serialized object for a new message inline keyboard
-    pub fn reply_markup<R: Into<InlineKeyboardMarkup>>(mut self, reply_markup: R) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
         self
     }
 }

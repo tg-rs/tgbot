@@ -44,6 +44,6 @@ fn send_chat_action() {
                 "message_thread_id": 1,
             }),
         ),
-        method.message_thread_id(1),
+        method.with_message_thread_id(1),
     );
 }

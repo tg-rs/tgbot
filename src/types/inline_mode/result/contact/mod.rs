@@ -6,105 +6,148 @@ use super::raw::{
     RawInlineQueryResult,
     RawInlineQueryResultData,
     RawInlineQueryResultDataError::{self, MissingField},
-    RawInlineQueryResultKind,
+    RawInlineQueryResultType,
 };
 
 #[cfg(test)]
 mod tests;
 
-/// Contact with a phone number
+/// Represents a contact with a phone number
 ///
-/// By default, this contact will be sent by the user
-/// Alternatively, you can use input_message_content
-/// to send a message with the specified content instead of the contact
+/// By default, this contact will be sent by the user.
+/// Alternatively, you can use [Self::with_input_message_content]
+/// to send a message with the specified content instead of the contact.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultContact {
+    first_name: String,
     id: String,
     phone_number: String,
-    first_name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    input_message_content: Option<InputMessageContent>,
     #[serde(skip_serializing_if = "Option::is_none")]
     last_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    vcard: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    input_message_content: Option<InputMessageContent>,
+    thumbnail_height: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_width: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    thumbnail_height: Option<Integer>,
+    vcard: Option<String>,
 }
 
 impl InlineQueryResultContact {
-    /// Creates a new InlineQueryResultContact with empty optional parameters
+    /// Creates a new InlineQueryResultContact
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
-    /// * phone_number - Contact's phone number
     /// * first_name - Contact's first name
-    pub fn new<I, P, N>(id: I, phone_number: P, first_name: N) -> Self
+    /// * id - Unique identifier of the result; 1-64 bytes
+    /// * phone_number - Contact's phone number
+    pub fn new<A, B, C>(first_name: A, id: B, phone_number: C) -> Self
     where
-        I: Into<String>,
-        P: Into<String>,
-        N: Into<String>,
+        A: Into<String>,
+        B: Into<String>,
+        C: Into<String>,
     {
-        InlineQueryResultContact {
+        Self {
+            first_name: first_name.into(),
             id: id.into(),
             phone_number: phone_number.into(),
-            first_name: first_name.into(),
-            last_name: None,
-            vcard: None,
-            reply_markup: None,
             input_message_content: None,
+            last_name: None,
+            reply_markup: None,
+            thumbnail_height: None,
             thumbnail_url: None,
             thumbnail_width: None,
-            thumbnail_height: None,
+            vcard: None,
         }
     }
 
-    /// Contact's last name
-    pub fn last_name<S: Into<String>>(mut self, last_name: S) -> Self {
-        self.last_name = Some(last_name.into());
+    /// Sets a new input message content
+    ///
+    /// # Arguments
+    ///
+    /// * value - Content of the message to be sent instead of the contact
+    pub fn with_input_message_content<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputMessageContent>,
+    {
+        self.input_message_content = Some(value.into());
         self
     }
 
-    /// Additional data about the contact in the form of a vCard, 0-2048 bytes
-    pub fn vcard<S: Into<String>>(mut self, vcard: S) -> Self {
-        self.vcard = Some(vcard.into());
+    /// Sets a new last name
+    ///
+    /// # Arguments
+    ///
+    /// * value - Last name
+    pub fn with_last_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.last_name = Some(value.into());
         self
     }
 
-    /// Inline keyboard attached to the message
-    pub fn reply_markup<I: Into<InlineKeyboardMarkup>>(mut self, reply_markup: I) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a new reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Inline keyboard attached to the message
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<InlineKeyboardMarkup>,
+    {
+        self.reply_markup = Some(value.into());
         self
     }
 
-    /// Content of the message to be sent instead of the contact
-    pub fn input_message_content<C: Into<InputMessageContent>>(mut self, input_message_content: C) -> Self {
-        self.input_message_content = Some(input_message_content.into());
+    /// Sets a new thumbnail height
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail height
+    pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
+        self.thumbnail_height = Some(value);
         self
     }
 
-    /// Url of the thumbnail for the result
-    pub fn thumbnail_url<S: Into<String>>(mut self, thumbnail_url: S) -> Self {
-        self.thumbnail_url = Some(thumbnail_url.into());
+    /// Sets a new thumbnail URL
+    ///
+    /// # Arguments
+    ///
+    /// * value - URL of the thumbnail for the result
+    pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.thumbnail_url = Some(value.into());
         self
     }
 
-    /// Thumbnail width
-    pub fn thumbnail_width(mut self, thumbnail_width: Integer) -> Self {
-        self.thumbnail_width = Some(thumbnail_width);
+    /// Sets a new thumbnail width
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail width
+    pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
+        self.thumbnail_width = Some(value);
         self
     }
 
-    /// Thumbnail height
-    pub fn thumbnail_height(mut self, thumbnail_height: Integer) -> Self {
-        self.thumbnail_height = Some(thumbnail_height);
+    /// Sets a new vCard
+    ///
+    /// # Arguments
+    ///
+    /// * value - Additional data about the contact in the form of a vCard, 0-2048 bytes
+    pub fn with_vcard<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.vcard = Some(value.into());
         self
     }
 }
@@ -114,16 +157,16 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultContact {
 
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
-            id: value.id,
-            phone_number: value.data.phone_number.ok_or(MissingField("phone_number"))?,
             first_name: value.data.first_name.ok_or(MissingField("first_name"))?,
-            last_name: value.data.last_name,
-            vcard: value.data.vcard,
-            reply_markup: value.data.reply_markup,
+            id: value.id,
             input_message_content: value.data.input_message_content,
+            last_name: value.data.last_name,
+            phone_number: value.data.phone_number.ok_or(MissingField("phone_number"))?,
+            reply_markup: value.data.reply_markup,
+            thumbnail_height: value.data.thumbnail_height,
             thumbnail_url: value.data.thumbnail_url,
             thumbnail_width: value.data.thumbnail_width,
-            thumbnail_height: value.data.thumbnail_height,
+            vcard: value.data.vcard,
         })
     }
 }
@@ -132,19 +175,19 @@ impl From<InlineQueryResultContact> for RawInlineQueryResult {
     fn from(value: InlineQueryResultContact) -> Self {
         Self {
             data: RawInlineQueryResultData {
-                phone_number: Some(value.phone_number),
                 first_name: Some(value.first_name),
-                last_name: value.last_name,
-                vcard: value.vcard,
-                reply_markup: value.reply_markup,
                 input_message_content: value.input_message_content,
+                last_name: value.last_name,
+                phone_number: Some(value.phone_number),
+                reply_markup: value.reply_markup,
+                thumbnail_height: value.thumbnail_height,
                 thumbnail_url: value.thumbnail_url,
                 thumbnail_width: value.thumbnail_width,
-                thumbnail_height: value.thumbnail_height,
+                vcard: value.vcard,
                 ..Default::default()
             },
             id: value.id,
-            kind: RawInlineQueryResultKind::Contact,
+            result_type: RawInlineQueryResultType::Contact,
         }
     }
 }

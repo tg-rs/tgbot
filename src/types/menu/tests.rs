@@ -1,38 +1,27 @@
 use crate::{
     api::{assert_payload_eq, Payload},
-    types::{
-        tests::assert_json_eq,
-        GetChatMenuButton,
-        MenuButton,
-        MenuButtonCommands,
-        MenuButtonDefault,
-        MenuButtonWebApp,
-        SetChatMenuButton,
-        WebAppInfo,
-    },
+    types::{tests::assert_json_eq, GetChatMenuButton, MenuButton, MenuButtonWebApp, SetChatMenuButton, WebAppInfo},
 };
 
 #[test]
 fn menu_button() {
     assert_json_eq(
-        MenuButton::Commands(MenuButtonCommands {}),
+        MenuButton::Commands,
         serde_json::json!({
             "type": "commands"
         }),
     );
     assert_json_eq(
-        MenuButton::Default(MenuButtonDefault {}),
+        MenuButton::Default,
         serde_json::json!({
             "type": "default"
         }),
     );
     assert_json_eq(
-        MenuButton::WebApp(MenuButtonWebApp {
-            text: String::from("button-text"),
-            web_app: WebAppInfo {
-                url: String::from("https://example.com"),
-            },
-        }),
+        MenuButton::WebApp(MenuButtonWebApp::new(
+            "button-text",
+            WebAppInfo::from("https://example.com"),
+        )),
         serde_json::json!({
             "type": "web_app",
             "text": "button-text",
@@ -56,7 +45,7 @@ fn get_chat_menu_button() {
                 "chat_id": 1,
             }),
         ),
-        GetChatMenuButton::default().chat_id(1),
+        GetChatMenuButton::default().with_chat_id(1),
     );
 }
 
@@ -84,7 +73,7 @@ fn set_chat_menu_button() {
                 },
             }),
         ),
-        SetChatMenuButton::default().menu_button(MenuButton::default()),
+        SetChatMenuButton::default().menu_button(MenuButton::Default),
     );
     assert_payload_eq(
         Payload::json(
@@ -98,6 +87,6 @@ fn set_chat_menu_button() {
         ),
         SetChatMenuButton::default()
             .chat_id(1)
-            .menu_button(MenuButton::commands()),
+            .menu_button(MenuButton::Commands),
     );
 }

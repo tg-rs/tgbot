@@ -83,10 +83,10 @@ where
                     break;
                 }
                 let method = GetUpdates::default()
-                    .offset(offset + 1)
-                    .limit(limit)
-                    .timeout(poll_timeout)
-                    .allowed_updates(allowed_updates.clone());
+                    .with_allowed_updates(allowed_updates.clone())
+                    .with_limit(limit)
+                    .with_offset(offset + 1)
+                    .with_timeout(poll_timeout);
                 let updates = match client.execute(method).await {
                     Ok(updates) => updates,
                     Err(err) => {

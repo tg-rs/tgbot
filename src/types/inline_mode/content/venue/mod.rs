@@ -5,13 +5,13 @@ use crate::types::{Float, Venue};
 #[cfg(test)]
 mod tests;
 
-/// Venue message to be sent as the result of an inline query
+/// Represents a venue message to be sent as the result of an inline query
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentVenue {
+    address: String,
     latitude: Float,
     longitude: Float,
     title: String,
-    address: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27,16 +27,20 @@ impl InputMessageContentVenue {
     ///
     /// # Arguments
     ///
+    /// * address - Address of the venue
     /// * latitude - Latitude of the venue in degrees
     /// * longitude - Longitude of the venue in degrees
     /// * title - Name of the venue
-    /// * address - Address of the venue
-    pub fn new<S: Into<String>>(latitude: Float, longitude: Float, title: S, address: S) -> Self {
-        InputMessageContentVenue {
+    pub fn new<A, B>(address: A, latitude: Float, longitude: Float, title: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            address: address.into(),
             latitude,
             longitude,
             title: title.into(),
-            address: address.into(),
             foursquare_id: None,
             foursquare_type: None,
             google_place_id: None,
@@ -44,32 +48,60 @@ impl InputMessageContentVenue {
         }
     }
 
-    /// Foursquare identifier of the venue, if known
-    pub fn foursquare_id<S: Into<String>>(mut self, foursquare_id: S) -> Self {
-        self.foursquare_id = Some(foursquare_id.into());
+    /// Sets a new foursquare ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Foursquare identifier of the venue
+    pub fn with_foursquare_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.foursquare_id = Some(value.into());
         self
     }
 
-    /// Foursquare type of the venue, if known
+    /// Sets a new foursquare type
+    ///
+    /// # Arguments
+    ///
+    /// * value - Foursquare type of the venue
     ///
     /// For example, “arts_entertainment/default”,
     /// “arts_entertainment/aquarium” or “food/ice-cream”
-    pub fn foursquare_type<S: Into<String>>(mut self, foursquare_type: S) -> Self {
-        self.foursquare_type = Some(foursquare_type.into());
+    pub fn with_foursquare_type<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.foursquare_type = Some(value.into());
         self
     }
 
-    /// Google Places identifier of the venue
-    pub fn google_place_id<S: Into<String>>(mut self, google_place_id: S) -> Self {
-        self.google_place_id = Some(google_place_id.into());
+    /// Sets a new google place ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Google Places identifier of the venue
+    pub fn with_google_place_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.google_place_id = Some(value.into());
         self
     }
 
-    /// Google Places type of the venue.
+    /// Sets a new google place type
+    ///
+    /// # Arguments
+    ///
+    /// * value - Google Places type of the venue
     ///
     /// <https://developers.google.com/places/web-service/supported_types>
-    pub fn google_place_type<S: Into<String>>(mut self, google_place_type: S) -> Self {
-        self.google_place_type = Some(google_place_type.into());
+    pub fn with_google_place_type<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.google_place_type = Some(value.into());
         self
     }
 }
@@ -77,10 +109,10 @@ impl InputMessageContentVenue {
 impl From<Venue> for InputMessageContentVenue {
     fn from(value: Venue) -> Self {
         Self {
+            address: value.address,
             latitude: value.location.latitude,
             longitude: value.location.longitude,
             title: value.title,
-            address: value.address,
             foursquare_id: value.foursquare_id,
             foursquare_type: value.foursquare_type,
             google_place_id: value.google_place_id,

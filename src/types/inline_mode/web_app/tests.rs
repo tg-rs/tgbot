@@ -6,19 +6,12 @@ use crate::{
 #[test]
 fn sent_web_app_message() {
     assert_json_eq(
-        SentWebAppMessage {
-            inline_message_id: Some(String::from("id")),
-        },
+        SentWebAppMessage::default().with_inline_message_id("id"),
         serde_json::json!({
             "inline_message_id": "id"
         }),
     );
-    assert_json_eq(
-        SentWebAppMessage {
-            inline_message_id: None,
-        },
-        serde_json::json!({}),
-    )
+    assert_json_eq(SentWebAppMessage::default(), serde_json::json!({}))
 }
 
 #[test]
@@ -39,8 +32,8 @@ fn answer_web_app_query() {
             }),
         ),
         AnswerWebAppQuery::new(
+            InlineQueryResultArticle::new("article-id", "article-text", "article-title"),
             "query-id",
-            InlineQueryResultArticle::new("article-id", "article-title", "article-text"),
         ),
     );
 }

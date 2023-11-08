@@ -16,13 +16,13 @@ use crate::{
 #[test]
 fn invoice() {
     assert_json_eq(
-        Invoice {
-            title: String::from("invoice title"),
-            description: String::from("invoice description"),
-            start_parameter: String::from("invoice start parameter"),
-            currency: String::from("RUB"),
-            total_amount: 100,
-        },
+        Invoice::new(
+            "RUB",
+            "invoice description",
+            "invoice start parameter",
+            "invoice title",
+            100,
+        ),
         serde_json::json!({
             "title": "invoice title",
             "description": "invoice description",
@@ -36,7 +36,7 @@ fn invoice() {
 #[test]
 fn labeled_price() {
     assert_json_eq(
-        LabeledPrice::new("price label", 145),
+        LabeledPrice::new(145, "price label"),
         serde_json::json!({"label": "price label", "amount": 145}),
     );
 }
@@ -54,10 +54,7 @@ fn create_invoice_link() {
         "payload",
         "provider-token",
         "GEL",
-        [LabeledPrice {
-            label: String::from("price-label"),
-            amount: 100,
-        }],
+        [LabeledPrice::new(100, "price-label")],
     );
     assert_payload_eq(
         Payload::json(
@@ -96,7 +93,7 @@ fn create_invoice_link() {
                 "max_tip_amount": 100
             }),
         ),
-        method.parameters(InvoiceParameters::default().with_max_tip_amount(100)),
+        method.with_parameters(InvoiceParameters::default().with_max_tip_amount(100)),
     );
 }
 
@@ -127,7 +124,7 @@ fn send_invoice() {
             "payload",
             "token",
             "RUB",
-            vec![LabeledPrice::new("item", 100)],
+            vec![LabeledPrice::new(100, "item")],
         ),
     );
     assert_payload_eq(
@@ -169,8 +166,8 @@ fn send_invoice() {
             }),
         ),
         SendInvoice::new(1, "title", "description", "payload", "token", "RUB", vec![])
-            .start_parameter("param")
-            .parameters(
+            .with_start_parameter("param")
+            .with_parameters(
                 InvoiceParameters::default()
                     .with_max_tip_amount(100)
                     .with_suggested_tip_amounts(vec![10, 50, 100])
@@ -190,11 +187,11 @@ fn send_invoice() {
                     .with_send_email_to_provider(true)
                     .with_flexible(true),
             )
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-            .message_thread_id(1),
+            .with_disable_notification(true)
+            .with_protect_content(true)
+            .with_reply_to_message_id(1)
+            .with_allow_sending_without_reply(true)
+            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+            .with_message_thread_id(1),
     );
 }

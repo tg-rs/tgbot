@@ -14,26 +14,14 @@ use crate::{
 #[test]
 fn chat_invite_link() {
     assert_json_eq(
-        ChatInviteLink {
-            invite_link: String::from("example.com/join/chat"),
-            creator: User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("User"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            creates_join_request: true,
-            is_primary: true,
-            is_revoked: false,
-            name: Some(String::from("Link")),
-            expire_date: Some(0),
-            member_limit: Some(10),
-            pending_join_request_count: Some(0),
-        },
+        ChatInviteLink::new("example.com/join/chat", User::new(1, "User", false))
+            .with_creates_join_request(true)
+            .with_is_primary(true)
+            .with_is_revoked(false)
+            .with_name("Link")
+            .with_expire_date(0)
+            .with_member_limit(10)
+            .with_pending_join_request_count(0),
         serde_json::json!({
             "invite_link": "example.com/join/chat",
             "creator": {
@@ -51,26 +39,7 @@ fn chat_invite_link() {
         }),
     );
     assert_json_eq(
-        ChatInviteLink {
-            invite_link: String::from("example.com/join/chat"),
-            creator: User {
-                id: 1,
-                is_bot: false,
-                first_name: String::from("User"),
-                last_name: None,
-                username: None,
-                language_code: None,
-                is_premium: None,
-                added_to_attachment_menu: None,
-            },
-            creates_join_request: true,
-            is_primary: true,
-            is_revoked: false,
-            name: None,
-            expire_date: None,
-            member_limit: None,
-            pending_join_request_count: None,
-        },
+        ChatInviteLink::new("example.com/join/chat", User::new(1, "User", false)),
         serde_json::json!({
             "invite_link": "example.com/join/chat",
             "creator": {
@@ -78,8 +47,8 @@ fn chat_invite_link() {
                 "is_bot": false,
                 "first_name": "User"
             },
-            "creates_join_request": true,
-            "is_primary": true,
+            "creates_join_request": false,
+            "is_primary": false,
             "is_revoked": false,
         }),
     );
@@ -109,10 +78,10 @@ fn create_chat_invite_link() {
             }),
         ),
         method
-            .name("Link")
-            .expire_date(0)
-            .member_limit(1)
-            .creates_join_request(false),
+            .with_name("Link")
+            .with_expire_date(0)
+            .with_member_limit(1)
+            .with_creates_join_request(false),
     )
 }
 
@@ -142,10 +111,10 @@ fn edit_chat_invite_link() {
             }),
         ),
         method
-            .name("Link")
-            .expire_date(0)
-            .member_limit(1)
-            .creates_join_request(false),
+            .with_name("Link")
+            .with_expire_date(0)
+            .with_member_limit(1)
+            .with_creates_join_request(false),
     );
 }
 

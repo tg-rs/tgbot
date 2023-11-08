@@ -1,7 +1,6 @@
 use crate::types::{
     tests::assert_json_eq,
     EncryptedCredentials,
-    EncryptedPassportElement,
     EncryptedPassportElementAddress,
     EncryptedPassportElementBankStatement,
     EncryptedPassportElementDriverLicense,
@@ -21,206 +20,64 @@ use crate::types::{
 
 #[test]
 fn passport_data() {
-    let expected_struct = PassportData {
-        credentials: EncryptedCredentials {
-            data: String::from("d"),
-            hash: String::from("h"),
-            secret: String::from("s"),
-        },
-        data: vec![
-            EncryptedPassportElement::Address(EncryptedPassportElementAddress {
-                data: String::from("d"),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::BankStatement(EncryptedPassportElementBankStatement {
-                files: vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }],
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::DriverLicense(EncryptedPassportElementDriverLicense {
-                data: String::from("d"),
-                front_side: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                reverse_side: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                selfie: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::Email(EncryptedPassportElementEmail {
-                email: String::from("u@h.z"),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::IdentityCard(EncryptedPassportElementIdentityCard {
-                data: String::from("d"),
-                front_side: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                reverse_side: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                selfie: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::InternalPassport(EncryptedPassportElementInternalPassport {
-                data: String::from("d"),
-                front_side: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                selfie: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::Passport(EncryptedPassportElementPassport {
-                data: String::from("d"),
-                front_side: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                selfie: PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                },
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::PassportRegistration(EncryptedPassportElementPassportRegistration {
-                files: vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }],
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::PersonalDetails(EncryptedPassportElementPersonalDetails {
-                data: String::from("d"),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::PhoneNumber(EncryptedPassportElementPhoneNumber {
-                phone_number: String::from("+79270000000"),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::RentalAgreement(EncryptedPassportElementRentalAgreement {
-                files: vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }],
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::TemporaryRegistration(EncryptedPassportElementTemporaryRegistration {
-                files: vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }],
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
-            EncryptedPassportElement::UtilityBill(EncryptedPassportElementUtilityBill {
-                files: vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }],
-                translation: Some(vec![PassportFile {
-                    file_id: String::from("f"),
-                    file_unique_id: String::from("uf"),
-                    file_size: 1,
-                    file_date: 0,
-                }]),
-                hash: String::from("h"),
-            }),
+    let expected_struct = PassportData::new(
+        EncryptedCredentials::new("d", "h", "s"),
+        [
+            EncryptedPassportElementAddress::new("d", "h").into(),
+            EncryptedPassportElementBankStatement::new([PassportFile::new(0, "f", 1, "uf")], "h")
+                .with_translation([PassportFile::new(0, "f", 1, "uf")])
+                .into(),
+            EncryptedPassportElementDriverLicense::new(
+                "d",
+                "h",
+                PassportFile::new(0, "f", 1, "uf"),
+                PassportFile::new(0, "f", 1, "uf"),
+                PassportFile::new(0, "f", 1, "uf"),
+            )
+            .with_translation([PassportFile::new(0, "f", 1, "uf")])
+            .into(),
+            EncryptedPassportElementEmail::new("u@h.z", "h").into(),
+            EncryptedPassportElementIdentityCard::new(
+                "d",
+                "h",
+                PassportFile::new(0, "f", 1, "uf"),
+                PassportFile::new(0, "f", 1, "uf"),
+                PassportFile::new(0, "f", 1, "uf"),
+            )
+            .with_translation([PassportFile::new(0, "f", 1, "uf")])
+            .into(),
+            EncryptedPassportElementInternalPassport::new(
+                "d",
+                "h",
+                PassportFile::new(0, "f", 1, "uf"),
+                PassportFile::new(0, "f", 1, "uf"),
+            )
+            .with_translation([PassportFile::new(0, "f", 1, "uf")])
+            .into(),
+            EncryptedPassportElementPassport::new(
+                "d",
+                "h",
+                PassportFile::new(0, "f", 1, "uf"),
+                PassportFile::new(0, "f", 1, "uf"),
+            )
+            .with_translation([PassportFile::new(0, "f", 1, "uf")])
+            .into(),
+            EncryptedPassportElementPassportRegistration::new([PassportFile::new(0, "f", 1, "uf")], "h")
+                .with_translation([PassportFile::new(0, "f", 1, "uf")])
+                .into(),
+            EncryptedPassportElementPersonalDetails::new("d", "h").into(),
+            EncryptedPassportElementPhoneNumber::new("h", "+79270000000").into(),
+            EncryptedPassportElementRentalAgreement::new([PassportFile::new(0, "f", 1, "uf")], "h")
+                .with_translation([PassportFile::new(0, "f", 1, "uf")])
+                .into(),
+            EncryptedPassportElementTemporaryRegistration::new([PassportFile::new(0, "f", 1, "uf")], "h")
+                .with_translation([PassportFile::new(0, "f", 1, "uf")])
+                .into(),
+            EncryptedPassportElementUtilityBill::new([PassportFile::new(0, "f", 1, "uf")], "h")
+                .with_translation([PassportFile::new(0, "f", 1, "uf")])
+                .into(),
         ],
-    };
+    );
     let expected_value = serde_json::json!({
         "data": [
             {

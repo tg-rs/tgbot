@@ -5,15 +5,27 @@ use crate::types::{ChannelChat, Integer, User};
 #[cfg(test)]
 mod tests;
 
-/// Contains information about original message
+/// Represents an information about original message
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Forward {
-    /// Sender of the original message
-    #[serde(flatten)]
-    pub from: ForwardFrom,
     /// Date the original message was sent in Unix time
     #[serde(rename = "forward_date")]
     pub date: Integer,
+    /// Sender of the original message
+    #[serde(flatten)]
+    pub from: ForwardFrom,
+}
+
+impl Forward {
+    /// Creates a new Forward
+    ///
+    /// # Arguments
+    ///
+    /// * date - Date of the original message
+    /// * from - Sender of the original message
+    pub fn new(date: Integer, from: ForwardFrom) -> Self {
+        Self { from, date }
+    }
 }
 
 /// Sender of the original message
@@ -22,10 +34,6 @@ pub struct Forward {
 #[serde(from = "RawForwardFrom")]
 #[serde(into = "RawForwardFrom")]
 pub enum ForwardFrom {
-    /// Information about user
-    User(User),
-    /// Name of user who has hidden link to account
-    HiddenUser(String),
     /// Information about channel
     Channel {
         /// Information about the original chat
@@ -36,6 +44,10 @@ pub enum ForwardFrom {
         #[serde(skip_serializing_if = "Option::is_none")]
         signature: Option<String>,
     },
+    /// Name of user who has hidden link to account
+    HiddenUser(String),
+    /// Information about user
+    User(User),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

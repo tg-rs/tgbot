@@ -8,17 +8,13 @@ use crate::{
 #[test]
 fn webhook_info() {
     assert_json_eq(
-        WebhookInfo {
-            url: String::from("https://example.com/tg-webhook"),
-            has_custom_certificate: true,
-            pending_update_count: 1,
-            ip_address: Some(String::from("127.0.0.1")),
-            last_error_date: Some(0),
-            last_error_message: Some(String::from("error")),
-            last_synchronization_error_date: Some(0),
-            max_connections: Some(10),
-            allowed_updates: Some(vec![AllowedUpdate::Message, AllowedUpdate::Poll]),
-        },
+        WebhookInfo::new("https://example.com/tg-webhook", true, 1)
+            .with_ip_address("127.0.0.1")
+            .with_last_error_date(0)
+            .with_last_error_message("error")
+            .with_last_synchronization_error_date(0)
+            .with_max_connections(10)
+            .with_allowed_updates([AllowedUpdate::Message, AllowedUpdate::Poll]),
         serde_json::json!({
             "url": "https://example.com/tg-webhook",
             "has_custom_certificate": true,
@@ -32,17 +28,7 @@ fn webhook_info() {
         }),
     );
     assert_json_eq(
-        WebhookInfo {
-            url: String::from("https://example.com/tg-webhook"),
-            has_custom_certificate: true,
-            pending_update_count: 1,
-            ip_address: None,
-            last_error_date: None,
-            last_error_message: None,
-            last_synchronization_error_date: None,
-            max_connections: None,
-            allowed_updates: None,
-        },
+        WebhookInfo::new("https://example.com/tg-webhook", true, 1),
         serde_json::json!({
             "url": "https://example.com/tg-webhook",
             "has_custom_certificate": true,
@@ -61,7 +47,7 @@ fn delete_webhook() {
                 "drop_pending_updates": false
             }),
         ),
-        DeleteWebhook::default().drop_pending_updates(false),
+        DeleteWebhook::default().with_drop_pending_updates(false),
     );
 }
 
@@ -98,12 +84,12 @@ fn set_webhook() {
             }),
         ),
         SetWebhook::new("url")
-            .certificate("cert")
-            .ip_address("127.0.0.1")
-            .max_connections(10)
-            .allowed_updates(updates)
+            .with_certificate("cert")
+            .with_ip_address("127.0.0.1")
+            .with_max_connections(10)
+            .with_allowed_updates(updates)
             .add_allowed_update(AllowedUpdate::Message)
-            .drop_pending_updates(true)
-            .secret_token("secret-token"),
+            .with_drop_pending_updates(true)
+            .with_secret_token("secret-token"),
     );
 }

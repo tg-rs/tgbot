@@ -8,18 +8,18 @@ use crate::types::{
 
 #[test]
 fn inline_query_result_article() {
-    let result = InlineQueryResultArticle::new("id", "title", InputMessageContentText::new("text"));
+    let result = InlineQueryResultArticle::new("id", InputMessageContentText::new("text"), "title");
     assert_json_eq(
         InlineQueryResult::from(
             result
                 .clone()
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .url("URL")
-                .hide_url(true)
-                .description("desc")
-                .thumbnail_url("thumb-url")
-                .thumbnail_width(200)
-                .thumbnail_height(200),
+                .with_description("desc")
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_hide_url(true)
+                .with_thumbnail_url("thumb-url")
+                .with_thumbnail_width(200)
+                .with_thumbnail_height(200)
+                .with_url("URL"),
         ),
         serde_json::json!({
             "type": "article",

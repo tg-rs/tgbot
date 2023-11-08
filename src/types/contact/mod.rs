@@ -8,121 +8,223 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Phone contact
+/// Represents a phone contact
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Contact {
-    /// Contact's phone number
-    pub phone_number: String,
-    /// Contact's first name
+    /// First name
     pub first_name: String,
-    /// Contact's last name
+    /// Phone number
+    pub phone_number: String,
+    /// Last name
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
-    /// Contact's user identifier in Telegram
+    /// Identifier in Telegram
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_id: Option<Integer>,
-    /// Additional data about the contact in the form of a vCard
+    /// Additional data in the form of a vCard
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vcard: Option<String>,
 }
 
-/// Send phone contacts
-#[derive(Clone, Debug, Serialize)]
-pub struct SendContact {
-    chat_id: ChatId,
-    phone_number: String,
-    first_name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    last_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    vcard: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    reply_markup: Option<ReplyMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    message_thread_id: Option<Integer>,
-}
-
-impl SendContact {
-    /// Creates a new SendContact with empty optional parameters
+impl Contact {
+    /// Creates a new contact
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * phone_number - Contact's phone number
-    /// * first_name - Contact's first name
-    pub fn new<C: Into<ChatId>, S: Into<String>>(chat_id: C, phone_number: S, first_name: S) -> Self {
-        SendContact {
-            chat_id: chat_id.into(),
-            phone_number: phone_number.into(),
+    /// * first_name - First name
+    /// * phone_number - Phone number
+    pub fn new<A, B>(first_name: A, phone_number: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
             first_name: first_name.into(),
+            phone_number: phone_number.into(),
             last_name: None,
+            user_id: None,
             vcard: None,
-            disable_notification: None,
-            protect_content: None,
-            reply_to_message_id: None,
-            allow_sending_without_reply: None,
-            reply_markup: None,
-            message_thread_id: None,
         }
     }
 
-    /// Contact's last name
-    pub fn last_name<S: Into<String>>(mut self, last_name: S) -> Self {
-        self.last_name = Some(last_name.into());
-        self
-    }
-
-    /// Additional data about the contact in the form of a vCard, 0-2048 bytes
-    pub fn vcard<S: Into<String>>(mut self, vcard: S) -> Self {
-        self.vcard = Some(vcard.into());
-        self
-    }
-
-    /// Sends the message silently
+    /// Sets a new last name
     ///
-    /// Users will receive a notification with no sound
-    pub fn disable_notification(mut self, disable_notification: bool) -> Self {
-        self.disable_notification = Some(disable_notification);
+    /// # Arguments
+    ///
+    /// * value - Last name
+    pub fn with_last_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.last_name = Some(value.into());
         self
     }
 
-    /// Protects the contents of the sent message from forwarding and saving
-    pub fn protect_content(mut self, protect_content: bool) -> Self {
-        self.protect_content = Some(protect_content);
+    /// Sets a new user ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - User ID
+    pub fn with_user_id(mut self, value: Integer) -> Self {
+        self.user_id = Some(value);
         self
     }
 
-    /// If the message is a reply, ID of the original message
-    pub fn reply_to_message_id(mut self, reply_to_message_id: Integer) -> Self {
-        self.reply_to_message_id = Some(reply_to_message_id);
+    /// Sets a new vCard
+    ///
+    /// # Arguments
+    ///
+    /// * value - vCard
+    pub fn with_vcard<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.vcard = Some(value.into());
+        self
+    }
+}
+
+/// Send a phone contact
+#[derive(Clone, Debug, Serialize)]
+pub struct SendContact {
+    chat_id: ChatId,
+    first_name: String,
+    phone_number: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    allow_sending_without_reply: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    last_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    message_thread_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_markup: Option<ReplyMarkup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_to_message_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    vcard: Option<String>,
+}
+
+impl SendContact {
+    /// Creates a new SendContact
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Unique identifier of the target chat
+    /// * first_name - First name
+    /// * phone_number - Phone number
+    pub fn new<A, B, C>(chat_id: A, first_name: B, phone_number: C) -> Self
+    where
+        A: Into<ChatId>,
+        B: Into<String>,
+        C: Into<String>,
+    {
+        SendContact {
+            chat_id: chat_id.into(),
+            first_name: first_name.into(),
+            phone_number: phone_number.into(),
+            allow_sending_without_reply: None,
+            disable_notification: None,
+            last_name: None,
+            message_thread_id: None,
+            protect_content: None,
+            reply_markup: None,
+            reply_to_message_id: None,
+            vcard: None,
+        }
+    }
+
+    /// Sets a new value for the `allow_sending_without_reply` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the message should be sent even
+    ///           if the specified replied-to message is not found
+    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
+        self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Pass True, if the message should be sent even
-    /// if the specified replied-to message is not found
-    pub fn allow_sending_without_reply(mut self, allow_sending_without_reply: bool) -> Self {
-        self.allow_sending_without_reply = Some(allow_sending_without_reply);
+    /// Sets a new value for the `disable_notification` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Send the message silently or not; a user will receive a notification without sound
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
+        self.disable_notification = Some(value);
         self
     }
 
-    /// Additional interface options
-    pub fn reply_markup<R: Into<ReplyMarkup>>(mut self, reply_markup: R) -> Self {
-        self.reply_markup = Some(reply_markup.into());
+    /// Sets a last name
+    ///
+    /// # Arguments
+    ///
+    /// * value - Contact's last name
+    pub fn with_last_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.last_name = Some(value.into());
         self
     }
 
-    /// Unique identifier for the target message thread (topic) of the forum;
-    /// for forum supergroups only
-    pub fn message_thread_id(mut self, message_thread_id: Integer) -> Self {
-        self.message_thread_id = Some(message_thread_id);
+    /// Sets a message thread ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the target message thread (topic) of the forum;
+    ///           for forum supergroups only
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.message_thread_id = Some(value);
+        self
+    }
+
+    /// Sets a value for the `protect_content` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    pub fn with_protect_content(mut self, value: bool) -> Self {
+        self.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a reply markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - Markup
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    where
+        T: Into<ReplyMarkup>,
+    {
+        self.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new message ID for a reply
+    ///
+    /// # Arguments
+    ///
+    /// * value - ID of the original message
+    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
+        self.reply_to_message_id = Some(value);
+        self
+    }
+
+    /// Sets a vCard
+    ///
+    /// # Arguments
+    ///
+    /// * value - Additional data about the contact in the form of a vCard, 0-2048 bytes
+    pub fn with_vcard<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.vcard = Some(value.into());
         self
     }
 }

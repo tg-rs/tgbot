@@ -11,17 +11,17 @@ mod tests;
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum ChatId {
-    /// @username of a chat
-    Username(String),
     /// ID of a chat
     Id(Integer),
+    /// Username of a chat in the format `@username`
+    Username(String),
 }
 
 impl fmt::Display for ChatId {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ChatId::Username(username) => write!(out, "{}", username),
             ChatId::Id(chat_id) => write!(out, "{}", chat_id),
+            ChatId::Username(username) => write!(out, "{}", username),
         }
     }
 }

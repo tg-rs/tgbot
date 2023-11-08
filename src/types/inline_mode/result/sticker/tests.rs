@@ -13,8 +13,8 @@ fn inline_query_result_cached_sticker() {
         InlineQueryResult::from(
             result
                 .clone()
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]])
-                .input_message_content(InputMessageContentText::new("text")),
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "sticker",

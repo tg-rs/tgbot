@@ -1,25 +1,14 @@
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, ForceReply, InputFile, PhotoSize, SendVideoNote, VideoNote},
+    types::{tests::assert_json_eq, ForceReply, InputFile, PhotoSize, SendVideoNote, SendVideoNoteError, VideoNote},
 };
 
 #[test]
 fn video_note() {
     assert_json_eq(
-        VideoNote {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            length: 124,
-            duration: 1234,
-            thumbnail: Some(PhotoSize {
-                file_id: String::from("thumb-file-id"),
-                file_unique_id: String::from("thumb-file-unique-id"),
-                width: 24,
-                height: 24,
-                file_size: Some(1024),
-            }),
-            file_size: Some(10240),
-        },
+        VideoNote::new(1234, "file-id", "file-unique-id", 124)
+            .with_thumbnail(PhotoSize::new("thumb-file-id", "thumb-file-unique-id", 24, 24).with_file_size(1024))
+            .with_file_size(10240),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
@@ -36,19 +25,12 @@ fn video_note() {
         }),
     );
     assert_json_eq(
-        VideoNote {
-            file_id: String::from("file-id"),
-            file_unique_id: String::from("file-unique-id"),
-            length: 50,
-            duration: 60,
-            thumbnail: None,
-            file_size: None,
-        },
+        VideoNote::new(1234, "file-id", "file-unique-id", 124),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
-            "length": 50,
-            "duration": 60,
+            "length": 124,
+            "duration": 1234,
         }),
     );
 }
@@ -73,7 +55,7 @@ fn send_video_note() {
                 ("video_note", InputFile::file_id("file-id").into()),
                 ("duration", 50.into()),
                 ("length", 100.into()),
-                ("thumbnail", InputFile::file_id("thumb-file-id").into()),
+                ("thumbnail", InputFile::url("https://example.com/image.jpg").into()),
                 ("disable_notification", true.into()),
                 ("protect_content", true.into()),
                 ("reply_to_message_id", 1.into()),
@@ -86,15 +68,24 @@ fn send_video_note() {
             ]),
         ),
         SendVideoNote::new(1, InputFile::file_id("file-id"))
-            .duration(50)
-            .length(100)
-            .thumbnail(InputFile::file_id("thumb-file-id"))
-            .disable_notification(true)
-            .protect_content(true)
-            .reply_to_message_id(1)
-            .allow_sending_without_reply(true)
-            .reply_markup(ForceReply::new(true))
+            .with_allow_sending_without_reply(true)
+            .with_disable_notification(true)
+            .with_duration(50)
+            .with_length(100)
+            .with_message_thread_id(1)
+            .with_protect_content(true)
+            .with_reply_to_message_id(1)
+            .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .message_thread_id(1),
+            .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
+            .unwrap(),
     );
+}
+
+#[test]
+fn send_video_note_with_thumbnail() {
+    let err = SendVideoNote::new(1, InputFile::file_id("file-id"))
+        .with_thumbnail(InputFile::file_id("thumb-file-id"))
+        .unwrap_err();
+    assert!(matches!(err, SendVideoNoteError::InvalidThumbnail));
 }

@@ -4,8 +4,8 @@ use crate::types::{tests::assert_json_eq, InlineKeyboardButton, InlineQueryResul
 fn inline_query_result_game() {
     assert_json_eq(
         InlineQueryResult::from(
-            InlineQueryResultGame::new("id", "name")
-                .reply_markup(vec![vec![InlineKeyboardButton::with_url("text", "url")]]),
+            InlineQueryResultGame::new("name", "id")
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
         ),
         serde_json::json!({
             "type": "game",
@@ -15,7 +15,7 @@ fn inline_query_result_game() {
         }),
     );
     assert_json_eq(
-        InlineQueryResult::from(InlineQueryResultGame::new("id", "name")),
+        InlineQueryResult::from(InlineQueryResultGame::new("name", "id")),
         serde_json::json!({
             "type": "game",
             "id": "id",

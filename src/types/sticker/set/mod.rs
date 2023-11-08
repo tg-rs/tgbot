@@ -18,27 +18,84 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Sticker set
+/// Represents a sticker set
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct StickerSet {
-    /// Sticker set name
-    pub name: String,
-    /// Sticker set title
-    pub title: String,
-    /// List of all set stickers
-    pub stickers: Vec<Sticker>,
-    /// Type of stickers in the set
-    pub sticker_type: StickerType,
-    /// True, if the sticker set contains animated stickers
+    /// Whether the sticker set contains animated stickers
     pub is_animated: bool,
-    /// True, if the sticker set contains video stickers
+    /// Whether the sticker set contains video stickers
     pub is_video: bool,
+    /// Name
+    pub name: String,
+    /// Type of stickers
+    pub sticker_type: StickerType,
+    /// List of stickers
+    pub stickers: Vec<Sticker>,
+    /// Title
+    pub title: String,
     /// Sticker set thumbnail in the .WEBP or .TGS format
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 
-/// Add a new sticker to a set created by the bot
+impl StickerSet {
+    /// Creates a new StickerSet
+    ///
+    /// # Arguments
+    ///
+    /// * name - Name
+    /// * sticker_type - Type of stickers
+    /// * stickers - List of stickers
+    /// * title - Title
+    pub fn new<A, B, C>(name: A, sticker_type: StickerType, stickers: C, title: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+        C: IntoIterator<Item = Sticker>,
+    {
+        Self {
+            is_animated: false,
+            is_video: false,
+            name: name.into(),
+            sticker_type,
+            stickers: stickers.into_iter().collect(),
+            title: title.into(),
+            thumbnail: None,
+        }
+    }
+
+    /// Sets a new value for the `is_animated` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the sticker set contains animated stickers
+    pub fn with_is_animated(mut self, value: bool) -> Self {
+        self.is_animated = value;
+        self
+    }
+
+    /// Sets a new value for the `is_video` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether the sticker set contains video stickers
+    pub fn with_is_video(mut self, value: bool) -> Self {
+        self.is_video = value;
+        self
+    }
+
+    /// Sets a new thumbnail
+    ///
+    /// # Arguments
+    ///
+    /// * value - Thumbnail
+    pub fn with_thumbnail(mut self, value: PhotoSize) -> Self {
+        self.thumbnail = Some(value);
+        self
+    }
+}
+
+/// Adds a new sticker to a set created by the bot
 ///
 /// The format of the added sticker must match the format of the other stickers in the set.
 /// Emoji sticker sets can have up to 200 stickers.
@@ -64,7 +121,7 @@ impl AddStickerToSet {
         let mut form: Form = sticker.try_into()?;
         form.insert_field("user_id", user_id);
         form.insert_field("name", name.into());
-        Ok(AddStickerToSet { form })
+        Ok(Self { form })
     }
 }
 
@@ -76,29 +133,29 @@ impl Method for AddStickerToSet {
     }
 }
 
-/// Create new sticker set owned by a user
+/// Creates a new sticker set owned by a user
 ///
-/// The bot will be able to edit the created sticker set
+/// The bot will be able to edit the created sticker set.
 #[derive(Debug)]
 pub struct CreateNewStickerSet {
     form: Form,
 }
 
 impl CreateNewStickerSet {
-    /// Creates a new CreateNewStickerSet with empty optional parameters
+    /// Creates a new CreateNewStickerSet
     ///
     /// # Arguments
     ///
     /// * user_id - User identifier of created sticker set owner
-    /// * name - Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals)
-    ///          Can contain only english letters, digits and underscores
-    ///          Must begin with a letter, can't contain consecutive underscores
-    ///          and must end in “_by_<bot username>”
-    ///          <bot_username> is case insensitive
+    /// * name - Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals);
+    ///          can contain only english letters, digits and underscores;
+    ///          must begin with a letter, can't contain consecutive underscores
+    ///          and must end in “_by_<bot username>”;
+    ///          <bot_username> is case insensitive;
     ///          1-64 characters
-    /// * title - Sticker set title, 1-64 characters
+    /// * title - Sticker set title; 1-64 characters
     /// * stickers - A list of 1-50 initial stickers to be added to the sticker set
-    /// * sticker_format - Format of stickers in the set,
+    /// * sticker_format - Format of stickers in the set
     pub fn new<A, B>(
         user_id: Integer,
         name: A,
@@ -115,22 +172,30 @@ impl CreateNewStickerSet {
         form.insert_field("name", name.into());
         form.insert_field("title", title.into());
         form.insert_field("sticker_format", sticker_format.as_ref());
-        Ok(CreateNewStickerSet { form })
+        Ok(Self { form })
     }
 
-    /// Pass True if stickers in the sticker set must be repainted to the color
-    /// of text when used in messages, the accent color if used as emoji status,
-    /// white on chat photos, or another appropriate color based on context;
-    /// for custom emoji sticker sets only
-    pub fn needs_repainting(mut self, value: bool) -> Self {
+    /// Sets a new value for the `needs_repainting` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether stickers in the sticker set must be repainted to the color
+    ///           of text when used in messages, the accent color if used as emoji status,
+    ///           white on chat photos, or another appropriate color based on context;
+    ///           for custom emoji sticker sets only
+    pub fn with_needs_repainting(mut self, value: bool) -> Self {
         self.form.insert_field("needs_repainting", value);
         self
     }
 
-    /// Type of stickers in the set, pass “regular”, “mask”, or “custom_emoji”
+    /// Sets a new sticker type
+    ///
+    /// # Arguments
+    ///
+    /// * value - Type of stickers in the set
     ///
     /// By default, a regular sticker set is created.
-    pub fn sticker_type(mut self, value: StickerType) -> Self {
+    pub fn with_sticker_type(mut self, value: StickerType) -> Self {
         self.form.insert_field("sticker_type", value.as_ref());
         self
     }
@@ -144,7 +209,7 @@ impl Method for CreateNewStickerSet {
     }
 }
 
-/// Delete a sticker from a set created by the bot
+/// Deletes a sticker from a set created by the bot
 #[derive(Clone, Debug, Serialize)]
 pub struct DeleteStickerFromSet {
     sticker: String,
@@ -156,8 +221,11 @@ impl DeleteStickerFromSet {
     /// # Arguments
     ///
     /// * sticker - File identifier of the sticker
-    pub fn new<S: Into<String>>(sticker: S) -> Self {
-        DeleteStickerFromSet {
+    pub fn new<T>(sticker: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
             sticker: sticker.into(),
         }
     }
@@ -171,7 +239,7 @@ impl Method for DeleteStickerFromSet {
     }
 }
 
-/// Delete a sticker set that was created by the bot
+/// Deletes a sticker set that was created by the bot
 #[derive(Clone, Debug, Serialize)]
 pub struct DeleteStickerSet {
     name: String,
@@ -199,7 +267,7 @@ impl Method for DeleteStickerSet {
     }
 }
 
-/// Get a sticker set
+/// Returns a sticker set
 #[derive(Clone, Debug, Serialize)]
 pub struct GetStickerSet {
     name: String,
@@ -211,8 +279,11 @@ impl GetStickerSet {
     /// # Arguments
     ///
     /// * name - Name of the sticker set
-    pub fn new<S: Into<String>>(name: S) -> Self {
-        GetStickerSet { name: name.into() }
+    pub fn new<T>(name: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self { name: name.into() }
     }
 }
 
@@ -224,7 +295,7 @@ impl Method for GetStickerSet {
     }
 }
 
-/// Set the thumbnail of a custom emoji sticker set
+/// Sets the thumbnail of a custom emoji sticker set
 #[derive(Clone, Debug, Serialize)]
 pub struct SetCustomEmojiStickerSetThumbnail {
     name: String,
@@ -248,10 +319,14 @@ impl SetCustomEmojiStickerSetThumbnail {
         }
     }
 
-    /// Custom emoji identifier of a sticker from the sticker set
+    /// Sets a new custom emoji ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Custom emoji identifier of a sticker from the sticker set
     ///
     /// Pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.
-    pub fn custom_emoji_id<T>(mut self, value: T) -> Self
+    pub fn with_custom_emoji_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
     {
@@ -268,11 +343,11 @@ impl Method for SetCustomEmojiStickerSetThumbnail {
     }
 }
 
-/// Move a sticker in a set created by the bot to a specific position
+/// Moves a sticker in a set created by the bot to a specific position
 #[derive(Clone, Debug, Serialize)]
 pub struct SetStickerPositionInSet {
-    sticker: String,
     position: Integer,
+    sticker: String,
 }
 
 impl SetStickerPositionInSet {
@@ -280,12 +355,15 @@ impl SetStickerPositionInSet {
     ///
     /// # Arguments
     ///
-    /// * sticker - File identifier of the sticker
     /// * position - New sticker position in the set, zero-based
-    pub fn new<S: Into<String>>(sticker: S, position: Integer) -> Self {
-        SetStickerPositionInSet {
-            sticker: sticker.into(),
+    /// * sticker - File identifier of the sticker
+    pub fn new<T>(position: Integer, sticker: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
             position,
+            sticker: sticker.into(),
         }
     }
 }
@@ -298,7 +376,7 @@ impl Method for SetStickerPositionInSet {
     }
 }
 
-/// Set the title of a created sticker set
+/// Sets a title of a created sticker set
 #[derive(Clone, Debug, Serialize)]
 pub struct SetStickerSetTitle {
     name: String,
@@ -311,7 +389,7 @@ impl SetStickerSetTitle {
     /// # Arguments
     ///
     /// * name - Sticker set name
-    /// * title - Sticker set title, 1-64 characters
+    /// * title - Sticker set title; 1-64 characters
     pub fn new<A, B>(name: A, title: B) -> Self
     where
         A: Into<String>,
@@ -332,7 +410,7 @@ impl Method for SetStickerSetTitle {
     }
 }
 
-/// Use this method to set the thumbnail of a sticker set
+/// Sets a thumbnail of a sticker set
 #[derive(Debug)]
 pub struct SetStickerSetThumbnail {
     form: Form,
@@ -354,7 +432,11 @@ impl SetStickerSetThumbnail {
         }
     }
 
-    /// A .WEBP or .PNG image with the thumbnail
+    /// Sets a new thumbnail
+    ///
+    /// # Arguments
+    ///
+    /// * value - A .WEBP or .PNG image with the thumbnail
     ///
     /// Must be up to 128 kilobytes in size and have a width and height of exactly 100px,
     /// or a .TGS animation with a thumbnail up to 32 kilobytes in size
@@ -365,11 +447,11 @@ impl SetStickerSetThumbnail {
     ///
     /// Animated and video sticker set thumbnails can't be uploaded via HTTP URL.
     /// If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
-    pub fn thumbnail<T>(mut self, thumb: T) -> Self
+    pub fn with_thumbnail<T>(mut self, value: T) -> Self
     where
         T: Into<InputFile>,
     {
-        self.form.insert_field("thumbnail", thumb.into());
+        self.form.insert_field("thumbnail", value.into());
         self
     }
 }

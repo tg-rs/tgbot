@@ -1,22 +1,14 @@
-use std::{error::Error, fmt};
-
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 
 use crate::types::{
     Animation,
     Audio,
-    ChatShared,
     Contact,
     Dice,
     Document,
-    ForumTopicClosed,
-    ForumTopicCreated,
-    ForumTopicEdited,
-    ForumTopicReopened,
+    ForumTopicIconColor,
     Game,
-    GeneralForumTopicHidden,
-    GeneralForumTopicUnhidden,
     Integer,
     Invoice,
     Location,
@@ -24,97 +16,110 @@ use crate::types::{
     PassportData,
     PhotoSize,
     Poll,
-    ProximityAlertTriggered,
     Sticker,
-    Story,
     SuccessfulPayment,
     Text,
-    TextEntities,
-    TextEntityError,
-    True,
     User,
-    UserShared,
     Venue,
     Video,
     VideoNote,
     Voice,
     WebAppData,
-    WriteAccessAllowed,
 };
+
+use self::raw::*;
 
 #[cfg(test)]
 mod tests;
 
-/// Contains message data
+mod raw;
+
+/// Represents a message data
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(rename_all = "snake_case")]
 pub enum MessageData {
-    /// Message is an animation, information about the animation
+    /// Information about the animation
     Animation(Animation),
-    /// A service message about a change in auto-delete timer settings
+    /// Auto-delete timer settings changed
     #[serde(rename = "message_auto_delete_timer_changed")]
-    AutoDeleteTimerChanged {
-        /// New auto-delete time for messages in the chat
-        #[serde(rename = "message_auto_delete_time")]
-        time: Integer,
-    },
-    /// Service message: the channel has been created
+    AutoDeleteTimerChanged(MessageDataAutoDeleteTimer),
+    /// The channel has been created
+    ///
     /// This field can‘t be received in a message coming through updates,
-    /// because bot can’t be a member of a channel when it is created
-    /// It can only be found in reply_to_message if someone replies to a very first message in a channel
+    /// because bot can’t be a member of a channel when it is created.
+    /// It can only be found in the `reply_to` field of the [`Message`] struct
+    /// if someone replies to a very first message in a channel.
     #[serde(
         deserialize_with = "RawDataFlag::deserialize_value",
         serialize_with = "RawDataFlag::serialize_value"
     )]
     ChannelChatCreated,
-    /// Service message: a chat was shared with the bot
-    ChatShared(ChatShared),
+    /// A chat was shared with the bot
+    ChatShared(MessageDataChatShared),
     /// The domain name of the website on which the user has logged in
     ConnectedWebsite(String),
-    /// Message is a shared contact, information about the contact
+    /// Information about the shared contact
     Contact(Contact),
-    /// Service message: the chat photo was deleted
+    /// The chat photo was deleted
     #[serde(
         deserialize_with = "RawDataFlag::deserialize_value",
         serialize_with = "RawDataFlag::serialize_value"
     )]
     DeleteChatPhoto,
-    /// Message is a dice with random value from 1 to 6
+    /// A dice with random value
     Dice(Dice),
-    /// Service message: forum topic closed
-    ForumTopicClosed(ForumTopicClosed),
-    /// Service message: forum topic created
-    ForumTopicCreated(ForumTopicCreated),
-    /// Service message: forum topic edited
-    ForumTopicEdited(ForumTopicEdited),
-    /// Service message: forum topic reopened
-    ForumTopicReopened(ForumTopicReopened),
-    /// Message is a game, information about the game
+    /// Forum topic closed
+    #[serde(
+        deserialize_with = "RawDataEmpty::deserialize_value",
+        serialize_with = "RawDataEmpty::serialize_value"
+    )]
+    ForumTopicClosed,
+    /// Forum topic created
+    ForumTopicCreated(MessageDataForumTopicCreated),
+    /// Forum topic edited
+    ForumTopicEdited(MessageDataForumTopicEdited),
+    /// Forum topic reopened
+    #[serde(
+        deserialize_with = "RawDataEmpty::deserialize_value",
+        serialize_with = "RawDataEmpty::serialize_value"
+    )]
+    ForumTopicReopened,
+    /// Information about the game
     Game(Game),
-    /// Service message: the 'General' forum topic hidden
-    GeneralForumTopicHidden(GeneralForumTopicHidden),
-    /// Service message: the 'General' forum topic unhidden
-    GeneralForumTopicUnhidden(GeneralForumTopicUnhidden),
-    /// Service message: the group has been created
+    /// The 'General' forum topic hidden
+    #[serde(
+        deserialize_with = "RawDataEmpty::deserialize_value",
+        serialize_with = "RawDataEmpty::serialize_value"
+    )]
+    GeneralForumTopicHidden,
+    /// The 'General' forum topic unhidden
+    #[serde(
+        deserialize_with = "RawDataEmpty::deserialize_value",
+        serialize_with = "RawDataEmpty::serialize_value"
+    )]
+    GeneralForumTopicUnhidden,
+    /// The group has been created
     #[serde(
         deserialize_with = "RawDataFlag::deserialize_value",
         serialize_with = "RawDataFlag::serialize_value"
     )]
     GroupChatCreated,
-    /// Message is an invoice for a payment, information about the invoice
+    /// Information about the invoice for a payment
     Invoice(Invoice),
     /// A member was removed from the group
-    /// (this member may be the bot itself)
+    ///
+    /// This member may be the bot itself.
     LeftChatMember(User),
-    /// Message is a shared location, information about the location
+    /// Information about the shared location
     Location(Location),
     /// The supergroup has been migrated from a group with the specified identifier
     MigrateFromChatId(Integer),
     /// The group has been migrated to a supergroup with the specified identifier
     MigrateToChatId(Integer),
     /// New members that were added to the group or supergroup
-    /// (the bot itself may be one of these members)
+    ///
+    /// The bot itself may be one of these members.
     NewChatMembers(Vec<User>),
     /// A chat photo was change to this value
     NewChatPhoto(Vec<PhotoSize>),
@@ -123,282 +128,594 @@ pub enum MessageData {
     /// Telegram Passport data
     PassportData(PassportData),
     /// Specified message was pinned
-    /// Note that the Message object in this field will not contain
-    /// further reply_to_message fields even if it is itself a reply
-    PinnedMessage(Box<Message>),
-    /// Message is a native poll, information about the poll
-    Poll(Poll),
-    /// Service message
     ///
+    /// Note that the Message object in variant will not contain
+    /// further `reply_to` field even if it is itself a reply.
+    PinnedMessage(Box<Message>),
+    /// Information about the native poll
+    Poll(Poll),
     /// A user in the chat triggered another user's proximity alert while sharing Live Location
-    ProximityAlertTriggered(ProximityAlertTriggered),
-    /// Message is a sticker, information about the sticker
+    ProximityAlertTriggered(MessageDataProximityAlert),
+    /// Information about the sticker
     Sticker(Sticker),
-    /// Message is a forwarded story
-    Story(Story),
-    /// Message is a service message about a successful payment, information about the payment
+    /// A forwarded story
+    #[serde(
+        deserialize_with = "RawDataEmpty::deserialize_value",
+        serialize_with = "RawDataEmpty::serialize_value"
+    )]
+    Story,
+    /// Information about the successful payment
     SuccessfulPayment(SuccessfulPayment),
-    /// Service message: the supergroup has been created
+    /// The supergroup has been created
+    ///
     /// This field can‘t be received in a message coming through updates,
     /// because bot can’t be a member of a supergroup when it is created
-    /// It can only be found in reply_to_message if someone replies to a very first message
-    /// in a directly created supergroup
+    /// It can only be found in the `reply_to` field of the [`Message`] struct
+    /// if someone replies to a very first message
+    /// in a directly created supergroup.
     #[serde(
         deserialize_with = "RawDataFlag::deserialize_value",
         serialize_with = "RawDataFlag::serialize_value"
     )]
     SupergroupChatCreated,
-    /// Service message: a user was shared with the bot
-    UserShared(UserShared),
-    /// Message is a venue, information about the venue
+    /// A user was shared with the bot
+    UserShared(MessageDataUserShared),
+    /// Information about the venue
     Venue(Venue),
-    /// Message is a video note, information about the video message
+    /// Information about the video note
     VideoNote(VideoNote),
-    /// A service message about a voice chat ended in the chat
-    VideoChatEnded {
-        /// Voice chat duration; in seconds
-        duration: Integer,
-    },
-    /// A service message about new members invited to a voice chat
-    VideoChatParticipantsInvited {
-        /// New members that were invited to the voice chat
-        #[serde(skip_serializing_if = "Option::is_none")]
-        users: Option<Vec<User>>,
-    },
-    /// A service message about a voice chat scheduled in the chat
-    VideoChatScheduled {
-        /// Point in time (Unix timestamp) when the voice chat
-        /// is supposed to be started by a chat administrator
-        start_date: Integer,
-    },
-    /// A service message about a voice chat started in the chat
+    /// A video chat ended in the chat
+    VideoChatEnded(MessageDataVideoChatEnded),
+    /// New members invited to a video chat
+    VideoChatParticipantsInvited(MessageDataVideoChatParticipantsInvited),
+    /// A video chat scheduled in the chat
+    VideoChatScheduled(MessageDataVideoChatScheduled),
+    /// A video chat started in the chat
     #[serde(
         deserialize_with = "RawDataEmpty::deserialize_value",
         serialize_with = "RawDataEmpty::serialize_value"
     )]
     VideoChatStarted,
-    /// Service message: data sent by a Web App
+    /// Data sent by a Web App
     WebAppData(WebAppData),
-    /// Service message: the user allowed the bot to write messages
+    /// The user allowed the bot to write messages
     /// after adding it to the attachment or side menu,
     /// launching a Web App from a link,
     /// or accepting an explicit request from a Web App
-    /// sent by the method requestWriteAccess
-    WriteAccessAllowed(WriteAccessAllowed),
-    /// Audio message
+    /// sent by the method `requestWriteAccess`.
+    WriteAccessAllowed(MessageDataWriteAccess),
+    /// Audio
     #[serde(untagged)]
-    Audio {
-        /// Audio caption
-        #[serde(
-            flatten,
-            deserialize_with = "MessageCaption::deserialize_value",
-            serialize_with = "MessageCaption::serialize_value",
-            skip_serializing_if = "Option::is_none"
-        )]
-        caption: Option<Text>,
-        /// Audio data
-        #[serde(rename = "audio")]
-        data: Audio,
-    },
-    /// Document message
+    Audio(MessageDataAudio),
+    /// Document
     #[serde(untagged)]
-    Document {
-        /// Document caption
-        #[serde(
-            flatten,
-            deserialize_with = "MessageCaption::deserialize_value",
-            serialize_with = "MessageCaption::serialize_value",
-            skip_serializing_if = "Option::is_none"
-        )]
-        caption: Option<Text>,
-        /// Document data
-        #[serde(rename = "document")]
-        data: Document,
-    },
-    /// Message is a photo, available sizes of the photo
+    Document(MessageDataDocument),
+    /// Available sizes of the photo
     #[serde(untagged)]
-    Photo {
-        /// Photo caption
-        #[serde(
-            flatten,
-            deserialize_with = "MessageCaption::deserialize_value",
-            serialize_with = "MessageCaption::serialize_value",
-            skip_serializing_if = "Option::is_none"
-        )]
-        caption: Option<Text>,
-        /// Photos
-        #[serde(rename = "photo")]
-        data: Vec<PhotoSize>,
-    },
-    /// The actual UTF-8 text of the message, 0-4096 characters
+    Photo(MessageDataPhoto),
+    /// The actual UTF-8 text of the message; 0-4096 characters
     #[serde(
         deserialize_with = "RawDataText::deserialize_value",
         serialize_with = "RawDataText::serialize_value",
         untagged
     )]
     Text(Text),
-    /// Message is a video, information about the video
+    /// Video
     #[serde(untagged)]
-    Video {
-        /// Video caption
-        #[serde(
-            flatten,
-            deserialize_with = "MessageCaption::deserialize_value",
-            serialize_with = "MessageCaption::serialize_value",
-            skip_serializing_if = "Option::is_none"
-        )]
-        caption: Option<Text>,
-        /// Video data
-        #[serde(rename = "video")]
-        data: Video,
-    },
-    /// Message is a voice message, information about the file
+    Video(MessageDataVideo),
+    /// Voice
     #[serde(untagged)]
-    Voice {
-        /// Voice caption
-        #[serde(
-            flatten,
-            deserialize_with = "MessageCaption::deserialize_value",
-            serialize_with = "MessageCaption::serialize_value",
-            skip_serializing_if = "Option::is_none"
-        )]
-        caption: Option<Text>,
-        /// Voice data
-        #[serde(rename = "voice")]
-        data: Voice,
-    },
-    /// Message has no data
+    Voice(MessageDataVoice),
+    /// Arbitrary data for future variants
     #[serde(untagged)]
     Unknown(JsonValue),
 }
 
-#[derive(Deserialize, Serialize)]
-struct MessageCaption {
-    caption: String,
+/// Represents a service message about a change in auto-delete timer settings
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataAutoDeleteTimer {
+    /// New auto-delete time for messages in the chat; in seconds
+    #[serde(rename = "message_auto_delete_time")]
+    pub time: Integer,
+}
+
+impl MessageDataAutoDeleteTimer {
+    /// Creates a new MessageDataAutoDeleteTimer
+    ///
+    /// # Arguments
+    ///
+    /// * time - Time in seconds
+    pub fn new(time: Integer) -> Self {
+        Self { time }
+    }
+}
+
+/// Represents an audio message data
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataAudio {
+    /// Audio data
+    #[serde(rename = "audio")]
+    pub data: Audio,
+    /// Audio caption
+    #[serde(
+        flatten,
+        deserialize_with = "RawCaption::deserialize_value",
+        serialize_with = "RawCaption::serialize_value",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub caption: Option<Text>,
+}
+
+impl From<Audio> for MessageDataAudio {
+    fn from(value: Audio) -> Self {
+        Self {
+            data: value,
+            caption: None,
+        }
+    }
+}
+
+impl MessageDataAudio {
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - Caption
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<Text>,
+    {
+        self.caption = Some(value.into());
+        self
+    }
+}
+
+/// Represents an information about the chat
+/// whose identifier was shared with the bot
+/// using a [`crate::types::KeyboardButtonRequestChat`] button
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataChatShared {
+    /// Identifier of the shared chat
+    ///
+    /// The bot may not have access to the chat and could be unable to use this identifier,
+    /// unless the chat is already known to the bot by some other means.
+    pub chat_id: Integer,
+    /// Identifier of the request
+    pub request_id: Integer,
+}
+
+impl MessageDataChatShared {
+    /// Creates a new MessageDataChatShared
+    ///
+    /// # Arguments
+    ///
+    /// * chat_id - Identifier of the shared chat
+    /// * request_id - Identifier of the request
+    pub fn new(chat_id: Integer, request_id: Integer) -> Self {
+        Self { chat_id, request_id }
+    }
+}
+
+/// Represents an document message data
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataDocument {
+    /// Document data
+    #[serde(rename = "document")]
+    pub data: Document,
+    /// Document caption
+    #[serde(
+        flatten,
+        deserialize_with = "RawCaption::deserialize_value",
+        serialize_with = "RawCaption::serialize_value",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub caption: Option<Text>,
+}
+
+impl From<Document> for MessageDataDocument {
+    fn from(value: Document) -> Self {
+        Self {
+            data: value,
+            caption: None,
+        }
+    }
+}
+
+impl MessageDataDocument {
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - Caption
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<Text>,
+    {
+        self.caption = Some(value.into());
+        self
+    }
+}
+
+/// Represents a service message about a new forum topic created in the chat
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataForumTopicCreated {
+    /// Color of the icon
+    pub icon_color: ForumTopicIconColor,
+    /// Name
+    pub name: String,
+    /// Unique identifier of the custom emoji shown as the topic icon
     #[serde(skip_serializing_if = "Option::is_none")]
-    caption_entities: Option<TextEntities>,
+    pub icon_custom_emoji_id: Option<String>,
 }
 
-impl MessageCaption {
-    fn deserialize_value<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
+impl MessageDataForumTopicCreated {
+    /// Creates a new MessageDataForumTopicCreated
+    ///
+    /// # Arguments
+    ///
+    /// * icon_color - Color of the icon
+    /// * name - Name
+    pub fn new<A, B>(icon_color: A, name: B) -> Self
     where
-        D: Deserializer<'de>,
+        A: Into<ForumTopicIconColor>,
+        B: Into<String>,
     {
-        Option::<MessageCaption>::deserialize(deserializer).map(|wrapper| {
-            wrapper.map(
-                |MessageCaption {
-                     caption: data,
-                     caption_entities: entities,
-                 }| Text { data, entities },
-            )
-        })
+        Self {
+            icon_color: icon_color.into(),
+            name: name.into(),
+            icon_custom_emoji_id: None,
+        }
     }
 
-    fn serialize_value<S>(value: &Option<Text>, serializer: S) -> Result<S::Ok, S::Error>
+    /// Sets a new icon custom emoji ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Emoji ID
+    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
     where
-        S: Serializer,
+        T: Into<String>,
     {
-        let value = value.clone().map(|value| MessageCaption {
-            caption: value.data,
-            caption_entities: value.entities,
-        });
-        value.serialize(serializer)
-    }
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct RawDataEmpty {}
-
-impl RawDataEmpty {
-    fn deserialize_value<'de, D>(deserializer: D) -> Result<(), D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        RawDataEmpty::deserialize(deserializer).map(|_| ())
-    }
-
-    fn serialize_value<S>(serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        RawDataEmpty {}.serialize(serializer)
+        self.icon_custom_emoji_id = Some(value.into());
+        self
     }
 }
 
-#[derive(Deserialize, Serialize)]
-struct RawDataFlag;
-
-impl RawDataFlag {
-    fn deserialize_value<'de, D>(deserializer: D) -> Result<(), D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        True::deserialize(deserializer).map(|_| ())
-    }
-
-    fn serialize_value<S>(serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        True.serialize(serializer)
-    }
-}
-
-#[derive(Deserialize, Serialize)]
-struct RawDataText {
-    text: String,
+/// Represents a service message about an edited forum topic
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataForumTopicEdited {
+    /// New name, if it was edited
     #[serde(skip_serializing_if = "Option::is_none")]
-    entities: Option<TextEntities>,
+    pub name: Option<String>,
+    /// New identifier of the custom emoji shown as the topic icon,
+    /// if it was edited; an empty string if the icon was removed
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icon_custom_emoji_id: Option<String>,
 }
 
-impl RawDataText {
-    fn deserialize_value<'de, D>(deserializer: D) -> Result<Text, D::Error>
+impl MessageDataForumTopicEdited {
+    /// Sets a new name
+    ///
+    /// # Arguments
+    ///
+    /// * value - Name
+    pub fn with_name<T>(mut self, value: T) -> Self
     where
-        D: Deserializer<'de>,
+        T: Into<String>,
     {
-        RawDataText::deserialize(deserializer).map(|x| Text {
-            data: x.text,
-            entities: x.entities,
-        })
+        self.name = Some(value.into());
+        self
     }
 
-    fn serialize_value<S>(value: &Text, serializer: S) -> Result<S::Ok, S::Error>
+    /// Sets a new icon custom emoji ID
+    ///
+    /// # Arguments
+    ///
+    /// * value - Emoji ID
+    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
     where
-        S: Serializer,
+        T: Into<String>,
     {
-        RawDataText {
-            text: value.data.clone(),
-            entities: value.entities.clone(),
-        }
-        .serialize(serializer)
+        self.icon_custom_emoji_id = Some(value.into());
+        self
     }
 }
 
-/// A message data error when parsing message data
-#[derive(Debug)]
-pub enum MessageDataError {
-    /// Error when parsing text entities
-    TextEntity(TextEntityError),
+/// Represents a list of available sizes of the photo
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataPhoto {
+    /// Photos
+    #[serde(rename = "photo")]
+    pub data: Vec<PhotoSize>,
+    /// Photo caption
+    #[serde(
+        flatten,
+        deserialize_with = "RawCaption::deserialize_value",
+        serialize_with = "RawCaption::serialize_value",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub caption: Option<Text>,
 }
 
-impl Error for MessageDataError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        match self {
-            MessageDataError::TextEntity(err) => Some(err),
+impl<T> From<T> for MessageDataPhoto
+where
+    T: IntoIterator<Item = PhotoSize>,
+{
+    fn from(value: T) -> Self {
+        Self {
+            data: value.into_iter().collect(),
+            caption: None,
         }
     }
 }
 
-impl fmt::Display for MessageDataError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            MessageDataError::TextEntity(err) => err.fmt(out),
+impl MessageDataPhoto {
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - Caption
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<Text>,
+    {
+        self.caption = Some(value.into());
+        self
+    }
+}
+
+/// Represents a content of a service message,
+/// sent whenever a user in the chat triggers
+/// a proximity alert set by another user
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataProximityAlert {
+    /// The distance between the users
+    pub distance: Integer,
+    /// User that triggered the alert
+    pub traveler: User,
+    /// User that set the alert
+    pub watcher: User,
+}
+
+impl MessageDataProximityAlert {
+    /// Creates a new MessageDataProximityAlert
+    ///
+    /// # Arguments
+    ///
+    /// * distance - Distance between users
+    /// * traveler - User that triggered the alert
+    /// * watcher - User that set the alert
+    pub fn new(distance: Integer, traveler: User, watcher: User) -> Self {
+        Self {
+            distance,
+            traveler,
+            watcher,
         }
     }
 }
 
-impl From<TextEntityError> for MessageDataError {
-    fn from(err: TextEntityError) -> Self {
-        Self::TextEntity(err)
+/// Contains information about the user
+/// whose identifier was shared with the bot
+/// using a [`KeyboardButtonRequestUser`] button
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataUserShared {
+    /// Identifier of the request
+    pub request_id: Integer,
+    /// Identifier of the shared user
+    ///
+    /// The bot may not have access to the user and could be unable to use this identifier,
+    /// unless the user is already known to the bot by some other means.
+    pub user_id: Integer,
+}
+
+impl MessageDataUserShared {
+    /// Creates a new MessageData
+    ///
+    /// # Arguments
+    ///
+    /// * request_id - Identifier of the request
+    /// * user_id - Identifier of the shared user
+    pub fn new(request_id: Integer, user_id: Integer) -> Self {
+        Self { request_id, user_id }
+    }
+}
+
+/// Represents a video message data
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataVideo {
+    /// Video data
+    #[serde(rename = "video")]
+    pub data: Video,
+    /// Video caption
+    #[serde(
+        flatten,
+        deserialize_with = "RawCaption::deserialize_value",
+        serialize_with = "RawCaption::serialize_value",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub caption: Option<Text>,
+}
+
+impl From<Video> for MessageDataVideo {
+    fn from(value: Video) -> Self {
+        Self {
+            data: value,
+            caption: None,
+        }
+    }
+}
+
+impl MessageDataVideo {
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - Caption
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<Text>,
+    {
+        self.caption = Some(value.into());
+        self
+    }
+}
+
+/// Represents a service message about a video chat ended in the chat
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataVideoChatEnded {
+    /// Video chat duration; in seconds
+    pub duration: Integer,
+}
+
+impl MessageDataVideoChatEnded {
+    /// Creates a new MessageDataVideoChatEnded
+    ///
+    /// # Arguments
+    ///
+    /// * duration - Video chat duration; in seconds
+    pub fn new(duration: Integer) -> Self {
+        Self { duration }
+    }
+}
+
+/// A service message about new members invited to a video chat
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataVideoChatParticipantsInvited {
+    /// New members that were invited to the voice chat
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub users: Option<Vec<User>>,
+}
+
+impl<T> From<T> for MessageDataVideoChatParticipantsInvited
+where
+    T: IntoIterator<Item = User>,
+{
+    fn from(value: T) -> Self {
+        Self::default().with_users(value)
+    }
+}
+
+impl MessageDataVideoChatParticipantsInvited {
+    /// Sets a new list of users
+    ///
+    /// # Arguments
+    ///
+    /// * value - New members that were invited to the voice chat
+    pub fn with_users<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = User>,
+    {
+        self.users = Some(value.into_iter().collect());
+        self
+    }
+}
+
+/// A service message about a video chat scheduled in the chat
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataVideoChatScheduled {
+    /// Point in time (Unix timestamp) when the video chat
+    /// is supposed to be started by a chat administrator
+    pub start_date: Integer,
+}
+
+impl MessageDataVideoChatScheduled {
+    /// Creates a new MessageDataVideoChatScheduled
+    ///
+    /// # Arguments
+    ///
+    /// * start_date - Point in time (Unix timestamp)
+    pub fn new(start_date: Integer) -> Self {
+        Self { start_date }
+    }
+}
+
+/// Message is a voice message, information about the file
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct MessageDataVoice {
+    /// Voice data
+    #[serde(rename = "voice")]
+    pub data: Voice,
+    /// Voice caption
+    #[serde(
+        flatten,
+        deserialize_with = "RawCaption::deserialize_value",
+        serialize_with = "RawCaption::serialize_value",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub caption: Option<Text>,
+}
+
+impl From<Voice> for MessageDataVoice {
+    fn from(value: Voice) -> Self {
+        Self {
+            data: value,
+            caption: None,
+        }
+    }
+}
+
+impl MessageDataVoice {
+    /// Sets a new caption
+    ///
+    /// # Arguments
+    ///
+    /// * value - Caption
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<Text>,
+    {
+        self.caption = Some(value.into());
+        self
+    }
+}
+
+/// Represents a service message about a user allowing a bot to write messages
+/// after adding it to the attachment menu,
+/// launching a Web App from a link,
+/// or accepting an explicit request from a Web App
+/// sent by the method `requestWriteAccess`
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataWriteAccess {
+    /// Whether access was granted when the bot was added to the attachment or side menu
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from_attachment_menu: Option<bool>,
+    /// Whether access was granted after the user accepted an explicit request
+    /// from a Web App sent by the method `requestWriteAccess`
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from_request: Option<bool>,
+    /// Name of the Web App,
+    /// if the access was granted when the Web App was launched from a link
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub web_app_name: Option<String>,
+}
+
+impl MessageDataWriteAccess {
+    /// Sets a new value of the `from_attachment_menu` flag
+    ///
+    /// * value - Value of the flag
+    pub fn with_from_attachment_menu(mut self, value: bool) -> Self {
+        self.from_attachment_menu = Some(value);
+        self
+    }
+
+    /// Sets a new value of the `from_request` flag
+    ///
+    /// * value - Value of the flag
+    pub fn with_from_request(mut self, value: bool) -> Self {
+        self.from_request = Some(value);
+        self
+    }
+
+    /// Sets a new name of the web app
+    ///
+    /// # Arguments
+    ///
+    /// * value - Name of the web app
+    pub fn with_web_app_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.web_app_name = Some(value.into());
+        self
     }
 }

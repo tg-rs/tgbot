@@ -62,155 +62,585 @@ struct ChatMemberUser {
 }
 
 impl ChatMemberUser {
-    fn deserialize_value<'de, D>(deserializer: D) -> Result<User, D::Error>
+    fn deserialize_value<'de, T>(deserializer: T) -> Result<User, T::Error>
     where
-        D: Deserializer<'de>,
+        T: Deserializer<'de>,
     {
         ChatMemberUser::deserialize(deserializer).map(|x| x.user)
     }
 
-    fn serialize_value<S>(value: &User, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize_value<T>(value: &User, serializer: T) -> Result<T::Ok, T::Error>
     where
-        S: Serializer,
+        T: Serializer,
     {
         let value = ChatMemberUser { user: value.clone() };
         value.serialize(serializer)
     }
 }
 
-/// Chat admin
+/// Represents a chat admin
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberAdministrator {
     /// Information about the user
     pub user: User,
-    /// True, if the bot is allowed
-    /// to edit administrator privileges of that user
+    /// Whether the bot is allowed to edit administrator privileges of that user
     pub can_be_edited: bool,
-    /// True, if the user's presence in the chat is hidden
-    pub is_anonymous: bool,
-    /// True, if the administrator can access the chat event log,
+    /// Whether the administrator can change the chat title, photo and other settings
+    pub can_change_info: bool,
+    /// Whether the administrator can delete messages of other users
+    pub can_delete_messages: bool,
+    /// Whether the administrator can delete stories posted by other users; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_delete_stories: Option<bool>,
+    /// Whether the administrator can edit messages
+    /// of other users and can pin messages; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_messages: Option<bool>,
+    /// Whether the administrator can edit stories posted by other users; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_stories: Option<bool>,
+    /// Whether the administrator can invite new users to the chat
+    pub can_invite_users: bool,
+    /// Whether the administrator can access the chat event log,
     /// chat statistics, message statistics in channels, see channel members,
     /// see anonymous administrators in supergroups and ignore slow mode;
     /// implied by any other administrator privilege
     pub can_manage_chat: bool,
-    /// True, if the administrator can delete messages of other users
-    pub can_delete_messages: bool,
-    /// True, if the administrator can manage video chats
+    /// Whether the user is allowed to
+    /// create, rename, close, and reopen forum topics; supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_topics: Option<bool>,
+    /// Whether the administrator can manage video chats
     pub can_manage_video_chats: bool,
-    /// True, if the administrator can restrict, ban or unban chat members
-    pub can_restrict_members: bool,
-    /// True, if the administrator can
+    /// Whether the administrator can pin messages; groups and supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_pin_messages: Option<bool>,
+    /// Whether the administrator can post in the channel; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_post_messages: Option<bool>,
+    /// Whether the administrator can post stories in the channel; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_post_stories: Option<bool>,
+    /// Whether the administrator can
     /// add new administrators with a subset
     /// of his own privileges or
     /// demote administrators that he has promoted,
     /// directly or indirectly
     /// (promoted by administrators that were appointed by the user)
     pub can_promote_members: bool,
-    /// True, if the administrator can change
-    /// the chat title, photo and other settings
-    pub can_change_info: bool,
-    /// True, if the administrator can invite new users to the chat
-    pub can_invite_users: bool,
-    /// True, if the administrator can post
-    /// in the channel; channels only
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_post_messages: Option<bool>,
-    /// True, if the administrator can edit messages
-    /// of other users and can pin messages; channels only
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_edit_messages: Option<bool>,
-    /// True, if the administrator can pin messages; groups and supergroups only
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_pin_messages: Option<bool>,
-    /// True, if the administrator can post stories in the channel; channels only
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_post_stories: Option<bool>,
-    /// True, if the administrator can edit stories posted by other users; channels only
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_edit_stories: Option<bool>,
-    /// True, if the administrator can delete stories posted by other users; channels only
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_delete_stories: Option<bool>,
-    /// True, if the user is allowed to
-    /// create, rename, close, and reopen forum topics; supergroups only
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_manage_topics: Option<bool>,
+    /// Whether the administrator can restrict, ban or unban chat members
+    pub can_restrict_members: bool,
     /// Custom title for this user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_title: Option<String>,
+    /// Whether the user's presence in the chat is hidden
+    pub is_anonymous: bool,
+}
+
+impl ChatMemberAdministrator {
+    /// Creates a new ChatMemberAdministrator
+    ///
+    /// # Arguments
+    ///
+    /// * user - Information about the user
+    ///
+    /// All optional values are `None` and flags are `false` by default
+    pub fn new(user: User) -> Self {
+        Self {
+            user,
+            can_be_edited: false,
+            can_change_info: false,
+            can_delete_messages: false,
+            can_delete_stories: None,
+            can_edit_messages: None,
+            can_edit_stories: None,
+            can_invite_users: false,
+            can_manage_chat: false,
+            can_manage_topics: None,
+            can_manage_video_chats: false,
+            can_pin_messages: None,
+            can_post_messages: None,
+            can_post_stories: None,
+            can_promote_members: false,
+            can_restrict_members: false,
+            is_anonymous: false,
+            custom_title: None,
+        }
+    }
+
+    /// Sets a new value for the `can_be_edited` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_be_edited(mut self, value: bool) -> Self {
+        self.can_be_edited = value;
+        self
+    }
+
+    /// Sets a new value for the `can_change_info` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_change_info(mut self, value: bool) -> Self {
+        self.can_change_info = value;
+        self
+    }
+
+    /// Sets a new value for the `can_edit_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_edit_messages(mut self, value: bool) -> Self {
+        self.can_edit_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_edit_stories` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_edit_stories(mut self, value: bool) -> Self {
+        self.can_edit_stories = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_delete_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_delete_messages(mut self, value: bool) -> Self {
+        self.can_delete_messages = value;
+        self
+    }
+
+    /// Sets a new value for the `can_delete_stories` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_delete_stories(mut self, value: bool) -> Self {
+        self.can_delete_stories = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_invite_users` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_invite_users(mut self, value: bool) -> Self {
+        self.can_invite_users = value;
+        self
+    }
+
+    /// Sets a new value for the `can_manage_chat` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_manage_chat(mut self, value: bool) -> Self {
+        self.can_manage_chat = value;
+        self
+    }
+
+    /// Sets a new value for the `can_manage_topics` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_manage_topics(mut self, value: bool) -> Self {
+        self.can_manage_topics = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_manage_video_chats` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_manage_video_chats(mut self, value: bool) -> Self {
+        self.can_manage_video_chats = value;
+        self
+    }
+
+    /// Sets a new value for the `can_pin_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_pin_messages(mut self, value: bool) -> Self {
+        self.can_pin_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_post_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_post_messages(mut self, value: bool) -> Self {
+        self.can_post_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_post_stories` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_post_stories(mut self, value: bool) -> Self {
+        self.can_post_stories = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_promote_members` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_promote_members(mut self, value: bool) -> Self {
+        self.can_promote_members = value;
+        self
+    }
+
+    /// Sets a new value for the `can_restrict_members` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_restrict_members(mut self, value: bool) -> Self {
+        self.can_restrict_members = value;
+        self
+    }
+
+    /// Sets a new custom title
+    ///
+    /// # Arguments
+    ///
+    /// * value - Custom title
+    pub fn with_custom_title<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.custom_title = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `is_anonymous` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_is_anonymous(mut self, value: bool) -> Self {
+        self.is_anonymous = value;
+        self
+    }
 }
 
 /// Represents a chat member that owns the chat and has all administrator privileges.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberCreator {
+    /// Whether the user's presence in the chat is hidden
+    pub is_anonymous: bool,
     /// Information about the user
     pub user: User,
-    /// True, if the user's presence in the chat is hidden
-    pub is_anonymous: bool,
     /// Custom title for this user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_title: Option<String>,
 }
 
-/// Kicked user
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct ChatMemberKicked {
-    /// Information about the user
-    pub user: User,
-    /// Date when restrictions will be lifted for this user, unix time
-    pub until_date: Integer,
+impl ChatMemberCreator {
+    /// Creates a new ChatMemberCreator
+    ///
+    /// # Arguments
+    ///
+    /// * user - Information about the user
+    ///
+    /// All optional fields are `None` and all flags are `false` by default.
+    pub fn new(user: User) -> Self {
+        Self {
+            is_anonymous: false,
+            user,
+            custom_title: None,
+        }
+    }
+
+    /// Sets a new custom title
+    ///
+    /// # Arguments
+    ///
+    /// * value - Custom title
+    pub fn with_custom_title<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.custom_title = Some(value.into());
+        self
+    }
+
+    /// Sets a new value of the `is_anonymous` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_is_anonymous(mut self, value: bool) -> Self {
+        self.is_anonymous = value;
+        self
+    }
 }
 
-/// Restricted user
+/// Represents a Kicked user
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct ChatMemberKicked {
+    /// Date when restrictions will be lifted for this user, unix time
+    pub until_date: Integer,
+    /// Information about the user
+    pub user: User,
+}
+
+impl ChatMemberKicked {
+    /// Creates a new ChatMemberKicked
+    ///
+    /// # Arguments
+    ///
+    /// * until_date - Date when restrictions will be lifted for this user, unix time
+    /// * user - Information about the user
+    pub fn new(until_date: Integer, user: User) -> Self {
+        Self { user, until_date }
+    }
+}
+
+/// Represents a restricted user
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberRestricted {
     /// Information about the user
     pub user: User,
-    /// True, if the user is a member
-    /// of the chat at the moment of the request
-    pub is_member: bool,
-    /// True, if the user allowed to change
-    /// the chat title, photo and other settings
+    /// Whether user may add web page previews to his messages
+    pub can_add_web_page_previews: bool,
+    /// Whether the user allowed to change the chat title, photo and other settings
     pub can_change_info: bool,
-    /// True, if the user allowed to invite new users to the chat
+    /// Whether the user allowed to invite new users to the chat
     pub can_invite_users: bool,
-    /// True, if the user allowed to pin messages; groups and supergroups only
+    /// Whether the user is allowed to create forum topics
+    pub can_manage_topics: bool,
+    /// Whether the user allowed to pin messages; groups and supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
-    /// True, if the user can send
-    /// text messages, contacts, locations and venues
-    pub can_send_messages: bool,
-    /// True, if the user is allowed to send audios
+    /// Whether the user is allowed to send audios
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_audios: Option<bool>,
-    /// True, if the user is allowed to send documents
+    /// Whether the user is allowed to send documents
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_documents: Option<bool>,
-    /// True, if the user is allowed to send photos
+    /// Whether the user can send text messages, contacts, locations and venues
+    pub can_send_messages: bool,
+    /// Whether the user can send animations, games, stickers and use inline bots
+    pub can_send_other_messages: bool,
+    /// Whether the user is allowed to send photos
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_photos: Option<bool>,
-    /// True, if the user is allowed to send videos
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_send_videos: Option<bool>,
-    /// True, if the user is allowed to send video notes
+    /// Whether the user is allowed to send polls
+    pub can_send_polls: bool,
+    /// Whether the user is allowed to send video notes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_video_notes: Option<bool>,
-    /// True, if the user is allowed to send voice notes
+    /// Whether the user is allowed to send videos
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_videos: Option<bool>,
+    /// Whether the user is allowed to send voice notes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_voice_notes: Option<bool>,
-    /// True, if the user is allowed to send polls
-    pub can_send_polls: bool,
-    /// True, if the user can send
-    /// animations, games, stickers
-    /// and use inline bots, implies can_send_media_messages
-    pub can_send_other_messages: bool,
-    /// True, if user may add web page previews
-    /// to his messages, implies can_send_media_messages
-    pub can_add_web_page_previews: bool,
-    /// True, if the user is allowed to create forum topics
-    pub can_manage_topics: bool,
+    /// Whether the user is a member of the chat at the moment of the request
+    pub is_member: bool,
     /// Date when restrictions will be lifted for this user, unix time
     pub until_date: Integer,
+}
+
+impl ChatMemberRestricted {
+    /// Creates a new ChatMemberRestricted
+    ///
+    /// # Arguments
+    ///
+    /// * user - Information about the user
+    /// * until_date - Date when restrictions will be lifted for this user, unix time
+    ///
+    /// All optional fields are `None` and all flags are `false` by default.
+    pub fn new(user: User, until_date: Integer) -> Self {
+        Self {
+            user,
+            can_add_web_page_previews: false,
+            can_change_info: false,
+            can_invite_users: false,
+            can_manage_topics: false,
+            can_pin_messages: None,
+            can_send_audios: None,
+            can_send_documents: None,
+            can_send_messages: false,
+            can_send_other_messages: false,
+            can_send_photos: None,
+            can_send_polls: false,
+            can_send_video_notes: None,
+            can_send_videos: None,
+            can_send_voice_notes: None,
+            is_member: false,
+            until_date,
+        }
+    }
+
+    /// Sets a new value for the `can_add_web_page_previews` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_add_web_page_previews(mut self, value: bool) -> Self {
+        self.can_add_web_page_previews = value;
+        self
+    }
+
+    /// Sets a new value for the `can_change_info` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_change_info(mut self, value: bool) -> Self {
+        self.can_change_info = value;
+        self
+    }
+
+    /// Sets a new value for the `can_invite_users` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_invite_users(mut self, value: bool) -> Self {
+        self.can_invite_users = value;
+        self
+    }
+
+    /// Sets a new value for the `can_manage_topics` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_manage_topics(mut self, value: bool) -> Self {
+        self.can_manage_topics = value;
+        self
+    }
+
+    /// Sets a new value for the `can_pin_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_pin_messages(mut self, value: bool) -> Self {
+        self.can_pin_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_send_audios` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_audios(mut self, value: bool) -> Self {
+        self.can_send_audios = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_send_documents` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_documents(mut self, value: bool) -> Self {
+        self.can_send_documents = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_send_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_messages(mut self, value: bool) -> Self {
+        self.can_send_messages = value;
+        self
+    }
+
+    /// Sets a new value for the `can_send_other_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_other_messages(mut self, value: bool) -> Self {
+        self.can_send_other_messages = value;
+        self
+    }
+
+    /// Sets a new value for the `can_send_photos` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_photos(mut self, value: bool) -> Self {
+        self.can_send_photos = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_send_polls` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_polls(mut self, value: bool) -> Self {
+        self.can_send_polls = value;
+        self
+    }
+
+    /// Sets a new value for the `can_send_video_notes` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_video_notes(mut self, value: bool) -> Self {
+        self.can_send_video_notes = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_send_videos` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_videos(mut self, value: bool) -> Self {
+        self.can_send_videos = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_send_voice_notes` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_can_send_voice_notes(mut self, value: bool) -> Self {
+        self.can_send_voice_notes = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_member` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_is_member(mut self, value: bool) -> Self {
+        self.is_member = value;
+        self
+    }
 }
 
 /// Represents changes in the status of a chat member
@@ -218,37 +648,90 @@ pub struct ChatMemberRestricted {
 pub struct ChatMemberUpdated {
     /// Chat the user belongs to
     pub chat: Chat,
-    /// Performer of the action, which resulted in the change
-    pub from: User,
     /// Date the change was done in Unix time
     pub date: Integer,
-    /// Previous information about the chat member
-    pub old_chat_member: ChatMember,
+    /// Performer of the action, which resulted in the change
+    pub from: User,
     /// New information about the chat member
     pub new_chat_member: ChatMember,
+    /// Previous information about the chat member
+    pub old_chat_member: ChatMember,
     /// Chat invite link, which was used by the user to join the chat;
     /// for joining by invite link events only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<ChatInviteLink>,
-    /// True, if the user joined the chat via a chat folder invite link
+    /// Whether the user joined the chat via a chat folder invite link
     #[serde(skip_serializing_if = "Option::is_none")]
     pub via_chat_folder_invite_link: Option<bool>,
+}
+
+impl ChatMemberUpdated {
+    /// Creates a new ChatMemberUpdated
+    ///
+    /// # Arguments
+    ///
+    /// * chat - Chat the user belongs to
+    /// * date - Date the change was done in Unix time
+    /// * from - Performer of the action, which resulted in the change
+    /// * new_chat_member - New information about the chat member
+    /// * old_chat_member - Previous information about the chat member
+    ///
+    /// All optional fields are `None` and all flags are `false` by default.
+    pub fn new(
+        chat: Chat,
+        date: Integer,
+        from: User,
+        new_chat_member: ChatMember,
+        old_chat_member: ChatMember,
+    ) -> Self {
+        Self {
+            chat,
+            date,
+            from,
+            new_chat_member,
+            old_chat_member,
+            invite_link: None,
+            via_chat_folder_invite_link: None,
+        }
+    }
+
+    /// Sets a new invite link
+    ///
+    /// # Arguments
+    ///
+    /// * value - Invite link
+    pub fn with_invite_link(mut self, value: ChatInviteLink) -> Self {
+        self.invite_link = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `via_chat_folder_invite_link` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    pub fn with_via_chat_folder_invite_link(mut self, value: bool) -> Self {
+        self.via_chat_folder_invite_link = Some(value);
+        self
+    }
 }
 
 /// Ban a user in a group, a supergroup or a channel
 ///
 /// In the case of supergroups and channels,
 /// the user will not be able to return to the chat on their own using invite links,
-/// etc., unless unbanned first. The bot must be an administrator in the chat
-/// for this to work and must have the appropriate admin rights
+/// etc., unless unbanned first.
+///
+/// The bot must be an administrator in the chat
+/// for this to work and must have the appropriate admin rights.
 #[derive(Clone, Debug, Serialize)]
 pub struct BanChatMember {
     chat_id: ChatId,
     user_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
-    until_date: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     revoke_messages: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    until_date: Option<Integer>,
 }
 
 impl BanChatMember {
@@ -256,9 +739,12 @@ impl BanChatMember {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * user_id - Unique identifier of the target user
-    pub fn new<C: Into<ChatId>>(chat_id: C, user_id: Integer) -> Self {
+    pub fn new<T>(chat_id: T, user_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
         BanChatMember {
             chat_id: chat_id.into(),
             user_id,
@@ -267,22 +753,29 @@ impl BanChatMember {
         }
     }
 
-    /// Date when the user will be unbanned, unix time
+    /// Sets a new value for the `revoke_messages` parameter
     ///
-    /// If user is banned for more than 366 days or less than 30 seconds
-    /// from the current time they are considered to be banned forever
-    pub fn until_date(mut self, until_date: Integer) -> Self {
-        self.until_date = Some(until_date);
+    /// # Arguments
+    ///
+    /// * value - Delete all messages from the chat for the user that is being removed;
+    ///           if `false`, the user will be able to see messages in the group that were
+    ///           sent before the user was removed;
+    ///           always `true` for supergroups and channels
+    pub fn with_revoke_messages(mut self, value: bool) -> Self {
+        self.revoke_messages = Some(value);
         self
     }
 
-    /// Delete all messages from the chat for the user that is being removed
+    /// Sets a new value for the `until_date` parameter
     ///
-    /// If False, the user will be able to see messages in the group that were
-    /// sent before the user was removed.
-    /// Always True for supergroups and channels.
-    pub fn revoke_messages(mut self, revoke_messages: bool) -> Self {
-        self.revoke_messages = Some(revoke_messages);
+    /// # Arguments
+    ///
+    /// * value - Date when the user will be unbanned, unix time
+    ///
+    /// If user is banned for more than 366 days or less than 30 seconds
+    /// from the current time they are considered to be banned forever
+    pub fn with_until_date(mut self, value: Integer) -> Self {
+        self.until_date = Some(value);
         self
     }
 }
@@ -297,10 +790,11 @@ impl Method for BanChatMember {
 
 /// Get a list of administrators in a chat
 ///
-/// On success, returns an Array of ChatMember objects that contains
-/// information about all chat administrators except other bots
+/// On success, returns an Array of `ChatMember` objects that contains
+/// information about all chat administrators except other bots.
+///
 /// If the chat is a group or a supergroup and no administrators
-/// were appointed, only the creator will be returned
+/// were appointed, only the creator will be returned.
 #[derive(Clone, Debug, Serialize)]
 pub struct GetChatAdministrators {
     chat_id: ChatId,
@@ -311,8 +805,11 @@ impl GetChatAdministrators {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
         GetChatAdministrators {
             chat_id: chat_id.into(),
         }
@@ -339,9 +836,12 @@ impl GetChatMember {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * user_id - Unique identifier of the target user
-    pub fn new<C: Into<ChatId>>(chat_id: C, user_id: Integer) -> Self {
+    pub fn new<T>(chat_id: T, user_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
         GetChatMember {
             chat_id: chat_id.into(),
             user_id,
@@ -368,8 +868,11 @@ impl GetChatMemberCount {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    pub fn new<C: Into<ChatId>>(chat_id: C) -> Self {
+    /// * chat_id - Unique identifier of the target chat
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
         GetChatMemberCount {
             chat_id: chat_id.into(),
         }
@@ -387,24 +890,29 @@ impl Method for GetChatMemberCount {
 /// Promote or demote a user in a supergroup or a channel
 ///
 /// The bot must be an administrator in the chat
-/// for this to work and must have the appropriate admin rights
-/// Pass False for all boolean parameters to demote a user
+/// for this to work and must have the appropriate admin rights.
+///
+/// Pass `false` for all boolean parameters to demote a user.
 #[derive(Clone, Debug, Serialize)]
 pub struct PromoteChatMember {
     chat_id: ChatId,
     user_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
-    is_anonymous: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_change_info: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_delete_messages: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    can_delete_stories: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     can_edit_messages: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    can_edit_stories: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_invite_users: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_manage_chat: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    can_manage_topics: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_manage_video_chats: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -412,17 +920,13 @@ pub struct PromoteChatMember {
     #[serde(skip_serializing_if = "Option::is_none")]
     can_post_messages: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    can_post_stories: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     can_promote_members: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     can_restrict_members: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    can_manage_topics: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    can_post_stories: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    can_edit_stories: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    can_delete_stories: Option<bool>,
+    is_anonymous: Option<bool>,
 }
 
 impl PromoteChatMember {
@@ -430,163 +934,225 @@ impl PromoteChatMember {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * user_id - Unique identifier of the target user
-    pub fn new<C: Into<ChatId>>(chat_id: C, user_id: Integer) -> Self {
+    pub fn new<T>(chat_id: T, user_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
         PromoteChatMember {
             chat_id: chat_id.into(),
             user_id,
-            is_anonymous: None,
             can_change_info: None,
             can_delete_messages: None,
+            can_delete_stories: None,
             can_edit_messages: None,
+            can_edit_stories: None,
             can_invite_users: None,
             can_manage_chat: None,
+            can_manage_topics: None,
             can_manage_video_chats: None,
             can_pin_messages: None,
             can_post_messages: None,
+            can_post_stories: None,
             can_promote_members: None,
             can_restrict_members: None,
-            can_manage_topics: None,
-            can_post_stories: None,
-            can_edit_stories: None,
-            can_delete_stories: None,
+            is_anonymous: None,
         }
     }
 
-    /// Promote all privileges
+    /// Promotes all privileges
     pub fn promote_all(mut self) -> Self {
         self.is_anonymous = Some(true);
         self.can_change_info = Some(true);
         self.can_delete_messages = Some(true);
+        self.can_delete_stories = Some(true);
         self.can_edit_messages = Some(true);
+        self.can_edit_stories = Some(true);
         self.can_invite_users = Some(true);
         self.can_manage_chat = Some(true);
+        self.can_manage_topics = Some(true);
         self.can_manage_video_chats = Some(true);
         self.can_pin_messages = Some(true);
         self.can_post_messages = Some(true);
+        self.can_post_stories = Some(true);
         self.can_promote_members = Some(true);
         self.can_restrict_members = Some(true);
-        self.can_manage_topics = Some(true);
-        self.can_post_stories = Some(true);
-        self.can_edit_stories = Some(true);
-        self.can_delete_stories = Some(true);
         self
     }
 
-    /// Demote all privileges
+    /// Demotes all privileges
     pub fn demote_all(mut self) -> Self {
         self.is_anonymous = Some(false);
         self.can_change_info = Some(false);
         self.can_delete_messages = Some(false);
+        self.can_delete_stories = Some(false);
         self.can_edit_messages = Some(false);
+        self.can_edit_stories = Some(false);
         self.can_invite_users = Some(false);
         self.can_manage_chat = Some(false);
+        self.can_manage_topics = Some(false);
         self.can_manage_video_chats = Some(false);
         self.can_pin_messages = Some(false);
         self.can_post_messages = Some(false);
+        self.can_post_stories = Some(false);
         self.can_promote_members = Some(false);
         self.can_restrict_members = Some(false);
-        self.can_manage_topics = Some(false);
-        self.can_post_stories = Some(false);
-        self.can_edit_stories = Some(false);
-        self.can_delete_stories = Some(false);
         self
     }
 
-    /// Administrator's presence in the chat is hidden if true
-    #[allow(clippy::wrong_self_convention)]
-    pub fn is_anonymous(mut self, is_anonymous: bool) -> Self {
-        self.is_anonymous = Some(is_anonymous);
-        self
-    }
-
-    /// Administrator can change chat title, photo and other settings
-    pub fn can_change_info(mut self, can_change_info: bool) -> Self {
-        self.can_change_info = Some(can_change_info);
-        self
-    }
-
-    /// Administrator can delete messages of other users
-    pub fn can_delete_messages(mut self, can_delete_messages: bool) -> Self {
-        self.can_delete_messages = Some(can_delete_messages);
-        self
-    }
-
-    /// Administrator can edit messages of other users and can pin messages, channels only
-    pub fn can_edit_messages(mut self, can_edit_messages: bool) -> Self {
-        self.can_edit_messages = Some(can_edit_messages);
-        self
-    }
-
-    /// Administrator can invite new users to the chat
-    pub fn can_invite_users(mut self, can_invite_users: bool) -> Self {
-        self.can_invite_users = Some(can_invite_users);
-        self
-    }
-
-    /// Administrator can access the chat event log, chat statistics,
-    /// message statistics in channels, see channel members,
-    /// see anonymous administrators in supergroups and ignore slow mode
+    /// Sets a new value for the `can_change_info` flag
     ///
-    /// Implied by any other administrator privilege
-    pub fn can_manage_chat(mut self, can_manage_chat: bool) -> Self {
-        self.can_manage_chat = Some(can_manage_chat);
+    /// # Arguments
+    ///
+    /// * value - Administrator can change chat title, photo and other settings
+    pub fn with_can_change_info(mut self, value: bool) -> Self {
+        self.can_change_info = Some(value);
         self
     }
 
-    /// Administrator can manage video chats, supergroups only
-    pub fn can_manage_video_chats(mut self, can_manage_video_chats: bool) -> Self {
-        self.can_manage_video_chats = Some(can_manage_video_chats);
+    /// Sets a new value for the `can_delete_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can delete messages of other users
+    pub fn with_can_delete_messages(mut self, value: bool) -> Self {
+        self.can_delete_messages = Some(value);
         self
     }
 
-    /// Administrator can pin messages, supergroups only
-    pub fn can_pin_messages(mut self, can_pin_messages: bool) -> Self {
-        self.can_pin_messages = Some(can_pin_messages);
+    /// Sets a new value for the `can_delete_stories` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can delete stories posted by other users; channels only
+    pub fn with_can_delete_stories(mut self, value: bool) -> Self {
+        self.can_delete_stories = Some(value);
         self
     }
 
-    /// Administrator can create channel posts, channels only
-    pub fn can_post_messages(mut self, can_post_messages: bool) -> Self {
-        self.can_post_messages = Some(can_post_messages);
+    /// Sets a new value for the `can_edit_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can edit messages of other users and can pin messages; channels only
+    pub fn with_can_edit_messages(mut self, value: bool) -> Self {
+        self.can_edit_messages = Some(value);
         self
     }
 
-    /// Administrator can add new administrators with a subset of his own privileges or demote administrators
-    /// that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
-    pub fn can_promote_members(mut self, can_promote_members: bool) -> Self {
-        self.can_promote_members = Some(can_promote_members);
+    /// Sets a new value for the `can_edit_stories` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can edit stories posted by other users; channels only
+    pub fn with_can_edit_stories(mut self, value: bool) -> Self {
+        self.can_edit_stories = Some(value);
         self
     }
 
-    /// Administrator can restrict, ban or unban chat members
-    pub fn can_restrict_members(mut self, can_restrict_members: bool) -> Self {
-        self.can_restrict_members = Some(can_restrict_members);
+    /// Sets a new value for the `can_invite_users` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can invite new users to the chat
+    pub fn with_can_invite_users(mut self, value: bool) -> Self {
+        self.can_invite_users = Some(value);
         self
     }
 
-    /// User is allowed to create, rename, close, and reopen forum topics, supergroups only
-    pub fn can_manage_topics(mut self, can_manage_topics: bool) -> Self {
-        self.can_manage_topics = Some(can_manage_topics);
+    /// Sets a new value for the `can_manage_chat` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can access the chat event log, chat statistics,
+    ///           message statistics in channels, see channel members,
+    ///           see anonymous administrators in supergroups and ignore slow mode;
+    ///           implied by any other administrator privilege
+    pub fn with_can_manage_chat(mut self, value: bool) -> Self {
+        self.can_manage_chat = Some(value);
         self
     }
 
-    /// Administrator can post stories in the channel; channels only
-    pub fn can_post_stories(mut self, can_post_stories: bool) -> Self {
-        self.can_post_stories = Some(can_post_stories);
+    /// Sets a new value for the `can_manage_topics` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - User is allowed to create, rename, close, and reopen forum topics; supergroups only
+    pub fn with_can_manage_topics(mut self, value: bool) -> Self {
+        self.can_manage_topics = Some(value);
         self
     }
 
-    /// Administrator can edit stories posted by other users; channels only
-    pub fn can_edit_stories(mut self, can_edit_stories: bool) -> Self {
-        self.can_edit_stories = Some(can_edit_stories);
+    /// Sets a new value for the `can_manage_video_chats` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can manage video chats; supergroups only
+    pub fn with_can_manage_video_chats(mut self, value: bool) -> Self {
+        self.can_manage_video_chats = Some(value);
         self
     }
 
-    /// Administrator can delete stories posted by other users; channels only
-    pub fn can_delete_stories(mut self, can_delete_stories: bool) -> Self {
-        self.can_delete_stories = Some(can_delete_stories);
+    /// Sets a new value for the `can_pin_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can pin messages; supergroups only
+    pub fn with_can_pin_messages(mut self, value: bool) -> Self {
+        self.can_pin_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_post_messages` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can create channel posts; channels only
+    pub fn with_can_post_messages(mut self, value: bool) -> Self {
+        self.can_post_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_post_stories` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can post stories in the channel; channels only
+    pub fn with_can_post_stories(mut self, value: bool) -> Self {
+        self.can_post_stories = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_promote_members` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can add new administrators with a subset
+    ///           of his own privileges or demote administrators that he has promoted,
+    ///           directly or indirectly (promoted by administrators that were appointed by him)
+    pub fn with_can_promote_members(mut self, value: bool) -> Self {
+        self.can_promote_members = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_restrict_members` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator can restrict, ban or unban chat members
+    pub fn with_can_restrict_members(mut self, value: bool) -> Self {
+        self.can_restrict_members = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_anonymous` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Administrator's presence in the chat is hidden if true
+    pub fn with_is_anonymous(mut self, value: bool) -> Self {
+        self.is_anonymous = Some(value);
         self
     }
 }
@@ -608,8 +1174,8 @@ impl Method for PromoteChatMember {
 #[derive(Clone, Debug, Serialize)]
 pub struct RestrictChatMember {
     chat_id: ChatId,
-    user_id: Integer,
     permissions: ChatPermissions,
+    user_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
     until_date: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -623,50 +1189,67 @@ impl RestrictChatMember {
     ///
     /// * chat_id - Unique identifier for the target chat
     /// * user_id - Unique identifier of the target user
-    pub fn new<C: Into<ChatId>>(chat_id: C, user_id: Integer) -> Self {
+    pub fn new<T>(chat_id: T, user_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
         RestrictChatMember {
             chat_id: chat_id.into(),
-            user_id,
             permissions: ChatPermissions::default(),
+            user_id,
             until_date: None,
             use_independent_chat_permissions: None,
         }
     }
 
-    /// Replace current permissions with the new one
-    pub fn with_permissions(mut self, permissions: ChatPermissions) -> Self {
-        self.permissions = permissions;
-        self
-    }
-
-    /// Restrict everything
-    pub fn restrict_all(mut self) -> Self {
-        self.permissions = ChatPermissions::restricted();
-        self
-    }
-
-    /// Allow everything
+    /// Allows everything
     pub fn allow_all(mut self) -> Self {
         self.permissions = ChatPermissions::allowed();
         self
     }
 
-    /// Date when restrictions will be lifted for the user, unix time
-    ///
-    /// If user is restricted for more than 366 days or less than 30 seconds
-    /// from the current time, they are considered to be restricted forever
-    pub fn until_date(mut self, until_date: Integer) -> Self {
-        self.until_date = Some(until_date);
+    /// Restricts everything
+    pub fn restrict_all(mut self) -> Self {
+        self.permissions = ChatPermissions::restricted();
         self
     }
 
+    /// Replaces current permissions with the new one
+    ///
+    /// # Arguments
+    ///
+    /// * value - New permissions
+    pub fn with_permissions(mut self, value: ChatPermissions) -> Self {
+        self.permissions = value;
+        self
+    }
+
+    /// Sets a new value for the `until_date` parameter
+    ///
+    /// # Arguments
+    ///
+    /// * value - Date when restrictions will be lifted for the user, unix time
+    ///
+    /// If user is restricted for more than 366 days or less than 30 seconds
+    /// from the current time, they are considered to be restricted forever
+    pub fn with_until_date(mut self, value: Integer) -> Self {
+        self.until_date = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `use_independent_chat_permissions` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    ///
     /// Pass True if chat permissions are set independently.
     ///
-    /// Otherwise, the can_send_other_messages and can_add_web_page_previews permissions
-    /// will imply the can_send_messages, can_send_audios, can_send_documents, can_send_photos,
-    /// can_send_videos, can_send_video_notes, and can_send_voice_notes permissions;
-    /// the can_send_polls permission will imply the can_send_messages permission.
-    pub fn use_independent_chat_permissions(mut self, value: bool) -> Self {
+    /// Otherwise, the `can_send_other_messages` and `can_add_web_page_previews` permissions
+    /// will imply the `can_send_messages`, `can_send_audios`, `can_send_documents`, `can_send_photos`,
+    /// `can_send_videos`, `can_send_video_notes`, and `can_send_voice_notes` permissions;
+    /// the `can_send_polls` permission will imply the `can_send_messages` permission.
+    pub fn with_use_independent_chat_permissions(mut self, value: bool) -> Self {
         self.use_independent_chat_permissions = Some(value);
         self
     }
@@ -681,8 +1264,6 @@ impl Method for RestrictChatMember {
 }
 
 /// Set a custom title for an administrator in a supergroup promoted by the bot
-///
-/// Returns True on success
 #[derive(Clone, Debug, Serialize)]
 pub struct SetChatAdministratorCustomTitle {
     chat_id: ChatId,
@@ -695,18 +1276,18 @@ impl SetChatAdministratorCustomTitle {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * user_id - Unique identifier of the target user
+    /// * chat_id - Unique identifier of the target chat
     /// * custom_title - New custom title for the administrator; 0-16 characters, emoji are not allowed
-    pub fn new<C, T>(chat_id: C, user_id: Integer, custom_title: T) -> Self
+    /// * user_id - Unique identifier of the target user
+    pub fn new<A, B>(chat_id: A, custom_title: B, user_id: Integer) -> Self
     where
-        C: Into<ChatId>,
-        T: Into<String>,
+        A: Into<ChatId>,
+        B: Into<String>,
     {
         Self {
             chat_id: chat_id.into(),
-            user_id,
             custom_title: custom_title.into(),
+            user_id,
         }
     }
 }
@@ -738,9 +1319,12 @@ impl UnbanChatMember {
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
+    /// * chat_id - Unique identifier of the target chat
     /// * user_id - Unique identifier of the target user
-    pub fn new<C: Into<ChatId>>(chat_id: C, user_id: Integer) -> Self {
+    pub fn new<T>(chat_id: T, user_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
         UnbanChatMember {
             chat_id: chat_id.into(),
             user_id,
@@ -748,8 +1332,14 @@ impl UnbanChatMember {
         }
     }
 
-    /// If true - do nothing if the user is not banned
-    pub fn only_if_banned(mut self, only_if_banned: bool) -> Self {
+    /// Sets a new value for the `only_if_banned` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Value of the flag
+    ///
+    /// If `true` - do nothing if the user is not banned
+    pub fn with_only_if_banned(mut self, only_if_banned: bool) -> Self {
         self.only_if_banned = Some(only_if_banned);
         self
     }

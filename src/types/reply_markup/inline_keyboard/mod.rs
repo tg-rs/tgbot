@@ -8,49 +8,50 @@ use crate::types::{True, WebAppInfo};
 #[cfg(test)]
 mod tests;
 
-/// Inline keyboard that appears right next to the message it belongs to
+/// Represents an inline keyboard that appears right next to the message it belongs to
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct InlineKeyboardMarkup {
     inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
 }
 
 impl InlineKeyboardMarkup {
-    /// Returns a KeyboardMarkup with given keyboard
-    pub fn from_vec(inline_keyboard: Vec<Vec<InlineKeyboardButton>>) -> Self {
-        InlineKeyboardMarkup { inline_keyboard }
-    }
-
-    /// Adds a row to keyboard
-    pub fn row(mut self, row: Vec<InlineKeyboardButton>) -> Self {
-        self.inline_keyboard.push(row);
+    /// Adds a row to the markup
+    ///
+    /// # Arguments
+    ///
+    /// * value - A row to add
+    pub fn add_row<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = InlineKeyboardButton>,
+    {
+        self.inline_keyboard.push(value.into_iter().collect());
         self
     }
 
     pub(crate) fn serialize(&self) -> Result<String, InlineKeyboardError> {
         serde_json::to_string(self).map_err(InlineKeyboardError::SerializeMarkup)
     }
-
-    /// Converts markup into a vector of buttons
-    pub fn into_vec(self) -> Vec<Vec<InlineKeyboardButton>> {
-        self.inline_keyboard
-    }
 }
 
-impl From<Vec<Vec<InlineKeyboardButton>>> for InlineKeyboardMarkup {
-    fn from(keyboard: Vec<Vec<InlineKeyboardButton>>) -> InlineKeyboardMarkup {
-        InlineKeyboardMarkup::from_vec(keyboard)
+impl<A, B> From<A> for InlineKeyboardMarkup
+where
+    A: IntoIterator<Item = B>,
+    B: IntoIterator<Item = InlineKeyboardButton>,
+{
+    fn from(value: A) -> InlineKeyboardMarkup {
+        Self {
+            inline_keyboard: value.into_iter().map(|x| x.into_iter().collect()).collect(),
+        }
     }
 }
 
 impl From<InlineKeyboardMarkup> for Vec<Vec<InlineKeyboardButton>> {
-    fn from(keyboard: InlineKeyboardMarkup) -> Self {
-        keyboard.into_vec()
+    fn from(value: InlineKeyboardMarkup) -> Self {
+        value.inline_keyboard
     }
 }
 
-/// Button of an inline keyboard
-///
-/// You must use exactly one of the optional fields
+/// Represents a button of an inline keyboard
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineKeyboardButton {
     text: String,
@@ -59,45 +60,109 @@ pub struct InlineKeyboardButton {
 }
 
 impl InlineKeyboardButton {
-    /// Creates a new InlineKeyboardButton
-    ///
-    /// # Arguments
-    ///
-    /// * text - Text of the button
-    /// * kind - Data for the button
-    pub fn new<S: Into<String>>(text: S, button_type: InlineKeyboardButtonType) -> Self {
+    fn new<T>(text: T, button_type: InlineKeyboardButtonType) -> Self
+    where
+        T: Into<String>,
+    {
         Self {
             text: text.into(),
             button_type,
         }
     }
 
-    /// HTTP or tg:// url to be opened when button is pressed
-    pub fn with_url<T: Into<String>, D: Into<String>>(text: T, url: D) -> Self {
-        Self::new(text, InlineKeyboardButtonType::Url(url.into()))
-    }
-
-    /// Description of the Web App that will be launched when the user presses the button
-    pub fn with_web_app<T: Into<String>>(text: T, web_app_info: WebAppInfo) -> Self {
-        Self::new(text, InlineKeyboardButtonType::WebApp(web_app_info))
-    }
-
-    /// Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes
-    pub fn with_callback_data<T: Into<String>, D: Into<String>>(text: T, data: D) -> Self {
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * data - Data to be sent in a callback query to the bot when button is pressed; 1-64 bytes
+    pub fn for_callback_data<A, B>(text: A, data: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
         Self::new(text, InlineKeyboardButtonType::CallbackData(data.into()))
     }
 
-    /// Same as with_callback_data, but takes a serializable type
+    /// Creates a new InlineKeyboardButton
     ///
-    /// Data will be serialized using serde_json
-    pub fn with_callback_data_struct<T: Into<String>, D: Serialize>(
-        text: T,
-        data: &D,
-    ) -> Result<Self, InlineKeyboardError> {
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * data - Data to be sent in a callback query
+    ///
+    /// Same as [`Self::for_callback_data`], but takes a serializable type.
+    ///
+    /// Data will be serialized using `serde_json`.
+    pub fn for_callback_data_struct<A, B>(text: A, data: &B) -> Result<Self, InlineKeyboardError>
+    where
+        A: Into<String>,
+        B: Serialize,
+    {
         let data = serde_json::to_string(data).map_err(InlineKeyboardError::SerializeCallbackData)?;
         Ok(Self::new(text, InlineKeyboardButtonType::CallbackData(data)))
     }
 
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    ///
+    /// A game will be launched when the user presses the button
+    ///
+    /// NOTE: This type of button must always be the first button in the first row
+    pub fn for_callback_game<T>(text: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self::new(text, InlineKeyboardButtonType::CallbackGame)
+    }
+
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * data - An HTTPs URL used to automatically authorize the user
+    ///
+    /// Can be used as a replacement for the [Telegram Login Widget][1]
+    ///
+    /// [1]: https://core.telegram.org/widgets/login
+    pub fn for_login_url<A, B>(text: A, data: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<LoginUrl>,
+    {
+        Self::new(text, InlineKeyboardButtonType::LoginUrl(data.into()))
+    }
+
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    ///
+    /// Represents a pay button
+    ///
+    /// https://core.telegram.org/bots/payments
+    ///
+    /// NOTE: This type of button must always be the first button in the
+    /// first row and can only be used in invoice messages.
+    pub fn for_pay<T>(text: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self::new(text, InlineKeyboardButtonType::Pay)
+    }
+
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * data - Text of an inline query
+    ///
     /// Pressing the button will prompt the user to select one of their chats,
     /// open that chat and insert the bot‘s username and
     /// the specified inline query in the input field
@@ -110,83 +175,109 @@ impl InlineKeyboardButton {
     /// Especially useful when combined with switch_pm… actions – in this case the user
     /// will be automatically returned to the chat they switched from,
     /// skipping the chat selection screen
-    pub fn with_switch_inline_query<T: Into<String>, D: Into<String>>(text: T, data: D) -> Self {
+    pub fn for_switch_inline_query<A, B>(text: A, data: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
         Self::new(text, InlineKeyboardButtonType::SwitchInlineQuery(data.into()))
     }
 
-    /// If set, pressing the button will insert the bot‘s username and
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * data - Inline query parameters
+    ///
+    /// Pressing the button will prompt the user to select one of their chats of the specified type,
+    /// open that chat and insert the bot username and the specified inline query in the input field
+    pub fn for_switch_inline_query_chosen_chat<T>(text: T, data: SwitchInlineQueryChosenChat) -> Self
+    where
+        T: Into<String>,
+    {
+        Self::new(text, InlineKeyboardButtonType::SwitchInlineQueryChosenChat(data))
+    }
+
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * data - Text of an inline query
+    ///
+    /// Pressing the button will insert the bot‘s username and
     /// the specified inline query in the current chat's input field
     ///
     /// Can be empty, in which case only the bot’s username will be inserted
     /// This offers a quick way for the user to open your bot in
     /// inline mode in the same chat – good for selecting something from multiple options
-    pub fn with_switch_inline_query_current_chat<T: Into<String>, D: Into<String>>(text: T, data: D) -> Self {
+    pub fn for_switch_inline_query_current_chat<A, B>(text: A, data: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
         Self::new(
             text,
             InlineKeyboardButtonType::SwitchInlineQueryCurrentChat(data.into()),
         )
     }
 
-    /// Pressing the button will prompt the user to select one of their chats of the specified type,
-    /// open that chat and insert the bot username and the specified inline query in the input field
-    pub fn with_switch_inline_query_chosen_chat<T>(text: T, value: SwitchInlineQueryChosenChat) -> Self
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * data - HTTP or `tg://` URL to be opened when button is pressed
+    pub fn for_url<A, B>(text: A, data: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self::new(text, InlineKeyboardButtonType::Url(data.into()))
+    }
+
+    /// Creates a new InlineKeyboardButton
+    ///
+    /// # Arguments
+    ///
+    /// * text - Text of the button
+    /// * data - Description of the Web App that will be launched when the user presses the button
+    pub fn for_web_app<T>(text: T, data: WebAppInfo) -> Self
     where
         T: Into<String>,
     {
-        Self::new(text, InlineKeyboardButtonType::SwitchInlineQueryChosenChat(value))
+        Self::new(text, InlineKeyboardButtonType::WebApp(data))
     }
 
-    /// Description of the game that will be launched when the user presses the button
-    ///
-    /// NOTE: This type of button must always be the first button in the first row
-    pub fn with_callback_game<T: Into<String>>(text: T) -> Self {
-        Self::new(text, InlineKeyboardButtonType::CallbackGame)
-    }
-
-    /// Send a Pay button
-    ///
-    /// NOTE: This type of button must always be the first button in the first row
-    pub fn with_pay<T: Into<String>>(text: T) -> Self {
-        Self::new(text, InlineKeyboardButtonType::Pay)
-    }
-
-    /// An HTTP URL used to automatically authorize the user
-    ///
-    /// Can be used as a replacement for the [Telegram Login Widget][1]
-    ///
-    /// [1]: https://core.telegram.org/widgets/login
-    pub fn with_login_url<T: Into<String>, D: Into<LoginUrl>>(text: T, data: D) -> Self {
-        Self::new(text, InlineKeyboardButtonType::LoginUrl(data.into()))
+    /// Returns a type of the button
+    pub fn button_type(&self) -> &InlineKeyboardButtonType {
+        &self.button_type
     }
 
     /// Returns a text of the button
     pub fn text(&self) -> &str {
         &self.text
     }
-
-    /// Returns a data for the button
-    pub fn button_type(&self) -> &InlineKeyboardButtonType {
-        &self.button_type
-    }
 }
 
-/// Variant of inline keyboard button
+/// Represents a type of an inline keyboard button
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum InlineKeyboardButtonType {
+    /// Data to be sent in a callback query to the bot when button is pressed; 1-64 bytes
+    CallbackData(String),
     /// Description of the game that will be launched when the user presses the button
     ///
-    /// NOTE: This type of button must always be the first button in the first row
+    /// NOTE: This type of button must always be the first button in the first row.
     #[serde(
         deserialize_with = "RawButtonEmpty::deserialize_value",
         serialize_with = "RawButtonEmpty::serialize_value"
     )]
     CallbackGame,
-    /// Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes
-    CallbackData(String),
     /// An HTTP URL used to automatically authorize the user
     ///
-    /// Can be used as a replacement for the [Telegram Login Widget][1]
+    /// Can be used as a replacement for the [Telegram Login Widget][1].
     ///
     /// [1]: https://core.telegram.org/widgets/login
     LoginUrl(LoginUrl),
@@ -202,14 +293,14 @@ pub enum InlineKeyboardButtonType {
     /// open that chat and insert the bot‘s username and
     /// the specified inline query in the input field
     ///
-    /// Can be empty, in which case just the bot’s username will be inserted
+    /// Can be empty, in which case just the bot’s username will be inserted.
     ///
     /// Note: This offers an easy way for users to start using your bot
-    /// in inline mode when they are currently in a private chat with it
+    /// in inline mode when they are currently in a private chat with it.
     ///
     /// Especially useful when combined with switch_pm… actions – in this case the user
     /// will be automatically returned to the chat they switched from,
-    /// skipping the chat selection screen
+    /// skipping the chat selection screen.
     SwitchInlineQuery(String),
     /// Pressing the button will prompt the user to select one of their chats of the specified type,
     /// open that chat and insert the bot username and the specified inline query in the input field
@@ -217,16 +308,16 @@ pub enum InlineKeyboardButtonType {
     /// Pressing the button will insert the bot‘s username and
     /// the specified inline query in the current chat's input field
     ///
-    /// Can be empty, in which case only the bot’s username will be inserted
+    /// Can be empty, in which case only the bot’s username will be inserted.
     /// This offers a quick way for the user to open your bot in
-    /// inline mode in the same chat – good for selecting something from multiple options
+    /// inline mode in the same chat – good for selecting something from multiple options.
     SwitchInlineQueryCurrentChat(String),
     /// HTTP or tg:// url to be opened when button is pressed
     Url(String),
     /// Description of the Web App that will be launched when the user presses the button
     ///
     /// The Web App will be able to send an arbitrary message on behalf
-    /// of the user using the method answerWebAppQuery.
+    /// of the user using the method [`crate::types::AnswerWebAppQuery`].
     /// Available only in private chats between a user and the bot.
     WebApp(WebAppInfo),
 }
@@ -300,85 +391,99 @@ impl fmt::Display for InlineKeyboardError {
 
 /// Represents a parameter of the inline keyboard button used to automatically authorize a user
 ///
-/// Serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram
+/// Serves as a great replacement for the
+/// Telegram Login Widget when the user is coming from Telegram.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct LoginUrl {
     url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    forward_text: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     bot_username: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    forward_text: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     request_write_access: Option<bool>,
 }
 
 impl LoginUrl {
-    /// Creates a new LoginUrl with given URL
+    /// Creates a new LoginUrl
     ///
-    /// An HTTP URL will be opened with user authorization data added to the query string when the button is pressed
+    /// # Arguments
     ///
-    /// If the user refuses to provide authorization data, the original URL without information about the user will be opened
+    /// * value - An HTTP URL to be opened with user authorization data
+    ///           added to the query string when the button is pressed
     ///
-    /// The data added is the same as described in [Receiving authorization data][1]
+    /// If the user refuses to provide authorization data,
+    /// the original URL without information about the user will be opened.
+    ///
+    /// The data added is the same as described in [Receiving authorization data][1].
     ///
     /// NOTE: You **must** always check the hash of the received data to verify the authentication
     /// and the integrity of the data as described in [Checking authorization][2]
     ///
     /// [1]: https://core.telegram.org/widgets/login#receiving-authorization-data
     /// [2]: https://core.telegram.org/widgets/login#checking-authorization
-    pub fn new<S>(url: S) -> Self
+    pub fn new<T>(url: T) -> Self
     where
-        S: Into<String>,
+        T: Into<String>,
     {
         Self {
             url: url.into(),
-            forward_text: None,
             bot_username: None,
+            forward_text: None,
             request_write_access: None,
         }
     }
 
-    /// New text of the button in forwarded messages
-    pub fn forward_text<S>(mut self, forward_text: S) -> Self
-    where
-        S: Into<String>,
-    {
-        self.forward_text = Some(forward_text.into());
-        self
-    }
-
-    /// Username of a bot, which will be used for user authorization
+    /// Sets a new bot username
     ///
-    /// See [Setting up a bot][1] for more details
+    /// # Arguments
     ///
-    /// If not specified, the current bot username will be assumed
+    /// * value - Username of a bot, which will be used for user authorization
     ///
-    /// The url domain must be the same as the domain linked with the bot
-    ///
-    /// See [Linking your domain to the bot][2] for more details
+    /// See [Setting up a bot][1] for more details.
+    /// If not specified, the current bot username will be assumed.
+    /// The url domain must be the same as the domain linked with the bot.
+    /// See [Linking your domain to the bot][2] for more details.
     ///
     /// [1]: https://core.telegram.org/widgets/login#setting-up-a-bot
     /// [2]: https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot
-    pub fn bot_username<S>(mut self, bot_username: S) -> Self
+    pub fn with_bot_username<T>(mut self, value: T) -> Self
     where
-        S: Into<String>,
+        T: Into<String>,
     {
-        self.bot_username = Some(bot_username.into());
+        self.bot_username = Some(value.into());
         self
     }
 
-    /// Pass True to request the permission for your bot to send messages to the user
-    pub fn request_write_access(mut self, request_write_access: bool) -> Self {
-        self.request_write_access = Some(request_write_access);
+    /// Sets a new forward text
+    ///
+    /// # Arguments
+    ///
+    /// * value - New text of the button in forwarded messages
+    pub fn with_forward_text<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.forward_text = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `request_write_access` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether to request the permission for your bot to send messages to the user
+    pub fn with_request_write_access(mut self, value: bool) -> Self {
+        self.request_write_access = Some(value);
         self
     }
 }
 
-impl<S> From<S> for LoginUrl
+impl<T> From<T> for LoginUrl
 where
-    S: Into<String>,
+    T: Into<String>,
 {
-    fn from(url: S) -> Self {
+    fn from(url: T) -> Self {
         Self::new(url)
     }
 }
@@ -418,26 +523,42 @@ impl SwitchInlineQueryChosenChat {
         }
     }
 
-    /// True, if private chats with users can be chosen
-    pub fn allow_bot_chats(mut self, value: bool) -> Self {
+    /// Sets a new value for the `allow_bot_chats` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether private chats with users can be chosen
+    pub fn with_allow_bot_chats(mut self, value: bool) -> Self {
         self.allow_bot_chats = Some(value);
         self
     }
 
-    /// True, if private chats with bots can be chosen
-    pub fn allow_channel_chats(mut self, value: bool) -> Self {
+    /// Sets a new value for the `allow_channel_chats` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether private chats with bots can be chosen
+    pub fn with_allow_channel_chats(mut self, value: bool) -> Self {
         self.allow_channel_chats = Some(value);
         self
     }
 
-    /// True, if group and supergroup chats can be chosen
-    pub fn allow_group_chats(mut self, value: bool) -> Self {
+    /// Sets a new value for the `allow_group_chats` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value  Whether group and supergroup chats can be chosen
+    pub fn with_allow_group_chats(mut self, value: bool) -> Self {
         self.allow_group_chats = Some(value);
         self
     }
 
-    /// True, if channel chats can be chosen
-    pub fn allow_user_chats(mut self, value: bool) -> Self {
+    /// Sets a new value for the `allow_user_chats` flag
+    ///
+    /// # Arguments
+    ///
+    /// * value - Whether channel chats can be chosen
+    pub fn with_allow_user_chats(mut self, value: bool) -> Self {
         self.allow_user_chats = Some(value);
         self
     }

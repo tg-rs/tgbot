@@ -19,7 +19,7 @@ const DEFAULT_LIMIT: Integer = 100;
 const DEFAULT_POLL_TIMEOUT: Duration = Duration::from_secs(10);
 const DEFAULT_ERROR_TIMEOUT: Duration = Duration::from_secs(5);
 
-/// Receive incoming updates using long polling
+/// Allows to receive an incoming update using long polling
 pub struct LongPoll<H> {
     client: Client,
     handler: Box<H>,
@@ -46,8 +46,12 @@ impl<H> LongPoll<H> {
         }
     }
 
-    /// Set poll options
-    pub fn options(mut self, options: LongPollOptions) -> Self {
+    /// Sets a new polling options
+    ///
+    /// # Arguments
+    ///
+    /// * value - Options
+    pub fn with_options(mut self, options: LongPollOptions) -> Self {
         self.options = options;
         self
     }
@@ -58,14 +62,15 @@ where
     H: UpdateHandler,
     H::Future: Send + 'static,
 {
-    /// Returns a long poll handle
+    /// Returns a handle which allows to control a polling loop
+    #[must_use]
     pub fn get_handle(&self) -> LongPollHandle {
         LongPollHandle {
             sender: self.sender.clone(),
         }
     }
 
-    /// Start polling loop
+    /// Starts polling loop
     pub async fn run(self) {
         let LongPollOptions {
             mut offset,
@@ -109,13 +114,13 @@ where
     }
 }
 
-/// Long poll handle
+/// Allows to control a polling loop
 pub struct LongPollHandle {
     sender: Sender<()>,
 }
 
 impl LongPollHandle {
-    /// Stop polling loop
+    /// Stops polling loop
     pub async fn shutdown(self) {
         let _ = self.sender.send(()).await;
     }
@@ -129,7 +134,7 @@ fn get_error_timeout(err: ExecuteError, default_timeout: Duration) -> Duration {
     }
 }
 
-/// Options for long polling
+/// Represents a long polling options
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct LongPollOptions {
     offset: Integer,
@@ -140,39 +145,47 @@ pub struct LongPollOptions {
 }
 
 impl LongPollOptions {
-    /// Limits the number of updates to be retrieved
-    ///
-    /// Values between 1—100 are accepted
-    ///
-    /// Defaults to 100
-    pub fn limit(mut self, limit: Integer) -> Self {
-        self.limit = limit;
-        self
-    }
-
-    /// Timeout for long polling
-    ///
-    /// 0 - usual short polling
-    ///
-    /// Defaults to 10
-    ///
-    /// Should be positive, short polling should be used for testing purposes only
-    pub fn poll_timeout(mut self, poll_timeout: Duration) -> Self {
-        self.poll_timeout = poll_timeout;
-        self
-    }
-
-    /// Timeout in seconds when an error has occurred
-    ///
-    /// Defaults to 5
-    pub fn error_timeout(mut self, error_timeout: u64) -> Self {
-        self.error_timeout = Duration::from_secs(error_timeout);
-        self
-    }
-
     /// Adds a type of updates you want your bot to receive
-    pub fn allowed_update(mut self, allowed_update: AllowedUpdate) -> Self {
-        self.allowed_updates.insert(allowed_update);
+    ///
+    /// # Arguments
+    ///
+    /// * value - A type of update
+    pub fn with_allowed_update(mut self, value: AllowedUpdate) -> Self {
+        self.allowed_updates.insert(value);
+        self
+    }
+
+    /// Sets a new error timeout
+    ///
+    /// # Arguments
+    ///
+    /// * value - Timeout in seconds when an error has occurred; default - 5
+    pub fn with_error_timeout(mut self, value: u64) -> Self {
+        self.error_timeout = Duration::from_secs(value);
+        self
+    }
+
+    /// Sets a new limit
+    ///
+    /// # Arguments
+    ///
+    /// * value - Limit of the number of updates to be retrieved; 1—100; default - 100
+    pub fn with_limit(mut self, value: Integer) -> Self {
+        self.limit = value;
+        self
+    }
+
+    /// Sets a new poll timeout
+    ///
+    /// # Arguments
+    ///
+    /// * value - Timeout for long polling in seconds;
+    ///           0 - usual short polling;
+    ///           default - 10
+    ///
+    /// Should be positive, short polling should be used for testing purposes only.
+    pub fn with_poll_timeout(mut self, value: Duration) -> Self {
+        self.poll_timeout = value;
         self
     }
 }

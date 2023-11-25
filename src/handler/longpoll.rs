@@ -19,7 +19,7 @@ const DEFAULT_LIMIT: Integer = 100;
 const DEFAULT_POLL_TIMEOUT: Duration = Duration::from_secs(10);
 const DEFAULT_ERROR_TIMEOUT: Duration = Duration::from_secs(5);
 
-/// Allows to receive an incoming update using long polling
+/// Allows receiving incoming updates from the Telegram Bot API using long polling.
 pub struct LongPoll<H> {
     client: Client,
     handler: Box<H>,
@@ -29,12 +29,12 @@ pub struct LongPoll<H> {
 }
 
 impl<H> LongPoll<H> {
-    /// Creates a new LongPoll
+    /// Creates a new `LongPoll`.
     ///
     /// # Arguments
     ///
-    /// * client - Telegram Bot API Client
-    /// * handler - Updates Handler
+    /// * `client` - Telegram Bot API Client.
+    /// * `handler` - Updates Handler.
     pub fn new(client: Client, handler: H) -> Self {
         let (sender, receiver) = channel(1);
         Self {
@@ -50,7 +50,7 @@ impl<H> LongPoll<H> {
     ///
     /// # Arguments
     ///
-    /// * value - Options
+    /// * `value` - Polling options to be set.
     pub fn with_options(mut self, options: LongPollOptions) -> Self {
         self.options = options;
         self
@@ -62,7 +62,7 @@ where
     H: UpdateHandler,
     H::Future: Send + 'static,
 {
-    /// Returns a handle which allows to control a polling loop
+    /// Returns a handle allowing control over the polling loop.
     #[must_use]
     pub fn get_handle(&self) -> LongPollHandle {
         LongPollHandle {
@@ -70,7 +70,7 @@ where
         }
     }
 
-    /// Starts polling loop
+    /// Starts the polling loop.
     pub async fn run(self) {
         let LongPollOptions {
             mut offset,
@@ -114,13 +114,13 @@ where
     }
 }
 
-/// Allows to control a polling loop
+/// Allows to control a polling loop.
 pub struct LongPollHandle {
     sender: Sender<()>,
 }
 
 impl LongPollHandle {
-    /// Stops polling loop
+    /// Stops the associated polling loop.
     pub async fn shutdown(self) {
         let _ = self.sender.send(()).await;
     }
@@ -134,7 +134,7 @@ fn get_error_timeout(err: ExecuteError, default_timeout: Duration) -> Duration {
     }
 }
 
-/// Represents a long polling options
+/// Represents options for configuring long polling behavior.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct LongPollOptions {
     offset: Integer,
@@ -145,43 +145,43 @@ pub struct LongPollOptions {
 }
 
 impl LongPollOptions {
-    /// Adds a type of updates you want your bot to receive
+    /// Adds a type of updates that you want your bot to receive.
     ///
     /// # Arguments
     ///
-    /// * value - A type of update
+    /// * `value` - A type of update to be allowed.
     pub fn with_allowed_update(mut self, value: AllowedUpdate) -> Self {
         self.allowed_updates.insert(value);
         self
     }
 
-    /// Sets a new error timeout
+    /// Sets a new error timeout.
     ///
     /// # Arguments
     ///
-    /// * value - Timeout in seconds when an error has occurred; default - 5
+    /// * `value` - Timeout in seconds when an error has occurred; default - 5.
     pub fn with_error_timeout(mut self, value: u64) -> Self {
         self.error_timeout = Duration::from_secs(value);
         self
     }
 
-    /// Sets a new limit
+    /// Sets a new limit for the number of updates to be retrieved.
     ///
     /// # Arguments
     ///
-    /// * value - Limit of the number of updates to be retrieved; 1—100; default - 100
+    /// * `value` - Limit of the number of updates to be retrieved; 1—100; default - 100.
     pub fn with_limit(mut self, value: Integer) -> Self {
         self.limit = value;
         self
     }
 
-    /// Sets a new poll timeout
+    /// Sets a new timeout for long polling.
     ///
     /// # Arguments
     ///
-    /// * value - Timeout for long polling in seconds;
-    ///           0 - usual short polling;
-    ///           default - 10
+    /// * `value` - Timeout for long polling in seconds;
+    ///             0 - usual short polling;
+    ///             default - 10.
     ///
     /// Should be positive, short polling should be used for testing purposes only.
     pub fn with_poll_timeout(mut self, value: Duration) -> Self {

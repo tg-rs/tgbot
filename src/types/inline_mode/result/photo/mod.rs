@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a link to a photo
+/// Represents a link to a photo.
 ///
 /// By default, a photo will be sent by the user with optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`]
@@ -43,13 +43,13 @@ pub struct InlineQueryResultPhoto {
 }
 
 impl InlineQueryResultPhoto {
-    /// Creates a new InlineQueryResultPhoto
+    /// Creates a new `InlineQueryResultPhoto`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the result; 1-64 bytes
-    /// * photo_url - A valid URL of the photo; must be in jpeg format; size must not exceed 5MB
-    /// * thumbnail_url - URL of the thumbnail of the photo
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `photo_url` - A valid URL of the photo; must be in jpeg format; size must not exceed 5MB.
+    /// * `thumbnail_url` - URL of the thumbnail of the photo.
     pub fn new<A, B, C>(id: A, photo_url: B, thumbnail_url: C) -> Self
     where
         A: Into<String>,
@@ -72,11 +72,11 @@ impl InlineQueryResultPhoto {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the photo to be sent, 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -85,13 +85,13 @@ impl InlineQueryResultPhoto {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -101,11 +101,11 @@ impl InlineQueryResultPhoto {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -114,11 +114,11 @@ impl InlineQueryResultPhoto {
         self
     }
 
-    /// Sets a new description
+    /// Sets a new description.
     ///
     /// # Arguments
     ///
-    /// * value - Short description of the result
+    /// * `value` - Short description of the result.
     pub fn with_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -127,11 +127,11 @@ impl InlineQueryResultPhoto {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the photo
+    /// * `value` - Content of the message to be sent instead of the photo.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -140,31 +140,31 @@ impl InlineQueryResultPhoto {
         self
     }
 
-    /// Sets a new photo height
+    /// Sets a new photo height.
     ///
     /// # Arguments
     ///
-    /// * value - Height of the photo
+    /// * `value` - Height of the photo.
     pub fn with_photo_height(mut self, value: Integer) -> Self {
         self.photo_height = Some(value);
         self
     }
 
-    /// Sets a new photo width
+    /// Sets a new photo width.
     ///
     /// # Arguments
     ///
-    /// * value - Width of the photo
+    /// * `value` - Width of the photo.
     pub fn with_photo_width(mut self, value: Integer) -> Self {
         self.photo_width = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -173,11 +173,11 @@ impl InlineQueryResultPhoto {
         self
     }
 
-    /// Sets a new title
+    /// Sets a new title.
     ///
     /// # Arguments
     ///
-    /// * value - Title of the result
+    /// * `value` - Title of the result.
     pub fn with_title<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -187,7 +187,7 @@ impl InlineQueryResultPhoto {
     }
 }
 
-/// Represents a link to a photo stored on the Telegram servers
+/// Represents a link to a photo stored on the Telegram servers.
 ///
 /// By default, this photo will be sent by the user with an optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send
@@ -213,12 +213,12 @@ pub struct InlineQueryResultCachedPhoto {
 }
 
 impl InlineQueryResultCachedPhoto {
-    /// Creates a new InlineQueryResultCachedPhoto
+    /// Creates a new `InlineQueryResultCachedPhoto`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the result; 1-64 bytes
-    /// * photo_file_id - A valid file identifier of the photo
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `photo_file_id` - A valid file identifier of the photo.
     pub fn new<A, B>(id: A, photo_file_id: B) -> Self
     where
         A: Into<String>,
@@ -237,11 +237,11 @@ impl InlineQueryResultCachedPhoto {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the photo to be sent; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -250,13 +250,13 @@ impl InlineQueryResultCachedPhoto {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -266,24 +266,24 @@ impl InlineQueryResultCachedPhoto {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
-    /// Caption entities will be set to [`None`] when this method is called
+    /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
         self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Sets a new description
+    /// Sets a new description.
     ///
     /// # Arguments
     ///
-    /// * value - Short description of the result
+    /// * `value` - Short description of the result.
     pub fn with_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -292,11 +292,11 @@ impl InlineQueryResultCachedPhoto {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the photo
+    /// * `value` - Content of the message to be sent instead of the photo.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -305,11 +305,11 @@ impl InlineQueryResultCachedPhoto {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -318,11 +318,11 @@ impl InlineQueryResultCachedPhoto {
         self
     }
 
-    /// Sets a new title
+    /// Sets a new title.
     ///
     /// # Arguments
     ///
-    /// * value - Title for the result
+    /// * `value` - Title for the result.
     pub fn with_title<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

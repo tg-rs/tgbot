@@ -5,20 +5,20 @@ use crate::types::{Chat, Integer, User};
 #[cfg(test)]
 mod tests;
 
-/// Represents a sender of a message
+/// Represents a sender of a message.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(untagged, from = "RawMessageSender", into = "RawMessageSender")]
 pub enum MessageSender {
-    /// For messages sent by chat
+    /// For messages sent by a chat.
     ///
     /// For example, the channel itself for channel posts, the supergroup itself for messages
     /// from anonymous group administrators, the linked channel
     /// for messages automatically forwarded to the discussion group.
     Chat(Chat),
-    /// For messages sent by user
+    /// For messages sent by a user.
     User(User),
-    /// For messages without sender chat and user
+    /// For messages without a sender chat and a user.
     Unknown,
 }
 
@@ -35,7 +35,7 @@ impl From<User> for MessageSender {
 }
 
 impl MessageSender {
-    /// Returns a sender user
+    /// Returns the sender user.
     pub fn get_user(&self) -> Option<&User> {
         match self {
             MessageSender::User(ref user) => Some(user),
@@ -43,19 +43,19 @@ impl MessageSender {
         }
     }
 
-    /// Returns ID of a sender user
+    /// Returns the ID of the sender user.
     pub fn get_user_id(&self) -> Option<Integer> {
         self.get_user().map(|user| user.id)
     }
 
-    /// Returns username of a sender user
+    /// Returns the username of the sender user.
     pub fn get_user_username(&self) -> Option<&str> {
         self.get_user()
             .and_then(|user| user.username.as_ref())
             .map(String::as_str)
     }
 
-    /// Returns a sender chat
+    /// Returns the sender chat.
     pub fn get_chat(&self) -> Option<&Chat> {
         match self {
             MessageSender::Chat(ref chat) => Some(chat),
@@ -63,12 +63,12 @@ impl MessageSender {
         }
     }
 
-    /// Returns ID of a sender chat
+    /// Returns the ID of the sender chat.
     pub fn get_chat_id(&self) -> Option<Integer> {
         self.get_chat().map(|chat| chat.get_id())
     }
 
-    /// Returns username of a sender chat
+    /// Returns the username of the sender chat.
     pub fn get_chat_username(&self) -> Option<&str> {
         self.get_chat().and_then(|chat| chat.get_username())
     }

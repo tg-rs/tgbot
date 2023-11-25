@@ -26,10 +26,10 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents an incoming update
+/// Represents an incoming update.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Update {
-    /// Unique identifier
+    /// Unique identifier of the update.
     ///
     /// Update identifiers start from a certain positive number and increase sequentially.
     /// This ID becomes especially handy if you’re using Webhooks, since it allows you to
@@ -39,23 +39,23 @@ pub struct Update {
     /// of the next update will be chosen randomly instead of sequentially.
     #[serde(rename = "update_id")]
     pub id: Integer,
-    /// Type of the update
+    /// Type of the update.
     #[serde(flatten)]
     pub update_type: UpdateType,
 }
 
 impl Update {
-    /// Creates a new Update
+    /// Creates a new `Update`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier
-    /// * update_type - Type of the update
+    /// * `id` - Unique identifier of the update.
+    /// * `update_type` - Type of the update.
     pub fn new(id: Integer, update_type: UpdateType) -> Self {
         Self { id, update_type }
     }
 
-    /// Returns a chat
+    /// Returns the chat.
     pub fn get_chat(&self) -> Option<&Chat> {
         self.get_message().map(|msg| &msg.chat).or(match self.update_type {
             UpdateType::BotStatus(ref status) | UpdateType::UserStatus(ref status) => Some(&status.chat),
@@ -64,17 +64,17 @@ impl Update {
         })
     }
 
-    /// Returns an ID of a chat
+    /// Returns the ID of the chat.
     pub fn get_chat_id(&self) -> Option<Integer> {
         self.get_chat().map(|chat| chat.get_id())
     }
 
-    /// Returns a username of a chat
+    /// Returns the username of the chat.
     pub fn get_chat_username(&self) -> Option<&str> {
         self.get_chat().and_then(|chat| chat.get_username())
     }
 
-    /// Returns a user
+    /// Returns the user.
     pub fn get_user(&self) -> Option<&User> {
         Some(match self.update_type {
             UpdateType::Message(ref msg)
@@ -97,19 +97,19 @@ impl Update {
         })
     }
 
-    /// Returns an ID of a user
+    /// Returns the ID of the user.
     pub fn get_user_id(&self) -> Option<Integer> {
         self.get_user().map(|user| user.id)
     }
 
-    /// Returns a username of a user
+    /// Returns the username of the user.
     pub fn get_user_username(&self) -> Option<&str> {
         self.get_user()
             .and_then(|user| user.username.as_ref())
             .map(String::as_str)
     }
 
-    /// Returns a message
+    /// Returns the message.
     pub fn get_message(&self) -> Option<&Message> {
         match self.update_type {
             UpdateType::Message(ref msg)
@@ -122,44 +122,44 @@ impl Update {
     }
 }
 
-/// Type of an update
+/// Represents a type of an update.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[allow(clippy::large_enum_variant)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateType {
-    /// The bot chat member status was updated in a chat
+    /// The bot chat member status was updated in a chat.
     ///
     /// For private chats, this update is received only
     /// when the bot is blocked or unblocked by the user.
     #[serde(rename = "my_chat_member")]
     BotStatus(ChatMemberUpdated),
-    /// New incoming callback query
+    /// A new incoming callback query.
     CallbackQuery(CallbackQuery),
-    /// New incoming channel post
+    /// A new incoming channel post.
     ChannelPost(Message),
-    /// A request to join the chat has been sent
+    /// A request to join the chat has been sent.
     ///
     /// The bot must have the `can_invite_users` administrator right
     /// in the chat to receive these updates.
     ChatJoinRequest(ChatJoinRequest),
-    /// The result of an inline query that was chosen by a user and sent to their chat partner
+    /// The result of an inline query that was chosen by a user and sent to their chat partner.
     ///
     /// Please see our documentation on the [feedback collecting][1]
     /// for details on how to enable these updates for your bot.
     ///
     /// [1]: https://core.telegram.org/bots/inline#collecting-feedback
     ChosenInlineResult(ChosenInlineResult),
-    /// New version of a channel post that is known to the bot and was edited
+    /// A new version of a channel post that is known to the bot and was edited.
     EditedChannelPost(Message),
-    /// New version of a message that is known to the bot and was edited
+    /// A new version of a message that is known to the bot and was edited.
     EditedMessage(Message),
-    /// New incoming [inline][1] query
+    /// A new incoming [inline][1] query.
     ///
     /// [1]: https://core.telegram.org/bots/api#inline-mode
     InlineQuery(InlineQuery),
-    /// New incoming message
+    /// A new incoming message.
     Message(Message),
-    /// New poll state
+    /// A new poll state.
     ///
     /// Bots receive only updates about polls, which are sent or stopped by the bot.
     Poll(Poll),
@@ -167,22 +167,22 @@ pub enum UpdateType {
     ///
     /// Bots receive new votes only in polls that were sent by the bot itself.
     PollAnswer(PollAnswer),
-    /// New incoming pre-checkout query
+    /// A new incoming pre-checkout query.
     ///
     /// Contains full information about checkout
     PreCheckoutQuery(PreCheckoutQuery),
-    /// New incoming shipping query
+    /// A new incoming shipping query.
     ///
     /// Only for invoices with flexible price.
     ShippingQuery(ShippingQuery),
-    /// A chat member's status was updated in a chat
+    /// A chat member's status was updated in a chat.
     ///
     /// The bot must be an administrator in the chat
     /// and must explicitly specify [`AllowedUpdate::UserStatus`] in the list
     /// of `allowed_updates` to receive these updates.
     #[serde(rename = "chat_member")]
     UserStatus(ChatMemberUpdated),
-    /// Used for unknown update types
+    /// Used for unknown update types.
     ///
     /// For example, Telegram introduced a new update type,
     /// but tgbot does not support it.
@@ -190,43 +190,43 @@ pub enum UpdateType {
     Unknown(JsonValue),
 }
 
-/// Represents a type of update to receive
+/// Represents a type of update to receive.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum AllowedUpdate {
-    /// The bot chat member status
+    /// The bot chat member status.
     #[serde(rename = "my_chat_member")]
     BotStatus,
-    /// A callback query
+    /// A callback query.
     CallbackQuery,
-    /// A channel post
+    /// A channel post.
     ChannelPost,
-    /// A request to join a chat
+    /// A request to join a chat.
     ChatJoinRequest,
-    /// A chosen inline result
+    /// A chosen inline result.
     ChosenInlineResult,
-    /// An edited channel post
+    /// An edited channel post.
     EditedChannelPost,
-    /// An edited message
+    /// An edited message.
     EditedMessage,
-    /// An inline query
+    /// An inline query.
     InlineQuery,
-    /// A message
+    /// A message.
     Message,
-    /// A poll
+    /// A poll.
     Poll,
-    /// A poll answer
+    /// A poll answer.
     PollAnswer,
-    /// A pre checkout query
+    /// A pre checkout query.
     PreCheckoutQuery,
-    /// A shipping query
+    /// A shipping query.
     ShippingQuery,
-    /// A chat member status
+    /// A chat member status.
     #[serde(rename = "chat_member")]
     UserStatus,
 }
 
-/// Returns incoming updates using long polling
+/// Returns incoming updates using long polling.
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetUpdates {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -248,11 +248,11 @@ impl Method for GetUpdates {
 }
 
 impl GetUpdates {
-    /// Adds a type of an update you want your bot to receive
+    /// Adds a type of an update you want your bot to receive.
     ///
     /// # Arguments
     ///
-    /// * value - Type to add
+    /// * `value` - The type to add.
     pub fn add_allowed_update(mut self, value: AllowedUpdate) -> Self {
         match self.allowed_updates {
             Some(ref mut updates) => {
@@ -267,11 +267,11 @@ impl GetUpdates {
         self
     }
 
-    /// Sets a new list of allowed updates
+    /// Sets a new list of allowed updates.
     ///
     /// # Arguments
     ///
-    /// * value - List of the types of updates you want your bot to receive
+    /// * `value` - List of the types of updates you want your bot to receive.
     ///
     /// For example, specify `[AllowedUpdate::Message, AllowedUpdate::EditedChannelPost]`
     /// to only receive updates of these types.
@@ -288,21 +288,21 @@ impl GetUpdates {
         self
     }
 
-    /// Sets a new limit
+    /// Sets a new limit.
     ///
     /// # Arguments
     ///
-    /// * value - Limit of the number of updates to be retrieved; 1—100; default - 100
+    /// * `value` - Limit of the number of updates to be retrieved; 1—100; default - 100.
     pub fn with_limit(mut self, value: Integer) -> Self {
         self.limit = Some(value);
         self
     }
 
-    /// Sets a new offset
+    /// Sets a new offset.
     ///
     /// # Arguments
     ///
-    /// * value - Identifier of the first update to be returned
+    /// * `value` - Identifier of the first update to be returned.
     ///
     /// Must be greater by one than the highest
     /// among the identifiers of previously received updates.
@@ -317,14 +317,14 @@ impl GetUpdates {
         self
     }
 
-    /// Sets a new timeout
+    /// Sets a new timeout.
     ///
     /// # Arguments
     ///
-    /// * value - Timeout for long polling;
+    /// * `value` - Timeout for long polling;
     ///           default - 0, i.e. usual short polling;
     ///           should be positive;
-    ///           short polling should be used for testing purposes only
+    ///           short polling should be used for testing purposes only.
     pub fn with_timeout(mut self, value: Duration) -> Self {
         self.timeout = Some(value.as_secs() as i64);
         self

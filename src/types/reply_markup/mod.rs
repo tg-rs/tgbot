@@ -9,17 +9,17 @@ mod force_reply;
 mod inline_keyboard;
 mod reply_keyboard;
 
-/// Reply markup
+/// Represents a reply markup.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(untagged)]
 pub enum ReplyMarkup {
-    /// Force reply
+    /// A force reply
     ForceReply(ForceReply),
-    /// Inline keyboard
+    /// An inline keyboard
     InlineKeyboardMarkup(InlineKeyboardMarkup),
     /// A custom keyboard with reply options
     ReplyKeyboardMarkup(ReplyKeyboardMarkup),
-    /// Remove keyboard
+    /// A remove keyboard
     ReplyKeyboardRemove(ReplyKeyboardRemove),
 }
 
@@ -53,7 +53,7 @@ impl From<Vec<Vec<KeyboardButton>>> for ReplyMarkup {
     }
 }
 
-/// An error occurred with reply markup
+/// Represents an error occurred with reply markup.
 #[derive(Debug)]
 pub enum ReplyMarkupError {
     /// Can not serialize markup

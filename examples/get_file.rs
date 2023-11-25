@@ -26,7 +26,7 @@ async fn handle_document(client: &Client, tmpdir: &Path, document: Document) {
     let file_path = file.file_path.unwrap();
     let mut stream = client.download_file(file_path).await.unwrap();
     println!("Name: {:?}", document.file_name);
-    println!("Mime-Type: {:?}", document.mime_type);
+    println!("MIME-Type: {:?}", document.mime_type);
     println!("Document size: {:?}", document.file_size);
     let mut file = File::create(path).await.unwrap();
     while let Some(chunk) = stream.next().await {

@@ -8,42 +8,42 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Type of action to tell the user that some is happening on the bot side
+/// Represents a type of an action to tell a user that something is happening on a bot side.
 #[derive(Clone, Copy, Debug, Deserialize, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ChatAction {
-    /// For stickers
+    /// Indicates the bot is choosing a sticker.
     ChooseSticker,
-    /// For location data
+    /// Indicates the bot is finding location data.
     FindLocation,
-    /// For videos
+    /// Indicates the bot is recording a video.
     RecordVideo,
-    /// For voice notes
+    /// Indicates the bot is recording a voice message.
     RecordVoice,
-    /// For video notes
+    /// Indicates the bot is recording a video note.
     RecordVideoNote,
-    /// For text messages
+    /// Indicates the bot is typing a text message.
     Typing,
-    /// For general files
+    /// Indicates the bot is uploading a document file.
     UploadDocument,
-    /// For photos
+    /// Indicates the bot is uploading a photo.
     UploadPhoto,
-    /// For videos
+    /// Indicates the bot is uploading a video.
     UploadVideo,
-    /// For video notes
+    /// Indicates the bot is uploading a video note.
     UploadVideoNote,
-    /// For voice notes
+    /// Indicates the bot is uploading a voice message.
     UploadVoice,
 }
 
-/// Tell the user that something is happening on the bot side
+/// Tells a user that something is happening on a bot side.
 ///
-/// The status is set for 5 seconds or less
+/// A status is set for 5 seconds or less
 /// (when a message arrives from your bot, Telegram clients clear its typing status).
 ///
 /// Example: The ImageBot needs some time to process a request and upload the image.
 /// Instead of sending a text message along the lines of “Retrieving image, please wait…”,
-/// the bot may use `sendChatAction` with `action = upload_photo`.
+/// the bot may use [`SendChatAction`] with [`ChatAction::UploadPhoto`].
 /// The user will see a “sending photo” status for the bot.
 ///
 /// We only recommend using this method when a response from the bot
@@ -57,28 +57,29 @@ pub struct SendChatAction {
 }
 
 impl SendChatAction {
-    /// Creates a new SendChatAction
+    /// Creates a new `SendChatAction`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - The unique identifier of the target chat
-    /// * action - The type of action to broadcast
+    /// * `chat_id` - The unique identifier of the target chat.
+    /// * `action` - The type of action to broadcast.
     pub fn new<T>(chat_id: T, action: ChatAction) -> Self
     where
         T: Into<ChatId>,
     {
-        SendChatAction {
+        Self {
             action,
             chat_id: chat_id.into(),
             message_thread_id: None,
         }
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread; supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self

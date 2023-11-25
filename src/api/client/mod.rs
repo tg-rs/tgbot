@@ -21,7 +21,7 @@ mod tests;
 
 const DEFAULT_HOST: &str = "https://api.telegram.org";
 
-/// Telegram Bot API client
+/// A client for interacting with the Telegram Bot API.
 #[derive(Clone)]
 pub struct Client {
     host: String,
@@ -30,11 +30,11 @@ pub struct Client {
 }
 
 impl Client {
-    /// Creates a new API instance with given token
+    /// Creates a new Telegram Bot API client with the provided bot token.
     ///
     /// # Arguments
     ///
-    /// * token - A bot token
+    /// * `token` - A token associated with your bot.
     pub fn new<T>(token: T) -> Result<Self, ClientError>
     where
         T: Into<String>,
@@ -46,12 +46,12 @@ impl Client {
         Ok(Self::with_client(client, token))
     }
 
-    /// Creates a new API instance with given HTTP client and token
+    /// Creates a new Telegram Bot API client with a custom HTTP client and bot token.
     ///
     /// # Arguments
     ///
-    /// * client - An HTTP client
-    /// * token - A bot token
+    /// * `client` - An HTTP client.
+    /// * `token` - A token associated with your bot.
     ///
     pub fn with_client<T>(http_client: HttpClient, token: T) -> Self
     where
@@ -64,11 +64,11 @@ impl Client {
         }
     }
 
-    /// Overrides API host
+    /// Overrides the default API host with a custom one.
     ///
     /// # Arguments
     ///
-    /// * host - A new API host
+    /// * `host` - The new API host to use.
     pub fn with_host<T>(mut self, host: T) -> Self
     where
         T: Into<String>,
@@ -77,9 +77,13 @@ impl Client {
         self
     }
 
-    /// Downloads a file
+    /// Downloads a file.
     ///
-    /// Use `getFile` method in order to get a value for `file_path` argument
+    /// Use [`crate::types::GetFile`] method to get a value for the `file_path` argument.
+    ///
+    /// # Arguments
+    ///
+    /// * `file_path` - The path to the file to be downloaded.
     ///
     /// # Example
     ///
@@ -117,10 +121,15 @@ impl Client {
         }
     }
 
-    /// Executes a method
+    /// Executes a method.
     ///
-    /// Note that client will not retry a request on timeout error
-    /// if the request is not cloneable
+    /// # Arguments
+    ///
+    /// * `method` - The method to execute.
+    ///
+    /// # Notes
+    ///
+    /// The client will not retry a request on a timeout error if the request is not cloneable
     /// (e.g. contains a stream).
     pub async fn execute<M>(&self, method: M) -> Result<M::Response, ExecuteError>
     where
@@ -173,19 +182,19 @@ impl fmt::Debug for Client {
     }
 }
 
-/// Represents an API method
+/// Represents an API method that can be executed by the Telegram Bot API client.
 pub trait Method {
-    /// Type of successful result in API response
+    /// The type representing a successful result in an API response.
     type Response;
 
-    /// Returns information about HTTP request
+    /// Converts the method into a payload for an HTTP request.
     fn into_payload(self) -> Payload;
 }
 
-/// A general Client error
+/// Represents general errors that can occur while working with the Telegram Bot API client.
 #[derive(Debug)]
 pub enum ClientError {
-    /// Can not build HTTP client
+    /// An error indicating a failure to build an HTTP client.
     BuildClient(HttpError),
 }
 
@@ -205,16 +214,17 @@ impl fmt::Display for ClientError {
     }
 }
 
-/// An error when downloading file
+/// Represents errors that can occur while attempting
+/// to download a file using the Telegram Bot API client.
 #[derive(Debug)]
 pub enum DownloadFileError {
-    /// Error when sending request
+    /// An error indicating a failure to send an HTTP request.
     Http(HttpError),
-    /// Server replied with an error
+    /// An error received from the server in response to the download request.
     Response {
-        /// HTTP status code
+        /// The HTTP status code received in the response.
         status: u16,
-        /// Response body
+        /// The body of the response as a string.
         text: String,
     },
 }
@@ -245,16 +255,17 @@ impl fmt::Display for DownloadFileError {
     }
 }
 
-/// An error when executing method
+/// Represents errors that can occur during the execution
+/// of a method using the Telegram Bot API client.
 #[derive(Debug, derive_more::From)]
 pub enum ExecuteError {
-    /// Error when sending request
+    /// An error indicating a failure to send an HTTP request.
     Http(HttpError),
-    /// Can not build an HTTP request
+    /// An error indicating a failure to build an HTTP request payload.
     Payload(PayloadError),
-    /// Telegram error got in response
+    /// An error received from the Telegram server in response to the execution request.
     Response(ResponseError),
-    /// Too many requests
+    /// An error indicating that the client has exceeded the rate limit for API requests.
     TooManyRequests,
 }
 

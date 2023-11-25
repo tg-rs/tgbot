@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a link to a voice recording in an `.ogg` container encoded with OPUS
+/// Represents a link to a voice recording in an OGG container encoded with OPUS.
 ///
 /// By default, this voice recording will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send
@@ -37,13 +37,13 @@ pub struct InlineQueryResultVoice {
 }
 
 impl InlineQueryResultVoice {
-    /// Creates a new InlineQueryResultVoice
+    /// Creates a new `InlineQueryResultVoice`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the result; 1-64 bytes
-    /// * title - Recording title
-    /// * voice_url - A valid URL of the voice recording
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `title` - Recording title.
+    /// * `voice_url` - A valid URL of the voice recording.
     pub fn new<A, B, C>(id: A, title: B, voice_url: C) -> Self
     where
         A: Into<String>,
@@ -63,11 +63,11 @@ impl InlineQueryResultVoice {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -76,13 +76,13 @@ impl InlineQueryResultVoice {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -92,11 +92,11 @@ impl InlineQueryResultVoice {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -105,11 +105,11 @@ impl InlineQueryResultVoice {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the voice recording
+    /// * `value` - Content of the message to be sent instead of the voice recording.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -118,11 +118,11 @@ impl InlineQueryResultVoice {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -131,18 +131,18 @@ impl InlineQueryResultVoice {
         self
     }
 
-    /// Sets a new voice duration
+    /// Sets a new voice duration.
     ///
     /// # Arguments
     ///
-    /// * value - Recording duration in seconds
+    /// * `value` - Recording duration in seconds.
     pub fn with_voice_duration(mut self, value: Integer) -> Self {
         self.voice_duration = Some(value);
         self
     }
 }
 
-/// Represents a link to a voice message stored on the Telegram servers
+/// Represents a link to a voice message stored on the Telegram servers.
 ///
 /// By default, this voice message will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`]
@@ -165,13 +165,13 @@ pub struct InlineQueryResultCachedVoice {
 }
 
 impl InlineQueryResultCachedVoice {
-    /// Creates a new InlineQueryResultCachedVoice
+    /// Creates a new `InlineQueryResultCachedVoice`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the result; 1-64 bytes
-    /// * title - Title of the result
-    /// * voice_file_id - A valid file identifier of the voice message
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `title` - Title of the result.
+    /// * `voice_file_id` - A valid file identifier of the voice message.
     pub fn new<A, B, C>(id: A, title: B, voice_file_id: C) -> Self
     where
         A: Into<String>,
@@ -190,11 +190,11 @@ impl InlineQueryResultCachedVoice {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption, 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -203,13 +203,13 @@ impl InlineQueryResultCachedVoice {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -219,11 +219,11 @@ impl InlineQueryResultCachedVoice {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -232,11 +232,11 @@ impl InlineQueryResultCachedVoice {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -245,11 +245,11 @@ impl InlineQueryResultCachedVoice {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the voice message
+    /// * `value` - Content of the message to be sent instead of the voice message.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,

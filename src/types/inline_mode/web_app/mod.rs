@@ -8,7 +8,7 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Describes an inline message sent by a Web App on behalf of a user
+/// Represents an inline message sent by a Web App on behalf of a user
 #[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct SentWebAppMessage {
     /// Identifier of the sent inline message
@@ -33,10 +33,9 @@ impl SentWebAppMessage {
     }
 }
 
-/// Set the result of an interaction with a Web App and
-/// send a corresponding message on behalf of the user to the chat from which the query originated
-///
-/// On success, a [`SentWebAppMessage`] object is returned.
+/// Sets a result of an interaction with a Web App and
+/// send a corresponding message on behalf of the user
+/// to the chat from which the query originated
 #[derive(Clone, Debug, Serialize)]
 pub struct AnswerWebAppQuery {
     web_app_query_id: String,

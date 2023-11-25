@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a link to a video animation (H.264/MPEG-4 AVC video without sound)
+/// Represents a link to a video animation (H.264/MPEG-4 AVC video without sound).
 ///
 /// By default, this animated MPEG-4 file will be sent by the user with optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`]
@@ -45,13 +45,13 @@ pub struct InlineQueryResultMpeg4Gif {
 }
 
 impl InlineQueryResultMpeg4Gif {
-    /// Creates a new InlineQueryResultMpeg4Gif
+    /// Creates a new `InlineQueryResultMpeg4Gif`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for the result, 1-64 bytes
-    /// * mpeg4_url - A valid URL for the MP4 file; file size must not exceed 1MB
-    /// * thumbnail_url - URL of the static thumbnail (jpeg or gif) for the result
+    /// * `id` - Unique identifier for the result; 1-64 bytes.
+    /// * `mpeg4_url` - A valid URL for the MP4 file; file size must not exceed 1MB.
+    /// * `thumbnail_url` - URL of the static thumbnail (jpeg or gif) for the result.
     pub fn new<A, B, C>(id: A, mpeg4_url: B, thumbnail_url: C) -> Self
     where
         A: Into<String>,
@@ -75,11 +75,11 @@ impl InlineQueryResultMpeg4Gif {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the MPEG-4 file to be sent; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -88,13 +88,13 @@ impl InlineQueryResultMpeg4Gif {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -104,24 +104,24 @@ impl InlineQueryResultMpeg4Gif {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
-    /// Caption entities will be set to [`None`] when this method is called
+    /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
         self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the video animation
+    /// * `value` - Content of the message to be sent instead of the video animation.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -130,41 +130,41 @@ impl InlineQueryResultMpeg4Gif {
         self
     }
 
-    /// Sets a new MPEG4 duration
+    /// Sets a new MPEG4 duration.
     ///
     /// # Arguments
     ///
-    /// * value - MPEG4 duration
+    /// * `value` - MPEG4 duration.
     pub fn with_mpeg4_duration(mut self, value: Integer) -> Self {
         self.mpeg4_duration = Some(value);
         self
     }
 
-    /// Sets a new MPEG4 height
+    /// Sets a new MPEG4 height.
     ///
     /// # Arguments
     ///
-    /// * value - MPEG4 height
+    /// * `value` - MPEG4 height.
     pub fn with_mpeg4_height(mut self, value: Integer) -> Self {
         self.mpeg4_height = Some(value);
         self
     }
 
-    /// Sets a new MPEG4 width
+    /// Sets a new MPEG4 width.
     ///
     /// # Arguments
     ///
-    /// * value - MPEG4 width
+    /// * `value` - MPEG4 width.
     pub fn with_mpeg4_width(mut self, value: Integer) -> Self {
         self.mpeg4_width = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -173,11 +173,11 @@ impl InlineQueryResultMpeg4Gif {
         self
     }
 
-    /// Sets a new thumbnail MIME type
+    /// Sets a new thumbnail MIME type.
     ///
     /// # Arguments
     ///
-    /// * value - MIME type of the thumbnail; defaults to “image/jpeg”
+    /// * `value` - MIME type of the thumbnail; default - “image/jpeg”.
     ///
     /// Must be one of “image/jpeg”, “image/gif”, or “video/mp4”.
     pub fn with_thumbnail_mime_type<T>(mut self, value: T) -> Self
@@ -188,11 +188,11 @@ impl InlineQueryResultMpeg4Gif {
         self
     }
 
-    /// Sets a new title
+    /// Sets a new title.
     ///
     /// # Arguments
     ///
-    /// * value - Title of the result
+    /// * `value` - Title of the result.
     pub fn with_title<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -203,7 +203,7 @@ impl InlineQueryResultMpeg4Gif {
 }
 
 /// Represents a link to a video animation
-/// (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers
+/// (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers.
 ///
 /// By default, this animated MPEG-4 file will be sent by the user with an optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`]
@@ -228,12 +228,12 @@ pub struct InlineQueryResultCachedMpeg4Gif {
 }
 
 impl InlineQueryResultCachedMpeg4Gif {
-    /// Creates a new InlineQueryResultCachedMpeg4Gif
+    /// Creates a new `InlineQueryResultCachedMpeg4Gif`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the result; 1-64 bytes
-    /// * mpeg4_file_id - A valid file identifier for the MP4 file
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `mpeg4_file_id` - A valid file identifier for the MP4 file.
     pub fn new<A, B>(id: A, mpeg4_file_id: B) -> Self
     where
         A: Into<String>,
@@ -251,11 +251,11 @@ impl InlineQueryResultCachedMpeg4Gif {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the MPEG-4 file to be sent; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, caption: T) -> Self
     where
         T: Into<String>,
@@ -264,40 +264,40 @@ impl InlineQueryResultCachedMpeg4Gif {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, caption_entities: T) -> Self
+    /// Caption parse mode will be set to [`None`] when this method is called.
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.caption_entities = Some(caption_entities.into_iter().collect());
+        self.caption_entities = Some(value.into_iter().collect());
         self.parse_mode = None;
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
+        self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the video animation
+    /// * `value` - Content of the message to be sent instead of the video animation.
     pub fn with_input_message_content<T>(mut self, input_message_content: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -306,24 +306,24 @@ impl InlineQueryResultCachedMpeg4Gif {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
-    pub fn with_reply_markup<T>(mut self, reply_markup: T) -> Self
+    /// * `value` - Reply markup.
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
     {
-        self.reply_markup = Some(reply_markup.into());
+        self.reply_markup = Some(value.into());
         self
     }
 
-    /// Sets a new title
+    /// Sets a new title.
     ///
     /// # Arguments
     ///
-    /// * value - Title for the result
+    /// * `value` - Title for the result.
     pub fn with_title<T>(mut self, title: T) -> Self
     where
         T: Into<String>,

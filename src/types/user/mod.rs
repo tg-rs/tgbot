@@ -10,42 +10,42 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a user
+/// Represents a user.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct User {
-    /// First name
+    /// First name of the user.
     pub first_name: String,
-    /// Unique identifier
+    /// Unique identifier of the user.
     pub id: Integer,
-    /// Whether the user is a bot
+    /// Indicates whether the user is a bot.
     pub is_bot: bool,
-    /// Whether the user added the bot to the attachment menu
+    /// Indicates whether the user added the bot to the attachment menu.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub added_to_attachment_menu: Option<bool>,
-    /// Whether the user is a Telegram Premium user
+    /// Indicates whether the user is a Telegram Premium user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_premium: Option<bool>,
-    /// [IETF language tag][1] of the user's language
+    /// [IETF language tag][1] of the user's language.
     ///
     /// [1]: https://en.wikipedia.org/wiki/IETF_language_tag
     #[serde(skip_serializing_if = "Option::is_none")]
     pub language_code: Option<String>,
-    /// Last name
+    /// Last name of the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
-    /// Username
+    /// Username of the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
 impl User {
-    /// Creates a new User
+    /// Creates a new `User`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier
-    /// * first_name - First name
-    /// * is_bot - Whether the user is a bot
+    /// * `id` - Unique identifier of the user.
+    /// * `first_name` - First name of the user.
+    /// * `is_bot` - Indicates whether the user is a bot.
     pub fn new<T>(id: Integer, first_name: T, is_bot: bool) -> Self
     where
         T: Into<String>,
@@ -62,7 +62,7 @@ impl User {
         }
     }
 
-    /// Returns a full name of the user (first name + last name)
+    /// Returns the full name of the user (first name + last name).
     pub fn get_full_name(&self) -> String {
         let mut full_name = self.first_name.clone();
         if let Some(ref last_name) = self.last_name {
@@ -72,7 +72,7 @@ impl User {
         full_name
     }
 
-    /// Returns a link to the user (`tg://user?id=xxx`)
+    /// Returns the link to the user (`tg://user?id=xxx`).
     ///
     /// These links will work only if they are used inside an inline link.
     /// For example, they will not work,
@@ -81,7 +81,11 @@ impl User {
         format!("tg://user?id={}", self.id)
     }
 
-    /// Returns a mention for the user
+    /// Returns the mention for the user.
+    ///
+    /// # Arguments
+    ///
+    /// * `parse_mode` - A parse mode for formatting the mention.
     ///
     /// These mentions are only guaranteed to work if the user has contacted the bot in the past,
     /// has sent a callback query to the bot via inline button or is a member
@@ -96,31 +100,31 @@ impl User {
         })
     }
 
-    /// Sets a new value for the `added_to_attachment_menu` flag
+    /// Sets a new value for an `added_to_attachment_menu` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Value of the flag
+    /// * `value` - Indicates whether the user added the bot to the attachment menu.
     pub fn with_added_to_attachment_menu(mut self, value: bool) -> Self {
         self.added_to_attachment_menu = Some(value);
         self
     }
 
-    /// Sets a new value for the `is_premium` flag
+    /// Sets a new value for an `is_premium` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Value of the flag
+    /// * `value` - Indicates whether the user is a Telegram Premium user.
     pub fn with_is_premium(mut self, value: bool) -> Self {
         self.is_premium = Some(value);
         self
     }
 
-    /// Sets a new language code
+    /// Sets a new language code.
     ///
     /// # Arguments
     ///
-    /// * value - Language code
+    /// * `value` - Language code.
     pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -129,11 +133,11 @@ impl User {
         self
     }
 
-    /// Sets a new last name
+    /// Sets a new last name.
     ///
     /// # Arguments
     ///
-    /// * value - Last name
+    /// * `value` - Last name.
     pub fn with_last_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -142,11 +146,11 @@ impl User {
         self
     }
 
-    /// Sets a new username
+    /// Sets a new username.
     ///
     /// # Arguments
     ///
-    /// * value - Username
+    /// * `value` - Username.
     pub fn with_username<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -156,7 +160,7 @@ impl User {
     }
 }
 
-/// An error occurred when getting user mention
+/// Represents an error occurred when getting user mention.
 #[derive(Debug)]
 pub enum MentionError {
     /// Parse mode is not supported
@@ -175,22 +179,22 @@ impl fmt::Display for MentionError {
     }
 }
 
-/// Represents a list of profile pictures of a user
+/// Represents a list of profile pictures of a user.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct UserProfilePhotos {
-    /// Requested profile pictures (in up to 4 sizes each)
+    /// Requested profile pictures (in up to 4 sizes each).
     pub photos: Vec<Vec<PhotoSize>>,
-    /// Total number of profile pictures the target user has
+    /// Total number of profile pictures the target user has.
     pub total_count: Integer,
 }
 
 impl UserProfilePhotos {
-    /// Creates a new UserProfilePhotos
+    /// Creates a new `UserProfilePhotos`.
     ///
     /// # Arguments
     ///
-    /// * photos - A list of photos
-    /// * total_count - Total number of photos
+    /// * `photos` - A list of photos.
+    /// * `total_count` - Total number of photos.
     pub fn new<A, B>(photos: A, total_count: Integer) -> Self
     where
         A: IntoIterator<Item = B>,
@@ -203,13 +207,13 @@ impl UserProfilePhotos {
     }
 }
 
-/// Represents a user ID
+/// Represents a user ID.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum UserId {
-    /// @username of a user
+    /// @username of a user.
     Username(String),
-    /// ID of a user
+    /// ID of a user.
     Id(Integer),
 }
 
@@ -240,7 +244,7 @@ impl fmt::Display for UserId {
     }
 }
 
-/// Returns a list of profile pictures for a user
+/// Returns a list of profile pictures for a user.
 #[derive(Clone, Debug, Serialize)]
 pub struct GetUserProfilePhotos {
     user_id: Integer,
@@ -251,11 +255,11 @@ pub struct GetUserProfilePhotos {
 }
 
 impl GetUserProfilePhotos {
-    /// Creates a new GetUserProfilePhotos
+    /// Creates a new `GetUserProfilePhotos`.
     ///
     /// # Arguments
     ///
-    /// * user_id - Unique identifier of the target user
+    /// * `user_id` - Unique identifier of the target user.
     pub fn new(user_id: Integer) -> Self {
         GetUserProfilePhotos {
             user_id,
@@ -264,23 +268,23 @@ impl GetUserProfilePhotos {
         }
     }
 
-    /// Sets a new limit
+    /// Sets a new limit.
     ///
     /// # Arguments
     ///
-    /// * value - Limit of the number of photos to be retrieved; 1—100; default - 100
+    /// * `value` - Limit of the number of photos to be retrieved; 1—100; default - 100.
     pub fn with_limit(mut self, limit: Integer) -> Self {
         self.limit = Some(limit);
         self
     }
 
-    /// Sets a new offset
+    /// Sets a new offset.
     ///
     /// # Arguments
     ///
-    /// * value - Sequential number of the first photo to be returned
+    /// * `value` - Sequential number of the first photo to be returned.
     ///
-    /// By default, all photos are returned
+    /// By default, all photos are returned.
     pub fn with_offset(mut self, offset: Integer) -> Self {
         self.offset = Some(offset);
         self

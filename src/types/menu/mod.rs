@@ -8,7 +8,7 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a menu button of the bot in a private chat
+/// Represents a menu button of the bot in a private chat.
 ///
 /// If a menu button other than default is set for a private chat, then it is applied in the chat.
 /// Otherwise the default menu button is applied.
@@ -16,33 +16,33 @@ mod tests;
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(from = "MenuButtonRaw", into = "MenuButtonRaw")]
 pub enum MenuButton {
-    /// Opens the list of bot commands
+    /// Opens the list of bot commands.
     Commands,
-    /// Default behaviour
+    /// Default behaviour.
     Default,
-    /// Launches a web app
+    /// Launches a web app.
     WebApp(MenuButtonWebApp),
 }
 
-/// Represents a menu button, which launches a Web App
+/// Represents a menu button, which launches a Web App.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MenuButtonWebApp {
-    /// Text on the button
+    /// Text on the button.
     pub text: String,
-    /// Description of the Web App that will be launched when the user presses the button
+    /// Description of the Web App that will be launched when the user presses the button.
     ///
     /// The Web App will be able to send an arbitrary message on behalf of the user
-    /// using the method answerWebAppQuery.
+    /// using the method `answerWebAppQuery`.
     pub web_app: WebAppInfo,
 }
 
 impl MenuButtonWebApp {
-    /// Creates a new MenuButtonWebApp
+    /// Creates a new `MenuButtonWebApp`.
     ///
     /// # Arguments
     ///
-    /// * text - Text of the button
-    /// * web_app - Web app to launch
+    /// * `text` - Text of the button.
+    /// * `web_app` - Web app to launch.
     pub fn new<T>(text: T, web_app: WebAppInfo) -> Self
     where
         T: Into<String>,
@@ -82,7 +82,7 @@ impl From<MenuButton> for MenuButtonRaw {
     }
 }
 
-/// Returns the current value of the bot menu button in a private chat, or the default menu button
+/// Returns the current value of the bot menu button in a private chat, or the default menu button.
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetChatMenuButton {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -90,13 +90,13 @@ pub struct GetChatMenuButton {
 }
 
 impl GetChatMenuButton {
-    /// Sets a new chat ID
+    /// Sets a new chat ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target private chat
+    /// * `value` - Unique identifier of the target private chat.
     ///
-    /// If not specified, default bot menu button will be returned
+    /// If not specified, default bot menu button will be returned.
     pub fn with_chat_id(mut self, value: Integer) -> Self {
         self.chat_id = Some(value);
         self
@@ -111,7 +111,7 @@ impl Method for GetChatMenuButton {
     }
 }
 
-/// Change the bot menu button in a private chat, or the default menu button.
+/// Changes a button of a menu of a bot in a private chat, or a default menu button.
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct SetChatMenuButton {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -121,21 +121,25 @@ pub struct SetChatMenuButton {
 }
 
 impl SetChatMenuButton {
-    /// Unique identifier for the target private chat
+    /// Sets a new chat ID.
     ///
-    /// If not specified, default bot menu button will be changed
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the target private chat.
+    ///
+    /// If not specified, default bot menu button will be changed.
     pub fn chat_id(mut self, chat_id: Integer) -> Self {
         self.chat_id = Some(chat_id);
         self
     }
 
-    /// An object for the new bot menu button
+    /// Sets a new menu button.
     ///
-    /// Defaults to [`MenuButtonDefault`]
+    /// # Arguments
     ///
-    /// [`MenuButtonDefault`]: MenuButtonDefault
-    pub fn menu_button(mut self, menu_button: MenuButton) -> Self {
-        self.menu_button = Some(menu_button);
+    /// * `value` - An object for the new bot menu button; default - [`MenuButton::Default`].
+    pub fn menu_button(mut self, value: MenuButton) -> Self {
+        self.menu_button = Some(value);
         self
     }
 }

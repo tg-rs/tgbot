@@ -16,19 +16,19 @@ mod document;
 mod photo;
 mod video;
 
-/// Represents a content of a media message to be sent
+/// Represents a content of a media message to be sent.
 #[derive(Debug)]
 pub struct InputMedia {
     form: Form,
 }
 
 impl InputMedia {
-    /// Creates a new input media
+    /// Creates a new `InputMedia`.
     ///
     /// # Arguments
     ///
-    /// * file - File to send
-    /// * media_type - Metadata of the media
+    /// * `file` - File to send.
+    /// * `media_type` - Metadata of the media.
     pub fn new<A, B>(file: A, media_type: B) -> Result<InputMedia, InputMediaError>
     where
         A: Into<InputFile>,
@@ -37,15 +37,15 @@ impl InputMedia {
         Self::create(file, media_type, None::<InputFile>)
     }
 
-    /// Creates a new input media with thumbnail
+    /// Creates a new `InputMedia` with a thumbnail.
     ///
     /// # Arguments
     ///
-    /// * file - File to send
-    /// * media_type - Metadata of the media
-    /// * thumbnail - Thumbnail file
+    /// * `file` - File to send.
+    /// * `media_type` - Metadata of the media.
+    /// * `thumbnail` - Thumbnail file.
     ///
-    /// Note that photo can not have a thumbnail
+    /// Note that photo can not have a thumbnail.
     pub fn with_thumbnail<A, B, C>(file: A, media_type: B, thumbnail: C) -> Result<InputMedia, InputMediaError>
     where
         A: Into<InputFile>,
@@ -94,18 +94,18 @@ impl From<InputMedia> for Form {
     }
 }
 
-/// Represents a metadata of the input media
+/// Represents a metadata of the input media.
 #[derive(Debug, derive_more::From)]
 pub enum InputMediaType {
-    /// An animation file
+    /// An animation file.
     Animation(InputMediaAnimation),
-    /// An audio file
+    /// An audio file.
     Audio(InputMediaAudio),
-    /// A general file
+    /// A general file.
     Document(InputMediaDocument),
-    /// A photo
+    /// A photo.
     Photo(InputMediaPhoto),
-    /// A video file
+    /// A video file.
     Video(InputMediaVideo),
 }
 
@@ -148,10 +148,10 @@ enum InputMediaData {
     },
 }
 
-/// An error occurred with [`InputMedia`]
+/// An error occurred with [`InputMedia`].
 #[derive(Debug)]
 pub enum InputMediaError {
-    /// Can not serialize media info
+    /// Can not serialize media info.
     SerializeInfo(JsonError),
 }
 

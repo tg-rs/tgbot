@@ -153,12 +153,9 @@ impl Error for WebhookError {
     }
 }
 
-/// A wrapper for non-sync [`UpdateHandler`]
+/// A wrapper for non-sync [`UpdateHandler`].
 ///
-/// Useful for [`run_server`] which requires a sync handler
-///
-/// [`UpdateHandler`]: UpdateHandler
-/// [`run_server`]: run_server
+/// Useful for [`run_server`] which requires a sync handler.
 pub struct SyncedUpdateHandler<T> {
     handler: Arc<Mutex<T>>,
 }
@@ -170,7 +167,11 @@ impl<T> From<T> for SyncedUpdateHandler<T> {
 }
 
 impl<T> SyncedUpdateHandler<T> {
-    /// Creates a new SyncedUpdateHandler
+    /// Creates a new SyncedUpdateHandler.
+    ///
+    /// # Arguments
+    ///
+    /// * `handler` - A non-sync handler.
     pub fn new(handler: T) -> Self {
         Self {
             handler: Arc::new(Mutex::new(handler)),
@@ -193,13 +194,13 @@ where
     }
 }
 
-/// Starts a server for webhook
+/// Starts a server for handling incoming updates via webhook.
 ///
 /// # Arguments
 ///
-/// * address - Bind address
-/// * path - URL path for webhook
-/// * handler - Updates handler
+/// * `address` - The bind address for the server.
+/// * `path` - The URL path for the webhook endpoint.
+/// * `handler` - The updates handler for processing incoming updates.
 pub async fn run_server<A, P, H>(address: A, path: P, handler: H) -> Result<(), HyperError>
 where
     A: Into<SocketAddr>,

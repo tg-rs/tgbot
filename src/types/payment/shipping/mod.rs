@@ -8,34 +8,34 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a shipping address
+/// Represents a shipping address.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ShippingAddress {
-    /// City
+    /// City.
     pub city: String,
-    /// ISO 3166-1 alpha-2 country code
+    /// ISO 3166-1 alpha-2 country code.
     pub country_code: String,
-    /// Address post code
+    /// Address post code.
     pub post_code: String,
-    /// State, if applicable
+    /// State, if applicable.
     pub state: String,
-    /// First line for the address
+    /// First line for the address.
     pub street_line1: String,
-    /// Second line for the address
+    /// Second line for the address.
     pub street_line2: String,
 }
 
 impl ShippingAddress {
-    /// Creates a new ShippingAddress
+    /// Creates a new `ShippingAddress`.
     ///
     /// # Arguments
     ///
-    /// * city - City
-    /// * country_code - ISO 3166-1 alpha-2 country code
-    /// * post_code - Post code
-    /// * state - State
-    /// * street_line1 - Street line 1
-    /// * street_line2 - Street line 2
+    /// * `city` - City.
+    /// * `country_code` - ISO 3166-1 alpha-2 country code.
+    /// * `post_code` - Post code.
+    /// * `state` - State.
+    /// * `street_line1` - First line for the address.
+    /// * `street_line2` - Second line for the address.
     pub fn new<A, B, C, D, E, F>(
         city: A,
         country_code: B,
@@ -63,7 +63,7 @@ impl ShippingAddress {
     }
 }
 
-/// Shipping option
+/// Represents a shipping option.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ShippingOption {
     id: String,
@@ -72,13 +72,13 @@ pub struct ShippingOption {
 }
 
 impl ShippingOption {
-    /// Creates a new ShippingOption
+    /// Creates a new `ShippingOption`.
     ///
     /// # Arguments
     ///
-    /// * id - Shipping option identifier
-    /// * title - Option title
-    /// * prices - List of price portions
+    /// * `id` - Shipping option identifier.
+    /// * `title` - Option title.
+    /// * `prices` - List of price portions.
     pub fn new<A, B, C>(id: A, title: B, prices: C) -> Self
     where
         A: Into<String>,
@@ -92,44 +92,44 @@ impl ShippingOption {
         }
     }
 
-    /// Returns an option id
+    /// Returns the ID of the option.
     pub fn id(&self) -> &str {
         &self.id
     }
 
-    /// Returns an option title
+    /// Returns the title of the option.
     pub fn title(&self) -> &str {
         &self.title
     }
 
-    /// Returns a list of price portions
+    /// Returns the list of price portions.
     pub fn prices(&self) -> &[LabeledPrice] {
         &self.prices
     }
 }
 
-/// Represents a shipping query
+/// Represents a shipping query.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ShippingQuery {
-    /// Unique query identifier
+    /// Unique query identifier.
     pub id: String,
-    /// User who sent the query
+    /// User who sent the query.
     pub from: User,
-    /// Bot specified invoice payload
+    /// Bot specified invoice payload.
     pub invoice_payload: String,
-    /// User specified shipping address
+    /// User specified shipping address.
     pub shipping_address: ShippingAddress,
 }
 
 impl ShippingQuery {
-    /// Creates a new ShippingQuery
+    /// Creates a new `ShippingQuery`.
     ///
     /// # Arguments
     ///
-    /// * id - Query ID
-    /// * from - Query sender
-    /// * invoice_payload - Bot specified payload
-    /// * shipping_address - User specified address
+    /// * `id` - Query ID.
+    /// * `from` - Query sender.
+    /// * `invoice_payload` - Bot specified payload.
+    /// * `shipping_address` - User specified address.
     pub fn new<A, B>(id: A, from: User, invoice_payload: B, shipping_address: ShippingAddress) -> Self
     where
         A: Into<String>,
@@ -144,10 +144,11 @@ impl ShippingQuery {
     }
 }
 
-/// Replies to a shipping query
+/// Replies to a shipping query.
 ///
-/// If you sent an invoice requesting a shipping address and the parameter `is_flexible` was specified,
-/// the Bot API will send an [`crate::types::UpdateType::ShippingQuery`] to the bot
+/// If you sent an invoice requesting a shipping address
+/// and the parameter `is_flexible` was specified,
+/// the Bot API will send an [`crate::types::UpdateType::ShippingQuery`] to the bot.
 #[derive(Clone, Debug, Serialize)]
 pub struct AnswerShippingQuery {
     ok: bool,
@@ -159,12 +160,12 @@ pub struct AnswerShippingQuery {
 }
 
 impl AnswerShippingQuery {
-    /// Creates a new AnswerShippingQuery with a success answer
+    /// Creates a new `AnswerShippingQuery` with a success answer.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the query to be answered
-    /// * options - Array of available shipping options
+    /// * `id` - Unique identifier of the query to be answered.
+    /// * `options` - Array of available shipping options.
     pub fn ok<A, B>(id: A, options: B) -> Self
     where
         A: Into<String>,
@@ -178,12 +179,12 @@ impl AnswerShippingQuery {
         }
     }
 
-    /// Creates a new AnswerShippingQuery with an error answer
+    /// Creates a new `AnswerShippingQuery` with an error answer.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the query to be answered
-    /// * message - Error message in human readable form
+    /// * `id` - Unique identifier of the query to be answered.
+    /// * `message` - Error message in human readable form.
     pub fn error<A, B>(id: A, message: B) -> Self
     where
         A: Into<String>,

@@ -6,7 +6,7 @@ use futures_util::future::BoxFuture;
 use tgbot::{
     api::Client,
     handler::{LongPoll, UpdateHandler},
-    types::{SendMessage, Update, UpdateType},
+    types::{SendMessage, Update},
 };
 
 struct Handler {
@@ -20,12 +20,12 @@ impl UpdateHandler for Handler {
         let client = self.client.clone();
         Box::pin(async move {
             log::info!("got an update: {:?}\n", update);
-            if let UpdateType::Message(message) = update.update_type {
-                if let Some(text) = message.get_text() {
-                    let chat_id = message.chat.get_id();
-                    let method = SendMessage::new(chat_id, text.data.clone());
-                    client.execute(method).await.unwrap();
-                }
+            let chat_id = update.get_chat_id();
+            let message = update.get_message();
+            let text = message.and_then(|x| x.get_text());
+            if let (Some(chat_id), Some(text)) = (chat_id, text) {
+                let method = SendMessage::new(chat_id, text.data.clone());
+                client.execute(method).await.unwrap();
             }
         })
     }

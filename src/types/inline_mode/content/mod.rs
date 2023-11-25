@@ -13,19 +13,19 @@ mod venue;
 #[cfg(test)]
 mod tests;
 
-/// Represents a content of a message to be sent as a result of an inline query
+/// Represents a content of a message to be sent as a result of an inline query.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum InputMessageContent {
-    /// Contact
+    /// Represents a contact.
     Contact(InputMessageContentContact),
-    /// Invoice
+    /// Represents an invoice.
     Invoice(InputMessageContentInvoice),
-    /// Venue
+    /// Represents a venue.
     Venue(InputMessageContentVenue),
-    /// Location
+    /// Represents a location.
     Location(InputMessageContentLocation),
-    /// Text
+    /// Represents a text.
     Text(InputMessageContentText),
 }
 

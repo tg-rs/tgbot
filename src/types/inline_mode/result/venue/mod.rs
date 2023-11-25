@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a venue
+/// Represents a venue.
 ///
 /// By default, the venue will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`]
@@ -45,15 +45,15 @@ pub struct InlineQueryResultVenue {
 }
 
 impl InlineQueryResultVenue {
-    /// Creates a new InlineQueryResultVenue
+    /// Creates a new `InlineQueryResultVenue`.
     ///
     /// # Arguments
     ///
-    /// * address - Address of the venue
-    /// * id - Unique identifier of the result; 1-64 bytes
-    /// * latitude - Latitude of the venue location in degrees
-    /// * longitude - Longitude of the venue location in degrees
-    /// * title - Title of the venue
+    /// * `address` - Address of the venue.
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `latitude` - Latitude of the venue location in degrees.
+    /// * `longitude` - Longitude of the venue location in degrees.
+    /// * `title` - Title of the venue.
     pub fn new<A, B, C>(address: A, id: B, latitude: Float, longitude: Float, title: C) -> Self
     where
         A: Into<String>,
@@ -78,11 +78,11 @@ impl InlineQueryResultVenue {
         }
     }
 
-    /// Sets a new Foursquare identifier
+    /// Sets a new foursquare ID.
     ///
     /// # Arguments
     ///
-    /// * value - Foursquare identifier of the venue if known
+    /// * `value` - Foursquare identifier of the venue.
     pub fn with_foursquare_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -91,13 +91,14 @@ impl InlineQueryResultVenue {
         self
     }
 
-    /// Sets a new Foursquare type
+    /// Sets a new foursquare type.
     ///
     /// # Arguments
     ///
-    /// * value - Foursquare type of the venue, if known
+    /// * `value` - Foursquare type of the venue.
     ///
-    /// For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/ice-cream”
+    /// For example, “arts_entertainment/default”,
+    /// “arts_entertainment/aquarium” or “food/ice-cream”.
     pub fn with_foursquare_type<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -106,11 +107,11 @@ impl InlineQueryResultVenue {
         self
     }
 
-    /// Sets a new Google Places identifier
+    /// Sets a new Google Places ID.
     ///
     /// # Arguments
     ///
-    /// * value - Google Places identifier of the venue
+    /// * `value` - Google Places identifier of the venue.
     pub fn with_google_place_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -119,11 +120,11 @@ impl InlineQueryResultVenue {
         self
     }
 
-    /// Sets a new Google Places type
+    /// Sets a new Google Places type.
     ///
     /// # Arguments
     ///
-    /// * value - Google Places type of the venue
+    /// * `value` - Google Places type of the venue.
     ///
     /// <https://developers.google.com/places/web-service/supported_types>
     pub fn with_google_place_type<T>(mut self, value: T) -> Self
@@ -134,11 +135,11 @@ impl InlineQueryResultVenue {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the venue
+    /// * `value` - Content of the message to be sent instead of the venue.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -147,11 +148,11 @@ impl InlineQueryResultVenue {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -160,21 +161,21 @@ impl InlineQueryResultVenue {
         self
     }
 
-    /// Sets a new thumbnail height
+    /// Sets a new thumbnail height.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail height
+    /// * `value` - Thumbnail height.
     pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
         self.thumbnail_height = Some(value);
         self
     }
 
-    /// Sets a new thumbnail URL
+    /// Sets a new thumbnail URL.
     ///
     /// # Arguments
     ///
-    /// * value - URL of the thumbnail for the result
+    /// * `value` - URL of the thumbnail for the result.
     pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -183,11 +184,11 @@ impl InlineQueryResultVenue {
         self
     }
 
-    /// Sets a new thumbnail width
+    /// Sets a new thumbnail width.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail width
+    /// * `value` - Thumbnail width.
     pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
         self.thumbnail_width = Some(value);
         self

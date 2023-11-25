@@ -87,9 +87,9 @@ impl Payload {
 /// An error when building an HTTP request
 #[derive(Debug, derive_more::From)]
 pub enum PayloadError {
-    /// Can not build a form body
+    /// Failed to build a form body
     Form(FormError),
-    /// Can not build a JSON body
+    /// Failed to build a JSON body
     Json(JsonError),
 }
 

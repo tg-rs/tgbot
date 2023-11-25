@@ -5,29 +5,29 @@ use crate::types::ShippingAddress;
 #[cfg(test)]
 mod tests;
 
-/// Represents an order
+/// Represents an order.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct OrderInfo {
-    /// User email
+    /// User's email.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
-    /// User name
+    /// User's name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// User's phone number
+    /// User's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number: Option<String>,
-    /// User shipping address
+    /// User's shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<ShippingAddress>,
 }
 
 impl OrderInfo {
-    /// Sets a new email
+    /// Sets a new E-Mail
     ///
     /// # Arguments
     ///
-    /// * value - Email
+    /// * `value` - The E-Mail of the user
     pub fn with_email<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -36,11 +36,11 @@ impl OrderInfo {
         self
     }
 
-    /// Sets a new user name
+    /// Sets a new name of a user.
     ///
     /// # Arguments
     ///
-    /// * value - Name
+    /// * `value` - The name of the user.
     pub fn with_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -49,11 +49,11 @@ impl OrderInfo {
         self
     }
 
-    /// Sets a new phone number
+    /// Sets a new phone number.
     ///
     /// # Arguments
     ///
-    /// * value - Phone number
+    /// * `value` - The phone number of the user.
     pub fn with_phone_number<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -62,11 +62,11 @@ impl OrderInfo {
         self
     }
 
-    /// Sets a new shipping address
+    /// Sets a new shipping address.
     ///
     /// # Arguments
     ///
-    /// * value - Shipping address
+    /// * `value` - The shipping address of the user.
     pub fn with_shipping_address(mut self, value: ShippingAddress) -> Self {
         self.shipping_address = Some(value);
         self

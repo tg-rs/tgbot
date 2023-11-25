@@ -7,7 +7,7 @@ use crate::types::Message;
 #[cfg(test)]
 mod tests;
 
-/// A simple command implementation
+/// A simple command implementation.
 ///
 /// We just take first command from a message and ignore others.
 /// Also we assume that entire text after command is arguments separated by whitespace.
@@ -33,30 +33,30 @@ pub struct Command {
 }
 
 impl Command {
-    /// Returns command name with leading slash
+    /// Returns the name of the command with leading slash.
     pub fn get_name(&self) -> &str {
         &self.name
     }
 
-    /// Returns a list of arguments
+    /// Returns the list of arguments.
     pub fn get_args(&self) -> &[String] {
         &self.args
     }
 
-    /// Returns a message where command comes from
+    /// Returns the message where the command comes from.
     pub fn get_message(&self) -> &Message {
         &self.message
     }
 }
 
-/// An error when parsing command
+/// Represents an error when parsing a command.
 #[derive(Debug)]
 pub enum CommandError {
-    /// Command not found in a message
+    /// A command is not found in a message.
     NotFound,
-    /// Failed to create an UTF-16 string when reading command from a message
+    /// Failed to create an UTF-16 string when reading a command from a message.
     Utf16(FromUtf16Error),
-    /// An error when splitting a string with mismatched quotes
+    /// An error when splitting an arguments string with mismatched quotes.
     MismatchedQuotes(MismatchedQuotes),
 }
 

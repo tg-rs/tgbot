@@ -22,48 +22,48 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound)
+/// Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Animation {
-    /// Duration in seconds as defined by sender
+    /// Duration in seconds as defined by sender.
     pub duration: Integer,
-    /// Identifier
+    /// Identifier of the file.
     ///
     /// Can be used to download or reuse the file.
     pub file_id: String,
-    /// Unique identifier
+    /// Unique identifier of the file.
     ///
     /// It is supposed to be the same over time and for different bots.
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Height as defined by sender
+    /// Height as defined by sender.
     pub height: Integer,
-    /// Width as defined by sender
+    /// Width as defined by sender.
     pub width: Integer,
-    /// Original filename as defined by sender
+    /// Original filename as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// File size in bytes
+    /// File size in bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
-    /// MIME type as defined by sender
+    /// MIME type as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
-    /// Thumbnail as defined by sender
+    /// Thumbnail as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 
 impl Animation {
-    /// Creates a new Animation
+    /// Creates a new `Animation`.
     ///
     /// # Arguments
     ///
-    /// * duration - Duration in seconds
-    /// * file_id - Identifier
-    /// * file_unique_id - Unique identifier
-    /// * height - Height
-    /// * width - Width
+    /// * `duration` - Duration in seconds.
+    /// * `file_id` - Identifier of the file.
+    /// * `file_unique_id` - Unique identifier of the file.
+    /// * `height` - Height.
+    /// * `width` - Width.
     pub fn new<A, B>(duration: Integer, file_id: A, file_unique_id: B, height: Integer, width: Integer) -> Self
     where
         A: Into<String>,
@@ -82,11 +82,11 @@ impl Animation {
         }
     }
 
-    /// Sets a new file name
+    /// Sets a new file name.
     ///
     /// # Arguments
     ///
-    /// * value - File name
+    /// * `value` - File name.
     pub fn with_file_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -95,21 +95,21 @@ impl Animation {
         self
     }
 
-    /// Sets a new file size
+    /// Sets a new file size.
     ///
     /// # Arguments
     ///
-    /// * value - File size
+    /// * `value` - The size of the file in bytes.
     pub fn with_file_size(mut self, value: Integer) -> Self {
         self.file_size = Some(value);
         self
     }
 
-    /// Sets a new mime type
+    /// Sets a new MIME type.
     ///
     /// # Arguments
     ///
-    /// * value - Mime type
+    /// * `value` - MIME type.
     pub fn with_mime_type<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -118,18 +118,18 @@ impl Animation {
         self
     }
 
-    /// Sets a new thumbnail
+    /// Sets a new thumbnail.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail
+    /// * `value` - Thumbnail.
     pub fn with_thumbnail(mut self, value: PhotoSize) -> Self {
         self.thumbnail = Some(value);
         self
     }
 }
 
-/// Send animation files (GIF or H.264/MPEG-4 AVC video without sound)
+/// Sends an animation file (GIF or H.264/MPEG-4 AVC video without sound).
 ///
 /// Bots can currently send animation files of up to 50 MB in size,
 /// this limit may be changed in the future.
@@ -139,18 +139,18 @@ pub struct SendAnimation {
 }
 
 impl SendAnimation {
-    /// Creates a new SendAnimation
+    /// Creates a new `SendAnimation`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * animation - Animation to send
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `animation` - Animation to send.
     pub fn new<A, B>(animation: A, chat_id: B) -> Self
     where
         A: Into<InputFile>,
         B: Into<ChatId>,
     {
-        SendAnimation {
+        Self {
             form: Form::from([
                 ("animation", animation.into().into()),
                 ("chat_id", chat_id.into().into()),
@@ -158,22 +158,22 @@ impl SendAnimation {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.form.insert_field("allow_sending_without_reply", value.to_string());
         self
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     ///
     /// May also be used when resending animation by `file_id`.
     pub fn with_caption<T>(mut self, value: T) -> Self
@@ -184,13 +184,13 @@ impl SendAnimation {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
     where
         T: IntoIterator<Item = TextEntity>,
@@ -201,11 +201,11 @@ impl SendAnimation {
         Ok(self)
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -214,73 +214,74 @@ impl SendAnimation {
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently;
-    ///           a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.form.insert_field("disable_notification", value);
         self
     }
 
-    /// Sets a new duration
+    /// Sets a new duration.
     ///
     /// # Arguments
     ///
-    /// * value - Duration in seconds
+    /// * `value` - Duration in seconds.
     pub fn with_duration(mut self, value: Integer) -> Self {
         self.form.insert_field("duration", value);
         self
     }
 
-    /// Sets a new value for the `has_spoiler` flag
+    /// Sets a new value for a `has_spoiler` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to cover with a spoiler animation
+    /// * `value` - Indicates whether to cover with a spoiler animation.
     pub fn with_has_spoiler(mut self, value: bool) -> Self {
         self.form.insert_field("has_spoiler", value);
         self
     }
 
-    /// Sets a new height
+    /// Sets a new height.
     ///
     /// # Arguments
     ///
-    /// * value - Height
+    /// * `value` - Height.
     pub fn with_height(mut self, value: Integer) -> Self {
         self.form.insert_field("height", value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.form.insert_field("message_thread_id", value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.form.insert_field("protect_content", value.to_string());
+        self.form.insert_field("protect_content", value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
     where
         T: Into<ReplyMarkup>,
@@ -290,21 +291,21 @@ impl SendAnimation {
         Ok(self)
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.form.insert_field("reply_to_message_id", value);
         self
     }
 
-    /// Sets a new thumbnail
+    /// Sets a new thumbnail.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail
+    /// * `value` - Thumbnail.
     ///
     /// The thumbnail should be in JPEG format and less than 200 kB in size.
     /// A thumbnail‘s width and height should not exceed 320.
@@ -322,11 +323,11 @@ impl SendAnimation {
         Ok(self)
     }
 
-    /// Sets a new width
+    /// Sets a new width.
     ///
     /// # Arguments
     ///
-    /// * value - Width
+    /// * `value` - Width.
     pub fn with_width(mut self, value: Integer) -> Self {
         self.form.insert_field("width", value);
         self
@@ -341,10 +342,10 @@ impl Method for SendAnimation {
     }
 }
 
-/// An error when sending an animation
+/// Represents an error when sending an animation.
 #[derive(Debug)]
 pub enum SendAnimationError {
-    /// Thumbnails can not be reused
+    /// Thumbnails can not be reused.
     InvalidThumbnail,
 }
 

@@ -7,13 +7,13 @@ use crate::types::Integer;
 #[cfg(test)]
 mod tests;
 
-/// Chat ID or username
+/// Represents an ID or username of a chat.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum ChatId {
-    /// ID of a chat
+    /// ID of a chat.
     Id(Integer),
-    /// Username of a chat in the format `@username`
+    /// Username of a chat in the format `@username`.
     Username(String),
 }
 

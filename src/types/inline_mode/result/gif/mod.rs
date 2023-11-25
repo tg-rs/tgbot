@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a link to an animated GIF file
+/// Represents a link to an animated GIF file.
 ///
 /// By default, this animated GIF file
 /// will be sent by the user with optional caption.
@@ -46,13 +46,13 @@ pub struct InlineQueryResultGif {
 }
 
 impl InlineQueryResultGif {
-    /// Creates a new InlineQueryResultGif
+    /// Creates a new `InlineQueryResultGif`.
     ///
     /// # Arguments
     ///
-    /// * gif_url - A valid URL for the GIF file; file size must not exceed 1MB
-    /// * id - Unique identifier for this result, 1-64 bytes
-    /// * thumbnail_url - URL of the static thumbnail for the result (jpeg or gif)
+    /// * `gif_url` - A valid URL for the GIF file; file size must not exceed 1MB.
+    /// * `id` - Unique identifier for this result; 1-64 bytes.
+    /// * `thumbnail_url` - URL of the static thumbnail for the result (JPEG or GIF).
     pub fn new<A, B, C>(gif_url: A, id: B, thumbnail_url: C) -> Self
     where
         A: Into<String>,
@@ -76,11 +76,11 @@ impl InlineQueryResultGif {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the GIF file to be sent, 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -89,13 +89,13 @@ impl InlineQueryResultGif {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -105,11 +105,11 @@ impl InlineQueryResultGif {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -118,41 +118,41 @@ impl InlineQueryResultGif {
         self
     }
 
-    /// Sets a new GIF duration
+    /// Sets a new GIF duration.
     ///
     /// # Arguments
     ///
-    /// * value - Duration of the GIF
+    /// * `value` - Duration of the GIF.
     pub fn with_gif_duration(mut self, value: Integer) -> Self {
         self.gif_duration = Some(value);
         self
     }
 
-    /// Sets a new GIF height
+    /// Sets a new GIF height.
     ///
     /// # Arguments
     ///
-    /// * value - Height of the GIF
+    /// * `value` - Height of the GIF.
     pub fn with_gif_height(mut self, value: Integer) -> Self {
         self.gif_height = Some(value);
         self
     }
 
-    /// Sets a new GIF width
+    /// Sets a new GIF width.
     ///
     /// # Arguments
     ///
-    /// * value - Width of the GIF
+    /// * `value` - Width of the GIF.
     pub fn with_gif_width(mut self, value: Integer) -> Self {
         self.gif_width = Some(value);
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the GIF animation
+    /// * `value` - Content of the message to be sent instead of the GIF animation.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -161,11 +161,11 @@ impl InlineQueryResultGif {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -174,11 +174,11 @@ impl InlineQueryResultGif {
         self
     }
 
-    /// Sets a new title
+    /// Sets a new title.
     ///
     /// # Arguments
     ///
-    /// * value - Title for the result
+    /// * `value` - Title for the result.
     pub fn with_title<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -187,11 +187,11 @@ impl InlineQueryResultGif {
         self
     }
 
-    /// Sets a new MIME type
+    /// Sets a new MIME type.
     ///
     /// # Arguments
     ///
-    /// * value - MIME type of the thumbnail; defaults to “image/jpeg”
+    /// * `value` - MIME type of the thumbnail; default - “image/jpeg”.
     ///
     /// Must be one of “image/jpeg”, “image/gif”, or “video/mp4”.
     pub fn with_thumbnail_mime_type<T>(mut self, value: T) -> Self
@@ -203,11 +203,11 @@ impl InlineQueryResultGif {
     }
 }
 
-/// Link to an animated GIF file stored on the Telegram servers
+/// Link to an animated GIF file stored on the Telegram servers.
 ///
-/// By default, this animated GIF file will be sent by the user with an optional caption
+/// By default, this animated GIF file will be sent by the user with an optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send
-/// a message with specified content instead of the animation
+/// a message with specified content instead of the animation.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedGif {
     gif_file_id: String,
@@ -227,12 +227,12 @@ pub struct InlineQueryResultCachedGif {
 }
 
 impl InlineQueryResultCachedGif {
-    /// Creates a new InlineQueryResultCachedGif
+    /// Creates a new `InlineQueryResultCachedGif`.
     ///
     /// # Arguments
     ///
-    /// * gif_file_id - A valid file identifier for the GIF file
-    /// * id - Unique identifier for this result, 1-64 bytes
+    /// * `gif_file_id` - A valid file identifier for the GIF file.
+    /// * `id` - Unique identifier for this result; 1-64 bytes.
     pub fn new<A, B>(gif_file_id: A, id: B) -> Self
     where
         A: Into<String>,
@@ -250,11 +250,11 @@ impl InlineQueryResultCachedGif {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the GIF file to be sent, 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -263,14 +263,13 @@ impl InlineQueryResultCachedGif {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption,
-    ///           which can be specified instead of parse_mode
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -280,11 +279,11 @@ impl InlineQueryResultCachedGif {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -293,11 +292,11 @@ impl InlineQueryResultCachedGif {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the GIF animation
+    /// * `value` - Content of the message to be sent instead of the GIF animation.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -306,11 +305,11 @@ impl InlineQueryResultCachedGif {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -319,11 +318,11 @@ impl InlineQueryResultCachedGif {
         self
     }
 
-    /// Sets a new title
+    /// Sets a new title.
     ///
     /// # Arguments
     ///
-    /// * value - Title for the result
+    /// * `value` - Title for the result.
     pub fn with_title<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

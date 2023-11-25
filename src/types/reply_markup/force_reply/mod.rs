@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 #[cfg(test)]
 mod tests;
 
-/// Represents a reply interface trigger
+/// Represents a reply interface trigger.
 ///
 /// Upon receiving a message with this object, Telegram clients
 /// will display a reply interface to the user.
@@ -21,13 +21,13 @@ pub struct ForceReply {
 }
 
 impl ForceReply {
-    /// Creates a new ForceReply
+    /// Creates a new `ForceReply`.
     ///
     /// # Arguments
     ///
-    /// * force_reply - Whether to show reply interface to the user,
-    ///                 as if they manually selected the bot‘s message
-    ///                 and tapped ’Reply'
+    /// * `force_reply` - Indicates whether to show reply interface to the user,
+    ///                   as if they manually selected the bot‘s message
+    ///                   and tapped ’Reply'.
     pub fn new(force_reply: bool) -> Self {
         ForceReply {
             force_reply,
@@ -36,14 +36,14 @@ impl ForceReply {
         }
     }
 
-    /// Sets a new input field placeholder
+    /// Sets a new input field placeholder.
     ///
     /// # Arguments
     ///
-    /// * value - The placeholder to be shown
-    ///           in the input field when
-    ///           the keyboard is active;
-    ///           1-64 characters
+    /// * `value` - The placeholder to be shown
+    ///             in the input field when
+    ///             the keyboard is active;
+    ///             1-64 characters.
     pub fn with_input_field_placeholder<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -52,18 +52,19 @@ impl ForceReply {
         self
     }
 
-    /// Sets a new value for the `selective` flag.
+    /// Sets a new value for a `selective` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Value of the flag
+    /// * `value` - Value of the flag.
     ///
-    /// Use this parameter if you want to force reply from specific users only
+    /// Use this parameter if you want to force reply from specific users only.
     ///
     /// Targets:
     ///
-    /// 1. users that are @mentioned in the text of the Message object
-    /// 2. if the bot message is a reply (has reply_to_message_id), sender of the original message
+    /// 1. users that are `@mentioned` in the text of the Message object.
+    /// 2. if the bot message is a reply (has `reply_to_message_id`),
+    ///    sender of the original message.
     pub fn with_selective(mut self, selective: bool) -> Self {
         self.selective = Some(selective);
         self

@@ -8,31 +8,31 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a phone contact
+/// Represents a phone contact.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Contact {
-    /// First name
+    /// First name.
     pub first_name: String,
-    /// Phone number
+    /// Phone number.
     pub phone_number: String,
-    /// Last name
+    /// Last name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
-    /// Identifier in Telegram
+    /// Identifier in Telegram.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_id: Option<Integer>,
-    /// Additional data in the form of a vCard
+    /// Additional data in the form of a vCard.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vcard: Option<String>,
 }
 
 impl Contact {
-    /// Creates a new contact
+    /// Creates a new `Contact`.
     ///
     /// # Arguments
     ///
-    /// * first_name - First name
-    /// * phone_number - Phone number
+    /// * `first_name` - First name.
+    /// * `phone_number` - Phone number.
     pub fn new<A, B>(first_name: A, phone_number: B) -> Self
     where
         A: Into<String>,
@@ -47,11 +47,11 @@ impl Contact {
         }
     }
 
-    /// Sets a new last name
+    /// Sets a new last name.
     ///
     /// # Arguments
     ///
-    /// * value - Last name
+    /// * `value` - Last name.
     pub fn with_last_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -60,21 +60,21 @@ impl Contact {
         self
     }
 
-    /// Sets a new user ID
+    /// Sets a new user ID.
     ///
     /// # Arguments
     ///
-    /// * value - User ID
+    /// * `value` - User ID.
     pub fn with_user_id(mut self, value: Integer) -> Self {
         self.user_id = Some(value);
         self
     }
 
-    /// Sets a new vCard
+    /// Sets a new vCard.
     ///
     /// # Arguments
     ///
-    /// * value - vCard
+    /// * `value` - Additional data about the contact in the form of a vCard; 0-2048 bytes.
     pub fn with_vcard<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -84,7 +84,7 @@ impl Contact {
     }
 }
 
-/// Send a phone contact
+/// Sends a phone contact.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendContact {
     chat_id: ChatId,
@@ -109,13 +109,13 @@ pub struct SendContact {
 }
 
 impl SendContact {
-    /// Creates a new SendContact
+    /// Creates a new `SendContact`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * first_name - First name
-    /// * phone_number - Phone number
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `first_name` - First name.
+    /// * `phone_number` - Phone number.
     pub fn new<A, B, C>(chat_id: A, first_name: B, phone_number: C) -> Self
     where
         A: Into<ChatId>,
@@ -137,32 +137,33 @@ impl SendContact {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Send the message silently or not; a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
     }
 
-    /// Sets a last name
+    /// Sets a last name.
     ///
     /// # Arguments
     ///
-    /// * value - Contact's last name
+    /// * `value` - Contact's last name.
     pub fn with_last_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -171,32 +172,33 @@ impl SendContact {
         self
     }
 
-    /// Sets a message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
     }
 
-    /// Sets a reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
@@ -205,21 +207,21 @@ impl SendContact {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.reply_to_message_id = Some(value);
         self
     }
 
-    /// Sets a vCard
+    /// Sets a new vCard.
     ///
     /// # Arguments
     ///
-    /// * value - Additional data about the contact in the form of a vCard, 0-2048 bytes
+    /// * `value` - Additional data about the contact in the form of a vCard; 0-2048 bytes.
     pub fn with_vcard<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

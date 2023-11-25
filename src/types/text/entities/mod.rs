@@ -13,7 +13,7 @@ use crate::types::User;
 #[cfg(test)]
 mod tests;
 
-/// Represents a collection of text entities
+/// Represents a collection of text entities.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(into = "Vec<TextEntity>", try_from = "Vec<RawTextEntity>")]
 pub struct TextEntities {
@@ -21,16 +21,16 @@ pub struct TextEntities {
 }
 
 impl TextEntities {
-    /// Pushes a new item into the collection
+    /// Pushes a new entity into the collection.
     ///
     /// # Arguments
     ///
-    /// * value - An entity to push
+    /// * `value` - The entity to push.
     pub fn push(&mut self, value: TextEntity) {
         self.items.push(value);
     }
 
-    /// Serializes text entities into a JSON string
+    /// Serializes text entities into a JSON string.
     pub fn serialize(&self) -> Result<String, TextEntityError> {
         serde_json::to_string(self).map_err(TextEntityError::Serialize)
     }
@@ -103,76 +103,76 @@ impl From<TextEntities> for Vec<TextEntity> {
     }
 }
 
-/// Represents an entity in a text
+/// Represents an entity in a text.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(try_from = "RawTextEntity", into = "RawTextEntity")]
 pub enum TextEntity {
-    /// Bold text
+    /// A bold text.
     Bold(TextEntityPosition),
-    /// Bot command
+    /// A bot command.
     BotCommand(TextEntityPosition),
-    /// Cashtag
+    /// A cashtag.
     Cashtag(TextEntityPosition),
-    /// Monospace string
+    /// A monospace string.
     Code(TextEntityPosition),
-    /// Inline custom emoji sticker
+    /// An inline custom emoji sticker.
     CustomEmoji {
-        /// Unique identifier of the custom emoji
+        /// Unique identifier of the custom emoji.
         ///
-        /// Use getCustomEmojiStickers to get full information about the sticker
+        /// Use [`crate::types::GetCustomEmojiStickers`] to get full information about the sticker.
         custom_emoji_id: String,
-        /// Position of entity in text
+        /// Position of entity in text.
         position: TextEntityPosition,
     },
-    /// E-Mail
+    /// An E-Mail.
     Email(TextEntityPosition),
-    /// Hashtag
+    /// A hashtag.
     Hashtag(TextEntityPosition),
-    /// Italic text
+    /// An italic text.
     Italic(TextEntityPosition),
-    /// User mention (e.g. @username)
+    /// A user mention (e.g. @username).
     Mention(TextEntityPosition),
-    /// Phone number
+    /// A phone number.
     PhoneNumber(TextEntityPosition),
-    /// Monospace block
+    /// A monospace block.
     Pre {
-        /// Position of entity in text
+        /// The position of the entity in the text.
         position: TextEntityPosition,
-        /// Name of the programming language
+        /// The name of the programming language.
         language: Option<String>,
     },
-    /// Spoiler message
+    /// A spoiler message.
     Spoiler(TextEntityPosition),
-    /// Strikethrough text
+    /// A strikethrough text.
     Strikethrough(TextEntityPosition),
-    /// Clickable text URLs
+    /// A clickable text URLs.
     TextLink {
-        /// Position of entity in text
+        /// The position of the entity in the text.
         position: TextEntityPosition,
-        /// URL that will be opened after user taps on the text
+        /// URL that will be opened after user taps on the text.
         url: String,
     },
-    /// Mention user without username
+    /// A user mention without a username.
     TextMention {
-        /// Position of entity in text
+        /// The position of the entity in the text.
         position: TextEntityPosition,
-        /// Mentioned user
+        /// The mentioned user.
         user: User,
     },
-    /// Underlined text
+    /// An underlined text.
     Underline(TextEntityPosition),
-    /// URL
+    /// An URL.
     Url(TextEntityPosition),
 }
 
 macro_rules! text_entity_factory {
     ($($method_name:ident => $enum_variant: ident),*) => {
         $(
-            /// Creates a new TextEntity
+            /// Creates a new `TextEntity`.
             ///
             /// # Arguments
             ///
-            /// * pos - Position of TextEntity in UTF-16 code units
+            /// * `pos` - Position of TextEntity in UTF-16 code units.
             pub fn $method_name<T: Into<TextEntityPosition>>(pos: T) -> TextEntity {
                 TextEntity::$enum_variant(pos.into())
             }
@@ -196,12 +196,12 @@ impl TextEntity {
         underline => Underline
     );
 
-    /// Creates a new TextEntity
+    /// Creates a new `TextEntity`.
     ///
     /// # Arguments
     ///
-    /// * pos - Position of TextEntity in UTF-16 code units
-    /// * custom_emoji_id - Unique identifier of the custom emoji
+    /// * `pos` - Position of the entity in UTF-16 code units.
+    /// * `custom_emoji_id` - Unique identifier of the custom emoji.
     pub fn custom_emoji<P: Into<TextEntityPosition>, I: Into<String>>(pos: P, custom_emoji_id: I) -> TextEntity {
         TextEntity::CustomEmoji {
             position: pos.into(),
@@ -209,12 +209,12 @@ impl TextEntity {
         }
     }
 
-    /// Creates a new TextEntity
+    /// Creates a new `TextEntity`.
     ///
     /// # Arguments
     ///
-    /// * pos - Position of TextEntity in UTF-16 code units
-    /// * language - The programming language of the entity text
+    /// * `pos` - Position of the entity in UTF-16 code units.
+    /// * `language` - The programming language of the entity text.
     pub fn pre<P: Into<TextEntityPosition>, L: Into<String>>(pos: P, language: Option<L>) -> TextEntity {
         TextEntity::Pre {
             position: pos.into(),
@@ -222,12 +222,12 @@ impl TextEntity {
         }
     }
 
-    /// Creates a new TextEntity
+    /// Creates a new `TextEntity`.
     ///
     /// # Arguments
     ///
-    /// * pos - Position of TextEntity in UTF-16 code units
-    /// * url - URL that will be opened after user taps on the text
+    /// * `pos` - The position of the entity in UTF-16 code units.
+    /// * `url` - The URL that will be opened after user taps on the text.
     pub fn text_link<P: Into<TextEntityPosition>, U: Into<String>>(pos: P, url: U) -> TextEntity {
         TextEntity::TextLink {
             position: pos.into(),
@@ -235,12 +235,12 @@ impl TextEntity {
         }
     }
 
-    /// Creates a new TextEntity
+    /// Creates a new `TextEntity`.
     ///
     /// # Arguments
     ///
-    /// * pos - Position of TextEntity in UTF-16 code units
-    /// * user - User to be mentioned
+    /// * `pos` - The position of the entity in UTF-16 code units.
+    /// * `user` - The user to be mentioned.
     pub fn text_mention<P: Into<TextEntityPosition>>(pos: P, user: User) -> TextEntity {
         TextEntity::TextMention {
             position: pos.into(),
@@ -292,16 +292,16 @@ enum RawTextEntityType {
     Url,
 }
 
-/// An error when parsing/serializing entities
+/// Represents an error when parsing/serializing entities.
 #[derive(Debug)]
 pub enum TextEntityError {
-    /// Custom emoji is required for custom_emoji entity
+    /// Custom emoji is required for custom_emoji entity.
     NoCustomEmoji,
-    /// URL is required for text_link entity
+    /// URL is required for `text_link` entity.
     NoUrl,
-    /// User is required for text_mention entity
+    /// User is required for `text_mention` entity.
     NoUser,
-    /// Failed to serialize entities
+    /// Failed to serialize entities.
     Serialize(JsonError),
 }
 
@@ -406,23 +406,23 @@ impl From<TextEntity> for RawTextEntity {
     }
 }
 
-/// Represents a bot command found in text
+/// Represents a bot command found in text.
 ///
-/// Use [`TextEntity::BotCommand`] to get a position of the command
+/// Use [`TextEntity::BotCommand`] to get a position of the command.
 #[derive(Clone, Debug, PartialEq, PartialOrd)]
 pub struct TextEntityBotCommand {
-    /// Actual command
+    /// Actual command.
     pub command: String,
-    /// Username of a bot
+    /// Username of a bot.
     pub bot_name: Option<String>,
 }
 
-/// Describes position of entity in text
+/// Represents a position of an entity in a text.
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
 pub struct TextEntityPosition {
-    /// Offset in UTF-16 code units to the start of the entity
+    /// Offset in UTF-16 code units to the start of the entity.
     pub offset: u32,
-    /// Length of the entity in UTF-16 code units
+    /// Length of the entity in UTF-16 code units.
     pub length: u32,
 }
 

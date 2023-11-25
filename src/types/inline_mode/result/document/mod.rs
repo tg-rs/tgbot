@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a link to a file
+/// Represents a link to a file.
 ///
 /// By default, this file will be sent by the user with an optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send a message
@@ -45,14 +45,15 @@ pub struct InlineQueryResultDocument {
 }
 
 impl InlineQueryResultDocument {
-    /// Creates a new InlineQueryResultDocument
+    /// Creates a new `InlineQueryResultDocument`.
     ///
     /// # Arguments
     ///
-    /// * document_url - A valid URL for the file
-    /// * id - Unique identifier of the result, 1-64 bytes
-    /// * mime_type - Mime type of the content of the file, either “application/pdf” or “application/zip”
-    /// * title - Title of the result
+    /// * `document_url` - A valid URL for the file.
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `mime_type` - MIME type of the content of the file,
+    ///                 either “application/pdf” or “application/zip”.
+    /// * `title` - Title of the result.
     pub fn new<A, B, C, D>(document_url: A, id: B, mime_type: C, title: D) -> Self
     where
         A: Into<String>,
@@ -77,11 +78,11 @@ impl InlineQueryResultDocument {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the document to be sent, 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -90,13 +91,13 @@ impl InlineQueryResultDocument {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -106,11 +107,11 @@ impl InlineQueryResultDocument {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -119,11 +120,11 @@ impl InlineQueryResultDocument {
         self
     }
 
-    /// Sets a new description
+    /// Sets a new description.
     ///
     /// # Arguments
     ///
-    /// * value - Short description of the result
+    /// * `value` - Short description of the result.
     pub fn with_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -132,11 +133,11 @@ impl InlineQueryResultDocument {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the file
+    /// * `value` - Content of the message to be sent instead of the file.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -145,11 +146,11 @@ impl InlineQueryResultDocument {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -158,31 +159,31 @@ impl InlineQueryResultDocument {
         self
     }
 
-    /// Sets a new thumbnail height
+    /// Sets a new thumbnail height.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail height
+    /// * `value` - Thumbnail height.
     pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
         self.thumbnail_height = Some(value);
         self
     }
 
-    /// Sets a new thumbnail width
+    /// Sets a new thumbnail width.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail width
+    /// * `value` - Thumbnail width.
     pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
         self.thumbnail_width = Some(value);
         self
     }
 
-    /// Sets a new thumbnail URL
+    /// Sets a new thumbnail URL.
     ///
     /// # Arguments
     ///
-    /// * value - URL of the thumbnail (jpeg only) for the file
+    /// * `value` - URL of the thumbnail (jpeg only) for the file.
     pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -192,7 +193,7 @@ impl InlineQueryResultDocument {
     }
 }
 
-/// Represents a link to a file stored on the Telegram servers
+/// Represents a link to a file stored on the Telegram servers.
 ///
 /// By default, this file will be sent by the user with an optional caption.
 /// Alternatively, you can use [Self::with_input_message_content]
@@ -217,13 +218,13 @@ pub struct InlineQueryResultCachedDocument {
 }
 
 impl InlineQueryResultCachedDocument {
-    /// Creates a new InlineQueryResultCachedDocument
+    /// Creates a new `InlineQueryResultCachedDocument`.
     ///
     /// # Arguments
     ///
-    /// * document_file_id - A valid file identifier of the file
-    /// * id - Unique identifier of the result, 1-64 bytes
-    /// * title - Title of the result
+    /// * `document_file_id` - A valid file identifier of the file.
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `title` - Title of the result.
     pub fn new<A, B, C>(document_file_id: A, id: B, title: C) -> Self
     where
         A: Into<String>,
@@ -243,11 +244,11 @@ impl InlineQueryResultCachedDocument {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the document to be sent, 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, caption: T) -> Self
     where
         T: Into<String>,
@@ -256,40 +257,40 @@ impl InlineQueryResultCachedDocument {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, caption_entities: T) -> Self
+    /// Caption parse mode will be set to [`None`] when this method is called.
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.caption_entities = Some(caption_entities.into_iter().collect());
+        self.caption_entities = Some(value.into_iter().collect());
         self.parse_mode = None;
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
+        self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Sets a new description
+    /// Sets a new description.
     ///
     /// # Arguments
     ///
-    /// * value - Short description of the result
+    /// * value - Short description of the result.
     pub fn with_description<T>(mut self, description: T) -> Self
     where
         T: Into<String>,
@@ -298,11 +299,11 @@ impl InlineQueryResultCachedDocument {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the file
+    /// * `value` - Content of the message to be sent instead of the file.
     pub fn with_input_message_content<T>(mut self, input_message_content: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -311,16 +312,16 @@ impl InlineQueryResultCachedDocument {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
-    pub fn with_reply_markup<T>(mut self, reply_markup: T) -> Self
+    /// * `value` - Reply markup.
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
     {
-        self.reply_markup = Some(reply_markup.into());
+        self.reply_markup = Some(value.into());
         self
     }
 }

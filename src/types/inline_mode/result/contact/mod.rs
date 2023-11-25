@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a contact with a phone number
+/// Represents a contact with a phone number.
 ///
 /// By default, this contact will be sent by the user.
 /// Alternatively, you can use [Self::with_input_message_content]
@@ -39,13 +39,13 @@ pub struct InlineQueryResultContact {
 }
 
 impl InlineQueryResultContact {
-    /// Creates a new InlineQueryResultContact
+    /// Creates a new `InlineQueryResultContact`.
     ///
     /// # Arguments
     ///
-    /// * first_name - Contact's first name
-    /// * id - Unique identifier of the result; 1-64 bytes
-    /// * phone_number - Contact's phone number
+    /// * `first_name` - Contact's first name.
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `phone_number` - Contact's phone number.
     pub fn new<A, B, C>(first_name: A, id: B, phone_number: C) -> Self
     where
         A: Into<String>,
@@ -66,11 +66,11 @@ impl InlineQueryResultContact {
         }
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the contact
+    /// * `value` - Content of the message to be sent instead of the contact.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -79,11 +79,11 @@ impl InlineQueryResultContact {
         self
     }
 
-    /// Sets a new last name
+    /// Sets a new last name.
     ///
     /// # Arguments
     ///
-    /// * value - Last name
+    /// * `value` - Last name.
     pub fn with_last_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -92,11 +92,11 @@ impl InlineQueryResultContact {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -105,21 +105,21 @@ impl InlineQueryResultContact {
         self
     }
 
-    /// Sets a new thumbnail height
+    /// Sets a new thumbnail height.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail height
+    /// * `value` - Thumbnail height.
     pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
         self.thumbnail_height = Some(value);
         self
     }
 
-    /// Sets a new thumbnail URL
+    /// Sets a new thumbnail URL.
     ///
     /// # Arguments
     ///
-    /// * value - URL of the thumbnail for the result
+    /// * `value` - URL of the thumbnail for the result.
     pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -128,21 +128,21 @@ impl InlineQueryResultContact {
         self
     }
 
-    /// Sets a new thumbnail width
+    /// Sets a new thumbnail width.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail width
+    /// * `value` - Thumbnail width.
     pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
         self.thumbnail_width = Some(value);
         self
     }
 
-    /// Sets a new vCard
+    /// Sets a new vCard.
     ///
     /// # Arguments
     ///
-    /// * value - Additional data about the contact in the form of a vCard, 0-2048 bytes
+    /// * `value` - Additional data about the contact in the form of a vCard; 0-2048 bytes.
     pub fn with_vcard<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

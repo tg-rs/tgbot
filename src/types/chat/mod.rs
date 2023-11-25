@@ -42,23 +42,23 @@ mod sender_chat;
 mod sticker_set;
 mod supergroup;
 
-/// Represents a chat
+/// Represents a chat.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum Chat {
-    /// Channel
+    /// Represents a channel chat.
     Channel(ChannelChat),
-    /// Group
+    /// Represents a group chat.
     Group(GroupChat),
-    /// Private chat
+    /// Represents a private chat.
     Private(PrivateChat),
-    /// Supergroup
+    /// Represents a supergroup chat.
     Supergroup(SupergroupChat),
 }
 
 impl Chat {
-    /// Returns ID of the chat
+    /// Returns an ID of the chat.
     pub fn get_id(&self) -> Integer {
         match self {
             Chat::Channel(chat) => chat.id,
@@ -68,7 +68,7 @@ impl Chat {
         }
     }
 
-    /// Returns username of the chat
+    /// Returns a username of the chat.
     pub fn get_username(&self) -> Option<&str> {
         match &self {
             Chat::Channel(chat) => &chat.username,
@@ -80,18 +80,18 @@ impl Chat {
     }
 }
 
-/// Get up to date information about the chat
+/// Returns up to date information about the chat.
 #[derive(Clone, Debug, Serialize)]
 pub struct GetChat {
     chat_id: ChatId,
 }
 
 impl GetChat {
-    /// Creates a new GetChat
+    /// Creates a new `GetChat`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
+    /// * `chat_id` - Unique identifier of the target chat.
     pub fn new<T>(chat_id: T) -> Self
     where
         T: Into<ChatId>,
@@ -110,18 +110,18 @@ impl Method for GetChat {
     }
 }
 
-/// Leave a group, supergroup or channel
+/// Leaves a group, supergroup or channel.
 #[derive(Clone, Debug, Serialize)]
 pub struct LeaveChat {
     chat_id: ChatId,
 }
 
 impl LeaveChat {
-    /// Creates a new LeaveChat
+    /// Creates a new `LeaveChat`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
+    /// * `chat_id` - Unique identifier of the target chat.
     pub fn new<T>(chat_id: T) -> Self
     where
         T: Into<ChatId>,
@@ -140,7 +140,7 @@ impl Method for LeaveChat {
     }
 }
 
-/// Change the description of a group, a supergroup or a channel
+/// Changes a description of a chat.
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the appropriate admin rights.
@@ -152,11 +152,11 @@ pub struct SetChatDescription {
 }
 
 impl SetChatDescription {
-    /// Creates a new SetChatDescription
+    /// Creates a new `SetChatDescription`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
+    /// * `chat_id` - Unique identifier of the target chat.
     pub fn new<T>(chat_id: T) -> Self
     where
         T: Into<ChatId>,
@@ -167,11 +167,11 @@ impl SetChatDescription {
         }
     }
 
-    /// Sets a new chat description
+    /// Sets a new chat description.
     ///
     /// # Arguments
     ///
-    /// * value - Description, 0-255 characters
+    /// * `value` - Description; 0-255 characters.
     pub fn with_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -189,13 +189,15 @@ impl Method for SetChatDescription {
     }
 }
 
-/// Change the title of a chat
+/// Changes a title of a chat.
 ///
 /// Titles can't be changed for private chats.
 /// The bot must be an administrator in the chat for this to work
 /// and must have the appropriate admin rights.
 ///
-/// Note: In regular groups (non-supergroups), this method will only work
+/// # Notes
+///
+/// In regular groups (non-supergroups), this method will only work
 /// if the ‘All Members Are Admins’ setting is off in the target group.
 #[derive(Clone, Debug, Serialize)]
 pub struct SetChatTitle {
@@ -204,12 +206,12 @@ pub struct SetChatTitle {
 }
 
 impl SetChatTitle {
-    /// Creates a new SetChatTitle
+    /// Creates a new `SetChatTitle`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * title - New chat title, 1-255 characters
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `title` - New chat title; 1-255 characters.
     pub fn new<A, B>(chat_id: A, title: B) -> Self
     where
         A: Into<ChatId>,

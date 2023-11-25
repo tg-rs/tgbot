@@ -5,7 +5,7 @@ use crate::types::{Integer, ParseMode, TextEntities, TextEntity};
 #[cfg(test)]
 mod tests;
 
-/// Represents an audio file to be treated as music to be sent
+/// Represents an audio file to be treated as music to be sent.
 #[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMediaAudio {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23,11 +23,11 @@ pub struct InputMediaAudio {
 }
 
 impl InputMediaAudio {
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the audio to be sent, 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -36,13 +36,13 @@ impl InputMediaAudio {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -52,11 +52,11 @@ impl InputMediaAudio {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -65,21 +65,21 @@ impl InputMediaAudio {
         self
     }
 
-    /// Sets a new duration
+    /// Sets a new duration.
     ///
     /// # Arguments
     ///
-    /// * value - Duration
+    /// * `value` - Duration.
     pub fn with_duration(mut self, value: Integer) -> Self {
         self.duration = Some(value);
         self
     }
 
-    /// Sets a new performer
+    /// Sets a new performer.
     ///
     /// # Arguments
     ///
-    /// * value - Performer of the audio
+    /// * `value` - Performer of the audio.
     pub fn with_performer<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -88,11 +88,11 @@ impl InputMediaAudio {
         self
     }
 
-    /// Sets a new title
+    /// Sets a new title.
     ///
     /// # Arguments
     ///
-    /// * value - Title of the audio
+    /// * `value` - Title of the audio.
     pub fn with_title<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

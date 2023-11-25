@@ -10,7 +10,7 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a dice with random value
+/// Represents a dice with a random value.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize)]
 pub struct Dice {
     #[serde(rename = "emoji")]
@@ -19,37 +19,37 @@ pub struct Dice {
 }
 
 impl Dice {
-    /// Returns a type of a dice
+    /// Returns the type of the dice.
     pub fn dice_type(&self) -> DiceType {
         self.dice_type
     }
 
-    /// Returns a value of a dice
+    /// Returns the value rolled on the dice.
     pub fn value(&self) -> Integer {
         self.value
     }
 }
 
-/// Represents a type of a dice
+/// Represents a type of a dice.
 #[derive(Debug, Copy, Clone, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[non_exhaustive]
 pub enum DiceType {
-    /// Basketball; range: 1-5
+    /// Basketball; range: 1-5.
     #[serde(rename = "🏀")]
     Basketball,
-    /// Bones; range: 1-6
+    /// Bones; range: 1-6.
     #[serde(rename = "🎲")]
     Bones,
-    /// Bowling; range: 1-6
+    /// Bowling; range: 1-6.
     #[serde(rename = "🎳")]
     Bowling,
-    /// Darts; range: 1-6
+    /// Darts; range: 1-6.
     #[serde(rename = "🎯")]
     Darts,
-    /// Football; range: 1-5
+    /// Football; range: 1-5.
     #[serde(rename = "⚽")]
     Football,
-    /// Slot machine; range: 1-64
+    /// Slot machine; range: 1-64.
     #[serde(rename = "🎰")]
     SlotMachine,
 }
@@ -80,7 +80,7 @@ impl fmt::Display for DiceType {
     }
 }
 
-/// Send a dice
+/// Sends a dice.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendDice {
     chat_id: ChatId,
@@ -100,15 +100,15 @@ pub struct SendDice {
 }
 
 impl SendDice {
-    /// Creates a new SendDice
+    /// Creates a new `SendDice`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * dice_type - Type of a dice
-    pub fn new<C>(chat_id: C, dice_type: DiceType) -> Self
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `dice_type` - Type of a dice.
+    pub fn new<T>(chat_id: T, dice_type: DiceType) -> Self
     where
-        C: Into<ChatId>,
+        T: Into<ChatId>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -122,54 +122,55 @@ impl SendDice {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to sends the message silently;
-    ///           a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protects the contents of the sent message from forwarding
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
@@ -178,11 +179,11 @@ impl SendDice {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.reply_to_message_id = Some(value);
         self

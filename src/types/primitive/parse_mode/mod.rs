@@ -10,7 +10,7 @@ const ESCAPE_MARKDOWN_V2: [char; 18] = [
     '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!',
 ];
 
-/// Represents a mode for parsing entities in a text
+/// Represents a mode for parsing entities in a text.
 ///
 /// See [formatting options][1] for more details.
 ///
@@ -27,11 +27,11 @@ pub enum ParseMode {
 }
 
 impl ParseMode {
-    /// Escapes HTML or Markdown special characters
+    /// Escapes HTML or Markdown special characters.
     ///
     /// # Arguments
     ///
-    /// * input - String that will be escaped
+    /// * `input` - String that will be escaped.
     ///
     /// For MarkdownV2 you must escape characters with `\` by yourself in the following cases:
     ///

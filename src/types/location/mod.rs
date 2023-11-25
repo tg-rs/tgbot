@@ -8,29 +8,29 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a point on the map
+/// Represents a point on a map.
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Location {
-    /// Latitude as defined by sender
+    /// Latitude as defined by sender.
     pub latitude: Float,
-    /// Longitude as defined by sender
+    /// Longitude as defined by sender.
     pub longitude: Float,
-    /// The direction in which user is moving; in degrees; 1-360
+    /// The direction in which user is moving; in degrees; 1-360.
     ///
     /// For active live locations only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub heading: Option<Integer>,
-    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    /// The radius of uncertainty for the location, measured in meters; 0-1500.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub horizontal_accuracy: Option<Float>,
     /// Time relative to the message sending date,
-    /// during which the location can be updated, in seconds
+    /// during which the location can be updated, in seconds.
     ///
     /// For active live locations only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub live_period: Option<Integer>,
     /// Maximum distance for proximity alerts about
-    /// approaching another chat member, in meters
+    /// approaching another chat member; in meters.
     ///
     /// For sent live locations only.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,12 +38,12 @@ pub struct Location {
 }
 
 impl Location {
-    /// Creates a new Location
+    /// Creates a new `Location`.
     ///
     /// # Arguments
     ///
-    /// * latitude - Latitude
-    /// * longitude - Longitude
+    /// * `latitude` - Latitude.
+    /// * `longitude` - Longitude.
     pub fn new(latitude: Float, longitude: Float) -> Self {
         Self {
             latitude,
@@ -55,48 +55,49 @@ impl Location {
         }
     }
 
-    /// Sets a new heading
+    /// Sets a new heading.
     ///
     /// # Arguments
     ///
-    /// * value - Heading
+    /// * `value` - A direction in which the user is moving; in degrees; 1-360.
     pub fn with_heading(mut self, value: Integer) -> Self {
         self.heading = Some(value);
         self
     }
 
-    /// Sets a new horizontal accuracy
+    /// Sets a new horizontal accuracy.
     ///
     /// # Arguments
     ///
-    /// * value - Horizontal accuracy
+    /// * `value` - A radius of uncertainty for the location; in meters; 0-1500.
     pub fn with_horizontal_accuracy(mut self, value: Float) -> Self {
         self.horizontal_accuracy = Some(value);
         self
     }
 
-    /// Sets a new live period
+    /// Sets a new live period.
     ///
     /// # Arguments
     ///
-    /// * value - Live period
+    /// * `value` - Period in seconds for which the location can be updated; 60-86400.
     pub fn with_live_period(mut self, value: Integer) -> Self {
         self.live_period = Some(value);
         self
     }
 
-    /// Sets a new proximity alert radius
+    /// Sets a new proximity alert radius.
     ///
     /// # Arguments
     ///
-    /// * value - Proximity alert radius
+    /// * `value` - A maximum distance for proximity alerts
+    ///             about approaching another chat member; in meters; 1-100000.
     pub fn with_proximity_alert_radius(mut self, value: Integer) -> Self {
         self.proximity_alert_radius = Some(value);
         self
     }
 }
 
-/// Sends a point on the map
+/// Sends a point on a map.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendLocation {
     chat_id: ChatId,
@@ -125,13 +126,13 @@ pub struct SendLocation {
 }
 
 impl SendLocation {
-    /// Creates a new SendLocation
+    /// Creates a new `SendLocation`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * latitude - Latitude
-    /// * longitude - Longitude
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `latitude` - Latitude.
+    /// * `longitude` - Longitude.
     pub fn new<T>(chat_id: T, latitude: Float, longitude: Float) -> Self
     where
         T: Into<ChatId>,
@@ -153,97 +154,96 @@ impl SendLocation {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently
-    ///
-    /// Users will receive a notification with no sound.
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new heading
+    /// Sets a new heading.
     ///
     /// # Arguments
     ///
-    /// * value - For live locations, a direction in which the user is moving; in degrees; 1-360
+    /// * `value` - A direction in which the user is moving; in degrees; 1-360.
     pub fn with_heading(mut self, value: Integer) -> Self {
         self.heading = Some(value);
         self
     }
 
-    /// Sets a new horizontal accuracy
+    /// Sets a new horizontal accuracy.
     ///
     /// # Arguments
     ///
-    /// * value - Radius of uncertainty for the location; in meters; 0-1500
+    /// * `value` - A radius of uncertainty for the location; in meters; 0-1500.
     pub fn with_horizontal_accuracy(mut self, value: Float) -> Self {
         self.horizontal_accuracy = Some(value);
         self
     }
 
-    /// Sets a new live period
+    /// Sets a new live period.
     ///
     /// # Arguments
     ///
-    /// * value - Period in seconds for which the location will be updated; 60-86400
+    /// * `value` - Period in seconds for which the location can be updated; 60-86400.
     pub fn with_live_period(mut self, value: Integer) -> Self {
         self.live_period = Some(value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new proximity alert radius
+    /// Sets a new proximity alert radius.
     ///
     /// # Arguments
     ///
-    /// * value - For live locations, a maximum distance for proximity alerts
-    ///           about approaching another chat member;
-    ///           in meters; 1-100000
+    /// * `value` - A maximum distance for proximity alerts
+    ///           about approaching another chat member; in meters; 1-100000.
     pub fn with_proximity_alert_radius(mut self, value: Integer) -> Self {
         self.proximity_alert_radius = Some(value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Additional interface options
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
@@ -252,11 +252,11 @@ impl SendLocation {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.reply_to_message_id = Some(value);
         self

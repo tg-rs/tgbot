@@ -1,4 +1,3 @@
-//! A Telegram Bot API client library
 #![doc = include_str!("../README.md")]
 #![warn(missing_docs)]
 
@@ -8,5 +7,5 @@ pub mod api;
 /// Update handlers
 pub mod handler;
 
-/// Types and methods available in the Bot API
+/// Telegram Bot API types
 pub mod types;

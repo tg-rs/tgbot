@@ -19,36 +19,36 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a voice file
+/// Represents a voice file.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Voice {
-    /// Duration in seconds as defined by sender
+    /// Duration in seconds as defined by sender.
     pub duration: Integer,
-    /// Identifier
+    /// Identifier of the file.
     ///
-    /// Can be used to download or reuse the file
+    /// Can be used to download or reuse the file.
     pub file_id: String,
-    /// Unique identifier
+    /// Unique identifier of the file.
     ///
     /// It is supposed to be the same over time and for different bots.
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// File size
+    /// File size in bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
-    /// MIME type as defined by sender
+    /// MIME type as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
 }
 
 impl Voice {
-    /// Creates a new Voice
+    /// Creates a new `Voice`.
     ///
     /// # Arguments
     ///
-    /// * duration - Duration in seconds
-    /// * file_id - Identifier
-    /// * file_unique_id - Unique identifier
+    /// * `duration` - Duration in seconds.
+    /// * `file_id` - Identifier of the file.
+    /// * `file_unique_id` - Unique identifier of the file.
     pub fn new<A, B>(duration: Integer, file_id: A, file_unique_id: B) -> Self
     where
         A: Into<String>,
@@ -63,21 +63,21 @@ impl Voice {
         }
     }
 
-    /// Sets a new file size
+    /// Sets a new size of the file.
     ///
     /// # Arguments
     ///
-    /// * value - File size in bytes
+    /// * `value` - The size of the file in bytes.
     pub fn with_file_size(mut self, value: Integer) -> Self {
         self.file_size = Some(value);
         self
     }
 
-    /// Sets a new MIME type
+    /// Sets a new MIME type.
     ///
     /// # Arguments
     ///
-    /// * value - MIME type
+    /// * `value` - MIME type.
     pub fn with_mime_type<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -87,7 +87,7 @@ impl Voice {
     }
 }
 
-/// Sends a voice message
+/// Sends a voice message.
 ///
 /// Audio must be in an .ogg file encoded with OPUS.
 /// Other formats may be sent as Audio or Document.
@@ -99,52 +99,55 @@ pub struct SendVoice {
 }
 
 impl SendVoice {
-    /// Creates a new SendVoice
+    /// Creates a new `SendVoice`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * voice - Audio file to send
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `voice` - Audio file to send.
     pub fn new<A, B>(chat_id: A, voice: B) -> Self
     where
         A: Into<ChatId>,
         B: Into<InputFile>,
     {
-        SendVoice {
+        Self {
             form: Form::from([("chat_id", chat_id.into().into()), ("voice", voice.into().into())]),
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.form.insert_field("allow_sending_without_reply", value.to_string());
         self
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - (0-1024 characters)
+    /// * `value` - Caption; 0-1024 characters.
     ///
     /// May also be used when resending documents by `file_id`.
-    pub fn with_caption<S: Into<String>>(mut self, value: S) -> Self {
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
         self.form.insert_field("caption", value.into());
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
     where
         T: IntoIterator<Item = TextEntity>,
@@ -155,11 +158,11 @@ impl SendVoice {
         Ok(self)
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -168,64 +171,68 @@ impl SendVoice {
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently;
-    ///           a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.form.insert_field("disable_notification", value);
         self
     }
 
-    /// Sets a new duration
+    /// Sets a new duration.
     ///
     /// # Arguments
     ///
-    /// * value - Duration in seconds
+    /// * `value` - Duration in seconds.
     pub fn with_duration(mut self, value: Integer) -> Self {
         self.form.insert_field("duration", value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.form.insert_field("message_thread_id", value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.form.insert_field("protect_content", value.to_string());
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Markup
-    pub fn with_reply_markup<R: Into<ReplyMarkup>>(mut self, value: R) -> Result<Self, ReplyMarkupError> {
+    /// * `value` - Reply markup.
+    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
+    where
+        T: Into<ReplyMarkup>,
+    {
         let value = value.into();
         self.form.insert_field("reply_markup", value.serialize()?);
         Ok(self)
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.form.insert_field("reply_to_message_id", value);
         self

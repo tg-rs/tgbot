@@ -11,7 +11,7 @@ use crate::{
 mod tests;
 
 /// Represents an error in the Telegram Passport element
-/// which was submitted that should be resolved by the user
+/// which was submitted that should be resolved by a user.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PassportElementError {
     #[serde(flatten)]
@@ -19,17 +19,17 @@ pub struct PassportElementError {
 }
 
 impl PassportElementError {
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
-    /// Represents an issue in one of the data fields that was provided by the user.
+    /// Represents an issue in one of a data fields that was provided by a user.
     /// The error is considered resolved when the field's value changes.
     ///
     /// # Arguments
     ///
-    /// * element_type - The section of the user's Telegram Passport which has the error
-    /// * field_name - Name of the data field which has the error
-    /// * data_hash - Base64-encoded data hash
-    /// * message - Error message
+    /// * `element_type` - A section of the user's Telegram Passport which has the error.
+    /// * `field_name` - A name of a data field which has the error.
+    /// * `data_hash` - A base64-encoded data hash.
+    /// * `message` - An error message.
     ///
     /// Supported element types:
     ///
@@ -64,17 +64,17 @@ impl PassportElementError {
         }
     }
 
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
     /// Represents an issue with the front side of a document.
-    /// The error is considered resolved when the file
+    /// The error is considered resolved when a file
     /// with the front side of the document changes.
     ///
     /// # Arguments
     ///
-    /// * element_type - The section of the user's Telegram Passport which has the issue
-    /// * file_hash - Base64-encoded hash of the file with the front side of the document
-    /// * message -  Error message
+    /// * `element_type` - A section of a user's Telegram Passport which has the error.
+    /// * `file_hash` - A base64-encoded hash of the file with the front side of the document.
+    /// * `message` - An error message.
     ///
     /// Supported element types:
     ///
@@ -104,17 +104,17 @@ impl PassportElementError {
         }
     }
 
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
     /// Represents an issue with the reverse side of a document.
-    /// The error is considered resolved when the
+    /// The error is considered resolved when a
     /// file with reverse side of the document changes.
     ///
     /// # Arguments
     ///
-    /// * element_type - The section of the user's Telegram Passport which has the issue
-    /// * file_hash - Base64-encoded hash of the file with the reverse side of the document
-    /// * message - Error message
+    /// * `element_type` - A section of the user's Telegram Passport which has the error.
+    /// * `file_hash` - A base64-encoded hash of the file with the reverse side of the document.
+    /// * `message` - An error message.
     ///
     /// Supported element types:
     ///
@@ -142,16 +142,16 @@ impl PassportElementError {
         }
     }
 
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
     /// Represents an issue with the selfie with a document.
-    /// The error is considered resolved when the file with the selfie changes.
+    /// The error is considered resolved when a file with the selfie changes.
     ///
     /// # Arguments
     ///
-    /// * element_type - The section of the user's Telegram Passport which has the issue
-    /// * file_hash - Base64-encoded hash of the file with the selfie
-    /// * message - Error message
+    /// * `element_type` - A section of the user's Telegram Passport which has the error.
+    /// * `file_hash` - A base64-encoded hash of the file with the selfie.
+    /// * `message` - An error message.
     ///
     /// Supported element types:
     ///
@@ -180,16 +180,16 @@ impl PassportElementError {
             _ => Err(UnexpectedEncryptedPassportElementType(element_type)),
         }
     }
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
     /// Represents an issue with a document scan.
-    /// The error is considered resolved when the file with the document scan changes.
+    /// The error is considered resolved when a file with the document scan changes.
     ///
     /// # Arguments
     ///
-    /// * element_type - The section of the user's Telegram Passport which has the issue
-    /// * file_hash - Base64-encoded hash of the file with the selfie
-    /// * message - Error message
+    /// * `element_type` - The section of the user's Telegram Passport which has the error.
+    /// * `file_hash` - A base64-encoded hash of the file with the selfie.
+    /// * `message` - An error message.
     ///
     /// Supported element types:
     ///
@@ -220,16 +220,16 @@ impl PassportElementError {
         }
     }
 
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
     /// Represents an issue with a list of scans.
-    /// The error is considered resolved when the list of files containing the scans changes
+    /// The error is considered resolved when a list of files containing the scans changes.
     ///
     /// # Arguments
     ///
-    /// * element_type - The section of the user's Telegram Passport which has the issue
-    /// * file_hashes - List of base64-encoded file hashes
-    /// * message - Error message
+    /// * `element_type` - A section of the user's Telegram Passport which has the error.
+    /// * `file_hashes` - A list of base64-encoded file hashes.
+    /// * `message` - An error message.
     ///
     /// Supported element types:
     ///
@@ -261,17 +261,17 @@ impl PassportElementError {
         }
     }
 
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
     /// Represents an issue with one of the files that constitute
     /// the translation of a document.
-    /// The error is considered resolved when the file changes.
+    /// The error is considered resolved when a file changes.
     ///
     /// # Arguments
     ///
-    /// * element_type - Type of element of the user's Telegram Passport which has the issue
-    /// * file_hash - Base64-encoded hash of the file with the selfie
-    /// * message - Error message
+    /// * `element_type` - A type of element of the user's Telegram Passport which has the error.
+    /// * `file_hash` - A base64-encoded hash of the file with the selfie.
+    /// * `message` - An error message.
     ///
     /// Supported element types:
     ///
@@ -314,16 +314,16 @@ impl PassportElementError {
         }
     }
 
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
     /// Represents an issue with the translated version of a document.
-    /// The error is considered resolved when a file with the document translation change.
+    /// The error is considered resolved when a file with the document translation changes.
     ///
     /// # Arguments
     ///
-    /// * element_type - Type of element of the user's Telegram Passport which has the issue
-    /// * file_hashes - List of base64-encoded file hashes
-    /// * message - Error message
+    /// * `element_type` - A type of element of the user's Telegram Passport which has the error.
+    /// * `file_hashes` - A list of base64-encoded file hashes.
+    /// * `message` - An error message.
     ///
     /// Supported element types:
     ///
@@ -367,16 +367,16 @@ impl PassportElementError {
         }
     }
 
-    /// Creates a new PassportElementError
+    /// Creates a new `PassportElementError`.
     ///
     /// Represents an issue in an unspecified place.
     /// The error is considered resolved when new data is added.
     ///
     /// # Arguments
     ///
-    /// * element_type - Type of element of the user's Telegram Passport which has the issue
-    /// * element_hash - Base64-encoded element hash
-    /// * message - Error message
+    /// * `element_type` - A type of element of the user's Telegram Passport which has the error.
+    /// * `element_hash` - A base64-encoded element hash.
+    /// * `message` - An error message.
     ///
     /// Accepts any variant of [`EncryptedPassportElementType`].
     pub fn unspecified<A, B>(element_type: EncryptedPassportElementType, element_hash: A, message: B) -> Self
@@ -463,7 +463,7 @@ enum PassportElementErrorType {
     },
 }
 
-/// Got an unexpected encrypted passport element type
+/// Represents an error with unexpected encrypted passport element type.
 #[derive(Clone, Debug)]
 pub struct UnexpectedEncryptedPassportElementType(EncryptedPassportElementType);
 
@@ -475,7 +475,7 @@ impl fmt::Display for UnexpectedEncryptedPassportElementType {
     }
 }
 
-/// Informs a user that some of the Telegram Passport elements they provided contains errors
+/// Informs a user that some of the Telegram Passport elements they provided contains errors.
 ///
 /// The user will not be able to re-submit their Passport to you until the errors are fixed.
 /// The contents of the field for which you returned the error must change.
@@ -494,12 +494,12 @@ pub struct SetPassportDataErrors {
 }
 
 impl SetPassportDataErrors {
-    /// Creates a new SetPassportDataErrors
+    /// Creates a new `SetPassportDataErrors`.
     ///
     /// # Arguments
     ///
-    /// * user_id - User identifier
-    /// * errors - Array describing the errors
+    /// * `user_id` - An identifier of a user.
+    /// * `errors` - An array describing the errors.
     pub fn new<T>(user_id: Integer, errors: T) -> Self
     where
         T: IntoIterator<Item = PassportElementError>,

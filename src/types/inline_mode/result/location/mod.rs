@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a location on a map
+/// Represents a location on a map.
 ///
 /// By default, the location will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`]
@@ -44,14 +44,14 @@ pub struct InlineQueryResultLocation {
 }
 
 impl InlineQueryResultLocation {
-    /// Creates a new InlineQueryResultLocation
+    /// Creates a new `InlineQueryResultLocation`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier for this result, 1-64 bytes
-    /// * latitude - Location latitude in degrees
-    /// * longitude - Location longitude in degrees
-    /// * title - Location title
+    /// * `id` - Unique identifier for this result; 1-64 bytes.
+    /// * `latitude` - Location latitude in degrees.
+    /// * `longitude` - Location longitude in degrees.
+    /// * `title` - Location title.
     pub fn new<A, B>(id: A, latitude: Float, longitude: Float, title: B) -> Self
     where
         A: Into<String>,
@@ -74,31 +74,31 @@ impl InlineQueryResultLocation {
         }
     }
 
-    /// Sets a new heading
+    /// Sets a new heading.
     ///
     /// # Arguments
     ///
-    /// * value - Direction in which the user is moving, in degrees; 1-360
+    /// * `value` - A direction in which the user is moving; in degrees; 1-360.
     pub fn with_heading(mut self, value: Integer) -> Self {
         self.heading = Some(value);
         self
     }
 
-    /// Sets a new horizontal accuracy
+    /// Sets a new horizontal accuracy.
     ///
     /// # Arguments
     ///
-    /// * value - The radius of uncertainty for the location, measured in meters; 0-1500
+    /// * `value` - A radius of uncertainty for the location; in meters; 0-1500.
     pub fn with_horizontal_accuracy(mut self, value: Float) -> Self {
         self.horizontal_accuracy = Some(value);
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the location
+    /// * `value` - Content of the message to be sent instead of the location.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -107,32 +107,32 @@ impl InlineQueryResultLocation {
         self
     }
 
-    /// Sets a new live period
+    /// Sets a new live period.
     ///
     /// # Arguments
     ///
-    /// * value - Period in seconds for which the location can be updated; 60-86400
+    /// * `value` - Period in seconds for which the location can be updated; 60-86400.
     pub fn with_live_period(mut self, value: Integer) -> Self {
         self.live_period = Some(value);
         self
     }
 
-    /// Sets a new proximity alert radius
+    /// Sets a new proximity alert radius.
     ///
     /// # Arguments
     ///
-    /// * value - A maximum distance for proximity alerts about
-    ///           approaching another chat member, in meters; 1-100000
+    /// * `value` - A maximum distance for proximity alerts
+    ///             about approaching another chat member; in meters; 1-100000.
     pub fn with_proximity_alert_radius(mut self, value: Integer) -> Self {
         self.proximity_alert_radius = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -141,21 +141,21 @@ impl InlineQueryResultLocation {
         self
     }
 
-    /// Sets a new thumbnail height
+    /// Sets a new thumbnail height.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail height
+    /// * `value` - Thumbnail height.
     pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
         self.thumbnail_height = Some(value);
         self
     }
 
-    /// Sets a new thumbnail URL
+    /// Sets a new thumbnail URL.
     ///
     /// # Arguments
     ///
-    /// * value - URL of the thumbnail for the result
+    /// * `value` - URL of the thumbnail for the result.
     pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -164,11 +164,11 @@ impl InlineQueryResultLocation {
         self
     }
 
-    /// Sets a new thumbnail width
+    /// Sets a new thumbnail width.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail width
+    /// * `value` - Thumbnail width.
     pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
         self.thumbnail_width = Some(value);
         self

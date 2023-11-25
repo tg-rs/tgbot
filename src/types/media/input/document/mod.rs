@@ -5,7 +5,7 @@ use crate::types::{ParseMode, TextEntities, TextEntity};
 #[cfg(test)]
 mod tests;
 
-/// Represents a general file to be sent
+/// Represents a general file to be sent.
 #[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMediaDocument {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -19,11 +19,11 @@ pub struct InputMediaDocument {
 }
 
 impl InputMediaDocument {
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the document to be sent; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -32,13 +32,13 @@ impl InputMediaDocument {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -48,11 +48,11 @@ impl InputMediaDocument {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -61,12 +61,12 @@ impl InputMediaDocument {
         self
     }
 
-    /// Sets a new value for the `disable_content_type_detection` flag
+    /// Sets a new value for a `disable_content_type_detection` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to disable automatic server-side content type detection for
-    ///           files uploaded using `multipart/form-data`
+    /// * `value` - Indicates whether to disable automatic server-side content type detection
+    ///             for files uploaded using `multipart/form-data`.
     ///
     /// Always [`true`], if the document is sent as part of an album.
     pub fn with_disable_content_type_detection(mut self, value: bool) -> Self {

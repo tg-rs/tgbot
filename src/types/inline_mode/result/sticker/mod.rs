@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a link to a sticker stored on the Telegram servers
+/// Represents a link to a sticker stored on the Telegram servers.
 ///
 /// By default, this sticker will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`] to
@@ -28,12 +28,12 @@ pub struct InlineQueryResultCachedSticker {
 }
 
 impl InlineQueryResultCachedSticker {
-    /// Creates a new InlineQueryResultCachedSticker
+    /// Creates a new `InlineQueryResultCachedSticker`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the result; 1-64 bytes
-    /// * sticker_file_id - A valid file identifier of the sticker
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
+    /// * `sticker_file_id` - A valid file identifier of the sticker.
     pub fn new<A, B>(id: A, sticker_file_id: B) -> Self
     where
         A: Into<String>,
@@ -47,11 +47,11 @@ impl InlineQueryResultCachedSticker {
         }
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the photo
+    /// * `value` - Content of the message to be sent instead of the photo.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -60,11 +60,11 @@ impl InlineQueryResultCachedSticker {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,

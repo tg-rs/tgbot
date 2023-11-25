@@ -20,59 +20,59 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a poll
+/// Represents a poll.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum Poll {
-    /// A regular poll
+    /// A regular poll.
     Regular(RegularPoll),
-    /// A quiz
+    /// A quiz.
     Quiz(Quiz),
 }
 
-/// Represents a type of a poll
+/// Represents a type of a poll.
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum PollType {
-    /// A quiz
+    /// A quiz.
     Quiz,
-    /// A regular poll
+    /// A regular poll.
     Regular,
 }
 
-/// Represents a regular poll
+/// Represents a regular poll.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct RegularPoll {
-    /// Whether the poll allows multiple answers
+    /// Indicates whether the poll allows multiple answers.
     pub allows_multiple_answers: bool,
-    /// Unique identifier
+    /// Unique identifier of the poll.
     pub id: String,
-    /// Whether the poll is anonymous
+    /// Indicates whether the poll is anonymous.
     pub is_anonymous: bool,
-    /// Whether the poll is closed
+    /// Indicates whether the poll is closed.
     pub is_closed: bool,
-    /// List of options
+    /// List of options.
     pub options: Vec<PollOption>,
-    /// Question; 1-255 characters
+    /// Question; 1-255 characters.
     pub question: String,
-    /// Total number of users that voted in the poll
+    /// Total number of users that voted in the poll.
     pub total_voter_count: Integer,
-    /// Point in time (Unix timestamp) when the poll will be automatically closed
+    /// Point in time (Unix timestamp) when the poll will be automatically closed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub close_date: Option<Integer>,
-    /// Amount of time in seconds the poll will be active after creation
+    /// Amount of time in seconds the poll will be active after creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub open_period: Option<Integer>,
 }
 
 impl RegularPoll {
-    /// Creates a new RegularPoll
+    /// Creates a new `RegularPoll`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier
-    /// * question - Question; 1-255 characters
+    /// * `id` - Unique identifier.
+    /// * `question` - Question; 1-255 characters.
     pub fn new<A, B>(id: A, question: B) -> Self
     where
         A: Into<String>,
@@ -91,61 +91,61 @@ impl RegularPoll {
         }
     }
 
-    /// Sets a new value for the `allows_multiple_answers` flag
+    /// Sets a new value for an `allows_multiple_answers` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the poll allows multiple answers
+    /// * `value` - Indicates whether the poll allows multiple answers.
     pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
         self.allows_multiple_answers = value;
         self
     }
 
-    /// Sets a new close date
+    /// Sets a new close date.
     ///
     /// # Arguments
     ///
-    /// * value - Point in time (Unix timestamp) when the poll will be automatically closed
+    /// * `value` - Point in time (Unix timestamp) when the poll will be automatically closed.
     pub fn with_close_date(mut self, value: Integer) -> Self {
         self.close_date = Some(value);
         self
     }
 
-    /// Sets a new value for the `is_anonymous` flag
+    /// Sets a new value for an `is_anonymous` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the quiz is anonymous
+    /// * `value` - Indicates whether the quiz is anonymous.
     pub fn with_is_anonymous(mut self, value: bool) -> Self {
         self.is_anonymous = value;
         self
     }
 
-    /// Sets a new value for the `is_closed` flag
+    /// Sets a new value for an `is_closed` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the quiz is closed
+    /// * `value` - Indicates whether the quiz is closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
         self.is_closed = value;
         self
     }
 
-    /// Sets a new open period
+    /// Sets a new open period.
     ///
     /// # Arguments
     ///
-    /// * value - Amount of time in seconds the poll will be active after creation
+    /// * `value` - Amount of time in seconds the poll will be active after creation.
     pub fn with_open_period(mut self, value: Integer) -> Self {
         self.open_period = Some(value);
         self
     }
 
-    /// Sets a new list of option
+    /// Sets a new list of options.
     ///
     /// # Arguments
     ///
-    /// * value - Options
+    /// * `value` - The list of options.
     pub fn with_options<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = PollOption>,
@@ -154,43 +154,43 @@ impl RegularPoll {
         self
     }
 
-    /// Sets a new correct total voter count
+    /// Sets a new correct total voter count.
     ///
     /// # Arguments
     ///
-    /// * value - Total number of users that answered to the quiz
+    /// * `value` - Total number of users that answered to the quiz.
     pub fn with_total_voter_count(mut self, value: Integer) -> Self {
         self.total_voter_count = value;
         self
     }
 }
 
-/// Represents a quiz
+/// Represents a quiz.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Quiz {
-    /// 0-based identifier of the correct answer option
+    /// 0-based identifier of the correct answer option.
     ///
     /// Available only for a closed quiz,
     /// or was sent (not forwarded) by the bot or
     /// to the private chat with the bot.
     pub correct_option_id: Integer,
-    /// Unique identifier
+    /// Unique identifier of the quiz.
     pub id: String,
-    /// Whether the quiz is anonymous
+    /// Indicates whether the quiz is anonymous.
     pub is_anonymous: bool,
-    /// Whether the quiz is closed
+    /// Indicates whether the quiz is closed.
     pub is_closed: bool,
-    /// List of options
+    /// List of options.
     pub options: Vec<PollOption>,
-    /// Question; 1-255 characters
+    /// Question; 1-255 characters.
     pub question: String,
-    /// Total number of users that answered to the quiz
+    /// Total number of users that answered to the quiz.
     pub total_voter_count: Integer,
-    /// Point in time (Unix timestamp) when the quiz will be automatically closed
+    /// Point in time (Unix timestamp) when the quiz will be automatically closed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub close_date: Option<Integer>,
     /// Text that is shown when a user chooses an incorrect answer or
-    /// taps on the lamp icon; 0-200 characters
+    /// taps on the lamp icon; 0-200 characters.
     #[serde(
         flatten,
         deserialize_with = "QuizExplanation::deserialize_value",
@@ -198,18 +198,18 @@ pub struct Quiz {
         skip_serializing_if = "Option::is_none"
     )]
     pub explanation: Option<Text>,
-    /// Amount of time in seconds the quiz will be active after creation
+    /// Amount of time in seconds the quiz will be active after creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub open_period: Option<Integer>,
 }
 
 impl Quiz {
-    /// Creates a new Quiz
+    /// Creates a new `Quiz`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier
-    /// * question - Question; 1-255 characters
+    /// * `id` - Unique identifier.
+    /// * `question` - Question; 1-255 characters.
     pub fn new<A, B>(id: A, question: B) -> Self
     where
         A: Into<String>,
@@ -229,33 +229,33 @@ impl Quiz {
         }
     }
 
-    /// Sets a new close date
+    /// Sets a new close date.
     ///
     /// # Arguments
     ///
-    /// * value - Point in time (Unix timestamp) when the quiz will be automatically closed
+    /// * `value` - Point in time (Unix timestamp) when the quiz will be automatically closed.
     pub fn with_close_date(mut self, value: Integer) -> Self {
         self.close_date = Some(value);
         self
     }
 
-    /// Sets a new correct option ID
+    /// Sets a new correct option ID.
     ///
     /// # Arguments
     ///
-    /// * value - 0-based identifier of the correct answer option
+    /// * `value` - 0-based identifier of the correct answer option.
     pub fn with_correct_option_id(mut self, value: Integer) -> Self {
         self.correct_option_id = value;
         self
     }
 
-    /// Sets a new explanation
+    /// Sets a new explanation.
     ///
     /// # Arguments
     ///
-    /// * value Text that is shown when a user chooses
-    ///         an incorrect answer or
-    ///         taps on the lamp icon; 0-200 characters
+    /// * `value` - Text that is shown when a user chooses
+    ///             an incorrect answer or
+    ///             taps on the lamp icon; 0-200 characters.
     pub fn with_explanation<T>(mut self, value: T) -> Self
     where
         T: Into<Text>,
@@ -264,41 +264,41 @@ impl Quiz {
         self
     }
 
-    /// Sets a new value for the `is_anonymous` flag
+    /// Sets a new value for the `is_anonymous` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the quiz is anonymous
+    /// * `value` - Indicates whether the quiz is anonymous.
     pub fn with_is_anonymous(mut self, value: bool) -> Self {
         self.is_anonymous = value;
         self
     }
 
-    /// Sets a new value for the `is_closed` flag
+    /// Sets a new value for the `is_closed` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the quiz is closed
+    /// * `value` - Indicates whether the quiz is closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
         self.is_closed = value;
         self
     }
 
-    /// Sets a new open period
+    /// Sets a new open period.
     ///
     /// # Arguments
     ///
-    /// * value - Amount of time in seconds the quiz will be active after creation
+    /// * `value` - Amount of time in seconds the quiz will be active after creation.
     pub fn with_open_period(mut self, value: Integer) -> Self {
         self.open_period = Some(value);
         self
     }
 
-    /// Sets a new list of option
+    /// Sets a new list of options.
     ///
     /// # Arguments
     ///
-    /// * value - Options
+    /// * `value` - The list of options.
     pub fn with_options<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = PollOption>,
@@ -307,11 +307,11 @@ impl Quiz {
         self
     }
 
-    /// Sets a new correct total voter count
+    /// Sets a new correct total voter count.
     ///
     /// # Arguments
     ///
-    /// * value - Total number of users that answered to the quiz
+    /// * `value` - Total number of users that answered to the quiz.
     pub fn with_total_voter_count(mut self, value: Integer) -> Self {
         self.total_voter_count = value;
         self
@@ -350,22 +350,22 @@ impl QuizExplanation {
     }
 }
 
-/// Represents an answer option in a poll
+/// Represents an answer option in a poll.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PollOption {
-    /// Option text; 1-100 characters
+    /// Option text; 1-100 characters.
     pub text: String,
-    /// Number of users that voted for this option
+    /// Number of users that voted for this option.
     pub voter_count: Integer,
 }
 
 impl PollOption {
-    /// Creates a new PollOption
+    /// Creates a new `PollOption`.
     ///
     /// # Arguments
     ///
-    /// * text - Option text; 1-100 characters
-    /// * voter_count - Number of users that voted for this option
+    /// * `text` - Option text; 1-100 characters.
+    /// * `voter_count` - Number of users that voted for this option.
     pub fn new<T>(text: T, voter_count: Integer) -> Self
     where
         T: Into<String>,
@@ -377,28 +377,28 @@ impl PollOption {
     }
 }
 
-/// Represents an answer of a user in a non-anonymous poll
+/// Represents an answer of a user in a non-anonymous poll.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PollAnswer {
-    /// 0-based identifiers of answer options, chosen by the user
+    /// 0-based identifiers of answer options, chosen by the user.
     ///
     /// May be empty if the user retracted their vote.
     pub option_ids: Vec<Integer>,
-    /// Unique poll identifier
+    /// Unique poll identifier.
     pub poll_id: String,
-    /// The chat or the user that changed answer to the poll
+    /// The chat or the user that changed answer to the poll.
     #[serde(flatten)]
     pub voter: PollAnswerVoter,
 }
 
 impl PollAnswer {
-    /// Creates a new PollAnswer
+    /// Creates a new `PollAnswer`.
     ///
     /// # Arguments
     ///
-    /// * option_ids - 0-based identifiers of answer options, chosen by the user
-    /// * poll_id - Unique poll identifier
-    /// * voter - The chat or the user that changed answer to the poll
+    /// * `option_ids` - 0-based identifiers of answer options, chosen by the user.
+    /// * `poll_id` - Unique poll identifier.
+    /// * `voter` - The chat or the user that changed answer to the poll.
     pub fn new<A, B, C>(option_ids: A, poll_id: B, voter: C) -> Self
     where
         A: IntoIterator<Item = Integer>,
@@ -413,13 +413,13 @@ impl PollAnswer {
     }
 }
 
-/// Represents the chat or the user that changed answer to the poll
+/// Represents the chat or the user that changed answer to the poll.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PollAnswerVoter {
-    /// The chat that changed the answer to the poll, if the voter is anonymous
+    /// The chat that changed the answer to the poll, if the voter is anonymous.
     Chat(Chat),
-    /// The user that changed the answer to the poll, if the voter isn't anonymous
+    /// The user that changed the answer to the poll, if the voter isn't anonymous.
     User(User),
 }
 
@@ -493,9 +493,9 @@ impl PollParameters {
     }
 }
 
-/// Sends a quiz
+/// Sends a quiz.
 ///
-/// On success, the sent Message is returned
+/// On success, the sent [`Message`] is returned.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendQuiz {
     #[serde(flatten)]
@@ -503,14 +503,14 @@ pub struct SendQuiz {
 }
 
 impl SendQuiz {
-    /// Creates a new SendQuiz
+    /// Creates a new `SendQuiz`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * question - Question; 1-300 characters
-    /// * correct_option_id - 0-based identifier of the correct answer option
-    /// * options - Answer options; 2-10 strings 1-100 characters each
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `question` - Question; 1-300 characters.
+    /// * `correct_option_id` - 0-based identifier of the correct answer option.
+    /// * `options` - Answer options; 2-10 strings 1-100 characters each.
     pub fn new<A, B, C, D>(chat_id: A, question: B, correct_option_id: Integer, options: C) -> Self
     where
         A: Into<ChatId>,
@@ -523,49 +523,49 @@ impl SendQuiz {
         Self { inner: parameters }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.inner.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new close date
+    /// Sets a new close date.
     ///
     /// # Arguments
     ///
-    /// * value - Point in time (Unix timestamp) when the quiz will be automatically closed
+    /// * `value` - Point in time (Unix timestamp) when the quiz will be automatically closed.
     ///
     /// Must be at least 5 and no more than 600 seconds in the future.
-    /// Can't be used together with `open_period` (`open_period` will be set to [`None`]).
+    /// Can't be used together with [`Self::with_open_period`] (open period will be set to [`None`]).
     pub fn with_close_date(mut self, value: Integer) -> Self {
         self.inner.close_date = Some(value);
         self.inner.open_period = None;
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Send the message silently or not;
-    ///           a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.inner.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new explanation
+    /// Sets a new explanation.
     ///
     /// # Arguments
     ///
-    /// * value - Text that is shown when a user chooses
-    ///           an incorrect answer or taps on the lamp icon;
-    ///           0-200 characters with at most 2 line feeds after entities parsing
+    /// * `value` - Text that is shown when a user chooses
+    ///             an incorrect answer or taps on the lamp icon;
+    ///             0-200 characters with at most 2 line feeds after entities parsing.
     pub fn with_explanation<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -574,11 +574,11 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new list of explanation entities
+    /// Sets a new list of explanation entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the quiz explanation
+    /// * `value` - List of special entities that appear in the quiz explanation.
     ///
     /// Explanation parse mode will be set to [`None`] when this method is called.
     pub fn with_explanation_entities<T>(mut self, value: T) -> Self
@@ -590,11 +590,11 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new explanation parse mode
+    /// Sets a new explanation parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Mode for parsing entities in the explanation
+    /// * `value` - Mode for parsing entities in the explanation.
     ///
     /// Explanation entities will be set to [`None`] when this method is called.
     pub fn with_explanation_parse_mode(mut self, value: ParseMode) -> Self {
@@ -603,65 +603,66 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new value for the `is_anonymous` flag
+    /// Sets a new value for an `is_anonymous` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the quiz needs to be anonymous; defaults to true
+    /// * `value` - Indicates whether the quiz needs to be anonymous; default - `true`.
     pub fn with_is_anonymous(mut self, value: bool) -> Self {
         self.inner.is_anonymous = Some(value);
         self
     }
 
-    /// Sets a new value for the `is_closed` flag
+    /// Sets a new value for an `is_closed` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the quiz needs to be immediately closed
+    /// * `value` - Indicates whether the quiz needs to be immediately closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
         self.inner.is_closed = Some(value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier for the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.inner.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new open period
+    /// Sets a new open period.
     ///
     /// # Arguments
     ///
-    /// * value - Amount of time in seconds the quiz will be active after creation; 5-600
+    /// * `value` - Amount of time in seconds the quiz will be active after creation; 5-600.
     ///
-    /// Can't be used together with `close_date` (`close_date` will be set to [`None`]).
+    /// Can't be used together with [`Self::with_close_date`] (close date will be set to [`None`]).
     pub fn with_open_period(mut self, value: Integer) -> Self {
         self.inner.open_period = Some(value);
         self.inner.close_date = None;
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.inner.protect_content = Some(value);
         self
     }
 
-    /// Sets a reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Reply markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
@@ -670,11 +671,11 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.inner.reply_to_message_id = Some(value);
         self
@@ -689,9 +690,9 @@ impl Method for SendQuiz {
     }
 }
 
-/// Sends a native poll
+/// Sends a native poll.
 ///
-/// On success, the sent Message is returned
+/// On success, the sent [`Message`] is returned.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendPoll {
     #[serde(flatten)]
@@ -699,13 +700,13 @@ pub struct SendPoll {
 }
 
 impl SendPoll {
-    /// Creates a new SendPoll
+    /// Creates a new `SendPoll`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * question - Question; 1-300 characters
-    /// * options - Answer options; 2-10 strings 1-100 characters each
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `question` - Question; 1-300 characters.
+    /// * `options` - Answer options; 2-10 strings 1-100 characters each.
     pub fn new<A, B, C, D>(chat_id: A, question: B, options: C) -> Self
     where
         A: Into<ChatId>,
@@ -718,87 +719,88 @@ impl SendPoll {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.inner.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new value for the `allows_multiple_answers` flag
+    /// Sets a new value for an `allows_multiple_answers` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the poll allows multiple answers; defaults to false
+    /// * `value` - Indicates whether the poll allows multiple answers; default - `false`.
     pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
         self.inner.allows_multiple_answers = Some(value);
         self
     }
 
-    /// Sets a new close date
+    /// Sets a new close date.
     ///
     /// # Arguments
     ///
-    /// * value - Point in time (Unix timestamp) when the poll will be automatically closed
+    /// * `value` - Point in time (Unix timestamp) when the poll will be automatically closed.
     ///
     /// Must be at least 5 and no more than 600 seconds in the future.
-    /// Can't be used together with `open_period` (`open_period` will be set to [`None`])
+    /// Can't be used together with [`Self::with_open_period`] (open period will be set to [`None`])
     pub fn with_close_date(mut self, value: Integer) -> Self {
         self.inner.close_date = Some(value);
         self.inner.open_period = None;
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Send the message silently or not; a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.inner.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new value for the `is_anonymous` flag
+    /// Sets a new value for an `is_anonymous` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the poll needs to be anonymous; defaults to true
+    /// * `value` - Indicates whether the poll needs to be anonymous; default - `true`.
     pub fn with_is_anonymous(mut self, value: bool) -> Self {
         self.inner.is_anonymous = Some(value);
         self
     }
 
-    /// Sets a new value for the `is_closed` flag
+    /// Sets a new value for an `is_closed` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the poll needs to be immediately closed
+    /// * `value` - Indicates whether the poll needs to be immediately closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
         self.inner.is_closed = Some(value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier for the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.inner.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new open period
+    /// Sets a new open period.
     ///
     /// # Arguments
     ///
-    /// * value - Amount of time in seconds the poll will be active after creation; 5-600
+    /// * `value` - Amount of time in seconds the poll will be active after creation; 5-600.
     ///
     /// Can't be used together with `close_date` (`close_date` will be set to [`None`]).
     pub fn with_open_period(mut self, value: Integer) -> Self {
@@ -807,21 +809,22 @@ impl SendPoll {
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.inner.protect_content = Some(value);
         self
     }
 
-    /// Sets a reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Reply markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
@@ -830,11 +833,11 @@ impl SendPoll {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.inner.reply_to_message_id = Some(value);
         self
@@ -849,9 +852,9 @@ impl Method for SendPoll {
     }
 }
 
-/// Stops a poll which was sent by the bot
+/// Stops a poll which was sent by the bot.
 ///
-/// On success, the stopped Poll with the final results is returned
+/// On success, the stopped [`Poll`] with the final results is returned.
 #[derive(Clone, Debug, Serialize)]
 pub struct StopPoll {
     chat_id: ChatId,
@@ -860,18 +863,18 @@ pub struct StopPoll {
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-/// Stops a quiz which was sent by the bot
+/// Stops a quiz which was sent by the bot.
 ///
-/// On success, the stopped Quiz with the final results is returned
+/// On success, the stopped [`Quiz`] with the final results is returned.
 pub type StopQuiz = StopPoll;
 
 impl StopPoll {
-    /// Creates a new StopPoll
+    /// Creates a new `StopPoll`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * message_id - Identifier of the original message with the poll
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the original message with the poll.
     pub fn new<T>(chat_id: T, message_id: Integer) -> Self
     where
         T: Into<ChatId>,
@@ -883,11 +886,11 @@ impl StopPoll {
         }
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,

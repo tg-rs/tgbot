@@ -8,28 +8,28 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a venue
+/// Represents a venue.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Venue {
-    /// Address
+    /// Address of the venue.
     pub address: String,
-    /// Location
+    /// Location of the venue.
     pub location: Location,
-    /// Name
+    /// Name of the venue.
     pub title: String,
-    /// Foursquare identifier
+    /// Foursquare identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_id: Option<String>,
-    /// Foursquare type
+    /// Foursquare type.
     ///
     /// Example: “arts_entertainment/default”,
-    /// “arts_entertainment/aquarium” or “food/ice-cream”
+    /// “arts_entertainment/aquarium” or “food/ice-cream”.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_type: Option<String>,
-    /// Google Places identifier
+    /// Google Places identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub google_place_id: Option<String>,
-    /// Google Places type
+    /// Google Places type.
     ///
     /// <https://developers.google.com/places/web-service/supported_types>
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,13 +37,13 @@ pub struct Venue {
 }
 
 impl Venue {
-    /// Creates a new Venue
+    /// Creates a new `Venue`.
     ///
     /// # Arguments
     ///
-    /// * title - Title
-    /// * address - Address
-    /// * location - Location
+    /// * `title` - Title of the venue.
+    /// * `address` - Address of the venue.
+    /// * `location` - Location of the venue.
     pub fn new<A, B>(title: A, address: B, location: Location) -> Self
     where
         A: Into<String>,
@@ -60,11 +60,11 @@ impl Venue {
         }
     }
 
-    /// Sets a new foursquare ID
+    /// Sets a new foursquare ID.
     ///
     /// # Arguments
     ///
-    /// * value - Foursquare ID
+    /// * `value` - Foursquare identifier of the venue.
     pub fn with_foursquare_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -73,11 +73,14 @@ impl Venue {
         self
     }
 
-    /// Sets a new foursquare type
+    /// Sets a new foursquare type.
     ///
     /// # Arguments
     ///
-    /// * value - Foursquare type
+    /// * `value` - Foursquare type of the venue.
+    ///
+    /// For example, “arts_entertainment/default”,
+    /// “arts_entertainment/aquarium” or “food/ice-cream”.
     pub fn with_foursquare_type<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -86,11 +89,11 @@ impl Venue {
         self
     }
 
-    /// Sets a new google place ID
+    /// Sets a new Google Places ID.
     ///
     /// # Arguments
     ///
-    /// * value - Google place ID
+    /// * `value` - Google Places identifier of the venue.
     pub fn with_google_place_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -99,11 +102,13 @@ impl Venue {
         self
     }
 
-    /// Sets a new google place type
+    /// Sets a new Google Places type.
     ///
     /// # Arguments
     ///
-    /// * value - Google place type
+    /// * `value` - Google Places type of the venue.
+    ///
+    /// <https://developers.google.com/places/web-service/supported_types>
     pub fn with_google_place_type<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -113,7 +118,7 @@ impl Venue {
     }
 }
 
-/// Sends information about a venue
+/// Sends information about a venue.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendVenue {
     chat_id: ChatId,
@@ -144,15 +149,15 @@ pub struct SendVenue {
 }
 
 impl SendVenue {
-    /// Creates a new SendVenue
+    /// Creates a new `SendVenue`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * latitude - Latitude
-    /// * longitude - Longitude
-    /// * title - Name
-    /// * address - Address
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `latitude` - Latitude of the venue.
+    /// * `longitude` - Longitude of the venue.
+    /// * `title` - Name of the venue.
+    /// * `address` - Address of the venue.
     pub fn new<A, B, C>(chat_id: A, latitude: Float, longitude: Float, title: B, address: C) -> Self
     where
         A: Into<ChatId>,
@@ -178,32 +183,33 @@ impl SendVenue {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Send the message silently or not; a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new Foursquare identifier
+    /// Sets a new foursquare ID.
     ///
     /// # Arguments
     ///
-    /// * value - Foursquare identifier
+    /// * `value` - Foursquare identifier of the venue.
     pub fn with_foursquare_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -212,14 +218,14 @@ impl SendVenue {
         self
     }
 
-    /// Sets a new foursquare type
+    /// Sets a new foursquare type.
     ///
     /// # Arguments
     ///
-    /// * value - Foursquare type of the venue
+    /// * `value` - Foursquare type of the venue.
     ///
     /// For example, “arts_entertainment/default”,
-    /// “arts_entertainment/aquarium” or “food/ice-cream”
+    /// “arts_entertainment/aquarium” or “food/ice-cream”.
     pub fn with_foursquare_type<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -228,11 +234,11 @@ impl SendVenue {
         self
     }
 
-    /// Sets a new google place ID
+    /// Sets a new Google Places ID.
     ///
     /// # Arguments
     ///
-    /// * value - Google Places identifier of the venue
+    /// * `value` - Google Places identifier of the venue.
     pub fn with_google_place_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -241,11 +247,11 @@ impl SendVenue {
         self
     }
 
-    // Sets a new google place type
+    /// Sets a new Google Places type.
     ///
     /// # Arguments
     ///
-    /// * value - Google Places type of the venue
+    /// * `value` - Google Places type of the venue.
     ///
     /// <https://developers.google.com/places/web-service/supported_types>
     pub fn with_google_place_type<T>(mut self, value: T) -> Self
@@ -256,32 +262,33 @@ impl SendVenue {
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protects the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
@@ -290,11 +297,11 @@ impl SendVenue {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.reply_to_message_id = Some(value);
         self

@@ -5,11 +5,6 @@ A full-featured Telegram Bot API client
 [![CI](https://img.shields.io/github/actions/workflow/status/tg-rs/tgbot/ci.yml?branch=master&style=flat-square)](https://github.com/tg-rs/tgbot/actions/)
 [![Coverage](https://img.shields.io/codecov/c/github/tg-rs/tgbot.svg?style=flat-square)](https://codecov.io/gh/tg-rs/tgbot)
 [![Version](https://img.shields.io/crates/v/tgbot.svg?style=flat-square)](https://crates.io/crates/tgbot)
-[![Downloads](https://img.shields.io/crates/d/tgbot.svg?style=flat-square)](https://crates.io/crates/tgbot)
-[![Release Documentation](https://img.shields.io/badge/docs-release-brightgreen.svg?style=flat-square)](https://docs.rs/tgbot)
-[![Master Documentation](https://img.shields.io/badge/docs-master-blueviolet.svg?style=flat-square)](https://tg-rs.github.io/tgbot/tgbot/)
-[![Telegram Chat](https://img.shields.io/badge/-@tgrsusers-blue?style=flat-square&logo=telegram)](https://t.me/tgrsusers)
-[![License](https://img.shields.io/crates/l/tgbot.svg?style=flat-square)](https://github.com/tg-rs/tgbot/tree/0.18.0/LICENSE)
 
 ## Installation
 
@@ -27,7 +22,7 @@ use futures_util::future::BoxFuture;
 use std::env;
 use tgbot::api::Client;
 use tgbot::handler::{LongPoll, UpdateHandler};
-use tgbot::types::{SendMessage, Update, UpdateType};
+use tgbot::types::{SendMessage, Update};
 
 struct Handler {
     client: Client,
@@ -40,12 +35,12 @@ impl UpdateHandler for Handler {
         println!("got an update: {:?}\n", update);
         let client = self.client.clone();
         Box::pin(async move {
-            if let UpdateType::Message(message) = update.update_type {
-                if let Some(text) = message.get_text() {
-                    let chat_id = message.chat.get_id();
-                    let method = SendMessage::new(chat_id, text.data.clone());
-                    client.execute(method).await.unwrap();
-                }
+            let chat_id = update.get_chat_id();
+            let message = update.get_message();
+            let text = message.and_then(|x| x.get_text());
+            if let (Some(chat_id), Some(text)) = (chat_id, text) {
+                let method = SendMessage::new(chat_id, text.data.clone());
+                client.execute(method).await.unwrap();
             }
         })
     }
@@ -83,25 +78,27 @@ async fn main() {
 }
 ```
 
-See more examples in [examples](https://github.com/tg-rs/tgbot/tree/0.18.0/examples) directory.
+See more examples in the [examples](https://github.com/tg-rs/tgbot/tree/0.18.0/examples) directory.
 
-In order to run an example you need to create a `.env` file:
+To run an example you need to create a `.env` file:
+
 ```sh
 cp sample.env .env
 ```
-Don't forget to change value of `TGBOT_TOKEN` and other variables if required.
+
+Don't forget to change the value of `TGBOT_TOKEN` and other variables if required.
 
 ## Versioning
 
 This project adheres to [ZeroVer](https://0ver.org/)
 
-## Changelog
+## Links
 
-See [CHANGELOG.md](https://github.com/tg-rs/tgbot/tree/0.18.0/CHANGELOG.md)
-
-## Code of Conduct
-
-See [CODE_OF_CONDUCT.md](https://github.com/tg-rs/tgbot/tree/0.18.0/CODE_OF_CONDUCT.md).
+- [Latest documentation](https://docs.rs/tgbot)
+- [Master documentation](https://tg-rs.github.io/tgbot/tgbot/)
+- [Telegram Chat](https://t.me/tgrsusers)
+- [Changelog](https://github.com/tg-rs/tgbot/tree/0.18.0/CHANGELOG.md)
+- [Code of Conduct](https://github.com/tg-rs/tgbot/tree/0.18.0/CODE_OF_CONDUCT.md)
 
 ## LICENSE
 

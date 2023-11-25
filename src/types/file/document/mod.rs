@@ -22,39 +22,39 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a general file (as opposed to photos, voice messages and audio files)
+/// Represents a general file (as opposed to photos, voice messages and audio files).
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Document {
-    /// Identifier
+    /// Identifier of the file.
     ///
     /// Can be used to download or reuse the file.
     pub file_id: String,
-    /// Unique identifier
+    /// Unique identifier of the file.
     ///
     /// It is supposed to be the same over time and for different bots.
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Original filename as defined by sender
+    /// Original filename as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// File size in bytes
+    /// File size in bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
-    /// Document thumbnail as defined by sender
+    /// Document thumbnail as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
-    /// MIME type as defined by sender
+    /// MIME type as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
 }
 
 impl Document {
-    /// Creates a new Document
+    /// Creates a new `Document`.
     ///
     /// # Arguments
     ///
-    /// * file_id - Identifier
-    /// * file_unique_id - Unique identifier
+    /// * `file_id` - Identifier of the file.
+    /// * `file_unique_id` - Unique identifier of the file.
     pub fn new<A, B>(file_id: A, file_unique_id: B) -> Self
     where
         A: Into<String>,
@@ -70,11 +70,11 @@ impl Document {
         }
     }
 
-    /// Sets a new file name
+    /// Sets a new name of the file.
     ///
     /// # Arguments
     ///
-    /// * value - File name
+    /// * `value` - The new name of the file.
     pub fn with_file_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -83,31 +83,31 @@ impl Document {
         self
     }
 
-    /// Sets a new file size
+    /// Sets a new size of the file.
     ///
     /// # Arguments
     ///
-    /// * value - File size in bytes
+    /// * `value` - The size of the file in bytes.
     pub fn with_file_size(mut self, value: Integer) -> Self {
         self.file_size = Some(value);
         self
     }
 
-    /// Sets a new thumbnail
+    /// Sets a new thumbnail.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail
+    /// * `value` - Thumbnail.
     pub fn with_thumbnail(mut self, value: PhotoSize) -> Self {
         self.thumbnail = Some(value);
         self
     }
 
-    /// Sets a new MIME type
+    /// Sets a new MIME type.
     ///
     /// # Arguments
     ///
-    /// * value - MIME type
+    /// * `value` - MIME type.
     pub fn with_mime_type<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -117,7 +117,7 @@ impl Document {
     }
 }
 
-/// Send general files
+/// Sends a general file.
 ///
 /// Bots can currently send files of any type of up to 50 MB in size,
 /// this limit may be changed in the future.
@@ -127,38 +127,38 @@ pub struct SendDocument {
 }
 
 impl SendDocument {
-    /// Creates a new SendDocument
+    /// Creates a new `SendDocument`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * document - File to send
+    /// * `chat_id` - Unique identifier for the target chat.
+    /// * `document` - File to send.
     pub fn new<A, B>(chat_id: A, document: B) -> Self
     where
         A: Into<ChatId>,
         B: Into<InputFile>,
     {
-        SendDocument {
+        Self {
             form: Form::from([("chat_id", chat_id.into().into()), ("document", document.into().into())]),
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.form.insert_field("allow_sending_without_reply", value.to_string());
         self
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - (0-1024 characters)
+    /// * `value` - Caption; 0-1024 characters.
     ///
     /// May also be used when resending documents by `file_id`.
     pub fn with_caption<T>(mut self, value: T) -> Self
@@ -169,13 +169,13 @@ impl SendDocument {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
     where
         T: IntoIterator<Item = TextEntity>,
@@ -186,67 +186,68 @@ impl SendDocument {
         Ok(self)
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.form.insert_field("parse_mode", parse_mode);
+    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
+        self.form.insert_field("parse_mode", value);
         self.form.remove_field("caption_entities");
         self
     }
 
-    /// Sets a new value for the `disable_content_type_detection` flag
+    /// Sets a new value for a `disable_content_type_detection` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to disable automatic server-side content type detection
-    ///           for files uploaded using multipart/form-data
+    /// * `value` - Indicates whether to disable automatic server-side content type detection
+    ///             for files uploaded using `multipart/form-data`.
     pub fn with_disable_content_type_detection(mut self, value: bool) -> Self {
         self.form.insert_field("disable_content_type_detection", value);
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently;
-    ///           a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.form.insert_field("disable_notification", value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.form.insert_field("message_thread_id", value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.form.insert_field("protect_content", value.to_string());
         self
     }
 
-    /// Sets a new thumbnail
+    /// Sets a new thumbnail.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail
+    /// * `value` - Thumbnail.
     ///
     /// The thumbnail should be in JPEG format and less than 200 kB in size.
     /// A thumbnail‘s width and height should not exceed 320.
@@ -264,11 +265,11 @@ impl SendDocument {
         Ok(self)
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
     where
         T: Into<ReplyMarkup>,
@@ -278,11 +279,11 @@ impl SendDocument {
         Ok(self)
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.form.insert_field("reply_to_message_id", value);
         self
@@ -297,10 +298,10 @@ impl Method for SendDocument {
     }
 }
 
-/// An error when sending a document
+/// Represents an error when sending a document.
 #[derive(Debug)]
 pub enum SendDocumentError {
-    /// Thumbnails can not be reused
+    /// Thumbnails can not be reused.
     InvalidThumbnail,
 }
 

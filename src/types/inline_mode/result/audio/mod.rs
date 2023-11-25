@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a link to an mp3 audio file
+/// Represents a link to an mp3 audio file.
 ///
 /// By default, this audio file will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send
@@ -39,13 +39,13 @@ pub struct InlineQueryResultAudio {
 }
 
 impl InlineQueryResultAudio {
-    /// Creates a new InlineQueryResultAudio
+    /// Creates a new `InlineQueryResultAudio`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier, 1-64 bytes
-    /// * audio_url - A valid URL of the audio file
-    /// * title - Title
+    /// * `id` - Unique identifier; 1-64 bytes.
+    /// * `audio_url` - A valid URL of the audio file.
+    /// * `title` - Title.
     pub fn new<A, B, C>(audio_url: A, id: B, title: C) -> Self
     where
         A: Into<String>,
@@ -66,21 +66,21 @@ impl InlineQueryResultAudio {
         }
     }
 
-    /// Sets a new audio duration
+    /// Sets a new audio duration.
     ///
     /// # Arguments
     ///
-    /// * value - Audio duration in seconds
+    /// * `value` - Audio duration in seconds.
     pub fn with_audio_duration(mut self, value: Integer) -> Self {
         self.audio_duration = Some(value);
         self
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -89,13 +89,13 @@ impl InlineQueryResultAudio {
         self
     }
 
-    /// Sets a new list of caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -105,11 +105,11 @@ impl InlineQueryResultAudio {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -118,11 +118,11 @@ impl InlineQueryResultAudio {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the audio
+    /// * `value` - Content of the message to be sent instead of the audio.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -131,11 +131,11 @@ impl InlineQueryResultAudio {
         self
     }
 
-    /// Sets a new performer
+    /// Sets a new performer.
     ///
     /// # Arguments
     ///
-    /// * value - Performer
+    /// * `value` - Performer.
     pub fn with_performer<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -144,11 +144,11 @@ impl InlineQueryResultAudio {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -158,7 +158,7 @@ impl InlineQueryResultAudio {
     }
 }
 
-/// Represents a link to an mp3 audio file stored on the Telegram servers
+/// Represents a link to an mp3 audio file stored on the Telegram servers.
 ///
 /// By default, this audio file will be sent by the user.
 /// Alternatively, you can use [Self::with_input_message_content]
@@ -180,12 +180,12 @@ pub struct InlineQueryResultCachedAudio {
 }
 
 impl InlineQueryResultCachedAudio {
-    /// Creates a new InlineQueryResultCachedAudio
+    /// Creates a new `InlineQueryResultCachedAudio`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier, 1-64 bytes
-    /// * audio_file_id - A valid file identifier for the audio file
+    /// * `id` - Unique identifier; 1-64 bytes.
+    /// * `audio_file_id` - A valid file identifier for the audio file.
     pub fn new<A, B>(audio_file_id: A, id: B) -> Self
     where
         A: Into<String>,
@@ -202,11 +202,11 @@ impl InlineQueryResultCachedAudio {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -215,13 +215,13 @@ impl InlineQueryResultCachedAudio {
         self
     }
 
-    /// Sets a new list of caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -231,11 +231,11 @@ impl InlineQueryResultCachedAudio {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -244,11 +244,11 @@ impl InlineQueryResultCachedAudio {
         self
     }
 
-    /// Sets a new input message content
+    /// Sets a new input message content.
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the audio
+    /// * value - Content of the message to be sent instead of the audio.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,
@@ -257,11 +257,11 @@ impl InlineQueryResultCachedAudio {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,

@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a game
+/// Represents a game.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultGame {
     game_short_name: String,
@@ -22,12 +22,12 @@ pub struct InlineQueryResultGame {
 }
 
 impl InlineQueryResultGame {
-    /// Creates a new InlineQueryResultGame
+    /// Creates a new `InlineQueryResultGame`.
     ///
     /// # Arguments
     ///
-    /// * game_short_name - Short name of the game
-    /// * id - Unique identifier of the result, 1-64 bytes
+    /// * `game_short_name` - Short name of the game.
+    /// * `id` - Unique identifier of the result; 1-64 bytes.
     pub fn new<A, B>(game_short_name: A, id: B) -> Self
     where
         A: Into<String>,
@@ -40,11 +40,11 @@ impl InlineQueryResultGame {
         }
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,

@@ -8,24 +8,24 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a join request sent to a chat
+/// Represents a join request sent to a chat.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChatJoinRequest {
-    /// Chat to which the request was sent
+    /// Chat to which the request was sent.
     pub chat: Chat,
-    /// Date the request was sent in Unix time
+    /// Date the request was sent in Unix time.
     pub date: Integer,
-    /// User that sent the join request
+    /// User that sent the join request.
     pub from: User,
-    /// Bio of the user
+    /// Bio of the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
-    /// Chat invite link that was used by the user to send the join request
+    /// Chat invite link that was used by the user to send the join request.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<ChatInviteLink>,
-    /// Identifier of a private chat with the user who sent the join request
+    /// Identifier of a private chat with the user who sent the join request.
     ///
-    /// The bot can use this identifier for 5 minutes to
+    /// A bot can use this identifier for 5 minutes to
     /// send messages until the join request is processed,
     /// assuming no other administrator contacted the user.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,15 +33,13 @@ pub struct ChatJoinRequest {
 }
 
 impl ChatJoinRequest {
-    /// Creates a new ChatJoinRequest
+    /// Creates a new `ChatJoinRequest`.
     ///
     /// # Arguments
     ///
-    /// * chat - Chat to which the request was sent
-    /// * date - Date the request was sent in Unix time
-    /// * from - User that sent the join request
-    ///
-    /// All optional values are `None` by default.
+    /// * `chat` - Chat to which the request was sent.
+    /// * `date` - Date the request was sent in Unix time.
+    /// * `from` - User that sent the join request.
     pub fn new(chat: Chat, date: Integer, from: User) -> Self {
         Self {
             chat,
@@ -53,11 +51,11 @@ impl ChatJoinRequest {
         }
     }
 
-    /// Sets a new bio
+    /// Sets a new bio.
     ///
     /// # Arguments
     ///
-    /// * value - Bio of the user
+    /// * `value` - The bio of the user.
     pub fn with_bio<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -66,28 +64,28 @@ impl ChatJoinRequest {
         self
     }
 
-    /// Sets a new invite link
+    /// Sets a new invite link.
     ///
     /// # Arguments
     ///
-    /// * value - Chat invite link that was used by the user to send the join request
+    /// * `value` - The chat invite link that was used by the user to send the join request.
     pub fn with_invite_link(mut self, value: ChatInviteLink) -> Self {
         self.invite_link = Some(value);
         self
     }
 
-    /// Sets a new user chat ID
+    /// Sets a new user chat ID.
     ///
     /// # Arguments
     ///
-    /// * value - Identifier of a private chat with the user who sent the join request
+    /// * `value` - The identifier of a private chat with the user who sent the join request.
     pub fn with_user_chat_id(mut self, value: Integer) -> Self {
         self.user_chat_id = Some(value);
         self
     }
 }
 
-/// Approve a chat join request
+/// Approves a chat join request.
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the `can_invite_users` administrator right.
@@ -98,12 +96,12 @@ pub struct ApproveChatJoinRequest {
 }
 
 impl ApproveChatJoinRequest {
-    /// Creates a new ApproveChatJoinRequest
+    /// Creates a new `ApproveChatJoinRequest`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * user_id - Unique identifier of the target user
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `user_id` - Unique identifier of the target user.
     pub fn new<T>(chat_id: T, user_id: Integer) -> Self
     where
         T: Into<ChatId>,
@@ -123,7 +121,7 @@ impl Method for ApproveChatJoinRequest {
     }
 }
 
-/// Decline a chat join request
+/// Declines a chat join request.
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the `can_invite_users` administrator right.
@@ -134,12 +132,12 @@ pub struct DeclineChatJoinRequest {
 }
 
 impl DeclineChatJoinRequest {
-    /// Creates a new DeclineChatJoinRequest
+    /// Creates a new `DeclineChatJoinRequest`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * user_id - Unique identifier of the target user
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `user_id` - Unique identifier of the target user.
     pub fn new<T>(chat_id: T, user_id: Integer) -> Self
     where
         T: Into<ChatId>,

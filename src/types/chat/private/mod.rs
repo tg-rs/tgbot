@@ -5,78 +5,78 @@ use crate::types::{ChatPhoto, Integer, Message};
 #[cfg(test)]
 mod tests;
 
-/// Represents a private chat
+/// Represents a private chat.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PrivateChat {
-    /// Unique identifier
+    /// Unique identifier of the chat.
     pub id: Integer,
-    /// First name of the other party
+    /// First name of the other party.
     pub first_name: String,
-    /// Last name of the other party
+    /// Last name of the other party.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
-    /// Username of the target chat
+    /// Username of the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
-    /// Photo
+    /// Photo of the other party.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<ChatPhoto>,
-    /// Bio of the other party
+    /// Bio of the other party.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
-    /// Latest pinned message
+    /// Latest pinned message.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pinned_message: Option<Box<Message>>,
-    /// Whether privacy settings of the other party
+    /// Indicates whether privacy settings of the other party
     /// in the private chat allows to use `tg://user?id=<user_id>`
-    /// links only in chats with the user
+    /// links only in chats with the user.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_private_forwards: Option<bool>,
     /// The time after which all messages sent to the chat
-    /// will be automatically deleted; in seconds
+    /// will be automatically deleted; in seconds.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_auto_delete_time: Option<Integer>,
-    /// Whether privacy settings of the other party
-    /// restrict sending voice and video note messages
+    /// Indicates whether privacy settings of the other party
+    /// restrict sending voice and video note messages.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_restricted_voice_and_video_messages: Option<bool>,
-    /// List of all active usernames of the other party
+    /// List of all active usernames of the other party.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active_usernames: Option<Vec<String>>,
-    /// Custom emoji identifier of emoji status of the other party
+    /// Custom emoji identifier of emoji status of the other party.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub emoji_status_custom_emoji_id: Option<String>,
     /// Expiration date of the emoji status of
-    /// the other party in a private chat in Unix time, if any
+    /// the other party in a private chat in Unix time, if any.
     ///
-    /// Returned only in `GetChat`.
+    /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub emoji_status_expiration_date: Option<Integer>,
 }
 
 impl PrivateChat {
-    /// Creates a new PrivateChat
+    /// Creates a new `PrivateChat`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier of the target chat
-    /// * first_name - First name of the other party
+    /// * `id` - Unique identifier of the target chat.
+    /// * `first_name` - First name of the other party.
     pub fn new<T>(id: Integer, first_name: T) -> Self
     where
         T: Into<String>,
@@ -98,11 +98,11 @@ impl PrivateChat {
         }
     }
 
-    /// Sets a new last name
+    /// Sets a new last name.
     ///
     /// # Arguments
     ///
-    /// * value - Last name
+    /// * `value` - Last name.
     pub fn with_last_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -111,11 +111,11 @@ impl PrivateChat {
         self
     }
 
-    /// Sets a new username
+    /// Sets a new username.
     ///
     /// # Arguments
     ///
-    /// * value - Username
+    /// * `value` - Username.
     pub fn with_username<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -124,21 +124,21 @@ impl PrivateChat {
         self
     }
 
-    /// Sets a new photo
+    /// Sets a new photo.
     ///
     /// # Arguments
     ///
-    /// * value - Chat photo
+    /// * `value` - Chat photo.
     pub fn with_photo(mut self, value: ChatPhoto) -> Self {
         self.photo = Some(value);
         self
     }
 
-    /// Sets a new bio
+    /// Sets a new bio.
     ///
     /// # Arguments
     ///
-    /// * value - Bio
+    /// * `value` - Bio.
     pub fn with_bio<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -147,51 +147,54 @@ impl PrivateChat {
         self
     }
 
-    /// Sets a new pinned message
+    /// Sets a new pinned message.
     ///
     /// # Arguments
     ///
-    /// * value - Pinned message
+    /// * `value` - Pinned message.
     pub fn with_pinned_message(mut self, value: Message) -> Self {
         self.pinned_message = Some(Box::new(value));
         self
     }
 
-    /// Sets a new value for the `has_private_forwards` flag
+    /// Sets a new value for a `has_private_forwards` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Value of the flag
+    /// * `value` - Indicates whether privacy settings of the other party
+    ///             in the private chat allows to use `tg://user?id=<user_id>`
+    ///             links only in chats with the user.
     pub fn with_has_private_forwards(mut self, value: bool) -> Self {
         self.has_private_forwards = Some(value);
         self
     }
 
-    /// Sets a new message auto-delete time
+    /// Sets a new message auto-delete time.
     ///
     /// # Arguments
     ///
-    /// * value - Time in seconds
+    /// * `value` - Time in seconds.
     pub fn with_message_auto_delete_time(mut self, value: Integer) -> Self {
         self.message_auto_delete_time = Some(value);
         self
     }
 
-    /// Sets a new value for the `has_restricted_voice_and_video_messages` flag
+    /// Sets a new value for a `has_restricted_voice_and_video_messages` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Value of the flag
+    /// * `value` - Indicates whether privacy settings of the other party
+    ///             restrict sending voice and video note messages.
     pub fn with_has_restricted_voice_and_video_messages(mut self, value: bool) -> Self {
         self.has_restricted_voice_and_video_messages = Some(value);
         self
     }
 
-    /// Sets a new list of active usernames
+    /// Sets a new list of active usernames.
     ///
     /// # Arguments
     ///
-    /// * value - Active usernames
+    /// * `value` - Active usernames.
     pub fn with_active_usernames<A, B>(mut self, value: A) -> Self
     where
         A: IntoIterator<Item = B>,
@@ -201,11 +204,11 @@ impl PrivateChat {
         self
     }
 
-    /// Sets a new custom emoji identifier of emoji status
+    /// Sets a new custom emoji identifier of emoji status.
     ///
     /// # Arguments
     ///
-    /// * value - Emoji identifier
+    /// * `value` - Emoji identifier.
     pub fn with_emoji_status_custom_emoji_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -214,11 +217,11 @@ impl PrivateChat {
         self
     }
 
-    /// Sets a new emoji status expiration date
+    /// Sets a new emoji status expiration date.
     ///
     /// # Arguments
     ///
-    /// * value - Unix timestamp; in seconds
+    /// * `value` - Unix timestamp; in seconds.
     pub fn with_emoji_status_expiration_date(mut self, value: Integer) -> Self {
         self.emoji_status_expiration_date = Some(value);
         self

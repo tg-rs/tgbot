@@ -22,48 +22,48 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a video file
+/// Represents a video file.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Video {
-    /// Duration in seconds as defined by sender
+    /// Duration in seconds as defined by sender.
     pub duration: Integer,
-    /// Identifier
+    /// Identifier of the file.
     ///
     /// Can be used to download or reuse the file.
     pub file_id: String,
-    /// Unique identifier
+    /// Unique identifier of the file.
     ///
     /// It is supposed to be the same over time and for different bots.
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
-    /// Height as defined by sender
+    /// Height as defined by sender.
     pub height: Integer,
-    /// Width as defined by sender
+    /// Width as defined by sender.
     pub width: Integer,
-    /// Original filename as defined by sender
+    /// Original filename as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
-    /// File size in bytes
+    /// File size in bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
-    /// MIME type as defined by sender
+    /// MIME type as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
-    /// Thumbnail
+    /// Thumbnail.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 
 impl Video {
-    /// Creates a new Video
+    /// Creates a new `Video`.
     ///
     /// # Arguments
     ///
-    /// * duration - Duration in seconds
-    /// * file_id - Identifier
-    /// * file_unique_id - Unique identifier
-    /// * height - Height
-    /// * width - Width
+    /// * `duration` - Duration of the video in seconds.
+    /// * `file_id` - Identifier of the file.
+    /// * `file_unique_id` - Unique identifier of the file.
+    /// * `height` - Height of the video.
+    /// * `width` - Width of the video.
     pub fn new<A, B>(duration: Integer, file_id: A, file_unique_id: B, height: Integer, width: Integer) -> Self
     where
         A: Into<String>,
@@ -82,11 +82,11 @@ impl Video {
         }
     }
 
-    /// Sets a new file name
+    /// Sets a new name of the file.
     ///
     /// # Arguments
     ///
-    /// * value - File name
+    /// * `value` - The name of the file.
     pub fn with_file_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -95,21 +95,21 @@ impl Video {
         self
     }
 
-    /// Sets a new file size
+    /// Sets a new size of the file.
     ///
     /// # Arguments
     ///
-    /// * value - File size in bytes
+    /// * `value` - The size of the file in bytes.
     pub fn with_file_size(mut self, value: Integer) -> Self {
         self.file_size = Some(value);
         self
     }
 
-    /// Sets a new MIME type
+    /// Sets a new MIME type.
     ///
     /// # Arguments
     ///
-    /// * value - MIME type
+    /// * `value` - MIME type.
     pub fn with_mime_type<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -118,18 +118,18 @@ impl Video {
         self
     }
 
-    /// Sets a new thumbnail
+    /// Sets a new thumbnail.
     ///
     /// # Arguments
     ///
-    /// * value - thumbnail
+    /// * `value` - Thumbnail.
     pub fn with_thumbnail(mut self, value: PhotoSize) -> Self {
         self.thumbnail = Some(value);
         self
     }
 }
 
-/// Send a video file
+/// Sends a video file.
 ///
 /// Telegram clients support mp4 videos (other formats may be sent as Document).
 /// Bots can currently send video files of up to 50 MB in size,
@@ -140,38 +140,38 @@ pub struct SendVideo {
 }
 
 impl SendVideo {
-    /// Creates a new SendVideo
+    /// Creates a new `SendVideo`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * video - Video to send
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `video` - Video to send.
     pub fn new<A, B>(chat_id: A, video: B) -> Self
     where
         A: Into<ChatId>,
         B: Into<InputFile>,
     {
-        SendVideo {
+        Self {
             form: Form::from([("chat_id", chat_id.into().into()), ("video", video.into().into())]),
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.form.insert_field("allow_sending_without_reply", value.to_string());
         self
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - (0-1024 characters)
+    /// * `value` - Caption; 0-1024 characters.
     ///
     /// May also be used when resending documents by `file_id`.
     pub fn with_caption<T>(mut self, value: T) -> Self
@@ -182,13 +182,13 @@ impl SendVideo {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
     where
         T: IntoIterator<Item = TextEntity>,
@@ -199,11 +199,11 @@ impl SendVideo {
         Ok(self)
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -212,73 +212,74 @@ impl SendVideo {
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently;
-    ///           a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.form.insert_field("disable_notification", value);
         self
     }
 
-    /// Sets a new duration
+    /// Sets a new duration.
     ///
     /// # Arguments
     ///
-    /// * value - Duration in seconds
+    /// * `value` - Duration in seconds.
     pub fn with_duration(mut self, value: Integer) -> Self {
         self.form.insert_field("duration", value);
         self
     }
 
-    /// Sets a new value for the `has_spoiler` flag
+    /// Sets a new value for a `has_spoiler` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to cover with a spoiler animation
+    /// * `value` - Indicates whether to cover with a spoiler animation.
     pub fn with_has_spoiler(mut self, value: bool) -> Self {
         self.form.insert_field("has_spoiler", value);
         self
     }
 
-    /// Sets a new height
+    /// Sets a new height.
     ///
     /// # Arguments
     ///
-    /// * value - Height
+    /// * `value` - Height.
     pub fn with_height(mut self, value: Integer) -> Self {
         self.form.insert_field("height", value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.form.insert_field("message_thread_id", value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.form.insert_field("protect_content", value.to_string());
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
     where
         T: Into<ReplyMarkup>,
@@ -288,31 +289,31 @@ impl SendVideo {
         Ok(self)
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.form.insert_field("reply_to_message_id", value);
         self
     }
 
-    /// Sets a new value for the `supports_streaming` flag
+    /// Sets a new value for a `supports_streaming` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the uploaded video is suitable for streaming
+    /// * `value` - Indicates whether the uploaded video is suitable for streaming.
     pub fn with_supports_streaming(mut self, value: bool) -> Self {
         self.form.insert_field("supports_streaming", value);
         self
     }
 
-    /// Sets a new thumbnail
+    /// Sets a new thumbnail.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail
+    /// * `value` - Thumbnail.
     ///
     /// The thumbnail should be in JPEG format and less than 200 kB in size.
     /// A thumbnail‘s width and height should not exceed 320.
@@ -330,7 +331,11 @@ impl SendVideo {
         Ok(self)
     }
 
-    /// Video width
+    /// Sets a new width.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Width.
     pub fn with_width(mut self, value: Integer) -> Self {
         self.form.insert_field("width", value);
         self
@@ -345,10 +350,10 @@ impl Method for SendVideo {
     }
 }
 
-/// An error when sending a video
+/// Represents an error when sending a video.
 #[derive(Debug)]
 pub enum SendVideoError {
-    /// Thumbnails can not be reused
+    /// Thumbnails can not be reused.
     InvalidThumbnail,
 }
 

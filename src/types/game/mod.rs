@@ -18,27 +18,28 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a Game
+/// Represents a Game.
 ///
 /// Use BotFather to create and edit games,
-/// their short names will act as unique identifiers
+/// their short names will act as unique identifiers.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Game {
-    /// Description
+    /// Description of the game.
     pub description: String,
-    /// Photo that will be displayed in the game message in chats
+    /// Photo that will be displayed in the game message in chats.
     pub photo: Vec<PhotoSize>,
-    /// Title
+    /// Title of the game.
     pub title: String,
-    /// Animation that will be displayed in the game message in chats
+    /// Animation that will be displayed in the game message in chats.
     ///
     /// Upload via BotFather.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub animation: Option<Animation>,
-    /// Brief description or high scores included in the game message; 0-4096 characters
+    /// Brief description or high scores included in the game message; 0-4096 characters.
     ///
     /// Can be automatically edited to include current high scores for
-    /// when the bot calls `SetGameScore`, or manually edited using `EditMessageText`.
+    /// when the bot calls [`SetGameScore`],
+    /// or manually edited using [`crate::types::EditMessageText`].
     #[serde(
         flatten,
         deserialize_with = "GameText::deserialize_value",
@@ -49,13 +50,13 @@ pub struct Game {
 }
 
 impl Game {
-    /// Creates a new Game
+    /// Creates a new `Game`.
     ///
     /// # Arguments
     ///
-    /// * description - Description
-    /// * photo - Photo
-    /// * title - Title
+    /// * `description` - Description of the game.
+    /// * `photo` - Photo of the game.
+    /// * `title` - Title of the game.
     pub fn new<A, B, C>(description: A, photo: B, title: C) -> Self
     where
         A: Into<String>,
@@ -71,21 +72,22 @@ impl Game {
         }
     }
 
-    /// Sets a new animation
+    /// Sets a new animation.
     ///
     /// # Arguments
     ///
-    /// * value - Animation
+    /// * `value` - Animation that will be displayed in the game message in chats.
     pub fn with_animation(mut self, value: Animation) -> Self {
         self.animation = Some(value);
         self
     }
 
-    /// Sets a new text
+    /// Sets a new text.
     ///
     /// # Arguments
     ///
-    /// * value - Text
+    /// * `value` - Brief description or high scores included in the game message;
+    ///             0-4096 characters.
     pub fn with_text<T>(mut self, value: T) -> Self
     where
         T: Into<Text>,
@@ -128,31 +130,31 @@ impl GameText {
     }
 }
 
-/// Represents a row of the high scores table for a game
+/// Represents a row of the high scores table for a game.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct GameHighScore {
-    /// Position in high score table
+    /// Position in the high score table.
     pub position: Integer,
-    /// Score
+    /// Score achieved by the user.
     pub score: Integer,
-    /// User
+    /// User associated with the high score.
     pub user: User,
 }
 
 impl GameHighScore {
-    /// Creates a new GameHighScore
+    /// Creates a new `GameHighScore`.
     ///
     /// # Arguments
     ///
-    /// * position - Position
-    /// * score - Score
-    /// * user - User
+    /// * `position` - Position in the high score table.
+    /// * `score` - Score achieved by the user.
+    /// * `user` - User associated with the high score.
     pub fn new(position: Integer, score: Integer, user: User) -> Self {
         Self { position, score, user }
     }
 }
 
-/// Returns data for high score tables
+/// Returns data for high score tables.
 ///
 /// Will return the score of the specified user and several of his neighbors in a game.
 /// This method will currently return scores for the target user,
@@ -171,13 +173,13 @@ pub struct GetGameHighScores {
 }
 
 impl GetGameHighScores {
-    /// Creates a new GetGameHighScores
+    /// Creates a new `GetGameHighScores` for a chat message.
     ///
     /// # Arguments
     ///
-    /// * user_id - Target user id
-    /// * chat_id - Unique identifier for the target chat
-    /// * message_id - Identifier of the sent message
+    /// * `user_id` - Target user ID.
+    /// * `chat_id` - Unique identifier for the target chat.
+    /// * `message_id` - Identifier of the sent message.
     pub fn for_chat_message(user_id: Integer, chat_id: Integer, message_id: Integer) -> Self {
         Self {
             user_id,
@@ -187,12 +189,12 @@ impl GetGameHighScores {
         }
     }
 
-    /// Creates a new GetGameHighScores
+    /// Creates a new `GetGameHighScores` for an inline message.
     ///
     /// # Arguments
     ///
-    /// * user_id - Target user id
-    /// * inline_message_id - Identifier of the inline message
+    /// * `user_id` - Target user ID.
+    /// * `inline_message_id` - Identifier of the inline message.
     pub fn for_inline_message<T>(user_id: Integer, inline_message_id: T) -> Self
     where
         T: Into<String>,
@@ -214,7 +216,7 @@ impl Method for GetGameHighScores {
     }
 }
 
-/// Sends a game
+/// Sends a game.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendGame {
     chat_id: Integer,
@@ -234,12 +236,12 @@ pub struct SendGame {
 }
 
 impl SendGame {
-    /// Creates a new SendGame
+    /// Creates a new `SendGame`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * game_short_name - Short name of the game, serves as the unique identifier for the game
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `game_short_name` - Short name of the game, serves as the unique identifier for the game.
     pub fn new<T>(chat_id: Integer, game_short_name: T) -> Self
     where
         T: Into<String>,
@@ -256,54 +258,55 @@ impl SendGame {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently;
-    ///           a user will receive a notification without sound
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -312,11 +315,11 @@ impl SendGame {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.reply_to_message_id = Some(value);
         self
@@ -331,10 +334,10 @@ impl Method for SendGame {
     }
 }
 
-/// Sets the score of the specified user in a game
+/// Sets the score of the specified user in a game.
 ///
 /// Returns an error, if the new score is not greater
-/// than the user's current score in the chat and force is `False`.
+/// than the user's current score in the chat and force is `false`.
 #[derive(Clone, Debug, Serialize)]
 pub struct SetGameScore {
     user_id: Integer,
@@ -352,16 +355,16 @@ pub struct SetGameScore {
 }
 
 impl SetGameScore {
-    /// Creates a new SetGameScore
+    /// Creates a new `SetGameScore`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * message_id - Identifier of the sent message
-    /// * user_id - User identifier
-    /// * score - New score, must be non-negative
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the sent message.
+    /// * `user_id` - User identifier.
+    /// * `score` - New score, must be non-negative.
     pub fn for_chat_message(chat_id: Integer, message_id: Integer, user_id: Integer, score: Integer) -> Self {
-        SetGameScore {
+        Self {
             user_id,
             score,
             force: None,
@@ -372,18 +375,18 @@ impl SetGameScore {
         }
     }
 
-    /// Creates a new SetGameScore
+    /// Creates a new `SetGameScore`.
     ///
     /// # Arguments
     ///
-    /// * inline_message_id - Identifier of the inline message
-    /// * user_id - User identifier
-    /// * score - New score, must be non-negative
+    /// * `inline_message_id` - Identifier of the inline message.
+    /// * `user_id` - User identifier.
+    /// * `score` - New score, must be non-negative.
     pub fn for_inline_message<T>(inline_message_id: T, user_id: Integer, score: Integer) -> Self
     where
         T: Into<String>,
     {
-        SetGameScore {
+        Self {
             user_id,
             score,
             force: None,
@@ -394,24 +397,24 @@ impl SetGameScore {
         }
     }
 
-    /// Sets a new value for the `disable_edit_message` flag
+    /// Sets a new value for a `disable_edit_message` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the game message should not be automatically
-    ///           edited to include the current scoreboard
+    /// * `value` - Indicates whether the game message should not be automatically
+    ///             edited to include the current scoreboard.
     pub fn with_disable_edit_message(mut self, value: bool) -> Self {
         self.disable_edit_message = Some(value);
         self
     }
 
-    /// Sets a new value for the `force` flag
+    /// Sets a new value for a `force` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the high score is allowed to decrease
+    /// * `value` - Indicates whether the high score is allowed to decrease.
     ///
-    /// This can be useful when fixing mistakes or banning cheaters
+    /// This can be useful when fixing mistakes or banning cheaters.
     pub fn with_force(mut self, value: bool) -> Self {
         self.force = Some(value);
         self

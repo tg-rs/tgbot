@@ -12,7 +12,7 @@ use super::raw::{
 #[cfg(test)]
 mod tests;
 
-/// Represents a link to an article or a web page
+/// Represents a link to an article or a web page.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultArticle {
     id: String,
@@ -35,13 +35,13 @@ pub struct InlineQueryResultArticle {
 }
 
 impl InlineQueryResultArticle {
-    /// Creates a new InlineQueryResultArticle
+    /// Creates a new `InlineQueryResultArticle`.
     ///
     /// # Arguments
     ///
-    /// * id - Unique identifier, 1-64 Bytes
-    /// * input_message_content - Content of the message
-    /// * title - Title of the result
+    /// * `id` - Unique identifier; 1-64 Bytes.
+    /// * `input_message_content` - Content of the message.
+    /// * `title` - Title of the result.
     pub fn new<A, B, C>(id: A, input_message_content: B, title: C) -> Self
     where
         A: Into<String>,
@@ -62,11 +62,11 @@ impl InlineQueryResultArticle {
         }
     }
 
-    /// Sets a new description
+    /// Sets a new description.
     ///
     /// # Arguments
     ///
-    /// * value - Short description of the result
+    /// * `value` - Short description of the result.
     pub fn with_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -75,21 +75,21 @@ impl InlineQueryResultArticle {
         self
     }
 
-    /// Sets a new value for the `hide_url` flag
+    /// Sets a new value for a `hide_url` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the URL must to be shown in the message
+    /// * `value` - Indicates whether the URL must to be shown in the message.
     pub fn with_hide_url(mut self, value: bool) -> Self {
         self.hide_url = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard attached to the message
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -98,31 +98,31 @@ impl InlineQueryResultArticle {
         self
     }
 
-    /// Sets a new thumbnail height
+    /// Sets a new thumbnail height.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail height
+    /// * `value` - Thumbnail height.
     pub fn with_thumbnail_height(mut self, value: Integer) -> Self {
         self.thumbnail_height = Some(value);
         self
     }
 
-    /// Sets a new thumbnail width
+    /// Sets a new thumbnail width.
     ///
     /// # Arguments
     ///
-    /// * value - Thumbnail width
+    /// * `value` - Thumbnail width.
     pub fn with_thumbnail_width(mut self, value: Integer) -> Self {
         self.thumbnail_width = Some(value);
         self
     }
 
-    /// Sets a new thumbnail URL
+    /// Sets a new thumbnail URL.
     ///
     /// # Arguments
     ///
-    /// * value - Url of the thumbnail for the result
+    /// * `value` - URL of the thumbnail for the result.
     pub fn with_thumbnail_url<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -131,9 +131,9 @@ impl InlineQueryResultArticle {
         self
     }
 
-    /// Sets a new URL
+    /// Sets a new URL.
     ///
-    /// * value - URL of the result
+    /// * `value` - URL of the result.
     pub fn with_url<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

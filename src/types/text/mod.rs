@@ -9,27 +9,27 @@ mod tests;
 
 mod entities;
 
-/// Represents a text with entities
+/// Represents a text with entities.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Text {
-    /// The actual UTF-8 text
+    /// The actual UTF-8 text.
     pub data: String,
-    /// Text entities
+    /// Text entities.
     pub entities: Option<TextEntities>,
 }
 
 impl Text {
-    /// Sets a new list of entities
+    /// Sets a new list of entities.
     ///
     /// # Arguments
     ///
-    /// * value - Entities to set
+    /// * `value` - The list of special entities that appear in the text.
     pub fn with_entities(mut self, value: TextEntities) -> Self {
         self.entities = Some(value);
         self
     }
 
-    /// Returns a list of bot commands found in text
+    /// Returns the list of bot commands found in text.
     pub fn get_bot_commands(&self) -> Option<Vec<TextEntityBotCommand>> {
         self.entities
             .as_ref()
@@ -92,7 +92,6 @@ impl<'a> From<&'a str> for Text {
     }
 }
 
-/// UTF-16 text representation
 struct TextRepr<'a> {
     iter: EncodeUtf16<'a>,
 }

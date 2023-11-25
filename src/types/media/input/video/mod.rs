@@ -5,7 +5,7 @@ use crate::types::{Integer, ParseMode, TextEntities, TextEntity};
 #[cfg(test)]
 mod tests;
 
-/// Represents a video to be sent
+/// Represents a video to be sent.
 #[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMediaVideo {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27,11 +27,11 @@ pub struct InputMediaVideo {
 }
 
 impl InputMediaVideo {
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption of the video to be sent; 0-1024 characters
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -40,13 +40,13 @@ impl InputMediaVideo {
         self
     }
 
-    /// Sets a new caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -56,11 +56,11 @@ impl InputMediaVideo {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -69,51 +69,51 @@ impl InputMediaVideo {
         self
     }
 
-    /// Sets a new duration
+    /// Sets a new duration.
     ///
     /// # Arguments
     ///
-    /// * value - Duration
+    /// * `value` - Duration.
     pub fn with_duration(mut self, value: Integer) -> Self {
         self.duration = Some(value);
         self
     }
 
-    /// Sets a new value for the `has_spoiler` flag
+    /// Sets a new value for a `has_spoiler` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the photo needs to be covered with a spoiler animation
+    /// * `value` - Indicates whether to cover with a spoiler animation.
     pub fn with_has_spoiler(mut self, value: bool) -> Self {
         self.has_spoiler = Some(value);
         self
     }
 
-    /// Sets a new height
+    /// Sets a new height.
     ///
     /// # Arguments
     ///
-    /// * value - Height
+    /// * `value` - Height.
     pub fn with_height(mut self, value: Integer) -> Self {
         self.height = Some(value);
         self
     }
 
-    /// Sets a new value for the `supports_streaming` flag
+    /// Sets a new value for a `supports_streaming` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the uploaded video is suitable for streaming
+    /// * `value` - Indicates whether the uploaded video is suitable for streaming.
     pub fn with_supports_streaming(mut self, value: bool) -> Self {
         self.supports_streaming = Some(value);
         self
     }
 
-    /// Sets a new width
+    /// Sets a new width.
     ///
     /// # Arguments
     ///
-    /// * value - Width
+    /// * `value` - Width.
     pub fn with_width(mut self, value: Integer) -> Self {
         self.width = Some(value);
         self

@@ -22,7 +22,7 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
-/// Copies a message
+/// Copies a message.
 ///
 /// Service messages and invoice messages can't be copied.
 /// A quiz poll can be copied only if the value of the field `correct_option_id` is known to the bot.
@@ -54,13 +54,13 @@ pub struct CopyMessage {
 }
 
 impl CopyMessage {
-    /// Creates a new CopyMessage
+    /// Creates a new `CopyMessage`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * from_chat_id - Unique identifier of the chat where the original message was sent
-    /// * message_id - Message identifier in the chat specified in `from_chat_id`
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `from_chat_id` - Unique identifier of the chat where the original message was sent.
+    /// * `message_id` - Message identifier in the chat specified in `from_chat_id`.
     pub fn new<A, B>(chat_id: A, from_chat_id: B, message_id: Integer) -> Self
     where
         A: Into<ChatId>,
@@ -82,22 +82,22 @@ impl CopyMessage {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - New caption for media, 0-1024 characters after entities parsing
+    /// * `value` - Caption; 0-1024 characters after entities parsing.
     ///
     /// If not specified, the original caption is kept.
     pub fn with_caption<T>(mut self, value: T) -> Self
@@ -108,13 +108,13 @@ impl CopyMessage {
         self
     }
 
-    /// Sets a new list of caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the new caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -124,11 +124,11 @@ impl CopyMessage {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
@@ -137,44 +137,44 @@ impl CopyMessage {
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently
-    ///
-    /// Users will receive a notification with no sound.
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier for the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protects the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Reply markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
@@ -183,11 +183,11 @@ impl CopyMessage {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.reply_to_message_id = Some(value);
         self
@@ -202,7 +202,7 @@ impl Method for CopyMessage {
     }
 }
 
-/// Deletes a message
+/// Deletes a message.
 ///
 /// Limitations:
 ///
@@ -222,12 +222,12 @@ pub struct DeleteMessage {
 }
 
 impl DeleteMessage {
-    /// Creates a new DeleteMessage
+    /// Creates a new `DeleteMessage`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * message_id - Identifier of the message to delete
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the message to delete.
     pub fn new<T>(chat_id: T, message_id: Integer) -> Self
     where
         T: Into<ChatId>,
@@ -247,7 +247,7 @@ impl Method for DeleteMessage {
     }
 }
 
-/// Changes a caption of a message
+/// Changes a caption of a message.
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageCaption {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -267,12 +267,12 @@ pub struct EditMessageCaption {
 }
 
 impl EditMessageCaption {
-    /// Creates a new EditMessageCaption for a chat message
+    /// Creates a new `EditMessageCaption` for a chat message.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * message_id - Identifier of the sent message
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the sent message.
     pub fn for_chat_message<T>(chat_id: T, message_id: Integer) -> Self
     where
         T: Into<ChatId>,
@@ -288,11 +288,11 @@ impl EditMessageCaption {
         }
     }
 
-    /// Creates a new EditMessageCaption for an inline message
+    /// Creates a new `EditMessageCaption` for an inline message.
     ///
     /// # Arguments
     ///
-    /// * inline_message_id - Identifier of the inline message
+    /// * `inline_message_id` - Identifier of the inline message.
     pub fn for_inline_message<T>(inline_message_id: T) -> Self
     where
         T: Into<String>,
@@ -308,11 +308,11 @@ impl EditMessageCaption {
         }
     }
 
-    /// Sets a new caption
+    /// Sets a new caption.
     ///
     /// # Arguments
     ///
-    /// * value - Caption
+    /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -321,13 +321,13 @@ impl EditMessageCaption {
         self
     }
 
-    /// Sets a new list of caption entities
+    /// Sets a new list of caption entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in the caption
+    /// * `value` - The list of special entities that appear in the caption.
     ///
-    /// Parse mode will be set to [`None`] when this method is called.
+    /// Caption parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -337,24 +337,24 @@ impl EditMessageCaption {
         self
     }
 
-    /// Sets a new caption parse mode
+    /// Sets a new caption parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
-    /// Entities will be set to [`None`] when this method is called.
+    /// Caption entities will be set to [`None`] when this method is called.
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
         self.parse_mode = Some(value);
         self.caption_entities = None;
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -372,7 +372,7 @@ impl Method for EditMessageCaption {
     }
 }
 
-/// Changes a live location message
+/// Changes a live location message.
 ///
 /// A location can be edited until its `live_period` expires or editing
 /// is explicitly disabled by a call to [`StopMessageLiveLocation`].
@@ -397,14 +397,14 @@ pub struct EditMessageLiveLocation {
 }
 
 impl EditMessageLiveLocation {
-    /// Creates a new EditMessageLiveLocation for a chat message
+    /// Creates a new `EditMessageLiveLocation` for a chat message.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * message_id - Identifier of the sent message
-    /// * latitude - Latitude of new location
-    /// * longitude Longitude of new location
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the sent message.
+    /// * `latitude` - Latitude of new location.
+    /// * `longitude` Longitude of new location.
     pub fn for_chat_message<T>(chat_id: T, message_id: Integer, latitude: Float, longitude: Float) -> Self
     where
         T: Into<ChatId>,
@@ -422,13 +422,13 @@ impl EditMessageLiveLocation {
         }
     }
 
-    /// Creates a new EditMessageLiveLocation for an inline message
+    /// Creates a new `EditMessageLiveLocation` for an inline message.
     ///
     /// # Arguments
     ///
-    /// * inline_message_id - Identifier of the inline message
-    /// * latitude - Latitude of new location
-    /// * longitude Longitude of new location
+    /// * `inline_message_id` - Identifier of the inline message.
+    /// * `latitude` - Latitude of new location.
+    /// * `longitude` - Longitude of new location.
     pub fn for_inline_message<T>(inline_message_id: T, latitude: Float, longitude: Float) -> Self
     where
         T: Into<String>,
@@ -446,42 +446,42 @@ impl EditMessageLiveLocation {
         }
     }
 
-    /// Sets a new horizontal accuracy
+    /// Sets a new horizontal accuracy.
     ///
     /// # Arguments
     ///
-    /// * value - The radius of uncertainty for the location; in meters; 0-1500
+    /// * `value` - A radius of uncertainty for the location; in meters; 0-1500.
     pub fn with_horizontal_accuracy(mut self, value: Float) -> Self {
         self.horizontal_accuracy = Some(value);
         self
     }
 
-    /// Sets a new heading
+    /// Sets a new heading.
     ///
     /// # Arguments
     ///
-    /// * value - Direction in which the user is moving; in degrees; 1-360
+    /// * `value` - A direction in which the user is moving; in degrees; 1-360.
     pub fn with_heading(mut self, value: Integer) -> Self {
         self.heading = Some(value);
         self
     }
 
-    /// Sets a new proximity alert radius
+    /// Sets a new proximity alert radius.
     ///
     /// # Arguments
     ///
-    /// * value - Maximum distance for proximity alerts about approaching another chat member;
-    ///           in meters; 1-100000
+    /// * `value` - A maximum distance for proximity alerts
+    ///             about approaching another chat member; in meters; 1-100000.
     pub fn with_proximity_alert_radius(mut self, value: Integer) -> Self {
         self.proximity_alert_radius = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -499,7 +499,7 @@ impl Method for EditMessageLiveLocation {
     }
 }
 
-/// Changes animation, audio, document, photo, or video message
+/// Changes animation, audio, document, photo, or video message.
 ///
 /// If a message is part of a message album, then it can be edited only
 /// to an audio for audio albums, only to a document for document albums
@@ -512,13 +512,13 @@ pub struct EditMessageMedia {
 }
 
 impl EditMessageMedia {
-    /// Creates a new EditMessageMedia for a chat message
+    /// Creates a new `EditMessageMedia` for a chat message.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * message_id - Identifier of the sent message
-    /// * media - New media content of the message
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the sent message.
+    /// * `media` - New media content of the message.
     pub fn for_chat_message<T>(chat_id: T, message_id: Integer, media: InputMedia) -> Self
     where
         T: Into<ChatId>,
@@ -529,12 +529,12 @@ impl EditMessageMedia {
         Self { form }
     }
 
-    /// Creates a new EditMessageMedia for an inline message
+    /// Creates a new `EditMessageMedia` for an inline message.
     ///
     /// # Arguments
     ///
-    /// * inline_message_id - Identifier of the inline message
-    /// * media - New media content of the message
+    /// * `inline_message_id` - Identifier of the inline message.
+    /// * `media` - New media content of the message.
     pub fn for_inline_message<T>(inline_message_id: T, media: InputMedia) -> Self
     where
         T: Into<String>,
@@ -544,11 +544,11 @@ impl EditMessageMedia {
         EditMessageMedia { form }
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, InlineKeyboardError>
     where
         T: Into<InlineKeyboardMarkup>,
@@ -567,7 +567,7 @@ impl Method for EditMessageMedia {
     }
 }
 
-/// Changes the reply markup of a message
+/// Changes the reply markup of a message.
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageReplyMarkup {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -581,12 +581,12 @@ pub struct EditMessageReplyMarkup {
 }
 
 impl EditMessageReplyMarkup {
-    /// Creates a new EditMessageReplyMarkup for a chat message
+    /// Creates a new `EditMessageReplyMarkup` for a chat message.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * message_id - Identifier of the sent message
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the sent message.
     pub fn for_chat_message<T>(chat_id: T, message_id: Integer) -> Self
     where
         T: Into<ChatId>,
@@ -599,11 +599,11 @@ impl EditMessageReplyMarkup {
         }
     }
 
-    /// Creates a new EditMessageReplyMarkup for an inline message
+    /// Creates a new `EditMessageReplyMarkup` for an inline message.
     ///
     /// # Arguments
     ///
-    /// * inline_message_id - Identifier of the inline message
+    /// * `inline_message_id` - Identifier of the inline message.
     pub fn for_inline_message<T>(inline_message_id: T) -> Self
     where
         T: Into<String>,
@@ -616,11 +616,11 @@ impl EditMessageReplyMarkup {
         }
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -638,7 +638,7 @@ impl Method for EditMessageReplyMarkup {
     }
 }
 
-/// Changes a text or a game message
+/// Changes a text or a game message.
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageText {
     text: String,
@@ -659,13 +659,13 @@ pub struct EditMessageText {
 }
 
 impl EditMessageText {
-    /// Creates a new EditMessageText for a chat message
+    /// Creates a new `EditMessageText` for a chat message.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * message_id - Identifier of the sent message
-    /// * text - New text of the message
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the sent message.
+    /// * `text` - New text of the message.
     pub fn for_chat_message<A, B>(chat_id: A, message_id: Integer, text: B) -> Self
     where
         A: Into<ChatId>,
@@ -683,12 +683,12 @@ impl EditMessageText {
         }
     }
 
-    /// Creates a new EditMessageText for an inline message
+    /// Creates a new `EditMessageText` for an inline message.
     ///
     /// # Arguments
     ///
-    /// * inline_message_id - Identifier of the inline message
-    /// * text - New text of the message
+    /// * `inline_message_id` - Identifier of the inline message.
+    /// * `text` - New text of the message.
     pub fn for_inline_message<A, B>(inline_message_id: A, text: B) -> Self
     where
         A: Into<String>,
@@ -706,11 +706,11 @@ impl EditMessageText {
         }
     }
 
-    /// Sets a new value for the `disable_web_page_preview` flag
+    /// Sets a new value for a `disable_web_page_preview` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to disable link previews for links in this message
+    /// * `value` - Indicates whether to disable link previews for links in the sent message.
     pub fn with_disable_web_page_preview(mut self, value: bool) -> Self {
         self.disable_web_page_preview = Some(value);
         self
@@ -720,7 +720,7 @@ impl EditMessageText {
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in message text
+    /// * `value` - List of special entities that appear in the text.
     ///
     /// Parse mode will be set to [`None`] when this method is called.
     pub fn with_entities<T>(mut self, value: T) -> Self
@@ -732,11 +732,11 @@ impl EditMessageText {
         self
     }
 
-    /// Sets a new parse mode
+    /// Sets a new parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Entities will be set to [`None`] when this method is called.
     pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
@@ -745,11 +745,11 @@ impl EditMessageText {
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
@@ -767,7 +767,7 @@ impl Method for EditMessageText {
     }
 }
 
-/// Forwards a message
+/// Forwards a message.
 #[derive(Clone, Debug, Serialize)]
 pub struct ForwardMessage {
     chat_id: ChatId,
@@ -782,13 +782,13 @@ pub struct ForwardMessage {
 }
 
 impl ForwardMessage {
-    /// Creates a new ForwardMessage
+    /// Creates a new `ForwardMessage`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier of the target chat
-    /// * from_chat_id - Unique identifier for the chat where the original message was sent
-    /// * message_id - Message identifier in the chat specified in from_chat_id
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `from_chat_id` - Unique identifier for the chat where the original message was sent.
+    /// * `message_id` - Message identifier in the chat specified in `from_chat_id`.
     pub fn new<A, B>(chat_id: A, from_chat_id: B, message_id: Integer) -> Self
     where
         A: Into<ChatId>,
@@ -804,34 +804,34 @@ impl ForwardMessage {
         }
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently
-    ///
-    /// Users will receive a notification with no sound.
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the forwarded message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
@@ -846,7 +846,7 @@ impl Method for ForwardMessage {
     }
 }
 
-/// Sends a text message
+/// Sends a text message.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendMessage {
     chat_id: ChatId,
@@ -872,12 +872,12 @@ pub struct SendMessage {
 }
 
 impl SendMessage {
-    /// Creates a new SendMessage
+    /// Creates a new `SendMessage`.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * text - Text of the message to be sent
+    /// * `chat_id` - Unique identifier for the target chat.
+    /// * `text` - Text of the message to be sent.
     pub fn new<A, B>(chat_id: A, text: B) -> Self
     where
         A: Into<ChatId>,
@@ -898,44 +898,43 @@ impl SendMessage {
         }
     }
 
-    /// Sets a new value for the `allow_sending_without_reply` flag
+    /// Sets a new value for an `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the message should be sent even
-    ///           if the specified replied-to message is not found
+    /// * `value` - Indicates whether the message should be sent even
+    ///             if the specified replied-to message is not found.
     pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
         self.allow_sending_without_reply = Some(value);
         self
     }
 
-    /// Sets a new value for the `disable_notification` flag
+    /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to send the message silently
-    ///
-    /// Users will receive a notification with no sound.
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new value for the `disable_web_page_preview` flag
+    /// Sets a new value for a `disable_web_page_preview` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to disable link previews for links in this message
+    /// * `value` - Indicates whether to disable link previews for links in the sent message.
     pub fn with_disable_web_page_preview(mut self, value: bool) -> Self {
         self.disable_web_page_preview = Some(value);
         self
     }
 
-    /// Sets a new list of entities
+    /// Sets a new list of entities.
     ///
     /// # Arguments
     ///
-    /// * value - List of special entities that appear in message text
+    /// * `value` - List of special entities that appear in the text.
     ///
     /// Parse mode will be set to [`None`] when this method is called.
     pub fn with_entities<T>(mut self, value: T) -> Self
@@ -947,22 +946,22 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new message thread ID
+    /// Sets a new message thread ID.
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the target message thread (topic) of the forum;
-    ///           for forum supergroups only
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new parse mode
+    /// Sets a new parse mode.
     ///
     /// # Arguments
     ///
-    /// * value - Parse mode
+    /// * `value` - Parse mode.
     ///
     /// Entities will be set to [`None`] when this method is called.
     pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
@@ -971,21 +970,22 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new value for the `protect_content` flag
+    /// Sets a new value for a `protect_content` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether to protect the contents of the sent message from forwarding and saving
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Reply markup
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
@@ -994,11 +994,11 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new message ID for a reply
+    /// Sets a new message ID for a reply.
     ///
     /// # Arguments
     ///
-    /// * value - ID of the original message
+    /// * `value` - ID of the original message.
     pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
         self.reply_to_message_id = Some(value);
         self
@@ -1013,7 +1013,7 @@ impl Method for SendMessage {
     }
 }
 
-/// Stop updating a live location message before `live_period` expires
+/// Stops updating a live location message before `live_period` expires.
 #[derive(Clone, Debug, Serialize)]
 pub struct StopMessageLiveLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1027,12 +1027,12 @@ pub struct StopMessageLiveLocation {
 }
 
 impl StopMessageLiveLocation {
-    /// Creates a new StopMessageLiveLocation for a chat message
+    /// Creates a new `StopMessageLiveLocation` for a chat message.
     ///
     /// # Arguments
     ///
-    /// * chat_id - Unique identifier for the target chat
-    /// * message_id - Identifier of the sent message
+    /// * `chat_id` - Unique identifier for the target chat.
+    /// * `message_id` - Identifier of the sent message.
     pub fn for_chat_message<T>(chat_id: T, message_id: Integer) -> Self
     where
         T: Into<ChatId>,
@@ -1045,11 +1045,11 @@ impl StopMessageLiveLocation {
         }
     }
 
-    /// Creates a new StopMessageLiveLocation for an inline message
+    /// Creates a new `StopMessageLiveLocation` for an inline message.
     ///
     /// # Arguments
     ///
-    /// * inline_message_id - Identifier of the inline message
+    /// * `inline_message_id` - Identifier of the inline message.
     pub fn for_inline_message<T>(inline_message_id: T) -> Self
     where
         T: Into<String>,
@@ -1062,11 +1062,11 @@ impl StopMessageLiveLocation {
         }
     }
 
-    /// Sets a new reply markup
+    /// Sets a new reply markup.
     ///
     /// # Arguments
     ///
-    /// * value - Inline keyboard
+    /// * `value` - Reply markup.
     pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,

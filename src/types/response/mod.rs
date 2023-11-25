@@ -7,18 +7,18 @@ use crate::types::{False, Integer, True};
 #[cfg(test)]
 mod tests;
 
-/// Represents an API Response
+/// Represents an API Response.
 #[derive(Clone, Debug, Deserialize)]
 #[serde(from = "RawResponse<T>")]
 pub enum Response<T> {
-    /// Success
+    /// Success.
     Success(T),
-    /// Error
+    /// Error.
     Error(ResponseError),
 }
 
 impl<T> Response<T> {
-    /// Returns a number of seconds left to wait before the request can be repeated
+    /// Returns a number of seconds left to wait before the request can be repeated.
     pub fn retry_after(&self) -> Option<u64> {
         match self {
             Response::Success(_) => None,
@@ -26,7 +26,7 @@ impl<T> Response<T> {
         }
     }
 
-    /// Converts the response into std result
+    /// Converts the response into [`Result`].
     pub fn into_result(self) -> Result<T, ResponseError> {
         match self {
             Response::Success(obj) => Ok(obj),
@@ -54,7 +54,7 @@ impl<T> From<RawResponse<T>> for Response<T> {
     }
 }
 
-/// Represents a response error
+/// Represents a response error.
 #[derive(Clone, Debug)]
 pub struct ResponseError {
     description: String,
@@ -64,27 +64,27 @@ pub struct ResponseError {
 }
 
 impl ResponseError {
-    /// Returns a human-readable description of the error
+    /// Returns a human-readable description of the error.
     pub fn description(&self) -> &str {
         &self.description
     }
 
-    /// Returns an error code
+    /// Returns an error code.
     pub fn error_code(&self) -> Option<Integer> {
         self.error_code
     }
 
-    /// Returns a flag describing whether a request can be repeated
+    /// Returns a flag describing whether a request can be repeated.
     pub fn can_retry(&self) -> bool {
         self.retry_after.is_some()
     }
 
-    /// Returns a number of seconds left to wait before the request can be repeated
+    /// Returns a number of seconds left to wait before the request can be repeated.
     pub fn retry_after(&self) -> Option<u64> {
         self.retry_after.and_then(|x| x.try_into().ok())
     }
 
-    /// Returns a new identifier of a group which has been migrated to a supergroup
+    /// Returns a new identifier of a group which has been migrated to a supergroup.
     pub fn migrate_to_chat_id(&self) -> Option<Integer> {
         self.migrate_to_chat_id
     }

@@ -2,51 +2,614 @@
 
 ## 0.19.0 (xx.yy.2023)
 
-- Updated project requirements.
-  - bytes 1.5
-  - tokio 1.33
+### Dependencies
+
+- Updated tokio version to 1.34.
+- Updated bytes version to 1.5.
+- Removed vec1 dependency.
+
+### Client
+
 - `Api` struct renamed to `api::Client`.
 - `ApiError`, `DownloadFileError`, `ExecuteError` moved to `api` module.
+
+### Handlers
+
 - Merged `UpdateHandler`, `longpoll` and `webhook` into `handler` module.
-- `methods` module was merged into `types` module.
-- `Deserialize` and `Serialize` implemented for all types.
+- Webhooks:
+  - Migrated from hyper to axum.
+  - `webhook::run_server` and `webhook::SyncedUpdateHandler` replaced by `handler::WebhookServer` type.
+  - Webhooks support is disabled by default and can be enabled using `webhook` feature.
+- Long polling:
+  - Added `#[must_use]` attribute to `LongPoll::get_handle`.
+  - Renamed `LongPoll::options` to `LongPoll::with_options`.
+  - Renamed methods of `LongPollOptions`: `allowed_update` to `with_allowed_update`,
+    `error_timeout` to `with_error_timeout`, `limit` to `with_limit`,
+    `poll_timeout` to `with_poll_timeout`.
+
+### Types
+
+- Merged `methods` module into `types` module.
+- `serde::Deserialize` and `serde::Serialize` are implemented for all types.
 - Moved `mime` reexport to `types` module.
-- Added `Update::get_chat()` method.
-- Updated `Message` type.
-  - Removed `MessageKind` enum.
-  - Removed `Message::get_user()` method.
-  - Removed `Message::get_user_id()` method.
-  - Removed `Message::get_user_username()` method.
-  - Removed `Message::get_chat()` method.
-  - Removed `Message::get_chat_id()` method.
-  - Removed `Message::get_chat_username()` method.
-  - Added `MessageSender` enum and `Message.sender` field.
-  - Added `Message.chat` field.
-  - Added `Message.author_signature` field.
-- Updated `MediaGroup` type.
-  - `MediaGroup::add_item()` method is private now.
-  - Added `MediaGroup::new()` method.
-  - `MediaGroupItem` replaced by a new struct and documented.
-- Updated `InputFileInfo` type.
-  - Added `name()` method.
-  - `mime_type()` method now returns a MIME Type.
-  - Added `with_mime_type()` method to set a MIME type.
-- Updated Bot-related stuff. 
-  - `Me` struct renamed to `Bot`.
-  - `GetMe` method renamed to `GetBot`.
-  - `DeleteMyCommands` method renamed to `DeleteBotCommands`.
-  - `GetMyCommands` method renamed to `GetBotCommands`.
-  - `SetMyCommands` method renamed to `SetBotCommands`.
-- Updated `InputMedia` type.
-    - Added `default()` method.
-    - `InputMediaKind` replaced by a new enum and documented.
-- Updated `Text` type.
-  - Implement `PartialEq` and `PartialOrd` for `Text` struct. 
-  - `Vec<TextEntity>` and `Vec1<TextEntity>` replaced by a new `TextEntities` struct.
-  - Serialization/deserialization of text and text_entities implemented using `Text` struct.
-  - Removed `vec1` dependency.
-- Now you can create `InputMessageContent` from `Contact`, `Location`, `Venue`, `Text`, `String`, `&str` using `From` trait.
-- Renamed `InputMessageContentInvoice::is_flexible` method to `flexible`.
+- `Vec<TextEntity>` and `Vec1<TextEntity>` replaced with a new `TextEntities` struct.
+
+### Bot API
+
+#### 6.0
+
+- Added types: `AnswerWebAppQuery`, `ChatAdministratorRights`, `GetBotDefaultAdministratorRights`, `GetChatMenuButton`,
+  `MenuButton`, `SentWebAppMessage`, `SetBotDefaultAdministratorRights`, `SetChatMenuButton`, `WebAppInfo`, `WebAppData`.
+- Added enum variants:
+  - `InlineKeyboardButtonKind`: `WebApp`
+  - `MessageData`: `WebAppData`.
+- Added fields:
+  - `WebhookInfo`: `last_synchronization_error_date`.
+- Added methods:
+  - `KeyboardButton`: `with_web_app`
+  - `InlineKeyboardButton`: `with_web_app`.
+- Renamed enum variants:
+  - `MessageData`: `VoiceChatScheduled` to `VideoChatScheduled`, `VoiceChatStarted` to `VideoChatStarted`,
+    `VoiceChatEnded` to `VideoChatEnded`, `VoiceChatParticipantsInvited` to `VideoChatParticipantsInvited`.
+- Renamed fields:
+  - `ChatMemberAdministrator`: `can_manage_voice_chats` to `can_manage_video_chats`.
+- Renamed methods:
+  - `PromoteChatMember`: `can_manage_voice_chats` to `can_manage_video_chats`.
+
+#### 6.1
+
+- Added types: `CreateInvoiceLink`.
+- Added fields:
+  - `SupergroupChat`: `join_to_send_messages`, `join_by_request`.
+  - `User`: `is_premium`.
+  - `Sticker`: `premium_animation`.
+- Added methods:
+  - `SetWebhook`: `with_secret_token`.
+- Common fields from `CreateInvoiceLink` and `SendInvoice` extracted to `InvoiceParameters`.
+
+#### 6.2
+
+- Added types: `GetCustomEmojiStickers`.
+- Added enum variants:
+  - `TextEntity`: `CustomEmoji`.
+- Added fields:
+  - `Sticker`: `custom_emoji_id`.
+  - `StickerSet`: `sticker_type`.
+  - `PrivateChat`: `has_restricted_voice_and_video_messages`.
+- Added methods:
+  - `TextEntity`: `custom_emoji`.
+  - `CreateNewStickerSet`: `with_sticker_type`.
+- Removed fields:
+  - `StickerSet`: `contains_masks`.
+- Removed methods:
+  - `CreateNewStickerSet`: `contains_masks`.
+
+#### 6.3
+
+- Added types: `MessageDataForumTopicCreated`, `CloseForumTopic`, `CreateForumTopic`,
+  `DeleteForumTopic`, `EditForumTopic`, `GetForumTopicIconStickers`, `ReopenForumTopic`, `UnpinAllForumTopicMessages`.
+- Added enum variants: `MessageData`: `ForumTopicClosed`, `ForumTopicCreated`, `ForumTopicReopened`.
+- Added fields:
+  - `ChatMemberAdministrator`: `can_manage_topics`.
+  - `ChatMemberRestricted`: `can_manage_topics`.
+  - `ChatPermissions`: `can_manage_topics`.
+  - `ChannelChat`: `active_usernames`.
+  - `SupergroupChat`: `active_usernames`, `is_forum`.
+  - `Message`: `is_topic_message`, `message_thread_id`.
+  - `PrivateChat`: `active_usernames`, `emoji_status_custom_emoji_id`.
+- Added methods:
+  - `CopyMessage`: `with_message_thread_id`.
+  - `ForwardMessage`: `with_message_thread_id`.
+  - `PromoteChatMember`: `with_can_manage_topics`.
+  - `SendAnimation`: `with_message_thread_id`.
+  - `SendAudio`: `with_message_thread_id`.
+  - `SendContact`: `with_message_thread_id`.
+  - `SendDice`: `with_message_thread_id`.
+  - `SendGame`: `with_message_thread_id`.
+  - `SendDocument`: `with_message_thread_id`.
+  - `SendInvoice`: `with_message_thread_id`.
+  - `SendLocation`: `with_message_thread_id`.
+  - `SendMediaGroup`: `with_message_thread_id`.
+  - `SendMessage`: `with_message_thread_id`.
+  - `SendPhoto`: `with_message_thread_id`.
+  - `SendPoll`: `with_message_thread_id`.
+  - `SendQuiz`: `with_message_thread_id`.
+  - `SendSticker`: `with_message_thread_id`.
+  - `SendVenue`: `with_message_thread_id`.
+  - `SendVideo`: `with_message_thread_id`.
+  - `SendVideoNote`: `with_message_thread_id`.
+  - `SendVoice`: `with_message_thread_id`.
+
+#### 6.4
+
+- Added types: `CloseGeneralForumTopic`, `EditGeneralForumTopic`, `MessageDataForumTopicEdited`,
+  `HideGeneralForumTopic`, `ReopenGeneralForumTopic`, `UnhideGeneralForumTopic`,
+  `MessageDataWriteAccess`.
+- Added enum variants:
+  - `MessageData`: `ForumTopicEdited`, `GeneralForumTopicHidden`, `GeneralForumTopicUnhidden`, `WriteAccessAllowed`.
+- Added fields:
+  - `GroupChat`: `has_hidden_members`.
+  - `InputMediaAnimation`: `has_spoiler`.
+  - `InputMediaPhoto`: `has_spoiler`.
+  - `InputMediaVideo`: `has_spoiler`.
+  - `Message`: `has_media_spoiler`.
+  - `SupergroupChat`: `has_aggressive_anti_spam_enabled`, `has_hidden_members`.
+- Added methods:
+  - `ReplyKeyboardMarkup`: `with_is_persistent`.
+  - `SendAnimation`: `with_has_spoiler`.
+  - `SendChatAction`: `with_message_thread_id`.
+  - `SendPhoto`: `with_has_spoiler`.
+  - `SendVideo`: `with_has_spoiler`.
+
+#### 6.5
+
+- Added types: `KeyboardButtonRequestChat`, `KeyboardButtonRequestUser`, `MessageDataChatShared`,
+  `MessageDataUserShared`.
+- Added enum variants:
+  - `MessageData`: `ChatShared`, `UserShared`.
+- Added fields:
+  - `ChatJoinRequest`: `user_chat_id`.
+  - `ChatMemberRestricted`: `can_send_audios`, `can_send_documents`, `can_send_photos`, `can_send_videos`,
+    `can_send_video_notes`, `can_send_voice_notes`.
+  - `ChatPermissions`: `can_send_audios`, `can_send_documents`, `can_send_photos`, `can_send_videos`,
+    `can_send_video_notes`, `can_send_voice_notes`.
+- Added methods:
+  - `KeyboardButton`: `wiht_request_chat`, `with_request_user`.
+  - `RestrictChatMember`: `with_use_independent_chat_permissions`.
+  - `SetChatPermissions` `with_use_independent_chat_permissions`.
+- Removed fields:
+  - `ChatMemberRestricted`: `can_send_media_messages`.
+  - `ChatPermissions`: `can_send_media_messages`.
+
+#### 6.6
+
+- Added types: `BotDescription`, `BotShortDescription`, `GetBotDescription`, `GetBotShortDescription`,
+  `SetBotDescription`, `SetBotShortDescription`, `StickerFormat`, `InputSticker`, `InputStickers`, `DeleteStickerSet`,
+  `SetCustomEmojiStickerSetThumbnail`, `SetStickerSetTitle`, `SetStickerEmojiList`, `SetStickerKeywords`,
+  `SetStickerMaskPosition`.
+- Added fields:
+  - `Sticker`: `sticker_type`, `needs_repainting`.
+- Added methods:
+  - `CreateNewStickerSet`: `with_needs_repainting`.
+  - `SendSticker`: `with_emoji`.
+- Renamed fields:
+  - `Animation`: `thumb` to `thumbnail`.
+  - `Audio`: `thumb` to `thumbnail`.
+  - `Document`: `thumb` to `thumbnail`.
+  - `InlineQueryResultArticle`: `thumb_url` to `thumbnail_url`, `thumb_width` to `thumbnail_width`,
+    `thumb_height` to `thumbnail_height`.
+  - `InlineQueryResultContact`: `thumb_url` to `thumbnail_url`, `thumb_width` to `thumbnail_width`,
+    `thumb_height` to `thumbnail_height`.
+  - `InlineQueryResultDocument`: `thumb_url` to `thumbnail_url`, `thumb_width` to `thumbnail_width`,
+    `thumb_height` to `thumbnail_height`.
+  - `InlineQueryResultGif`: `thumb_mime_type` to `thumbnail_mime_type`, `thumb_url` to `thumbnail_url`.
+  - `InlineQueryResultLocation`: `thumb_url` to `thumbnail_url`, `thumb_width` to `thumbnail_width`,
+    `thumb_height` to `thumbnail_height`.
+  - `InlineQueryResultMpeg4Gif`: `thumb_mime_type` to `thumbnail_mime_type`, `thumb_url` to `thumbnail_url`.
+  - `InlineQueryResultPhoto`: `thumb_url` to `thumbnail_url`.
+  - `InlineQueryResultVenue`: `thumb_url` to `thumbnail_url`, `thumb_width` to `thumbnail_width`,
+    `thumb_height` to `thumbnail_height`.
+  - `InlineQueryResultVideo`: `thumb_url` to `thumbnail_url`.
+  - `Sticker`: `thumb` to `thumbnail`.
+  - `Video`: `thumb` to `thumbnail`.
+  - `VideoNote`: `thumb` to `thumbnail`.
+- Renamed methods:
+  - `InputMedia`: `with_thumb` to `with_thumbnail`.
+  - `MediaGroupItem`: `with_thumb` to `with_thumbnail`.
+  - `SendAnimation`: `thumb` to `with_thumbnail`.
+  - `SendAudio`: `thumb` to `with_thumbnail`.
+  - `SendDocument`: `thumb` to `with_thumbnail`.
+  - `SendVideo`: `thumb` to `with_thumbnail`.
+  - `SendVideoNote`: `thumb` to `with_thumbnail`.
+- Changed signature:
+  - `AddStickerToSet::new` to `(user_id: Integer, name: Into<String>, sticker: InputSticker)`.
+  - `CreateNewStickerSet::new`
+    to `(user_id: Integer, name: Into<String>, title: Into<String>, InputStickers, StickerFormat)`.
+  - `UploadStickerFile::new` to `(user_id: Integer, sticker: T, sticker_format: StickerFormat)`.
+- Removed types: `NewSticker`.
+- Removed methods:
+  - `AddStickerToSet`: `mask_position`.
+  - `InputMediaAnimation`: `thumb`.
+
+#### 6.7
+
+- Added types: `InlineQueryResultsButton`, `SwitchInlineQueryChosenChat`, `BotName`, `GetBotName`, `SetBotName`.
+- Added enum variants:
+  - `InlineKeyboardButtonKind`: `SwitchInlineQueryChosenChat`.
+- Added fields:
+  - `ChatMemberUpdated`: `via_chat_folder_invite_link`.
+- Added methods:
+  - `AnswerInlineQuery`: `with_button`.
+  - `InlineKeyboardButton`: `for_switch_inline_query_chosen_chat`.
+- Removed methods:
+  - `AnswerInlineQuery`: `switch_pm_text`, `switch_pm_parameters`.
+
+#### 6.8
+
+- Added types: `PollAnswerVoter`, `Story`.
+- Added enum variants:
+  - `MessageData`: `Story`.
+- Added fields:
+  - `PollAnswer`: `voter`.
+  - `PrivateChat`: `emoji_status_expiration_date`.
+- Removed fields:
+  - `PollAnswer`: `user`.
+
+#### 6.9
+
+- Added fields:
+  - `ChatMemberAdministrator`: `can_post_stories`, `can_edit_stories`, `can_delete_stories`.
+- Added methods:
+  - `PromoteChatMember`: `with_can_post_stories`, `with_can_edit_stories`, `with_can_delete_stories`.
+
+### Refactoring
+
+#### Added fields
+
+- `Message`: `sender`, `chat`, `author_signature`.
+
+#### Added constructors and setters
+
+`Animation`, `Audio`, `Bot`, `BotCommand`, `ChannelChat`, `ChatInviteLink`, `ChatJoinRequest`, `ChatLocation`,
+`ChatMemberAdministrator`, `ChatMemberCreator`, `ChatMemberKicked`, `ChatMemberRestricted`, `ChatMemberUpdated`,
+`ChatPhoto`, `ChosenInlineResult`, `Contact`, `Document`, `EncryptedCredentials`, `EncryptedPassportElementAddress`,
+`EncryptedPassportElementBankStatement`, `EncryptedPassportElementDriverLicense`, `EncryptedPassportElementEmail`,
+`EncryptedPassportElementIdentityCard`, `EncryptedPassportElementInternalPassport`,
+`EncryptedPassportElementInternalPassport`, `EncryptedPassportElementPassport`,
+`EncryptedPassportElementPassportRegistration`, `EncryptedPassportElementPersonalDetails`,
+`EncryptedPassportElementPersonalDetails`, `EncryptedPassportElementPhoneNumber`,
+`EncryptedPassportElementRentalAgreement`, `EncryptedPassportElementTemporaryRegistration`,
+`EncryptedPassportElementUtilityBill`, `File`, `Forward`, `Game`, `GameHighScore`, `GroupChat`, `InlineQuery`,
+`Invoice`, `Location`, `MaskPosition`, `Message`, `OrderInfo`, `PassportData`, `PassportFile`, `PhotoSize`,
+`PollAnswer`, `PollOption`, `PreCheckoutQuery`, `PrivateChat`, `ProximityAlertTriggered`, `Quiz`, `RegularPoll`,
+`ShippingAddress`, `ShippingQuery`, `Sticker`, `StickerSet`, `SuccessfulPayment`, `SupergroupChat`, `Text`, `Update`,
+`User`, `UserProfilePhotos`, `Venue`, `Video`, `VideoNote`, `Voice`, `WebhookInfo`.
+
+#### Added `From` implementations
+
+- `bool` for `ForceReply`.
+- `[[InlineKeyboardButton; B]; A]` for `ReplyMarkup`.
+- `[[KeyboardButton; B]; A]` for `ReplyMarkup`.
+- `Contact`, `Location`, `Venue`, `Text`, `String`, `&str` for `InputMessageContent`.
+
+#### Added methods
+
+- `MediaGroup`: `new`.
+- `Update`: `get_chat`.
+- `InputFileReader`: `with_file_name`, `file_name`, `with_mime_type`, `mime_type`.
+- `InputMedia`: `default`.
+
+#### Renamed types
+
+- `Me` to `Bot`.
+- `GetMe` to `GetBot`.
+- `DeleteMyCommands` to `DeleteBotCommands`.
+- `GetMyCommands` to `GetBotCommands`.
+- `SetMyCommands` to `SetBotCommands`.
+- `DiceKind` to `DiceType`.
+- `PollKind` to `PollType`.
+- `UpdateKind` to `UpdateType`.
+- `ProximityAlertTriggered` to `MessageDataProximityAlert`.
+- `EncryptedPassportElementKind` to `EncryptedPassportElementType`.
+- `UnexpectedEncryptedPassportElementKind` to `UnexpectedEncryptedPassportElementType`.
+- `InlineKeyboardButtonKind` to `InlineKeyboardButtonType`.
+
+#### Renamed enum variants
+
+- `AllowedUpdate::ChatMember` to `AllowedUpdate::UserStatus`.
+
+#### Renamed fields
+
+- `Update`: `kind` to `update_type`.
+- `InlineKeyboardButton`: `kind` to `button_type`.
+
+#### Changed types
+
+- `MediaGroupItem` enum replaced with a new `MediaGroupItem` struct and documented.
+- `InputMediaKind` replaced with a new `InputMediaType` enum and documented.
+- `InputFile` converted into enum.
+
+#### Changed enum variants
+
+- `MessageData`: `AutoDeleteTimerChanged(MessageDataAutoDeleteTimer)`, `VideoChatEnded(MessageDataVideoChatEnded)`,
+  `VideoChatParticipantsInvited(MessageDataVideoChatParticipantsInvited)`,
+  `VideoChatScheduled(MessageDataVideoChatScheduled)`, `Audio(MessageDataAudio)`, `Document(MessageDataDocument)`,
+  `Photo(MessageDataPhoto)`, `Video(MessageDataVideo)`, `Voice(MessageDataVoice)`,
+  `Empty` to `Unknown(serde_json::Value)`.
+
+#### Renamed methods
+
+- `DeleteBotCommands`: `scope` to `with_scope`, `language_code` to `with_language_code`.
+- `GetBotCommands`: `scope` to `with_scope`, `language_code` to `with_language_code`.
+- `SetBotCommands`: `scope` to `with_scope`, `language_code` to `with_language_code`.
+- `CreateChatInviteLink`: `name` to `with_name`, `expire_date` to `with_expire_date`,
+  `member_limit` to `with_member_limit`, `create_join_request` to `with_create_join_request`.
+- `EditChatInviteLink`: `name` to `with_name`, `expire_date` to `with_expire_date`,
+  `member_limit` to `with_member_limit`, `creates_join_request` to `with_creates_join_request`.
+- `BanChatMember`: `until_date` to `with_until_date`, `revoke_messages` to `with_revoke_messages`.
+- `PromoteChatMember`: `is_anonymous` to `with_is_anonymous`, `can_change_info` to `with_can_change_info`
+  `can_delete_messages` to `with_can_delete_messages`, `can_edit_messages` to `with_can_edit_messages`,
+  `can_invite_users` to `with_can_invite_users`, `can_manage_chat` to `with_can_manage_chat`,
+  `can_manage_video_chat` to `with_can_manage_video_chat`, `can_pin_messages` to `with_can_pin_messages`,
+  `can_post_messages` to `with_can_post_messages`, `can_promote_members` to `with_can_promote_members`,
+  `can_restrict_members` to `with_can_restrict_members`, `can_manage_topics` to `with_can_manage_topics`,
+  `can_post_stories` to `with_can_post_stories`, `can_edit_stories` to `with_can_edit_stories`,
+  `can_delete_stories` to `with_can_delete_stories`.
+- `RestrictChatMember`: `until_date` to `with_until_date`.
+- `UnbanChatMember`: `only_if_banned` to `with_only_if_banned`.
+- `PinChatMessage`: `disable_notification` to `with_disable_notification`.
+- `UnpinChatMessage`: `message_id` to `with_message_id`.
+- `ChatPermissions`: `with_send_messages` to `with_can_send_messages`, `with_send_polls` to `with_can_send_polls`,
+  `with_send_other_messages` to `with_can_send_other_messages`,
+  `with_add_web_page_previews` to `with_can_add_web_page_previews`, `with_change_info` to `with_can_change_info`,
+  `with_invite_users` to `with_can_invite_users`, `with_pin_messages` to `with_can_pin_messages`.
+- `SetChatDescription`: `description` to `with_description`.
+- `SendContact`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `last_name` to `with_last_name`,
+  `protect_content` to `with_protect_content`, `reply_markup` to `with_reply_markup`,
+  `reply_to_message_id` to `with_reply_to_message_id`, `vcard` to `with_vcard`.
+- `SendDice`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `SendAnimation`: `allow_sending_without_reply` to `with_allow_sending_without_reply`, `caption` to `with_caption`,
+  `caption_entities` to `with_caption_entities`, `disable_notification` to `with_disable_notification`,
+  `duration` to `with_duration`, `height` to `with_height`, `parse_mode` to `with_caption_parse_mode`,
+  `protect_content` to `with_protect_content`, `reply_markup` to `with_reply_markup`,
+  `reply_to_message_id` to `with_reply_to_message_id`.
+- `SendAudio`: `allow_sending_without_reply` to `with_allow_sending_without_reply`, `caption` to `with_caption`,
+  `caption_entities` to `with_caption_entities`, `disable_notification` to `with_disable_notification`,
+  `duration` to `with_duration`, `parse_mode` to `with_caption_parse_mode`, `performer` to `with_performer`,
+  `protect_content` to `with_protect_content`, `title` to `with_title`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `SendDocument`: `allow_sending_without_reply` to `with_allow_sending_without_reply`, `caption` to `with_caption`,
+  `caption_entities` to `with_caption_entities`,
+  `disable_content_type_detection` to `with_disable_content_type_detection`,
+  `disable_notification` to `with_disable_notification`, `parse_mode` to `with_caption_parse_mode`,
+  `protect_content` to `with_protect_content`, `reply_markup` to `with_reply_markup`,
+  `reply_to_message_id` to `with_reply_to_message_id`.
+- `SendPhoto`: `allow_sending_without_reply` to `with_allow_sending_without_reply`, `caption` to `with_caption`,
+  `caption_entities` to `with_caption_entities`, `disable_notification` to `with_disable_notification`,
+  `parse_mode` to `with_caption_parse_mode`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `SendVideo`: `allow_sending_without_reply` to `with_allow_sending_without_reply`, `caption` to `with_caption`,
+  `caption_entities` to `with_caption_entities`, `disable_notification` to `with_disable_notification`,
+  `duration` to `with_duration`, `height` to `with_height`, `parse_mode` to `with_caption_parse_mode`,
+  `protect_content` to `with_protect_content`, `reply_markup` to `with_reply_markup`,
+  `reply_to_message_id` to `with_reply_to_message_id`, `supports_streaming` to `with_supports_streaming`.
+- `SendVideoNote`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `duration` to `with_duration`, `length` to `with_length`,
+  `protect_content` to `with_protect_content`, `reply_markup` to `with_reply_markup`,
+  `reply_to_message_id` to `with_reply_to_message_id`.
+- `SendVoice`: `allow_sending_without_reply` to `with_allow_sending_without_reply`, `caption` to `with_caption`,
+  `caption_entities` to `with_caption_entities`, `disable_notification` to `with_disable_notification`,
+  `duration` to `with_duration`, `parse_mode` to `with_caption_parse_mode`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `InputMessageContentContact`: `last_name` to `with_last_name`, `vcard` to `with_vcard`.
+- `InputMessageContentInvoice`: `is_flexible` to `with_is_flexible`, `max_tip_amount` to `with_max_tip_amount`,
+  `need_email` to `with_need_email`, `need_name` to `with_need_name`,
+  `need_phone_number` to `with_need_phone_number`, `need_shipping_address` to `with_need_shipping_address`,
+  `photo_height` to `with_photo_height`, `photo_size` to `with_photo_size`, `photo_width` to `with_photo_width`,
+  `photo_url` to `with_photo_url`, `provider_data` to `with_provider_data`,
+  `send_email_to_provider` to `with_send_email_to_provider`,
+  `send_phone_number_to_provider` to `with_send_phone_number_to_provider`,
+  `suggested_tip_amounts` to `with_suggested_tip_amounts`.
+- `InputMessageContentLocation`: `heading` to `with_heading`, `horizontal_accuracy` to `with_horizontal_accuracy`,
+  `live_period` to `with_live_period`, `proximity_alert_radius` to `with_proximity_alert_radius`.
+- `InputMessageContentText`: `disable_web_page_preview` to `with_disable_web_page_preview`,
+  `entities` to `with_entities`, `parse_mode` to `with_parse_mode`.
+- `InputMessageContentVenue`: `foursquare_id` to `with_foursquare_id`, `foursquare_type` to `with_foursquare_type`,
+  `google_place_id` to `with_google_place_id`, `google_place_type` to `with_google_place_type`.
+- `AnswerInlineQuery`: `button` to `with_button`, `cache_time` to `with_cache_time`,
+  `is_personal` to `with_is_personal`, `next_offset` to `with_next_offset`.
+- `InlineQueryResultArticle`: `description` to `with_description`, `hide_url` to `with_hide_url`,
+  `reply_markup` to `with_reply_markup`, `url` to `with_url`.
+- `InlineQueryResultAudio`: `audio_duration` to `with_audio_duration`, `caption` to `with_caption`,
+  `caption_entities` to `with_caption_entities`, `input_message_content` to `with_input_message_content`,
+  `parse_mode` to `with_caption_parse_mode`, `performer` to `with_performer`, `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultCachedAudio`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `input_message_content` to `with_input_message_content`, `parse_mode` to `with_caption_parse_mode`,
+  `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultContact`: `input_message_content` to `with_input_message_content`,
+  `last_name` to `with_last_name`, `reply_markup` to `with_reply_markup`, `vcard` to `with_vcard`.
+- `InlineQueryResultDocument`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `description` to `with_description`, `input_message_content` to `with_input_message_content`,
+  `parse_mode` to `with_caption_parse_mode`, `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultCachedDocument`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `description` to `with_description`, `input_message_content` to `with_input_message_content`,
+  `parse_mode` to `with_caption_parse_mode`, `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultGame`: `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultGif`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `gif_duration` to `with_gif_duration`, `gif_height` to `with_gif_height`, `gif_width` to `with_gif_width`,
+  `input_message_content` to `with_input_message_content`, `parse_mode` to `with_caption_parse_mode`,
+  `reply_markup` to `with_reply_markup`, `title` to `with_title`.
+- `InlineQueryResultCachedGif`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `input_message_content` to `with_input_message_content`, `parse_mode` to `with_caption_parse_mode`,
+  `reply_markup` to `with_reply_markup`, `title` to `with_title`.
+- `InlineQueryResultLocation`: `heading` to `with_heading`, `horizontal_accuracy` to `with_horizontal_accuracy`,
+  `input_message_content` to `with_input_message_content`, `live_period` to `with_live_period`,
+  `proximity_alert_radius` to `with_proximity_alert_radius`, `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultMpeg4Gif`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `input_message_content` to `with_input_message_content`, `mpeg4_duration` to `with_mpeg4_duration`,
+  `mpeg4_height` to `with_mpeg4_height`, `mpeg4_width` to `with_mpeg4_width`,
+  `parse_mode` to `with_caption_parse_mode`, `reply_markup` to `with_reply_markup`, `title` to `with_title`.
+- `InlineQueryResultCachedMpeg4Gif`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `input_message_content` to `with_input_message_content`, `parse_mode` to `with_caption_parse_mode`,
+  `reply_markup` to `with_reply_markup`, `title` to `with_title`.
+- `InlineQueryResultPhoto`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `description` to `with_description`, `input_message_content` to `with_input_message_content`,
+  `parse_mode` to `with_caption_parse_mode`, `photo_height` to `with_photo_height`,
+  `photo_width` to `with_photo_width`, `reply_markup` to `with_reply_markup`, `title` to `with_title`.
+- `InlineQueryResultCachedPhoto`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `description` to `with_description`, `input_message_content` to `with_input_message_content`,
+  `parse_mode` to `with_caption_parse_mode`, `reply_markup` to `with_reply_markup`, `title` to `with_title`.
+- `InlineQueryResultCachedSticker`: `input_message_content` to `with_input_message_content`,
+  `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultVenue`: `foursquare_id` to `with_foursquare_id`, `foursquare_type` to `with_foursquare_type`,
+  `google_place_id` to `with_google_place_id`, `google_place_type` to `with_google_place_type`,
+  `input_message_content` to `with_input_message_content`, `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultVideo`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `description` to `with_description`, `input_message_content` to `with_input_message_content`,
+  `parse_mode` to `with_caption_parse_mode`, `reply_markup` to `with_reply_markup`,
+  `video_duration` to `with_video_duration`, `video_height` to `with_video_height`,
+  `video_width` to `with_video_width`.
+- `InlineQueryResultCachedVideo`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `description` to `with_description`, `input_message_content` to `with_input_message_content`,
+  `parse_mode` to `with_caption_parse_mode`, `reply_markup` to `with_reply_markup`.
+- `InlineQueryResultVoice`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `input_message_content` to `with_input_message_content`, `parse_mode` to `with_caption_parse_mode`,
+  `reply_markup` to `with_reply_markup`, `voice_duration` to `with_voice_duration`.
+- `InlineQueryResultCachedVoice`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `parse_mode` to `with_caption_parse_mode`, `reply_markup` to `with_reply_markup`,
+  `input_message_content` to `with_input_message_content`.
+- `GetGameHighScores`: `new` to `for_chat_message`, `with_inline_message_id` to `for_inline_message`.
+- `SendGame`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `SetGameScore`: `new` to `for_chat_message`, `with_inline_message_id` to `for_inline_message`,
+  `disable_edit_message` to `with_disable_edit_message`, `force` to `with_force`.
+- `InputMediaAnimation`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `duration` to `with_duration`, `height` to `with_height`, `parse_mode` to `with_caption_parse_mode`,
+  `width` to `with_width`.
+- `InputMediaAudio`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `duration` to `with_duration`, `parse_mode` to `with_caption_parse_mode`, `performer` to `with_performer`,
+  `title` to `with_title`.
+- `InputMediaDocument`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `disable_content_type_detection` to `with_disable_content_type_detection`,
+  `parse_mode` to `with_caption_parse_mode`.
+- `InputMediaPhoto`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `parse_mode` to `with_caption_parse_mode`.
+- `InputMediaVideo`: `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `duration` to `with_duration`, `height` to `with_height`,
+  `parse_mode` to `with_caption_parse_mode`, `supports_streaming` to `with_supports_streaming`, `width` to `with_width`.
+- `SendLocation`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `heading` to `with_heading`,
+  `horizontal_accuracy` to `with_horizontal_accuracy`, `live_period` to `with_live_period`,
+  `proximity_alert_radius` to `with_proximity_alert_radius`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `MediaGroupItem`:`audio` to `for_audio`, `document` to `for_document`, `photo` to `for_photo`, `video` to `for_video`.
+- `SendMediaGroup`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `protect_content` to `with_protect_content`,
+  `reply_to_message_id` to `with_reply_to_message_id`.
+- `InlineKeyboardMarkup`: `row` to `add_row`.
+- `InlineKeyboardButton`: `callback_data` to `for_callback_data`, `callback_data_struct` to `for_callback_data_struct`,
+  `callback_game` to `for_callback_game`, `login_url` to `for_login_url`, `pay` to `for_pay`, `url` to `for_url`,
+  `web_app` to `for_web_app`.
+- `DeleteWebhook`: `drop_pending_updates` to `with_drop_pending_updates`.
+- `SetWebhook`: `allowed_updates` to `with_allowed_updates`, `certificate` to `with_certificate`,
+  `drop_pending_updates` to `with_drop_pending_updates`, `ip_address` to `with_ip_address`,
+  `max_connections` to `with_max_connections`.
+- `SendVenue`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `foursquare_id` to `with_foursquare_id`,
+  `foursquare_type` to `with_foursquare_type`, `google_place_id` to `with_google_place_id`,
+  `google_place_type` to `with_google_place_type`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `GetUserProfilePhotos`: `limit` to `with_limit`, `offset` to `with_offset`.
+- `GetUpdates`: `allowed_updates` to `with_allowed_updates`, `limit` to `with_limit`, `offset` to `with_offset`,
+  `timeout` to `with_timeout`.
+- `SendSticker`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `emoji` to `with_emoji`,
+  `protect_content` to `with_protect_content`, `reply_markup` to `with_reply_markup`,
+  `reply_to_message_id` to `with_reply_to_message_id`.
+- `SetStickerMaskPosition`: `mask_position` to `with_mask_position`.
+- `ReplyKeyboardMarkup`: `row` to `add_row`, `input_field_placeholder` to `with_input_field_placeholder`,
+  `one_time_keyboard` to `with_one_time_keyboard`, `resize_keyboard` to `with_resize_keyboard`,
+  `selective` to `with_selective`.
+- `KeyboardButton`: `request_contact` to `with_request_contact`,
+  `request_location` to `with_request_location`, `request_poll` to `with_request_poll`, `web_app` to `with_web_app`.
+- `ReplyKeyboardRemove`: `selective` to `with_selective`.
+- `LoginUrl`: `bot_username` to `with_bot_username`, `forward_text` to `with_forward_text`,
+  `request_write_access` to `with_request_write_access`.
+- `ForceReply`: `input_field_placeholder` to `with_input_field_placeholder`, `selective` to `with_selective`.
+- `SendQuiz`: `allow_sending_without_reply` to `with_allow_sending_without_reply`, `close_date` to `with_close_date`,
+  `disable_notification` to `with_disable_notification`, `explanation` to `with_explanation`,
+  `explanation_entities` to `with_explanation_entities`, `explanation_parse_mode` to `with_explanation_parse_mode`,
+  `is_anonymous` to `with_is_anonymous`, `is_closed` to `with_is_closed`, `open_period` to `with_open_period`,
+  `protect_content` to `with_protect_content`, `reply_markup` to `with_reply_markup`,
+  `reply_to_message_id` to `with_reply_to_message_id`.
+- `SendPoll`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `allows_multiple_answers` to `with_allows_multiple_answers`, `close_date` to `with_close_date`,
+  `disable_notification` to `with_disable_notification`, `is_anonymous` to `with_is_anonymous`,
+  `is_closed` to `with_is_closed`, `open_period` to `with_open_period`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `StopPoll`: `reply_markup` to `with_reply_markup`.
+- `CreateInvoiceLink`: `parameters` to `with_parameters`.
+- `SendInvoice`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `parameters` to `with_parameters`,
+  `protect_content` to `with_protect_content`, `reply_markup` to `with_reply_markup`,
+  `reply_to_message_id` to `with_reply_to_message_id`, `start_parameter` to `with_start_parameter`.
+- `CopyMessage`: `allow_sending_without_reply` to `with_allow_sending_without_reply`, `caption` to `with_caption`,
+  `caption_entities` to `with_caption_entities`, `disable_notification` to `with_disable_notification`,
+  `parse_mode` to `with_caption_parse_mode`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `EditMessageCaption`: `new` to `for_chat_message`, `with_inline_message_id` to `for_inline_message`,
+  `caption` to `with_caption`, `caption_entities` to `with_caption_entities`,
+  `parse_mode` to `with_caption_parse_mode`, `reply_markup` to `with_reply_markup`.
+- `EditMessageLiveLocation`: `new` to `for_chat_message`, `with_inline_message_id` to `for_inline_message`,
+  `horizontal_accuracy` to `with_horizontal_accuracy`, `heading` to `with_heading`,
+  `proximity_alert_radius` to `with_proximity_alert_radius`, `reply_markup` to `with_reply_markup`.
+- `EditMessageMedia`: `new` to `for_chat_message`, `with_inline_message_id` to `for_inline_message`,
+  `reply_markup` to `with_reply_markup`
+- `EditMessageReplyMarkup`: `new` to `for_chat_message`, `with_inline_message_id` to `for_inline_message`,
+  `reply_markup` to `with_reply_markup`.
+- `EditMessageText`: `new` to `for_chat_message`, `with_inline_message_id` to `for_inline_message`,
+  `disable_web_page_preview` to `with_disable_web_page_preview`, `entities` to `with_entities`,
+  `parse_mode` to `with_parse_mode`, `reply_markup` to `with_reply_markup`,
+- `ForwardMessage`: `disable_notification` to `with_disable_notification`, `protect_content` to `with_protect_content`.
+- `SendMessage`: `allow_sending_without_reply` to `with_allow_sending_without_reply`,
+  `disable_notification` to `with_disable_notification`, `disable_web_page_preview` to `with_disable_web_page_preview`,
+  `entities` to `with_entities`, `parse_mode` to `with_parse_mode`, `protect_content` to `with_protect_content`,
+  `reply_markup` to `with_reply_markup`, `reply_to_message_id` to `with_reply_to_message_id`.
+- `StopMessageLiveLocation`: `new` to `for_chat_message`, `with_inline_message_id` to `for_inline_message`,
+  `reply_markup` to `with_reply_markup`.
+- `Dice`: `kind` to `dice_type`.
+
+#### Removed types
+
+- `MessageDataError` - unused.
+- `InputFileInfo` - use `InputFileReader::file_name` and `InputFileReader::mime_type` methods instead.
+- `MessageKind` - use `Message.chat`, `Message.sender` and `Message.author_signature` fields instead.
+
+#### Removed enum variants
+
+- `FormError::Io` - unused.
+- `InlineKeyboardError::UnexpectedButtonKind` - unused.
+
+#### Removed methods
+
+- `ReplyKeyboardMarkup`:
+  - `from_vec` - use `From`/`Into` instead.
+- `InlineKeyboardMarkup`:
+  - `from_vec` - use `From`/`Into` instead
+  - `into_vec` - use `From`/`Into` instead.
+- `Message`:
+  - `get_user`, `get_user_id`, `get_user_username` - use `Message.sender` field instead.
+  - `get_chat`, `get_chat_id`, `get_chat_username` - use `Message.chat` field instead.
+- `InputFileReader`:
+  - `info` - use `InputFileReader::file_name` and `InputFileReader::mime_type` instead.
+- `InputFile`:
+  - `reader` - use `From`/`Into` instead.
+
+#### Changed signature
+
+`Animation::new`, `SendContact::new`, `InputMessageContentContact::new`, `InputMessageContentInvoice::new`,
+`InputMessageContentVenue::new`, `AnswerInlineQuery::new`, `AnswerWebAppQuery::new`, `InlineQueryResultArticle::new`,
+`InlineQueryResultAudio::new`, `InlineQueryResultCachedAudio::new`, `InlineQueryResultContact::new`,
+`InlineQueryResultDocument::new`, `InlineQueryResultCachedDocument::new`, `InlineQueryResultGame::new`,
+`InlineQueryResultGif::new`, `InlineQueryResultCachedGif::new`, `InlineQueryResultVenue::new`,
+`InlineQueryResultVideo::new`, `InlineQueryResultCachedVideo::new`, `InlineQueryResultVoice::new`,
+`InlineQueryResultCachedVoice::new`, `InputMedia::new`, `InputMedia::with_thumbnail`, `SetPassportDataErrors::new`,
+`LabeledPrice::new`, `ShippingOption::new`, `AnswerShippingQuery::ok`, `AnswerShippingQuery::error`, `SendQuiz::new`,
+`SendPoll::new`.
+
+#### Changed visibility
+
+- `InlineKeyboardButton::new` method to private.
+- `MediaGroup::add_item` method to private.
+
+#### Fixed
+
+- Use different type parameters for strings in `PassportElementError` factory methods and `SendContact::new` method.
+- Added missing variants to the `AllowedUpdate` enum: `BotStatus`, `ChatJoinRequest`.
 
 ## 0.18.0 (10.02.2022)
 

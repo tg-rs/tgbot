@@ -9,9 +9,12 @@ license = "MIT"
 documentation = "https://docs.rs/tgbot"
 repository = "https://github.com/tg-rs/tgbot"
 
+[features]
+webhook = ["dep:axum"]
+
 [dependencies]
 async-stream = "0.3"
-axum = "0.7"
+axum = { version = "0.7", optional = true }
 bytes = "1.5"
 derive_more = "0.99"
 futures-util = "0.3"
@@ -37,3 +40,4 @@ toml = "0.8"
 
 [package.metadata.docs.rs]
 all-features = true
+rustdoc-args = ["--cfg", "nightly"]

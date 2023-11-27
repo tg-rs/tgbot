@@ -6,6 +6,7 @@ use tokio::net::TcpListener;
 use crate::{handler::UpdateHandler, types::Update};
 
 /// Represents a simple webhook server for handling incoming updates from the Telegram Bot API.
+#[cfg_attr(nightly, doc(cfg(feature = "webhook")))]
 pub struct WebhookServer {
     router: Router,
 }

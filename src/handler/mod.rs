@@ -2,9 +2,13 @@ use std::future::Future;
 
 use crate::types::Update;
 
-pub use self::{longpoll::*, webhook::*};
+pub use self::longpoll::*;
+#[cfg(feature = "webhook")]
+pub use self::webhook::*;
 
 mod longpoll;
+
+#[cfg(feature = "webhook")]
 mod webhook;
 
 /// Represents an update handler for processing updates received from the Telegram Bot API.

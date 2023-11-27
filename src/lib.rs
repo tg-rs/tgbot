@@ -1,3 +1,4 @@
+#![cfg_attr(nightly, feature(doc_cfg))]
 #![doc = include_str!("../README.md")]
 #![warn(missing_docs)]
 

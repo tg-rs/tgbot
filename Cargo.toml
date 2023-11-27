@@ -11,11 +11,10 @@ repository = "https://github.com/tg-rs/tgbot"
 
 [dependencies]
 async-stream = "0.3"
+axum = "0.7"
 bytes = "1.5"
 derive_more = "0.99"
 futures-util = "0.3"
-http = "0.2"
-hyper = { version = "0.14", features = ["server"] }
 log = "0.4"
 mime = "0.3"
 mime_guess = "2.0"

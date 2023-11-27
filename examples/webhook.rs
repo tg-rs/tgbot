@@ -2,10 +2,11 @@ use dotenv::dotenv;
 use futures_util::future::BoxFuture;
 
 use tgbot::{
-    handler::{run_server, UpdateHandler},
+    handler::{UpdateHandler, WebhookServer},
     types::Update,
 };
 
+#[derive(Clone, Copy)]
 struct Handler;
 
 impl UpdateHandler for Handler {
@@ -22,5 +23,8 @@ impl UpdateHandler for Handler {
 async fn main() {
     dotenv().ok();
     env_logger::init();
-    run_server(([127, 0, 0, 1], 8080), "/", Handler).await.unwrap();
+    WebhookServer::new("/", Handler)
+        .run(([127, 0, 0, 1], 8080))
+        .await
+        .unwrap();
 }

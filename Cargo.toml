@@ -38,6 +38,10 @@ tempfile = "3.8"
 tokio = { version = "1.34", features = ["fs", "io-util", "macros", "rt-multi-thread"] }
 toml = "0.8"
 
+[[example]]
+name = "webhook"
+required-features = ["webhook"]
+
 [lints.rust]
 missing_docs = "warn"
 

@@ -1,3 +1,4 @@
+//! The example shows how to schedule a message
 use std::{env, time::Duration};
 
 use dotenv::dotenv;
@@ -30,21 +31,23 @@ async fn main() {
 
     let (tx, mut rx) = mpsc::channel(100);
 
+    // Spawn a scheduler task
     spawn(async move {
         let timeout = Duration::from_secs(1);
         for _ in 0..10usize {
             if tx.send(Notification::Hello).await.is_err() {
-                println!("Receiver dropped");
+                log::error!("Receiver dropped");
                 return;
             }
             sleep(timeout).await;
         }
     });
 
+    // Handle notifications here
     while let Some(notification) = rx.recv().await {
         match notification {
             Notification::Update(_update) => {
-                // you can handle update from telegram here
+                // Handle the update from Telegram here
                 unimplemented!()
             }
             Notification::Hello => {

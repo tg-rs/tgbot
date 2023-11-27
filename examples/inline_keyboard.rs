@@ -1,3 +1,4 @@
+//! The example shows how to use inline keyboards
 use std::env;
 
 use dotenv::dotenv;
@@ -7,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use tgbot::{
     api::Client,
     handler::{LongPoll, UpdateHandler},
-    types::{InlineKeyboardButton, Message, SendMessage, Update, UpdateType},
+    types::{AnswerCallbackQuery, InlineKeyboardButton, Message, SendMessage, Update, UpdateType},
 };
 
 struct Handler {
@@ -32,23 +33,19 @@ async fn handle_update(client: &Client, update: Update) -> Option<Message> {
             if let Some(commands) = message.get_text().and_then(|text| text.get_bot_commands()) {
                 let command = &commands[0];
                 if command.command == "/start" {
-                    let callback_data = CallbackData::new("hello!");
-                    let method = SendMessage::new(chat_id, "keyboard example").with_reply_markup([[
-                        // You also can use with_callback_data in order to pass a plain string
-                        InlineKeyboardButton::for_callback_data_struct("button", &callback_data).unwrap(),
+                    let callback_data = CallbackData::new("Hello!");
+                    let method = SendMessage::new(chat_id, "Press the button").with_reply_markup([[
+                        // You also can use with_callback_data to pass a regular string
+                        InlineKeyboardButton::for_callback_data_struct("Greet", &callback_data).unwrap(),
                     ]]);
                     return Some(client.execute(method).await.unwrap());
                 }
             }
         }
         UpdateType::CallbackQuery(query) => {
-            if let Some(ref message) = query.message {
-                let chat_id = message.chat.get_id();
-                // or query.data if you have passed a plain string
-                let data = query.parse_data::<CallbackData>().unwrap().unwrap();
-                let method = SendMessage::new(chat_id, data.value);
-                return Some(client.execute(method).await.unwrap());
-            }
+            let data = query.parse_data::<CallbackData>().unwrap().unwrap(); // or query.data if you have passed a plain string
+            let method = AnswerCallbackQuery::new(query.id).with_text(data.value);
+            client.execute(method).await.unwrap();
         }
         _ => {}
     }

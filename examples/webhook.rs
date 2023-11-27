@@ -1,3 +1,4 @@
+//! The example shows how to handle updates using a webhook
 use dotenv::dotenv;
 use futures_util::future::BoxFuture;
 
@@ -14,7 +15,7 @@ impl UpdateHandler for Handler {
 
     fn handle(&self, update: Update) -> Self::Future {
         Box::pin(async move {
-            log::info!("got an update: {:?}\n", update);
+            log::info!("Got an update: {:?}", update);
         })
     }
 }

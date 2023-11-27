@@ -48,7 +48,7 @@ pub struct File {
     pub file_size: Option<Integer>,
     /// File path.
     ///
-    /// Use `https://api.telegram.org/file/bot<token>/<file_path>` to get the file.
+    /// Use [`crate::api::Client::download_file`] to get the file.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_path: Option<String>,
 }

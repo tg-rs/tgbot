@@ -1,3 +1,4 @@
+//! The example shows how to use long polling
 use std::env;
 
 use dotenv::dotenv;
@@ -19,7 +20,7 @@ impl UpdateHandler for Handler {
     fn handle(&self, update: Update) -> Self::Future {
         let client = self.client.clone();
         Box::pin(async move {
-            log::info!("got an update: {:?}\n", update);
+            log::info!("Got an update: {:?}", update);
             let chat_id = update.get_chat_id();
             let message = update.get_message();
             let text = message.and_then(|x| x.get_text());

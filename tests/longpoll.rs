@@ -3,7 +3,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use futures_util::future::BoxFuture;
 use mockito::{Matcher, Server};
 use serde_json::json;

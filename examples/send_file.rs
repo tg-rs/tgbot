@@ -1,7 +1,7 @@
 //! The example shows how to send a file
 use std::env;
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use futures_util::future::BoxFuture;
 
 use tgbot::{

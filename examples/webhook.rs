@@ -1,5 +1,5 @@
 //! The example shows how to handle updates using a webhook
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use futures_util::future::BoxFuture;
 
 use tgbot::{

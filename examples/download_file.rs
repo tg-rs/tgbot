@@ -4,7 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use futures_util::{future::BoxFuture, stream::StreamExt};
 use tempfile::tempdir;
 use tokio::{fs::File, io::AsyncWriteExt};

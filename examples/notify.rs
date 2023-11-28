@@ -1,7 +1,7 @@
 //! The example shows how to schedule a message
 use std::{env, time::Duration};
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use tokio::{spawn, sync::mpsc, time::sleep};
 
 use tgbot::{

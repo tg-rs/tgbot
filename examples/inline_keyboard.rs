@@ -1,7 +1,7 @@
 //! The example shows how to use inline keyboards
 use std::env;
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use futures_util::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 

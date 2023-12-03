@@ -190,6 +190,137 @@ pub enum UpdateType {
     Unknown(JsonValue),
 }
 
+/// Conversion of an [`Update`] into `T` failed.
+///
+/// Use [`Update::from`] to get the original update.
+pub struct UnexpectedUpdate(Update);
+
+impl From<UnexpectedUpdate> for Update {
+    fn from(value: UnexpectedUpdate) -> Self {
+        value.0
+    }
+}
+
+impl TryFrom<Update> for ChatMemberUpdated {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            BotStatus(x) | UserStatus(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for CallbackQuery {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            CallbackQuery(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for ChatJoinRequest {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            ChatJoinRequest(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for ChosenInlineResult {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            ChosenInlineResult(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for InlineQuery {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            InlineQuery(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for Message {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            EditedChannelPost(x) | EditedMessage(x) | ChannelPost(x) | Message(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for Poll {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            Poll(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for PollAnswer {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            PollAnswer(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for PreCheckoutQuery {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            PreCheckoutQuery(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for ShippingQuery {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            ShippingQuery(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
 /// Represents a type of update to receive.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]

@@ -18,6 +18,7 @@ use crate::{
         InlineQuery,
         Message,
         MessageData,
+        Poll,
         PollAnswer,
         PollAnswerVoter,
         PollOption,
@@ -71,6 +72,8 @@ fn bot_status() {
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
 
+    assert!(ChatMemberUpdated::try_from(expected_struct.clone()).is_ok());
+
     assert_json_eq(
         expected_struct,
         serde_json::json!({
@@ -120,6 +123,8 @@ fn callback_query() {
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
 
+    assert!(CallbackQuery::try_from(expected_struct.clone()).is_ok());
+
     assert_json_eq(
         expected_struct,
         serde_json::json!({
@@ -155,6 +160,8 @@ fn channel_post() {
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert_eq!(expected_struct.get_chat_username().unwrap(), "channel_username");
     assert!(expected_struct.get_user().is_none());
+
+    assert!(Message::try_from(expected_struct.clone()).is_ok());
 
     assert_json_eq(
         expected_struct,
@@ -199,6 +206,8 @@ fn chat_join_request() {
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
 
+    assert!(ChatJoinRequest::try_from(expected_struct.clone()).is_ok());
+
     assert_json_eq(
         expected_struct,
         serde_json::json!({
@@ -234,6 +243,8 @@ fn chosen_inline_result() {
     assert!(expected_struct.get_chat_username().is_none());
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
+
+    assert!(ChosenInlineResult::try_from(expected_struct.clone()).is_ok());
 
     assert_json_eq(
         expected_struct,
@@ -271,6 +282,8 @@ fn edited_channel_post() {
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert_eq!(expected_struct.get_chat_username().unwrap(), "channel_username");
     assert!(expected_struct.get_user().is_none());
+
+    assert!(Message::try_from(expected_struct.clone()).is_ok());
 
     assert_json_eq(
         expected_struct,
@@ -324,6 +337,8 @@ fn edited_message() {
     assert_eq!(expected_struct.get_user_id().unwrap(), 1111);
     assert_eq!(expected_struct.get_user_username().unwrap(), "john_doe");
 
+    assert!(Message::try_from(expected_struct.clone()).is_ok());
+
     assert_json_eq(
         expected_struct,
         serde_json::json!({
@@ -369,6 +384,8 @@ fn inline_query() {
     assert!(expected_struct.get_chat_username().is_none());
     assert_eq!(expected_struct.get_user().map(|u| u.id).unwrap(), 1);
 
+    assert!(InlineQuery::try_from(expected_struct.clone()).is_ok());
+
     assert_json_eq(
         expected_struct,
         serde_json::json!({
@@ -404,6 +421,8 @@ fn message() {
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
     assert_eq!(expected_struct.get_user().map(|u| u.id).unwrap(), 1);
+
+    assert!(Message::try_from(expected_struct.clone()).is_ok());
 
     assert_json_eq(
         expected_struct,
@@ -448,6 +467,8 @@ fn poll() {
     assert!(expected_struct.get_chat_username().is_none());
     assert!(expected_struct.get_user().is_none());
 
+    assert!(Poll::try_from(expected_struct.clone()).is_ok());
+
     assert_json_eq(
         expected_struct,
         serde_json::json!({
@@ -484,6 +505,8 @@ fn poll_answer() {
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
 
+    assert!(PollAnswer::try_from(expected_struct.clone()).is_ok());
+
     assert_json_eq(
         expected_struct,
         serde_json::json!({
@@ -517,6 +540,8 @@ fn pre_checkout_query() {
     assert!(expected_struct.get_chat_username().is_none());
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
+
+    assert!(PreCheckoutQuery::try_from(expected_struct.clone()).is_ok());
 
     assert_json_eq(
         expected_struct,
@@ -552,6 +577,8 @@ fn shipping_query() {
     assert!(expected_struct.get_chat_username().is_none());
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
+
+    assert!(ShippingQuery::try_from(expected_struct.clone()).is_ok());
 
     assert_json_eq(
         expected_struct,
@@ -611,6 +638,8 @@ fn user_status() {
     assert!(expected_struct.get_chat_username().is_none());
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
+
+    assert!(ChatMemberUpdated::try_from(expected_struct.clone()).is_ok());
 
     assert_json_eq(
         expected_struct,

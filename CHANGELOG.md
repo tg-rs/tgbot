@@ -311,11 +311,13 @@
 
 #### Changed enum variants
 
+- `ChatId`: `Id(ChatPeerId)`, `Username(ChatUsername)`.
 - `MessageData`: `AutoDeleteTimerChanged(MessageDataAutoDeleteTimer)`, `VideoChatEnded(MessageDataVideoChatEnded)`,
   `VideoChatParticipantsInvited(MessageDataVideoChatParticipantsInvited)`,
   `VideoChatScheduled(MessageDataVideoChatScheduled)`, `Audio(MessageDataAudio)`, `Document(MessageDataDocument)`,
   `Photo(MessageDataPhoto)`, `Video(MessageDataVideo)`, `Voice(MessageDataVoice)`,
   `Empty` to `Unknown(serde_json::Value)`.
+- `UserId`: `Id(UserPeerId)`, `Username(UserUsername)`.
 
 #### Renamed methods
 

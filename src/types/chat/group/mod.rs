@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ChatPermissions, ChatPhoto, Integer, Message};
+use crate::types::{ChatPeerId, ChatPermissions, ChatPhoto, Integer, Message};
 
 #[cfg(test)]
 mod tests;
@@ -9,7 +9,7 @@ mod tests;
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct GroupChat {
     /// Unique identifier of the group.
-    pub id: Integer,
+    pub id: ChatPeerId,
     /// Title of the group.
     pub title: String,
     /// Indicates whether non-administrators can only get the list of bots
@@ -58,12 +58,13 @@ impl GroupChat {
     ///
     /// * `id` - Unique identifier of the group.
     /// * `title` - Title of the group.
-    pub fn new<T>(id: Integer, title: T) -> Self
+    pub fn new<A, B>(id: A, title: B) -> Self
     where
-        T: Into<String>,
+        A: Into<ChatPeerId>,
+        B: Into<String>,
     {
         Self {
-            id,
+            id: id.into(),
             title: title.into(),
             has_hidden_members: None,
             has_protected_content: None,

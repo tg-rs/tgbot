@@ -23,9 +23,9 @@ async fn main() {
 
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
     let chat_id = env::var("TGBOT_NOTIFICATION_CHAT_ID").expect("TGBOT_NOTIFICATION_CHAT_ID is not set");
-    let chat_id = match chat_id.parse::<Integer>() {
-        Ok(chat_id) => ChatId::Id(chat_id),
-        Err(_) => ChatId::Username(chat_id),
+    let chat_id: ChatId = match chat_id.parse::<Integer>() {
+        Ok(chat_id) => chat_id.into(),
+        Err(_) => chat_id.into(),
     };
     let client = Client::new(token).expect("Failed to create API");
 

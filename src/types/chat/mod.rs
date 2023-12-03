@@ -1,9 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    api::{Method, Payload},
-    types::Integer,
-};
+use crate::api::{Method, Payload};
 
 pub use self::{
     action::*,
@@ -59,7 +56,7 @@ pub enum Chat {
 
 impl Chat {
     /// Returns an ID of the chat.
-    pub fn get_id(&self) -> Integer {
+    pub fn get_id(&self) -> ChatPeerId {
         match self {
             Chat::Channel(chat) => chat.id,
             Chat::Group(chat) => chat.id,
@@ -69,14 +66,13 @@ impl Chat {
     }
 
     /// Returns a username of the chat.
-    pub fn get_username(&self) -> Option<&str> {
+    pub fn get_username(&self) -> Option<&ChatUsername> {
         match &self {
-            Chat::Channel(chat) => &chat.username,
-            Chat::Group(_) => &None,
-            Chat::Private(chat) => &chat.username,
-            Chat::Supergroup(chat) => &chat.username,
+            Chat::Channel(chat) => chat.username.as_ref(),
+            Chat::Group(_) => None,
+            Chat::Private(chat) => chat.username.as_ref(),
+            Chat::Supergroup(chat) => chat.username.as_ref(),
         }
-        .as_deref()
     }
 }
 

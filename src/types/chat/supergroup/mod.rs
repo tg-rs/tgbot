@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ChatLocation, ChatPermissions, ChatPhoto, Integer, Message};
+use crate::types::{ChatLocation, ChatPeerId, ChatPermissions, ChatPhoto, ChatUsername, Integer, Message};
 
 #[cfg(test)]
 mod tests;
@@ -9,7 +9,7 @@ mod tests;
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct SupergroupChat {
     /// Unique identifier of the supergroup.
-    pub id: Integer,
+    pub id: ChatPeerId,
     /// Title of the supergroup.
     pub title: String,
     /// List of all active supergroup usernames.
@@ -106,7 +106,7 @@ pub struct SupergroupChat {
     pub sticker_set_name: Option<String>,
     /// Username of the supergroup.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub username: Option<String>,
+    pub username: Option<ChatUsername>,
 }
 
 impl SupergroupChat {
@@ -116,12 +116,13 @@ impl SupergroupChat {
     ///
     /// * `id` - Unique identifier of the supergroup.
     /// * `title` - Title of the supergroup.
-    pub fn new<T>(id: Integer, title: T) -> Self
+    pub fn new<A, B>(id: A, title: B) -> Self
     where
-        T: Into<String>,
+        A: Into<ChatPeerId>,
+        B: Into<String>,
     {
         Self {
-            id,
+            id: id.into(),
             title: title.into(),
             active_usernames: None,
             can_set_sticker_set: None,
@@ -348,7 +349,7 @@ impl SupergroupChat {
     /// * `value` - Username of the supergroup.
     pub fn with_username<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<ChatUsername>,
     {
         self.username = Some(value.into());
         self

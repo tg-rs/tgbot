@@ -16,7 +16,7 @@ pub struct User {
     /// First name of the user.
     pub first_name: String,
     /// Unique identifier of the user.
-    pub id: Integer,
+    pub id: UserPeerId,
     /// Indicates whether the user is a bot.
     pub is_bot: bool,
     /// Indicates whether the user added the bot to the attachment menu.
@@ -35,7 +35,7 @@ pub struct User {
     pub last_name: Option<String>,
     /// Username of the user.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub username: Option<String>,
+    pub username: Option<UserUsername>,
 }
 
 impl User {
@@ -46,13 +46,14 @@ impl User {
     /// * `id` - Unique identifier of the user.
     /// * `first_name` - First name of the user.
     /// * `is_bot` - Indicates whether the user is a bot.
-    pub fn new<T>(id: Integer, first_name: T, is_bot: bool) -> Self
+    pub fn new<A, B>(id: A, first_name: B, is_bot: bool) -> Self
     where
-        T: Into<String>,
+        A: Into<UserPeerId>,
+        B: Into<String>,
     {
         Self {
             first_name: first_name.into(),
-            id,
+            id: id.into(),
             is_bot,
             added_to_attachment_menu: None,
             is_premium: None,
@@ -78,7 +79,7 @@ impl User {
     /// For example, they will not work,
     /// when used in an inline keyboard button or in a message text.
     pub fn get_link(&self) -> String {
-        format!("tg://user?id={}", self.id)
+        format!("tg://user?id={}", self.id.0)
     }
 
     /// Returns the mention for the user.
@@ -153,7 +154,7 @@ impl User {
     /// * `value` - Username.
     pub fn with_username<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<UserUsername>,
     {
         self.username = Some(value.into());
         self
@@ -207,40 +208,122 @@ impl UserProfilePhotos {
     }
 }
 
+/// ID of a user.
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[serde(from = "Integer", into = "Integer")]
+pub struct UserPeerId(Integer);
+
+impl From<Integer> for UserPeerId {
+    fn from(value: Integer) -> Self {
+        Self(value)
+    }
+}
+
+impl From<UserPeerId> for Integer {
+    fn from(value: UserPeerId) -> Self {
+        value.0
+    }
+}
+
+impl fmt::Display for UserPeerId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+impl PartialEq<Integer> for UserPeerId {
+    fn eq(&self, other: &Integer) -> bool {
+        self.0.eq(other)
+    }
+}
+
+/// Username of a user in the format `@username`.
+#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[serde(from = "String", into = "String")]
+pub struct UserUsername(String);
+
+impl From<&str> for UserUsername {
+    fn from(value: &str) -> Self {
+        Self(String::from(value))
+    }
+}
+
+impl From<String> for UserUsername {
+    fn from(value: String) -> Self {
+        Self(value)
+    }
+}
+
+impl From<UserUsername> for String {
+    fn from(value: UserUsername) -> Self {
+        value.0
+    }
+}
+
+impl fmt::Display for UserUsername {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+impl PartialEq<String> for UserUsername {
+    fn eq(&self, other: &String) -> bool {
+        self.0.eq(other)
+    }
+}
+
+impl PartialEq<str> for UserUsername {
+    fn eq(&self, other: &str) -> bool {
+        self.0.eq(other)
+    }
+}
+
 /// Represents a user ID.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum UserId {
-    /// @username of a user.
-    Username(String),
     /// ID of a user.
-    Id(Integer),
+    Id(UserPeerId),
+    /// @username of a user.
+    Username(UserUsername),
 }
 
 impl From<&str> for UserId {
     fn from(username: &str) -> UserId {
-        UserId::Username(String::from(username))
+        UserId::Username(String::from(username).into())
     }
 }
 
 impl From<String> for UserId {
     fn from(username: String) -> UserId {
-        UserId::Username(username)
+        UserId::Username(username.into())
     }
 }
 
 impl From<Integer> for UserId {
     fn from(id: Integer) -> UserId {
-        UserId::Id(id)
+        UserId::Id(id.into())
     }
 }
 
 impl fmt::Display for UserId {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            UserId::Username(username) => write!(out, "{}", username),
-            UserId::Id(chat_id) => write!(out, "{}", chat_id),
+            UserId::Id(chat_id) => write!(out, "{}", chat_id.0),
+            UserId::Username(username) => write!(out, "{}", username.0),
         }
+    }
+}
+
+impl From<UserPeerId> for UserId {
+    fn from(value: UserPeerId) -> Self {
+        UserId::Id(value)
+    }
+}
+
+impl From<UserUsername> for UserId {
+    fn from(value: UserUsername) -> Self {
+        UserId::Username(value)
     }
 }
 

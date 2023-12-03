@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ChatPhoto, Integer, Message};
+use crate::types::{ChatPeerId, ChatPhoto, ChatUsername, Integer, Message};
 
 #[cfg(test)]
 mod tests;
@@ -9,7 +9,7 @@ mod tests;
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PrivateChat {
     /// Unique identifier of the chat.
-    pub id: Integer,
+    pub id: ChatPeerId,
     /// First name of the other party.
     pub first_name: String,
     /// Last name of the other party.
@@ -17,7 +17,7 @@ pub struct PrivateChat {
     pub last_name: Option<String>,
     /// Username of the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub username: Option<String>,
+    pub username: Option<ChatUsername>,
     /// Photo of the other party.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -77,12 +77,13 @@ impl PrivateChat {
     ///
     /// * `id` - Unique identifier of the target chat.
     /// * `first_name` - First name of the other party.
-    pub fn new<T>(id: Integer, first_name: T) -> Self
+    pub fn new<A, B>(id: A, first_name: B) -> Self
     where
-        T: Into<String>,
+        A: Into<ChatPeerId>,
+        B: Into<String>,
     {
         Self {
-            id,
+            id: id.into(),
             first_name: first_name.into(),
             last_name: None,
             username: None,
@@ -118,7 +119,7 @@ impl PrivateChat {
     /// * `value` - Username.
     pub fn with_username<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<ChatUsername>,
     {
         self.username = Some(value.into());
         self

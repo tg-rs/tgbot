@@ -201,7 +201,7 @@ fn chat_join_request() {
             User::new(1, "John", false),
         )),
     );
-    assert_eq!(expected_struct.get_chat_id(), Some(1));
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());
@@ -634,7 +634,7 @@ fn user_status() {
             ChatMember::Member(User::new(2, "John", false)),
         )),
     );
-    assert_eq!(expected_struct.get_chat_id(), Some(1));
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
     assert_eq!(expected_struct.get_user_id().unwrap(), 1);
     assert!(expected_struct.get_user_username().is_none());

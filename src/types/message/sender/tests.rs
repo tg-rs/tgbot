@@ -54,8 +54,8 @@ fn group_chat() {
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());
     assert!(expected_struct.sender.get_user().is_some());
-    assert_eq!(expected_struct.sender.get_user_id(), Some(1));
-    assert_eq!(expected_struct.sender.get_user_username(), Some("test"));
+    assert_eq!(expected_struct.sender.get_user_id().unwrap(), 1);
+    assert_eq!(expected_struct.sender.get_user_username().unwrap(), "test");
 
     let expected_value = serde_json::json!({
         "message_id": 1,
@@ -92,7 +92,7 @@ fn private_chat() {
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());
     assert!(expected_struct.sender.get_user().is_some());
-    assert_eq!(expected_struct.sender.get_user_id(), Some(1));
+    assert_eq!(expected_struct.sender.get_user_id().unwrap(), 1);
     assert!(expected_struct.sender.get_user_username().is_none());
     let expected_value = serde_json::json!({
         "message_id": 1,
@@ -113,7 +113,7 @@ fn supergroup_chat() {
     assert_eq!(expected_struct.chat.get_id(), 1);
     assert!(expected_struct.chat.get_username().is_none());
     assert!(expected_struct.sender.get_user().is_some());
-    assert_eq!(expected_struct.sender.get_user_id(), Some(1));
+    assert_eq!(expected_struct.sender.get_user_id().unwrap(), 1);
     assert!(expected_struct.sender.get_user_username().is_none());
     let expected_value = serde_json::json!({
         "message_id": 1,

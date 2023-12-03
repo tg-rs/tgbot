@@ -26,10 +26,7 @@ fn channel_chat() {
             .with_active_usernames(["channel_username"]),
     );
     assert_eq!(expected_struct.get_id(), 1);
-    assert_eq!(
-        expected_struct.get_username().unwrap(),
-        String::from("channel_username")
-    );
+    assert_eq!(&expected_struct.get_username().unwrap(), &"channel_username");
     assert_json_eq(
         expected_struct,
         serde_json::json!({

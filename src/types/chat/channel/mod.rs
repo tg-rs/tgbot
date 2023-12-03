@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ChatPhoto, Integer, Message};
+use crate::types::{ChatPeerId, ChatPhoto, ChatUsername, Integer, Message};
 
 #[cfg(test)]
 mod tests;
@@ -9,7 +9,7 @@ mod tests;
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChannelChat {
     /// Unique identifier of the channel.
-    pub id: Integer,
+    pub id: ChatPeerId,
     /// Title of the channel.
     pub title: String,
     /// List of all active channel usernames.
@@ -55,7 +55,7 @@ pub struct ChannelChat {
     pub pinned_message: Option<Box<Message>>,
     /// Username of the channel.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub username: Option<String>,
+    pub username: Option<ChatUsername>,
 }
 
 impl ChannelChat {
@@ -65,12 +65,13 @@ impl ChannelChat {
     ///
     /// * `id` - Unique identifier of the channel.
     /// * `title` - Title of the channel.
-    pub fn new<T>(id: Integer, title: T) -> Self
+    pub fn new<A, B>(id: A, title: B) -> Self
     where
-        T: Into<String>,
+        A: Into<ChatPeerId>,
+        B: Into<String>,
     {
         Self {
-            id,
+            id: id.into(),
             title: title.into(),
             active_usernames: None,
             description: None,
@@ -183,7 +184,7 @@ impl ChannelChat {
     /// * `value` - Username of the channel.
     pub fn with_username<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<ChatUsername>,
     {
         self.username = Some(value.into());
         self

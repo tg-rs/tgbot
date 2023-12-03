@@ -192,7 +192,7 @@ fn via_bot() {
     assert_eq!(bot.id, 3);
     assert_eq!(bot.first_name, "example");
     assert_eq!(bot.last_name.unwrap(), "bot");
-    assert_eq!(bot.username.unwrap(), "example_bot");
+    assert_eq!(&bot.username.unwrap(), "example_bot");
 }
 
 #[test]

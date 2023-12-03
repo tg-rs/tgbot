@@ -123,7 +123,7 @@ fn user_profile_photos() {
 #[test]
 fn user_id() {
     let username = UserId::from("username");
-    if let UserId::Username(username) = username {
+    if let UserId::Username(ref username) = username {
         assert_eq!(username, "username");
     } else {
         panic!("Unexpected username: {:?}", username);

@@ -10,6 +10,8 @@ use crate::{
         Chat,
         ChatJoinRequest,
         ChatMemberUpdated,
+        ChatPeerId,
+        ChatUsername,
         ChosenInlineResult,
         InlineQuery,
         Integer,
@@ -20,6 +22,8 @@ use crate::{
         PreCheckoutQuery,
         ShippingQuery,
         User,
+        UserPeerId,
+        UserUsername,
     },
 };
 
@@ -65,12 +69,12 @@ impl Update {
     }
 
     /// Returns the ID of the chat.
-    pub fn get_chat_id(&self) -> Option<Integer> {
+    pub fn get_chat_id(&self) -> Option<ChatPeerId> {
         self.get_chat().map(|chat| chat.get_id())
     }
 
     /// Returns the username of the chat.
-    pub fn get_chat_username(&self) -> Option<&str> {
+    pub fn get_chat_username(&self) -> Option<&ChatUsername> {
         self.get_chat().and_then(|chat| chat.get_username())
     }
 
@@ -98,15 +102,13 @@ impl Update {
     }
 
     /// Returns the ID of the user.
-    pub fn get_user_id(&self) -> Option<Integer> {
+    pub fn get_user_id(&self) -> Option<UserPeerId> {
         self.get_user().map(|user| user.id)
     }
 
     /// Returns the username of the user.
-    pub fn get_user_username(&self) -> Option<&str> {
-        self.get_user()
-            .and_then(|user| user.username.as_ref())
-            .map(String::as_str)
+    pub fn get_user_username(&self) -> Option<&UserUsername> {
+        self.get_user().and_then(|user| user.username.as_ref())
     }
 
     /// Returns the message.

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Chat, Integer, User};
+use crate::types::{Chat, ChatPeerId, ChatUsername, User, UserPeerId, UserUsername};
 
 #[cfg(test)]
 mod tests;
@@ -44,15 +44,13 @@ impl MessageSender {
     }
 
     /// Returns the ID of the sender user.
-    pub fn get_user_id(&self) -> Option<Integer> {
+    pub fn get_user_id(&self) -> Option<UserPeerId> {
         self.get_user().map(|user| user.id)
     }
 
     /// Returns the username of the sender user.
-    pub fn get_user_username(&self) -> Option<&str> {
-        self.get_user()
-            .and_then(|user| user.username.as_ref())
-            .map(String::as_str)
+    pub fn get_user_username(&self) -> Option<&UserUsername> {
+        self.get_user().and_then(|user| user.username.as_ref())
     }
 
     /// Returns the sender chat.
@@ -64,12 +62,12 @@ impl MessageSender {
     }
 
     /// Returns the ID of the sender chat.
-    pub fn get_chat_id(&self) -> Option<Integer> {
+    pub fn get_chat_id(&self) -> Option<ChatPeerId> {
         self.get_chat().map(|chat| chat.get_id())
     }
 
     /// Returns the username of the sender chat.
-    pub fn get_chat_username(&self) -> Option<&str> {
+    pub fn get_chat_username(&self) -> Option<&ChatUsername> {
         self.get_chat().and_then(|chat| chat.get_username())
     }
 }

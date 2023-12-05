@@ -47,7 +47,6 @@ jobs:
           toolchain: stable
           components: clippy
       - name: Generate Cargo.lock
-        uses: actions-rs/cargo@v1
         run: cargo generate-lockfile
       - name: Cache cargo registry
         uses: actions/cache@v3

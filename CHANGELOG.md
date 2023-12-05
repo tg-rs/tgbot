@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.19.0 (xx.yy.2023)
+## 0.19.0 (05.12.2023)
 
 ### Dependencies
 

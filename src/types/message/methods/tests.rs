@@ -11,6 +11,7 @@ use crate::{
         EditMessageText,
         ForceReply,
         ForwardMessage,
+        ForwardMessages,
         InlineKeyboardButton,
         InlineKeyboardMarkup,
         InputFile,
@@ -385,6 +386,38 @@ fn forward_message() {
             }),
         ),
         ForwardMessage::new(1, 2, 3)
+            .with_disable_notification(true)
+            .with_message_thread_id(1)
+            .with_protect_content(true),
+    );
+}
+
+#[test]
+fn forward_messages() {
+    assert_payload_eq(
+        Payload::json(
+            "forwardMessages",
+            serde_json::json!({
+                "chat_id": 1,
+                "from_chat_id": 2,
+                "message_ids": [3]
+            }),
+        ),
+        ForwardMessages::new(1, 2, [3]),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "forwardMessages",
+            serde_json::json!({
+                "chat_id": 1,
+                "from_chat_id": 2,
+                "message_ids": [3],
+                "disable_notification": true,
+                "protect_content": true,
+                "message_thread_id": 1
+            }),
+        ),
+        ForwardMessages::new(1, 2, [3])
             .with_disable_notification(true)
             .with_message_thread_id(1)
             .with_protect_content(true),

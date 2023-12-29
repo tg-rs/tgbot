@@ -107,6 +107,8 @@ impl From<TextEntities> for Vec<TextEntity> {
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(try_from = "RawTextEntity", into = "RawTextEntity")]
 pub enum TextEntity {
+    /// A block quotation.
+    Blockquote(TextEntityPosition),
     /// A bold text.
     Bold(TextEntityPosition),
     /// A bot command.
@@ -182,6 +184,7 @@ macro_rules! text_entity_factory {
 
 impl TextEntity {
     text_entity_factory!(
+        blockquote => Blockquote,
         bold => Bold,
         bot_command => BotCommand,
         cashtag => Cashtag,
@@ -261,6 +264,7 @@ struct RawTextEntity {
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "type")]
 enum RawTextEntityType {
+    Blockquote,
     Bold,
     BotCommand,
     Cashtag,
@@ -340,6 +344,7 @@ impl TryFrom<RawTextEntity> for TextEntity {
         };
 
         Ok(match raw.entity_type {
+            RawTextEntityType::Blockquote => TextEntity::Blockquote(position),
             RawTextEntityType::Bold => TextEntity::Bold(position),
             RawTextEntityType::BotCommand => TextEntity::BotCommand(position),
             RawTextEntityType::Cashtag => TextEntity::Cashtag(position),
@@ -382,6 +387,7 @@ impl From<TextEntity> for RawTextEntity {
             };
         }
         match entity {
+            TextEntity::Blockquote(p) => raw!(Blockquote(p)),
             TextEntity::Bold(p) => raw!(Bold(p)),
             TextEntity::BotCommand(p) => raw!(BotCommand(p)),
             TextEntity::Cashtag(p) => raw!(Cashtag(p)),

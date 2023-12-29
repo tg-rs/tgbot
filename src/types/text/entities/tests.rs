@@ -6,7 +6,7 @@ fn deserialize() {
         "message_id": 1, "date": 0,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
         "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
-        "text": "bold /bot_command $cashtag code u@h.z #hashtag italic @mention phone pre text-link text-mention url underline spoiler strikethrough pre 🤡",
+        "text": "bold /bot_command $cashtag code u@h.z #hashtag italic @mention phone pre text-link text-mention url underline spoiler strikethrough pre 🤡 blockquote",
         "entities": [
             {"type": "bold", "offset": 0, "length": 4},
             {"type": "bot_command", "offset": 5, "length": 12},
@@ -34,7 +34,8 @@ fn deserialize() {
             {"type": "spoiler", "offset": 110, "length": 7},
             {"type": "strikethrough", "offset": 118, "length": 13},
             {"type": "pre", "offset": 132, "length": 3, "language": "rust"},
-            {"type": "custom_emoji", "offset": 136, "length": 2, "custom_emoji_id": "emoji-id"}
+            {"type": "custom_emoji", "offset": 136, "length": 2, "custom_emoji_id": "emoji-id"},
+            {"type": "blockquote", "offset": 139, "length": 10}
         ]
     });
     let msg: Message = serde_json::from_value(input).unwrap();
@@ -77,7 +78,11 @@ fn deserialize() {
                 TextEntity::CustomEmoji {
                     custom_emoji_id: String::from("emoji-id"),
                     position: TextEntityPosition { offset: 136, length: 2 },
-                }
+                },
+                TextEntity::Blockquote(TextEntityPosition {
+                    offset: 139,
+                    length: 10
+                },)
             ],
             entities
         );
@@ -106,6 +111,14 @@ fn deserialize_failed() {
 #[test]
 fn serialize() {
     for (entity, expected) in vec![
+        (
+            TextEntity::Blockquote(TextEntityPosition { offset: 0, length: 10 }),
+            serde_json::json!({
+                "type": "blockquote",
+                "offset": 0,
+                "length": 10
+            }),
+        ),
         (
             TextEntity::Bold(TextEntityPosition { offset: 0, length: 10 }),
             serde_json::json!({

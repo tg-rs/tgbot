@@ -43,7 +43,7 @@ impl Client {
             .use_rustls_tls()
             .build()
             .map_err(ClientError::BuildClient)?;
-        Ok(Self::with_client(client, token))
+        Ok(Self::with_http_client(client, token))
     }
 
     /// Creates a new Telegram Bot API client with a custom HTTP client and bot token.
@@ -53,7 +53,7 @@ impl Client {
     /// * `client` - An HTTP client.
     /// * `token` - A token associated with your bot.
     ///
-    pub fn with_client<T>(http_client: HttpClient, token: T) -> Self
+    pub fn with_http_client<T>(http_client: HttpClient, token: T) -> Self
     where
         T: Into<String>,
     {

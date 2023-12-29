@@ -7,6 +7,7 @@ use crate::types::{
     Location,
     Message,
     MessageData,
+    ReactionType,
     SupergroupChat,
     Text,
     User,
@@ -54,7 +55,8 @@ fn supergroup() {
             .with_is_forum(true)
             .with_active_usernames(vec!["supergroup_chat"])
             .with_has_hidden_members(true)
-            .with_has_aggressive_anti_spam_enabled(true),
+            .with_has_aggressive_anti_spam_enabled(true)
+            .with_available_reactions([ReactionType::emoji("👍")]),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
@@ -119,6 +121,12 @@ fn supergroup() {
             "active_usernames": ["supergroup_chat"],
             "has_hidden_members": true,
             "has_aggressive_anti_spam_enabled": true,
+            "available_reactions": [
+                {
+                    "type": "emoji",
+                    "emoji": "👍"
+                }
+            ]
         }),
     );
 

@@ -18,6 +18,7 @@ pub use self::{
     payment::*,
     poll::*,
     primitive::*,
+    reaction::*,
     reply_markup::*,
     response::*,
     sticker::*,
@@ -46,6 +47,7 @@ mod passport;
 mod payment;
 mod poll;
 mod primitive;
+mod reaction;
 mod reply_markup;
 mod response;
 mod sticker;

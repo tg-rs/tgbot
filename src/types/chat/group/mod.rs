@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ChatPeerId, ChatPermissions, ChatPhoto, Integer, Message};
+use crate::types::{ChatPeerId, ChatPermissions, ChatPhoto, Integer, Message, ReactionType};
 
 #[cfg(test)]
 mod tests;
@@ -12,6 +12,13 @@ pub struct GroupChat {
     pub id: ChatPeerId,
     /// Title of the group.
     pub title: String,
+    /// List of available reactions allowed in the chat.
+    ///
+    /// If omitted, then all emoji reactions are allowed.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub available_reactions: Option<Vec<ReactionType>>,
     /// Indicates whether non-administrators can only get the list of bots
     /// and administrators in the group.
     ///
@@ -66,6 +73,7 @@ impl GroupChat {
         Self {
             id: id.into(),
             title: title.into(),
+            available_reactions: None,
             has_hidden_members: None,
             has_protected_content: None,
             invite_link: None,
@@ -74,6 +82,19 @@ impl GroupChat {
             photo: None,
             pinned_message: None,
         }
+    }
+
+    /// Sets a new list of available reactions.
+    ///
+    /// # Arguments
+    ///
+    /// `value` - The list of all available reactions.
+    pub fn with_available_reactions<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = ReactionType>,
+    {
+        self.available_reactions = Some(value.into_iter().collect());
+        self
     }
 
     /// Sets a value for a `has_hidden_members` flag.

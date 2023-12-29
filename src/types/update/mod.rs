@@ -16,6 +16,8 @@ use crate::{
         InlineQuery,
         Integer,
         Message,
+        MessageReactionCountUpdated,
+        MessageReactionUpdated,
         Poll,
         PollAnswer,
         PollAnswerVoter,
@@ -64,6 +66,8 @@ impl Update {
         self.get_message().map(|msg| &msg.chat).or(match self.update_type {
             UpdateType::BotStatus(ref status) | UpdateType::UserStatus(ref status) => Some(&status.chat),
             UpdateType::ChatJoinRequest(ref request) => Some(&request.chat),
+            UpdateType::MessageReaction(ref reaction) => Some(&reaction.chat),
+            UpdateType::MessageReactionCount(ref reaction_count) => Some(&reaction_count.chat),
             _ => None,
         })
     }
@@ -97,6 +101,8 @@ impl Update {
             },
             UpdateType::BotStatus(ref status) | UpdateType::UserStatus(ref status) => &status.from,
             UpdateType::ChatJoinRequest(ref request) => &request.from,
+            UpdateType::MessageReaction(ref reaction) => return reaction.user.as_ref(),
+            UpdateType::MessageReactionCount(_) => return None,
             UpdateType::Unknown(_) => return None,
         })
     }
@@ -161,6 +167,20 @@ pub enum UpdateType {
     InlineQuery(InlineQuery),
     /// A new incoming message.
     Message(Message),
+    /// A reaction to a message was changed by a user.
+    ///
+    /// The bot must be an administrator in the chat
+    /// and must explicitly specify [`AllowedUpdate::MessageReaction`]
+    /// in the list of allowed_updates to receive these updates.
+    ///
+    /// The update isn't received for reactions set by bots.
+    MessageReaction(MessageReactionUpdated),
+    /// Reactions to a message with anonymous reactions were changed.
+    ///
+    /// The bot must be an administrator in the chat
+    /// and must explicitly specify [`AllowedUpdate::MessageReactionCount`]
+    /// in the list of allowed_updates to receive these updates.
+    MessageReactionCount(MessageReactionCountUpdated),
     /// A new poll state.
     ///
     /// Bots receive only updates about polls, which are sent or stopped by the bot.
@@ -346,6 +366,10 @@ pub enum AllowedUpdate {
     InlineQuery,
     /// A message.
     Message,
+    /// A reaction to a message.
+    MessageReaction,
+    /// An anonymous reaction to a message.
+    MessageReactionCount,
     /// A poll.
     Poll,
     /// A poll answer.

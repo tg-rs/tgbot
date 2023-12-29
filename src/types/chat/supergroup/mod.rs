@@ -1,6 +1,15 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ChatLocation, ChatPeerId, ChatPermissions, ChatPhoto, ChatUsername, Integer, Message};
+use crate::types::{
+    ChatLocation,
+    ChatPeerId,
+    ChatPermissions,
+    ChatPhoto,
+    ChatUsername,
+    Integer,
+    Message,
+    ReactionType,
+};
 
 #[cfg(test)]
 mod tests;
@@ -17,6 +26,13 @@ pub struct SupergroupChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active_usernames: Option<Vec<String>>,
+    /// List of available reactions allowed in the chat.
+    ///
+    /// If omitted, then all emoji reactions are allowed.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub available_reactions: Option<Vec<ReactionType>>,
     /// Indicates whether the bot can change the supergroup sticker set.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -125,6 +141,7 @@ impl SupergroupChat {
             id: id.into(),
             title: title.into(),
             active_usernames: None,
+            available_reactions: None,
             can_set_sticker_set: None,
             description: None,
             has_aggressive_anti_spam_enabled: None,
@@ -157,6 +174,19 @@ impl SupergroupChat {
         B: Into<String>,
     {
         self.active_usernames = Some(value.into_iter().map(Into::into).collect());
+        self
+    }
+
+    /// Sets a new list of available reactions.
+    ///
+    /// # Arguments
+    ///
+    /// `value` - The list of all available reactions.
+    pub fn with_available_reactions<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = ReactionType>,
+    {
+        self.available_reactions = Some(value.into_iter().collect());
         self
     }
 

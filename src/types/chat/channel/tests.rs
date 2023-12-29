@@ -1,4 +1,14 @@
-use crate::types::{tests::assert_json_eq, ChannelChat, Chat, ChatPhoto, Message, MessageData, Text, User};
+use crate::types::{
+    tests::assert_json_eq,
+    ChannelChat,
+    Chat,
+    ChatPhoto,
+    Message,
+    MessageData,
+    ReactionType,
+    Text,
+    User,
+};
 
 #[test]
 fn channel_chat() {
@@ -23,7 +33,8 @@ fn channel_chat() {
             .with_linked_chat_id(2)
             .with_has_protected_content(true)
             .with_message_auto_delete_time(86400)
-            .with_active_usernames(["channel_username"]),
+            .with_active_usernames(["channel_username"])
+            .with_available_reactions([ReactionType::emoji("👍")]),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(&expected_struct.get_username().unwrap(), &"channel_username");
@@ -63,7 +74,13 @@ fn channel_chat() {
             "linked_chat_id": 2,
             "has_protected_content": true,
             "message_auto_delete_time": 86400,
-            "active_usernames": ["channel_username"]
+            "active_usernames": ["channel_username"],
+            "available_reactions": [
+                {
+                    "type": "emoji",
+                    "emoji": "👍"
+                }
+            ]
         }),
     );
 

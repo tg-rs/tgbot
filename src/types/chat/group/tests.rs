@@ -6,6 +6,7 @@ use crate::types::{
     GroupChat,
     Message,
     MessageData,
+    ReactionType,
     Text,
     User,
 };
@@ -31,7 +32,8 @@ fn group_chat() {
             .with_permissions(ChatPermissions::allowed())
             .with_has_protected_content(true)
             .with_message_auto_delete_time(86400)
-            .with_has_hidden_members(true),
+            .with_has_hidden_members(true)
+            .with_available_reactions([ReactionType::emoji("👍")]),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());
@@ -84,6 +86,12 @@ fn group_chat() {
             "has_protected_content": true,
             "message_auto_delete_time": 86400,
             "has_hidden_members": true,
+            "available_reactions": [
+                {
+                    "type": "emoji",
+                    "emoji": "👍"
+                }
+            ]
         }),
     );
     assert_json_eq(

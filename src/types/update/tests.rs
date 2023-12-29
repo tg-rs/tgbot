@@ -18,12 +18,16 @@ use crate::{
         InlineQuery,
         Message,
         MessageData,
+        MessageReactionCountUpdated,
+        MessageReactionUpdated,
         Poll,
         PollAnswer,
         PollAnswerVoter,
         PollOption,
         PreCheckoutQuery,
         PrivateChat,
+        ReactionCount,
+        ReactionType,
         RegularPoll,
         ShippingAddress,
         ShippingQuery,
@@ -50,6 +54,7 @@ fn allowed_update() {
         (Poll, serde_json::json!("poll")),
         (PollAnswer, serde_json::json!("poll_answer")),
         (UserStatus, serde_json::json!("chat_member")),
+        (MessageReaction, serde_json::json!("message_reaction")),
     ] {
         assert_json_eq(expected_struct, expected_value);
     }
@@ -444,6 +449,96 @@ fn message() {
                 "text": "message-text",
                 "has_protected_content": false,
                 "is_automatic_forward": false
+            }
+        }),
+    );
+}
+
+#[test]
+fn message_reaction() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::MessageReaction(MessageReactionUpdated::new(
+            PrivateChat::new(1, "test"),
+            0,
+            1,
+            [ReactionType::emoji("🤡")],
+            [ReactionType::emoji("🤮")],
+        )),
+    );
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert!(expected_struct.get_chat_username().is_none());
+    assert!(expected_struct.get_user_id().is_none());
+    assert!(expected_struct.get_user_username().is_none());
+    assert!(expected_struct.get_user().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "message_reaction": {
+                "chat": {
+                    "type": "private",
+                    "id": 1,
+                    "first_name": "test"
+                },
+                "date": 0,
+                "message_id": 1,
+                "old_reaction": [
+                    {
+                        "type": "emoji",
+                        "emoji": "🤮"
+                    }
+                ],
+                "new_reaction": [
+                    {
+                        "type": "emoji",
+                        "emoji": "🤡"
+                    }
+                ]
+            }
+        }),
+    );
+}
+
+#[test]
+fn message_reaction_count() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::MessageReactionCount(MessageReactionCountUpdated::new(
+            PrivateChat::new(1, "test"),
+            0,
+            1,
+            [ReactionCount::new(ReactionType::emoji("🤡"), 1)],
+        )),
+    );
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert!(expected_struct.get_chat_username().is_none());
+    assert!(expected_struct.get_user_id().is_none());
+    assert!(expected_struct.get_user_username().is_none());
+    assert!(expected_struct.get_user().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "message_reaction_count": {
+                "chat": {
+                    "type": "private",
+                    "id": 1,
+                    "first_name": "test"
+                },
+                "date": 0,
+                "message_id": 1,
+                "reactions": [
+                    {
+                        "type": {
+                            "type": "emoji",
+                            "emoji": "🤡"
+                        },
+                        "total_count": 1
+                    }
+                ]
             }
         }),
     );

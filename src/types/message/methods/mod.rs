@@ -248,6 +248,44 @@ impl Method for DeleteMessage {
     }
 }
 
+/// Deletes multiple messages simultaneously.
+///
+/// If some of the specified messages can't be found, they are skipped.
+///
+/// See [`DeleteMessage`] for limitations on which messages can be deleted.
+#[derive(Clone, Debug, Serialize)]
+pub struct DeleteMessages {
+    chat_id: ChatId,
+    message_ids: Vec<Integer>,
+}
+
+impl DeleteMessages {
+    /// Creates a new `DeleteMessages`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_ids` - Identifiers of 1-100 messages to delete.
+    pub fn new<A, B>(chat_id: A, message_ids: B) -> Self
+    where
+        A: Into<ChatId>,
+        B: IntoIterator<Item = Integer>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+            message_ids: message_ids.into_iter().collect(),
+        }
+    }
+}
+
+impl Method for DeleteMessages {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteMessages", self)
+    }
+}
+
 /// Changes a caption of a message.
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageCaption {

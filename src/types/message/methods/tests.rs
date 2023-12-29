@@ -3,6 +3,7 @@ use crate::{
     types::{
         CopyMessage,
         DeleteMessage,
+        DeleteMessages,
         EditMessageCaption,
         EditMessageLiveLocation,
         EditMessageMedia,
@@ -96,6 +97,20 @@ fn delete_message() {
             }),
         ),
         DeleteMessage::new(1, 2),
+    );
+}
+
+#[test]
+fn delete_messages() {
+    assert_payload_eq(
+        Payload::json(
+            "deleteMessages",
+            serde_json::json!({
+                "chat_id": 1,
+                "message_ids": [2]
+            }),
+        ),
+        DeleteMessages::new(1, [2]),
     );
 }
 

@@ -15,6 +15,7 @@ use crate::{
         InputFile,
         InputMedia,
         InputMediaPhoto,
+        LinkPreviewOptions,
         ParseMode,
         SendMessage,
         StopMessageLiveLocation,
@@ -293,7 +294,9 @@ fn edit_message_text() {
                 "message_id": 2,
                 "text": "text",
                 "parse_mode": "Markdown",
-                "disable_web_page_preview": true,
+                "link_preview_options": {
+                    "is_disabled": true
+                },
                 "reply_markup": {
                     "inline_keyboard": [
                         [
@@ -307,7 +310,7 @@ fn edit_message_text() {
             }),
         ),
         EditMessageText::for_chat_message(1, 2, "text")
-            .with_disable_web_page_preview(true)
+            .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
             .with_parse_mode(ParseMode::Markdown)
             .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
     );
@@ -396,7 +399,9 @@ fn send_message() {
                     "offset": 0,
                     "length": 2
                 }],
-                "disable_web_page_preview": true,
+                "link_preview_options": {
+                    "is_disabled": true
+                },
                 "disable_notification": true,
                 "protect_content": true,
                 "reply_to_message_id": 1,
@@ -410,7 +415,7 @@ fn send_message() {
         SendMessage::new(1, "text")
             .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
-            .with_disable_web_page_preview(true)
+            .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
             .with_message_thread_id(1)
             .with_parse_mode(ParseMode::Markdown)
             .with_entities(vec![TextEntity::bold(0..2)])

@@ -1,4 +1,12 @@
-use crate::types::{tests::assert_json_eq, EditMessageResult, Message, MessageData, SupergroupChat, User};
+use crate::types::{
+    tests::assert_json_eq,
+    EditMessageResult,
+    LinkPreviewOptions,
+    Message,
+    MessageData,
+    SupergroupChat,
+    User,
+};
 
 #[test]
 fn get_text() {
@@ -131,6 +139,27 @@ fn is_edited() {
     }))
     .unwrap();
     assert!(!msg.is_edited());
+}
+
+#[test]
+fn link_peview_options() {
+    let data: Message = serde_json::from_value(serde_json::json!({
+        "message_id": 2, "date": 1,
+        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+        "text": "test",
+        "link_preview_options": {
+            "is_disabled": true
+        }
+    }))
+    .unwrap();
+    let options = data
+        .link_preview_options
+        .as_ref()
+        .expect("link_preview_options is empty");
+    assert!(options.is_disabled.unwrap());
+    let data = data.with_link_preview_options(LinkPreviewOptions::default());
+    assert!(data.link_preview_options.as_ref().unwrap().is_disabled.is_none());
 }
 
 #[test]

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Chat, InlineKeyboardMarkup, Integer, Text, User};
+use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, Text, User};
 
 pub use self::{command::*, data::*, forward::*, methods::*, sender::*};
 
@@ -61,6 +61,10 @@ pub struct Message {
     /// Indicates whether the message is sent to a forum topic.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_topic_message: Option<bool>,
+    /// Options used for link preview generation for the message,
+    /// if it is a text message and link preview options were changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link_preview_options: Option<LinkPreviewOptions>,
     /// Unique identifier of a media message group this message belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub media_group_id: Option<String>,
@@ -115,6 +119,7 @@ impl Message {
             forward: None,
             has_media_spoiler: None,
             is_topic_message: None,
+            link_preview_options: None,
             media_group_id: None,
             message_thread_id: None,
             reply_markup: None,
@@ -282,6 +287,16 @@ impl Message {
     /// * `value` - Indicates whether the message is a topic message.
     pub fn with_is_topic_message(mut self, value: bool) -> Self {
         self.is_topic_message = Some(value);
+        self
+    }
+
+    /// Sets a new link preview options.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - New options.
+    pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Self {
+        self.link_preview_options = Some(value);
         self
     }
 

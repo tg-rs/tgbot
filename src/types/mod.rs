@@ -10,6 +10,7 @@ pub use self::{
     forum::*,
     game::*,
     inline_mode::*,
+    link::*,
     location::*,
     media::*,
     menu::*,
@@ -39,6 +40,7 @@ mod file;
 mod forum;
 mod game;
 mod inline_mode;
+mod link;
 mod location;
 mod media;
 mod menu;

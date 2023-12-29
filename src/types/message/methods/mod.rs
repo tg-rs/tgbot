@@ -10,6 +10,7 @@ use crate::{
         InlineKeyboardMarkup,
         InputMedia,
         Integer,
+        LinkPreviewOptions,
         Message,
         MessageId,
         ParseMode,
@@ -645,9 +646,9 @@ pub struct EditMessageText {
     #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<ChatId>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    disable_web_page_preview: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     entities: Option<TextEntities>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    link_preview_options: Option<LinkPreviewOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     inline_message_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -674,7 +675,7 @@ impl EditMessageText {
         Self {
             text: text.into(),
             chat_id: Some(chat_id.into()),
-            disable_web_page_preview: None,
+            link_preview_options: None,
             entities: None,
             inline_message_id: None,
             message_id: Some(message_id),
@@ -697,23 +698,13 @@ impl EditMessageText {
         Self {
             text: text.into(),
             chat_id: None,
-            disable_web_page_preview: None,
+            link_preview_options: None,
             entities: None,
             inline_message_id: Some(inline_message_id.into()),
             message_id: None,
             parse_mode: None,
             reply_markup: None,
         }
-    }
-
-    /// Sets a new value for a `disable_web_page_preview` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether to disable link previews for links in the sent message.
-    pub fn with_disable_web_page_preview(mut self, value: bool) -> Self {
-        self.disable_web_page_preview = Some(value);
-        self
     }
 
     /// Sets a new list of entities
@@ -729,6 +720,16 @@ impl EditMessageText {
     {
         self.entities = Some(value.into_iter().collect());
         self.parse_mode = None;
+        self
+    }
+
+    /// Sets a new link preview options.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Link preview generation options for the message.
+    pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Self {
+        self.link_preview_options = Some(value);
         self
     }
 
@@ -856,9 +857,9 @@ pub struct SendMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    disable_web_page_preview: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     entities: Option<TextEntities>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    link_preview_options: Option<LinkPreviewOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -888,8 +889,8 @@ impl SendMessage {
             text: text.into(),
             allow_sending_without_reply: None,
             disable_notification: None,
-            disable_web_page_preview: None,
             entities: None,
+            link_preview_options: None,
             message_thread_id: None,
             parse_mode: None,
             protect_content: None,
@@ -920,16 +921,6 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new value for a `disable_web_page_preview` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether to disable link previews for links in the sent message.
-    pub fn with_disable_web_page_preview(mut self, value: bool) -> Self {
-        self.disable_web_page_preview = Some(value);
-        self
-    }
-
     /// Sets a new list of entities.
     ///
     /// # Arguments
@@ -943,6 +934,16 @@ impl SendMessage {
     {
         self.entities = Some(value.into_iter().collect());
         self.parse_mode = None;
+        self
+    }
+
+    /// Sets a new link preview options.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Link preview generation options for the message.
+    pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Self {
+        self.link_preview_options = Some(value);
         self
     }
 

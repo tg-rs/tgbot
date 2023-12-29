@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ParseMode, Text, TextEntities, TextEntity};
+use crate::types::{LinkPreviewOptions, ParseMode, Text, TextEntities, TextEntity};
 
 #[cfg(test)]
 mod tests;
@@ -10,9 +10,9 @@ mod tests;
 pub struct InputMessageContentText {
     message_text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    disable_web_page_preview: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     entities: Option<TextEntities>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    link_preview_options: Option<LinkPreviewOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
 }
@@ -30,19 +30,9 @@ impl InputMessageContentText {
         Self {
             message_text: value.into(),
             entities: None,
+            link_preview_options: None,
             parse_mode: None,
-            disable_web_page_preview: None,
         }
-    }
-
-    /// Sets a new value for a `disable_web_page_preview` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether to disable link previews for links in the sent message.
-    pub fn with_disable_web_page_preview(mut self, disable_web_page_preview: bool) -> Self {
-        self.disable_web_page_preview = Some(disable_web_page_preview);
-        self
     }
 
     /// Sets a new list of entities.
@@ -52,12 +42,22 @@ impl InputMessageContentText {
     /// * `value` - List of special entities that appear in the text.
     ///
     /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_entities<T>(mut self, entities: T) -> Self
+    pub fn with_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.entities = Some(entities.into_iter().collect());
+        self.entities = Some(value.into_iter().collect());
         self.parse_mode = None;
+        self
+    }
+
+    /// Sets a new link preview options.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Link preview generation options for the message.
+    pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Self {
+        self.link_preview_options = Some(value);
         self
     }
 
@@ -68,8 +68,8 @@ impl InputMessageContentText {
     /// * `value` - Parse mode.
     ///
     /// Entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, parse_mode: ParseMode) -> Self {
-        self.parse_mode = Some(parse_mode);
+    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
+        self.parse_mode = Some(value);
         self.entities = None;
         self
     }

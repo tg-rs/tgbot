@@ -4,7 +4,6 @@ use std::{
 };
 
 use dotenvy::dotenv;
-use futures_util::future::BoxFuture;
 use mockito::{Matcher, Server};
 use serde_json::json;
 use tokio::{spawn, sync::Mutex, time::sleep};
@@ -20,14 +19,9 @@ struct Handler {
 }
 
 impl UpdateHandler for Handler {
-    type Future = BoxFuture<'static, ()>;
-
-    fn handle(&self, update: Update) -> Self::Future {
-        let updates = self.updates.clone();
-        Box::pin(async move {
-            let mut updates = updates.lock().await;
-            updates.push(update);
-        })
+    async fn handle(&self, update: Update) {
+        let mut updates = self.updates.lock().await;
+        updates.push(update);
     }
 }
 

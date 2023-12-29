@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use futures_util::future::BoxFuture;
 use reqwest::{Client, StatusCode};
 use tokio::sync::Mutex;
 
@@ -15,14 +14,9 @@ struct Handler {
 }
 
 impl UpdateHandler for Handler {
-    type Future = BoxFuture<'static, ()>;
-
-    fn handle(&self, update: Update) -> Self::Future {
-        let updates = self.updates.clone();
-        Box::pin(async move {
-            let mut updates = updates.lock().await;
-            updates.push(update);
-        })
+    async fn handle(&self, update: Update) {
+        let mut updates = self.updates.lock().await;
+        updates.push(update);
     }
 }
 

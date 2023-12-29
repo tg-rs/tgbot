@@ -1,22 +1,16 @@
 //! The example shows how to handle updates using a webhook
 use dotenvy::dotenv;
-use futures_util::future::BoxFuture;
 
 use tgbot::{
     handler::{UpdateHandler, WebhookServer},
     types::Update,
 };
 
-#[derive(Clone, Copy)]
 struct Handler;
 
 impl UpdateHandler for Handler {
-    type Future = BoxFuture<'static, ()>;
-
-    fn handle(&self, update: Update) -> Self::Future {
-        Box::pin(async move {
-            log::info!("Got an update: {:?}", update);
-        })
+    async fn handle(&self, update: Update) {
+        log::info!("Got an update: {:?}", update);
     }
 }
 

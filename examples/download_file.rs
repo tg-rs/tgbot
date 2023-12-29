@@ -5,7 +5,7 @@ use std::{
 };
 
 use dotenvy::dotenv;
-use futures_util::{future::BoxFuture, stream::StreamExt};
+use futures_util::stream::StreamExt;
 use tempfile::tempdir;
 use tokio::{fs::File, io::AsyncWriteExt};
 
@@ -15,7 +15,6 @@ use tgbot::{
     types::{Document, GetFile, MessageData, Update, UpdateType},
 };
 
-#[derive(Clone)]
 struct Handler {
     client: Client,
     tmpdir: PathBuf,
@@ -46,18 +45,13 @@ async fn handle_document(client: &Client, tmpdir: &Path, document: Document) {
 }
 
 impl UpdateHandler for Handler {
-    type Future = BoxFuture<'static, ()>;
-
-    fn handle(&self, update: Update) -> Self::Future {
-        let this = self.clone();
-        Box::pin(async move {
-            log::info!("Got an update: {:?}", update);
-            if let UpdateType::Message(message) = update.update_type {
-                if let MessageData::Document(document) = message.data {
-                    handle_document(&this.client, &this.tmpdir, document.data).await;
-                }
+    async fn handle(&self, update: Update) {
+        log::info!("Got an update: {:?}", update);
+        if let UpdateType::Message(message) = update.update_type {
+            if let MessageData::Document(document) = message.data {
+                handle_document(&self.client, &self.tmpdir, document.data).await;
             }
-        })
+        }
     }
 }
 

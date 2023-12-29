@@ -1,4 +1,4 @@
-use std::{io::Error as IoError, net::SocketAddr};
+use std::{io::Error as IoError, net::SocketAddr, sync::Arc};
 
 use axum::Router;
 use tokio::net::TcpListener;
@@ -21,12 +21,11 @@ impl WebhookServer {
     pub fn new<A, B>(path: A, handler: B) -> Self
     where
         A: AsRef<str>,
-        B: UpdateHandler + Clone + Send + Sync + 'static,
-        B::Future: Send,
+        B: UpdateHandler + Send + Sync + 'static,
     {
         let router = Router::new()
             .route(path.as_ref(), axum::routing::post(handle_update::<B>))
-            .layer(axum::Extension(handler));
+            .layer(axum::Extension(Arc::new(handler)));
         Self { router }
     }
 
@@ -54,7 +53,7 @@ impl From<WebhookServer> for Router {
     }
 }
 
-async fn handle_update<H>(handler: axum::Extension<H>, axum::extract::Json(update): axum::extract::Json<Update>)
+async fn handle_update<H>(handler: axum::Extension<Arc<H>>, axum::extract::Json(update): axum::extract::Json<Update>)
 where
     H: UpdateHandler,
 {

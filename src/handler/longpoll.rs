@@ -1,4 +1,4 @@
-use std::{cmp::max, collections::HashSet, time::Duration};
+use std::{cmp::max, collections::HashSet, sync::Arc, time::Duration};
 
 use async_stream::stream;
 use futures_util::{pin_mut, stream::StreamExt};
@@ -22,7 +22,7 @@ const DEFAULT_ERROR_TIMEOUT: Duration = Duration::from_secs(5);
 /// Allows receiving incoming updates from the Telegram Bot API using long polling.
 pub struct LongPoll<H> {
     client: Client,
-    handler: Box<H>,
+    handler: Arc<H>,
     options: LongPollOptions,
     sender: Sender<()>,
     receiver: Receiver<()>,
@@ -39,7 +39,7 @@ impl<H> LongPoll<H> {
         let (sender, receiver) = channel(1);
         Self {
             client,
-            handler: Box::new(handler),
+            handler: Arc::new(handler),
             options: LongPollOptions::default(),
             sender,
             receiver,
@@ -59,8 +59,7 @@ impl<H> LongPoll<H> {
 
 impl<H> LongPoll<H>
 where
-    H: UpdateHandler,
-    H::Future: Send + 'static,
+    H: UpdateHandler + Send + Sync + 'static,
 {
     /// Returns a handle allowing control over the polling loop.
     #[must_use]
@@ -109,7 +108,8 @@ where
         };
         pin_mut!(s);
         while let Some(update) = s.next().await {
-            spawn(self.handler.handle(update));
+            let handler = self.handler.clone();
+            spawn(async move { handler.handle(update).await });
         }
     }
 }

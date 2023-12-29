@@ -2,7 +2,6 @@
 use std::env;
 
 use dotenvy::dotenv;
-use futures_util::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 
 use tgbot::{
@@ -53,16 +52,11 @@ async fn handle_update(client: &Client, update: Update) -> Option<Message> {
 }
 
 impl UpdateHandler for Handler {
-    type Future = BoxFuture<'static, ()>;
-
-    fn handle(&self, update: Update) -> Self::Future {
-        let client = self.client.clone();
-        Box::pin(async move {
-            log::info!("Got an update: {:?}", update);
-            if let Some(msg) = handle_update(&client, update).await {
-                log::info!("Message sent: {:?}", msg);
-            }
-        })
+    async fn handle(&self, update: Update) {
+        log::info!("Got an update: {:?}", update);
+        if let Some(msg) = handle_update(&self.client, update).await {
+            log::info!("Message sent: {:?}", msg);
+        }
     }
 }
 

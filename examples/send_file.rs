@@ -2,7 +2,6 @@
 use std::env;
 
 use dotenvy::dotenv;
-use futures_util::future::BoxFuture;
 
 use tgbot::{
     api::Client,
@@ -10,25 +9,19 @@ use tgbot::{
     types::{InputFile, SendDocument, Update},
 };
 
-#[derive(Clone)]
 struct Handler {
     client: Client,
     file_url: String,
 }
 
 impl UpdateHandler for Handler {
-    type Future = BoxFuture<'static, ()>;
-
-    fn handle(&self, update: Update) -> Self::Future {
-        let this = self.clone();
-        Box::pin(async move {
-            log::info!("Got an update: {:?}", update);
-            let chat_id = update.get_chat_id().unwrap();
-            this.client
-                .execute(SendDocument::new(chat_id, InputFile::url(this.file_url)))
-                .await
-                .unwrap();
-        })
+    async fn handle(&self, update: Update) {
+        log::info!("Got an update: {:?}", update);
+        let chat_id = update.get_chat_id().unwrap();
+        self.client
+            .execute(SendDocument::new(chat_id, InputFile::url(&self.file_url)))
+            .await
+            .unwrap();
     }
 }
 

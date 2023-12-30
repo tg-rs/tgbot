@@ -8,6 +8,10 @@ use crate::{
         CallbackQuery,
         ChannelChat,
         Chat,
+        ChatBoost,
+        ChatBoostRemoved,
+        ChatBoostSource,
+        ChatBoostUpdated,
         ChatJoinRequest,
         ChatMember,
         ChatMemberKicked,
@@ -42,19 +46,21 @@ use crate::{
 fn allowed_update() {
     use crate::types::AllowedUpdate::*;
     for (expected_struct, expected_value) in [
-        (Message, serde_json::json!("message")),
-        (EditedMessage, serde_json::json!("edited_message")),
-        (ChannelPost, serde_json::json!("channel_post")),
-        (EditedChannelPost, serde_json::json!("edited_channel_post")),
-        (InlineQuery, serde_json::json!("inline_query")),
-        (ChosenInlineResult, serde_json::json!("chosen_inline_result")),
         (CallbackQuery, serde_json::json!("callback_query")),
-        (ShippingQuery, serde_json::json!("shipping_query")),
-        (PreCheckoutQuery, serde_json::json!("pre_checkout_query")),
+        (ChannelPost, serde_json::json!("channel_post")),
+        (ChatBoostRemoved, serde_json::json!("removed_chat_boost")),
+        (ChatBoostUpdated, serde_json::json!("chat_boost")),
+        (ChosenInlineResult, serde_json::json!("chosen_inline_result")),
+        (EditedChannelPost, serde_json::json!("edited_channel_post")),
+        (EditedMessage, serde_json::json!("edited_message")),
+        (InlineQuery, serde_json::json!("inline_query")),
+        (Message, serde_json::json!("message")),
+        (MessageReaction, serde_json::json!("message_reaction")),
         (Poll, serde_json::json!("poll")),
         (PollAnswer, serde_json::json!("poll_answer")),
+        (PreCheckoutQuery, serde_json::json!("pre_checkout_query")),
+        (ShippingQuery, serde_json::json!("shipping_query")),
         (UserStatus, serde_json::json!("chat_member")),
-        (MessageReaction, serde_json::json!("message_reaction")),
     ] {
         assert_json_eq(expected_struct, expected_value);
     }
@@ -191,6 +197,88 @@ fn channel_post() {
                 "text": "test message from channel",
                 "has_protected_content": false,
                 "is_automatic_forward": false
+            }
+        }),
+    );
+}
+
+#[test]
+fn chat_boost_removed() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::ChatBoostRemoved(ChatBoostRemoved::new(
+            "id",
+            ChannelChat::new(1, "test"),
+            0,
+            ChatBoostSource::GiftCode(User::new(1, "test", false)),
+        )),
+    );
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert!(expected_struct.get_chat_username().is_none());
+    assert!(expected_struct.get_user().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+                "update_id": 1,
+                "removed_chat_boost": {
+                    "boost_id": "id",
+                    "chat": {
+                        "type": "channel",
+                        "id": 1,
+                        "title": "test"
+                    },
+                    "remove_date": 0,
+                    "source": {
+                        "source": "gift_code",
+                        "user": {
+                            "id": 1,
+                            "first_name": "test",
+                            "is_bot": false
+                        }
+                    },
+                }
+            }
+        ),
+    );
+}
+
+#[test]
+fn chat_boost_updated() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::ChatBoostUpdated(ChatBoostUpdated::new(
+            ChatBoost::new(0, "id", 0, ChatBoostSource::GiftCode(User::new(1, "test", false))),
+            ChannelChat::new(1, "test"),
+        )),
+    );
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert!(expected_struct.get_chat_username().is_none());
+    assert!(expected_struct.get_user().is_none());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "chat_boost": {
+                "boost": {
+                    "add_date": 0,
+                    "boost_id": "id",
+                    "expiration_date": 0,
+                    "source": {
+                        "source": "gift_code",
+                        "user": {
+                            "id": 1,
+                            "first_name": "test",
+                            "is_bot": false
+                        }
+                    },
+                },
+                "chat": {
+                    "type": "channel",
+                    "id": 1,
+                    "title": "test"
+                }
             }
         }),
     );

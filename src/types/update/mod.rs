@@ -8,6 +8,8 @@ use crate::{
     types::{
         CallbackQuery,
         Chat,
+        ChatBoostRemoved,
+        ChatBoostUpdated,
         ChatJoinRequest,
         ChatMemberUpdated,
         ChatPeerId,
@@ -64,10 +66,12 @@ impl Update {
     /// Returns the chat.
     pub fn get_chat(&self) -> Option<&Chat> {
         self.get_message().map(|msg| &msg.chat).or(match self.update_type {
-            UpdateType::BotStatus(ref status) | UpdateType::UserStatus(ref status) => Some(&status.chat),
-            UpdateType::ChatJoinRequest(ref request) => Some(&request.chat),
-            UpdateType::MessageReaction(ref reaction) => Some(&reaction.chat),
-            UpdateType::MessageReactionCount(ref reaction_count) => Some(&reaction_count.chat),
+            UpdateType::BotStatus(ref x) | UpdateType::UserStatus(ref x) => Some(&x.chat),
+            UpdateType::ChatBoostRemoved(ref x) => Some(&x.chat),
+            UpdateType::ChatBoostUpdated(ref x) => Some(&x.chat),
+            UpdateType::ChatJoinRequest(ref x) => Some(&x.chat),
+            UpdateType::MessageReaction(ref x) => Some(&x.chat),
+            UpdateType::MessageReactionCount(ref x) => Some(&x.chat),
             _ => None,
         })
     }
@@ -85,24 +89,26 @@ impl Update {
     /// Returns the user.
     pub fn get_user(&self) -> Option<&User> {
         Some(match self.update_type {
-            UpdateType::Message(ref msg)
-            | UpdateType::EditedMessage(ref msg)
-            | UpdateType::ChannelPost(ref msg)
-            | UpdateType::EditedChannelPost(ref msg) => return msg.sender.get_user(),
-            UpdateType::InlineQuery(ref query) => &query.from,
-            UpdateType::ChosenInlineResult(ref result) => &result.from,
-            UpdateType::CallbackQuery(ref query) => &query.from,
-            UpdateType::ShippingQuery(ref query) => &query.from,
-            UpdateType::PreCheckoutQuery(ref query) => &query.from,
+            UpdateType::BotStatus(ref x) | UpdateType::UserStatus(ref x) => &x.from,
+            UpdateType::CallbackQuery(ref x) => &x.from,
+            UpdateType::ChatBoostRemoved(_) => return None,
+            UpdateType::ChatBoostUpdated(_) => return None,
+            UpdateType::ChatJoinRequest(ref x) => &x.from,
+            UpdateType::ChosenInlineResult(ref x) => &x.from,
+            UpdateType::InlineQuery(ref x) => &x.from,
+            UpdateType::Message(ref x)
+            | UpdateType::EditedMessage(ref x)
+            | UpdateType::ChannelPost(ref x)
+            | UpdateType::EditedChannelPost(ref x) => return x.sender.get_user(),
+            UpdateType::MessageReaction(ref x) => return x.user.as_ref(),
+            UpdateType::MessageReactionCount(_) => return None,
             UpdateType::Poll(_) => return None,
-            UpdateType::PollAnswer(ref answer) => match &answer.voter {
-                PollAnswerVoter::User(user) => user,
+            UpdateType::PollAnswer(ref x) => match &x.voter {
+                PollAnswerVoter::User(x) => x,
                 PollAnswerVoter::Chat(_) => return None,
             },
-            UpdateType::BotStatus(ref status) | UpdateType::UserStatus(ref status) => &status.from,
-            UpdateType::ChatJoinRequest(ref request) => &request.from,
-            UpdateType::MessageReaction(ref reaction) => return reaction.user.as_ref(),
-            UpdateType::MessageReactionCount(_) => return None,
+            UpdateType::PreCheckoutQuery(ref x) => &x.from,
+            UpdateType::ShippingQuery(ref x) => &x.from,
             UpdateType::Unknown(_) => return None,
         })
     }
@@ -145,6 +151,16 @@ pub enum UpdateType {
     CallbackQuery(CallbackQuery),
     /// A new incoming channel post.
     ChannelPost(Message),
+    /// A boost was removed from a chat.
+    ///
+    /// The bot must be an administrator in the chat to receive these updates.
+    #[serde(rename = "removed_chat_boost")]
+    ChatBoostRemoved(ChatBoostRemoved),
+    /// A chat boost was added or changed.
+    ///
+    /// The bot must be an administrator in the chat to receive these updates.
+    #[serde(rename = "chat_boost")]
+    ChatBoostUpdated(ChatBoostUpdated),
     /// A request to join the chat has been sent.
     ///
     /// The bot must have the `can_invite_users` administrator right
@@ -354,6 +370,12 @@ pub enum AllowedUpdate {
     CallbackQuery,
     /// A channel post.
     ChannelPost,
+    /// A boost was removed from a chat.
+    #[serde(rename = "removed_chat_boost")]
+    ChatBoostRemoved,
+    /// A chat boost was added or changed.
+    #[serde(rename = "chat_boost")]
+    ChatBoostUpdated,
     /// A request to join a chat.
     ChatJoinRequest,
     /// A chosen inline result.

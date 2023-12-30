@@ -4,6 +4,7 @@ use crate::api::{Method, Payload};
 
 pub use self::{
     action::*,
+    boost::*,
     channel::*,
     group::*,
     id::*,
@@ -24,6 +25,7 @@ pub use self::{
 mod tests;
 
 mod action;
+mod boost;
 mod channel;
 mod group;
 mod id;

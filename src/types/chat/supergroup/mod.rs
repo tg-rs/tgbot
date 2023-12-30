@@ -83,6 +83,12 @@ pub struct SupergroupChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_protected_content: Option<bool>,
+    /// Whether new chat members will have access to old messages;
+    /// available only to chat administrators.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_visible_history: Option<bool>,
     /// Invite link for the supergroup.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -184,6 +190,7 @@ impl SupergroupChat {
             has_aggressive_anti_spam_enabled: None,
             has_hidden_members: None,
             has_protected_content: None,
+            has_visible_history: None,
             invite_link: None,
             is_forum: None,
             join_by_request: None,
@@ -327,6 +334,17 @@ impl SupergroupChat {
     /// * `value` - Indicates whether messages from the chat can't be forwarded to other chats.
     pub fn with_has_protected_content(mut self, value: bool) -> Self {
         self.has_protected_content = Some(value);
+        self
+    }
+
+    /// Sets a new value for a `has_visible_history` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether new chat members will have access to old messages;
+    ///             available only to chat administrators.
+    pub fn with_has_visible_history(mut self, value: bool) -> Self {
+        self.has_visible_history = Some(value);
         self
     }
 

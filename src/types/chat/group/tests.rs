@@ -41,7 +41,8 @@ fn group_chat() {
             .with_accent_color(AccentColor::Red)
             .with_background_custom_emoji_id("emoji-id")
             .with_profile_accent_color(ProfileAccentColor::try_from(1).unwrap())
-            .with_profile_background_custom_emoji_id("emoji-id"),
+            .with_profile_background_custom_emoji_id("emoji-id")
+            .with_has_visible_history(true),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());
@@ -105,7 +106,8 @@ fn group_chat() {
             "accent_color_id": 0,
             "background_custom_emoji_id": "emoji-id",
             "profile_accent_color_id": 1,
-            "profile_background_custom_emoji_id": "emoji-id"
+            "profile_background_custom_emoji_id": "emoji-id",
+            "has_visible_history": true
         }),
     );
     assert_json_eq(

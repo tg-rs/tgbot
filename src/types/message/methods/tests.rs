@@ -2,6 +2,7 @@ use crate::{
     api::{assert_payload_eq, Form, Payload},
     types::{
         CopyMessage,
+        CopyMessages,
         DeleteMessage,
         DeleteMessages,
         EditMessageCaption,
@@ -84,6 +85,42 @@ fn copy_message() {
             }),
         ),
         method.with_caption_entities([TextEntity::bold(1..2)]),
+    );
+}
+
+#[test]
+fn copy_messages() {
+    let method = CopyMessages::new(1, 2, [3]);
+    assert_payload_eq(
+        Payload::json(
+            "copyMessages",
+            serde_json::json!({
+                "chat_id": 1,
+                "from_chat_id": 2,
+                "message_ids": [3],
+            }),
+        ),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "copyMessages",
+            serde_json::json!({
+                "chat_id": 1,
+                "from_chat_id": 2,
+                "message_ids": [3],
+                "disable_notification": true,
+                "protect_content": true,
+                "message_thread_id": 1,
+                "remove_caption": true
+            }),
+        ),
+        method
+            .clone()
+            .with_disable_notification(true)
+            .with_message_thread_id(1)
+            .with_protect_content(true)
+            .with_remove_caption(true),
     );
 }
 

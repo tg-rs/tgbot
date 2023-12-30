@@ -203,6 +203,108 @@ impl Method for CopyMessage {
     }
 }
 
+/// Copies messages of any kind.
+///
+/// If some of the specified messages can't be found or copied, they are skipped.
+/// Service messages, giveaway messages, giveaway winners messages,
+/// and invoice messages can't be copied.
+/// A quiz poll can be copied only if the value of the field `correct_option_id` is known to the bot.
+/// The method is analogous to the method [`ForwardMessages`],
+/// but the copied messages don't have a link to the original message.
+/// Album grouping is kept for copied messages.
+#[derive(Clone, Debug, Serialize)]
+pub struct CopyMessages {
+    chat_id: ChatId,
+    from_chat_id: ChatId,
+    message_ids: Vec<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    disable_notification: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    message_thread_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    protect_content: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    remove_caption: Option<bool>,
+}
+
+impl CopyMessages {
+    /// Creates a new `CopyMessages`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier for the target chat.
+    /// * `from_chat_id` - Unique identifier for the chat where the original messages were sent.
+    /// * `message_ids` - Identifiers of 1-100 messages in the chat from_chat_id to copy;
+    ///                   the identifiers must be specified in a strictly increasing order.
+    pub fn new<A, B, C>(chat_id: A, from_chat_id: B, message_ids: C) -> Self
+    where
+        A: Into<ChatId>,
+        B: Into<ChatId>,
+        C: IntoIterator<Item = Integer>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+            from_chat_id: from_chat_id.into(),
+            message_ids: message_ids.into_iter().collect(),
+            disable_notification: None,
+            message_thread_id: None,
+            protect_content: None,
+            remove_caption: None,
+        }
+    }
+
+    /// Sets a new value for a `disable_notification` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether to send the message silently or not;
+    ///             a user will receive a notification without sound.
+    pub fn with_disable_notification(mut self, value: bool) -> Self {
+        self.disable_notification = Some(value);
+        self
+    }
+
+    /// Sets a new message thread ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the target message thread;
+    ///             supergroups only.
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.message_thread_id = Some(value);
+        self
+    }
+
+    /// Sets a new value for a `protect_content` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether to protect the contents
+    ///             of the sent message from forwarding and saving.
+    pub fn with_protect_content(mut self, value: bool) -> Self {
+        self.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a new value for a `remove_caption` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether to copy the messages without their captions.
+    pub fn with_remove_caption(mut self, value: bool) -> Self {
+        self.remove_caption = Some(value);
+        self
+    }
+}
+
+impl Method for CopyMessages {
+    type Response = Vec<MessageId>;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("copyMessages", self)
+    }
+}
+
 /// Deletes a message.
 ///
 /// Limitations:

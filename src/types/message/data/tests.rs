@@ -2,11 +2,15 @@ use crate::types::{
     tests::assert_json_eq,
     Animation,
     Audio,
+    ChannelChat,
     Contact,
     Document,
     EncryptedCredentials,
     ForumTopicIconColor,
     Game,
+    Giveaway,
+    GiveawayCompleted,
+    GiveawayWinners,
     Invoice,
     Location,
     Message,
@@ -307,6 +311,80 @@ fn general_forum_topic_unhidden() {
 
     expected_struct.data = MessageData::GeneralForumTopicUnhidden;
     expected_value["general_forum_topic_unhidden"] = serde_json::json!({});
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn giveaway() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::Giveaway(Giveaway::new([ChannelChat::new(1, "test")], 0, 1));
+    expected_value["giveaway"] = serde_json::json!({
+        "chats": [
+            {
+                "type": "channel",
+                "id": 1,
+                "title": "test"
+            }
+        ],
+        "winners_selection_date": 0,
+        "winner_count": 1
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn giveaway_created() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::GiveawayCreated;
+    expected_value["giveaway_created"] = serde_json::json!({});
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn giveaway_completed() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::GiveawayCompleted(GiveawayCompleted::new(1));
+    expected_value["giveaway_completed"] = serde_json::json!({
+        "winner_count": 1
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn giveaway_winners() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::GiveawayWinners(GiveawayWinners::new(
+        ChannelChat::new(1, "test"),
+        1,
+        1,
+        [User::new(1, "test", false)],
+        0,
+    ));
+    expected_value["giveaway_winners"] = serde_json::json!({
+        "chat": {
+            "type": "channel",
+            "id": 1,
+            "title": "test"
+        },
+        "giveaway_message_id": 1,
+        "winner_count": 1,
+        "winners": [
+            {
+                "id": 1,
+                "first_name": "test",
+                "is_bot": false
+            }
+        ],
+        "winners_selection_date": 0
+    });
     assert_json_eq(expected_struct, expected_value);
 }
 

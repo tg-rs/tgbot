@@ -9,6 +9,9 @@ use crate::types::{
     Document,
     ForumTopicIconColor,
     Game,
+    Giveaway,
+    GiveawayCompleted,
+    GiveawayWinners,
     Integer,
     Invoice,
     Location,
@@ -99,6 +102,18 @@ pub enum MessageData {
         serialize_with = "RawDataEmpty::serialize_value"
     )]
     GeneralForumTopicUnhidden,
+    /// A scheduled giveaway.
+    Giveaway(Giveaway),
+    /// Service message: a scheduled giveaway was created.
+    #[serde(
+        deserialize_with = "RawDataEmpty::deserialize_value",
+        serialize_with = "RawDataEmpty::serialize_value"
+    )]
+    GiveawayCreated,
+    /// Service message: a giveaway without public winners was completed.
+    GiveawayCompleted(GiveawayCompleted),
+    /// A giveaway with public winners was completed.
+    GiveawayWinners(GiveawayWinners),
     /// The group has been created.
     #[serde(
         deserialize_with = "RawDataFlag::deserialize_value",

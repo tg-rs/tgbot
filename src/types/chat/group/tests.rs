@@ -1,11 +1,13 @@
 use crate::types::{
     tests::assert_json_eq,
+    AccentColor,
     Chat,
     ChatPermissions,
     ChatPhoto,
     GroupChat,
     Message,
     MessageData,
+    ProfileAccentColor,
     ReactionType,
     Text,
     User,
@@ -35,7 +37,11 @@ fn group_chat() {
             .with_has_hidden_members(true)
             .with_available_reactions([ReactionType::emoji("👍")])
             .with_emoji_status_custom_emoji_id("emoji-id")
-            .with_emoji_status_expiration_date(0),
+            .with_emoji_status_expiration_date(0)
+            .with_accent_color(AccentColor::Red)
+            .with_background_custom_emoji_id("emoji-id")
+            .with_profile_accent_color(ProfileAccentColor::try_from(1).unwrap())
+            .with_profile_background_custom_emoji_id("emoji-id"),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert!(expected_struct.get_username().is_none());
@@ -95,7 +101,11 @@ fn group_chat() {
                 }
             ],
             "emoji_status_custom_emoji_id": "emoji-id",
-            "emoji_status_expiration_date": 0
+            "emoji_status_expiration_date": 0,
+            "accent_color_id": 0,
+            "background_custom_emoji_id": "emoji-id",
+            "profile_accent_color_id": 1,
+            "profile_background_custom_emoji_id": "emoji-id"
         }),
     );
     assert_json_eq(

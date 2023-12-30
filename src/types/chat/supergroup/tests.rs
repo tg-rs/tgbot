@@ -1,5 +1,6 @@
 use crate::types::{
     tests::assert_json_eq,
+    AccentColor,
     Chat,
     ChatLocation,
     ChatPermissions,
@@ -7,6 +8,7 @@ use crate::types::{
     Location,
     Message,
     MessageData,
+    ProfileAccentColor,
     ReactionType,
     SupergroupChat,
     Text,
@@ -58,7 +60,11 @@ fn supergroup() {
             .with_active_usernames(vec!["supergroup_chat"])
             .with_has_hidden_members(true)
             .with_has_aggressive_anti_spam_enabled(true)
-            .with_available_reactions([ReactionType::emoji("👍")]),
+            .with_available_reactions([ReactionType::emoji("👍")])
+            .with_accent_color(AccentColor::Red)
+            .with_background_custom_emoji_id("emoji-id")
+            .with_profile_accent_color(ProfileAccentColor::try_from(1).unwrap())
+            .with_profile_background_custom_emoji_id("emoji-id"),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
@@ -130,7 +136,11 @@ fn supergroup() {
                 }
             ],
             "emoji_status_custom_emoji_id": "emoji-id",
-            "emoji_status_expiration_date": 0
+            "emoji_status_expiration_date": 0,
+            "accent_color_id": 0,
+            "background_custom_emoji_id": "emoji-id",
+            "profile_accent_color_id": 1,
+            "profile_background_custom_emoji_id": "emoji-id"
         }),
     );
 

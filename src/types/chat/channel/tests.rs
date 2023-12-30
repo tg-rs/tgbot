@@ -1,10 +1,12 @@
 use crate::types::{
     tests::assert_json_eq,
+    AccentColor,
     ChannelChat,
     Chat,
     ChatPhoto,
     Message,
     MessageData,
+    ProfileAccentColor,
     ReactionType,
     Text,
     User,
@@ -36,7 +38,11 @@ fn channel_chat() {
             .with_active_usernames(["channel_username"])
             .with_available_reactions([ReactionType::emoji("👍")])
             .with_emoji_status_custom_emoji_id("emoji-id")
-            .with_emoji_status_expiration_date(0),
+            .with_emoji_status_expiration_date(0)
+            .with_accent_color(AccentColor::Red)
+            .with_background_custom_emoji_id("emoji-id")
+            .with_profile_accent_color(ProfileAccentColor::try_from(1).unwrap())
+            .with_profile_background_custom_emoji_id("emoji-id"),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(&expected_struct.get_username().unwrap(), &"channel_username");
@@ -84,7 +90,11 @@ fn channel_chat() {
                 }
             ],
             "emoji_status_custom_emoji_id": "emoji-id",
-            "emoji_status_expiration_date": 0
+            "emoji_status_expiration_date": 0,
+            "accent_color_id": 0,
+            "background_custom_emoji_id": "emoji-id",
+            "profile_accent_color_id": 1,
+            "profile_background_custom_emoji_id": "emoji-id"
         }),
     );
 

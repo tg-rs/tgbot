@@ -1,4 +1,15 @@
-use crate::types::{tests::assert_json_eq, Chat, ChatPhoto, Message, MessageData, PrivateChat, Text, User};
+use crate::types::{
+    tests::assert_json_eq,
+    AccentColor,
+    Chat,
+    ChatPhoto,
+    Message,
+    MessageData,
+    PrivateChat,
+    ProfileAccentColor,
+    Text,
+    User,
+};
 
 #[test]
 fn private_chat() {
@@ -32,7 +43,11 @@ fn private_chat() {
             .with_has_restricted_voice_and_video_messages(true)
             .with_active_usernames(["john_doe"])
             .with_emoji_status_custom_emoji_id("emoji-id")
-            .with_emoji_status_expiration_date(0),
+            .with_emoji_status_expiration_date(0)
+            .with_accent_color(AccentColor::Red)
+            .with_background_custom_emoji_id("emoji-id")
+            .with_profile_accent_color(ProfileAccentColor::try_from(1).unwrap())
+            .with_profile_background_custom_emoji_id("emoji-id"),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "john_doe");
@@ -78,7 +93,11 @@ fn private_chat() {
             "has_restricted_voice_and_video_messages": true,
             "active_usernames": ["john_doe"],
             "emoji_status_custom_emoji_id": "emoji-id",
-            "emoji_status_expiration_date": 0
+            "emoji_status_expiration_date": 0,
+            "accent_color_id": 0,
+            "background_custom_emoji_id": "emoji-id",
+            "profile_accent_color_id": 1,
+            "profile_background_custom_emoji_id": "emoji-id"
         }),
     );
     let expected_struct = Chat::Private(PrivateChat::new(1, "John"));

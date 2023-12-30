@@ -1,6 +1,8 @@
-use crate::types::Integer;
-use serde::{Deserialize, Serialize};
 use std::{error::Error, fmt};
+
+use serde::{Deserialize, Serialize};
+
+use crate::types::Integer;
 
 #[cfg(test)]
 mod tests;

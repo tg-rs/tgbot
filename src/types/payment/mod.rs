@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::Integer;
-
 pub use self::{checkout::*, invoice::*, order::*, shipping::*};
+use crate::types::Integer;
 
 #[cfg(test)]
 mod tests;

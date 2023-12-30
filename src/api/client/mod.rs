@@ -12,9 +12,8 @@ use reqwest::{
 use serde::de::DeserializeOwned;
 use tokio::time::sleep;
 
-use crate::types::{Response, ResponseError};
-
 use super::payload::{Payload, PayloadError};
+use crate::types::{Response, ResponseError};
 
 #[cfg(test)]
 mod tests;

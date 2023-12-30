@@ -2,12 +2,11 @@
 use std::{env, time::Duration};
 
 use dotenvy::dotenv;
-use tokio::{spawn, sync::mpsc, time::sleep};
-
 use tgbot::{
     api::Client,
     types::{ChatId, Integer, SendMessage, Update},
 };
+use tokio::{spawn, sync::mpsc, time::sleep};
 
 #[allow(clippy::large_enum_variant)]
 enum Notification {

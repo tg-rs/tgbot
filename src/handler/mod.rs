@@ -1,10 +1,9 @@
 use std::future::Future;
 
-use crate::types::Update;
-
 pub use self::longpoll::*;
 #[cfg(feature = "webhook")]
 pub use self::webhook::*;
+use crate::types::Update;
 
 mod longpoll;
 

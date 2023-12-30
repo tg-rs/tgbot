@@ -1,6 +1,5 @@
 //! The example shows how to handle updates using a webhook
 use dotenvy::dotenv;
-
 use tgbot::{
     handler::{UpdateHandler, WebhookServer},
     types::Update,

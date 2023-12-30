@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 
+use self::raw::*;
 use crate::types::{
     Animation,
     Audio,
@@ -29,8 +30,6 @@ use crate::types::{
     Voice,
     WebAppData,
 };
-
-use self::raw::*;
 
 #[cfg(test)]
 mod tests;

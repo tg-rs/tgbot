@@ -8,12 +8,11 @@ use tokio::{
 };
 use tokio_util::codec::{BytesCodec, FramedRead};
 
+pub use self::{animation::*, audio::*, document::*, photo::*, video::*, video_note::*, voice::*};
 use crate::{
     api::{FormValue, Method, Payload},
     types::Integer,
 };
-
-pub use self::{animation::*, audio::*, document::*, photo::*, video::*, video_note::*, voice::*};
 
 #[cfg(test)]
 mod tests;

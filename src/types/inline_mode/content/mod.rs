@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Contact, Location, Text, Venue};
-
 pub use self::{contact::*, invoice::*, location::*, text::*, venue::*};
+use crate::types::{Contact, Location, Text, Venue};
 
 mod contact;
 mod invoice;

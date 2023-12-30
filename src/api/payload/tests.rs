@@ -1,9 +1,8 @@
 use pretty_assertions::assert_eq;
 use serde_json::Value as JsonValue;
 
-use crate::api::Method;
-
 use super::{Payload, PayloadData};
+use crate::api::Method;
 
 pub(crate) fn assert_payload_eq<A>(expected_payload: Payload, actual_method: A)
 where

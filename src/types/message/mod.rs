@@ -1,8 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize};
 
-use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, Text, User};
-
 pub use self::{command::*, data::*, methods::*, origin::*, sender::*};
+use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, Text, User};
 
 #[cfg(test)]
 mod tests;

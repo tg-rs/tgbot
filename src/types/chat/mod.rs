@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-use crate::api::{Method, Payload};
-
 pub use self::{
     action::*,
     boost::*,
@@ -20,6 +18,7 @@ pub use self::{
     sticker_set::*,
     supergroup::*,
 };
+use crate::api::{Method, Payload};
 
 #[cfg(test)]
 mod tests;

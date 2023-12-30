@@ -3,9 +3,8 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
-use crate::{api::Form, types::InputFile};
-
 pub use self::{animation::*, audio::*, document::*, photo::*, video::*};
+use crate::{api::Form, types::InputFile};
 
 #[cfg(test)]
 mod tests;

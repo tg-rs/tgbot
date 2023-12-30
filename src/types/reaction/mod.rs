@@ -1,8 +1,9 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{
     api::{Method, Payload},
     types::{Chat, ChatId, Integer, User},
 };
-use serde::{Deserialize, Serialize};
 
 #[cfg(test)]
 mod tests;

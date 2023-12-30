@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Location, User, WebAppInfo};
-
 use self::raw::RawInlineQueryResult;
 pub use self::{
     article::*,
@@ -18,6 +16,7 @@ pub use self::{
     video::*,
     voice::*,
 };
+use crate::types::{Location, User, WebAppInfo};
 
 #[cfg(test)]
 mod tests;

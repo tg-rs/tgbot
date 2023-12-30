@@ -1,6 +1,5 @@
 use futures_util::stream::StreamExt;
 use mockito::Server;
-
 use tgbot::{api::Client, types::Close};
 
 #[tokio::test]

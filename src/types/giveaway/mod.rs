@@ -1,5 +1,6 @@
-use crate::types::{Chat, Integer, Message, User};
 use serde::{Deserialize, Serialize};
+
+use crate::types::{Chat, Integer, Message, User};
 
 #[cfg(test)]
 mod tests;

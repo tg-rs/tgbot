@@ -7,13 +7,12 @@ use std::{
 use dotenvy::dotenv;
 use futures_util::stream::StreamExt;
 use tempfile::tempdir;
-use tokio::{fs::File, io::AsyncWriteExt};
-
 use tgbot::{
     api::Client,
     handler::{LongPoll, UpdateHandler},
     types::{Document, GetFile, MessageData, Update, UpdateType},
 };
+use tokio::{fs::File, io::AsyncWriteExt};
 
 struct Handler {
     client: Client,

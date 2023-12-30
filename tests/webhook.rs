@@ -1,12 +1,11 @@
 use std::sync::Arc;
 
 use reqwest::{Client, StatusCode};
-use tokio::sync::Mutex;
-
 use tgbot::{
     handler::{UpdateHandler, WebhookServer},
     types::Update,
 };
+use tokio::sync::Mutex;
 
 #[derive(Clone)]
 struct Handler {

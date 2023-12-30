@@ -1,11 +1,10 @@
 use serde::{Deserialize, Serialize};
 
+pub use self::{input::*, mask::*, set::*};
 use crate::{
     api::{Form, Method, Payload},
     types::{ChatId, File, InputFile, Integer, Message, PhotoSize, ReplyMarkup, ReplyMarkupError},
 };
-
-pub use self::{input::*, mask::*, set::*};
 
 #[cfg(test)]
 mod tests;

@@ -6,13 +6,12 @@ use std::{
 use dotenvy::dotenv;
 use mockito::{Matcher, Server};
 use serde_json::json;
-use tokio::{spawn, sync::Mutex, time::sleep};
-
 use tgbot::{
     api::Client,
     handler::{LongPoll, UpdateHandler},
     types::Update,
 };
+use tokio::{spawn, sync::Mutex, time::sleep};
 
 struct Handler {
     updates: Arc<Mutex<Vec<Update>>>,

@@ -1,13 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::InlineKeyboardMarkup;
-
 use super::raw::{
     RawInlineQueryResult,
     RawInlineQueryResultData,
     RawInlineQueryResultDataError::{self, MissingField},
     RawInlineQueryResultType,
 };
+use crate::types::InlineKeyboardMarkup;
 
 #[cfg(test)]
 mod tests;

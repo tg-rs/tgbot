@@ -5,10 +5,9 @@ use reqwest::{Client as HttpClient, Method as HttpMethod, RequestBuilder as Http
 use serde::ser::Serialize;
 use serde_json::Error as JsonError;
 
-use super::form::{Form, FormError};
-
 #[cfg(test)]
 pub(crate) use self::tests::*;
+use super::form::{Form, FormError};
 
 #[cfg(test)]
 mod tests;

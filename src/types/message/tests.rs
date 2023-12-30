@@ -1,12 +1,42 @@
 use crate::types::{
     tests::assert_json_eq,
     EditMessageResult,
+    InaccessibleMessage,
     LinkPreviewOptions,
+    MaybeInaccessibleMessage,
     Message,
     MessageData,
     SupergroupChat,
     User,
 };
+
+#[test]
+fn maybe_inaccesible() {
+    let msg: MaybeInaccessibleMessage = serde_json::from_value(serde_json::json!({
+        "message_id": 1, "date": 0,
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+    }))
+    .unwrap();
+    match msg {
+        MaybeInaccessibleMessage::InaccessibleMessage(InaccessibleMessage { chat, message_id }) => {
+            assert_eq!(chat.get_id(), 1);
+            assert_eq!(message_id, 1);
+        }
+        MaybeInaccessibleMessage::Message(_) => panic!("Unexpected message variant"),
+    };
+
+    let msg: MaybeInaccessibleMessage = serde_json::from_value(serde_json::json!({
+        "message_id": 1, "date": 1,
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+    }))
+    .unwrap();
+    match msg {
+        MaybeInaccessibleMessage::InaccessibleMessage(_) => panic!("Unexpected message variant"),
+        MaybeInaccessibleMessage::Message(msg) => {
+            assert_eq!(msg.id, 1);
+        }
+    };
+}
 
 #[test]
 fn get_text() {

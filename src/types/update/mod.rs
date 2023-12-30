@@ -17,6 +17,7 @@ use crate::{
         ChosenInlineResult,
         InlineQuery,
         Integer,
+        MaybeInaccessibleMessage,
         Message,
         MessageReactionCountUpdated,
         MessageReactionUpdated,
@@ -130,7 +131,10 @@ impl Update {
             | UpdateType::EditedMessage(ref msg)
             | UpdateType::ChannelPost(ref msg)
             | UpdateType::EditedChannelPost(ref msg) => Some(msg),
-            UpdateType::CallbackQuery(ref query) => query.message.as_ref(),
+            UpdateType::CallbackQuery(ref query) => match query.message {
+                Some(MaybeInaccessibleMessage::Message(ref msg)) => Some(msg),
+                _ => None,
+            },
             _ => None,
         }
     }

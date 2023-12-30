@@ -13,6 +13,7 @@ use crate::types::{
     GiveawayWinners,
     Invoice,
     Location,
+    MaybeInaccessibleMessage,
     Message,
     MessageData,
     MessageDataAudio,
@@ -53,7 +54,7 @@ use crate::types::{
 fn create_message_struct() -> Message {
     Message::new(
         1,
-        0,
+        1,
         SupergroupChat::new(1, "Chat"),
         MessageData::Unknown(serde_json::json!({})),
         User::new(1, "User", false),
@@ -63,7 +64,7 @@ fn create_message_struct() -> Message {
 fn create_message_value() -> serde_json::Value {
     serde_json::json!({
         "message_id": 1,
-        "date": 0,
+        "date": 1,
         "from": {"id": 1, "first_name": "User", "is_bot": false},
         "chat": {"id": 1, "type": "supergroup", "title": "Chat"},
         "has_protected_content": false,
@@ -584,10 +585,10 @@ fn pinned_message() {
 
     let mut pinned_message = create_message_struct();
     pinned_message.data = MessageData::Text(Text::from("text"));
-    expected_struct.data = MessageData::PinnedMessage(Box::new(pinned_message));
+    expected_struct.data = MessageData::PinnedMessage(MaybeInaccessibleMessage::Message(Box::new(pinned_message)));
     expected_value["pinned_message"] = serde_json::json!({
         "message_id": 1,
-        "date": 0,
+        "date": 1,
         "from": {"id": 1, "first_name": "User", "is_bot": false},
         "chat": {"id": 1, "type": "supergroup", "title": "Chat"},
         "text": "text",

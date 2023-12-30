@@ -15,7 +15,7 @@ use crate::types::{
     Integer,
     Invoice,
     Location,
-    Message,
+    MaybeInaccessibleMessage,
     PassportData,
     PhotoSize,
     Poll,
@@ -146,7 +146,7 @@ pub enum MessageData {
     ///
     /// Note that the Message object in variant will not contain
     /// further `reply_to` field even if it is itself a reply.
-    PinnedMessage(Box<Message>),
+    PinnedMessage(MaybeInaccessibleMessage),
     /// Information about the native poll.
     Poll(Poll),
     /// A user in the chat triggered another user's proximity alert while sharing Live Location.

@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 
 use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, Text, User};
 
@@ -22,6 +22,43 @@ pub enum EditMessageResult {
     Message(Message),
     /// Returned if edited message is NOT sent by the bot.
     Bool(bool),
+}
+
+/// Describes a message that was deleted or is otherwise inaccessible to the bot.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct InaccessibleMessage {
+    /// Chat the message belonged to.
+    pub chat: Chat,
+    /// Unique message identifier inside the chat
+    pub message_id: Integer,
+}
+
+/// Describes a message that can be inaccessible to the bot.
+#[derive(Clone, Debug, derive_more::From, PartialEq, Serialize)]
+#[serde(untagged)]
+pub enum MaybeInaccessibleMessage {
+    /// Describes a message that was deleted or is otherwise inaccessible to the bot.
+    InaccessibleMessage(InaccessibleMessage),
+    /// Describes a regular message.
+    Message(Box<Message>),
+}
+
+impl<'de> Deserialize<'de> for MaybeInaccessibleMessage {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Message::deserialize(deserializer).map(|x| {
+            if x.date == 0 {
+                Self::InaccessibleMessage(InaccessibleMessage {
+                    chat: x.chat,
+                    message_id: x.id,
+                })
+            } else {
+                Self::Message(Box::new(x))
+            }
+        })
+    }
 }
 
 /// Represents a message.

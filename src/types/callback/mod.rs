@@ -5,7 +5,7 @@ use serde_json::Error as JsonError;
 
 use crate::{
     api::{Method, Payload},
-    types::{Integer, Message, User},
+    types::{Integer, MaybeInaccessibleMessage, User},
 };
 
 #[cfg(test)]
@@ -51,7 +51,7 @@ pub struct CallbackQuery {
     /// Note that message content and message date
     /// will not be available if the message is too old.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub message: Option<Message>,
+    pub message: Option<MaybeInaccessibleMessage>,
 }
 
 impl CallbackQuery {
@@ -144,7 +144,7 @@ impl CallbackQuery {
     /// # Arguments
     ///
     /// * `value` - Message with the callback button that originated the query.
-    pub fn with_message(mut self, value: Message) -> Self {
+    pub fn with_message(mut self, value: MaybeInaccessibleMessage) -> Self {
         self.message = Some(value);
         self
     }

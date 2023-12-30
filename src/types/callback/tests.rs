@@ -6,6 +6,7 @@ use crate::{
         tests::assert_json_eq,
         AnswerCallbackQuery,
         CallbackQuery,
+        MaybeInaccessibleMessage,
         Message,
         MessageData,
         SupergroupChat,
@@ -23,13 +24,13 @@ struct QueryData {
 fn callback_query() {
     let user = User::new(1, "User", false);
     let expected_struct = CallbackQuery::new("id", user.clone())
-        .with_message(Message::new(
+        .with_message(MaybeInaccessibleMessage::Message(Box::new(Message::new(
             2,
-            0,
+            1,
             SupergroupChat::new(3, "Supergroup Chat"),
             MessageData::Text(Text::from("text")),
             user,
-        ))
+        ))))
         .with_inline_message_id("id")
         .with_chat_instance("instance")
         .with_data(r#"{"k": "v"}"#)
@@ -46,7 +47,7 @@ fn callback_query() {
             },
             "message": {
                 "message_id": 2,
-                "date": 0,
+                "date": 1,
                 "from": {"id": 1, "first_name": "User", "is_bot": false},
                 "chat": {"id": 3, "type": "supergroup", "title": "Supergroup Chat"},
                 "text": "text",

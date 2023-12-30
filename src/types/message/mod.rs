@@ -2,15 +2,15 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, Text, User};
 
-pub use self::{command::*, data::*, forward::*, methods::*, sender::*};
+pub use self::{command::*, data::*, methods::*, origin::*, sender::*};
 
 #[cfg(test)]
 mod tests;
 
 mod command;
 mod data;
-mod forward;
 mod methods;
+mod origin;
 mod sender;
 
 /// Represents a result of `EditMessage*` requests.
@@ -51,10 +51,9 @@ pub struct Message {
     /// Author signature.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
-    /// Forwarded data.
-    #[serde(flatten)]
+    /// formation about the original message for forwarded messages.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub forward: Option<Forward>,
+    pub forward_origin: Option<MessageOrigin>,
     /// Indicates whether the message media is covered by a spoiler animation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_media_spoiler: Option<bool>,
@@ -116,7 +115,7 @@ impl Message {
             is_automatic_forward: false,
             sender: sender.into(),
             author_signature: None,
-            forward: None,
+            forward_origin: None,
             has_media_spoiler: None,
             is_topic_message: None,
             link_preview_options: None,
@@ -260,13 +259,13 @@ impl Message {
         self
     }
 
-    /// Sets a new forward.
+    /// Sets a new forward origin.
     ///
     /// # Arguments
     ///
-    /// * `value` - Forward.
-    pub fn with_forward(mut self, value: Forward) -> Self {
-        self.forward = Some(value);
+    /// * `value` - Information about the message origin.
+    pub fn with_forward_origin(mut self, value: MessageOrigin) -> Self {
+        self.forward_origin = Some(value);
         self
     }
 

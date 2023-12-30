@@ -4,6 +4,7 @@ pub use self::{
     bot::*,
     callback::*,
     chat::*,
+    color::*,
     contact::*,
     dice::*,
     file::*,
@@ -35,6 +36,7 @@ pub use self::{
 mod bot;
 mod callback;
 mod chat;
+mod color;
 mod contact;
 mod dice;
 mod file;

@@ -43,6 +43,16 @@ pub struct SupergroupChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Custom emoji identifier of emoji status.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub emoji_status_custom_emoji_id: Option<String>,
+    /// Expiration date of the emoji status of in Unix time, if any.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub emoji_status_expiration_date: Option<Integer>,
     /// Indicates whether aggressive anti-spam checks are enabled in the supergroup.
     ///
     /// The field is only available to chat administrators.
@@ -144,6 +154,8 @@ impl SupergroupChat {
             available_reactions: None,
             can_set_sticker_set: None,
             description: None,
+            emoji_status_custom_emoji_id: None,
+            emoji_status_expiration_date: None,
             has_aggressive_anti_spam_enabled: None,
             has_hidden_members: None,
             has_protected_content: None,
@@ -210,6 +222,29 @@ impl SupergroupChat {
         T: Into<String>,
     {
         self.description = Some(value.into());
+        self
+    }
+
+    /// Sets a new custom emoji identifier of emoji status.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Emoji identifier.
+    pub fn with_emoji_status_custom_emoji_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.emoji_status_custom_emoji_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new emoji status expiration date.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unix timestamp; in seconds.
+    pub fn with_emoji_status_expiration_date(mut self, value: Integer) -> Self {
+        self.emoji_status_expiration_date = Some(value);
         self
     }
 

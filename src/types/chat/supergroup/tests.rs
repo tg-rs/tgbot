@@ -25,6 +25,8 @@ fn supergroup() {
                 "small-file-unique-id",
             ))
             .with_description("Description")
+            .with_emoji_status_custom_emoji_id("emoji-id")
+            .with_emoji_status_expiration_date(0)
             .with_invite_link("example.com/join/supergroup")
             .with_pinned_message(Message::new(
                 1,
@@ -126,7 +128,9 @@ fn supergroup() {
                     "type": "emoji",
                     "emoji": "👍"
                 }
-            ]
+            ],
+            "emoji_status_custom_emoji_id": "emoji-id",
+            "emoji_status_expiration_date": 0
         }),
     );
 

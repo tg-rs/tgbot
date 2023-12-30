@@ -34,7 +34,9 @@ fn channel_chat() {
             .with_has_protected_content(true)
             .with_message_auto_delete_time(86400)
             .with_active_usernames(["channel_username"])
-            .with_available_reactions([ReactionType::emoji("👍")]),
+            .with_available_reactions([ReactionType::emoji("👍")])
+            .with_emoji_status_custom_emoji_id("emoji-id")
+            .with_emoji_status_expiration_date(0),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(&expected_struct.get_username().unwrap(), &"channel_username");
@@ -80,7 +82,9 @@ fn channel_chat() {
                     "type": "emoji",
                     "emoji": "👍"
                 }
-            ]
+            ],
+            "emoji_status_custom_emoji_id": "emoji-id",
+            "emoji_status_expiration_date": 0
         }),
     );
 

@@ -159,7 +159,7 @@ pub enum MessageData {
     )]
     SupergroupChatCreated,
     /// A user was shared with the bot.
-    UserShared(MessageDataUserShared),
+    UsersShared(MessageDataUsersShared),
     /// Information about the venue.
     Venue(Venue),
     /// Information about the video note.
@@ -494,29 +494,35 @@ impl MessageDataProximityAlert {
     }
 }
 
-/// Contains information about the user
-/// whose identifier was shared with the bot
-/// using a [`crate::types::KeyboardButton::with_request_user`] button.
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct MessageDataUserShared {
+/// Contains information about the users
+/// whose identifiers were shared with the bot
+/// using a [`crate::types::KeyboardButton::with_request_users`] button.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataUsersShared {
     /// Identifier of the request.
     pub request_id: Integer,
-    /// Identifier of the shared user.
+    /// Identifiers of the shared users.
     ///
-    /// The bot may not have access to the user and could be unable to use this identifier,
-    /// unless the user is already known to the bot by some other means.
-    pub user_id: Integer,
+    /// The bot may not have access to the users and could be unable to use these identifiers,
+    /// unless the users are already known to the bot by some other means.
+    pub user_ids: Vec<Integer>,
 }
 
-impl MessageDataUserShared {
-    /// Creates a new `MessageDataUserShared`.
+impl MessageDataUsersShared {
+    /// Creates a new `MessageDataUsersShared`.
     ///
     /// # Arguments
     ///
     /// * `request_id` - Identifier of the request.
-    /// * `user_id` - Identifier of the shared user.
-    pub fn new(request_id: Integer, user_id: Integer) -> Self {
-        Self { request_id, user_id }
+    /// * `user_ids` - Identifiers of the shared users.
+    pub fn new<T>(request_id: Integer, user_ids: T) -> Self
+    where
+        T: IntoIterator<Item = Integer>,
+    {
+        Self {
+            request_id,
+            user_ids: user_ids.into_iter().collect(),
+        }
     }
 }
 

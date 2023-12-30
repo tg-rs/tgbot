@@ -151,7 +151,7 @@ enum KeyboardButtonType {
     RequestContact(True),
     RequestLocation(True),
     RequestPoll(KeyboardButtonPollType),
-    RequestUser(KeyboardButtonRequestUser),
+    RequestUsers(KeyboardButtonRequestUsers),
     WebApp(WebAppInfo),
 }
 
@@ -241,8 +241,8 @@ impl KeyboardButton {
     /// to the bot in a [`crate::types::MessageData::UserShared`] message.
     ///
     /// Available in private chats only.
-    pub fn with_request_user(mut self, value: KeyboardButtonRequestUser) -> Self {
-        self.button_type = Some(KeyboardButtonType::RequestUser(value));
+    pub fn with_request_users(mut self, value: KeyboardButtonRequestUsers) -> Self {
+        self.button_type = Some(KeyboardButtonType::RequestUsers(value));
         self
     }
 
@@ -412,16 +412,18 @@ impl KeyboardButtonRequestChat {
 ///
 /// [More about requesting users](https://core.telegram.org/bots/features#chat-and-user-selection)
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-pub struct KeyboardButtonRequestUser {
+pub struct KeyboardButtonRequestUsers {
     request_id: Integer,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_quantity: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     user_is_bot: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     user_is_premium: Option<bool>,
 }
 
-impl KeyboardButtonRequestUser {
-    /// Creates a new `KeyboardButtonRequestUser`.
+impl KeyboardButtonRequestUsers {
+    /// Creates a new `KeyboardButtonRequestUsers`.
     ///
     /// # Arguments
     ///
@@ -432,9 +434,20 @@ impl KeyboardButtonRequestUser {
     pub fn new(request_id: Integer) -> Self {
         Self {
             request_id,
+            max_quantity: None,
             user_is_bot: None,
             user_is_premium: None,
         }
+    }
+
+    /// Sets a new max quantity
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The maximum number of users to be selected; 1-10; default - 1.
+    pub fn with_max_quantity(mut self, value: Integer) -> Self {
+        self.max_quantity = Some(value);
+        self
     }
 
     /// Sets a new value for a `user_is_bot` flag.

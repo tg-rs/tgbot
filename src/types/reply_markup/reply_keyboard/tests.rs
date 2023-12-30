@@ -3,7 +3,7 @@ use crate::types::{
     ChatAdministratorRights,
     KeyboardButton,
     KeyboardButtonRequestChat,
-    KeyboardButtonRequestUser,
+    KeyboardButtonRequestUsers,
     PollType,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
@@ -30,9 +30,10 @@ fn reply_keyboard_markup() {
         KeyboardButton::new("request quiz").with_request_poll(PollType::Quiz),
         KeyboardButton::new("request regular poll").with_request_poll(PollType::Regular),
         KeyboardButton::new("request any poll").with_request_poll(None),
-        KeyboardButton::new("request user 1").with_request_user(KeyboardButtonRequestUser::new(1)),
-        KeyboardButton::new("request user 2").with_request_user(
-            KeyboardButtonRequestUser::new(1)
+        KeyboardButton::new("request user 1").with_request_users(KeyboardButtonRequestUsers::new(1)),
+        KeyboardButton::new("request user 2").with_request_users(
+            KeyboardButtonRequestUsers::new(1)
+                .with_max_quantity(2)
                 .with_user_is_bot(true)
                 .with_user_is_premium(true),
         ),
@@ -103,9 +104,10 @@ fn reply_keyboard_markup() {
                     {"text": "request quiz", "request_poll": {"type": "quiz"}},
                     {"text": "request regular poll", "request_poll": {"type": "regular"}},
                     {"text": "request any poll", "request_poll": {}},
-                    {"text": "request user 1", "request_user": {"request_id": 1}},
-                    {"text": "request user 2", "request_user": {
+                    {"text": "request user 1", "request_users": {"request_id": 1}},
+                    {"text": "request user 2", "request_users": {
                         "request_id": 1,
+                        "max_quantity": 2,
                         "user_is_bot": true,
                         "user_is_premium": true
                     }},
@@ -177,9 +179,10 @@ fn reply_keyboard_markup() {
                     {"text": "request quiz", "request_poll": {"type": "quiz"}},
                     {"text": "request regular poll", "request_poll": {"type": "regular"}},
                     {"text": "request any poll", "request_poll": {}},
-                    {"text": "request user 1", "request_user": {"request_id": 1}},
-                    {"text": "request user 2", "request_user": {
+                    {"text": "request user 1", "request_users": {"request_id": 1}},
+                    {"text": "request user 2", "request_users": {
                         "request_id": 1,
+                        "max_quantity": 2,
                         "user_is_bot": true,
                         "user_is_premium": true
                     }},

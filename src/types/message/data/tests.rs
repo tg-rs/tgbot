@@ -19,7 +19,7 @@ use crate::types::{
     MessageDataForumTopicEdited,
     MessageDataPhoto,
     MessageDataProximityAlert,
-    MessageDataUserShared,
+    MessageDataUsersShared,
     MessageDataVideo,
     MessageDataVideoChatEnded,
     MessageDataVideoChatParticipantsInvited,
@@ -672,14 +672,14 @@ fn unknown() {
 }
 
 #[test]
-fn user_shared() {
+fn users_shared() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::UserShared(MessageDataUserShared::new(1, 1));
-    expected_value["user_shared"] = serde_json::json!({
+    expected_struct.data = MessageData::UsersShared(MessageDataUsersShared::new(1, [1]));
+    expected_value["users_shared"] = serde_json::json!({
         "request_id": 1,
-        "user_id": 1,
+        "user_ids": [1],
     });
     assert_json_eq(expected_struct, expected_value);
 }

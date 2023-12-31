@@ -1,6 +1,6 @@
 use serde::{Deserialize, Deserializer, Serialize};
 
-pub use self::{command::*, data::*, methods::*, origin::*, sender::*};
+pub use self::{command::*, data::*, methods::*, origin::*, reply::*, sender::*};
 use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, Text, User};
 
 #[cfg(test)]
@@ -10,6 +10,7 @@ mod command;
 mod data;
 mod methods;
 mod origin;
+mod reply;
 mod sender;
 
 /// Represents a result of `EditMessage*` requests.
@@ -87,6 +88,9 @@ pub struct Message {
     /// Author signature.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
+    /// Information about the message that is being replied to, which may come from another chat or forum topic.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_reply: Option<ExternalReplyInfo>,
     /// formation about the original message for forwarded messages.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub forward_origin: Option<MessageOrigin>,
@@ -151,6 +155,7 @@ impl Message {
             is_automatic_forward: false,
             sender: sender.into(),
             author_signature: None,
+            external_reply: None,
             forward_origin: None,
             has_media_spoiler: None,
             is_topic_message: None,
@@ -292,6 +297,17 @@ impl Message {
         T: Into<String>,
     {
         self.author_signature = Some(value.into());
+        self
+    }
+
+    /// Sets a new external reply.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about the message that is being replied to,
+    ///             which may come from another chat or forum topic.
+    pub fn with_external_reply(mut self, value: ExternalReplyInfo) -> Self {
+        self.external_reply = Some(value);
         self
     }
 

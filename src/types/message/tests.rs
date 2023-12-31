@@ -39,6 +39,32 @@ fn maybe_inaccesible() {
 }
 
 #[test]
+fn external_reply() {
+    let msg: Message = serde_json::from_value(serde_json::json!({
+        "message_id": 1, "date": 1,
+        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+        "text": "text",
+        "external_reply": {
+            "origin": {
+                "type": "hidden_user",
+                "date": 1,
+                "sender_user_name": "test"
+            },
+            "animation": {
+                "duration": 10,
+                "file_id": "file-id",
+                "file_unique_id": "file-unique-id",
+                "height": 20,
+                "width": 30
+            }
+        }
+    }))
+    .unwrap();
+    assert!(msg.external_reply.is_some());
+}
+
+#[test]
 fn get_text() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,

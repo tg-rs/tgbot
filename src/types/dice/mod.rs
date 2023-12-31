@@ -19,6 +19,16 @@ pub struct Dice {
 }
 
 impl Dice {
+    /// Creates a new `Dice`.
+    ///
+    /// # Arguments
+    ///
+    /// * `dice_type` - Type of the dice.
+    /// * `value` - Value rolled on the dice.
+    pub fn new(dice_type: DiceType, value: Integer) -> Self {
+        Self { dice_type, value }
+    }
+
     /// Returns the type of the dice.
     pub fn dice_type(&self) -> DiceType {
         self.dice_type

@@ -50,7 +50,7 @@ pub enum MessageData {
     ///
     /// This field can‘t be received in a message coming through updates,
     /// because bot can’t be a member of a channel when it is created.
-    /// It can only be found in the `reply_to` field of the [`Message`] struct
+    /// It can only be found in the `reply_to` field of the [`crate::types::Message`] struct
     /// if someone replies to a very first message in a channel.
     #[serde(
         deserialize_with = "RawDataFlag::deserialize_value",
@@ -164,7 +164,7 @@ pub enum MessageData {
     ///
     /// This field can‘t be received in a message coming through updates,
     /// because bot can’t be a member of a supergroup when it is created
-    /// It can only be found in the `reply_to` field of the [`Message`] struct
+    /// It can only be found in the `reply_to` field of the [`crate::types::Message`] struct
     /// if someone replies to a very first message
     /// in a directly created supergroup.
     #[serde(

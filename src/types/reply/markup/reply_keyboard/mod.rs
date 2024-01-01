@@ -238,7 +238,7 @@ impl KeyboardButton {
     ///
     /// If specified, pressing the button will open a list of suitable users.
     /// Tapping on any user will send their identifier
-    /// to the bot in a [`crate::types::MessageData::UserShared`] message.
+    /// to the bot in a [`crate::types::MessageData::UsersShared`] message.
     ///
     /// Available in private chats only.
     pub fn with_request_users(mut self, value: KeyboardButtonRequestUsers) -> Self {
@@ -429,7 +429,7 @@ impl KeyboardButtonRequestUsers {
     ///
     /// * `request_id` - Signed 32-bit identifier of the request,
     ///                  which will be received back
-    ///                  in the [`crate::types::MessageDataUserShared`] object;
+    ///                  in the [`crate::types::MessageDataUsersShared`] object;
     ///                  must be unique within the message.
     pub fn new(request_id: Integer) -> Self {
         Self {

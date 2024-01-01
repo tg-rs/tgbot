@@ -1,5 +1,123 @@
 # Changelog
 
+## 0.20.0 (xx.01.2024)
+
+### Dependencies
+
+- Updated tokio version to 1.35.
+
+### Client
+
+- `Client::with_client` method renamed to `Client::with_http_client`.
+
+### Handlers
+
+- Removed `Future` associated type from `UpdateHandler` trait.
+
+### Bot API
+
+#### 7.0
+
+- Added types: `AccentColor`, `ChatBoost`, `ChatBoostRemoved`, `ChatBoostSource`, `ChatBoostSourceGiveaway`,
+  `ChatBoostUpdated`, `CopyMessages`, `DeleteMessages`, `ExternalReplyData`, `ExternalReplyInfo`, `ForwardMessages`,
+  `GetUserChatBoosts`, `Giveaway`, `GiveawayCompleted`, `GiveawayWinners`, `InaccessibleMessage`, `LinkPreviewOptions`,
+  `MaybeInaccessibleMessage`, `MessageOrigin`, `MessageOriginChannel`, `MessageOriginChat`, `MessageOriginHiddenUser`,
+  `MessageOriginUser`, `MessageReactionCountUpdated`, `MessageReactionUpdated`, `ProfileAccentColor`, `ReactionCount`,
+  `ReactionType`, `ReplyParameters`, `ReplyQuote`, `SetMessageReaction`, `TextQuote`, `UserChatBoosts`.
+- Added enum variants:
+  - `AllowedUpdate`: `ChatBoostRemoved`, `ChatBoostUpdated`, `MessageReaction`, `MessageReactionCount`.
+  - `MessageData`: `Giveaway`, `GiveawayCreated`, `GiveawayCompleted`, `GiveawayWinners`.
+  - `TextEntity`: `Blockquote`.
+  - `UpdateType`: `ChatBoostRemoved`, `ChatBoostUpdated`, `MessageReaction`, `MessageReactionCount`.
+- Added fields:
+  - `ChannelChat`: `accent_color`, `available_reactions`, `background_custom_emoji_id`,
+    `emoji_status_custom_emoji_id`, `emoji_status_expiration_date`, `profile_accent_color`,
+    `profile_background_custom_emoji_id`.
+  - `GroupChat`: `accent_color`, `available_reactions`, `background_custom_emoji_id`, `emoji_status_custom_emoji_id`,
+    `emoji_status_expiration_date`, `has_visible_history`, `profile_accent_color`,
+    `profile_background_custom_emoji_id`.
+  - `Message`: `external_reply`, `forward_origin`, `link_preview_options`, `quote`.
+  - `MessageDataUsersShared`: `user_ids`.
+  - `PrivateChat`: `accent_color`, `background_custom_emoji_id`, `profile_accent_color`,
+    `profile_background_custom_emoji_id`.
+  - `SupergroupChat`: `accent_color`, `available_reactions`, `background_custom_emoji_id`,
+    `emoji_status_custom_emoji_id`, `emoji_status_expiration_date`, `has_visible_history`, `profile_accent_color`,
+    `profile_background_custom_emoji_id`.
+- Added methods:
+  - `ChannelChat`: `with_accent_color`, `with_available_reactions`, `with_background_custom_emoji_id`,
+    `with_emoji_status_custom_emoji_id`, `with_emoji_status_expiration_date`, `with_profile_accent_color`,
+    `with_profile_background_custom_emoji_id`.
+  - `CopyMessage`: `with_reply_parameters`.
+  - `EditMessageText`: `with_link_preview_options`.
+  - `GroupChat`: `with_accent_color`, `with_available_reactions`, `with_background_custom_emoji_id`,
+    `with_emoji_status_custom_emoji_id`, `with_emoji_status_expiration_date`, `with_has_visible_history`,
+    `with_profile_accent_color`, `with_profile_background_custom_emoji_id`.
+  - `InputMessageContentText`: `with_link_preview_options`.
+  - `KeyboardButtonRequestUsers`: `with_max_quantity`.
+  - `Message`: `with_external_reply`, `with_forward_origin`, `with_link_preview_options`, `with_quote`.
+  - `PrivateChat`: `with_accent_color`, `with_background_custom_emoji_id`,
+    `with_profile_accent_color`, `with_profile_background_custom_emoji_id`.
+  - `SendAnimation`: `with_reply_parameters`.
+  - `SendAudio`: `with_reply_parameters`.
+  - `SendContact`: `with_reply_parameters`.
+  - `SendDice`: `with_reply_parameters`.
+  - `SendDocument`: `with_reply_parameters`.
+  - `SendGame`: `with_reply_parameters`.
+  - `SendInvoice`: `with_reply_parameters`.
+  - `SendLocation`: `with_reply_parameters`.
+  - `SendMediaGroup`: `with_reply_parameters`.
+  - `SendMessage`: `with_link_preview_options`, `with_reply_parameters`.
+  - `SendPhoto`: `with_reply_parameters`.
+  - `SendPoll`: `with_reply_parameters`.
+  - `SendQuiz`: `with_reply_parameters`.
+  - `SendSticker`: `with_reply_parameters`.
+  - `SendVenue`: `with_reply_parameters`.
+  - `SendVideo`: `with_reply_parameters`.
+  - `SendVideoNote`: `with_reply_parameters`.
+  - `SendVoice`: `with_reply_parameters`.
+  - `SupergroupChat`: `with_accent_color`, `with_available_reactions`, `with_background_custom_emoji_id`,
+    `with_emoji_status_custom_emoji_id`, `with_emoji_status_expiration_date`, `with_has_visible_history`,
+    `with_profile_accent_color`, `with_profile_background_custom_emoji_id`.
+  - `TextEntity`: `blockquote`
+- Changed enum variants:
+  - `MessageData`: `PinnedMessage(Box<Message>)` to `PinnedMessage(MaybeInaccessibleMessage)`.
+- Changed fields:
+  - `CallbackQuery`: type of `message` from `Message` to `MaybeInaccessibleMessage`.
+- Renamed types: `KeyboardButtonRequestUser` to `KeyboardButtonRequestUsers`,
+  `MessageDataUserShared` to `MessageDataUsersShared`.
+- Renamed enum variants:
+  - `MessageData`: `UserShared` to `UsersShared`.
+- Renamed methods:
+  - `KeyboardButton`: `with_request_user` to `with_request_users`.
+- Removed types: `Forward`, `ForwardFrom`.
+- Removed fields:
+  - `Message`: `forward`.
+  - `MessageDataUsersShared`: `user_id`.
+- Removed methods:
+  - `CopyMessage`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `EditMessageText`: `with_disable_web_page_preview`.
+  - `InputMessageContentText`: `with_disable_web_page_preview`.
+  - `Message`: `with_forward`.
+  - `SendAnimation`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendAudio`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendContact`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendDice`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendDocument`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendGame`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendInvoice`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendLocation`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendMediaGroup`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendPhoto`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendMessage`: `with_disable_web_page_preview`.
+  - `SendMessage`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendPoll`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendQuiz`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendSticker`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendVenue`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendVideo`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendVideoNote`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+  - `SendVoice`: `with_allow_sending_without_reply`, `with_reply_to_message_id`.
+
 ## 0.19.0 (05.12.2023)
 
 ### Dependencies

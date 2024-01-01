@@ -65,6 +65,22 @@ fn external_reply() {
 }
 
 #[test]
+fn quote() {
+    let msg: Message = serde_json::from_value(serde_json::json!({
+        "message_id": 1, "date": 1,
+        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+        "text": "text",
+        "quote": {
+            "position": 0,
+            "text": "test"
+        }
+    }))
+    .unwrap();
+    assert!(msg.quote.is_some());
+}
+
+#[test]
 fn get_text() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 1, "date": 1,

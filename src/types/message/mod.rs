@@ -1,6 +1,6 @@
 use serde::{Deserialize, Deserializer, Serialize};
 
-pub use self::{command::*, data::*, methods::*, origin::*, reply::*, sender::*};
+pub use self::{command::*, data::*, methods::*, origin::*, quote::*, reply::*, sender::*};
 use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, Text, User};
 
 #[cfg(test)]
@@ -10,6 +10,7 @@ mod command;
 mod data;
 mod methods;
 mod origin;
+mod quote;
 mod reply;
 mod sender;
 
@@ -111,6 +112,9 @@ pub struct Message {
     /// for supergroups only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_thread_id: Option<Integer>,
+    /// For replies that quote part of the original message, the quoted part of the message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quote: Option<TextQuote>,
     /// Inline keyboard attached to the message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -162,6 +166,7 @@ impl Message {
             link_preview_options: None,
             media_group_id: None,
             message_thread_id: None,
+            quote: None,
             reply_markup: None,
             reply_to: None,
             via_bot: None,
@@ -372,6 +377,16 @@ impl Message {
     ///             supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
+        self
+    }
+
+    /// Sets a new quote
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The quoted part of the original message.
+    pub fn with_quote(mut self, value: TextQuote) -> Self {
+        self.quote = Some(value);
         self
     }
 

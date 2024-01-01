@@ -22,7 +22,7 @@ pub use self::{
     poll::*,
     primitive::*,
     reaction::*,
-    reply_markup::*,
+    reply::*,
     response::*,
     sticker::*,
     text::*,
@@ -54,7 +54,7 @@ mod payment;
 mod poll;
 mod primitive;
 mod reaction;
-mod reply_markup;
+mod reply;
 mod response;
 mod sticker;
 mod text;

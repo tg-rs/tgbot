@@ -9,6 +9,7 @@ use crate::{
         Invoice,
         InvoiceParameters,
         LabeledPrice,
+        ReplyParameters,
         SendInvoice,
     },
 };
@@ -154,19 +155,21 @@ fn send_invoice() {
                 "send_email_to_provider": true,
                 "is_flexible": true,
                 "disable_notification": true,
+                "message_thread_id": 1,
                 "protect_content": true,
-                "reply_to_message_id": 1,
-                "allow_sending_without_reply": true,
                 "reply_markup": {
                     "inline_keyboard": [[
                         {"text": "text", "url": "url"}
                     ]]
                 },
-                "message_thread_id": 1,
+                "reply_parameters": {
+                    "message_id": 1
+                }
             }),
         ),
         SendInvoice::new(1, "title", "description", "payload", "token", "RUB", vec![])
-            .with_start_parameter("param")
+            .with_disable_notification(true)
+            .with_message_thread_id(1)
             .with_parameters(
                 InvoiceParameters::default()
                     .with_max_tip_amount(100)
@@ -187,11 +190,9 @@ fn send_invoice() {
                     .with_send_email_to_provider(true)
                     .with_flexible(true),
             )
-            .with_disable_notification(true)
             .with_protect_content(true)
-            .with_reply_to_message_id(1)
-            .with_allow_sending_without_reply(true)
             .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_message_thread_id(1),
+            .with_reply_parameters(ReplyParameters::new(1))
+            .with_start_parameter("param"),
     );
 }

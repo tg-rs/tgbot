@@ -10,6 +10,7 @@ use crate::{
         MaskPositionPoint,
         PhotoSize,
         ReplyMarkup,
+        ReplyParameters,
         SendSticker,
         SetStickerEmojiList,
         SetStickerKeywords,
@@ -123,30 +124,30 @@ fn get_custom_emoji_stickers() {
 #[test]
 fn send_sticker() {
     let reply_markup = ReplyMarkup::from(ForceReply::new(true));
+    let reply_parameters = ReplyParameters::new(1);
     assert_payload_eq(
         Payload::form(
             "sendSticker",
             Form::from([
                 ("chat_id", FormValue::from(1)),
                 ("sticker", InputFile::file_id("sticker-id").into()),
-                ("allow_sending_without_reply", true.into()),
                 ("disable_notification", true.into()),
                 ("emoji", "😱".into()),
                 ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
                 ("reply_markup", reply_markup.serialize().unwrap().into()),
-                ("reply_to_message_id", 1.into()),
+                ("reply_parameters", reply_parameters.serialize().unwrap().into()),
             ]),
         ),
         SendSticker::new(1, InputFile::file_id("sticker-id"))
-            .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
             .with_emoji("😱")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(reply_markup)
             .unwrap()
-            .with_reply_to_message_id(1),
+            .with_reply_parameters(reply_parameters)
+            .unwrap(),
     );
     assert_payload_eq(
         Payload::form(

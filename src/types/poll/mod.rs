@@ -11,6 +11,7 @@ use crate::{
         Message,
         ParseMode,
         ReplyMarkup,
+        ReplyParameters,
         TextEntities,
         TextEntity,
         User,
@@ -429,8 +430,6 @@ struct PollParameters {
     options: Vec<String>,
     question: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allows_multiple_answers: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     close_date: Option<Integer>,
@@ -460,7 +459,7 @@ struct PollParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
+    reply_parameters: Option<ReplyParameters>,
 }
 
 impl PollParameters {
@@ -473,7 +472,6 @@ impl PollParameters {
             chat_id,
             options: options.into_iter().map(Into::into).collect(),
             question,
-            allow_sending_without_reply: None,
             allows_multiple_answers: None,
             close_date: None,
             correct_option_id: None,
@@ -488,7 +486,7 @@ impl PollParameters {
             poll_type: Some(poll_type),
             protect_content: None,
             reply_markup: None,
-            reply_to_message_id: None,
+            reply_parameters: None,
         }
     }
 }
@@ -521,17 +519,6 @@ impl SendQuiz {
         let mut parameters = PollParameters::new(chat_id.into(), question.into(), PollType::Quiz, options);
         parameters.correct_option_id = Some(correct_option_id);
         Self { inner: parameters }
-    }
-
-    /// Sets a new value for an `allow_sending_without_reply` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the message should be sent even
-    ///             if the specified replied-to message is not found.
-    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
-        self.inner.allow_sending_without_reply = Some(value);
-        self
     }
 
     /// Sets a new close date.
@@ -671,13 +658,13 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new message ID for a reply.
+    /// Sets new reply parameters.
     ///
     /// # Arguments
     ///
-    /// * `value` - ID of the original message.
-    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
-        self.inner.reply_to_message_id = Some(value);
+    /// * `value` - Description of the message to reply to.
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.inner.reply_parameters = Some(value);
         self
     }
 }
@@ -717,17 +704,6 @@ impl SendPoll {
         Self {
             inner: PollParameters::new(chat_id.into(), question.into(), PollType::Regular, options),
         }
-    }
-
-    /// Sets a new value for an `allow_sending_without_reply` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the message should be sent even
-    ///             if the specified replied-to message is not found.
-    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
-        self.inner.allow_sending_without_reply = Some(value);
-        self
     }
 
     /// Sets a new value for an `allows_multiple_answers` flag.
@@ -833,13 +809,13 @@ impl SendPoll {
         self
     }
 
-    /// Sets a new message ID for a reply.
+    /// Sets new reply parameters.
     ///
     /// # Arguments
     ///
-    /// * `value` - ID of the original message.
-    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
-        self.inner.reply_to_message_id = Some(value);
+    /// * `value` - Description of the message to reply to.
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.inner.reply_parameters = Some(value);
         self
     }
 }

@@ -8,6 +8,7 @@ use crate::{
         GetGameHighScores,
         InlineKeyboardButton,
         PhotoSize,
+        ReplyParameters,
         SendGame,
         SetGameScore,
         Text,
@@ -124,23 +125,23 @@ fn send_game() {
                 "game_short_name": "Game",
                 "disable_notification": true,
                 "protect_content": true,
-                "reply_to_message_id": 1,
-                "allow_sending_without_reply": true,
+                "message_thread_id": 1,
                 "reply_markup": {
                     "inline_keyboard": [[
                         {"text": "text", "url": "example.com"}
                     ]]
                 },
-                "message_thread_id": 1
+                "reply_parameters": {
+                    "message_id": 1
+                }
             }),
         ),
         method
-            .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup([[InlineKeyboardButton::for_url("text", "example.com")]])
-            .with_reply_to_message_id(1),
+            .with_reply_parameters(ReplyParameters::new(1)),
     )
 }
 

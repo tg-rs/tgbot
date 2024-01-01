@@ -15,6 +15,7 @@ use crate::{
         MessageId,
         ParseMode,
         ReplyMarkup,
+        ReplyParameters,
         TextEntities,
         TextEntity,
     },
@@ -35,8 +36,6 @@ pub struct CopyMessage {
     from_chat_id: ChatId,
     message_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
@@ -51,7 +50,7 @@ pub struct CopyMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
+    reply_parameters: Option<ReplyParameters>,
 }
 
 impl CopyMessage {
@@ -71,7 +70,6 @@ impl CopyMessage {
             chat_id: chat_id.into(),
             from_chat_id: from_chat_id.into(),
             message_id,
-            allow_sending_without_reply: None,
             caption: None,
             caption_entities: None,
             disable_notification: None,
@@ -79,19 +77,8 @@ impl CopyMessage {
             parse_mode: None,
             protect_content: None,
             reply_markup: None,
-            reply_to_message_id: None,
+            reply_parameters: None,
         }
-    }
-
-    /// Sets a new value for an `allow_sending_without_reply` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the message should be sent even
-    ///             if the specified replied-to message is not found.
-    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
-        self.allow_sending_without_reply = Some(value);
-        self
     }
 
     /// Sets a new caption.
@@ -184,13 +171,13 @@ impl CopyMessage {
         self
     }
 
-    /// Sets a new message ID for a reply.
+    /// Sets new reply parameters.
     ///
     /// # Arguments
     ///
-    /// * `value` - ID of the original message.
-    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
-        self.reply_to_message_id = Some(value);
+    /// * `value` - Description of the message to reply to.
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.reply_parameters = Some(value);
         self
     }
 }
@@ -1078,8 +1065,6 @@ pub struct SendMessage {
     chat_id: ChatId,
     text: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     entities: Option<TextEntities>,
@@ -1094,7 +1079,7 @@ pub struct SendMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
+    reply_parameters: Option<ReplyParameters>,
 }
 
 impl SendMessage {
@@ -1112,7 +1097,6 @@ impl SendMessage {
         Self {
             chat_id: chat_id.into(),
             text: text.into(),
-            allow_sending_without_reply: None,
             disable_notification: None,
             entities: None,
             link_preview_options: None,
@@ -1120,19 +1104,8 @@ impl SendMessage {
             parse_mode: None,
             protect_content: None,
             reply_markup: None,
-            reply_to_message_id: None,
+            reply_parameters: None,
         }
-    }
-
-    /// Sets a new value for an `allow_sending_without_reply` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the message should be sent even
-    ///             if the specified replied-to message is not found.
-    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
-        self.allow_sending_without_reply = Some(value);
-        self
     }
 
     /// Sets a new value for a `disable_notification` flag.
@@ -1220,13 +1193,13 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new message ID for a reply.
+    /// Sets new reply parameters.
     ///
     /// # Arguments
     ///
-    /// * `value` - ID of the original message.
-    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
-        self.reply_to_message_id = Some(value);
+    /// * `value` - Description of the message to reply to.
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.reply_parameters = Some(value);
         self
     }
 }

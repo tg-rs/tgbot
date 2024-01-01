@@ -6,6 +6,7 @@ use crate::{
         InputFile,
         ParseMode,
         PhotoSize,
+        ReplyParameters,
         SendVideo,
         SendVideoError,
         TextEntity,
@@ -63,6 +64,7 @@ fn send_video() {
         ),
         SendVideo::new(1, InputFile::file_id("file-id")),
     );
+    let reply_parameters = ReplyParameters::new(1);
     assert_payload_eq(
         Payload::form(
             "sendVideo",
@@ -77,19 +79,17 @@ fn send_video() {
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("supports_streaming", true.into()),
                 ("disable_notification", true.into()),
+                ("has_spoiler", true.into()),
+                ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
-                ("reply_to_message_id", 1.into()),
-                ("allow_sending_without_reply", true.into()),
                 (
                     "reply_markup",
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
-                ("message_thread_id", 1.into()),
-                ("has_spoiler", true.into()),
+                ("reply_parameters", reply_parameters.serialize().unwrap().into()),
             ]),
         ),
         SendVideo::new(1, InputFile::file_id("file-id"))
-            .with_allow_sending_without_reply(true)
             .with_caption("Caption")
             .with_disable_notification(true)
             .with_duration(100)
@@ -100,7 +100,8 @@ fn send_video() {
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .with_reply_to_message_id(1)
+            .with_reply_parameters(reply_parameters)
+            .unwrap()
             .with_supports_streaming(true)
             .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
             .unwrap()

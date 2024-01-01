@@ -1,6 +1,6 @@
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, ForceReply, InputFile, ParseMode, SendVoice, TextEntity, Voice},
+    types::{tests::assert_json_eq, ForceReply, InputFile, ParseMode, ReplyParameters, SendVoice, TextEntity, Voice},
 };
 
 #[test]
@@ -39,6 +39,7 @@ fn send_voice() {
         ),
         SendVoice::new(1, InputFile::file_id("file-id")),
     );
+    let reply_parameters = ReplyParameters::new(1);
     assert_payload_eq(
         Payload::form(
             "sendVoice",
@@ -49,18 +50,16 @@ fn send_voice() {
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("duration", 100.into()),
                 ("disable_notification", true.into()),
+                ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
-                ("reply_to_message_id", 1.into()),
-                ("allow_sending_without_reply", true.into()),
                 (
                     "reply_markup",
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
-                ("message_thread_id", 1.into()),
+                ("reply_parameters", reply_parameters.serialize().unwrap().into()),
             ]),
         ),
         SendVoice::new(1, InputFile::file_id("file-id"))
-            .with_allow_sending_without_reply(true)
             .with_caption("Caption")
             .with_disable_notification(true)
             .with_duration(100)
@@ -69,7 +68,8 @@ fn send_voice() {
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .with_reply_to_message_id(1),
+            .with_reply_parameters(reply_parameters)
+            .unwrap(),
     );
 }
 

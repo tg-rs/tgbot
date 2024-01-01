@@ -1,6 +1,6 @@
 use crate::{
     api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, Contact, ForceReply, SendContact},
+    types::{tests::assert_json_eq, Contact, ForceReply, ReplyParameters, SendContact},
 };
 
 #[test]
@@ -52,22 +52,22 @@ fn send_contact() {
                 "vcard": "BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD",
                 "disable_notification": true,
                 "protect_content": true,
-                "reply_to_message_id": 1,
-                "allow_sending_without_reply": true,
                 "reply_markup": {
                     "force_reply": true
+                },
+                "reply_parameters": {
+                    "message_id": 1
                 },
                 "message_thread_id": 1
             }),
         ),
         method
-            .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
             .with_last_name("Doe")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
-            .with_reply_to_message_id(1)
+            .with_reply_parameters(ReplyParameters::new(1))
             .with_vcard("BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD"),
     );
 }

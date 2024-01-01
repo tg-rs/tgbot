@@ -3,7 +3,18 @@ use serde::{Deserialize, Serialize};
 pub use self::{input::*, mask::*, set::*};
 use crate::{
     api::{Form, Method, Payload},
-    types::{ChatId, File, InputFile, Integer, Message, PhotoSize, ReplyMarkup, ReplyMarkupError},
+    types::{
+        ChatId,
+        File,
+        InputFile,
+        Integer,
+        Message,
+        PhotoSize,
+        ReplyMarkup,
+        ReplyMarkupError,
+        ReplyParameters,
+        ReplyParametersError,
+    },
 };
 
 #[cfg(test)]
@@ -309,17 +320,6 @@ impl SendSticker {
         }
     }
 
-    /// Sets a new value for an `allow_sending_without_reply` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the message should be sent even
-    ///             if the specified replied-to message is not found.
-    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_sending_without_reply", value.to_string());
-        self
-    }
-
     /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
@@ -380,14 +380,14 @@ impl SendSticker {
         Ok(self)
     }
 
-    /// Sets a new message ID for a reply.
+    /// Sets new reply parameters.
     ///
     /// # Arguments
     ///
-    /// * `value` - ID of the original message.
-    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("reply_to_message_id", value);
-        self
+    /// * `value` - Description of the message to reply to.
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
+        self.form.insert_field("reply_parameters", value.serialize()?);
+        Ok(self)
     }
 }
 

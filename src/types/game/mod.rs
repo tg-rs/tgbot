@@ -9,6 +9,7 @@ use crate::{
         Integer,
         Message,
         PhotoSize,
+        ReplyParameters,
         Text,
         TextEntities,
         User,
@@ -222,8 +223,6 @@ pub struct SendGame {
     chat_id: Integer,
     game_short_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
@@ -232,7 +231,7 @@ pub struct SendGame {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
+    reply_parameters: Option<ReplyParameters>,
 }
 
 impl SendGame {
@@ -249,24 +248,12 @@ impl SendGame {
         Self {
             chat_id,
             game_short_name: game_short_name.into(),
-            allow_sending_without_reply: None,
             disable_notification: None,
             message_thread_id: None,
             protect_content: None,
             reply_markup: None,
-            reply_to_message_id: None,
+            reply_parameters: None,
         }
-    }
-
-    /// Sets a new value for an `allow_sending_without_reply` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the message should be sent even
-    ///             if the specified replied-to message is not found.
-    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
-        self.allow_sending_without_reply = Some(value);
-        self
     }
 
     /// Sets a new value for a `disable_notification` flag.
@@ -315,13 +302,13 @@ impl SendGame {
         self
     }
 
-    /// Sets a new message ID for a reply.
+    /// Sets new reply parameters.
     ///
     /// # Arguments
     ///
-    /// * `value` - ID of the original message.
-    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
-        self.reply_to_message_id = Some(value);
+    /// * `value` - Description of the message to reply to.
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.reply_parameters = Some(value);
         self
     }
 }

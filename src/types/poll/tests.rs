@@ -12,6 +12,7 @@ use crate::{
         PollOption,
         Quiz,
         RegularPoll,
+        ReplyParameters,
         SendPoll,
         SendQuiz,
         StopPoll,
@@ -152,23 +153,23 @@ fn send_quiz() {
                 "correct_option_id": 0,
                 "disable_notification": true,
                 "protect_content": true,
-                "reply_to_message_id": 1,
-                "allow_sending_without_reply": true,
+                "message_thread_id": 1,
                 "reply_markup": {
                     "force_reply": true
                 },
-                "message_thread_id": 1,
+                "reply_parameters": {
+                    "message_id": 1
+                }
             }),
         ),
         SendQuiz::new(1, "Q", 0, ["O1", "O2"])
-            .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
             .with_is_anonymous(false)
             .with_is_closed(false)
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
-            .with_reply_to_message_id(1),
+            .with_reply_parameters(ReplyParameters::new(1)),
     )
 }
 
@@ -199,24 +200,24 @@ fn send_poll() {
                 "allows_multiple_answers": true,
                 "disable_notification": true,
                 "protect_content": true,
-                "reply_to_message_id": 1,
-                "allow_sending_without_reply": true,
+                "message_thread_id": 1,
                 "reply_markup": {
                     "force_reply": true
                 },
-                "message_thread_id": 1
+                "reply_parameters": {
+                    "message_id": 1
+                },
             }),
         ),
         SendPoll::new(1, "Q", ["O1", "O2"])
-            .with_allow_sending_without_reply(true)
             .with_allows_multiple_answers(true)
             .with_disable_notification(true)
             .with_is_anonymous(false)
             .with_is_closed(false)
             .with_message_thread_id(1)
             .with_protect_content(true)
-            .with_reply_to_message_id(1)
-            .with_reply_markup(ForceReply::new(true)),
+            .with_reply_markup(ForceReply::new(true))
+            .with_reply_parameters(ReplyParameters::new(1)),
     );
 }
 

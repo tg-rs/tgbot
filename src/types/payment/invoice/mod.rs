@@ -3,7 +3,7 @@ use serde_json::Error as JsonError;
 
 use crate::{
     api::{Method, Payload},
-    types::{ChatId, InlineKeyboardMarkup, Integer, Message},
+    types::{ChatId, InlineKeyboardMarkup, Integer, Message, ReplyParameters},
 };
 
 #[cfg(test)]
@@ -385,8 +385,6 @@ pub struct SendInvoice {
     provider_token: String,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    allow_sending_without_reply: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
@@ -397,7 +395,7 @@ pub struct SendInvoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_to_message_id: Option<Integer>,
+    reply_parameters: Option<ReplyParameters>,
     #[serde(skip_serializing_if = "Option::is_none")]
     start_parameter: Option<String>,
 }
@@ -443,26 +441,14 @@ impl SendInvoice {
             provider_token: provider_token.into(),
             currency: currency.into(),
             prices: prices.into_iter().collect(),
-            start_parameter: None,
             disable_notification: None,
-            protect_content: None,
-            reply_to_message_id: None,
-            allow_sending_without_reply: None,
-            reply_markup: None,
-            parameters: None,
             message_thread_id: None,
+            parameters: None,
+            protect_content: None,
+            reply_markup: None,
+            reply_parameters: None,
+            start_parameter: None,
         }
-    }
-
-    /// Sets a new value for an `allow_sending_without_reply` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the message should be sent even
-    ///             if the specified replied-to message is not found.
-    pub fn with_allow_sending_without_reply(mut self, value: bool) -> Self {
-        self.allow_sending_without_reply = Some(value);
-        self
     }
 
     /// Sets a new value for a `disable_notification` flag.
@@ -524,13 +510,13 @@ impl SendInvoice {
         self
     }
 
-    /// Sets a new message ID for a reply.
+    /// Sets new reply parameters.
     ///
     /// # Arguments
     ///
-    /// * `value` - ID of the original message.
-    pub fn with_reply_to_message_id(mut self, value: Integer) -> Self {
-        self.reply_to_message_id = Some(value);
+    /// * `value` - Description of the message to reply to.
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.reply_parameters = Some(value);
         self
     }
 

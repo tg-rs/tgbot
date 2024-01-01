@@ -20,6 +20,7 @@ use crate::{
         InputMediaPhoto,
         LinkPreviewOptions,
         ParseMode,
+        ReplyParameters,
         SendMessage,
         StopMessageLiveLocation,
         TextEntity,
@@ -50,23 +51,23 @@ fn copy_message() {
                 "caption": "caption",
                 "parse_mode": "Markdown",
                 "disable_notification": true,
+                "message_thread_id": 1,
                 "protect_content": true,
-                "reply_to_message_id": 1,
                 "reply_markup": {"force_reply": true},
-                "allow_sending_without_reply": true,
-                "message_thread_id": 1
+                "reply_parameters": {
+                    "message_id": 1
+                }
             }),
         ),
         method
             .clone()
-            .with_allow_sending_without_reply(true)
             .with_caption("caption")
             .with_disable_notification(true)
             .with_message_thread_id(1)
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
-            .with_reply_to_message_id(1),
+            .with_reply_parameters(ReplyParameters::new(1)),
     );
     assert_payload_eq(
         Payload::json(
@@ -488,25 +489,25 @@ fn send_message() {
                     "is_disabled": true
                 },
                 "disable_notification": true,
+                "message_thread_id": 1,
                 "protect_content": true,
-                "reply_to_message_id": 1,
-                "allow_sending_without_reply": true,
                 "reply_markup": {
                     "force_reply": true
                 },
-                "message_thread_id": 1,
+                "reply_parameters": {
+                    "message_id": 1
+                }
             }),
         ),
         SendMessage::new(1, "text")
-            .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
             .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
             .with_message_thread_id(1)
             .with_parse_mode(ParseMode::Markdown)
             .with_entities(vec![TextEntity::bold(0..2)])
             .with_protect_content(true)
-            .with_reply_to_message_id(1)
-            .with_reply_markup(ForceReply::new(true)),
+            .with_reply_markup(ForceReply::new(true))
+            .with_reply_parameters(ReplyParameters::new(1)),
     );
 }
 

@@ -1,6 +1,6 @@
 use crate::{
     api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, Dice, DiceType, ForceReply, SendDice},
+    types::{tests::assert_json_eq, Dice, DiceType, ForceReply, ReplyParameters, SendDice},
 };
 
 #[test]
@@ -97,20 +97,20 @@ fn send_dice() {
                 "emoji": "🎲",
                 "disable_notification": true,
                 "protect_content": true,
-                "reply_to_message_id": 1,
-                "allow_sending_without_reply": true,
+                "message_thread_id": 1,
                 "reply_markup": {
                     "force_reply": true
                 },
-                "message_thread_id": 1
+                "reply_parameters": {
+                    "message_id": 1
+                }
             }),
         ),
         method
-            .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
             .with_message_thread_id(1)
             .with_protect_content(true)
-            .with_reply_to_message_id(1)
-            .with_reply_markup(ForceReply::new(true)),
+            .with_reply_markup(ForceReply::new(true))
+            .with_reply_parameters(ReplyParameters::new(1)),
     );
 }

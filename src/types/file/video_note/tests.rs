@@ -1,6 +1,15 @@
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, ForceReply, InputFile, PhotoSize, SendVideoNote, SendVideoNoteError, VideoNote},
+    types::{
+        tests::assert_json_eq,
+        ForceReply,
+        InputFile,
+        PhotoSize,
+        ReplyParameters,
+        SendVideoNote,
+        SendVideoNoteError,
+        VideoNote,
+    },
 };
 
 #[test]
@@ -47,6 +56,7 @@ fn send_video_note() {
         ),
         SendVideoNote::new(1, InputFile::file_id("file-id")),
     );
+    let reply_parameters = ReplyParameters::new(1);
     assert_payload_eq(
         Payload::form(
             "sendVideoNote",
@@ -57,25 +67,24 @@ fn send_video_note() {
                 ("length", 100.into()),
                 ("thumbnail", InputFile::url("https://example.com/image.jpg").into()),
                 ("disable_notification", true.into()),
+                ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
-                ("reply_to_message_id", 1.into()),
-                ("allow_sending_without_reply", true.into()),
                 (
                     "reply_markup",
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
-                ("message_thread_id", 1.into()),
+                ("reply_parameters", reply_parameters.serialize().unwrap().into()),
             ]),
         ),
         SendVideoNote::new(1, InputFile::file_id("file-id"))
-            .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
             .with_duration(50)
             .with_length(100)
             .with_message_thread_id(1)
             .with_protect_content(true)
-            .with_reply_to_message_id(1)
             .with_reply_markup(ForceReply::new(true))
+            .unwrap()
+            .with_reply_parameters(reply_parameters)
             .unwrap()
             .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
             .unwrap(),

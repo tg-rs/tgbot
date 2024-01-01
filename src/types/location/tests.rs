@@ -1,6 +1,6 @@
 use crate::{
     api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, ForceReply, Location, SendLocation},
+    types::{tests::assert_json_eq, ForceReply, Location, ReplyParameters, SendLocation},
 };
 
 #[test]
@@ -55,14 +55,12 @@ fn send_location() {
                 "proximity_alert_radius": 100,
                 "disable_notification": true,
                 "protect_content": true,
-                "reply_to_message_id": 1,
-                "allow_sending_without_reply": true,
+                "message_thread_id": 1,
                 "reply_markup": {"force_reply": true},
-                "message_thread_id": 1
+                "reply_parameters": {"message_id": 1}
             }),
         ),
         SendLocation::new(1, 2.0, 3.0)
-            .with_allow_sending_without_reply(true)
             .with_disable_notification(true)
             .with_heading(120)
             .with_horizontal_accuracy(1.5)
@@ -71,6 +69,6 @@ fn send_location() {
             .with_protect_content(true)
             .with_proximity_alert_radius(100)
             .with_reply_markup(ForceReply::new(true))
-            .with_reply_to_message_id(1),
+            .with_reply_parameters(ReplyParameters::new(1)),
     );
 }

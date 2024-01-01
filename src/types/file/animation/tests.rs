@@ -7,6 +7,7 @@ use crate::{
         InputFile,
         ParseMode,
         PhotoSize,
+        ReplyParameters,
         SendAnimation,
         SendAnimationError,
         TextEntity,
@@ -63,6 +64,7 @@ fn send_animation() {
         ),
         SendAnimation::new(InputFile::file_id("file-id"), 1),
     );
+    let reply_parameters = ReplyParameters::new(1);
     assert_payload_eq(
         Payload::form(
             "sendAnimation",
@@ -76,15 +78,14 @@ fn send_animation() {
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("disable_notification", true.into()),
+                ("has_spoiler", true.into()),
+                ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
-                ("reply_to_message_id", 1.into()),
-                ("allow_sending_without_reply", true.into()),
                 (
                     "reply_markup",
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
-                ("message_thread_id", 1.into()),
-                ("has_spoiler", true.into()),
+                ("reply_parameters", reply_parameters.serialize().unwrap().into()),
             ]),
         ),
         SendAnimation::new(InputFile::file_id("file-id"), 1)
@@ -96,13 +97,13 @@ fn send_animation() {
             .with_caption("Caption")
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_disable_notification(true)
+            .with_has_spoiler(true)
+            .with_message_thread_id(1)
             .with_protect_content(true)
-            .with_reply_to_message_id(1)
-            .with_allow_sending_without_reply(true)
             .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .with_message_thread_id(1)
-            .with_has_spoiler(true),
+            .with_reply_parameters(reply_parameters)
+            .unwrap(),
     );
 }
 

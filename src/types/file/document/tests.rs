@@ -7,6 +7,7 @@ use crate::{
         InputFile,
         ParseMode,
         PhotoSize,
+        ReplyParameters,
         SendDocument,
         SendDocumentError,
         TextEntity,
@@ -57,6 +58,7 @@ fn send_document() {
         ),
         SendDocument::new(1, InputFile::file_id("file-id")),
     );
+    let reply_parameters = ReplyParameters::new(1);
     assert_payload_eq(
         Payload::form(
             "sendDocument",
@@ -68,18 +70,16 @@ fn send_document() {
                 ("disable_content_type_detection", true.into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("disable_notification", true.into()),
+                ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
-                ("reply_to_message_id", 1.into()),
-                ("allow_sending_without_reply", true.into()),
                 (
                     "reply_markup",
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
-                ("message_thread_id", 1.into()),
+                ("reply_parameters", reply_parameters.serialize().unwrap().into()),
             ]),
         ),
         SendDocument::new(1, InputFile::file_id("file-id"))
-            .with_allow_sending_without_reply(true)
             .with_caption("Caption")
             .with_disable_content_type_detection(true)
             .with_disable_notification(true)
@@ -88,7 +88,8 @@ fn send_document() {
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
             .unwrap()
-            .with_reply_to_message_id(1)
+            .with_reply_parameters(reply_parameters)
+            .unwrap()
             .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
             .unwrap(),
     );

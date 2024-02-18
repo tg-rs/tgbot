@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.21.0 (18.02.2024)
+
+### Dependencies
+
+- Updated tokio version to 1.36.
+
+### Bot API
+
+#### 7.1
+
+- Added types: `ReplyTo`, `Story`.
+- Added enum variants:
+  - `MessageData`: `BoostAdded`.
+- Added fields:
+  - `Message`: `sender_boost_count`.
+  - `SupergroupChat`: `custom_emoji_sticker_set_name`, `unrestrict_boost_count`.
+- Changed enum variants:
+  - `ExternalReplyInfo`: `Story` to `Story(Story)`.
+  - `MessageData`: `Story` to `Story(Story)`.
+- Changed fields:
+  - `Message`: `reply_to` from `Option<Box<Message>>` to `Option<ReplyTo>`.
+
 ## 0.20.0 (01.01.2024)
 
 ### Dependencies

@@ -21,6 +21,7 @@ use crate::types::{
     PhotoSize,
     Poll,
     Sticker,
+    Story,
     SuccessfulPayment,
     Text,
     User,
@@ -46,6 +47,14 @@ pub enum MessageData {
     /// Auto-delete timer settings changed.
     #[serde(rename = "message_auto_delete_timer_changed")]
     AutoDeleteTimerChanged(MessageDataAutoDeleteTimer),
+    /// Service message: user boosted the chat.
+    ///
+    /// Contains a number of boosts added by the user.
+    #[serde(
+        deserialize_with = "RawDataBoostAdded::deserialize_value",
+        serialize_with = "RawDataBoostAdded::serialize_value"
+    )]
+    BoostAdded(Integer),
     /// The channel has been created.
     ///
     /// This field can‘t be received in a message coming through updates,
@@ -153,11 +162,7 @@ pub enum MessageData {
     /// Information about the sticker.
     Sticker(Sticker),
     /// A forwarded story.
-    #[serde(
-        deserialize_with = "RawDataEmpty::deserialize_value",
-        serialize_with = "RawDataEmpty::serialize_value"
-    )]
-    Story,
+    Story(Story),
     /// Information about the successful payment.
     SuccessfulPayment(SuccessfulPayment),
     /// The supergroup has been created.

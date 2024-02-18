@@ -118,13 +118,15 @@ pub struct Message {
     /// Inline keyboard attached to the message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
-    /// For replies, the original message.
-    ///
-    /// Note that the Message object in this field will not contain further
-    /// `reply_to` fields even if it itself is a reply.
-    #[serde(rename = "reply_to_message")]
+    /// For replies, the original message or story.
+    #[serde(flatten)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reply_to: Option<Box<Message>>,
+    pub reply_to: Option<ReplyTo>,
+    /// Number of boosts added by the user.
+    ///
+    /// Contains a value only if the sender of the message boosted the chat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_boost_count: Option<Integer>,
     /// Bot through which the message was sent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub via_bot: Option<User>,
@@ -169,6 +171,7 @@ impl Message {
             quote: None,
             reply_markup: None,
             reply_to: None,
+            sender_boost_count: None,
             via_bot: None,
         }
     }
@@ -403,13 +406,26 @@ impl Message {
         self
     }
 
-    /// Sets a new original message for the reply.
+    /// Sets a new original message or story for the reply.
     ///
     /// # Arguments
     ///
-    /// * `value` - For replies, the original message.
-    pub fn with_reply_to(mut self, value: Message) -> Self {
-        self.reply_to = Some(Box::new(value));
+    /// * `value` - For replies, the original message or story.
+    pub fn with_reply_to<T>(mut self, value: T) -> Self
+    where
+        T: Into<ReplyTo>,
+    {
+        self.reply_to = Some(value.into());
+        self
+    }
+
+    /// Sets a new sender boost count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Number of boosts added by the user.
+    pub fn with_sender_boost_count(mut self, value: Integer) -> Self {
+        self.sender_boost_count = Some(value);
         self
     }
 

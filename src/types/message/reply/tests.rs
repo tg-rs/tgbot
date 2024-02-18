@@ -19,9 +19,11 @@ use crate::types::{
     PhotoSize,
     Poll,
     PollOption,
+    PrivateChat,
     RegularPoll,
     Sticker,
     StickerType,
+    Story,
     User,
     Venue,
     Video,
@@ -296,14 +298,24 @@ fn external_reply_info() {
         }),
     );
     assert_json_eq(
-        ExternalReplyInfo::new(ExternalReplyData::Story {}, origin.clone()),
+        ExternalReplyInfo::new(
+            ExternalReplyData::Story(Story::new(PrivateChat::new(1, "test"), 1)),
+            origin.clone(),
+        ),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
                 "date": 1,
                 "sender_user_name": "test"
             },
-            "story": {}
+            "story": {
+                "chat": {
+                    "first_name": "test",
+                    "id": 1,
+                    "type": "private"
+                },
+                "id": 1
+            }
         }),
     );
     assert_json_eq(

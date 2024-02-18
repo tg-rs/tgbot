@@ -35,9 +35,11 @@ use crate::types::{
     PhotoSize,
     Poll,
     PollOption,
+    PrivateChat,
     RegularPoll,
     Sticker,
     StickerType,
+    Story,
     SuccessfulPayment,
     SupergroupChat,
     Text,
@@ -126,6 +128,18 @@ fn auto_delete_timer_changed() {
     expected_struct.data = MessageData::AutoDeleteTimerChanged(MessageDataAutoDeleteTimer::new(10000));
     expected_value["message_auto_delete_timer_changed"] = serde_json::json!({
         "message_auto_delete_time": 10000,
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn boost_added() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::BoostAdded(1);
+    expected_value["boost_added"] = serde_json::json!({
+        "boost_count": 1
     });
     assert_json_eq(expected_struct, expected_value);
 }
@@ -690,8 +704,15 @@ fn story() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::Story;
-    expected_value["story"] = serde_json::json!({});
+    expected_struct.data = MessageData::Story(Story::new(PrivateChat::new(1, "test"), 1));
+    expected_value["story"] = serde_json::json!({
+        "chat": {
+            "first_name": "test",
+            "id": 1,
+            "type": "private"
+        },
+        "id": 1
+    });
     assert_json_eq(expected_struct, expected_value);
 }
 

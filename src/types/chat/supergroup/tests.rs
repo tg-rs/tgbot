@@ -39,6 +39,7 @@ fn supergroup() {
             ))
             .with_sticker_set_name("Sticker Set")
             .with_can_set_sticker_set(true)
+            .with_custom_emoji_sticker_set_name("test")
             .with_permissions(
                 ChatPermissions::default()
                     .with_can_send_messages(true)
@@ -65,7 +66,8 @@ fn supergroup() {
             .with_background_custom_emoji_id("emoji-id")
             .with_profile_accent_color(ProfileAccentColor::try_from(1).unwrap())
             .with_profile_background_custom_emoji_id("emoji-id")
-            .with_has_visible_history(true),
+            .with_has_visible_history(true)
+            .with_unrestrict_boost_count(1),
     );
     assert_eq!(expected_struct.get_id(), 1);
     assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
@@ -86,6 +88,7 @@ fn supergroup() {
             "invite_link": "example.com/join/supergroup",
             "sticker_set_name": "Sticker Set",
             "can_set_sticker_set": true,
+            "custom_emoji_sticker_set_name": "test",
             "slow_mode_delay": 10,
             "permissions": {
                 "can_send_messages": true,
@@ -142,7 +145,8 @@ fn supergroup() {
             "background_custom_emoji_id": "emoji-id",
             "profile_accent_color_id": 1,
             "profile_background_custom_emoji_id": "emoji-id",
-            "has_visible_history": true
+            "has_visible_history": true,
+            "unrestrict_boost_count": 1
         }),
     );
 

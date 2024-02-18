@@ -15,14 +15,14 @@ pub struct ChatAdministratorRights {
     pub can_change_info: bool,
     /// Indicates whether the administrator can delete messages of other users.
     pub can_delete_messages: bool,
-    /// Indicates whether the administrator can delete stories posted by other users; channels only.
+    /// Indicates whether the administrator can delete stories posted by other users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_delete_stories: Option<bool>,
     /// Indicates whether the administrator can edit messages of other users
     /// and can pin messages; channels only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_messages: Option<bool>,
-    /// Indicates whether the administrator can edit stories posted by other users; channels only.
+    /// Indicates whether the administrator can edit stories posted by other users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_stories: Option<bool>,
     /// Indicates whether the user is allowed to invite new users to the chat.
@@ -47,7 +47,7 @@ pub struct ChatAdministratorRights {
     /// or access channel statistics; channels only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
-    /// Indicates whether the administrator can post stories in the channel; channels only.
+    /// Indicates whether the administrator can post stories in the chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_stories: Option<bool>,
     /// Indicates whether the administrator can

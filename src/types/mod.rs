@@ -25,6 +25,7 @@ pub use self::{
     reply::*,
     response::*,
     sticker::*,
+    story::*,
     text::*,
     update::*,
     user::*,
@@ -57,6 +58,7 @@ mod reaction;
 mod reply;
 mod response;
 mod sticker;
+mod story;
 mod text;
 mod update;
 mod user;

@@ -6,6 +6,7 @@ use crate::types::{
     MaybeInaccessibleMessage,
     Message,
     MessageData,
+    ReplyTo,
     SupergroupChat,
     User,
 };
@@ -235,7 +236,7 @@ fn link_peview_options() {
 }
 
 #[test]
-fn reply_to() {
+fn reply_to_message() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
@@ -249,7 +250,7 @@ fn reply_to() {
         }
     }))
     .unwrap();
-    if let Some(msg) = msg.reply_to {
+    if let Some(ReplyTo::Message(msg)) = msg.reply_to {
         assert_eq!(msg.id, 1);
     } else {
         panic!("Unexpected reply_to data: {:?}", msg.reply_to);
@@ -257,7 +258,7 @@ fn reply_to() {
 }
 
 #[test]
-fn reply_to_with_empty_data() {
+fn reply_to_message_with_empty_data() {
     let data: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
@@ -271,6 +272,39 @@ fn reply_to_with_empty_data() {
     }))
     .unwrap();
     assert!(data.reply_to.is_some());
+}
+
+#[test]
+fn reply_to_story() {
+    let msg: Message = serde_json::from_value(serde_json::json!({
+        "message_id": 2, "date": 1,
+        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+        "text": "test",
+        "reply_to_story": {
+            "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+            "id": 1
+        }
+    }))
+    .unwrap();
+    if let Some(ReplyTo::Story(story)) = msg.reply_to {
+        assert_eq!(story.id, 1);
+    } else {
+        panic!("Unexpected reply_to data: {:?}", msg.reply_to);
+    }
+}
+
+#[test]
+fn sender_boost_count() {
+    let data: Message = serde_json::from_value(serde_json::json!({
+        "message_id": 2, "date": 1,
+        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+        "text": "test",
+        "sender_boost_count": 1
+    }))
+    .unwrap();
+    assert_eq!(data.sender_boost_count.unwrap(), 1);
 }
 
 #[test]

@@ -15,10 +15,12 @@ use crate::types::{
     Invoice,
     LinkPreviewOptions,
     Location,
+    Message,
     MessageOrigin,
     PhotoSize,
     Poll,
     Sticker,
+    Story,
     Venue,
     Video,
     VideoNote,
@@ -27,6 +29,32 @@ use crate::types::{
 
 #[cfg(test)]
 mod tests;
+
+/// Contains information about a message or a story that is being replied to.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub enum ReplyTo {
+    /// The original message.
+    ///
+    /// Note that the Message object in this field will not contain further
+    /// `reply_to` fields even if it itself is a reply.
+    #[serde(rename = "reply_to_message")]
+    Message(Box<Message>),
+    /// The original story.
+    #[serde(rename = "reply_to_story")]
+    Story(Story),
+}
+
+impl From<Message> for ReplyTo {
+    fn from(value: Message) -> Self {
+        Self::Message(Box::new(value))
+    }
+}
+
+impl From<Story> for ReplyTo {
+    fn from(value: Story) -> Self {
+        Self::Story(value)
+    }
+}
 
 /// Contains information about a message that is being replied to, which may come from another chat or forum topic.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -152,7 +180,7 @@ pub enum ExternalReplyData {
     /// Message is a sticker, information about the sticker.
     Sticker(Sticker),
     /// Message is a forwarded story.
-    Story {},
+    Story(Story),
     /// Message is a venue, information about the venue.
     Venue(Venue),
     /// Message is a video, information about the video.

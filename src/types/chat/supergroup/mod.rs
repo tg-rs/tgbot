@@ -51,6 +51,12 @@ pub struct SupergroupChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_set_sticker_set: Option<bool>,
+    /// The name of the group's custom emoji sticker set.
+    /// Custom emoji from this set can be used by all users and bots in the group.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_emoji_sticker_set_name: Option<String>,
     /// Description of the supergroup.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -159,6 +165,12 @@ pub struct SupergroupChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sticker_set_name: Option<String>,
+    /// The minimum number of boosts that a non-administrator user needs to add
+    /// in order to ignore slow mode and chat permissions.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unrestrict_boost_count: Option<Integer>,
     /// Username of the supergroup.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<ChatUsername>,
@@ -184,6 +196,7 @@ impl SupergroupChat {
             available_reactions: None,
             background_custom_emoji_id: None,
             can_set_sticker_set: None,
+            custom_emoji_sticker_set_name: None,
             description: None,
             emoji_status_custom_emoji_id: None,
             emoji_status_expiration_date: None,
@@ -205,6 +218,7 @@ impl SupergroupChat {
             profile_background_custom_emoji_id: None,
             slow_mode_delay: None,
             sticker_set_name: None,
+            unrestrict_boost_count: None,
             username: None,
         }
     }
@@ -267,6 +281,19 @@ impl SupergroupChat {
     /// * `value` - Indicates whether the bot can change the supergroup sticker set.
     pub fn with_can_set_sticker_set(mut self, value: bool) -> Self {
         self.can_set_sticker_set = Some(value);
+        self
+    }
+
+    /// Sets a new custom emoji sticker set name
+    ///
+    /// # Arguments
+    ///
+    /// `value` - Name of of the group's custom emoji sticker set.
+    pub fn with_custom_emoji_sticker_set_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.custom_emoji_sticker_set_name = Some(value.into());
         self
     }
 
@@ -496,6 +523,16 @@ impl SupergroupChat {
         T: Into<String>,
     {
         self.sticker_set_name = Some(value.into());
+        self
+    }
+
+    /// Sets a new unrestrict boost count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Number of boosts.
+    pub fn with_unrestrict_boost_count(mut self, value: Integer) -> Self {
+        self.unrestrict_boost_count = Some(value);
         self
     }
 

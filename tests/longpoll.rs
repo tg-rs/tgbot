@@ -28,7 +28,7 @@ impl UpdateHandler for Handler {
 async fn longpoll() {
     dotenv().ok();
     env_logger::init();
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     server
         .mock("POST", "/bot-token/getUpdates")
         .match_body(Matcher::PartialJson(json!({

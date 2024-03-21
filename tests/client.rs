@@ -4,7 +4,7 @@ use tgbot::{api::Client, types::Close};
 
 #[tokio::test]
 async fn execute() {
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     let client = Client::new("-token").unwrap().with_host(server.url());
 
     server
@@ -43,7 +43,7 @@ async fn execute() {
 
 #[tokio::test]
 async fn download_file() {
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     server
         .mock("GET", "/file/bot-token/file-ok")
         .with_body(b"file-data")

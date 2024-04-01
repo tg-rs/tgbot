@@ -211,9 +211,10 @@ fn set_sticker_set_thumbnail() {
             Form::from([
                 ("name", FormValue::from("name")),
                 ("user_id", 1.into()),
+                ("format", "static".into()),
                 ("thumbnail", InputFile::file_id("file-id").into()),
             ]),
         ),
-        SetStickerSetThumbnail::new("name", 1).with_thumbnail(InputFile::file_id("file-id")),
+        SetStickerSetThumbnail::new("name", 1, StickerFormat::Static).with_thumbnail(InputFile::file_id("file-id")),
     );
 }

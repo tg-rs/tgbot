@@ -2,7 +2,17 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Form, Method, Payload},
-    types::{InputFile, InputSticker, InputStickerError, InputStickers, Integer, PhotoSize, Sticker, StickerType},
+    types::{
+        InputFile,
+        InputSticker,
+        InputStickerError,
+        InputStickers,
+        Integer,
+        PhotoSize,
+        Sticker,
+        StickerFormat,
+        StickerType,
+    },
 };
 
 #[cfg(test)]
@@ -379,12 +389,17 @@ impl SetStickerSetThumbnail {
     ///
     /// * `name` - Sticker set name.
     /// * `user_id` - User identifier of the sticker set owner.
-    pub fn new<N>(name: N, user_id: Integer) -> Self
+    /// * `format` - Format of the thumbnail
+    pub fn new<N>(name: N, user_id: Integer, format: StickerFormat) -> Self
     where
         N: Into<String>,
     {
         Self {
-            form: Form::from([("name", name.into().into()), ("user_id", user_id.into())]),
+            form: Form::from([
+                ("name", name.into().into()),
+                ("user_id", user_id.into()),
+                ("format", format.as_ref().into()),
+            ]),
         }
     }
 

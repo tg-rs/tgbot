@@ -6,6 +6,7 @@ use serde_json::Value as JsonValue;
 use crate::{
     api::{Method, Payload},
     types::{
+        BusinessConnection,
         CallbackQuery,
         Chat,
         ChatBoostRemoved,
@@ -91,6 +92,7 @@ impl Update {
     pub fn get_user(&self) -> Option<&User> {
         Some(match self.update_type {
             UpdateType::BotStatus(ref x) | UpdateType::UserStatus(ref x) => &x.from,
+            UpdateType::BusinessConnection(ref x) => &x.user,
             UpdateType::CallbackQuery(ref x) => &x.from,
             UpdateType::ChatBoostRemoved(_) => return None,
             UpdateType::ChatBoostUpdated(_) => return None,
@@ -151,6 +153,9 @@ pub enum UpdateType {
     /// when the bot is blocked or unblocked by the user.
     #[serde(rename = "my_chat_member")]
     BotStatus(ChatMemberUpdated),
+    /// The bot was connected to or disconnected from a business account,
+    /// or a user edited an existing connection with the bot.
+    BusinessConnection(BusinessConnection),
     /// A new incoming callback query.
     CallbackQuery(CallbackQuery),
     /// A new incoming channel post.
@@ -240,6 +245,18 @@ pub struct UnexpectedUpdate(Update);
 impl From<UnexpectedUpdate> for Update {
     fn from(value: UnexpectedUpdate) -> Self {
         value.0
+    }
+}
+
+impl TryFrom<Update> for BusinessConnection {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            BusinessConnection(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
     }
 }
 
@@ -370,6 +387,8 @@ pub enum AllowedUpdate {
     /// The bot chat member status.
     #[serde(rename = "my_chat_member")]
     BotStatus,
+    /// Business account connection changes.
+    BusinessConnection,
     /// A callback query.
     CallbackQuery,
     /// A channel post.

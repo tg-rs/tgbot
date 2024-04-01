@@ -5,6 +5,7 @@ use crate::{
     types::{
         tests::assert_json_eq,
         AllowedUpdate,
+        BusinessConnection,
         CallbackQuery,
         ChannelChat,
         Chat,
@@ -46,6 +47,7 @@ use crate::{
 fn allowed_update() {
     use crate::types::AllowedUpdate::*;
     for (expected_struct, expected_value) in [
+        (BusinessConnection, serde_json::json!("business_connection")),
         (CallbackQuery, serde_json::json!("callback_query")),
         (ChannelPost, serde_json::json!("channel_post")),
         (ChatBoostRemoved, serde_json::json!("removed_chat_boost")),
@@ -118,6 +120,40 @@ fn bot_status() {
                     },
                     "until_date": 0
                 }
+            }
+        }),
+    );
+}
+
+#[test]
+fn business_connection() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::BusinessConnection(BusinessConnection::new(0, "id", User::new(1, "John", false), 2)),
+    );
+
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert!(BusinessConnection::try_from(expected_struct.clone()).is_ok());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "business_connection": {
+                "can_reply": false,
+                "date": 0,
+                "id": "id",
+                "is_enabled": false,
+                "user": {
+                    "id": 1,
+                    "first_name": "John",
+                    "is_bot": false
+                },
+                "user_chat_id": 2
             }
         }),
     );

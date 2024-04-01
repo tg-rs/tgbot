@@ -2,6 +2,7 @@ pub use mime;
 
 pub use self::{
     bot::*,
+    business::*,
     callback::*,
     chat::*,
     color::*,
@@ -35,6 +36,7 @@ pub use self::{
 };
 
 mod bot;
+mod business;
 mod callback;
 mod chat;
 mod color;

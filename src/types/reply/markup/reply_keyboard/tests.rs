@@ -22,6 +22,9 @@ fn reply_keyboard_markup() {
                 .with_chat_is_forum(true)
                 .with_chat_has_username(true)
                 .with_chat_is_created(true)
+                .with_request_photo(true)
+                .with_request_title(true)
+                .with_request_username(true)
                 .with_user_administrator_rights(ChatAdministratorRights::all())
                 .with_bot_administrator_rights(ChatAdministratorRights::all())
                 .with_bot_is_member(true),
@@ -67,6 +70,9 @@ fn reply_keyboard_markup() {
                         "chat_is_forum": true,
                         "chat_has_username": true,
                         "chat_is_created": true,
+                        "request_photo": true,
+                        "request_title": true,
+                        "request_username": true,
                         "user_administrator_rights": {
                             "is_anonymous": true,
                             "can_manage_chat": true,
@@ -145,6 +151,9 @@ fn reply_keyboard_markup() {
                         "chat_is_forum": true,
                         "chat_has_username": true,
                         "chat_is_created": true,
+                        "request_photo": true,
+                        "request_title": true,
+                        "request_username": true,
                         "user_administrator_rights": {
                             "is_anonymous": true,
                             "can_manage_chat": true,

@@ -303,6 +303,12 @@ pub struct KeyboardButtonRequestChat {
     #[serde(skip_serializing_if = "Option::is_none")]
     chat_has_username: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    request_photo: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    request_title: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    request_username: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     user_administrator_rights: Option<ChatAdministratorRights>,
 }
 
@@ -326,6 +332,9 @@ impl KeyboardButtonRequestChat {
             chat_is_created: None,
             chat_is_forum: None,
             chat_has_username: None,
+            request_photo: None,
+            request_title: None,
+            request_username: None,
             user_administrator_rights: None,
         }
     }
@@ -388,6 +397,36 @@ impl KeyboardButtonRequestChat {
     /// If not specified, no additional restrictions are applied.
     pub fn with_chat_has_username(mut self, value: bool) -> Self {
         self.chat_has_username = Some(value);
+        self
+    }
+
+    /// Sets a new value for a `request_photo` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to request the chat's photo.
+    pub fn with_request_photo(mut self, value: bool) -> Self {
+        self.request_photo = Some(value);
+        self
+    }
+
+    /// Sets a new value for a `request_title` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to request the chat's title.
+    pub fn with_request_title(mut self, value: bool) -> Self {
+        self.request_title = Some(value);
+        self
+    }
+
+    /// Sets a new value for a `request_username` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to request the chat's username.
+    pub fn with_request_username(mut self, value: bool) -> Self {
+        self.request_username = Some(value);
         self
     }
 

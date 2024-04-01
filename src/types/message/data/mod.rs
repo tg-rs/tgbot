@@ -20,6 +20,7 @@ use crate::types::{
     PassportData,
     PhotoSize,
     Poll,
+    SharedUser,
     Sticker,
     Story,
     SuccessfulPayment,
@@ -520,11 +521,8 @@ impl MessageDataProximityAlert {
 pub struct MessageDataUsersShared {
     /// Identifier of the request.
     pub request_id: Integer,
-    /// Identifiers of the shared users.
-    ///
-    /// The bot may not have access to the users and could be unable to use these identifiers,
-    /// unless the users are already known to the bot by some other means.
-    pub user_ids: Vec<Integer>,
+    /// Information about users shared with the bot.
+    pub users: Vec<SharedUser>,
 }
 
 impl MessageDataUsersShared {
@@ -533,14 +531,14 @@ impl MessageDataUsersShared {
     /// # Arguments
     ///
     /// * `request_id` - Identifier of the request.
-    /// * `user_ids` - Identifiers of the shared users.
-    pub fn new<T>(request_id: Integer, user_ids: T) -> Self
+    /// * `users` - Information about users shared with the bot.
+    pub fn new<T>(request_id: Integer, users: T) -> Self
     where
-        T: IntoIterator<Item = Integer>,
+        T: IntoIterator<Item = SharedUser>,
     {
         Self {
             request_id,
-            user_ids: user_ids.into_iter().collect(),
+            users: users.into_iter().collect(),
         }
     }
 }

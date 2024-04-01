@@ -2,8 +2,43 @@ use std::collections::HashMap;
 
 use crate::{
     api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, GetUserProfilePhotos, ParseMode, PhotoSize, User, UserId, UserProfilePhotos},
+    types::{
+        tests::assert_json_eq,
+        GetUserProfilePhotos,
+        ParseMode,
+        PhotoSize,
+        SharedUser,
+        User,
+        UserId,
+        UserProfilePhotos,
+    },
 };
+
+#[test]
+fn shared_user() {
+    assert_json_eq(SharedUser::new(1), serde_json::json!({"user_id": 1}));
+    assert_json_eq(
+        SharedUser::new(1)
+            .with_first_name("John")
+            .with_last_name("Doe")
+            .with_photo([PhotoSize::new("file-id", "file-unique-id", 100, 100)])
+            .with_username("john_doe"),
+        serde_json::json!({
+            "user_id": 1,
+            "first_name": "John",
+            "last_name": "Doe",
+            "photo": [
+                {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "height": 100,
+                    "width": 100
+                }
+            ],
+            "username": "john_doe"
+        }),
+    );
+}
 
 #[test]
 fn user() {

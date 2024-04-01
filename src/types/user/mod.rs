@@ -10,6 +10,98 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
+/// Contains information about a user that
+/// was shared with the bot using a [`crate::types::KeyboardButtonRequestUser`] button.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct SharedUser {
+    /// Identifier of the shared user.
+    ///
+    /// The bot may not have access to the user and could be unable to use this identifier,
+    /// unless the user is already known to the bot by some other means.
+    pub user_id: Integer,
+    /// First name of the user, if the name was requested by the bot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name: Option<String>,
+    /// Last name of the user, if the name was requested by the bot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<String>,
+    /// Available sizes of the user photo, if the photo was requested by the bot
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo: Option<Vec<PhotoSize>>,
+    /// Username of the user, if the username was requested by the bot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+}
+
+impl SharedUser {
+    /// Creates a new `SharedUser`.
+    ///
+    /// # Arguments
+    ///
+    /// * `user_id` - Identifier of the shared user.
+    pub fn new(user_id: Integer) -> Self {
+        Self {
+            user_id,
+            first_name: None,
+            last_name: None,
+            photo: None,
+            username: None,
+        }
+    }
+
+    /// Sets a new first name.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - First name.
+    pub fn with_first_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.first_name = Some(value.into());
+        self
+    }
+
+    /// Sets a new last name.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Last name.
+    pub fn with_last_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.last_name = Some(value.into());
+        self
+    }
+
+    /// Sets new photo sizes.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Available sizes of photo.
+    pub fn with_photo<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = PhotoSize>,
+    {
+        self.photo = Some(value.into_iter().collect());
+        self
+    }
+
+    /// Sets a new username.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Username.
+    pub fn with_username<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.username = Some(value.into());
+        self
+    }
+}
+
 /// Represents a user.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct User {

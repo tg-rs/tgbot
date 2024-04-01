@@ -37,6 +37,7 @@ use crate::types::{
     PollOption,
     PrivateChat,
     RegularPoll,
+    SharedUser,
     Sticker,
     StickerType,
     Story,
@@ -776,10 +777,14 @@ fn users_shared() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::UsersShared(MessageDataUsersShared::new(1, [1]));
+    expected_struct.data = MessageData::UsersShared(MessageDataUsersShared::new(1, [SharedUser::new(1)]));
     expected_value["users_shared"] = serde_json::json!({
         "request_id": 1,
-        "user_ids": [1],
+        "users": [
+            {
+                "user_id": 1
+            }
+        ],
     });
     assert_json_eq(expected_struct, expected_value);
 }

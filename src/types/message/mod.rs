@@ -104,6 +104,11 @@ pub struct Message {
     /// Indicates whether the message media is covered by a spoiler animation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub has_media_spoiler: Option<bool>,
+    /// Whether the message was sent by an implicit action.
+    ///
+    /// For example, as an away or a greeting business message, or as a scheduled message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_from_offline: Option<bool>,
     /// Indicates whether the message is sent to a forum topic.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_topic_message: Option<bool>,
@@ -176,6 +181,7 @@ impl Message {
             external_reply: None,
             forward_origin: None,
             has_media_spoiler: None,
+            is_from_offline: None,
             is_topic_message: None,
             link_preview_options: None,
             media_group_id: None,
@@ -362,6 +368,16 @@ impl Message {
     /// * `value` - Indicates whether the message has a media spoiler.
     pub fn with_has_media_spoiler(mut self, value: bool) -> Self {
         self.has_media_spoiler = Some(value);
+        self
+    }
+
+    /// Sets a new value for an `is_from_offline` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the message was sent by an implicit action.
+    pub fn with_is_from_offline(mut self, value: bool) -> Self {
+        self.is_from_offline = Some(value);
         self
     }
 

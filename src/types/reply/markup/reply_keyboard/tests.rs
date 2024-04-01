@@ -34,6 +34,9 @@ fn reply_keyboard_markup() {
         KeyboardButton::new("request user 2").with_request_users(
             KeyboardButtonRequestUsers::new(1)
                 .with_max_quantity(2)
+                .with_request_name(true)
+                .with_request_photo(true)
+                .with_request_username(true)
                 .with_user_is_bot(true)
                 .with_user_is_premium(true),
         ),
@@ -108,6 +111,9 @@ fn reply_keyboard_markup() {
                     {"text": "request user 2", "request_users": {
                         "request_id": 1,
                         "max_quantity": 2,
+                        "request_name": true,
+                        "request_photo": true,
+                        "request_username": true,
                         "user_is_bot": true,
                         "user_is_premium": true
                     }},
@@ -183,6 +189,9 @@ fn reply_keyboard_markup() {
                     {"text": "request user 2", "request_users": {
                         "request_id": 1,
                         "max_quantity": 2,
+                        "request_name": true,
+                        "request_photo": true,
+                        "request_username": true,
                         "user_is_bot": true,
                         "user_is_premium": true
                     }},

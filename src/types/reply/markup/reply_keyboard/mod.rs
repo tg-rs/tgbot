@@ -417,6 +417,12 @@ pub struct KeyboardButtonRequestUsers {
     #[serde(skip_serializing_if = "Option::is_none")]
     max_quantity: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    request_name: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    request_photo: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    request_username: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     user_is_bot: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     user_is_premium: Option<bool>,
@@ -435,6 +441,9 @@ impl KeyboardButtonRequestUsers {
         Self {
             request_id,
             max_quantity: None,
+            request_name: None,
+            request_photo: None,
+            request_username: None,
             user_is_bot: None,
             user_is_premium: None,
         }
@@ -447,6 +456,36 @@ impl KeyboardButtonRequestUsers {
     /// * `value` - The maximum number of users to be selected; 1-10; default - 1.
     pub fn with_max_quantity(mut self, value: Integer) -> Self {
         self.max_quantity = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `request_name` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to request the users' first and last name.
+    pub fn with_request_name(mut self, value: bool) -> Self {
+        self.request_name = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `request_photo` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to request users' photo.
+    pub fn with_request_photo(mut self, value: bool) -> Self {
+        self.request_photo = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `request_username` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to request users' username.
+    pub fn with_request_username(mut self, value: bool) -> Self {
+        self.request_username = Some(value);
         self
     }
 

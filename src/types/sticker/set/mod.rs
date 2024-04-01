@@ -2,17 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Form, Method, Payload},
-    types::{
-        InputFile,
-        InputSticker,
-        InputStickerError,
-        InputStickers,
-        Integer,
-        PhotoSize,
-        Sticker,
-        StickerFormat,
-        StickerType,
-    },
+    types::{InputFile, InputSticker, InputStickerError, InputStickers, Integer, PhotoSize, Sticker, StickerType},
 };
 
 #[cfg(test)]
@@ -129,14 +119,7 @@ impl CreateNewStickerSet {
     ///            1-64 characters.
     /// * `title` - Sticker set title; 1-64 characters.
     /// * `stickers` - A list of 1-50 initial stickers to be added to the sticker set.
-    /// * `sticker_format` - Format of stickers in the set.
-    pub fn new<A, B>(
-        user_id: Integer,
-        name: A,
-        title: B,
-        stickers: InputStickers,
-        sticker_format: StickerFormat,
-    ) -> Result<Self, InputStickerError>
+    pub fn new<A, B>(user_id: Integer, name: A, title: B, stickers: InputStickers) -> Result<Self, InputStickerError>
     where
         A: Into<String>,
         B: Into<String>,
@@ -145,7 +128,6 @@ impl CreateNewStickerSet {
         form.insert_field("user_id", user_id);
         form.insert_field("name", name.into());
         form.insert_field("title", title.into());
-        form.insert_field("sticker_format", sticker_format.as_ref());
         Ok(Self { form })
     }
 

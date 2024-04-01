@@ -88,10 +88,9 @@ fn create_new_sticker_set() {
                 ),
                 ("needs_repainting", true.into()),
                 ("sticker_type", "regular".into()),
-                ("sticker_format", "static".into()),
             ]),
         ),
-        CreateNewStickerSet::new(1, "name", "title", create_input_stickers(), StickerFormat::Static)
+        CreateNewStickerSet::new(1, "name", "title", create_input_stickers())
             .unwrap()
             .with_needs_repainting(true)
             .with_sticker_type(StickerType::Regular),
@@ -107,10 +106,9 @@ fn create_new_sticker_set() {
                     "stickers",
                     r#"[{"sticker":"sticker-file-id","emoji_list":["😻"],"format":"static"}]"#.into(),
                 ),
-                ("sticker_format", "static".into()),
             ]),
         ),
-        CreateNewStickerSet::new(1, "name", "title", create_input_stickers(), StickerFormat::Static).unwrap(),
+        CreateNewStickerSet::new(1, "name", "title", create_input_stickers()).unwrap(),
     );
 }
 

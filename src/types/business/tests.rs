@@ -4,8 +4,10 @@ use crate::{
         tests::assert_json_eq,
         BusinessConnection,
         BusinessIntro,
+        BusinessLocation,
         BusinessMessagesDeleted,
         GetBusinessConnection,
+        Location,
         PrivateChat,
         Sticker,
         StickerType,
@@ -63,6 +65,24 @@ fn business_intro() {
                 "is_video": false,
             },
             "title": "title"
+        }),
+    );
+}
+
+#[test]
+fn business_location() {
+    assert_json_eq(
+        BusinessLocation::new("address"),
+        serde_json::json!({"address": "address"}),
+    );
+    assert_json_eq(
+        BusinessLocation::new("address").with_location(Location::new(1.0, 2.0)),
+        serde_json::json!({
+            "address": "address",
+            "location": {
+                "latitude": 1.0,
+                "longitude": 2.0,
+            }
         }),
     );
 }

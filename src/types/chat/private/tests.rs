@@ -2,6 +2,7 @@ use crate::types::{
     tests::assert_json_eq,
     AccentColor,
     BusinessIntro,
+    BusinessLocation,
     Chat,
     ChatPhoto,
     Message,
@@ -26,6 +27,7 @@ fn private_chat() {
             ))
             .with_bio("Bio")
             .with_business_intro(BusinessIntro::default())
+            .with_business_location(BusinessLocation::new("address"))
             .with_pinned_message(
                 Message::new(
                     1,
@@ -69,6 +71,9 @@ fn private_chat() {
             },
             "bio": "Bio",
             "business_intro": {},
+            "business_location": {
+                "address": "address"
+            },
             "pinned_message": {
                 "message_id": 1,
                 "date": 0,

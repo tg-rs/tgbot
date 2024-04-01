@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Chat, Integer, Sticker, User},
+    types::{Chat, Integer, Location, Sticker, User},
 };
 
 #[cfg(test)]
@@ -118,6 +118,43 @@ impl BusinessIntro {
         T: Into<String>,
     {
         self.title = Some(value.into());
+        self
+    }
+}
+
+/// Provides information about address and location of the business.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct BusinessLocation {
+    /// Address of the business.
+    pub address: String,
+    /// Location of the business.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<Location>,
+}
+
+impl BusinessLocation {
+    /// Creates a new `BusinessLocation`.
+    ///
+    /// # Arguments
+    ///
+    /// * `address` - Address of the business.
+    pub fn new<T>(address: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            address: address.into(),
+            location: None,
+        }
+    }
+
+    /// Sets a new location.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Location of the business.
+    pub fn with_location(mut self, value: Location) -> Self {
+        self.location = Some(value);
         self
     }
 }

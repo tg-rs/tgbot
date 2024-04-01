@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::types::{
     AccentColor,
     BusinessIntro,
+    BusinessLocation,
     ChatPeerId,
     ChatPhoto,
     ChatUsername,
@@ -47,6 +48,11 @@ pub struct PrivateChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_intro: Option<BusinessIntro>,
+    /// For private chats with business accounts, the location of the business.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_location: Option<BusinessLocation>,
     /// Custom emoji identifier of emoji status of the other party.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -125,6 +131,7 @@ impl PrivateChat {
             background_custom_emoji_id: None,
             bio: None,
             business_intro: None,
+            business_location: None,
             emoji_status_custom_emoji_id: None,
             emoji_status_expiration_date: None,
             has_private_forwards: None,
@@ -197,6 +204,16 @@ impl PrivateChat {
     /// * `value` - Intro.
     pub fn with_business_intro(mut self, value: BusinessIntro) -> Self {
         self.business_intro = Some(value);
+        self
+    }
+
+    /// Sets a new business location.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Location.
+    pub fn with_business_location(mut self, value: BusinessLocation) -> Self {
+        self.business_location = Some(value);
         self
     }
 

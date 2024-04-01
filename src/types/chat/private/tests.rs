@@ -1,6 +1,7 @@
 use crate::types::{
     tests::assert_json_eq,
     AccentColor,
+    Birthdate,
     BusinessIntro,
     BusinessLocation,
     BusinessOpeningHours,
@@ -28,6 +29,7 @@ fn private_chat() {
                 "small-file-unique-id",
             ))
             .with_bio("Bio")
+            .with_birthdate(Birthdate::new(1, 1))
             .with_business_intro(BusinessIntro::default())
             .with_business_location(BusinessLocation::new("address"))
             .with_business_opening_hours(BusinessOpeningHours::new("UTC", [(0, 1)]))
@@ -74,6 +76,10 @@ fn private_chat() {
                 "big_file_unique_id": "big-file-unique-id",
             },
             "bio": "Bio",
+            "birthdate": {
+                "day": 1,
+                "month": 1
+            },
             "business_intro": {},
             "business_location": {
                 "address": "address"

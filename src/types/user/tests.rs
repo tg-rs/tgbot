@@ -4,6 +4,7 @@ use crate::{
     api::{assert_payload_eq, Payload},
     types::{
         tests::assert_json_eq,
+        Birthdate,
         GetUserProfilePhotos,
         ParseMode,
         PhotoSize,
@@ -13,6 +14,15 @@ use crate::{
         UserProfilePhotos,
     },
 };
+
+#[test]
+fn birthdate() {
+    assert_json_eq(Birthdate::new(1, 1), serde_json::json!({"day": 1, "month": 1}));
+    assert_json_eq(
+        Birthdate::new(1, 1).with_year(1970),
+        serde_json::json!({"day": 1, "month": 1, "year": 1970}),
+    );
+}
 
 #[test]
 fn shared_user() {

@@ -10,6 +10,40 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
+/// Represents the date of birth of a user.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct Birthdate {
+    /// Day of the user's birth; 1-31
+    pub day: Integer,
+    /// Month of the user's birth; 1-12
+    pub month: Integer,
+    /// Year of the user's birth
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<Integer>,
+}
+
+impl Birthdate {
+    /// Creates a new `Birthdate`.
+    ///
+    /// # Arguments
+    ///
+    /// * `day` - Day.
+    /// * `month` - Month.
+    pub fn new(day: Integer, month: Integer) -> Self {
+        Self { day, month, year: None }
+    }
+
+    /// Sets a new year.
+    ///
+    /// # Arguments
+    ///
+    /// * `year` - Year.
+    pub fn with_year(mut self, value: Integer) -> Self {
+        self.year = Some(value);
+        self
+    }
+}
+
 /// Contains information about a user that
 /// was shared with the bot using a [`crate::types::KeyboardButtonRequestUser`] button.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]

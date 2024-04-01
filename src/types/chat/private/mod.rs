@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::{
     AccentColor,
+    Birthdate,
     BusinessIntro,
     BusinessLocation,
     BusinessOpeningHours,
@@ -45,6 +46,11 @@ pub struct PrivateChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
+    /// The date of birth of the user.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub birthdate: Option<Birthdate>,
     /// For chats with business accounts, the intro of the business.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -142,6 +148,7 @@ impl PrivateChat {
             active_usernames: None,
             background_custom_emoji_id: None,
             bio: None,
+            birthdate: None,
             business_intro: None,
             business_location: None,
             business_opening_hours: None,
@@ -208,6 +215,16 @@ impl PrivateChat {
         T: Into<String>,
     {
         self.bio = Some(value.into());
+        self
+    }
+
+    /// Sets a new date of birth.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Date of birth.
+    pub fn with_birthdate(mut self, value: Birthdate) -> Self {
+        self.birthdate = Some(value);
         self
     }
 

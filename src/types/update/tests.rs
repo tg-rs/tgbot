@@ -6,6 +6,7 @@ use crate::{
         tests::assert_json_eq,
         AllowedUpdate,
         BusinessConnection,
+        BusinessMessagesDeleted,
         CallbackQuery,
         ChannelChat,
         Chat,
@@ -154,6 +155,51 @@ fn business_connection() {
                     "is_bot": false
                 },
                 "user_chat_id": 2
+            }
+        }),
+    );
+}
+
+#[test]
+fn business_message() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::BusinessMessage(Message::new(
+            1,
+            0,
+            PrivateChat::new(1, "John"),
+            MessageData::Text(Text::from("message-text")),
+            User::new(1, "John", false),
+        )),
+    );
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+    assert_eq!(expected_struct.get_user().map(|u| u.id).unwrap(), 1);
+
+    assert!(Message::try_from(expected_struct.clone()).is_ok());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "business_message": {
+                "message_id": 1,
+                "date": 0,
+                "from": {
+                    "id": 1,
+                    "is_bot": false,
+                    "first_name": "John"
+                },
+                "chat": {
+                    "id": 1,
+                    "type": "private",
+                    "first_name": "John"
+                },
+                "text": "message-text",
+                "has_protected_content": false,
+                "is_automatic_forward": false
             }
         }),
     );
@@ -387,6 +433,98 @@ fn chosen_inline_result() {
                     "is_bot": false
                 },
                 "query": "q",
+            }
+        }),
+    );
+}
+
+#[test]
+fn deleted_business_messages() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::DeletedBusinessMessages(BusinessMessagesDeleted::new(
+            "id",
+            PrivateChat::new(1, "John").with_username("john_doe"),
+            [2],
+        )),
+    );
+
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
+    assert_eq!(expected_struct.get_chat_username().unwrap(), "john_doe");
+    assert!(expected_struct.get_user_id().is_none());
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert!(BusinessMessagesDeleted::try_from(expected_struct.clone()).is_ok());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "deleted_business_messages": {
+                "business_connection_id": "id",
+                "chat": {
+                    "type": "private",
+                    "id": 1,
+                    "first_name": "John",
+                    "username": "john_doe"
+                },
+                "message_ids": [2]
+            }
+        }),
+    );
+}
+
+#[test]
+fn edited_business_message() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::EditedBusinessMessage(
+            Message::new(
+                1365,
+                1441,
+                PrivateChat::new(1111, "John")
+                    .with_last_name("Doe")
+                    .with_username("john_doe"),
+                MessageData::Text(Text::from("Edited text")),
+                User::new(1111, "John", false)
+                    .with_last_name("Doe")
+                    .with_username("john_doe"),
+            )
+            .with_edit_date(1441),
+        ),
+    );
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 1111);
+    assert_eq!(expected_struct.get_chat_username().unwrap(), "john_doe");
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1111);
+    assert_eq!(expected_struct.get_user_username().unwrap(), "john_doe");
+
+    assert!(Message::try_from(expected_struct.clone()).is_ok());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "edited_business_message": {
+                "chat": {
+                    "id": 1111,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "username": "john_doe",
+                    "type": "private",
+                },
+                "date": 1441,
+                "edit_date": 1441,
+                "from": {
+                    "id": 1111,
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "username": "john_doe",
+                    "is_bot": false
+                },
+                "has_protected_content": false,
+                "is_automatic_forward": false,
+                "message_id": 1365,
+                "text": "Edited text",
             }
         }),
     );

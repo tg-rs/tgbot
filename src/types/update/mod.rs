@@ -7,6 +7,7 @@ use crate::{
     api::{Method, Payload},
     types::{
         BusinessConnection,
+        BusinessMessagesDeleted,
         CallbackQuery,
         Chat,
         ChatBoostRemoved,
@@ -69,6 +70,7 @@ impl Update {
     pub fn get_chat(&self) -> Option<&Chat> {
         self.get_message().map(|msg| &msg.chat).or(match self.update_type {
             UpdateType::BotStatus(ref x) | UpdateType::UserStatus(ref x) => Some(&x.chat),
+            UpdateType::DeletedBusinessMessages(ref x) => Some(&x.chat),
             UpdateType::ChatBoostRemoved(ref x) => Some(&x.chat),
             UpdateType::ChatBoostUpdated(ref x) => Some(&x.chat),
             UpdateType::ChatJoinRequest(ref x) => Some(&x.chat),
@@ -98,8 +100,11 @@ impl Update {
             UpdateType::ChatBoostUpdated(_) => return None,
             UpdateType::ChatJoinRequest(ref x) => &x.from,
             UpdateType::ChosenInlineResult(ref x) => &x.from,
+            UpdateType::DeletedBusinessMessages(_) => return None,
             UpdateType::InlineQuery(ref x) => &x.from,
             UpdateType::Message(ref x)
+            | UpdateType::BusinessMessage(ref x)
+            | UpdateType::EditedBusinessMessage(ref x)
             | UpdateType::EditedMessage(ref x)
             | UpdateType::ChannelPost(ref x)
             | UpdateType::EditedChannelPost(ref x) => return x.sender.get_user(),
@@ -130,6 +135,8 @@ impl Update {
     pub fn get_message(&self) -> Option<&Message> {
         match self.update_type {
             UpdateType::Message(ref msg)
+            | UpdateType::BusinessMessage(ref msg)
+            | UpdateType::EditedBusinessMessage(ref msg)
             | UpdateType::EditedMessage(ref msg)
             | UpdateType::ChannelPost(ref msg)
             | UpdateType::EditedChannelPost(ref msg) => Some(msg),
@@ -156,6 +163,8 @@ pub enum UpdateType {
     /// The bot was connected to or disconnected from a business account,
     /// or a user edited an existing connection with the bot.
     BusinessConnection(BusinessConnection),
+    /// New non-service message from a connected business account.
+    BusinessMessage(Message),
     /// A new incoming callback query.
     CallbackQuery(CallbackQuery),
     /// A new incoming channel post.
@@ -182,6 +191,10 @@ pub enum UpdateType {
     ///
     /// [1]: https://core.telegram.org/bots/inline#collecting-feedback
     ChosenInlineResult(ChosenInlineResult),
+    /// Messages were deleted from a connected business account.
+    DeletedBusinessMessages(BusinessMessagesDeleted),
+    /// New version of a message from a connected business account.
+    EditedBusinessMessage(Message),
     /// A new version of a channel post that is known to the bot and was edited.
     EditedChannelPost(Message),
     /// A new version of a message that is known to the bot and was edited.
@@ -260,6 +273,18 @@ impl TryFrom<Update> for BusinessConnection {
     }
 }
 
+impl TryFrom<Update> for BusinessMessagesDeleted {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            DeletedBusinessMessages(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
 impl TryFrom<Update> for ChatMemberUpdated {
     type Error = UnexpectedUpdate;
 
@@ -326,7 +351,12 @@ impl TryFrom<Update> for Message {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            EditedChannelPost(x) | EditedMessage(x) | ChannelPost(x) | Message(x) => Ok(x),
+            BusinessMessage(x)
+            | EditedBusinessMessage(x)
+            | EditedChannelPost(x)
+            | EditedMessage(x)
+            | ChannelPost(x)
+            | Message(x) => Ok(x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -389,6 +419,8 @@ pub enum AllowedUpdate {
     BotStatus,
     /// Business account connection changes.
     BusinessConnection,
+    /// New non-service message from a connected business account.
+    BusinessMessage,
     /// A callback query.
     CallbackQuery,
     /// A channel post.
@@ -403,6 +435,10 @@ pub enum AllowedUpdate {
     ChatJoinRequest,
     /// A chosen inline result.
     ChosenInlineResult,
+    /// Messages were deleted from a connected business account.
+    DeletedBusinessMessages,
+    /// New version of a message from a connected business account.
+    EditedBusinessMessage,
     /// An edited channel post.
     EditedChannelPost,
     /// An edited message.

@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, BusinessConnection, User};
+use crate::types::{tests::assert_json_eq, BusinessConnection, BusinessMessagesDeleted, PrivateChat, User};
 
 #[test]
 fn business_connection() {
@@ -21,4 +21,19 @@ fn business_connection() {
     expected_value["can_reply"] = serde_json::json!(true);
     expected_value["is_enabled"] = serde_json::json!(true);
     assert_json_eq(expected_struct, expected_value)
+}
+
+#[test]
+fn business_messages_deleted() {
+    let expected_struct = BusinessMessagesDeleted::new("id", PrivateChat::new(1, "test"), [2]);
+    let expected_value = serde_json::json!({
+        "business_connection_id": "id",
+        "chat": {
+            "type": "private",
+            "id": 1,
+            "first_name": "test"
+        },
+        "message_ids": [2]
+    });
+    assert_json_eq(expected_struct, expected_value);
 }

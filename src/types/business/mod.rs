@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Integer, User};
+use crate::types::{Chat, Integer, User};
 
 #[cfg(test)]
 mod tests;
@@ -64,5 +64,39 @@ impl BusinessConnection {
     pub fn with_is_enabled(mut self, value: bool) -> Self {
         self.is_enabled = value;
         self
+    }
+}
+
+/// Provides information about messages deleted from a connected business account.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct BusinessMessagesDeleted {
+    /// Unique identifier of the business connection.
+    pub business_connection_id: String,
+    /// Information about a chat in the business account.
+    /// The bot may not have access to the chat or the corresponding user.
+    pub chat: Chat,
+    /// A list of identifiers of deleted messages in the chat of the business account.
+    pub message_ids: Vec<Integer>,
+}
+
+impl BusinessMessagesDeleted {
+    /// Creates a new `BusinessMessagesDeleted`.
+    ///
+    /// # Arguments
+    ///
+    /// * business_connection_id - Unique identifier of the business connection.
+    /// * chat - Information about a chat in the business account.
+    /// * message_ids - A list of identifiers of deleted messages in the chat of the business account.
+    pub fn new<A, B, C>(business_connection_id: A, chat: B, message_ids: C) -> Self
+    where
+        A: Into<String>,
+        B: Into<Chat>,
+        C: IntoIterator<Item = Integer>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            chat: chat.into(),
+            message_ids: message_ids.into_iter().collect(),
+        }
     }
 }

@@ -2,13 +2,13 @@
 
 ## 0.22.0 (01.04.2024)
 
-### Bot API
-
 ### Dependencies
 
 - Updated bytes version to 1.6.
 - Updated reqwest version to 0.12.
 - Updated tokio version to 1.37.
+
+### Bot API
 
 #### 7.2
 

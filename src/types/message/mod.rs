@@ -89,6 +89,12 @@ pub struct Message {
     /// Author signature.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
+    /// Unique identifier of the business connection from which the message was received.
+    ///
+    /// If non-empty, the message belongs to a chat of the corresponding business account
+    /// that is independent from any potential bot chat which might share the same identifier.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_connection_id: Option<String>,
     /// Information about the message that is being replied to, which may come from another chat or forum topic.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_reply: Option<ExternalReplyInfo>,
@@ -161,6 +167,7 @@ impl Message {
             is_automatic_forward: false,
             sender: sender.into(),
             author_signature: None,
+            business_connection_id: None,
             external_reply: None,
             forward_origin: None,
             has_media_spoiler: None,
@@ -305,6 +312,19 @@ impl Message {
         T: Into<String>,
     {
         self.author_signature = Some(value.into());
+        self
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection from which the message was received.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
         self
     }
 

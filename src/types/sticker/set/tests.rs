@@ -50,15 +50,27 @@ fn add_sticker_to_set() {
             Form::from([
                 ("user_id", FormValue::from(1)),
                 ("name", "name".into()),
-                ("sticker", r#"{"sticker":"sticker-id","emoji_list":["😻"]}"#.into()),
+                (
+                    "sticker",
+                    r#"{"sticker":"sticker-id","emoji_list":["😻"],"format":"static"}"#.into(),
+                ),
             ]),
         ),
-        AddStickerToSet::new(1, "name", InputSticker::new(InputFile::file_id("sticker-id"), ["😻"])).unwrap(),
+        AddStickerToSet::new(
+            1,
+            "name",
+            InputSticker::new(InputFile::file_id("sticker-id"), ["😻"], StickerFormat::Static),
+        )
+        .unwrap(),
     );
 }
 
 fn create_input_stickers() -> InputStickers {
-    InputStickers::default().add_sticker(InputSticker::new(InputFile::file_id("sticker-file-id"), ["😻"]))
+    InputStickers::default().add_sticker(InputSticker::new(
+        InputFile::file_id("sticker-file-id"),
+        ["😻"],
+        StickerFormat::Static,
+    ))
 }
 
 #[test]
@@ -72,7 +84,7 @@ fn create_new_sticker_set() {
                 ("title", "title".into()),
                 (
                     "stickers",
-                    r#"[{"sticker":"sticker-file-id","emoji_list":["😻"]}]"#.into(),
+                    r#"[{"sticker":"sticker-file-id","emoji_list":["😻"],"format":"static"}]"#.into(),
                 ),
                 ("needs_repainting", true.into()),
                 ("sticker_type", "regular".into()),
@@ -93,7 +105,7 @@ fn create_new_sticker_set() {
                 ("title", "title".into()),
                 (
                     "stickers",
-                    r#"[{"sticker":"sticker-file-id","emoji_list":["😻"]}]"#.into(),
+                    r#"[{"sticker":"sticker-file-id","emoji_list":["😻"],"format":"static"}]"#.into(),
                 ),
                 ("sticker_format", "static".into()),
             ]),

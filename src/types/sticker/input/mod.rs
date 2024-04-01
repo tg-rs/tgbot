@@ -5,7 +5,7 @@ use serde_json::Error as JsonError;
 
 use crate::{
     api::Form,
-    types::{InputFile, MaskPosition},
+    types::{InputFile, MaskPosition, StickerFormat},
 };
 
 #[cfg(test)]
@@ -15,6 +15,7 @@ mod tests;
 #[derive(Debug)]
 pub struct InputSticker {
     emoji_list: Vec<String>,
+    format: StickerFormat,
     sticker: InputFile,
     keywords: Option<Vec<String>>,
     mask_position: Option<MaskPosition>,
@@ -27,7 +28,8 @@ impl InputSticker {
     ///
     /// * `sticker` - The added sticker.
     /// * `emoji_list` - List of 1-20 emoji associated with the sticker.
-    pub fn new<A, B, C>(sticker: A, emoji_list: B) -> Self
+    /// * `format` - Format of the sticker.
+    pub fn new<A, B, C>(sticker: A, emoji_list: B, format: StickerFormat) -> Self
     where
         A: Into<InputFile>,
         B: IntoIterator<Item = C>,
@@ -35,6 +37,7 @@ impl InputSticker {
     {
         Self {
             emoji_list: emoji_list.into_iter().map(Into::into).collect(),
+            format,
             sticker: sticker.into(),
             keywords: None,
             mask_position: None,
@@ -76,6 +79,7 @@ impl TryFrom<InputSticker> for Form {
         let InputSticker {
             sticker,
             emoji_list,
+            format,
             mask_position,
             keywords,
         } = value;
@@ -93,6 +97,7 @@ impl TryFrom<InputSticker> for Form {
             serde_json::to_string(&InputStickerMetadata {
                 sticker,
                 emoji_list,
+                format,
                 mask_position,
                 keywords,
             })
@@ -119,6 +124,7 @@ impl InputStickers {
         let InputSticker {
             sticker,
             emoji_list,
+            format,
             mask_position,
             keywords,
         } = value;
@@ -134,6 +140,7 @@ impl InputStickers {
         self.metadata.push(InputStickerMetadata {
             sticker,
             emoji_list,
+            format,
             mask_position,
             keywords,
         });
@@ -170,6 +177,7 @@ impl fmt::Display for InputStickerError {
 struct InputStickerMetadata {
     sticker: String,
     emoji_list: Vec<String>,
+    format: StickerFormat,
     #[serde(skip_serializing_if = "Option::is_none")]
     mask_position: Option<MaskPosition>,
     #[serde(skip_serializing_if = "Option::is_none")]

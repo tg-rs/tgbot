@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Chat, Integer, User};
+use crate::{
+    api::{Method, Payload},
+    types::{Chat, Integer, User},
+};
 
 #[cfg(test)]
 mod tests;
@@ -98,5 +101,35 @@ impl BusinessMessagesDeleted {
             chat: chat.into(),
             message_ids: message_ids.into_iter().collect(),
         }
+    }
+}
+
+/// Returns information about the connection of the bot with a business account.
+#[derive(Clone, Debug, Serialize)]
+pub struct GetBusinessConnection {
+    business_connection_id: String,
+}
+
+impl GetBusinessConnection {
+    /// Creates a new `GetBusinessConnection`.
+    ///
+    /// # Arguments
+    ///
+    /// * business_connection_id - Unique identifier of the business connection.
+    pub fn new<T>(business_connection_id: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+        }
+    }
+}
+
+impl Method for GetBusinessConnection {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getBusinessConnection", self)
     }
 }

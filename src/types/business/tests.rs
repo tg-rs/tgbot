@@ -1,4 +1,14 @@
-use crate::types::{tests::assert_json_eq, BusinessConnection, BusinessMessagesDeleted, PrivateChat, User};
+use crate::{
+    api::{assert_payload_eq, Payload},
+    types::{
+        tests::assert_json_eq,
+        BusinessConnection,
+        BusinessMessagesDeleted,
+        GetBusinessConnection,
+        PrivateChat,
+        User,
+    },
+};
 
 #[test]
 fn business_connection() {
@@ -36,4 +46,15 @@ fn business_messages_deleted() {
         "message_ids": [2]
     });
     assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn get_business_connection() {
+    assert_payload_eq(
+        Payload::json(
+            "getBusinessConnection",
+            serde_json::json!({"business_connection_id": "id"}),
+        ),
+        GetBusinessConnection::new("id"),
+    )
 }

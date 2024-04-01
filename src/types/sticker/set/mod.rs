@@ -261,6 +261,52 @@ impl Method for GetStickerSet {
     }
 }
 
+/// Replaces an existing sticker in a sticker set with a new one.
+///
+/// The method is equivalent to calling [`crate::types::DeleteStickerFromSet`],
+/// then [`crate::types::AddStickerToSet`],
+/// then [`crate::types::SetStickerPositionInSet`].
+#[derive(Debug)]
+pub struct ReplaceStickerInSet {
+    form: Form,
+}
+
+impl ReplaceStickerInSet {
+    /// Creates a new `ReplaceStickerInSet`.
+    ///
+    /// # Arguments
+    ///
+    /// * `name` - Sticker set name.
+    /// * `old_sticker` - File identifier of the replaced sticker.
+    /// * `sticker` -  Information about the added sticker.
+    ///                If exactly the same sticker had already been added to the set, then the set remains unchanged.
+    /// * `user_id` - User identifier of the sticker set owner.
+    pub fn new<A, B>(
+        name: A,
+        old_sticker: B,
+        sticker: InputSticker,
+        user_id: Integer,
+    ) -> Result<Self, InputStickerError>
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        let mut form: Form = sticker.try_into()?;
+        form.insert_field("name", name.into());
+        form.insert_field("old_sticker", old_sticker.into());
+        form.insert_field("user_id", user_id);
+        Ok(Self { form })
+    }
+}
+
+impl Method for ReplaceStickerInSet {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::form("replaceStickerInSet", self.form)
+    }
+}
+
 /// Sets the thumbnail of a custom emoji sticker set.
 #[derive(Clone, Debug, Serialize)]
 pub struct SetCustomEmojiStickerSetThumbnail {

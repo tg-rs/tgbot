@@ -1,3 +1,4 @@
+use super::ReplaceStickerInSet;
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
     types::{
@@ -148,6 +149,32 @@ fn get_sticker_set() {
             }),
         ),
         GetStickerSet::new("name"),
+    );
+}
+
+#[test]
+fn replace_sticker_in_set() {
+    let method = ReplaceStickerInSet::new(
+        "test",
+        "old-sticker",
+        InputSticker::new(InputFile::file_id("test"), ["😻"], StickerFormat::Static),
+        1,
+    )
+    .unwrap();
+    assert_payload_eq(
+        Payload::form(
+            "replaceStickerInSet",
+            Form::from([
+                ("name", "test".into()),
+                ("old_sticker", "old-sticker".into()),
+                (
+                    "sticker",
+                    r#"{"sticker":"test","emoji_list":["😻"],"format":"static"}"#.into(),
+                ),
+                ("user_id", FormValue::from(1)),
+            ]),
+        ),
+        method,
     );
 }
 

@@ -25,16 +25,12 @@ use crate::{
 fn sticker_set() {
     assert_json_eq(
         StickerSet::new("test", StickerType::Regular, vec![], "test")
-            .with_is_animated(false)
-            .with_is_video(false)
             .with_thumbnail(PhotoSize::new("thumb-file-id", "thumb-file-unique-id", 512, 512).with_file_size(2048)),
         serde_json::json!({
             "name": "test",
             "title": "test",
             "stickers": [],
             "sticker_type": "regular",
-            "is_animated": false,
-            "is_video": false,
             "thumbnail": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-file-unique-id",

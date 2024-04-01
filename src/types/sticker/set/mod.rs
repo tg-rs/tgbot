@@ -21,10 +21,6 @@ mod tests;
 /// Represents a sticker set.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct StickerSet {
-    /// Indicates whether the sticker set contains animated stickers.
-    pub is_animated: bool,
-    /// Indicates whether the sticker set contains video stickers.
-    pub is_video: bool,
     /// Name of the sticker set.
     pub name: String,
     /// Type of stickers.
@@ -54,34 +50,12 @@ impl StickerSet {
         C: IntoIterator<Item = Sticker>,
     {
         Self {
-            is_animated: false,
-            is_video: false,
             name: name.into(),
             sticker_type,
             stickers: stickers.into_iter().collect(),
             title: title.into(),
             thumbnail: None,
         }
-    }
-
-    /// Sets a new value for an `is_animated` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the sticker set contains animated stickers.
-    pub fn with_is_animated(mut self, value: bool) -> Self {
-        self.is_animated = value;
-        self
-    }
-
-    /// Sets a new value for an `is_video` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the sticker set contains video stickers.
-    pub fn with_is_video(mut self, value: bool) -> Self {
-        self.is_video = value;
-        self
     }
 
     /// Sets a new thumbnail.

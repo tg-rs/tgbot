@@ -75,6 +75,7 @@ fn send_animation() {
                 ("width", 200.into()),
                 ("height", 300.into()),
                 ("thumbnail", InputFile::url("https://google.com/favicon.ico").into()),
+                ("business_connection_id", "id".into()),
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("disable_notification", true.into()),
@@ -94,6 +95,7 @@ fn send_animation() {
             .with_height(300)
             .with_thumbnail(InputFile::url("https://google.com/favicon.ico"))
             .unwrap()
+            .with_business_connection_id("id")
             .with_caption("Caption")
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_disable_notification(true)

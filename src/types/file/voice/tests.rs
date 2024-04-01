@@ -49,6 +49,7 @@ fn send_voice() {
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("duration", 100.into()),
+                ("business_connection_id", "id".into()),
                 ("disable_notification", true.into()),
                 ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
@@ -60,6 +61,7 @@ fn send_voice() {
             ]),
         ),
         SendVoice::new(1, InputFile::file_id("file-id"))
+            .with_business_connection_id("id")
             .with_caption("Caption")
             .with_disable_notification(true)
             .with_duration(100)

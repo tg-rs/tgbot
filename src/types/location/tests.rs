@@ -53,6 +53,7 @@ fn send_location() {
                 "live_period": 100,
                 "heading": 120,
                 "proximity_alert_radius": 100,
+                "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
                 "message_thread_id": 1,
@@ -61,6 +62,7 @@ fn send_location() {
             }),
         ),
         SendLocation::new(1, 2.0, 3.0)
+            .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_heading(120)
             .with_horizontal_accuracy(1.5)

@@ -96,6 +96,8 @@ pub struct SendDice {
     chat_id: ChatId,
     emoji: DiceType,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
@@ -121,12 +123,26 @@ impl SendDice {
         Self {
             chat_id: chat_id.into(),
             emoji: dice_type,
+            business_connection_id: None,
             disable_notification: None,
             message_thread_id: None,
             protect_content: None,
             reply_markup: None,
             reply_parameters: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the business connection.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new value for a `disable_notification` flag.

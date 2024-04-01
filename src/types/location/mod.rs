@@ -104,6 +104,8 @@ pub struct SendLocation {
     latitude: Float,
     longitude: Float,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
@@ -139,6 +141,7 @@ impl SendLocation {
             chat_id: chat_id.into(),
             latitude,
             longitude,
+            business_connection_id: None,
             disable_notification: None,
             heading: None,
             horizontal_accuracy: None,
@@ -149,6 +152,19 @@ impl SendLocation {
             reply_markup: None,
             reply_parameters: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the business connection.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new value for a `disable_notification` flag.

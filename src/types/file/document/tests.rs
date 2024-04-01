@@ -67,6 +67,7 @@ fn send_document() {
                 ("document", InputFile::file_id("file-id").into()),
                 ("thumbnail", InputFile::url("https://example.com/image.jpg").into()),
                 ("caption", "Caption".into()),
+                ("business_connection_id", "id".into()),
                 ("disable_content_type_detection", true.into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("disable_notification", true.into()),
@@ -80,6 +81,7 @@ fn send_document() {
             ]),
         ),
         SendDocument::new(1, InputFile::file_id("file-id"))
+            .with_business_connection_id("id")
             .with_caption("Caption")
             .with_disable_content_type_detection(true)
             .with_disable_notification(true)

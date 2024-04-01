@@ -41,9 +41,10 @@ fn send_chat_action() {
             serde_json::json!({
                 "chat_id": 1,
                 "action": "typing",
+                "business_connection_id": "id",
                 "message_thread_id": 1,
             }),
         ),
-        method.with_message_thread_id(1),
+        method.with_business_connection_id("id").with_message_thread_id(1),
     );
 }

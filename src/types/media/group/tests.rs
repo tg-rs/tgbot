@@ -31,6 +31,7 @@ fn send_media_group() {
     let reply_parameters = ReplyParameters::new(1);
     let mut form: Form = create_media_group().into();
     form.insert_field("chat_id", 1);
+    form.insert_field("business_connection_id", "id");
     form.insert_field("disable_notification", true);
     form.insert_field("protect_content", true);
     form.insert_field("message_thread_id", 1);
@@ -38,6 +39,7 @@ fn send_media_group() {
     assert_payload_eq(
         Payload::form("sendMediaGroup", form),
         SendMediaGroup::new(1, create_media_group())
+            .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_message_thread_id(1)
             .with_protect_content(true)

@@ -53,6 +53,8 @@ pub struct SendChatAction {
     action: ChatAction,
     chat_id: ChatId,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
 }
 
@@ -70,8 +72,22 @@ impl SendChatAction {
         Self {
             action,
             chat_id: chat_id.into(),
+            business_connection_id: None,
             message_thread_id: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the business connection on behalf of which the action will be sent.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new message thread ID.

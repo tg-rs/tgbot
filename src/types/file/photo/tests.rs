@@ -56,6 +56,7 @@ fn send_photo() {
                 ("photo", InputFile::file_id("file-id").into()),
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
+                ("business_connection_id", "id".into()),
                 ("disable_notification", true.into()),
                 ("has_spoiler", true.into()),
                 ("message_thread_id", 1.into()),
@@ -69,6 +70,7 @@ fn send_photo() {
         ),
         SendPhoto::new(1, InputFile::file_id("file-id"))
             .with_caption("Caption")
+            .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_has_spoiler(true)
             .with_message_thread_id(1)

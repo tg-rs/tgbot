@@ -488,6 +488,7 @@ fn send_message() {
                 "link_preview_options": {
                     "is_disabled": true
                 },
+                "business_connection_id": "id",
                 "disable_notification": true,
                 "message_thread_id": 1,
                 "protect_content": true,
@@ -500,6 +501,7 @@ fn send_message() {
             }),
         ),
         SendMessage::new(1, "text")
+            .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
             .with_message_thread_id(1)

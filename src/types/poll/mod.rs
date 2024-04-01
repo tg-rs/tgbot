@@ -432,6 +432,8 @@ struct PollParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     allows_multiple_answers: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     close_date: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     correct_option_id: Option<Integer>,
@@ -473,6 +475,7 @@ impl PollParameters {
             options: options.into_iter().map(Into::into).collect(),
             question,
             allows_multiple_answers: None,
+            business_connection_id: None,
             close_date: None,
             correct_option_id: None,
             disable_notification: None,
@@ -519,6 +522,19 @@ impl SendQuiz {
         let mut parameters = PollParameters::new(chat_id.into(), question.into(), PollType::Quiz, options);
         parameters.correct_option_id = Some(correct_option_id);
         Self { inner: parameters }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the business connection.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.inner.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new close date.
@@ -713,6 +729,19 @@ impl SendPoll {
     /// * `value` - Indicates whether the poll allows multiple answers; default - `false`.
     pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
         self.inner.allows_multiple_answers = Some(value);
+        self
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the business connection on behalf.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.inner.business_connection_id = Some(value.into());
         self
     }
 

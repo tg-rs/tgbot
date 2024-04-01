@@ -131,6 +131,7 @@ fn send_sticker() {
             Form::from([
                 ("chat_id", FormValue::from(1)),
                 ("sticker", InputFile::file_id("sticker-id").into()),
+                ("business_connection_id", "id".into()),
                 ("disable_notification", true.into()),
                 ("emoji", "😱".into()),
                 ("message_thread_id", 1.into()),
@@ -140,6 +141,7 @@ fn send_sticker() {
             ]),
         ),
         SendSticker::new(1, InputFile::file_id("sticker-id"))
+            .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_emoji("😱")
             .with_message_thread_id(1)

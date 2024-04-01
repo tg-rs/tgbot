@@ -91,6 +91,8 @@ pub struct SendContact {
     first_name: String,
     phone_number: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     last_name: Option<String>,
@@ -124,6 +126,7 @@ impl SendContact {
             chat_id: chat_id.into(),
             first_name: first_name.into(),
             phone_number: phone_number.into(),
+            business_connection_id: None,
             disable_notification: None,
             last_name: None,
             message_thread_id: None,
@@ -132,6 +135,19 @@ impl SendContact {
             reply_parameters: None,
             vcard: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the business connection.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new value for a `disable_notification` flag.

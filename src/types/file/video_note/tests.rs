@@ -66,6 +66,7 @@ fn send_video_note() {
                 ("duration", 50.into()),
                 ("length", 100.into()),
                 ("thumbnail", InputFile::url("https://example.com/image.jpg").into()),
+                ("business_connection_id", "id".into()),
                 ("disable_notification", true.into()),
                 ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
@@ -77,6 +78,7 @@ fn send_video_note() {
             ]),
         ),
         SendVideoNote::new(1, InputFile::file_id("file-id"))
+            .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_duration(50)
             .with_length(100)

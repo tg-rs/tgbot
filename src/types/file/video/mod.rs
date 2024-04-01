@@ -158,6 +158,19 @@ impl SendVideo {
         }
     }
 
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * value - Unique identifier of the business connection.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.form.insert_field("business_connection_id", value.into());
+        self
+    }
+
     /// Sets a new caption.
     ///
     /// # Arguments

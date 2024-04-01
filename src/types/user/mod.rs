@@ -45,7 +45,7 @@ impl Birthdate {
 }
 
 /// Contains information about a user that
-/// was shared with the bot using a [`crate::types::KeyboardButtonRequestUser`] button.
+/// was shared with the bot using a [`crate::types::KeyboardButtonRequestUsers`] button.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct SharedUser {
     /// Identifier of the shared user.

@@ -30,10 +30,10 @@ impl BusinessConnection {
     ///
     /// # Arguments
     ///
-    /// * date - Date the connection was established in Unix time.
-    /// * id - Unique identifier of the business connection.
-    /// * user - Business account user that created the business connection.
-    /// * user_chat_id - Identifier of a private chat with the user who created the business connection.
+    /// * `date` - Date the connection was established in Unix time.
+    /// * `id` - Unique identifier of the business connection.
+    /// * `user` - Business account user that created the business connection.
+    /// * `user_chat_id` - Identifier of a private chat with the user who created the business connection.
     pub fn new<T>(date: Integer, id: T, user: User, user_chat_id: Integer) -> Self
     where
         T: Into<String>,
@@ -48,22 +48,22 @@ impl BusinessConnection {
         }
     }
 
-    /// Sets a new value for the `can_reply` flag.
+    /// Sets a new value for a `can_reply` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the bot can act on behalf of the business account
-    ///           in chats that were active in the last 24 hours.
+    /// * `value` - Whether the bot can act on behalf of the business account
+    ///             in chats that were active in the last 24 hours.
     pub fn with_can_reply(mut self, value: bool) -> Self {
         self.can_reply = value;
         self
     }
 
-    /// Sets a new value for the `is_enabled` flag
+    /// Sets a new value for an `is_enabled` flag.
     ///
     /// # Arguments
     ///
-    /// * value - Whether the connection is active.
+    /// * `value` - Whether the connection is active.
     pub fn with_is_enabled(mut self, value: bool) -> Self {
         self.is_enabled = value;
         self
@@ -176,9 +176,9 @@ impl BusinessMessagesDeleted {
     ///
     /// # Arguments
     ///
-    /// * business_connection_id - Unique identifier of the business connection.
-    /// * chat - Information about a chat in the business account.
-    /// * message_ids - A list of identifiers of deleted messages in the chat of the business account.
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `chat` - Information about a chat in the business account.
+    /// * `message_ids` - A list of identifiers of deleted messages in the chat of the business account.
     pub fn new<A, B, C>(business_connection_id: A, chat: B, message_ids: C) -> Self
     where
         A: Into<String>,
@@ -265,7 +265,7 @@ impl GetBusinessConnection {
     ///
     /// # Arguments
     ///
-    /// * business_connection_id - Unique identifier of the business connection.
+    /// * `business_connection_id` - Unique identifier of the business connection.
     pub fn new<T>(business_connection_id: T) -> Self
     where
         T: Into<String>,

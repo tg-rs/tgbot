@@ -528,7 +528,7 @@ impl SendQuiz {
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the business connection.
+    /// * `value` - Unique identifier of the business connection.
     pub fn with_business_connection_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -736,7 +736,7 @@ impl SendPoll {
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the business connection on behalf.
+    /// * `value` - Unique identifier of the business connection on behalf.
     pub fn with_business_connection_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

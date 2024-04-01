@@ -81,7 +81,7 @@ impl SendChatAction {
     ///
     /// # Arguments
     ///
-    /// * value - Unique identifier of the business connection on behalf of which the action will be sent.
+    /// * `value` - Unique identifier of the business connection on behalf of which the action will be sent.
     pub fn with_business_connection_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

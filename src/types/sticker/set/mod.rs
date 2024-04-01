@@ -435,7 +435,7 @@ impl SetStickerSetThumbnail {
     ///
     /// * `name` - Sticker set name.
     /// * `user_id` - User identifier of the sticker set owner.
-    /// * `format` - Format of the thumbnail
+    /// * `format` - Format of the thumbnail.
     pub fn new<N>(name: N, user_id: Integer, format: StickerFormat) -> Self
     where
         N: Into<String>,

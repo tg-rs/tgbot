@@ -1,6 +1,15 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{AccentColor, ChatPeerId, ChatPhoto, ChatUsername, Integer, Message, ProfileAccentColor};
+use crate::types::{
+    AccentColor,
+    BusinessIntro,
+    ChatPeerId,
+    ChatPhoto,
+    ChatUsername,
+    Integer,
+    Message,
+    ProfileAccentColor,
+};
 
 #[cfg(test)]
 mod tests;
@@ -33,6 +42,11 @@ pub struct PrivateChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
+    /// For chats with business accounts, the intro of the business.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_intro: Option<BusinessIntro>,
     /// Custom emoji identifier of emoji status of the other party.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -110,6 +124,7 @@ impl PrivateChat {
             active_usernames: None,
             background_custom_emoji_id: None,
             bio: None,
+            business_intro: None,
             emoji_status_custom_emoji_id: None,
             emoji_status_expiration_date: None,
             has_private_forwards: None,
@@ -172,6 +187,16 @@ impl PrivateChat {
         T: Into<String>,
     {
         self.bio = Some(value.into());
+        self
+    }
+
+    /// Sets a new business intro.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Intro.
+    pub fn with_business_intro(mut self, value: BusinessIntro) -> Self {
+        self.business_intro = Some(value);
         self
     }
 

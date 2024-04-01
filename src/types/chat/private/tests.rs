@@ -1,6 +1,7 @@
 use crate::types::{
     tests::assert_json_eq,
     AccentColor,
+    BusinessIntro,
     Chat,
     ChatPhoto,
     Message,
@@ -24,6 +25,7 @@ fn private_chat() {
                 "small-file-unique-id",
             ))
             .with_bio("Bio")
+            .with_business_intro(BusinessIntro::default())
             .with_pinned_message(
                 Message::new(
                     1,
@@ -66,6 +68,7 @@ fn private_chat() {
                 "big_file_unique_id": "big-file-unique-id",
             },
             "bio": "Bio",
+            "business_intro": {},
             "pinned_message": {
                 "message_id": 1,
                 "date": 0,

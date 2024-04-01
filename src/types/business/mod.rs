@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Chat, Integer, User},
+    types::{Chat, Integer, Sticker, User},
 };
 
 #[cfg(test)]
@@ -66,6 +66,58 @@ impl BusinessConnection {
     /// * value - Whether the connection is active.
     pub fn with_is_enabled(mut self, value: bool) -> Self {
         self.is_enabled = value;
+        self
+    }
+}
+
+/// Represents the intro of the business.
+#[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct BusinessIntro {
+    /// Message text of the business intro.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Sticker of the business intro.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sticker: Option<Sticker>,
+    /// Title text of the business intro.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+}
+
+impl BusinessIntro {
+    /// Sets a new message.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - .Message text of the business intro.
+    pub fn with_message<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.message = Some(value.into());
+        self
+    }
+
+    /// Sets a new sticker.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - .Sticker of the business intro.
+    pub fn with_sticker(mut self, value: Sticker) -> Self {
+        self.sticker = Some(value);
+        self
+    }
+
+    /// Sets a new title.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - .Title text of the business intro.
+    pub fn with_title<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.title = Some(value.into());
         self
     }
 }

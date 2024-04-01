@@ -3,9 +3,12 @@ use crate::{
     types::{
         tests::assert_json_eq,
         BusinessConnection,
+        BusinessIntro,
         BusinessMessagesDeleted,
         GetBusinessConnection,
         PrivateChat,
+        Sticker,
+        StickerType,
         User,
     },
 };
@@ -31,6 +34,37 @@ fn business_connection() {
     expected_value["can_reply"] = serde_json::json!(true);
     expected_value["is_enabled"] = serde_json::json!(true);
     assert_json_eq(expected_struct, expected_value)
+}
+
+#[test]
+fn business_intro() {
+    assert_json_eq(BusinessIntro::default(), serde_json::json!({}));
+
+    assert_json_eq(
+        BusinessIntro::default()
+            .with_message("msg")
+            .with_sticker(Sticker::new(
+                "file-id",
+                "file-unique-id",
+                StickerType::Regular,
+                512,
+                512,
+            ))
+            .with_title("title"),
+        serde_json::json!({
+            "message": "msg",
+            "sticker": {
+                "file_id": "file-id",
+                "file_unique_id": "file-unique-id",
+                "type": "regular",
+                "height": 512,
+                "width": 512,
+                "is_animated": false,
+                "is_video": false,
+            },
+            "title": "title"
+        }),
+    );
 }
 
 #[test]

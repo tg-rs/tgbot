@@ -133,6 +133,11 @@ pub struct Message {
     /// Contains a value only if the sender of the message boosted the chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sender_boost_count: Option<Integer>,
+    /// The bot that actually sent the message on behalf of the business account.
+    ///
+    /// Available only for outgoing messages sent on behalf of the connected business account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_business_bot: Option<User>,
     /// Bot through which the message was sent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub via_bot: Option<User>,
@@ -179,6 +184,7 @@ impl Message {
             reply_markup: None,
             reply_to: None,
             sender_boost_count: None,
+            sender_business_bot: None,
             via_bot: None,
         }
     }
@@ -446,6 +452,16 @@ impl Message {
     /// * `value` - Number of boosts added by the user.
     pub fn with_sender_boost_count(mut self, value: Integer) -> Self {
         self.sender_boost_count = Some(value);
+        self
+    }
+
+    /// Sets a new bot.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The bot that actually sent the message on behalf of the business account.
+    pub fn with_sender_business_bot(mut self, value: User) -> Self {
+        self.sender_business_bot = Some(value);
         self
     }
 

@@ -4,6 +4,7 @@ use crate::types::{
     AccentColor,
     BusinessIntro,
     BusinessLocation,
+    BusinessOpeningHours,
     ChatPeerId,
     ChatPhoto,
     ChatUsername,
@@ -53,6 +54,11 @@ pub struct PrivateChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_location: Option<BusinessLocation>,
+    /// For private chats with business accounts, the opening hours of the business.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_opening_hours: Option<BusinessOpeningHours>,
     /// Custom emoji identifier of emoji status of the other party.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -132,6 +138,7 @@ impl PrivateChat {
             bio: None,
             business_intro: None,
             business_location: None,
+            business_opening_hours: None,
             emoji_status_custom_emoji_id: None,
             emoji_status_expiration_date: None,
             has_private_forwards: None,
@@ -214,6 +221,16 @@ impl PrivateChat {
     /// * `value` - Location.
     pub fn with_business_location(mut self, value: BusinessLocation) -> Self {
         self.business_location = Some(value);
+        self
+    }
+
+    /// Sets new business opening hours.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Opening hours.
+    pub fn with_business_opening_hours(mut self, value: BusinessOpeningHours) -> Self {
+        self.business_opening_hours = Some(value);
         self
     }
 

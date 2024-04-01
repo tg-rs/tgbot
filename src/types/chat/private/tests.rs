@@ -3,6 +3,7 @@ use crate::types::{
     AccentColor,
     BusinessIntro,
     BusinessLocation,
+    BusinessOpeningHours,
     Chat,
     ChatPhoto,
     Message,
@@ -28,6 +29,7 @@ fn private_chat() {
             .with_bio("Bio")
             .with_business_intro(BusinessIntro::default())
             .with_business_location(BusinessLocation::new("address"))
+            .with_business_opening_hours(BusinessOpeningHours::new("UTC", [(0, 1)]))
             .with_pinned_message(
                 Message::new(
                     1,
@@ -73,6 +75,15 @@ fn private_chat() {
             "business_intro": {},
             "business_location": {
                 "address": "address"
+            },
+            "business_opening_hours": {
+                "time_zone_name": "UTC",
+                "opening_hours": [
+                    {
+                        "opening_minute": 0,
+                        "closing_minute": 1
+                    }
+                ]
             },
             "pinned_message": {
                 "message_id": 1,

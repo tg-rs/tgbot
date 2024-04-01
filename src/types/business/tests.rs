@@ -6,6 +6,7 @@ use crate::{
         BusinessIntro,
         BusinessLocation,
         BusinessMessagesDeleted,
+        BusinessOpeningHours,
         GetBusinessConnection,
         Location,
         PrivateChat,
@@ -98,6 +99,25 @@ fn business_messages_deleted() {
             "first_name": "test"
         },
         "message_ids": [2]
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn business_opening_hours() {
+    let expected_struct = BusinessOpeningHours::new("UTC", [(1, 2), (3, 4)]);
+    let expected_value = serde_json::json!({
+        "time_zone_name": "UTC",
+        "opening_hours": [
+            {
+                "opening_minute": 1,
+                "closing_minute": 2,
+            },
+            {
+                "opening_minute": 3,
+                "closing_minute": 4,
+            }
+        ]
     });
     assert_json_eq(expected_struct, expected_value);
 }

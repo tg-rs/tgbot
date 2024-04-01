@@ -193,6 +193,67 @@ impl BusinessMessagesDeleted {
     }
 }
 
+/// Provides information about the time interval describing business opening hours.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct BusinessOpeningHoursInterval {
+    /// The minute's sequence number in a week, starting on Monday,
+    /// marking the start of the time interval during which the business is open; 0 - 7 24 60.
+    pub opening_minute: Integer,
+    /// The minute's sequence number in a week, starting on Monday,
+    /// marking the end of the time interval during which the business is open; 0 - 8 24 60.
+    pub closing_minute: Integer,
+}
+
+impl BusinessOpeningHoursInterval {
+    /// Creates a new `BusinessOpeningHoursInterval`.
+    ///
+    /// # Arguments
+    ///
+    /// * `opening_minute` - Start of the time interval during which the business is open.
+    /// * `closing_minute` - End of the time interval during which the business is open.
+    pub fn new(opening_minute: Integer, closing_minute: Integer) -> Self {
+        Self {
+            opening_minute,
+            closing_minute,
+        }
+    }
+}
+
+impl From<(Integer, Integer)> for BusinessOpeningHoursInterval {
+    fn from((opening_minute, closing_minute): (Integer, Integer)) -> Self {
+        Self::new(opening_minute, closing_minute)
+    }
+}
+
+/// Provides information about the opening hours of the business.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct BusinessOpeningHours {
+    /// Unique name of the time zone for which the opening hours are defined.
+    pub time_zone_name: String,
+    /// List of time intervals describing business opening hours.
+    pub opening_hours: Vec<BusinessOpeningHoursInterval>,
+}
+
+impl BusinessOpeningHours {
+    /// Creates a new `BusinessOpeningHours`.
+    ///
+    /// # Arguments
+    ///
+    /// * `time_zone_name` - Unique name of the time zone for which the opening hours are defined.
+    /// * `opening_hours` - List of time intervals describing business opening hours.
+    pub fn new<A, B, C>(time_zone_name: A, opening_hours: B) -> Self
+    where
+        A: Into<String>,
+        B: IntoIterator<Item = C>,
+        C: Into<BusinessOpeningHoursInterval>,
+    {
+        Self {
+            time_zone_name: time_zone_name.into(),
+            opening_hours: opening_hours.into_iter().map(Into::into).collect(),
+        }
+    }
+}
+
 /// Returns information about the connection of the bot with a business account.
 #[derive(Clone, Debug, Serialize)]
 pub struct GetBusinessConnection {

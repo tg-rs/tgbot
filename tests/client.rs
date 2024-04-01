@@ -30,7 +30,7 @@ async fn execute() {
     let err = client.execute(Close).await.unwrap_err();
     assert_eq!(
         err.to_string(),
-        "failed to execute method: error decoding response body: expected value at line 1 column 1"
+        "failed to execute method: error decoding response body"
     );
 
     server

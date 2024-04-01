@@ -19,6 +19,8 @@ pub struct Bot {
     pub id: Integer,
     /// The username of the bot.
     pub username: String,
+    /// Whether the bot can be connected to a Telegram Business account to receive its messages.
+    pub can_connect_to_business: bool,
     /// Indicates whether the bot can be invited to groups.
     pub can_join_groups: bool,
     /// Indicates whether privacy mode is disabled, allowing the bot to read all group messages.
@@ -47,11 +49,22 @@ impl Bot {
             first_name: first_name.into(),
             id,
             username: username.into(),
+            can_connect_to_business: false,
             can_join_groups: false,
             can_read_all_group_messages: false,
             last_name: None,
             supports_inline_queries: false,
         }
+    }
+
+    /// Sets a new value for a `can_connect_to_business` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can be connected to a Telegram Business account.
+    pub fn with_can_connect_to_business(mut self, value: bool) -> Self {
+        self.can_connect_to_business = value;
+        self
     }
 
     /// Sets a new value for a `can_join_groups` flag.

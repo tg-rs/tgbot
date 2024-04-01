@@ -31,10 +31,12 @@ fn bot() {
     assert_json_eq(
         Bot::new(1, "loo_maclin_bot", "Loo")
             .with_last_name("Maclin")
+            .with_can_connect_to_business(true)
             .with_can_join_groups(true)
             .with_can_read_all_group_messages(true)
             .with_supports_inline_queries(false),
         serde_json::json!({
+            "can_connect_to_business": true,
             "can_join_groups": true,
             "can_read_all_group_messages": true,
             "first_name": "Loo",

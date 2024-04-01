@@ -5,6 +5,7 @@ use crate::types::{
     BusinessIntro,
     BusinessLocation,
     BusinessOpeningHours,
+    Chat,
     ChatPeerId,
     ChatPhoto,
     ChatUsername,
@@ -92,6 +93,11 @@ pub struct PrivateChat {
     /// Returned only in [`crate::types::GetChat`].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_auto_delete_time: Option<Integer>,
+    /// The personal channel of the user.
+    ///
+    /// Returned only in [`crate::types::GetChat`].
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub personal_chat: Option<Box<Chat>>,
     /// Photo of the other party.
     ///
     /// Returned only in [`crate::types::GetChat`].
@@ -145,6 +151,7 @@ impl PrivateChat {
             has_restricted_voice_and_video_messages: None,
             last_name: None,
             message_auto_delete_time: None,
+            personal_chat: None,
             photo: None,
             pinned_message: None,
             profile_accent_color: None,
@@ -300,6 +307,19 @@ impl PrivateChat {
     /// * `value` - Time in seconds.
     pub fn with_message_auto_delete_time(mut self, value: Integer) -> Self {
         self.message_auto_delete_time = Some(value);
+        self
+    }
+
+    /// Sets a new personal chat.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Personal chat.
+    pub fn with_personal_chat<T>(mut self, value: T) -> Self
+    where
+        T: Into<Chat>,
+    {
+        self.personal_chat = Some(Box::new(value.into()));
         self
     }
 

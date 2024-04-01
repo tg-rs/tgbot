@@ -4,6 +4,7 @@ use crate::types::{
     BusinessIntro,
     BusinessLocation,
     BusinessOpeningHours,
+    ChannelChat,
     Chat,
     ChatPhoto,
     Message,
@@ -52,6 +53,7 @@ fn private_chat() {
             .with_emoji_status_expiration_date(0)
             .with_accent_color(AccentColor::Red)
             .with_background_custom_emoji_id("emoji-id")
+            .with_personal_chat(ChannelChat::new(1, "test"))
             .with_profile_accent_color(ProfileAccentColor::try_from(1).unwrap())
             .with_profile_background_custom_emoji_id("emoji-id"),
     );
@@ -115,6 +117,11 @@ fn private_chat() {
             "emoji_status_expiration_date": 0,
             "accent_color_id": 0,
             "background_custom_emoji_id": "emoji-id",
+            "personal_chat": {
+                "type": "channel",
+                "id": 1,
+                "title": "test"
+            },
             "profile_accent_color_id": 1,
             "profile_background_custom_emoji_id": "emoji-id"
         }),

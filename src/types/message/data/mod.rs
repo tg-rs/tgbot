@@ -293,7 +293,7 @@ impl MessageDataAudio {
 /// Represents an information about the chat
 /// whose identifier was shared with the bot
 /// using a [`crate::types::KeyboardButtonRequestChat`] button.
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MessageDataChatShared {
     /// Identifier of the shared chat.
     ///
@@ -302,6 +302,15 @@ pub struct MessageDataChatShared {
     pub chat_id: Integer,
     /// Identifier of the request.
     pub request_id: Integer,
+    /// Available sizes of the chat photo, if the photo was requested by the bot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub photo: Option<Vec<PhotoSize>>,
+    /// Title of the chat, if the title was requested by the bot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+    /// Username of the chat, if the username was requested by the bot and available.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
 }
 
 impl MessageDataChatShared {
@@ -312,7 +321,52 @@ impl MessageDataChatShared {
     /// * `chat_id` - Identifier of the shared chat.
     /// * `request_id` - Identifier of the request.
     pub fn new(chat_id: Integer, request_id: Integer) -> Self {
-        Self { chat_id, request_id }
+        Self {
+            chat_id,
+            request_id,
+            title: None,
+            username: None,
+            photo: None,
+        }
+    }
+
+    /// Sets a new photo.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Available sizes of the chat photo.
+    pub fn with_photo<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = PhotoSize>,
+    {
+        self.photo = Some(value.into_iter().collect());
+        self
+    }
+
+    /// Sets a new title.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Title.
+    pub fn with_title<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.title = Some(value.into());
+        self
+    }
+
+    /// Sets a new username.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Username.
+    pub fn with_username<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.username = Some(value.into());
+        self
     }
 }
 

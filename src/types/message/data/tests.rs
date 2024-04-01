@@ -160,13 +160,32 @@ fn chat_shared() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::ChatShared(MessageDataChatShared {
-        request_id: 1,
-        chat_id: 1,
-    });
+    expected_struct.data = MessageData::ChatShared(MessageDataChatShared::new(1, 1));
     expected_value["chat_shared"] = serde_json::json!({
         "request_id": 1,
         "chat_id": 1,
+    });
+    assert_json_eq(expected_struct.clone(), expected_value.clone());
+
+    expected_struct.data = MessageData::ChatShared(
+        MessageDataChatShared::new(1, 1)
+            .with_photo([PhotoSize::new("file-id", "file-unique-id", 100, 100)])
+            .with_title("title")
+            .with_username("username"),
+    );
+    expected_value["chat_shared"] = serde_json::json!({
+        "request_id": 1,
+        "chat_id": 1,
+        "photo": [
+            {
+                "file_id": "file-id",
+                "file_unique_id": "file-unique-id",
+                "height": 100,
+                "width": 100
+            }
+        ],
+        "title": "title",
+        "username": "username"
     });
     assert_json_eq(expected_struct, expected_value);
 }

@@ -1,5 +1,64 @@
 # Changelog
 
+## 0.22.0 (01.04.2024)
+
+### Bot API
+
+### Dependencies
+
+- Updated bytes version to 1.6.
+- Updated reqwest version to 0.12.
+- Updated tokio version to 1.37.
+
+#### 7.2
+
+- Added types: `Birthdate`, `BusinessConnection`, `BusinessMessagesDeleted`, `BusinessIntro`, `BusinessLocation`,
+  `BusinessOpeningHours`, `BusinessOpeningHoursInterval`, `GetBusinessConnection`, `ReplaceStickerInSet`, `SharedUser`.
+- Added enum variants:
+  - `UpdateType`: `BusinessConnection`, `BusinessMessage`, `EditedBusinessMessage`, `DeletedBusinessMessages`.
+  - `AllowedUpdate`: `BusinessConnection`, `BusinessMessage`, `EditedBusinessMessage`, `DeletedBusinessMessages`.
+- Added fields:
+  - `Bot`: `can_connect_to_business`.
+  - `Message`: `business_connection_id`, `is_from_offline`, `sender_business_bot`.
+  - `MessageDataChatShared`: `photo`, `title`, `username`.
+  - `MessageDataUsersShared`: `users`.
+  - `PrivateChat`: `birthdate`, `business_intro`, `business_location`, `business_opening_hours`, `personal_chat`.
+- Added methods:
+  - `Bot`: `with_can_connect_to_business`.
+  - `KeyboardButtonRequestChat`: `with_request_photo`, `with_request_title`, `with_request_username`.
+  - `KeyboardButtonRequestUsers`: `with_request_name`, `with_request_photo`, `with_request_username`.
+  - `Message`: `with_business_connection_id`, `with_is_from_offline`, `with_sender_business_bot`.
+  - `MessageDataChatShared`: `with_photo`, `with_title`, `with_username`.
+  - `PrivateChat`: `with_birthdate`, `with_business_intro`, `with_business_location`, `with_business_opening_hours`,
+    `with_personal_chat`.
+  - `SendAnimation`: `with_business_connection_id`.
+  - `SendAudio`: `with_business_connection_id`.
+  - `SendChatAction`: `with_business_connection_id`.
+  - `SendContact`: `with_business_connection_id`.
+  - `SendDice`: `with_business_connection_id`.
+  - `SendDocument`: `with_business_connection_id`.
+  - `SendGame`: `with_business_connection_id`.
+  - `SendLocation`: `with_business_connection_id`.
+  - `SendMediaGroup`: `with_business_connection_id`.
+  - `SendMessage`: `with_business_connection_id`.
+  - `SendPhoto`: `with_business_connection_id`.
+  - `SendPoll`: `with_business_connection_id`.
+  - `SendQuiz`: `with_business_connection_id`.
+  - `SendSticker`: `with_business_connection_id`.
+  - `SendVenue`: `with_business_connection_id`.
+  - `SendVideo`: `with_business_connection_id`.
+  - `SendVideoNote`: `with_business_connection_id`.
+  - `SendVoice`: `with_business_connection_id`.
+- Changed signature:
+  - `CreateNewStickerSet::new` to `(user_id: Integer, name: Into<String>, title: Into<String>, stickers: InputStickers) -> Result<Self, InputStickerError>`
+  - `InputSticker::new` to `(sticker: Into<InputFile>, emoji_list: IntoIterator<Item=Into<String>>, format: StickerFormat) -> Self`
+  - `SetStickerSetThumbnail::new` to `(name: Into<String>, user_id: Integer, format: StickerFormat) -> Self`
+- Removed fields:
+  - `MessageDataUsersShared`: `user_ids`.
+  - `StickerSet`: `is_animated`, `is_video`.
+- Removed methods:
+  - `StickerSet`: `with_is_animated`, `with_is_video`.
+
 ## 0.21.0 (18.02.2024)
 
 ### Dependencies

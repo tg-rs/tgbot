@@ -62,7 +62,9 @@ impl InputMessageContentLocation {
     ///
     /// # Arguments
     ///
-    /// * `value` - Period in seconds for which the location can be updated; 60-86400.
+    /// * `value` - Period in seconds during which the location can be updated,
+    ///             should be between 60 and 86400,
+    ///             or 0x7FFFFFFF for live locations that can be edited indefinitely.
     pub fn with_live_period(mut self, value: Integer) -> Self {
         self.live_period = Some(value);
         self

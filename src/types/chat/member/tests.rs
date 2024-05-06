@@ -1,26 +1,10 @@
 use crate::{
     api::{assert_payload_eq, Payload},
     types::{
-        tests::assert_json_eq,
-        BanChatMember,
-        Chat,
-        ChatInviteLink,
-        ChatMember,
-        ChatMemberAdministrator,
-        ChatMemberCreator,
-        ChatMemberKicked,
-        ChatMemberRestricted,
-        ChatMemberUpdated,
-        ChatPermissions,
-        GetChatAdministrators,
-        GetChatMember,
-        GetChatMemberCount,
-        GroupChat,
-        PromoteChatMember,
-        RestrictChatMember,
-        SetChatAdministratorCustomTitle,
-        UnbanChatMember,
-        User,
+        tests::assert_json_eq, BanChatMember, Chat, ChatInviteLink, ChatMember, ChatMemberAdministrator,
+        ChatMemberCreator, ChatMemberKicked, ChatMemberRestricted, ChatMemberUpdated, ChatPermissions,
+        GetChatAdministrators, GetChatMember, GetChatMemberCount, GroupChat, PromoteChatMember, RestrictChatMember,
+        SetChatAdministratorCustomTitle, UnbanChatMember, User,
     },
 };
 
@@ -314,7 +298,8 @@ fn chat_member_updated() {
             ChatInviteLink::new("https://t.me/joinchat/o8oIBrbCI3U2OGJi", User::new(1, "John", false))
                 .with_is_primary(true),
         )
-        .with_via_chat_folder_invite_link(true),
+        .with_via_chat_folder_invite_link(true)
+        .with_via_join_request(true),
         serde_json::json!({
             "chat": {
                 "id": 1,
@@ -355,7 +340,8 @@ fn chat_member_updated() {
                 "is_primary": true,
                 "is_revoked": false
             },
-            "via_chat_folder_invite_link": true
+            "via_chat_folder_invite_link": true,
+            "via_join_request": true
         }),
     );
     assert_json_eq(

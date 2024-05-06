@@ -672,6 +672,10 @@ pub struct ChatMemberUpdated {
     /// Indicates whether the user joined the chat via a chat folder invite link.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub via_chat_folder_invite_link: Option<bool>,
+    /// Indicates whether the user joined the chat after sending a direct join request
+    /// and being approved by an administrator.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub via_join_request: Option<bool>,
 }
 
 impl ChatMemberUpdated {
@@ -699,6 +703,7 @@ impl ChatMemberUpdated {
             old_chat_member,
             invite_link: None,
             via_chat_folder_invite_link: None,
+            via_join_request: None,
         }
     }
 
@@ -719,6 +724,17 @@ impl ChatMemberUpdated {
     /// * `value` - Indicates whether the user joined the chat via a chat folder invite link.
     pub fn with_via_chat_folder_invite_link(mut self, value: bool) -> Self {
         self.via_chat_folder_invite_link = Some(value);
+        self
+    }
+
+    /// Sets a new value for a `via_join_request` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the user joined the chat after sending a direct join request
+    ///             and being approved by an administrator.
+    pub fn with_via_join_request(mut self, value: bool) -> Self {
+        self.via_join_request = Some(value);
         self
     }
 }

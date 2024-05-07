@@ -232,6 +232,7 @@ fn edit_message_live_location() {
                 "latitude": 3.0,
                 "longitude": 4.0,
                 "horizontal_accuracy": 5.0,
+                "live_period": 10,
                 "heading": 100,
                 "proximity_alert_radius": 200,
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]}
@@ -240,6 +241,7 @@ fn edit_message_live_location() {
         EditMessageLiveLocation::for_chat_message(1, 2, 3.0, 4.0)
             .with_heading(100)
             .with_horizontal_accuracy(5.0)
+            .with_live_period(10)
             .with_proximity_alert_radius(200)
             .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
     );

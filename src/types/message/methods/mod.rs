@@ -517,6 +517,8 @@ pub struct EditMessageLiveLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
     inline_message_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    live_period: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     message_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proximity_alert_radius: Option<Integer>,
@@ -542,6 +544,7 @@ impl EditMessageLiveLocation {
             longitude,
             chat_id: Some(chat_id.into()),
             inline_message_id: None,
+            live_period: None,
             heading: None,
             horizontal_accuracy: None,
             message_id: Some(message_id),
@@ -568,6 +571,7 @@ impl EditMessageLiveLocation {
             heading: None,
             horizontal_accuracy: None,
             inline_message_id: Some(inline_message_id.into()),
+            live_period: None,
             message_id: None,
             proximity_alert_radius: None,
             reply_markup: None,
@@ -591,6 +595,21 @@ impl EditMessageLiveLocation {
     /// * `value` - A direction in which the user is moving; in degrees; 1-360.
     pub fn with_heading(mut self, value: Integer) -> Self {
         self.heading = Some(value);
+        self
+    }
+
+    /// Sets a new live period
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - New period in seconds during which the location can be updated,
+    ///             starting from the message send date.
+    ///             If 0x7FFFFFFF is specified, then the location can be updated forever.
+    ///             Otherwise, the new value must not exceed the current live_period by more than a day,
+    ///             and the live location expiration date must remain within the next 90 days.
+    ///             If not specified, then live_period remains unchanged
+    pub fn with_live_period(mut self, value: Integer) -> Self {
+        self.live_period = Some(value);
         self
     }
 

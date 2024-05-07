@@ -3,14 +3,127 @@ use crate::{
     types::{
         tests::assert_json_eq,
         BackgroundType,
+        ChannelChat,
+        Chat,
         ChatBackground,
         Document,
         GetChat,
+        GroupChat,
         LeaveChat,
+        PrivateChat,
         SetChatDescription,
         SetChatTitle,
+        SupergroupChat,
     },
 };
+
+#[test]
+fn channel_chat() {
+    let expected_struct = Chat::Channel(ChannelChat::new(1, "Channel").with_username("channel_username"));
+    assert_eq!(expected_struct.get_id(), 1);
+    assert_eq!(&expected_struct.get_username().unwrap(), &"channel_username");
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "id": 1,
+            "type": "channel",
+            "title": "Channel",
+            "username": "channel_username",
+        }),
+    );
+
+    let expected_struct = Chat::Channel(ChannelChat::new(1, "Channel"));
+    assert_eq!(expected_struct.get_id(), 1);
+    assert!(expected_struct.get_username().is_none());
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "id": 1,
+            "type": "channel",
+            "title": "Channel"
+        }),
+    );
+}
+
+#[test]
+fn group_chat() {
+    let expected_struct = Chat::Group(GroupChat::new(1, "Group"));
+    assert_eq!(expected_struct.get_id(), 1);
+    assert!(&expected_struct.get_username().is_none());
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "id": 1,
+            "type": "group",
+            "title": "Group",
+        }),
+    );
+}
+
+#[test]
+fn private_chat() {
+    let expected_struct = Chat::Private(
+        PrivateChat::new(1, "John")
+            .with_last_name("Doe")
+            .with_username("john_doe"),
+    );
+    assert_eq!(expected_struct.get_id(), 1);
+    assert_eq!(expected_struct.get_username().unwrap(), "john_doe");
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "id": 1,
+            "type": "private",
+            "username": "john_doe",
+            "first_name": "John",
+            "last_name": "Doe",
+        }),
+    );
+    let expected_struct = Chat::Private(PrivateChat::new(1, "John"));
+    assert_eq!(expected_struct.get_id(), 1);
+    assert!(expected_struct.get_username().is_none());
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "id": 1,
+            "type": "private",
+            "first_name": "John",
+        }),
+    );
+}
+
+#[test]
+fn supergroup_chat() {
+    let expected_struct = Chat::Supergroup(
+        SupergroupChat::new(1, "Supergroup Chat")
+            .with_is_forum(true)
+            .with_username("supergroup_chat"),
+    );
+    assert_eq!(expected_struct.get_id(), 1);
+    assert_eq!(expected_struct.get_username().unwrap(), "supergroup_chat");
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "id": 1,
+            "type": "supergroup",
+            "title": "Supergroup Chat",
+            "is_forum": true,
+            "username": "supergroup_chat",
+        }),
+    );
+
+    let expected_struct = Chat::Supergroup(SupergroupChat::new(1, "Supergroup Chat"));
+    assert_eq!(expected_struct.get_id(), 1);
+    assert!(expected_struct.get_username().is_none());
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "id": 1,
+            "type": "supergroup",
+            "title": "Supergroup Chat"
+        }),
+    );
+}
 
 #[test]
 fn chat_background() {

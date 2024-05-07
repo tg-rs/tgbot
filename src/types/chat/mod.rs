@@ -3,8 +3,7 @@ use serde::{Deserialize, Serialize};
 pub use self::{
     action::*,
     boost::*,
-    channel::*,
-    group::*,
+    full_info::*,
     id::*,
     invite_link::*,
     join_request::*,
@@ -13,10 +12,8 @@ pub use self::{
     message::*,
     permissions::*,
     photo::*,
-    private::*,
     sender_chat::*,
     sticker_set::*,
-    supergroup::*,
 };
 use crate::{
     api::{Method, Payload},
@@ -28,8 +25,7 @@ mod tests;
 
 mod action;
 mod boost;
-mod channel;
-mod group;
+mod full_info;
 mod id;
 mod invite_link;
 mod join_request;
@@ -38,10 +34,8 @@ mod member;
 mod message;
 mod permissions;
 mod photo;
-mod private;
 mod sender_chat;
 mod sticker_set;
-mod supergroup;
 
 /// Represents a chat.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
@@ -77,6 +71,200 @@ impl Chat {
             Chat::Private(chat) => chat.username.as_ref(),
             Chat::Supergroup(chat) => chat.username.as_ref(),
         }
+    }
+}
+
+/// Represents a channel chat.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct ChannelChat {
+    /// Unique identifier of the channel.
+    pub id: ChatPeerId,
+    /// Title of the channel.
+    pub title: String,
+    /// Username of the channel.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<ChatUsername>,
+}
+
+impl ChannelChat {
+    /// Creates a new `ChannelChat`.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - Unique identifier of the channel.
+    /// * `title` - Title of the channel.
+    pub fn new<A, B>(id: A, title: B) -> Self
+    where
+        A: Into<ChatPeerId>,
+        B: Into<String>,
+    {
+        Self {
+            id: id.into(),
+            title: title.into(),
+            username: None,
+        }
+    }
+
+    /// Sets a new username.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Username of the channel.
+    pub fn with_username<T>(mut self, value: T) -> Self
+    where
+        T: Into<ChatUsername>,
+    {
+        self.username = Some(value.into());
+        self
+    }
+}
+
+/// Represents a group chat.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct GroupChat {
+    /// Unique identifier of the group.
+    pub id: ChatPeerId,
+    /// Title of the group.
+    pub title: String,
+}
+
+impl GroupChat {
+    /// Creates a new `GroupChat`.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - Unique identifier of the group.
+    /// * `title` - Title of the group.
+    pub fn new<A, B>(id: A, title: B) -> Self
+    where
+        A: Into<ChatPeerId>,
+        B: Into<String>,
+    {
+        Self {
+            id: id.into(),
+            title: title.into(),
+        }
+    }
+}
+
+/// Represents a private chat.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct PrivateChat {
+    /// Unique identifier of the chat.
+    pub id: ChatPeerId,
+    /// First name of the other party.
+    pub first_name: String,
+    /// Last name of the other party.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<String>,
+    /// Username of the target chat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<ChatUsername>,
+}
+
+impl PrivateChat {
+    /// Creates a new `PrivateChat`.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - Unique identifier of the target chat.
+    /// * `first_name` - First name of the other party.
+    pub fn new<A, B>(id: A, first_name: B) -> Self
+    where
+        A: Into<ChatPeerId>,
+        B: Into<String>,
+    {
+        Self {
+            id: id.into(),
+            first_name: first_name.into(),
+            last_name: None,
+            username: None,
+        }
+    }
+
+    /// Sets a new last name.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Last name.
+    pub fn with_last_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.last_name = Some(value.into());
+        self
+    }
+
+    /// Sets a new username.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Username.
+    pub fn with_username<T>(mut self, value: T) -> Self
+    where
+        T: Into<ChatUsername>,
+    {
+        self.username = Some(value.into());
+        self
+    }
+}
+
+/// Represents a supergroup chat.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct SupergroupChat {
+    /// Unique identifier of the supergroup.
+    pub id: ChatPeerId,
+    /// Title of the supergroup.
+    pub title: String,
+    /// Whether the supergroup has topic enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_forum: Option<bool>,
+    /// Username of the supergroup.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<ChatUsername>,
+}
+
+impl SupergroupChat {
+    /// Creates a new `SupergroupChat`.
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - Unique identifier of the supergroup.
+    /// * `title` - Title of the supergroup.
+    pub fn new<A, B>(id: A, title: B) -> Self
+    where
+        A: Into<ChatPeerId>,
+        B: Into<String>,
+    {
+        Self {
+            id: id.into(),
+            title: title.into(),
+            is_forum: None,
+            username: None,
+        }
+    }
+
+    /// Sets a new value for an `is_forum` flag.
+    ///
+    /// # Arguments
+    ///
+    /// `value` - Whether the supergroup has topics enabled.
+    pub fn with_is_forum(mut self, value: bool) -> Self {
+        self.is_forum = Some(value);
+        self
+    }
+
+    /// Sets a new username.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Username of the supergroup.
+    pub fn with_username<T>(mut self, value: T) -> Self
+    where
+        T: Into<ChatUsername>,
+    {
+        self.username = Some(value.into());
+        self
     }
 }
 

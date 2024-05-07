@@ -6,6 +6,7 @@ use crate::{
         Chat,
         ForceReply,
         InlineKeyboardButton,
+        ParseMode,
         Poll,
         PollAnswer,
         PollAnswerVoter,
@@ -127,6 +128,7 @@ fn poll_answer_voter() {
 
 #[test]
 fn send_quiz() {
+    let method = SendQuiz::new(1, "Q", 0, ["X"]);
     assert_payload_eq(
         Payload::json(
             "sendPoll",
@@ -138,8 +140,47 @@ fn send_quiz() {
                 "correct_option_id": 0
             }),
         ),
-        SendQuiz::new(1, "Q", 0, ["X"]),
+        method.clone(),
     );
+
+    let method = method.with_question_entities([TextEntity::bold(0..1)]);
+    assert_payload_eq(
+        Payload::json(
+            "sendPoll",
+            serde_json::json!({
+                "chat_id": 1,
+                "question": "Q",
+                "type": "quiz",
+                "options": ["X"],
+                "correct_option_id": 0,
+                "question_entities": [
+                    {
+                        "type": "bold",
+                        "offset": 0,
+                        "length": 1
+                    }
+                ]
+            }),
+        ),
+        method.clone(),
+    );
+
+    let method = method.with_question_parse_mode(ParseMode::MarkdownV2);
+    assert_payload_eq(
+        Payload::json(
+            "sendPoll",
+            serde_json::json!({
+                "chat_id": 1,
+                "question": "Q",
+                "type": "quiz",
+                "options": ["X"],
+                "correct_option_id": 0,
+                "question_parse_mode": "MarkdownV2"
+            }),
+        ),
+        method,
+    );
+
     assert_payload_eq(
         Payload::json(
             "sendPoll",
@@ -177,6 +218,8 @@ fn send_quiz() {
 
 #[test]
 fn send_poll() {
+    let method = SendPoll::new(1, "Q", ["X"]);
+
     assert_payload_eq(
         Payload::json(
             "sendPoll",
@@ -187,8 +230,45 @@ fn send_poll() {
                 "options": ["X"]
             }),
         ),
-        SendPoll::new(1, "Q", ["X"]),
+        method.clone(),
     );
+
+    let method = method.with_question_entities([TextEntity::bold(0..1)]);
+    assert_payload_eq(
+        Payload::json(
+            "sendPoll",
+            serde_json::json!({
+                "chat_id": 1,
+                "question": "Q",
+                "type": "regular",
+                "options": ["X"],
+                "question_entities": [
+                    {
+                        "type": "bold",
+                        "offset": 0,
+                        "length": 1
+                    }
+                ]
+            }),
+        ),
+        method.clone(),
+    );
+
+    let method = method.with_question_parse_mode(ParseMode::MarkdownV2);
+    assert_payload_eq(
+        Payload::json(
+            "sendPoll",
+            serde_json::json!({
+                "chat_id": 1,
+                "question": "Q",
+                "type": "regular",
+                "options": ["X"],
+                "question_parse_mode": "MarkdownV2"
+            }),
+        ),
+        method,
+    );
+
     assert_payload_eq(
         Payload::json(
             "sendPoll",

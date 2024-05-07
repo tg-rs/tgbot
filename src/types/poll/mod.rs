@@ -536,6 +536,10 @@ struct PollParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    question_entities: Option<TextEntities>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    question_parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
@@ -564,6 +568,8 @@ impl PollParameters {
             message_thread_id: None,
             open_period: None,
             poll_type: Some(poll_type),
+            question_entities: None,
+            question_parse_mode: None,
             protect_content: None,
             reply_markup: None,
             reply_parameters: None,
@@ -738,6 +744,35 @@ impl SendQuiz {
         self
     }
 
+    /// Sets a new list of question entities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of special entities that appear in the poll question.
+    ///
+    /// Question parse mode will be set to [`None`] when this method is called.
+    pub fn with_question_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.inner.question_entities = Some(value.into_iter().collect());
+        self.inner.question_parse_mode = None;
+        self
+    }
+
+    /// Sets a new question parse mode.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Mode for parsing entities in the question.
+    ///
+    /// Question entities will be set to [`None`] when this method is called.
+    pub fn with_question_parse_mode(mut self, value: ParseMode) -> Self {
+        self.inner.question_parse_mode = Some(value);
+        self.inner.question_entities = None;
+        self
+    }
+
     /// Sets a new reply markup.
     ///
     /// # Arguments
@@ -899,6 +934,35 @@ impl SendPoll {
     ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.inner.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a new list of question entities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of special entities that appear in the poll question.
+    ///
+    /// Question parse mode will be set to [`None`] when this method is called.
+    pub fn with_question_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.inner.question_entities = Some(value.into_iter().collect());
+        self.inner.question_parse_mode = None;
+        self
+    }
+
+    /// Sets a new question parse mode.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Mode for parsing entities in the question.
+    ///
+    /// Question entities will be set to [`None`] when this method is called.
+    pub fn with_question_parse_mode(mut self, value: ParseMode) -> Self {
+        self.inner.question_parse_mode = Some(value);
+        self.inner.question_entities = None;
         self
     }
 

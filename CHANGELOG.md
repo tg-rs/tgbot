@@ -1,5 +1,76 @@
 # Changelog
 
+## 0.23.0 (07.05.2024)
+
+### Bot API
+
+#### 7.3
+
+- Added types: `BackgroundFill`, `BackgroundType`, `ChatBackground`, `ChatFullInfo`, `ChatFullInfoType`, `InputPollOption`.
+- Added enum variatns: `MessageData`::`ChatBackgroundSet`.
+- Added fields:
+  - `ChatMemberUpdated`: `via_join_request`.
+- Added methods:
+  - `ChatMemberUpdated`: `with_via_join_request`.
+  - `EditMessageLiveLocation`: `with_live_period`.
+  - `SendPoll`: `with_question_entities`, `with_question_parse_mode`.
+  - `SendQuiz`: `with_question_entities`, `with_question_parse_mode`.
+- Changed fields:
+  - `RegularPoll`: `question` from `String` to `Text`.
+  - `Quiz`: `question` from `String` to `Text`.
+  - `PollOption`: `text` from `String` to `Text`.
+- Changed signature:
+  - `SendPoll::new`: `options` from `IntoIterator<Item=Into<String>>` to `IntoIterator<Item=Into<InputPollOption>>`.
+  - `SendQuiz::new`: `options` from `IntoIterator<Item=Into<String>>` to `IntoIterator<Item=Into<InputPollOption>>`.
+- Changed return type:
+  - `GetChat`: from `Chat` to `ChatFullInfo`.
+- Removed methods:
+  - `ChannelChat`: `accent_color`, `active_usernames`, `available_reactions`, `background_custom_emoji_id`,
+    `description`, `emoji_status_custom_emoji_id`, `emoji_status_expiration_date`, `has_protected_content`,
+    `invite_link`, `linked_chat_id`, `message_auto_delete_time`, `photo`, `pinned_message`, `profile_accent_color`,
+    `profile_background_custom_emoji_id`.
+  - `GroupChat`: `accent_color`, `available_reactions`, `background_custom_emoji_id`, `emoji_status_custom_emoji_id`,
+    `emoji_status_expiration_date`, `has_hidden_members`, `has_protected_content`, `has_visible_history`,
+    `invite_link`, `message_auto_delete_time`, `permissions`, `photo`, `pinned_message`, `profile_accent_color`,
+    `profile_background_custom_emoji_id`.
+  - `PrivateChat`: `accent_color`, `active_usernames`, `background_custom_emoji_id`, `bio`, `birthdate`,
+    `business_intro`, `business_location`, `business_opening_hours`, `emoji_status_custom_emoji_id`,
+    `emoji_status_expiration_date`, `has_private_forwards`, `has_restricted_voice_and_video_messages`, `last_name`,
+    `message_auto_delete_time`, `personal_chat`, `photo`, `pinned_message`, `profile_accent_color`,
+    `profile_background_custom_emoji_id`.
+  - `SupergroupChat`: `accent_color`, `active_usernames`, `available_reactions`, `background_custom_emoji_id`,
+    `can_set_sticker_set`, `custom_emoji_sticker_set_name`, `description`, `emoji_status_custom_emoji_id`,
+    `emoji_status_expiration_date`, `has_aggressive_anti_spam_enabled`, `has_hidden_members`, `has_protected_content`,
+    `has_visible_history`, `invite_link`, `is_forum`, `join_by_request`, `join_to_send_messages`, `linked_chat_id`,
+    `location`, `message_auto_delete_time`, `permissions`, `photo`, `pinned_message`, `profile_accent_color`,
+    `profile_background_custom_emoji_id`, `slow_mode_delay`, `sticker_set_name`, `unrestrict_boost_count`.
+- Removed fields:
+  - `ChannelChat`: `with_accent_color`, `with_active_usernames`, `with_available_reactions`,
+    `with_background_custom_emoji_id`, `with_description`, `with_emoji_status_custom_emoji_id`,
+    `with_emoji_status_expiration_date`, `with_has_protected_content`, `with_invite_link`, `with_linked_chat_id`,
+    `with_message_auto_delete_time`, `with_photo`, `with_pinned_message`, `with_profile_accent_color`,
+    `with_profile_background_custom_emoji_id`.
+  - `GroupChat`: `with_accent_color`, `with_available_reactions`, `with_background_custom_emoji_id`,
+    `with_emoji_status_custom_emoji_id`, `with_emoji_status_expiration_date`, `with_has_hidden_members`,
+    `with_has_protected_content`, `with_has_visible_history`, `with_invite_link`, `with_message_auto_delete_time`,
+    `with_permissions`, `with_photo`, `with_pinned_message`, `with_profile_accent_color`,
+    `with_profile_background_custom_emoji_id`.
+  - `PrivateChat`: `with_accent_color`, `with_active_usernames`, `with_background_custom_emoji_id`, `with_bio`,
+    `with_birthdate`, `with_business_intro`, `with_business_location`, `with_business_opening_hours`,
+    `with_emoji_status_custom_emoji_id`, `with_emoji_status_expiration_date`, `with_has_private_forwards`,
+    `with_has_restricted_voice_and_video_messages`, `with_last_name`, `with_message_auto_delete_time`,
+    `with_personal_chat`, `with_photo`, `with_pinned_message`, `with_profile_accent_color`,
+    `with_profile_background_custom_emoji_id`.
+  - `SupergroupChat`: `with_accent_color`, `with_active_usernames`, `with_available_reactions`,
+    `with_background_custom_emoji_id`, `with_can_set_sticker_set`, `with_custom_emoji_sticker_set_name`,
+    `with_description`, `with_emoji_status_custom_emoji_id`, `with_emoji_status_expiration_date`,
+    `with_has_aggressive_anti_spam_enabled`, `with_has_hidden_members`, `with_has_protected_content`,
+    `with_has_visible_history`, `with_invite_link`, `with_is_forum`, `with_join_by_request`,
+    `with_join_to_send_messages`, `with_linked_chat_id`, `with_location`, `with_message_auto_delete_time`,
+    `with_permissions`, `with_photo`, `with_pinned_message`, `with_profile_accent_color`,
+    `with_profile_background_custom_emoji_id`, `with_slow_mode_delay`, `with_sticker_set_name`,
+    `with_unrestrict_boost_count`.
+
 ## 0.22.0 (01.04.2024)
 
 ### Dependencies

@@ -18,7 +18,10 @@ pub use self::{
     sticker_set::*,
     supergroup::*,
 };
-use crate::api::{Method, Payload};
+use crate::{
+    api::{Method, Payload},
+    types::BackgroundType,
+};
 
 #[cfg(test)]
 mod tests;
@@ -74,6 +77,20 @@ impl Chat {
             Chat::Private(chat) => chat.username.as_ref(),
             Chat::Supergroup(chat) => chat.username.as_ref(),
         }
+    }
+}
+
+/// Represents a chat background.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct ChatBackground {
+    /// Type of the background
+    #[serde(rename = "type")]
+    pub background_type: BackgroundType,
+}
+
+impl From<BackgroundType> for ChatBackground {
+    fn from(value: BackgroundType) -> Self {
+        Self { background_type: value }
     }
 }
 

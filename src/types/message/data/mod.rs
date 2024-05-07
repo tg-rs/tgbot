@@ -5,6 +5,7 @@ use self::raw::*;
 use crate::types::{
     Animation,
     Audio,
+    ChatBackground,
     Contact,
     Dice,
     Document,
@@ -67,6 +68,8 @@ pub enum MessageData {
         serialize_with = "RawDataFlag::serialize_value"
     )]
     ChannelChatCreated,
+    /// Chat background set.
+    ChatBackgroundSet(ChatBackground),
     /// A chat was shared with the bot.
     ChatShared(MessageDataChatShared),
     /// The domain name of the website on which the user has logged in.

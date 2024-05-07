@@ -2,7 +2,9 @@ use crate::types::{
     tests::assert_json_eq,
     Animation,
     Audio,
+    BackgroundType,
     ChannelChat,
+    ChatBackground,
     Contact,
     Document,
     EncryptedCredentials,
@@ -153,6 +155,32 @@ fn channel_chat_created() {
     expected_struct.data = MessageData::ChannelChatCreated;
     expected_value["channel_chat_created"] = serde_json::json!(true);
     assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn chat_background_set() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::ChatBackgroundSet(ChatBackground::from(BackgroundType::Wallpaper {
+        dark_theme_dimming: 100,
+        document: Document::new("file-id", "file-unique-id"),
+        is_blurred: Some(true),
+        is_moving: Some(false),
+    }));
+    expected_value["chat_background_set"] = serde_json::json!({
+        "type": {
+            "type": "wallpaper",
+            "dark_theme_dimming": 100,
+            "document": {
+                "file_id": "file-id",
+                "file_unique_id": "file-unique-id",
+            },
+            "is_blurred": true,
+            "is_moving": false,
+        }
+    });
+    assert_json_eq(expected_struct.clone(), expected_value.clone());
 }
 
 #[test]

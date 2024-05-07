@@ -1,6 +1,7 @@
 pub use mime;
 
 pub use self::{
+    background::*,
     bot::*,
     business::*,
     callback::*,
@@ -35,6 +36,7 @@ pub use self::{
     webhook::*,
 };
 
+mod background;
 mod bot;
 mod business;
 mod callback;

@@ -1,7 +1,40 @@
 use crate::{
     api::{assert_payload_eq, Payload},
-    types::{GetChat, LeaveChat, SetChatDescription, SetChatTitle},
+    types::{
+        tests::assert_json_eq,
+        BackgroundType,
+        ChatBackground,
+        Document,
+        GetChat,
+        LeaveChat,
+        SetChatDescription,
+        SetChatTitle,
+    },
 };
+
+#[test]
+fn chat_background() {
+    assert_json_eq(
+        ChatBackground::from(BackgroundType::Wallpaper {
+            dark_theme_dimming: 100,
+            document: Document::new("file-id", "file-unique-id"),
+            is_blurred: Some(true),
+            is_moving: Some(false),
+        }),
+        serde_json::json!({
+            "type": {
+                "type": "wallpaper",
+                "dark_theme_dimming": 100,
+                "document": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                },
+                "is_blurred": true,
+                "is_moving": false,
+            }
+        }),
+    );
+}
 
 #[test]
 fn get_chat() {

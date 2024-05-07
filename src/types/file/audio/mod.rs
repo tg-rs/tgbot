@@ -159,7 +159,7 @@ impl Audio {
 
 /// Sends am audio file.
 ///
-/// Your audio must be in the `.mp3` format.
+/// Your audio must be in the `.MP3` or `.M4A` format.
 /// Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
 /// For sending voice messages, use the [`crate::types::SendVoice`] method instead.
 #[derive(Debug)]

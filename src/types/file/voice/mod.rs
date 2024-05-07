@@ -91,7 +91,7 @@ impl Voice {
 
 /// Sends a voice message.
 ///
-/// Audio must be in an .ogg file encoded with OPUS.
+/// Audio must be in an .ogg file encoded with OPUS, or in .MP3 format, or in .M4A format.
 /// Other formats may be sent as Audio or Document.
 /// Bots can currently send voice messages of up to 50 MB in size,
 /// this limit may be changed in the future.

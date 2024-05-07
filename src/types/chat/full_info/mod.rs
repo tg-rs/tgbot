@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 
 use crate::types::{
-    ProfileAccentColor,
     AccentColor,
     Birthdate,
     BusinessIntro,
@@ -13,6 +12,7 @@ use crate::types::{
     ChatPhoto,
     Integer,
     Message,
+    ProfileAccentColor,
     ReactionType,
 };
 
@@ -43,7 +43,8 @@ pub struct ChatFullInfo {
     pub chat_type: ChatFullInfoType,
 
     /// Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview.
-    pub accent_color_id: AccentColor,
+    #[serde(rename = "accent_color_id")]
+    pub accent_color: AccentColor,
     /// The maximum number of reactions that can be set on a message in the chat.
     pub max_reaction_count: Integer,
 
@@ -72,8 +73,8 @@ pub struct ChatFullInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pinned_message: Option<Message>,
     /// Identifier of the accent color for the chat's profile background.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub profile_accent_color_id: Option<ProfileAccentColor>,
+    #[serde(rename = "profile_accent_color_id", skip_serializing_if = "Option::is_none")]
+    pub profile_accent_color: Option<ProfileAccentColor>,
     /// Custom emoji identifier of the emoji chosen by the chat for its profile background.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub profile_background_custom_emoji_id: Option<String>,

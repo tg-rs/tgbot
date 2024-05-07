@@ -28,7 +28,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
     ChatFullInfo {
         id: 1,
         chat_type,
-        accent_color_id: AccentColor::Red,
+        accent_color: AccentColor::Red,
         max_reaction_count: 0,
         available_reactions: None,
         background_custom_emoji_id: None,
@@ -38,7 +38,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         message_auto_delete_time: None,
         photo: None,
         pinned_message: None,
-        profile_accent_color_id: None,
+        profile_accent_color: None,
         profile_background_custom_emoji_id: None,
         active_usernames: None,
         username: None,
@@ -104,7 +104,7 @@ fn chat_full_info_channel() {
         MessageData::Text(Text::from("text")),
         User::new(1, "User", false),
     ));
-    expected_struct.profile_accent_color_id = Some(ProfileAccentColor::try_from(1).unwrap());
+    expected_struct.profile_accent_color = Some(ProfileAccentColor::try_from(1).unwrap());
     expected_struct.profile_background_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.active_usernames = Some(vec![String::from("channel_username")]);
     expected_struct.username = Some(String::from("channel_username"));
@@ -209,7 +209,7 @@ fn group_chat() {
     expected_struct.emoji_status_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.emoji_status_expiration_date = Some(0);
     expected_struct.background_custom_emoji_id = Some(String::from("emoji-id"));
-    expected_struct.profile_accent_color_id = Some(ProfileAccentColor::try_from(1).unwrap());
+    expected_struct.profile_accent_color = Some(ProfileAccentColor::try_from(1).unwrap());
     expected_struct.profile_background_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.has_visible_history = Some(true);
 
@@ -333,7 +333,7 @@ fn private_chat() {
     expected_struct.emoji_status_expiration_date = Some(0);
     expected_struct.background_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.personal_chat = Some(Chat::from(ChannelChat::new(1, "test")));
-    expected_struct.profile_accent_color_id = Some(ProfileAccentColor::try_from(1).unwrap());
+    expected_struct.profile_accent_color = Some(ProfileAccentColor::try_from(1).unwrap());
     expected_struct.profile_background_custom_emoji_id = Some(String::from("emoji-id"));
 
     assert_json_eq(
@@ -472,7 +472,7 @@ fn supergroup_chat() {
     expected_struct.has_aggressive_anti_spam_enabled = Some(true);
     expected_struct.available_reactions = Some(vec![ReactionType::emoji("👍")]);
     expected_struct.background_custom_emoji_id = Some(String::from("emoji-id"));
-    expected_struct.profile_accent_color_id = Some(ProfileAccentColor::try_from(1).unwrap());
+    expected_struct.profile_accent_color = Some(ProfileAccentColor::try_from(1).unwrap());
     expected_struct.profile_background_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.has_visible_history = Some(true);
     expected_struct.unrestrict_boost_count = Some(1);

@@ -305,7 +305,7 @@ impl GetChat {
 }
 
 impl Method for GetChat {
-    type Response = Chat;
+    type Response = ChatFullInfo;
 
     fn into_payload(self) -> Payload {
         Payload::json("getChat", self)

@@ -3,7 +3,6 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use crate::{
     api::{Method, Payload},
     types::{
-        text::Text,
         Chat,
         ChatId,
         InlineKeyboardMarkup,
@@ -12,6 +11,7 @@ use crate::{
         ParseMode,
         ReplyMarkup,
         ReplyParameters,
+        Text,
         TextEntities,
         TextEntity,
         User,
@@ -42,6 +42,37 @@ pub enum PollType {
     Regular,
 }
 
+#[derive(Deserialize, Serialize)]
+struct RawQuestion {
+    question: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    question_entities: Option<TextEntities>,
+}
+
+impl RawQuestion {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<Text, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let value = Self::deserialize(deserializer)?;
+        Ok(Text {
+            data: value.question,
+            entities: value.question_entities,
+        })
+    }
+
+    fn serialize_value<S>(value: &Text, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        Self {
+            question: value.data.clone(),
+            question_entities: value.entities.clone(),
+        }
+        .serialize(serializer)
+    }
+}
+
 /// Represents a regular poll.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct RegularPoll {
@@ -56,7 +87,12 @@ pub struct RegularPoll {
     /// List of options.
     pub options: Vec<PollOption>,
     /// Question; 1-255 characters.
-    pub question: String,
+    #[serde(
+        flatten,
+        deserialize_with = "RawQuestion::deserialize_value",
+        serialize_with = "RawQuestion::serialize_value"
+    )]
+    pub question: Text,
     /// Total number of users that voted in the poll.
     pub total_voter_count: Integer,
     /// Point in time (Unix timestamp) when the poll will be automatically closed.
@@ -77,7 +113,7 @@ impl RegularPoll {
     pub fn new<A, B>(id: A, question: B) -> Self
     where
         A: Into<String>,
-        B: Into<String>,
+        B: Into<Text>,
     {
         Self {
             allows_multiple_answers: false,
@@ -184,7 +220,12 @@ pub struct Quiz {
     /// List of options.
     pub options: Vec<PollOption>,
     /// Question; 1-255 characters.
-    pub question: String,
+    #[serde(
+        flatten,
+        deserialize_with = "RawQuestion::deserialize_value",
+        serialize_with = "RawQuestion::serialize_value"
+    )]
+    pub question: Text,
     /// Total number of users that answered to the quiz.
     pub total_voter_count: Integer,
     /// Point in time (Unix timestamp) when the quiz will be automatically closed.
@@ -214,7 +255,7 @@ impl Quiz {
     pub fn new<A, B>(id: A, question: B) -> Self
     where
         A: Into<String>,
-        B: Into<String>,
+        B: Into<Text>,
     {
         Self {
             correct_option_id: 0,

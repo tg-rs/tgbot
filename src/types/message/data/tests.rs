@@ -639,7 +639,7 @@ fn poll() {
 
     expected_struct.data = MessageData::Poll(Poll::Regular(RegularPoll {
         id: String::from("poll-id"),
-        question: String::from("Rust?"),
+        question: Text::from("Rust?"),
         options: vec![
             PollOption {
                 text: String::from("Yes"),

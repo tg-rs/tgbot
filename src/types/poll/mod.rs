@@ -501,10 +501,82 @@ pub enum PollAnswerVoter {
     User(User),
 }
 
+/// Contains information about one answer option in a poll to send.
+#[derive(Clone, Debug, Serialize)]
+pub struct InputPollOption {
+    text: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    text_parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    text_entities: Option<TextEntities>,
+}
+
+impl InputPollOption {
+    /// Creates a new `InputPollOption`.
+    ///
+    /// # Arguments
+    ///
+    /// * `text` - Option text; 1-100 characters.
+    pub fn new<T>(text: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            text: text.into(),
+            text_parse_mode: None,
+            text_entities: None,
+        }
+    }
+
+    /// Sets a new list of text entities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of special entities that appear in the poll option text.
+    ///
+    /// Text parse mode will be set to [`None`] when this method is called.
+    pub fn with_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.text_entities = Some(value.into_iter().collect());
+        self.text_parse_mode = None;
+        self
+    }
+
+    /// Sets a new text parse mode.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` -  Mode for parsing entities in the text.
+    ///
+    /// Currently, only custom emoji entities are allowed.
+    /// Text entities will be set to [`None`] when this method is called.
+    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
+        self.text_parse_mode = Some(value);
+        self.text_entities = None;
+        self
+    }
+}
+
+impl<T> From<T> for InputPollOption
+where
+    T: Into<Text>,
+{
+    fn from(value: T) -> Self {
+        let value = value.into();
+        Self {
+            text: value.data,
+            text_entities: value.entities,
+            text_parse_mode: None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, Serialize)]
 struct PollParameters {
     chat_id: ChatId,
-    options: Vec<String>,
+    options: Vec<InputPollOption>,
     question: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     allows_multiple_answers: Option<bool>,
@@ -549,7 +621,7 @@ impl PollParameters {
     fn new<A, B>(chat_id: ChatId, question: String, poll_type: PollType, options: A) -> Self
     where
         A: IntoIterator<Item = B>,
-        B: Into<String>,
+        B: Into<InputPollOption>,
     {
         Self {
             chat_id,
@@ -600,7 +672,7 @@ impl SendQuiz {
         A: Into<ChatId>,
         B: Into<String>,
         C: IntoIterator<Item = D>,
-        D: Into<String>,
+        D: Into<InputPollOption>,
     {
         let mut parameters = PollParameters::new(chat_id.into(), question.into(), PollType::Quiz, options);
         parameters.correct_option_id = Some(correct_option_id);
@@ -827,7 +899,7 @@ impl SendPoll {
         A: Into<ChatId>,
         B: Into<String>,
         C: IntoIterator<Item = D>,
-        D: Into<String>,
+        D: Into<InputPollOption>,
     {
         Self {
             inner: PollParameters::new(chat_id.into(), question.into(), PollType::Regular, options),

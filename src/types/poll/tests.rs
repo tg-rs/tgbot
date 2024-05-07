@@ -136,7 +136,7 @@ fn send_quiz() {
                 "chat_id": 1,
                 "question": "Q",
                 "type": "quiz",
-                "options": ["X"],
+                "options": [{"text": "X"}],
                 "correct_option_id": 0
             }),
         ),
@@ -151,7 +151,7 @@ fn send_quiz() {
                 "chat_id": 1,
                 "question": "Q",
                 "type": "quiz",
-                "options": ["X"],
+                "options": [{"text": "X"}],
                 "correct_option_id": 0,
                 "question_entities": [
                     {
@@ -173,7 +173,7 @@ fn send_quiz() {
                 "chat_id": 1,
                 "question": "Q",
                 "type": "quiz",
-                "options": ["X"],
+                "options": [{"text": "X"}],
                 "correct_option_id": 0,
                 "question_parse_mode": "MarkdownV2"
             }),
@@ -188,7 +188,7 @@ fn send_quiz() {
                 "chat_id": 1,
                 "question": "Q",
                 "type": "quiz",
-                "options": ["O1", "O2"],
+                "options": [{"text": "O1"}, {"text": "O2"}],
                 "is_anonymous": false,
                 "is_closed": false,
                 "correct_option_id": 0,
@@ -227,7 +227,7 @@ fn send_poll() {
                 "chat_id": 1,
                 "question": "Q",
                 "type": "regular",
-                "options": ["X"]
+                "options": [{"text": "X"}]
             }),
         ),
         method.clone(),
@@ -241,7 +241,7 @@ fn send_poll() {
                 "chat_id": 1,
                 "question": "Q",
                 "type": "regular",
-                "options": ["X"],
+                "options": [{"text": "X"}],
                 "question_entities": [
                     {
                         "type": "bold",
@@ -262,7 +262,7 @@ fn send_poll() {
                 "chat_id": 1,
                 "question": "Q",
                 "type": "regular",
-                "options": ["X"],
+                "options": [{"text": "X"}],
                 "question_parse_mode": "MarkdownV2"
             }),
         ),
@@ -276,7 +276,7 @@ fn send_poll() {
                 "chat_id": 1,
                 "question": "Q",
                 "type": "regular",
-                "options": ["O1", "O2"],
+                "options": [{"text": "O1"}, {"text": "O2"}],
                 "is_anonymous": false,
                 "is_closed": false,
                 "allows_multiple_answers": true,

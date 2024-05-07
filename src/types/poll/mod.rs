@@ -392,11 +392,47 @@ impl QuizExplanation {
     }
 }
 
+#[derive(Deserialize, Serialize)]
+struct RawPollOptionText {
+    text: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    text_entities: Option<TextEntities>,
+}
+
+impl RawPollOptionText {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<Text, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let value = Self::deserialize(deserializer)?;
+        Ok(Text {
+            data: value.text,
+            entities: value.text_entities,
+        })
+    }
+
+    fn serialize_value<S>(value: &Text, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        Self {
+            text: value.data.clone(),
+            text_entities: value.entities.clone(),
+        }
+        .serialize(serializer)
+    }
+}
+
 /// Represents an answer option in a poll.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PollOption {
     /// Option text; 1-100 characters.
-    pub text: String,
+    #[serde(
+        flatten,
+        deserialize_with = "RawPollOptionText::deserialize_value",
+        serialize_with = "RawPollOptionText::serialize_value"
+    )]
+    pub text: Text,
     /// Number of users that voted for this option.
     pub voter_count: Integer,
 }
@@ -410,7 +446,7 @@ impl PollOption {
     /// * `voter_count` - Number of users that voted for this option.
     pub fn new<T>(text: T, voter_count: Integer) -> Self
     where
-        T: Into<String>,
+        T: Into<Text>,
     {
         Self {
             text: text.into(),

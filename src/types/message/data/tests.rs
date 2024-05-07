@@ -640,16 +640,7 @@ fn poll() {
     expected_struct.data = MessageData::Poll(Poll::Regular(RegularPoll {
         id: String::from("poll-id"),
         question: Text::from("Rust?"),
-        options: vec![
-            PollOption {
-                text: String::from("Yes"),
-                voter_count: 1000,
-            },
-            PollOption {
-                text: String::from("No"),
-                voter_count: 0,
-            },
-        ],
+        options: vec![PollOption::new("Yes", 1000), PollOption::new("No", 0)],
         total_voter_count: 100,
         is_closed: true,
         is_anonymous: true,

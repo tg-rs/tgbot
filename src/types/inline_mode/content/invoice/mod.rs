@@ -13,7 +13,6 @@ pub struct InputMessageContentInvoice {
     description: String,
     payload: String,
     prices: Vec<LabeledPrice>,
-    provider_token: String,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_flexible: Option<bool>,
@@ -38,6 +37,8 @@ pub struct InputMessageContentInvoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     provider_data: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    provider_token: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     send_email_to_provider: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     send_phone_number_to_provider: Option<bool>,
@@ -57,30 +58,20 @@ impl InputMessageContentInvoice {
     ///               use for your internal processes.
     /// * `prices` - Price breakdown (e.g. product price, tax, discount,
     ///              delivery cost, delivery tax, bonus, etc.).
-    /// * `provider_token` - Payment provider token, obtained via Bot Father.
     /// * `title` - Product name; 1-32 characters.
-    pub fn new<A, B, C, D, E, F>(
-        currency: A,
-        description: B,
-        payload: C,
-        prices: D,
-        provider_token: E,
-        title: F,
-    ) -> Self
+    pub fn new<A, B, C, D, E>(currency: A, description: B, payload: C, prices: D, title: E) -> Self
     where
         A: Into<String>,
         B: Into<String>,
         C: Into<String>,
         D: IntoIterator<Item = LabeledPrice>,
         E: Into<String>,
-        F: Into<String>,
     {
         Self {
             currency: currency.into(),
             description: description.into(),
             payload: payload.into(),
             prices: prices.into_iter().collect(),
-            provider_token: provider_token.into(),
             title: title.into(),
             is_flexible: None,
             max_tip_amount: None,
@@ -93,6 +84,7 @@ impl InputMessageContentInvoice {
             photo_width: None,
             photo_url: None,
             provider_data: None,
+            provider_token: None,
             send_email_to_provider: None,
             send_phone_number_to_provider: None,
             suggested_tip_amounts: None,
@@ -228,6 +220,20 @@ impl InputMessageContentInvoice {
     {
         self.provider_data = Some(serde_json::to_string(value)?);
         Ok(self)
+    }
+
+    /// Sets a new provider token.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Payment provider token, obtained via @BotFather.
+    ///             Pass an empty string for payments in Telegram Stars.
+    pub fn with_provider_token<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.provider_token = Some(value.into());
+        self
     }
 
     /// Sets a new value for a `send_email_to_provider` flag.

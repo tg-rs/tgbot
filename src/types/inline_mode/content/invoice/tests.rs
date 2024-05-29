@@ -16,7 +16,6 @@ fn input_message_content_invoice() {
                 "description",
                 "payload",
                 [LabeledPrice::new(100, "item")],
-                "provider-token",
                 "title",
             )
             .with_is_flexible(true)
@@ -28,6 +27,7 @@ fn input_message_content_invoice() {
                 key: String::from("value"),
             })
             .unwrap()
+            .with_provider_token("provider-token")
             .with_photo_height(24)
             .with_photo_size(100)
             .with_photo_width(24)
@@ -66,14 +66,12 @@ fn input_message_content_invoice() {
             "description",
             "payload",
             [LabeledPrice::new(100, "item")],
-            "provider-token",
             "title",
         )),
         serde_json::json!({
             "title": "title",
             "description": "description",
             "payload": "payload",
-            "provider_token": "provider-token",
             "currency": "RUB",
             "prices": [{"label": "item", "amount": 100}]
         }),

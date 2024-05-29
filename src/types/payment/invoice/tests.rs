@@ -53,7 +53,6 @@ fn create_invoice_link() {
         "product-name",
         "product-description",
         "payload",
-        "provider-token",
         "GEL",
         [LabeledPrice::new(100, "price-label")],
     );
@@ -64,7 +63,6 @@ fn create_invoice_link() {
                 "title": "product-name",
                 "description": "product-description",
                 "payload": "payload",
-                "provider_token": "provider-token",
                 "currency": "GEL",
                 "prices": [
                     {
@@ -83,7 +81,6 @@ fn create_invoice_link() {
                 "title": "product-name",
                 "description": "product-description",
                 "payload": "payload",
-                "provider_token": "provider-token",
                 "currency": "GEL",
                 "prices": [
                     {
@@ -91,10 +88,15 @@ fn create_invoice_link() {
                         "amount": 100
                     }
                 ],
+                "provider_token": "provider-token",
                 "max_tip_amount": 100
             }),
         ),
-        method.with_parameters(InvoiceParameters::default().with_max_tip_amount(100)),
+        method.with_parameters(
+            InvoiceParameters::default()
+                .with_max_tip_amount(100)
+                .with_provider_token("provider-token"),
+        ),
     );
 }
 
@@ -108,7 +110,6 @@ fn send_invoice() {
                 "title": "title",
                 "description": "description",
                 "payload": "payload",
-                "provider_token": "token",
                 "currency": "RUB",
                 "prices": [
                     {
@@ -123,7 +124,6 @@ fn send_invoice() {
             "title",
             "description",
             "payload",
-            "token",
             "RUB",
             vec![LabeledPrice::new(100, "item")],
         ),
@@ -167,27 +167,28 @@ fn send_invoice() {
                 }
             }),
         ),
-        SendInvoice::new(1, "title", "description", "payload", "token", "RUB", vec![])
+        SendInvoice::new(1, "title", "description", "payload", "RUB", vec![])
             .with_disable_notification(true)
             .with_message_thread_id(1)
             .with_parameters(
                 InvoiceParameters::default()
                     .with_max_tip_amount(100)
-                    .with_suggested_tip_amounts(vec![10, 50, 100])
+                    .with_need_email(true)
+                    .with_need_name(true)
+                    .with_need_phone_number(true)
+                    .with_need_shipping_address(true)
+                    .with_photo_height(300)
+                    .with_photo_size(100)
+                    .with_photo_url("url")
+                    .with_photo_width(200)
                     .with_provider_data(&ProviderData {
                         key: String::from("value"),
                     })
                     .unwrap()
-                    .with_photo_url("url")
-                    .with_photo_size(100)
-                    .with_photo_width(200)
-                    .with_photo_height(300)
-                    .with_need_name(true)
-                    .with_need_phone_number(true)
-                    .with_need_email(true)
-                    .with_need_shipping_address(true)
-                    .with_send_phone_number_to_provider(true)
+                    .with_provider_token("token")
                     .with_send_email_to_provider(true)
+                    .with_send_phone_number_to_provider(true)
+                    .with_suggested_tip_amounts(vec![10, 50, 100])
                     .with_flexible(true),
             )
             .with_protect_content(true)

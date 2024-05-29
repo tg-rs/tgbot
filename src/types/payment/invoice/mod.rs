@@ -141,6 +141,11 @@ pub struct InvoiceParameters {
     /// A detailed description of required fields should be provided by the payment provider.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub provider_data: Option<String>,
+    /// Payment provider token, obtained via @BotFather.
+    ///
+    /// Pass an empty string for payments in Telegram Stars.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provider_token: Option<String>,
     /// Indicates whether the user's phone number should be sent to the provider.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub send_phone_number_to_provider: Option<bool>,
@@ -273,6 +278,20 @@ impl InvoiceParameters {
         Ok(self)
     }
 
+    /// Sets a new provider token.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Payment provider token, obtained via @BotFather.
+    ///             Pass an empty string for payments in Telegram Stars.
+    pub fn with_provider_token<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.provider_token = Some(value.into());
+        self
+    }
+
     /// Sets a new value for a `send_phone_number_to_provider` flag.
     ///
     /// # Arguments
@@ -316,10 +335,10 @@ pub struct CreateInvoiceLink {
     description: String,
     payload: String,
     prices: Vec<LabeledPrice>,
-    provider_token: String,
     title: String,
     #[serde(flatten)]
     parameters: Option<InvoiceParameters>,
+
 }
 
 impl CreateInvoiceLink {
@@ -332,11 +351,10 @@ impl CreateInvoiceLink {
     /// * `payload` - Bot-defined invoice payload; 1-128 bytes;
     ///               this will not be displayed to the user;
     ///               use for your internal processes.
-    /// * `provider_token` - Payment provider token, obtained via BotFather.
     /// * `currency` - Three-letter ISO 4217 currency code, see more on currencies.
     /// * `prices` - Price breakdown
     ///              (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.).
-    pub fn new<A, B, C, D, E>(title: A, description: B, payload: C, provider_token: D, currency: D, prices: E) -> Self
+    pub fn new<A, B, C, D, E>(title: A, description: B, payload: C, currency: D, prices: E) -> Self
     where
         A: Into<String>,
         B: Into<String>,
@@ -348,7 +366,6 @@ impl CreateInvoiceLink {
             currency: currency.into(),
             description: description.into(),
             payload: payload.into(),
-            provider_token: provider_token.into(),
             prices: prices.into_iter().collect(),
             title: title.into(),
             parameters: None,
@@ -382,7 +399,6 @@ pub struct SendInvoice {
     description: String,
     payload: String,
     prices: Vec<LabeledPrice>,
-    provider_token: String,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
@@ -411,34 +427,23 @@ impl SendInvoice {
     /// * `payload` - Bot-defined invoice payload; 1-128 bytes
     ///               this will not be displayed to the user;
     ///               use for your internal processes.
-    /// * `provider_token` - Payments provider token, obtained via Bot Father.
     /// * `currency` - Three-letter ISO 4217 currency code, see more on currencies.
     /// * `prices` - Price breakdown, a list of components
     ///              (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.).
-    pub fn new<A, B, C, D, E, F, G>(
-        chat_id: A,
-        title: B,
-        description: C,
-        payload: D,
-        provider_token: E,
-        currency: F,
-        prices: G,
-    ) -> Self
+    pub fn new<A, B, C, D, E, F>(chat_id: A, title: B, description: C, payload: D, currency: E, prices: F) -> Self
     where
         A: Into<ChatId>,
         B: Into<String>,
         C: Into<String>,
         D: Into<String>,
         E: Into<String>,
-        F: Into<String>,
-        G: IntoIterator<Item = LabeledPrice>,
+        F: IntoIterator<Item = LabeledPrice>,
     {
         SendInvoice {
             chat_id: chat_id.into(),
             title: title.into(),
             description: description.into(),
             payload: payload.into(),
-            provider_token: provider_token.into(),
             currency: currency.into(),
             prices: prices.into_iter().collect(),
             disable_notification: None,

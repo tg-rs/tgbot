@@ -95,6 +95,9 @@ pub struct Message {
     /// that is independent from any potential bot chat which might share the same identifier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_connection_id: Option<String>,
+    /// Unique identifier of the message effect added to the message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effect_id: Option<String>,
     /// Information about the message that is being replied to, which may come from another chat or forum topic.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_reply: Option<ExternalReplyInfo>,
@@ -178,6 +181,7 @@ impl Message {
             sender: sender.into(),
             author_signature: None,
             business_connection_id: None,
+            effect_id: None,
             external_reply: None,
             forward_origin: None,
             has_media_spoiler: None,
@@ -268,6 +272,19 @@ impl Message {
     /// * `value` - Edit date; Unix timestamp.
     pub fn with_edit_date(mut self, value: Integer) -> Self {
         self.edit_date = Some(value);
+        self
+    }
+
+    /// Sets a new effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect.
+    pub fn with_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.effect_id = Some(value.into());
         self
     }
 

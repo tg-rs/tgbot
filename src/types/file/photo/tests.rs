@@ -67,6 +67,7 @@ fn send_photo() {
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
                 ("reply_parameters", reply_parameters.serialize().unwrap().into()),
+                ("show_caption_above_media", true.into()),
             ]),
         ),
         SendPhoto::new(1, InputFile::file_id("file-id"))
@@ -81,7 +82,8 @@ fn send_photo() {
             .with_reply_markup(ForceReply::new(true))
             .unwrap()
             .with_reply_parameters(reply_parameters)
-            .unwrap(),
+            .unwrap()
+            .with_show_caption_above_media(true),
     );
 }
 

@@ -56,7 +56,8 @@ fn copy_message() {
                 "reply_markup": {"force_reply": true},
                 "reply_parameters": {
                     "message_id": 1
-                }
+                },
+                "show_caption_above_media": true
             }),
         ),
         method
@@ -67,7 +68,8 @@ fn copy_message() {
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
-            .with_reply_parameters(ReplyParameters::new(1)),
+            .with_reply_parameters(ReplyParameters::new(1))
+            .with_show_caption_above_media(true),
     );
     assert_payload_eq(
         Payload::json(
@@ -179,13 +181,15 @@ fn edit_message_caption() {
                             {"text": "text", "url": "url"}
                         ]
                     ]
-                }
+                },
+                "show_caption_above_media": true
             }),
         ),
         EditMessageCaption::for_chat_message(1, 2)
             .with_caption("caption")
             .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+            .with_show_caption_above_media(true),
     );
 
     assert_payload_eq(

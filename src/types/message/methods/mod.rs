@@ -51,6 +51,8 @@ pub struct CopyMessage {
     reply_markup: Option<ReplyMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
 }
 
 impl CopyMessage {
@@ -78,6 +80,7 @@ impl CopyMessage {
             protect_content: None,
             reply_markup: None,
             reply_parameters: None,
+            show_caption_above_media: None,
         }
     }
 
@@ -178,6 +181,17 @@ impl CopyMessage {
     /// * `value` - Description of the message to reply to.
     pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
         self.reply_parameters = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// `value` - Whether the caption must be shown above the message media.
+    ///           Ignored if a new caption isn't specified.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
         self
     }
 }
@@ -392,6 +406,8 @@ pub struct EditMessageCaption {
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
 }
 
 impl EditMessageCaption {
@@ -413,6 +429,7 @@ impl EditMessageCaption {
             message_id: Some(message_id),
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
         }
     }
 
@@ -433,6 +450,7 @@ impl EditMessageCaption {
             message_id: None,
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
         }
     }
 
@@ -488,6 +506,17 @@ impl EditMessageCaption {
         T: Into<InlineKeyboardMarkup>,
     {
         self.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// `value` - Whether the caption must be shown above the message media.
+    ///           Supported only for animation, photo and video messages.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
         self
     }
 }

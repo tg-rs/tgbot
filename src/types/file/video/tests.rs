@@ -89,6 +89,7 @@ fn send_video() {
                     serde_json::to_string(&ForceReply::new(true)).unwrap().into(),
                 ),
                 ("reply_parameters", reply_parameters.serialize().unwrap().into()),
+                ("show_caption_above_media", true.into()),
             ]),
         ),
         SendVideo::new(1, InputFile::file_id("file-id"))
@@ -106,6 +107,7 @@ fn send_video() {
             .unwrap()
             .with_reply_parameters(reply_parameters)
             .unwrap()
+            .with_show_caption_above_media(true)
             .with_supports_streaming(true)
             .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
             .unwrap()

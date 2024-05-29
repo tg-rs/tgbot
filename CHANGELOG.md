@@ -1,5 +1,58 @@
 # Changelog
 
+## 0.24.0 (29.05.2024)
+
+### Bot API
+
+#### 7.4
+
+- Added types:
+  - `RefundStarPayment`.
+- Added enum variants:
+   `TextEntity::ExpandableBlockQuote`.
+- Added fields:
+  - `InvoiceParameters`: `provider_token`.
+  - `Message`: `effect_id`, `show_caption_above_media`.
+- Added methods:
+  - `CopyMessage`: `with_show_caption_above_media`.
+  - `EditMessageCaption`: `with_show_caption_above_media`.
+  - `InlineQueryResultGif`: `with_show_caption_above_media`.
+  - `InlineQueryResultMpeg4Gif`: `with_show_caption_above_media`.
+  - `InlineQueryResultPhoto`: `with_show_caption_above_media`.
+  - `InlineQueryResultVideo`: `with_show_caption_above_media`.
+  - `InlineQueryResultCachedGif`: `with_show_caption_above_media`.
+  - `InlineQueryResultCachedMpeg4Gif`: `with_show_caption_above_media`.
+  - `InlineQueryResultCachedPhoto`: `with_show_caption_above_media`.
+  - `InlineQueryResultCachedVideo`: `with_show_caption_above_media`.
+  - `InputMediaAnimation`: `with_show_caption_above_media`.
+  - `InputMediaPhoto`: `with_show_caption_above_media`.
+  - `InputMediaVideo`: `with_show_caption_above_media`.
+  - `InputMessageContentInvoice`: `with_provider_token`.
+  - `InvoiceParameters`: `with_provider_token`.
+  - `Message`: `with_effect_id`, `with_show_caption_above_media`.
+  - `SendAnimation`: `with_message_effect_id`, `with_show_caption_above_media`.
+  - `SendAudio`: `with_message_effect_id`.
+  - `SendContact`: `with_message_effect_id`.
+  - `SendDice`: `with_message_effect_id`.
+  - `SendDocument`: `with_message_effect_id`.
+  - `SendGame`: `with_message_effect_id`.
+  - `SendInvoice`: `with_message_effect_id`.
+  - `SendLocation`: `with_message_effect_id`.
+  - `SendMediaGroup`: `with_message_effect_id`.
+  - `SendMessage`: `with_message_effect_id`.
+  - `SendPhoto`: `with_message_effect_id`, `with_show_caption_above_media`.
+  - `SendPoll`: `with_message_effect_id`.
+  - `SendSticker`: `with_message_effect_id`.
+  - `SendVenue`: `with_message_effect_id`.
+  - `SendVideo`: `with_message_effect_id`, `with_show_caption_above_media`.
+  - `SendVideoNote`: `with_message_effect_id`.
+  - `SendVoice`: `with_message_effect_id`.
+  - `TextEntity`: `expandable_blockquote`.
+- Changed signature:
+  - `CreateInvoiceLink::new` to `(title: Into<String>, description: Into<String>, payload: Into<String>, currency: Into<String>, prices: IntoIterator<Item=LabeledPrice>)`.
+  - `SendInvoice::new` to `(chat_id: Into<ChatId>, title: Into<String>, description: Into<String>, payload: Into<String>, currency: Into<String>, prices: IntoIterator<Item=LabeledPrice>)`.
+  - `InputMessageContentInvoice::new` to `(currency: Into<String>, description: Into<String>, payload: Into<String>, prices: IntoIterator<Item=LabeledPrice>, title: Into<String>)`.
+
 ## 0.23.0 (07.05.2024)
 
 ### Bot API

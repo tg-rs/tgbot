@@ -59,6 +59,7 @@ fn send_contact() {
                 "reply_parameters": {
                     "message_id": 1
                 },
+                "message_effect_id": "effect-id",
                 "message_thread_id": 1
             }),
         ),
@@ -66,6 +67,7 @@ fn send_contact() {
             .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_last_name("Doe")
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))

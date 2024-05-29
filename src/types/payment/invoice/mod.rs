@@ -338,7 +338,6 @@ pub struct CreateInvoiceLink {
     title: String,
     #[serde(flatten)]
     parameters: Option<InvoiceParameters>,
-
 }
 
 impl CreateInvoiceLink {
@@ -403,6 +402,8 @@ pub struct SendInvoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    message_effect_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
     #[serde(flatten)]
     parameters: Option<InvoiceParameters>,
@@ -447,6 +448,7 @@ impl SendInvoice {
             currency: currency.into(),
             prices: prices.into_iter().collect(),
             disable_notification: None,
+            message_effect_id: None,
             message_thread_id: None,
             parameters: None,
             protect_content: None,
@@ -464,6 +466,19 @@ impl SendInvoice {
     ///             a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
+        self
+    }
+
+    /// Sets a new message effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect to be added to the message; for private chats only.
+    pub fn with_message_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.message_effect_id = Some(value.into());
         self
     }
 

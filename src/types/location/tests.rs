@@ -56,6 +56,7 @@ fn send_location() {
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
+                "message_effect_id": "effect-id",
                 "message_thread_id": 1,
                 "reply_markup": {"force_reply": true},
                 "reply_parameters": {"message_id": 1}
@@ -67,6 +68,7 @@ fn send_location() {
             .with_heading(120)
             .with_horizontal_accuracy(1.5)
             .with_live_period(100)
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_proximity_alert_radius(100)

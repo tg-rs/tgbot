@@ -139,6 +139,8 @@ pub struct SendVenue {
     #[serde(skip_serializing_if = "Option::is_none")]
     google_place_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    message_effect_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
@@ -176,6 +178,7 @@ impl SendVenue {
             foursquare_type: None,
             google_place_id: None,
             google_place_type: None,
+            message_effect_id: None,
             message_thread_id: None,
             protect_content: None,
             reply_markup: None,
@@ -261,6 +264,19 @@ impl SendVenue {
         T: Into<String>,
     {
         self.google_place_type = Some(value.into());
+        self
+    }
+
+    /// Sets a new message effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect to be added to the message; for private chats only.
+    pub fn with_message_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.message_effect_id = Some(value.into());
         self
     }
 

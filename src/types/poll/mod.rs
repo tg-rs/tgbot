@@ -599,6 +599,8 @@ struct PollParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     is_closed: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    message_effect_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     open_period: Option<Integer>,
@@ -637,6 +639,7 @@ impl PollParameters {
             explanation_parse_mode: None,
             is_anonymous: None,
             is_closed: None,
+            message_effect_id: None,
             message_thread_id: None,
             open_period: None,
             poll_type: Some(poll_type),
@@ -778,6 +781,19 @@ impl SendQuiz {
     /// * `value` - Indicates whether the quiz needs to be immediately closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
         self.inner.is_closed = Some(value);
+        self
+    }
+
+    /// Sets a new message effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect to be added to the message; for private chats only.
+    pub fn with_message_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.inner.message_effect_id = Some(value.into());
         self
     }
 
@@ -971,6 +987,19 @@ impl SendPoll {
     /// * `value` - Indicates whether the poll needs to be immediately closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
         self.inner.is_closed = Some(value);
+        self
+    }
+
+    /// Sets a new message effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect to be added to the message; for private chats only.
+    pub fn with_message_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.inner.message_effect_id = Some(value.into());
         self
     }
 

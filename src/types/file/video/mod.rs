@@ -257,6 +257,19 @@ impl SendVideo {
         self
     }
 
+    /// Sets a new message effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect to be added to the message; for private chats only.
+    pub fn with_message_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.form.insert_field("message_effect_id", value.into());
+        self
+    }
+
     /// Sets a new message thread ID.
     ///
     /// # Arguments

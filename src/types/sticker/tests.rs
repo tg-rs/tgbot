@@ -134,6 +134,7 @@ fn send_sticker() {
                 ("business_connection_id", "id".into()),
                 ("disable_notification", true.into()),
                 ("emoji", "😱".into()),
+                ("message_effect_id", "effect-id".into()),
                 ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
                 ("reply_markup", reply_markup.serialize().unwrap().into()),
@@ -144,6 +145,7 @@ fn send_sticker() {
             .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_emoji("😱")
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(reply_markup)

@@ -71,6 +71,7 @@ fn send_document() {
                 ("disable_content_type_detection", true.into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("disable_notification", true.into()),
+                ("message_effect_id", "effect-id".into()),
                 ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
                 (
@@ -85,6 +86,7 @@ fn send_document() {
             .with_caption("Caption")
             .with_disable_content_type_detection(true)
             .with_disable_notification(true)
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_protect_content(true)

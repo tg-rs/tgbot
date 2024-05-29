@@ -195,6 +195,7 @@ fn send_quiz() {
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
+                "message_effect_id": "effect-id",
                 "message_thread_id": 1,
                 "reply_markup": {
                     "force_reply": true
@@ -209,6 +210,7 @@ fn send_quiz() {
             .with_disable_notification(true)
             .with_is_anonymous(false)
             .with_is_closed(false)
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
@@ -283,6 +285,7 @@ fn send_poll() {
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
+                "message_effect_id": "effect-id",
                 "message_thread_id": 1,
                 "reply_markup": {
                     "force_reply": true
@@ -298,6 +301,7 @@ fn send_poll() {
             .with_disable_notification(true)
             .with_is_anonymous(false)
             .with_is_closed(false)
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))

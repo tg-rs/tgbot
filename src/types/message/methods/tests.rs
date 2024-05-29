@@ -492,6 +492,7 @@ fn send_message() {
                 },
                 "business_connection_id": "id",
                 "disable_notification": true,
+                "message_effect_id": "effect-id",
                 "message_thread_id": 1,
                 "protect_content": true,
                 "reply_markup": {
@@ -506,6 +507,7 @@ fn send_message() {
             .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_parse_mode(ParseMode::Markdown)
             .with_entities(vec![TextEntity::bold(0..2)])

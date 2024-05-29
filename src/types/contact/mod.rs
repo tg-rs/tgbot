@@ -97,6 +97,8 @@ pub struct SendContact {
     #[serde(skip_serializing_if = "Option::is_none")]
     last_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    message_effect_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
@@ -129,6 +131,7 @@ impl SendContact {
             business_connection_id: None,
             disable_notification: None,
             last_name: None,
+            message_effect_id: None,
             message_thread_id: None,
             protect_content: None,
             reply_markup: None,
@@ -171,6 +174,19 @@ impl SendContact {
         T: Into<String>,
     {
         self.last_name = Some(value.into());
+        self
+    }
+
+    /// Sets a new message effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect to be added to the message; for private chats only.
+    pub fn with_message_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.message_effect_id = Some(value.into());
         self
     }
 

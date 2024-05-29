@@ -34,6 +34,7 @@ fn send_media_group() {
     form.insert_field("business_connection_id", "id");
     form.insert_field("disable_notification", true);
     form.insert_field("protect_content", true);
+    form.insert_field("message_effect_id", "effect-id");
     form.insert_field("message_thread_id", 1);
     form.insert_field("reply_parameters", reply_parameters.serialize().unwrap());
     assert_payload_eq(
@@ -41,6 +42,7 @@ fn send_media_group() {
         SendMediaGroup::new(1, create_media_group())
             .with_business_connection_id("id")
             .with_disable_notification(true)
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_parameters(reply_parameters)

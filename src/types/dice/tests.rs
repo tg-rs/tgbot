@@ -98,6 +98,7 @@ fn send_dice() {
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
+                "message_effect_id": "effect-id",
                 "message_thread_id": 1,
                 "reply_markup": {
                     "force_reply": true
@@ -110,6 +111,7 @@ fn send_dice() {
         method
             .with_business_connection_id("id")
             .with_disable_notification(true)
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))

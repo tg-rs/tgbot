@@ -80,6 +80,7 @@ fn send_animation() {
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("disable_notification", true.into()),
                 ("has_spoiler", true.into()),
+                ("message_effect_id", "effect-id".into()),
                 ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
                 (
@@ -100,6 +101,7 @@ fn send_animation() {
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_disable_notification(true)
             .with_has_spoiler(true)
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))

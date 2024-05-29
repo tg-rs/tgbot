@@ -81,6 +81,7 @@ fn send_video() {
                 ("business_connection_id", "id".into()),
                 ("disable_notification", true.into()),
                 ("has_spoiler", true.into()),
+                ("message_effect_id", "effect-id".into()),
                 ("message_thread_id", 1.into()),
                 ("protect_content", true.into()),
                 (
@@ -97,6 +98,7 @@ fn send_video() {
             .with_duration(100)
             .with_has_spoiler(true)
             .with_height(300)
+            .with_message_effect_id("effect-id")
             .with_message_thread_id(1)
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_protect_content(true)

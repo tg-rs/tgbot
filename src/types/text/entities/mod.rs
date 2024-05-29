@@ -128,6 +128,8 @@ pub enum TextEntity {
     },
     /// An E-Mail.
     Email(TextEntityPosition),
+    /// Collapsed-by-default block quotation.
+    ExpandableBlockquote(TextEntityPosition),
     /// A hashtag.
     Hashtag(TextEntityPosition),
     /// An italic text.
@@ -190,6 +192,7 @@ impl TextEntity {
         cashtag => Cashtag,
         code => Code,
         email => Email,
+        expandable_blockquote => ExpandableBlockquote,
         hashtag => Hashtag,
         italic => Italic,
         mention => Mention,
@@ -274,6 +277,7 @@ enum RawTextEntityType {
         custom_emoji_id: Option<String>,
     },
     Email,
+    ExpandableBlockquote,
     Hashtag,
     Italic,
     Mention,
@@ -354,6 +358,7 @@ impl TryFrom<RawTextEntity> for TextEntity {
                 custom_emoji_id: custom_emoji_id.ok_or(TextEntityError::NoCustomEmoji)?,
             },
             RawTextEntityType::Email => TextEntity::Email(position),
+            RawTextEntityType::ExpandableBlockquote => TextEntity::ExpandableBlockquote(position),
             RawTextEntityType::Hashtag => TextEntity::Hashtag(position),
             RawTextEntityType::Italic => TextEntity::Italic(position),
             RawTextEntityType::Mention => TextEntity::Mention(position),
@@ -397,6 +402,7 @@ impl From<TextEntity> for RawTextEntity {
                 custom_emoji_id,
             } => raw!(CustomEmoji(p, custom_emoji_id)),
             TextEntity::Email(p) => raw!(Email(p)),
+            TextEntity::ExpandableBlockquote(p) => raw!(ExpandableBlockquote(p)),
             TextEntity::Hashtag(p) => raw!(Hashtag(p)),
             TextEntity::Italic(p) => raw!(Italic(p)),
             TextEntity::Mention(p) => raw!(Mention(p)),

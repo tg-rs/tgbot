@@ -6,36 +6,37 @@ fn deserialize() {
         "message_id": 1, "date": 0,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
         "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
-        "text": "bold /bot_command $cashtag code u@h.z #hashtag italic @mention phone pre text-link text-mention url underline spoiler strikethrough pre 🤡 blockquote",
+        "text": "b /c $c cd u@h.z #h i @m p pre l tm url u s sx pre 🤡 bq ebq",
         "entities": [
-            {"type": "bold", "offset": 0, "length": 4},
-            {"type": "bot_command", "offset": 5, "length": 12},
-            {"type": "cashtag", "offset": 18, "length": 8},
-            {"type": "code", "offset": 27, "length": 4},
-            {"type": "email", "offset": 32, "length": 5},
-            {"type": "hashtag", "offset": 38, "length": 8},
-            {"type": "italic", "offset": 47, "length": 6},
-            {"type": "mention", "offset": 54, "length": 8},
-            {"type": "phone_number", "offset": 63, "length": 5},
-            {"type": "pre", "offset": 69, "length": 3},
-            {"type": "text_link", "offset": 73, "length": 9, "url": "https://example.com"},
+            {"type": "bold", "offset": 0, "length": 1},
+            {"type": "bot_command", "offset": 3, "length": 2},
+            {"type": "cashtag", "offset": 6, "length": 2},
+            {"type": "code", "offset": 9, "length": 2},
+            {"type": "email", "offset": 12, "length": 5},
+            {"type": "hashtag", "offset": 18, "length": 2},
+            {"type": "italic", "offset": 21, "length": 1},
+            {"type": "mention", "offset": 23, "length": 2},
+            {"type": "phone_number", "offset": 26, "length": 1},
+            {"type": "pre", "offset": 28, "length": 3},
+            {"type": "text_link", "offset": 32, "length": 1, "url": "https://example.com"},
             {
                 "type": "text_mention",
-                "offset": 83,
-                "length": 12,
+                "offset": 34,
+                "length": 2,
                 "user": {
                     "id": 1,
                     "first_name": "test",
                     "is_bot": false
                 }
             },
-            {"type": "url", "offset": 96, "length": 3},
-            {"type": "underline", "offset": 100, "length": 9},
-            {"type": "spoiler", "offset": 110, "length": 7},
-            {"type": "strikethrough", "offset": 118, "length": 13},
-            {"type": "pre", "offset": 132, "length": 3, "language": "rust"},
-            {"type": "custom_emoji", "offset": 136, "length": 2, "custom_emoji_id": "emoji-id"},
-            {"type": "blockquote", "offset": 139, "length": 10}
+            {"type": "url", "offset": 37, "length": 3},
+            {"type": "underline", "offset": 41, "length": 1},
+            {"type": "spoiler", "offset": 43, "length": 1},
+            {"type": "strikethrough", "offset": 45, "length": 2},
+            {"type": "pre", "offset": 48, "length": 3, "language": "rust"},
+            {"type": "custom_emoji", "offset": 52, "length": 2, "custom_emoji_id": "emoji-id"},
+            {"type": "blockquote", "offset": 54, "length": 2},
+            {"type": "expandable_blockquote", "offset": 57, "length": 3}
         ]
     });
     let msg: Message = serde_json::from_value(input).unwrap();
@@ -43,46 +44,41 @@ fn deserialize() {
         let entities: Vec<TextEntity> = text.entities.unwrap().into();
         assert_eq!(
             vec![
-                TextEntity::Bold(TextEntityPosition { offset: 0, length: 4 }),
-                TextEntity::bot_command(TextEntityPosition { offset: 5, length: 12 }),
-                TextEntity::Cashtag(TextEntityPosition { offset: 18, length: 8 }),
-                TextEntity::Code(TextEntityPosition { offset: 27, length: 4 }),
-                TextEntity::Email(TextEntityPosition { offset: 32, length: 5 }),
-                TextEntity::Hashtag(TextEntityPosition { offset: 38, length: 8 }),
-                TextEntity::Italic(TextEntityPosition { offset: 47, length: 6 }),
-                TextEntity::Mention(TextEntityPosition { offset: 54, length: 8 }),
-                TextEntity::PhoneNumber(TextEntityPosition { offset: 63, length: 5 }),
+                TextEntity::Bold(TextEntityPosition { offset: 0, length: 1 }),
+                TextEntity::bot_command(TextEntityPosition { offset: 3, length: 2 }),
+                TextEntity::Cashtag(TextEntityPosition { offset: 6, length: 2 }),
+                TextEntity::Code(TextEntityPosition { offset: 9, length: 2 }),
+                TextEntity::Email(TextEntityPosition { offset: 12, length: 5 }),
+                TextEntity::Hashtag(TextEntityPosition { offset: 18, length: 2 }),
+                TextEntity::Italic(TextEntityPosition { offset: 21, length: 1 }),
+                TextEntity::Mention(TextEntityPosition { offset: 23, length: 2 }),
+                TextEntity::PhoneNumber(TextEntityPosition { offset: 26, length: 1 }),
                 TextEntity::Pre {
-                    position: TextEntityPosition { offset: 69, length: 3 },
+                    position: TextEntityPosition { offset: 28, length: 3 },
                     language: None,
                 },
                 TextEntity::TextLink {
-                    position: TextEntityPosition { offset: 73, length: 9 },
+                    position: TextEntityPosition { offset: 32, length: 1 },
                     url: String::from("https://example.com"),
                 },
                 TextEntity::TextMention {
-                    position: TextEntityPosition { offset: 83, length: 12 },
+                    position: TextEntityPosition { offset: 34, length: 2 },
                     user: User::new(1, "test", false),
                 },
-                TextEntity::Url(TextEntityPosition { offset: 96, length: 3 }),
-                TextEntity::Underline(TextEntityPosition { offset: 100, length: 9 }),
-                TextEntity::Spoiler(TextEntityPosition { offset: 110, length: 7 }),
-                TextEntity::Strikethrough(TextEntityPosition {
-                    offset: 118,
-                    length: 13,
-                }),
+                TextEntity::Url(TextEntityPosition { offset: 37, length: 3 }),
+                TextEntity::Underline(TextEntityPosition { offset: 41, length: 1 }),
+                TextEntity::Spoiler(TextEntityPosition { offset: 43, length: 1 }),
+                TextEntity::Strikethrough(TextEntityPosition { offset: 45, length: 2 }),
                 TextEntity::Pre {
-                    position: TextEntityPosition { offset: 132, length: 3 },
+                    position: TextEntityPosition { offset: 48, length: 3 },
                     language: Some(String::from("rust")),
                 },
                 TextEntity::CustomEmoji {
                     custom_emoji_id: String::from("emoji-id"),
-                    position: TextEntityPosition { offset: 136, length: 2 },
+                    position: TextEntityPosition { offset: 52, length: 2 },
                 },
-                TextEntity::Blockquote(TextEntityPosition {
-                    offset: 139,
-                    length: 10
-                },)
+                TextEntity::Blockquote(TextEntityPosition { offset: 54, length: 2 }),
+                TextEntity::ExpandableBlockquote(TextEntityPosition { offset: 57, length: 3 }),
             ],
             entities
         );
@@ -164,6 +160,14 @@ fn serialize() {
             TextEntity::Email(TextEntityPosition { offset: 0, length: 10 }),
             serde_json::json!({
                 "type": "email",
+                "offset": 0,
+                "length": 10
+            }),
+        ),
+        (
+            TextEntity::ExpandableBlockquote(TextEntityPosition { offset: 0, length: 10 }),
+            serde_json::json!({
+                "type": "expandable_blockquote",
                 "offset": 0,
                 "length": 10
             }),

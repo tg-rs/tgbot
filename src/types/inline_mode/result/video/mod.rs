@@ -38,6 +38,8 @@ pub struct InlineQueryResultVideo {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     video_duration: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     video_height: Option<Integer>,
@@ -77,6 +79,7 @@ impl InlineQueryResultVideo {
             description: None,
             caption_entities: None,
             reply_markup: None,
+            show_caption_above_media: None,
             input_message_content: None,
         }
     }
@@ -152,6 +155,16 @@ impl InlineQueryResultVideo {
         self
     }
 
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
+        self
+    }
+
     /// Sets a new reply markup.
     ///
     /// # Arguments
@@ -217,6 +230,8 @@ pub struct InlineQueryResultCachedVideo {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
 }
 
@@ -244,6 +259,7 @@ impl InlineQueryResultCachedVideo {
             input_message_content: None,
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
         }
     }
 
@@ -327,6 +343,16 @@ impl InlineQueryResultCachedVideo {
         self.reply_markup = Some(value.into());
         self
     }
+
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
+        self
+    }
 }
 
 impl TryFrom<RawInlineQueryResult> for InlineQueryResultVideo {
@@ -342,6 +368,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultVideo {
             mime_type: value.data.mime_type.ok_or(MissingField("mime_type"))?,
             parse_mode: value.data.parse_mode,
             reply_markup: value.data.reply_markup,
+            show_caption_above_media: value.data.show_caption_above_media,
             thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
             title: value.data.title.ok_or(MissingField("title"))?,
             video_duration: value.data.video_duration,
@@ -363,6 +390,7 @@ impl From<InlineQueryResultVideo> for RawInlineQueryResult {
                 mime_type: Some(value.mime_type),
                 parse_mode: value.parse_mode,
                 reply_markup: value.reply_markup,
+                show_caption_above_media: value.show_caption_above_media,
                 thumbnail_url: Some(value.thumbnail_url),
                 title: Some(value.title),
                 video_duration: value.video_duration,
@@ -389,6 +417,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedVideo {
             input_message_content: value.data.input_message_content,
             parse_mode: value.data.parse_mode,
             reply_markup: value.data.reply_markup,
+            show_caption_above_media: value.data.show_caption_above_media,
             title: value.data.title.ok_or(MissingField("title"))?,
             video_file_id: value.data.video_file_id.ok_or(MissingField("video_file_id"))?,
         })
@@ -405,6 +434,7 @@ impl From<InlineQueryResultCachedVideo> for RawInlineQueryResult {
                 input_message_content: value.input_message_content,
                 parse_mode: value.parse_mode,
                 reply_markup: value.reply_markup,
+                show_caption_above_media: value.show_caption_above_media,
                 title: Some(value.title),
                 video_file_id: Some(value.video_file_id),
                 ..Default::default()

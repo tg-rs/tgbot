@@ -157,6 +157,8 @@ pub(super) struct RawInlineQueryResultData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub(super) show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) sticker_file_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) thumbnail_height: Option<Integer>,

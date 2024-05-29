@@ -22,6 +22,7 @@ fn inline_query_result_photo() {
                 .with_photo_height(300)
                 .with_photo_width(200)
                 .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_show_caption_above_media(true)
                 .with_title("title"),
         ),
         serde_json::json!({
@@ -36,6 +37,7 @@ fn inline_query_result_photo() {
             "caption": "caption",
             "parse_mode": "Markdown",
             "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
+            "show_caption_above_media": true,
             "input_message_content": {"message_text": "text"}
         }),
     );
@@ -62,6 +64,7 @@ fn inline_query_result_cached_photo() {
                 .with_input_message_content(InputMessageContentText::new("text"))
                 .with_caption_parse_mode(ParseMode::Markdown)
                 .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_show_caption_above_media(true)
                 .with_title("title"),
         ),
         serde_json::json!({
@@ -73,6 +76,7 @@ fn inline_query_result_cached_photo() {
             "caption": "caption",
             "parse_mode": "Markdown",
             "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
+            "show_caption_above_media": true,
             "input_message_content": {"message_text": "text"}
         }),
     );

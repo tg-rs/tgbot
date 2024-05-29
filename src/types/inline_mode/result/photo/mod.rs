@@ -38,6 +38,8 @@ pub struct InlineQueryResultPhoto {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
 }
 
@@ -67,6 +69,7 @@ impl InlineQueryResultPhoto {
             photo_width: None,
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
             title: None,
         }
     }
@@ -172,6 +175,16 @@ impl InlineQueryResultPhoto {
         self
     }
 
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
+        self
+    }
+
     /// Sets a new title.
     ///
     /// # Arguments
@@ -208,6 +221,8 @@ pub struct InlineQueryResultCachedPhoto {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
 }
 
@@ -232,6 +247,7 @@ impl InlineQueryResultCachedPhoto {
             input_message_content: None,
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
             title: None,
         }
     }
@@ -317,6 +333,16 @@ impl InlineQueryResultCachedPhoto {
         self
     }
 
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
+        self
+    }
+
     /// Sets a new title.
     ///
     /// # Arguments
@@ -346,6 +372,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultPhoto {
             photo_width: value.data.photo_width,
             photo_url: value.data.photo_url.ok_or(MissingField("photo_url"))?,
             reply_markup: value.data.reply_markup,
+            show_caption_above_media: value.data.show_caption_above_media,
             thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
             title: value.data.title,
         })
@@ -365,6 +392,7 @@ impl From<InlineQueryResultPhoto> for RawInlineQueryResult {
                 photo_url: Some(value.photo_url),
                 photo_width: value.photo_width,
                 reply_markup: value.reply_markup,
+                show_caption_above_media: value.show_caption_above_media,
                 thumbnail_url: Some(value.thumbnail_url),
                 title: value.title,
                 ..Default::default()
@@ -389,6 +417,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedPhoto {
             photo_file_id: value.data.photo_file_id.ok_or(MissingField("photo_file_id"))?,
             title: value.data.title,
             reply_markup: value.data.reply_markup,
+            show_caption_above_media: value.data.show_caption_above_media,
         })
     }
 }
@@ -404,6 +433,7 @@ impl From<InlineQueryResultCachedPhoto> for RawInlineQueryResult {
                 parse_mode: value.parse_mode,
                 photo_file_id: Some(value.photo_file_id),
                 reply_markup: value.reply_markup,
+                show_caption_above_media: value.show_caption_above_media,
                 title: value.title,
                 ..Default::default()
             },

@@ -21,6 +21,8 @@ pub struct InputMediaAnimation {
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     width: Option<Integer>,
 }
 
@@ -94,6 +96,16 @@ impl InputMediaAnimation {
     /// * `value` - Height.
     pub fn with_height(mut self, value: Integer) -> Self {
         self.height = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
         self
     }
 

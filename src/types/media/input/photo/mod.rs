@@ -16,6 +16,8 @@ pub struct InputMediaPhoto {
     has_spoiler: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
 }
 
 impl InputMediaPhoto {
@@ -58,6 +60,16 @@ impl InputMediaPhoto {
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
         self.parse_mode = Some(value);
         self.caption_entities = None;
+        self
+    }
+
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
         self
     }
 

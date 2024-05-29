@@ -38,6 +38,8 @@ pub struct InlineQueryResultMpeg4Gif {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_mime_type: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
@@ -69,6 +71,7 @@ impl InlineQueryResultMpeg4Gif {
             mpeg4_width: None,
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
             thumbnail_mime_type: None,
             title: None,
         }
@@ -172,6 +175,16 @@ impl InlineQueryResultMpeg4Gif {
         self
     }
 
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
+        self
+    }
+
     /// Sets a new thumbnail MIME type.
     ///
     /// # Arguments
@@ -223,6 +236,8 @@ pub struct InlineQueryResultCachedMpeg4Gif {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
 }
 
@@ -246,6 +261,7 @@ impl InlineQueryResultCachedMpeg4Gif {
             input_message_content: None,
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
             title: None,
         }
     }
@@ -318,6 +334,16 @@ impl InlineQueryResultCachedMpeg4Gif {
         self
     }
 
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
+        self
+    }
+
     /// Sets a new title.
     ///
     /// # Arguments
@@ -347,6 +373,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultMpeg4Gif {
             mpeg4_duration: value.data.mpeg4_duration,
             parse_mode: value.data.parse_mode,
             reply_markup: value.data.reply_markup,
+            show_caption_above_media: value.data.show_caption_above_media,
             thumbnail_mime_type: value.data.thumbnail_mime_type,
             thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
             title: value.data.title,
@@ -367,6 +394,7 @@ impl From<InlineQueryResultMpeg4Gif> for RawInlineQueryResult {
                 mpeg4_url: Some(value.mpeg4_url),
                 parse_mode: value.parse_mode,
                 reply_markup: value.reply_markup,
+                show_caption_above_media: value.show_caption_above_media,
                 thumbnail_url: Some(value.thumbnail_url),
                 thumbnail_mime_type: value.thumbnail_mime_type,
                 title: value.title,
@@ -389,6 +417,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedMpeg4Gif {
             input_message_content: value.data.input_message_content,
             mpeg4_file_id: value.data.mpeg4_file_id.ok_or(MissingField("mpeg4_file_id"))?,
             parse_mode: value.data.parse_mode,
+            show_caption_above_media: value.data.show_caption_above_media,
             reply_markup: value.data.reply_markup,
             title: value.data.title,
         })
@@ -405,6 +434,7 @@ impl From<InlineQueryResultCachedMpeg4Gif> for RawInlineQueryResult {
                 mpeg4_file_id: Some(value.mpeg4_file_id),
                 parse_mode: value.parse_mode,
                 reply_markup: value.reply_markup,
+                show_caption_above_media: value.show_caption_above_media,
                 title: value.title,
                 ..Default::default()
             },

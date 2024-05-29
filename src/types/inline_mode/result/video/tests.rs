@@ -20,6 +20,7 @@ fn inline_query_result_video() {
                 .with_input_message_content(InputMessageContentText::new("text"))
                 .with_caption_parse_mode(ParseMode::Markdown)
                 .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_show_caption_above_media(true)
                 .with_video_duration(400)
                 .with_video_width(200)
                 .with_video_height(300),
@@ -38,6 +39,7 @@ fn inline_query_result_video() {
             "video_duration": 400,
             "description": "desc",
             "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
+            "show_caption_above_media": true,
             "input_message_content": {"message_text": "text"}
         }),
     );
@@ -65,7 +67,8 @@ fn inline_query_result_cached_video() {
                 .with_description("desc")
                 .with_input_message_content(InputMessageContentText::new("text"))
                 .with_caption_parse_mode(ParseMode::Markdown)
-                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_show_caption_above_media(true),
         ),
         serde_json::json!({
             "type": "video",
@@ -76,6 +79,7 @@ fn inline_query_result_cached_video() {
             "caption": "caption",
             "parse_mode": "Markdown",
             "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
+            "show_caption_above_media": true,
             "input_message_content": {"message_text": "text"}
         }),
     );

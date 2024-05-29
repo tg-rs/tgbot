@@ -6,11 +6,13 @@ fn input_media_photo() {
         InputMediaPhoto::default()
             .with_caption("caption")
             .with_has_spoiler(true)
-            .with_caption_parse_mode(ParseMode::Markdown),
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_show_caption_above_media(true),
         serde_json::json!({
             "caption": "caption",
             "parse_mode": "Markdown",
             "has_spoiler": true,
+            "show_caption_above_media": true
         }),
     );
     assert_json_eq(InputMediaPhoto::default(), serde_json::json!({}));

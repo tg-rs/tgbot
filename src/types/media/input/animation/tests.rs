@@ -9,6 +9,7 @@ fn input_media_animation() {
             .with_has_spoiler(true)
             .with_height(200)
             .with_caption_parse_mode(ParseMode::Markdown)
+            .with_show_caption_above_media(true)
             .with_width(200),
         serde_json::json!({
             "caption": "caption",
@@ -17,6 +18,7 @@ fn input_media_animation() {
             "height": 200,
             "duration": 10,
             "has_spoiler": true,
+            "show_caption_above_media": true
         }),
     );
     assert_json_eq(InputMediaAnimation::default(), serde_json::json!({}));

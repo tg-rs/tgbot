@@ -39,6 +39,8 @@ pub struct InlineQueryResultGif {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_mime_type: Option<String>,
@@ -70,6 +72,7 @@ impl InlineQueryResultGif {
             input_message_content: None,
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
             title: None,
             thumbnail_mime_type: None,
         }
@@ -173,6 +176,16 @@ impl InlineQueryResultGif {
         self
     }
 
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
+        self
+    }
+
     /// Sets a new title.
     ///
     /// # Arguments
@@ -222,6 +235,8 @@ pub struct InlineQueryResultCachedGif {
     #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
 }
 
@@ -245,6 +260,7 @@ impl InlineQueryResultCachedGif {
             input_message_content: None,
             parse_mode: None,
             reply_markup: None,
+            show_caption_above_media: None,
             title: None,
         }
     }
@@ -317,6 +333,16 @@ impl InlineQueryResultCachedGif {
         self
     }
 
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
+        self
+    }
+
     /// Sets a new title.
     ///
     /// # Arguments
@@ -345,6 +371,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultGif {
             id: value.id,
             input_message_content: value.data.input_message_content,
             parse_mode: value.data.parse_mode,
+            show_caption_above_media: value.data.show_caption_above_media,
             reply_markup: value.data.reply_markup,
             thumbnail_mime_type: value.data.thumbnail_mime_type,
             thumbnail_url: value.data.thumbnail_url.ok_or(MissingField("thumbnail_url"))?,
@@ -366,6 +393,7 @@ impl From<InlineQueryResultGif> for RawInlineQueryResult {
                 input_message_content: value.input_message_content,
                 parse_mode: value.parse_mode,
                 reply_markup: value.reply_markup,
+                show_caption_above_media: value.show_caption_above_media,
                 thumbnail_mime_type: value.thumbnail_mime_type,
                 thumbnail_url: Some(value.thumbnail_url),
                 title: value.title,
@@ -389,6 +417,7 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultCachedGif {
             input_message_content: value.data.input_message_content,
             parse_mode: value.data.parse_mode,
             reply_markup: value.data.reply_markup,
+            show_caption_above_media: value.data.show_caption_above_media,
             title: value.data.title,
         })
     }
@@ -404,6 +433,7 @@ impl From<InlineQueryResultCachedGif> for RawInlineQueryResult {
                 input_message_content: value.input_message_content,
                 parse_mode: value.parse_mode,
                 reply_markup: value.reply_markup,
+                show_caption_above_media: value.show_caption_above_media,
                 title: value.title,
                 ..Default::default()
             },

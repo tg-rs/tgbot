@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Integer, User};
+use crate::{
+    api::{Method, Payload},
+    types::{Integer, User},
+};
 
 #[cfg(test)]
 mod tests;
@@ -178,5 +181,47 @@ impl From<RevenueWithdrawalState> for RawRevenueWithdrawalState {
             Pending => Self::Pending {},
             Succeeded { date, url } => Self::Succeeded { date, url },
         }
+    }
+}
+
+/// Returns the bot's Telegram Star transactions in chronological order.
+#[derive(Clone, Copy, Debug, Default, Serialize)]
+pub struct GetStarTransactions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    offset: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    limit: Option<Integer>,
+}
+
+impl GetStarTransactions {
+    /// Sets a new offset.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Number of transactions to skip in the response.
+    pub fn with_offset(mut self, value: Integer) -> Self {
+        self.offset = Some(value);
+        self
+    }
+
+    /// Sets a new limit.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The maximum number of transactions to be retrieved.
+    ///
+    /// Values between 1-100 are accepted.
+    /// Defaults to 100.
+    pub fn with_limit(mut self, value: Integer) -> Self {
+        self.limit = Some(value);
+        self
+    }
+}
+
+impl Method for GetStarTransactions {
+    type Response = StarTransactions;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getStarTransactions", self)
     }
 }

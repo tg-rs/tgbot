@@ -1,11 +1,31 @@
-use crate::types::{
-    tests::assert_json_eq,
-    RevenueWithdrawalState,
-    StarTransaction,
-    StarTransactions,
-    TransactionPartner,
-    User,
+use crate::{
+    api::{assert_payload_eq, Payload},
+    types::{
+        tests::assert_json_eq,
+        GetStarTransactions,
+        RevenueWithdrawalState,
+        StarTransaction,
+        StarTransactions,
+        TransactionPartner,
+        User,
+    },
 };
+
+#[test]
+fn get_star_transactions() {
+    let method = GetStarTransactions::default();
+    assert_payload_eq(Payload::json("getStarTransactions", serde_json::json!({})), method);
+    assert_payload_eq(
+        Payload::json(
+            "getStarTransactions",
+            serde_json::json!({
+                "offset": 0,
+                "limit": 5,
+            }),
+        ),
+        method.with_offset(0).with_limit(5),
+    );
+}
 
 #[test]
 fn revenue_withdrawal_state() {

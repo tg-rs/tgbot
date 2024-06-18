@@ -173,6 +173,7 @@ fn edit_message_caption() {
             serde_json::json!({
                 "chat_id": 1,
                 "message_id": 2,
+                "business_connection_id": "c-id",
                 "caption": "caption",
                 "parse_mode": "Markdown",
                 "reply_markup": {
@@ -186,6 +187,7 @@ fn edit_message_caption() {
             }),
         ),
         EditMessageCaption::for_chat_message(1, 2)
+            .with_business_connection_id("c-id")
             .with_caption("caption")
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
@@ -231,6 +233,7 @@ fn edit_message_live_location() {
         Payload::json(
             "editMessageLiveLocation",
             serde_json::json!({
+                "business_connection_id": "c-id",
                 "chat_id": 1,
                 "message_id": 2,
                 "latitude": 3.0,
@@ -243,6 +246,7 @@ fn edit_message_live_location() {
             }),
         ),
         EditMessageLiveLocation::for_chat_message(1, 2, 3.0, 4.0)
+            .with_business_connection_id("c-id")
             .with_heading(100)
             .with_horizontal_accuracy(5.0)
             .with_live_period(10)
@@ -272,10 +276,12 @@ fn edit_message_media() {
     let markup: InlineKeyboardMarkup = [[InlineKeyboardButton::for_url("text", "url")]].into();
     form.insert_field("chat_id", 1);
     form.insert_field("message_id", 2);
+    form.insert_field("business_connection_id", "c-id");
     form.insert_field("reply_markup", markup.serialize().unwrap());
     assert_payload_eq(
         Payload::form("editMessageMedia", form),
         EditMessageMedia::for_chat_message(1, 2, input_media)
+            .with_business_connection_id("c-id")
             .with_reply_markup(markup)
             .unwrap(),
     );
@@ -326,10 +332,13 @@ fn edit_message_reply_markup() {
             "editMessageReplyMarkup",
             serde_json::json!({
                 "inline_message_id": "msg-id",
+                "business_connection_id": "c-id",
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]}
             }),
         ),
-        EditMessageReplyMarkup::for_inline_message("msg-id").with_reply_markup(markup),
+        EditMessageReplyMarkup::for_inline_message("msg-id")
+            .with_business_connection_id("c-id")
+            .with_reply_markup(markup),
     );
 }
 
@@ -353,6 +362,7 @@ fn edit_message_text() {
                 "chat_id": 1,
                 "message_id": 2,
                 "text": "text",
+                "business_connection_id": "c-id",
                 "parse_mode": "Markdown",
                 "link_preview_options": {
                     "is_disabled": true
@@ -370,6 +380,7 @@ fn edit_message_text() {
             }),
         ),
         EditMessageText::for_chat_message(1, 2, "text")
+            .with_business_connection_id("c-id")
             .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
             .with_parse_mode(ParseMode::Markdown)
             .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
@@ -537,12 +548,14 @@ fn stop_message_live_location() {
         Payload::json(
             "stopMessageLiveLocation",
             serde_json::json!({
+                "business_connection_id": "c-id",
                 "chat_id": 1,
                 "message_id": 2,
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]}
             }),
         ),
         StopMessageLiveLocation::for_chat_message(1, 2)
+            .with_business_connection_id("c-id")
             .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
     );
     assert_payload_eq(

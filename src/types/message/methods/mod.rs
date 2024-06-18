@@ -393,6 +393,8 @@ impl Method for DeleteMessages {
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageCaption {
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
@@ -422,6 +424,7 @@ impl EditMessageCaption {
         T: Into<ChatId>,
     {
         Self {
+            business_connection_id: None,
             caption: None,
             caption_entities: None,
             chat_id: Some(chat_id.into()),
@@ -443,6 +446,7 @@ impl EditMessageCaption {
         T: Into<String>,
     {
         Self {
+            business_connection_id: None,
             caption: None,
             caption_entities: None,
             chat_id: None,
@@ -452,6 +456,19 @@ impl EditMessageCaption {
             reply_markup: None,
             show_caption_above_media: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection on behalf of which the message to be edited was sent.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new caption.
@@ -538,6 +555,8 @@ pub struct EditMessageLiveLocation {
     latitude: Float,
     longitude: Float,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<ChatId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
@@ -571,6 +590,7 @@ impl EditMessageLiveLocation {
         Self {
             latitude,
             longitude,
+            business_connection_id: None,
             chat_id: Some(chat_id.into()),
             inline_message_id: None,
             live_period: None,
@@ -596,6 +616,7 @@ impl EditMessageLiveLocation {
         Self {
             latitude,
             longitude,
+            business_connection_id: None,
             chat_id: None,
             heading: None,
             horizontal_accuracy: None,
@@ -605,6 +626,19 @@ impl EditMessageLiveLocation {
             proximity_alert_radius: None,
             reply_markup: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection on behalf of which the message to be edited was sent.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new horizontal accuracy.
@@ -720,6 +754,19 @@ impl EditMessageMedia {
         EditMessageMedia { form }
     }
 
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection on behalf of which the message to be edited was sent.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.form.insert_field("business_connection_id", value.into());
+        self
+    }
+
     /// Sets a new reply markup.
     ///
     /// # Arguments
@@ -747,6 +794,8 @@ impl Method for EditMessageMedia {
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageReplyMarkup {
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<ChatId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     inline_message_id: Option<String>,
@@ -768,6 +817,7 @@ impl EditMessageReplyMarkup {
         T: Into<ChatId>,
     {
         Self {
+            business_connection_id: None,
             chat_id: Some(chat_id.into()),
             inline_message_id: None,
             message_id: Some(message_id),
@@ -785,11 +835,25 @@ impl EditMessageReplyMarkup {
         T: Into<String>,
     {
         Self {
+            business_connection_id: None,
             chat_id: None,
             inline_message_id: Some(inline_message_id.into()),
             message_id: None,
             reply_markup: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection on behalf of which the message to be edited was sent.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new reply markup.
@@ -818,6 +882,8 @@ impl Method for EditMessageReplyMarkup {
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageText {
     text: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<ChatId>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -849,6 +915,7 @@ impl EditMessageText {
     {
         Self {
             text: text.into(),
+            business_connection_id: None,
             chat_id: Some(chat_id.into()),
             link_preview_options: None,
             entities: None,
@@ -872,6 +939,7 @@ impl EditMessageText {
     {
         Self {
             text: text.into(),
+            business_connection_id: None,
             chat_id: None,
             link_preview_options: None,
             entities: None,
@@ -880,6 +948,19 @@ impl EditMessageText {
             parse_mode: None,
             reply_markup: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection on behalf of which the message to be edited was sent.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new list of entities
@@ -1296,6 +1377,8 @@ impl Method for SendMessage {
 #[derive(Clone, Debug, Serialize)]
 pub struct StopMessageLiveLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<ChatId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     inline_message_id: Option<String>,
@@ -1317,6 +1400,7 @@ impl StopMessageLiveLocation {
         T: Into<ChatId>,
     {
         Self {
+            business_connection_id: None,
             chat_id: Some(chat_id.into()),
             inline_message_id: None,
             message_id: Some(message_id),
@@ -1334,11 +1418,25 @@ impl StopMessageLiveLocation {
         T: Into<String>,
     {
         Self {
+            business_connection_id: None,
             chat_id: None,
             inline_message_id: Some(inline_message_id.into()),
             message_id: None,
             reply_markup: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection on behalf of which the message to be edited was sent.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new reply markup.

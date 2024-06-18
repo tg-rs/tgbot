@@ -317,9 +317,12 @@ fn stop_poll() {
             serde_json::json!({
                 "chat_id": 1,
                 "message_id": 2,
+                "business_connection_id": "c-id",
                 "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]}
             }),
         ),
-        StopPoll::new(1, 2).with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+        StopPoll::new(1, 2)
+            .with_business_connection_id("c-id")
+            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
     );
 }

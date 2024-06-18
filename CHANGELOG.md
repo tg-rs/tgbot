@@ -2,6 +2,10 @@
 
 ## 0.25.0 (18.06.2024)
 
+### Dependencies
+
+- Updated tokio version to 1.38.
+
 ### Bot API
 
 #### 7.5

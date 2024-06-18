@@ -1,13 +1,28 @@
 # Changelog
 
+## 0.25.0 (18.06.2024)
+
+### Bot API
+
+#### 7.5
+
+- Added types: `GetStarTransactions`, `RevenueWithdrawalState`, `StarTransaction`, `StarTransactions`, `TransactionPartner`.
+- Added methods:
+  - `EditMessageCaption`: `with_business_connection_id`.
+  - `EditMessageLiveLocation`: `with_business_connection_id`.
+  - `EditMessageMedia`: `with_business_connection_id`.
+  - `EditMessageReplyMarkup`: `with_business_connection_id`.
+  - `EditMessageText`: `with_business_connection_id`.
+  - `StopMessageLiveLocation`: `with_business_connection_id`.
+  - `StopPoll`: `with_business_connection_id`.
+
 ## 0.24.0 (29.05.2024)
 
 ### Bot API
 
 #### 7.4
 
-- Added types:
-  - `RefundStarPayment`.
+- Added types: `RefundStarPayment`.
 - Added enum variants:
    `TextEntity::ExpandableBlockQuote`.
 - Added fields:

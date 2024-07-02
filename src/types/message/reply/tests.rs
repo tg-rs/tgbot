@@ -16,6 +16,9 @@ use crate::types::{
     LinkPreviewOptions,
     Location,
     MessageOriginHiddenUser,
+    PaidMedia,
+    PaidMediaInfo,
+    PaidMediaPreview,
     PhotoSize,
     Poll,
     PollOption,
@@ -31,11 +34,15 @@ use crate::types::{
     Voice,
 };
 
+fn create_origin() -> MessageOriginHiddenUser {
+    MessageOriginHiddenUser::new(1, "test")
+}
+
 #[test]
-fn external_reply_info() {
-    let origin = MessageOriginHiddenUser::new(1, "test");
+fn external_reply_info_animation() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Animation::new(10, "file-id", "file-unique-id", 20, 30), origin.clone()),
+        ExternalReplyInfo::new(Animation::new(10, "file-id", "file-unique-id", 20, 30), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -51,8 +58,13 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_audio() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Audio::new(10, "file-id", "file-unique-id"), origin.clone()),
+        ExternalReplyInfo::new(Audio::new(10, "file-id", "file-unique-id"), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -66,8 +78,13 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_contact() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Contact::new("first-name", "+79001230099"), origin.clone()),
+        ExternalReplyInfo::new(Contact::new("first-name", "+79001230099"), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -80,8 +97,13 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_dice() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Dice::new(DiceType::Basketball, 1), origin.clone()),
+        ExternalReplyInfo::new(Dice::new(DiceType::Basketball, 1), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -94,8 +116,13 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_document() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Document::new("file-id", "file-unique-id"), origin.clone()),
+        ExternalReplyInfo::new(Document::new("file-id", "file-unique-id"), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -108,6 +135,11 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_game() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(
             Game::new(
@@ -115,7 +147,7 @@ fn external_reply_info() {
                 [PhotoSize::new("file-id", "file-unique-id", 10, 20)],
                 "title",
             ),
-            origin.clone(),
+            origin,
         ),
         serde_json::json!({
             "origin": {
@@ -137,8 +169,13 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_giveaway() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Giveaway::new([ChannelChat::new(1, "test")], 1, 1), origin.clone()),
+        ExternalReplyInfo::new(Giveaway::new([ChannelChat::new(1, "test")], 1, 1), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -158,10 +195,15 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_giveaway_winners() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(
             GiveawayWinners::new(ChannelChat::new(1, "test"), 1, 1, [User::new(1, "test", false)], 1),
-            origin.clone(),
+            origin,
         ),
         serde_json::json!({
             "origin": {
@@ -188,10 +230,15 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_invoice() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(
             Invoice::new("RUB", "description", "start-parameter", "title", 1),
-            origin.clone(),
+            origin,
         ),
         serde_json::json!({
             "origin": {
@@ -208,8 +255,13 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_location() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Location::new(1.0, 2.0), origin.clone()),
+        ExternalReplyInfo::new(Location::new(1.0, 2.0), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -222,11 +274,39 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_paid_media() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(
-            vec![PhotoSize::new("file-id", "file-unique-id", 10, 20)],
-            origin.clone(),
+            PaidMediaInfo::new(100, [PaidMedia::Preview(PaidMediaPreview::default())]),
+            origin,
         ),
+        serde_json::json!({
+            "origin": {
+                "type": "hidden_user",
+                "date": 1,
+                "sender_user_name": "test"
+            },
+            "paid_media": {
+                "star_count": 100,
+                "paid_media": [
+                    {
+                        "type": "preview"
+                    }
+                ]
+            }
+        }),
+    );
+}
+
+#[test]
+fn external_reply_info_photo() {
+    let origin = create_origin();
+    assert_json_eq(
+        ExternalReplyInfo::new(vec![PhotoSize::new("file-id", "file-unique-id", 10, 20)], origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -243,6 +323,11 @@ fn external_reply_info() {
             ]
         }),
     );
+}
+
+#[test]
+fn external_reply_info_poll() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(
             Poll::from(
@@ -252,7 +337,7 @@ fn external_reply_info() {
                     .with_options([PollOption::new("Yes", 1000), PollOption::new("No", 0)])
                     .with_total_voter_count(1000),
             ),
-            origin.clone(),
+            origin,
         ),
         serde_json::json!({
             "origin": {
@@ -275,10 +360,15 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_sticker() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(
             Sticker::new("file-id", "file-unique-id", StickerType::Regular, 10, 20),
-            origin.clone(),
+            origin,
         ),
         serde_json::json!({
             "origin": {
@@ -297,10 +387,15 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_story() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(
             ExternalReplyData::Story(Story::new(PrivateChat::new(1, "test"), 1)),
-            origin.clone(),
+            origin,
         ),
         serde_json::json!({
             "origin": {
@@ -318,8 +413,13 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_venue() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Venue::new("title", "address", Location::new(1.0, 2.0)), origin.clone()),
+        ExternalReplyInfo::new(Venue::new("title", "address", Location::new(1.0, 2.0)), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -336,8 +436,13 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_video() {
+    let origin = create_origin();
     assert_json_eq(
-        ExternalReplyInfo::new(Video::new(10, "file-id", "file-unique-id", 20, 30), origin.clone()),
+        ExternalReplyInfo::new(Video::new(10, "file-id", "file-unique-id", 20, 30), origin),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",
@@ -353,6 +458,11 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_video_note() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(VideoNote::new(10, "file-id", "file-unique-id", 20), origin.clone()),
         serde_json::json!({
@@ -369,6 +479,11 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_voice() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(Voice::new(10, "file-id", "file-unique-id"), origin.clone()),
         serde_json::json!({
@@ -384,6 +499,11 @@ fn external_reply_info() {
             }
         }),
     );
+}
+
+#[test]
+fn external_reply_info_unknown() {
+    let origin = create_origin();
     assert_json_eq(
         ExternalReplyInfo::new(
             ExternalReplyData::Unknown(serde_json::json!({"key": "value"})),
@@ -399,14 +519,11 @@ fn external_reply_info() {
         }),
     );
     assert_json_eq(
-        ExternalReplyInfo::new(
-            ExternalReplyData::Unknown(serde_json::json!({"key": "value"})),
-            origin.clone(),
-        )
-        .with_chat(ChannelChat::new(1, "test"))
-        .with_has_media_spoiler(true)
-        .with_link_preview_options(LinkPreviewOptions::default())
-        .with_message_id(1),
+        ExternalReplyInfo::new(ExternalReplyData::Unknown(serde_json::json!({"key": "value"})), origin)
+            .with_chat(ChannelChat::new(1, "test"))
+            .with_has_media_spoiler(true)
+            .with_link_preview_options(LinkPreviewOptions::default())
+            .with_message_id(1),
         serde_json::json!({
             "origin": {
                 "type": "hidden_user",

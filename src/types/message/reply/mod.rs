@@ -17,6 +17,7 @@ use crate::types::{
     Location,
     Message,
     MessageOrigin,
+    PaidMediaInfo,
     PhotoSize,
     Poll,
     Sticker,
@@ -173,6 +174,8 @@ pub enum ExternalReplyData {
     Invoice(Invoice),
     /// Message is a shared location, information about the location.
     Location(Location),
+    /// Message contains paid media, information about the paid media.
+    PaidMedia(PaidMediaInfo),
     /// Message is a photo, available sizes of the photo.
     Photo(Vec<PhotoSize>),
     /// Message is a native poll, information about the poll.

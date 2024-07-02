@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.26.0 (02.07.2024)
+
+### Bot API
+
+#### 7.6
+
+- Added types: `InputPaidMediaGroup`, `InputPaidMediaGroupError`, `InputPaidMediaGroupItem`, `InputPaidMediaVideo`,
+  `PaidMedia`, `PaidMediaInfo`, `PaidMediaPreview`, `SendPaidMedia`.
+- Added enum variants: `ExternalReplyData::PaidMedia`, `MessageData::PaidMedia`, `TransactionPartner::TelegramAds`.
+- Added fields:
+  - `ChatFullInfo`: `can_send_paid_media`.
+- Changed enum variants:
+  - `TransactionPartner`: `User(User)` to `User { user: User, invoice_payload: Option<String> }`.
+
 ## 0.25.0 (18.06.2024)
 
 ### Dependencies
@@ -27,8 +41,7 @@
 #### 7.4
 
 - Added types: `RefundStarPayment`.
-- Added enum variants:
-   `TextEntity::ExpandableBlockQuote`.
+- Added enum variants: `TextEntity::ExpandableBlockQuote`.
 - Added fields:
   - `InvoiceParameters`: `provider_token`.
   - `Message`: `effect_id`, `show_caption_above_media`.

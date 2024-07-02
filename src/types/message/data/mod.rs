@@ -18,6 +18,7 @@ use crate::types::{
     Invoice,
     Location,
     MaybeInaccessibleMessage,
+    PaidMediaInfo,
     PassportData,
     PhotoSize,
     Poll,
@@ -152,6 +153,8 @@ pub enum MessageData {
     NewChatPhoto(Vec<PhotoSize>),
     /// A chat title was changed to this value.
     NewChatTitle(String),
+    /// Message contains paid media; information about the paid media.
+    PaidMedia(PaidMediaInfo),
     /// Telegram Passport data.
     PassportData(PassportData),
     /// Specified message was pinned.

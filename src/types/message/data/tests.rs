@@ -33,6 +33,9 @@ use crate::types::{
     MessageDataVideoChatScheduled,
     MessageDataVoice,
     MessageDataWriteAccess,
+    PaidMedia,
+    PaidMediaInfo,
+    PaidMediaPreview,
     PassportData,
     PhotoSize,
     Poll,
@@ -581,6 +584,26 @@ fn new_chat_title() {
 
     expected_struct.data = MessageData::NewChatTitle(String::from("new chat title"));
     expected_value["new_chat_title"] = serde_json::json!("new chat title");
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn paid_media() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::PaidMedia(PaidMediaInfo::new(
+        100,
+        [PaidMedia::Preview(PaidMediaPreview::default())],
+    ));
+    expected_value["paid_media"] = serde_json::json!({
+        "star_count": 100,
+        "paid_media": [
+            {
+                "type": "preview"
+            }
+        ]
+    });
     assert_json_eq(expected_struct, expected_value);
 }
 

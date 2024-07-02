@@ -112,7 +112,10 @@ fn transaction_partner() {
         serde_json::json!({"type": "telegram_ads"}),
     );
     assert_json_eq(
-        TransactionPartner::User(User::new(1, "John", false)),
+        TransactionPartner::User {
+            user: User::new(1, "John", false),
+            invoice_payload: None,
+        },
         serde_json::json!({
             "type": "user",
             "user" : {
@@ -120,6 +123,21 @@ fn transaction_partner() {
                 "first_name": "John",
                 "is_bot": false
             }
+        }),
+    );
+    assert_json_eq(
+        TransactionPartner::User {
+            user: User::new(1, "John", false),
+            invoice_payload: Some(String::from("invoice-payload")),
+        },
+        serde_json::json!({
+            "type": "user",
+            "user" : {
+                "id": 1,
+                "first_name": "John",
+                "is_bot": false
+            },
+            "invoice_payload": "invoice-payload",
         }),
     );
 }

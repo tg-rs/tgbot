@@ -103,7 +103,12 @@ pub enum TransactionPartner {
     /// Describes a withdrawal transaction to the Telegram Ads platform.
     TelegramAds,
     /// Describes a transaction with a user.
-    User(User),
+    User {
+        /// Information about the user.
+        user: User,
+        /// Bot-specified invoice payload
+        invoice_payload: Option<String>,
+    },
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -117,6 +122,8 @@ enum RawTransactionPartner {
     TelegramAds {},
     User {
         user: User,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        invoice_payload: Option<String>,
     },
 }
 
@@ -126,7 +133,7 @@ impl From<RawTransactionPartner> for TransactionPartner {
             RawTransactionPartner::Fragment { withdrawal_state } => Self::Fragment(withdrawal_state),
             RawTransactionPartner::Other {} => Self::Other,
             RawTransactionPartner::TelegramAds {} => Self::TelegramAds,
-            RawTransactionPartner::User { user } => Self::User(user),
+            RawTransactionPartner::User { user, invoice_payload } => Self::User { user, invoice_payload },
         }
     }
 }
@@ -137,7 +144,7 @@ impl From<TransactionPartner> for RawTransactionPartner {
             TransactionPartner::Fragment(withdrawal_state) => Self::Fragment { withdrawal_state },
             TransactionPartner::Other => Self::Other {},
             TransactionPartner::TelegramAds => Self::TelegramAds {},
-            TransactionPartner::User(user) => Self::User { user },
+            TransactionPartner::User { user, invoice_payload } => Self::User { user, invoice_payload },
         }
     }
 }

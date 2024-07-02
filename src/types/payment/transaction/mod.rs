@@ -100,6 +100,8 @@ pub enum TransactionPartner {
     Fragment(Option<RevenueWithdrawalState>),
     /// Describes a transaction with an unknown source or recipient.
     Other,
+    /// Describes a withdrawal transaction to the Telegram Ads platform.
+    TelegramAds,
     /// Describes a transaction with a user.
     User(User),
 }
@@ -112,6 +114,7 @@ enum RawTransactionPartner {
         withdrawal_state: Option<RevenueWithdrawalState>,
     },
     Other {},
+    TelegramAds {},
     User {
         user: User,
     },
@@ -122,6 +125,7 @@ impl From<RawTransactionPartner> for TransactionPartner {
         match value {
             RawTransactionPartner::Fragment { withdrawal_state } => Self::Fragment(withdrawal_state),
             RawTransactionPartner::Other {} => Self::Other,
+            RawTransactionPartner::TelegramAds {} => Self::TelegramAds,
             RawTransactionPartner::User { user } => Self::User(user),
         }
     }
@@ -132,6 +136,7 @@ impl From<TransactionPartner> for RawTransactionPartner {
         match value {
             TransactionPartner::Fragment(withdrawal_state) => Self::Fragment { withdrawal_state },
             TransactionPartner::Other => Self::Other {},
+            TransactionPartner::TelegramAds => Self::TelegramAds {},
             TransactionPartner::User(user) => Self::User { user },
         }
     }

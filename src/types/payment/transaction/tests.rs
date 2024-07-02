@@ -108,6 +108,10 @@ fn transaction_partner() {
     );
     assert_json_eq(TransactionPartner::Other, serde_json::json!({"type": "other"}));
     assert_json_eq(
+        TransactionPartner::TelegramAds,
+        serde_json::json!({"type": "telegram_ads"}),
+    );
+    assert_json_eq(
         TransactionPartner::User(User::new(1, "John", false)),
         serde_json::json!({
             "type": "user",

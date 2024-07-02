@@ -45,6 +45,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         description: None,
         invite_link: None,
         title: None,
+        can_send_paid_media: None,
         linked_chat_id: None,
         bio: None,
         birthdate: None,
@@ -110,6 +111,7 @@ fn chat_full_info_channel() {
     expected_struct.username = Some(String::from("channel_username"));
     expected_struct.description = Some(String::from("Description"));
     expected_struct.invite_link = Some(String::from("example.com/join/channel"));
+    expected_struct.can_send_paid_media = Some(true);
     expected_struct.title = Some(String::from("Channel"));
     expected_struct.linked_chat_id = Some(2);
     expected_struct.emoji_status_custom_emoji_id = Some(String::from("emoji-id"));
@@ -130,6 +132,7 @@ fn chat_full_info_channel() {
                     "big_file_unique_id": "big-file-unique-id",
                 }
             ],
+            "can_send_paid_media": true,
             "description": "Description",
             "invite_link": "example.com/join/channel",
             "pinned_message": {

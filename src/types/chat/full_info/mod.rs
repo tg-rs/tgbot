@@ -97,6 +97,12 @@ pub struct ChatFullInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 
+    /// Whether paid media messages can be sent or forwarded to the channel chat.
+    ///
+    /// The field is available only for channel chats.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_send_paid_media: Option<bool>,
+
     /// Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa;
     /// for supergroups and channel chats.
     #[serde(skip_serializing_if = "Option::is_none")]

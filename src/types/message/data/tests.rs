@@ -41,6 +41,7 @@ use crate::types::{
     Poll,
     PollOption,
     PrivateChat,
+    RefundedPayment,
     RegularPoll,
     SharedUser,
     Sticker,
@@ -737,6 +738,21 @@ fn proximity_alert_triggered() {
             "is_bot": false
         },
         "distance": 100,
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn refunded_payment() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::RefundedPayment(RefundedPayment::new("RUB", "payload", "charge-id", 100));
+    expected_value["refunded_payment"] = serde_json::json!({
+        "currency": "RUB",
+        "invoice_payload": "payload",
+        "telegram_payment_charge_id": "charge-id",
+        "total_amount": 100,
     });
     assert_json_eq(expected_struct, expected_value);
 }

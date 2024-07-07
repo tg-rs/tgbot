@@ -22,6 +22,7 @@ use crate::types::{
     PassportData,
     PhotoSize,
     Poll,
+    RefundedPayment,
     SharedUser,
     Sticker,
     Story,
@@ -166,6 +167,8 @@ pub enum MessageData {
     Poll(Poll),
     /// A user in the chat triggered another user's proximity alert while sharing Live Location.
     ProximityAlertTriggered(MessageDataProximityAlert),
+    /// A service message about a refunded payment, information about the payment.
+    RefundedPayment(RefundedPayment),
     /// Information about the sticker.
     Sticker(Sticker),
     /// A forwarded story.

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.27.0 (07.07.2024)
+
+### Bot API
+
+#### 7.7
+
+- Added types: `RefundedPayment`.
+- Added enum variants: `MessageData::RefundedPayment`.
+
 ## 0.26.0 (02.07.2024)
 
 ### Bot API

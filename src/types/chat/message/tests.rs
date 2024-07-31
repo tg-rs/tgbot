@@ -49,10 +49,11 @@ fn unpin_chat_message() {
             "unpinChatMessage",
             serde_json::json!({
                 "chat_id": 1,
+                "business_connection_id": "c-id",
                 "message_id": 2
             }),
         ),
-        method.with_message_id(2),
+        method.with_business_connection_id("c-id").with_message_id(2),
     );
 }
 

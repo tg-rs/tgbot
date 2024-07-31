@@ -85,6 +85,8 @@ impl Method for PinChatMessage {
 pub struct UnpinChatMessage {
     chat_id: ChatId,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     message_id: Option<Integer>,
 }
 
@@ -100,8 +102,23 @@ impl UnpinChatMessage {
     {
         UnpinChatMessage {
             chat_id: chat_id.into(),
+            business_connection_id: None,
             message_id: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection
+    ///             on behalf of which the message will be unpinned.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new message ID.

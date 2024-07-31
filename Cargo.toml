@@ -44,6 +44,7 @@ required-features = ["webhook"]
 
 [lints.rust]
 missing_docs = "warn"
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(nightly)'] }
 
 [package.metadata.docs.rs]
 all-features = true

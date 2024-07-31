@@ -22,10 +22,13 @@ fn pin_chat_message() {
             serde_json::json!({
                 "chat_id": 1,
                 "message_id": 2,
+                "business_connection_id": "c-id",
                 "disable_notification": true
             }),
         ),
-        method.with_disable_notification(true),
+        method
+            .with_business_connection_id("c-id")
+            .with_disable_notification(true),
     );
 }
 

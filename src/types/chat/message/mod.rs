@@ -18,6 +18,8 @@ pub struct PinChatMessage {
     chat_id: ChatId,
     message_id: Integer,
     #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
 }
 
@@ -35,8 +37,23 @@ impl PinChatMessage {
         PinChatMessage {
             chat_id: chat_id.into(),
             message_id,
+            business_connection_id: None,
             disable_notification: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection
+    ///             on behalf of which the message will be pinned.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new value for a `disable_notification` flag.

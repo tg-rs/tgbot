@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.28.0 (31.07.2024)
+
+### Bot API
+
+#### 7.8
+
+- Added fields:
+  - `Bot`: `has_main_web_app`.
+- Added methods:
+  - `PinChatMessage`: `with_business_connection_id`.
+  - `UnpinChatMessage`: `with_business_connection_id`.
+
 ## 0.27.0 (07.07.2024)
 
 ### Bot API

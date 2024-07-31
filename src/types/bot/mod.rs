@@ -25,6 +25,8 @@ pub struct Bot {
     pub can_join_groups: bool,
     /// Indicates whether privacy mode is disabled, allowing the bot to read all group messages.
     pub can_read_all_group_messages: bool,
+    /// Indicates whether the bot has a main Web App.
+    pub has_main_web_app: bool,
     /// The last name of the bot.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
@@ -52,6 +54,7 @@ impl Bot {
             can_connect_to_business: false,
             can_join_groups: false,
             can_read_all_group_messages: false,
+            has_main_web_app: false,
             last_name: None,
             supports_inline_queries: false,
         }
@@ -84,6 +87,16 @@ impl Bot {
     /// * `value` - Indicates whether privacy mode is disabled.
     pub fn with_can_read_all_group_messages(mut self, value: bool) -> Self {
         self.can_read_all_group_messages = value;
+        self
+    }
+
+    /// Sets a new value for a `has_main_web_app` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the bot has a main Web App.
+    pub fn with_has_main_web_app(mut self, value: bool) -> Self {
+        self.has_main_web_app = value;
         self
     }
 

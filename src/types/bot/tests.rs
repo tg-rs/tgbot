@@ -34,6 +34,7 @@ fn bot() {
             .with_can_connect_to_business(true)
             .with_can_join_groups(true)
             .with_can_read_all_group_messages(true)
+            .with_has_main_web_app(true)
             .with_supports_inline_queries(false),
         serde_json::json!({
             "can_connect_to_business": true,
@@ -41,6 +42,7 @@ fn bot() {
             "can_read_all_group_messages": true,
             "first_name": "Loo",
             "id": 1,
+            "has_main_web_app": true,
             "last_name": "Maclin",
             "supports_inline_queries": false,
             "username": "loo_maclin_bot",

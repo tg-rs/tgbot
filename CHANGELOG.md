@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.29.0 (18.08.2024)
+
+### Dependencies
+
+- derive_more 1.0
+
+### Bot API
+
+#### 7.9
+
+- Added fields:
+  - `TransactionPartner::User`: `paid_media`.
+- Added methods:
+  - `SendPaidMedia`: `with_business_connection_id`.
+- Added types:
+  - `CreateChatSubscriptionInviteLink`.
+  - `EditChatSubscriptionInviteLink`.
+- Added enum variants:
+  - `ReactionType::Paid`.
+- Changed enum variants:
+  - `ChatMember::Member`: `Member { user: User, until_date: Option<Integer> }`.
+
 ## 0.28.0 (31.07.2024)
 
 ### Dependencies

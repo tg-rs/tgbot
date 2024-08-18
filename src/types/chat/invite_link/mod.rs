@@ -233,6 +233,65 @@ impl Method for CreateChatInviteLink {
     }
 }
 
+/// Creates a subscription invite link for a channel chat.
+///
+/// The bot must have the `can_invite_users` administrator rights.
+/// The link can be edited using the method [`crate::types::EditChatSubscriptionInviteLink`]
+/// or revoked using the method [`crate::types::RevokeChatInviteLink`].
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateChatSubscriptionInviteLink {
+    chat_id: ChatId,
+    subscription_period: Integer,
+    subscription_price: Integer,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
+}
+
+impl CreateChatSubscriptionInviteLink {
+    /// Creates a new `CreateChatSubscriptionInviteLink`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier for the target channel chat.
+    /// * `subscription_period` - The number of seconds the subscription will be active for before the next payment.
+    ///                           Currently, it must always be 2592000 (30 days).
+    /// * `subscription_price` - The amount of Telegram Stars a user must pay initially
+    ///                          and after each subsequent subscription period to be a member of the chat;
+    ///                          1-2500.
+    pub fn new<T>(chat_id: T, subscription_period: Integer, subscription_price: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+            name: None,
+            subscription_period,
+            subscription_price,
+        }
+    }
+
+    /// Sets a new name.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Invite link name; 0-32 characters.
+    pub fn with_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.name = Some(value.into());
+        self
+    }
+}
+
+impl Method for CreateChatSubscriptionInviteLink {
+    type Response = ChatInviteLink;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("createChatSubscriptionInviteLink", self)
+    }
+}
+
 /// Changes a non-primary invite link created by a bot.
 ///
 /// The bot must be an administrator in the chat for this to work
@@ -326,6 +385,58 @@ impl Method for EditChatInviteLink {
 
     fn into_payload(self) -> Payload {
         Payload::json("editChatInviteLink", self)
+    }
+}
+
+/// Allows to edit a subscription invite link created by the bot.
+///
+/// The bot must have the `can_invite_users` administrator rights.
+#[derive(Clone, Debug, Serialize)]
+pub struct EditChatSubscriptionInviteLink {
+    chat_id: ChatId,
+    invite_link: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<String>,
+}
+
+impl EditChatSubscriptionInviteLink {
+    /// Creates a new `EditChatSubscriptionInviteLink`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier for the target chat.
+    /// * `invite_link` - The invite link to edit
+    pub fn new<A, B>(chat_id: A, invite_link: B) -> Self
+    where
+        A: Into<ChatId>,
+        B: Into<String>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+            invite_link: invite_link.into(),
+            name: None,
+        }
+    }
+
+    /// Sets a new name of the invite link.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The name of the invite link; 0-32 characters.
+    pub fn with_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.name = Some(value.into());
+        self
+    }
+}
+
+impl Method for EditChatSubscriptionInviteLink {
+    type Response = ChatInviteLink;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("editChatSubscriptionInviteLink", self)
     }
 }
 

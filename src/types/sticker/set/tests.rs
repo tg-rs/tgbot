@@ -1,4 +1,3 @@
-use super::ReplaceStickerInSet;
 use crate::{
     api::{assert_payload_eq, Form, FormValue, Payload},
     types::{
@@ -12,6 +11,7 @@ use crate::{
         InputSticker,
         InputStickers,
         PhotoSize,
+        ReplaceStickerInSet,
         SetCustomEmojiStickerSetThumbnail,
         SetStickerPositionInSet,
         SetStickerSetThumbnail,

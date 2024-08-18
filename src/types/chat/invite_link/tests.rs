@@ -4,7 +4,9 @@ use crate::{
         tests::assert_json_eq,
         ChatInviteLink,
         CreateChatInviteLink,
+        CreateChatSubscriptionInviteLink,
         EditChatInviteLink,
+        EditChatSubscriptionInviteLink,
         ExportChatInviteLink,
         RevokeChatInviteLink,
         User,
@@ -86,6 +88,36 @@ fn create_chat_invite_link() {
 }
 
 #[test]
+fn create_chat_subscription_invite_link() {
+    let method = CreateChatSubscriptionInviteLink::new(1, 2592000, 1);
+
+    assert_payload_eq(
+        Payload::json(
+            "createChatSubscriptionInviteLink",
+            serde_json::json!({
+                "chat_id": 1,
+                "subscription_period": 2592000,
+                "subscription_price": 1,
+            }),
+        ),
+        method.clone(),
+    );
+
+    assert_payload_eq(
+        Payload::json(
+            "createChatSubscriptionInviteLink",
+            serde_json::json!({
+                "chat_id": 1,
+                "subscription_period": 2592000,
+                "subscription_price": 1,
+                "name": "test",
+            }),
+        ),
+        method.with_name("test"),
+    );
+}
+
+#[test]
 fn edit_chat_invite_link() {
     let method = EditChatInviteLink::new(1, "example.com/join/chat");
     assert_payload_eq(
@@ -115,6 +147,34 @@ fn edit_chat_invite_link() {
             .with_expire_date(0)
             .with_member_limit(1)
             .with_creates_join_request(false),
+    );
+}
+
+#[test]
+fn edit_chat_subscription_invite_link() {
+    let method = EditChatSubscriptionInviteLink::new(1, "test");
+
+    assert_payload_eq(
+        Payload::json(
+            "editChatSubscriptionInviteLink",
+            serde_json::json!({
+                "chat_id": 1,
+                "invite_link": "test",
+            }),
+        ),
+        method.clone(),
+    );
+
+    assert_payload_eq(
+        Payload::json(
+            "editChatSubscriptionInviteLink",
+            serde_json::json!({
+                "chat_id": 1,
+                "invite_link": "test",
+                "name": "test",
+            }),
+        ),
+        method.with_name("test"),
     );
 }
 

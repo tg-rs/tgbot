@@ -17,6 +17,7 @@ use crate::{
         ReplyParameters,
         ReplyParametersError,
         TextEntities,
+        TextEntity,
         TextEntityError,
         Video,
     },
@@ -200,6 +201,20 @@ impl SendPaidMedia {
         Self { form }
     }
 
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection
+    ///             on behalf of which the message will be sent.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.form.insert_field("business_connection_id", value.into());
+        self
+    }
+
     /// Sets a new caption.
     ///
     /// # Arguments
@@ -220,9 +235,9 @@ impl SendPaidMedia {
     /// `value` - A list of special entities that appear in the caption, which can be specified instead of parse_mode.
     pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
     where
-        T: Into<TextEntities>,
+        T: IntoIterator<Item = TextEntity>,
     {
-        let value = value.into().serialize()?;
+        let value = value.into_iter().collect::<TextEntities>().serialize()?;
         self.form.insert_field("caption_entities", value);
         self.form.remove_field("parse_mode");
         Ok(self)

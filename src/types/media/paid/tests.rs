@@ -4,6 +4,7 @@ use crate::{
     api::{assert_payload_eq, Form, Payload},
     types::{
         tests::assert_json_eq,
+        ForceReply,
         InputFile,
         InputPaidMediaGroup,
         InputPaidMediaGroupError,
@@ -13,7 +14,11 @@ use crate::{
         PaidMediaInfo,
         PaidMediaPreview,
         PhotoSize,
+        ReplyMarkup,
+        ReplyParameters,
         SendPaidMedia,
+        TextEntities,
+        TextEntity,
         Video,
     },
 };
@@ -123,6 +128,48 @@ fn send_paid_media() {
         ("chat_id", 1.into()),
         ("media", "[{\"type\":\"photo\",\"media\":\"file-id\"}]".into()),
         ("star_count", 100.into()),
+    ]);
+    assert_payload_eq(Payload::form("sendPaidMedia", form), method);
+
+    let media = InputPaidMediaGroup::new([InputPaidMediaGroupItem::for_photo(InputFile::file_id("file-id"))]).unwrap();
+    let caption_entities = vec![TextEntity::bold(0..1)];
+    let reply_parameters = ReplyParameters::new(1);
+    let reply_markup = ForceReply::new(true);
+    let method = SendPaidMedia::new(1, media, 100)
+        .with_business_connection_id("c-id")
+        .with_caption("caption")
+        .with_caption_entities(caption_entities.clone())
+        .unwrap()
+        .with_disable_notification(true)
+        .with_protect_content(true)
+        .with_reply_parameters(reply_parameters.clone())
+        .unwrap()
+        .with_reply_markup(reply_markup.clone())
+        .unwrap()
+        .with_show_caption_above_media(true);
+    let form = Form::from([
+        ("chat_id", 1.into()),
+        ("media", "[{\"type\":\"photo\",\"media\":\"file-id\"}]".into()),
+        ("star_count", 100.into()),
+        ("business_connection_id", "c-id".into()),
+        ("caption", "caption".into()),
+        (
+            "caption_entities",
+            serde_json::to_string(&TextEntities::from_iter(caption_entities))
+                .unwrap()
+                .into(),
+        ),
+        ("disable_notification", true.into()),
+        ("protect_content", true.into()),
+        (
+            "reply_parameters",
+            serde_json::to_string(&reply_parameters).unwrap().into(),
+        ),
+        (
+            "reply_markup",
+            serde_json::to_string(&ReplyMarkup::from(reply_markup)).unwrap().into(),
+        ),
+        ("show_caption_above_media", true.into()),
     ]);
     assert_payload_eq(Payload::form("sendPaidMedia", form), method);
 }

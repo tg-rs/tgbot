@@ -78,7 +78,10 @@ fn bot_status() {
             0,
             User::new(1, "John", false),
             ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", true))),
-            ChatMember::Member(User::new(2, "John", true)),
+            ChatMember::Member {
+                user: User::new(2, "John", true),
+                until_date: None,
+            },
         )),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
@@ -988,7 +991,10 @@ fn user_status() {
             0,
             User::new(1, "John", false),
             ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", false))),
-            ChatMember::Member(User::new(2, "John", false)),
+            ChatMember::Member {
+                user: User::new(2, "John", false),
+                until_date: None,
+            },
         )),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);

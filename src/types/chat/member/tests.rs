@@ -204,7 +204,10 @@ fn chat_member_left() {
 
 #[test]
 fn chat_member() {
-    let expected_struct = ChatMember::Member(User::new(1, "John", false));
+    let expected_struct = ChatMember::Member {
+        user: User::new(1, "John", false),
+        until_date: None,
+    };
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
     assert_json_eq(
@@ -216,6 +219,25 @@ fn chat_member() {
                 "is_bot": false,
                 "first_name": "John"
             }
+        }),
+    );
+
+    let expected_struct = ChatMember::Member {
+        user: User::new(1, "John", false),
+        until_date: Some(1),
+    };
+    assert_eq!(expected_struct.get_user().id, 1);
+    assert!(expected_struct.is_member());
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "status": "member",
+            "user": {
+                "id": 1,
+                "is_bot": false,
+                "first_name": "John"
+            },
+            "until_date": 1,
         }),
     );
 }
@@ -308,7 +330,10 @@ fn chat_member_updated() {
             0,
             User::new(1, "John", true),
             ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", false))),
-            ChatMember::Member(User::new(2, "John", false)),
+            ChatMember::Member {
+                user: User::new(2, "John", false),
+                until_date: None,
+            },
         )
         .with_invite_link(
             ChatInviteLink::new("https://t.me/joinchat/o8oIBrbCI3U2OGJi", User::new(1, "John", false))
@@ -366,7 +391,10 @@ fn chat_member_updated() {
             0,
             User::new(1, "John", true),
             ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", false))),
-            ChatMember::Member(User::new(2, "John", false)),
+            ChatMember::Member {
+                user: User::new(2, "John", false),
+                until_date: None,
+            },
         ),
         serde_json::json!({
             "chat": {

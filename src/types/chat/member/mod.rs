@@ -24,9 +24,13 @@ pub enum ChatMember {
     #[serde(serialize_with = "ChatMemberUser::serialize_value")]
     Left(User),
     /// Represents a regular chat member.
-    #[serde(deserialize_with = "ChatMemberUser::deserialize_value")]
-    #[serde(serialize_with = "ChatMemberUser::serialize_value")]
-    Member(User),
+    Member {
+        /// Information about the user
+        user: User,
+        /// Date when the user's subscription will expire; Unix time
+        #[serde(skip_serializing_if = "Option::is_none")]
+        until_date: Option<Integer>,
+    },
     /// Represents a restricted user.
     Restricted(ChatMemberRestricted),
 }
@@ -40,7 +44,7 @@ impl ChatMember {
             Creator(ref creator) => &creator.user,
             Kicked(ref kicked) => &kicked.user,
             Left(ref user) => user,
-            Member(ref user) => user,
+            Member { ref user, .. } => user,
             Restricted(ref restricted) => &restricted.user,
         }
     }
@@ -49,7 +53,7 @@ impl ChatMember {
     pub fn is_member(&self) -> bool {
         use self::ChatMember::*;
         match self {
-            Administrator(_) | Creator(_) | Member(_) => true,
+            Administrator(_) | Creator(_) | Member { .. } => true,
             Kicked(_) | Left(_) => false,
             Restricted(ref restricted) => restricted.is_member,
         }

@@ -28,6 +28,30 @@ fn reaction_count() {
 }
 
 #[test]
+fn reaction_type() {
+    assert_json_eq(
+        ReactionType::custom_emoji("🤡"),
+        serde_json::json!({
+            "type": "custom_emoji",
+            "custom_emoji": "🤡"
+        }),
+    );
+    assert_json_eq(
+        ReactionType::emoji("🤡"),
+        serde_json::json!({
+            "type": "emoji",
+            "emoji": "🤡"
+        }),
+    );
+    assert_json_eq(
+        ReactionType::Paid,
+        serde_json::json!({
+            "type": "paid",
+        }),
+    );
+}
+
+#[test]
 fn message_reaction_count_updated() {
     assert_json_eq(
         MessageReactionCountUpdated::new(

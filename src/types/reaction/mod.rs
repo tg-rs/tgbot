@@ -71,12 +71,14 @@ impl MessageReactionCountUpdated {
 
 /// Represents a reaction type.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-#[serde(from = "ReactionTypeRaw", into = "ReactionTypeRaw")]
+#[serde(from = "RawReactionType", into = "RawReactionType")]
 pub enum ReactionType {
     /// A reaction based on a custom emoji.
     CustomEmoji(String),
     /// A reaction based on a predefined emoji.
     Emoji(String),
+    /// The reaction is paid.
+    Paid,
 }
 
 impl ReactionType {
@@ -107,27 +109,28 @@ impl ReactionType {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
-enum ReactionTypeRaw {
-    /// A reaction based on a custom emoji.
+enum RawReactionType {
     CustomEmoji { custom_emoji: String },
-    /// A reaction based on a predefined emoji.
     Emoji { emoji: String },
+    Paid,
 }
 
-impl From<ReactionType> for ReactionTypeRaw {
+impl From<ReactionType> for RawReactionType {
     fn from(value: ReactionType) -> Self {
         match value {
             ReactionType::CustomEmoji(custom_emoji) => Self::CustomEmoji { custom_emoji },
             ReactionType::Emoji(emoji) => Self::Emoji { emoji },
+            ReactionType::Paid => Self::Paid,
         }
     }
 }
 
-impl From<ReactionTypeRaw> for ReactionType {
-    fn from(value: ReactionTypeRaw) -> Self {
+impl From<RawReactionType> for ReactionType {
+    fn from(value: RawReactionType) -> Self {
         match value {
-            ReactionTypeRaw::CustomEmoji { custom_emoji } => Self::CustomEmoji(custom_emoji),
-            ReactionTypeRaw::Emoji { emoji } => Self::Emoji(emoji),
+            RawReactionType::CustomEmoji { custom_emoji } => Self::CustomEmoji(custom_emoji),
+            RawReactionType::Emoji { emoji } => Self::Emoji(emoji),
+            RawReactionType::Paid => Self::Paid,
         }
     }
 }

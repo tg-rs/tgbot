@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Integer, User},
+    types::{Integer, PaidMedia, User},
 };
 
 #[cfg(test)]
@@ -108,6 +108,8 @@ pub enum TransactionPartner {
         user: User,
         /// Bot-specified invoice payload
         invoice_payload: Option<String>,
+        /// Information about the paid media bought by the user
+        paid_media: Option<Vec<PaidMedia>>,
     },
 }
 
@@ -124,6 +126,8 @@ enum RawTransactionPartner {
         user: User,
         #[serde(skip_serializing_if = "Option::is_none")]
         invoice_payload: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        paid_media: Option<Vec<PaidMedia>>,
     },
 }
 
@@ -133,7 +137,15 @@ impl From<RawTransactionPartner> for TransactionPartner {
             RawTransactionPartner::Fragment { withdrawal_state } => Self::Fragment(withdrawal_state),
             RawTransactionPartner::Other {} => Self::Other,
             RawTransactionPartner::TelegramAds {} => Self::TelegramAds,
-            RawTransactionPartner::User { user, invoice_payload } => Self::User { user, invoice_payload },
+            RawTransactionPartner::User {
+                user,
+                invoice_payload,
+                paid_media,
+            } => Self::User {
+                user,
+                invoice_payload,
+                paid_media,
+            },
         }
     }
 }
@@ -144,7 +156,15 @@ impl From<TransactionPartner> for RawTransactionPartner {
             TransactionPartner::Fragment(withdrawal_state) => Self::Fragment { withdrawal_state },
             TransactionPartner::Other => Self::Other {},
             TransactionPartner::TelegramAds => Self::TelegramAds {},
-            TransactionPartner::User { user, invoice_payload } => Self::User { user, invoice_payload },
+            TransactionPartner::User {
+                user,
+                invoice_payload,
+                paid_media,
+            } => Self::User {
+                user,
+                invoice_payload,
+                paid_media,
+            },
         }
     }
 }

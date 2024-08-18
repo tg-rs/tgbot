@@ -3,6 +3,8 @@ use crate::{
     types::{
         tests::assert_json_eq,
         GetStarTransactions,
+        PaidMedia,
+        PaidMediaPreview,
         RevenueWithdrawalState,
         StarTransaction,
         StarTransactions,
@@ -115,6 +117,7 @@ fn transaction_partner() {
         TransactionPartner::User {
             user: User::new(1, "John", false),
             invoice_payload: None,
+            paid_media: None,
         },
         serde_json::json!({
             "type": "user",
@@ -129,6 +132,7 @@ fn transaction_partner() {
         TransactionPartner::User {
             user: User::new(1, "John", false),
             invoice_payload: Some(String::from("invoice-payload")),
+            paid_media: Some(vec![PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))]),
         },
         serde_json::json!({
             "type": "user",
@@ -138,6 +142,12 @@ fn transaction_partner() {
                 "is_bot": false
             },
             "invoice_payload": "invoice-payload",
+            "paid_media": [
+                {
+                    "type": "preview",
+                    "duration": 1,
+                }
+            ]
         }),
     );
 }

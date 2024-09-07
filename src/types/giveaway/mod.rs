@@ -229,6 +229,10 @@ pub struct GiveawayWinners {
     /// Description of additional giveaway prize.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prize_description: Option<String>,
+    /// The number of Telegram Stars that were split between giveaway winners;
+    /// for Telegram Star giveaways only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prize_star_count: Option<Integer>,
     /// Number of undistributed prizes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unclaimed_prize_count: Option<Integer>,
@@ -269,6 +273,7 @@ impl GiveawayWinners {
             only_new_members: None,
             premium_subscription_month_count: None,
             prize_description: None,
+            prize_star_count: None,
             unclaimed_prize_count: None,
             was_refunded: None,
         }
@@ -314,6 +319,17 @@ impl GiveawayWinners {
         T: Into<String>,
     {
         self.prize_description = Some(value.into());
+        self
+    }
+
+    /// Sets a new prize star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of Telegram Stars to be split between giveaway winners;
+    ///             for Telegram Star giveaways only.
+    pub fn with_prize_star_count(mut self, value: Integer) -> Self {
+        self.prize_star_count = Some(value);
         self
     }
 

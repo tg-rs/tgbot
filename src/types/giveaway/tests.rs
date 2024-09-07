@@ -149,8 +149,9 @@ fn giveaway_winners() {
         expected_struct
             .with_additional_chat_count(1)
             .with_only_new_members(true)
-            .with_premium_subscription_month_count(1)
+            .with_premium_subscription_month_count(2)
             .with_prize_description("test")
+            .with_prize_star_count(3)
             .with_unclaimed_prize_count(1)
             .with_was_refunded(false),
         serde_json::json!({
@@ -171,8 +172,9 @@ fn giveaway_winners() {
             "winners_selection_date": 0,
             "additional_chat_count": 1,
             "only_new_members": true,
-            "premium_subscription_month_count": 1,
+            "premium_subscription_month_count": 2,
             "prize_description": "test",
+            "prize_star_count": 3,
             "unclaimed_prize_count": 1,
             "was_refunded": false,
         }),

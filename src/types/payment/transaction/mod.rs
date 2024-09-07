@@ -106,10 +106,12 @@ pub enum TransactionPartner {
     User {
         /// Information about the user.
         user: User,
-        /// Bot-specified invoice payload
+        /// Bot-specified invoice payload.
         invoice_payload: Option<String>,
-        /// Information about the paid media bought by the user
+        /// Information about the paid media bought by the user.
         paid_media: Option<Vec<PaidMedia>>,
+        /// Bot-specified paid media payload.
+        paid_media_payload: Option<String>,
     },
 }
 
@@ -128,6 +130,8 @@ enum RawTransactionPartner {
         invoice_payload: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
         paid_media: Option<Vec<PaidMedia>>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        paid_media_payload: Option<String>,
     },
 }
 
@@ -141,10 +145,12 @@ impl From<RawTransactionPartner> for TransactionPartner {
                 user,
                 invoice_payload,
                 paid_media,
+                paid_media_payload,
             } => Self::User {
                 user,
                 invoice_payload,
                 paid_media,
+                paid_media_payload,
             },
         }
     }
@@ -160,10 +166,12 @@ impl From<TransactionPartner> for RawTransactionPartner {
                 user,
                 invoice_payload,
                 paid_media,
+                paid_media_payload,
             } => Self::User {
                 user,
                 invoice_payload,
                 paid_media,
+                paid_media_payload,
             },
         }
     }

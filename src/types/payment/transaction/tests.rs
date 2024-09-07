@@ -118,6 +118,7 @@ fn transaction_partner() {
             user: User::new(1, "John", false),
             invoice_payload: None,
             paid_media: None,
+            paid_media_payload: None,
         },
         serde_json::json!({
             "type": "user",
@@ -133,6 +134,7 @@ fn transaction_partner() {
             user: User::new(1, "John", false),
             invoice_payload: Some(String::from("invoice-payload")),
             paid_media: Some(vec![PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))]),
+            paid_media_payload: Some(String::from("media-payload")),
         },
         serde_json::json!({
             "type": "user",
@@ -147,7 +149,8 @@ fn transaction_partner() {
                     "type": "preview",
                     "duration": 1,
                 }
-            ]
+            ],
+            "paid_media_payload": "media-payload",
         }),
     );
 }

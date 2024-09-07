@@ -164,6 +164,11 @@ pub struct GiveawayCompleted {
     /// Message with the giveaway that was completed, if it wasn't deleted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub giveaway_message: Option<Box<Message>>,
+    /// Whether the giveaway is a Telegram Star giveaway.
+    ///
+    /// Otherwise, currently, the giveaway is a Telegram Premium giveaway.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_star_giveaway: Option<bool>,
     /// Number of undistributed prizes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unclaimed_prize_count: Option<Integer>,
@@ -178,8 +183,9 @@ impl GiveawayCompleted {
     pub fn new(winner_count: Integer) -> Self {
         Self {
             winner_count,
-            unclaimed_prize_count: None,
             giveaway_message: None,
+            is_star_giveaway: None,
+            unclaimed_prize_count: None,
         }
     }
 
@@ -190,6 +196,17 @@ impl GiveawayCompleted {
     /// * `value` - Message with the giveaway that was completed.
     pub fn with_giveaway_message(mut self, value: Message) -> Self {
         self.giveaway_message = Some(Box::new(value));
+        self
+    }
+
+    /// Sets a new value for an `is_star_giveaway` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the giveaway is a Telegram Star giveaway.
+    ///             Otherwise, currently, the giveaway is a Telegram Premium giveaway.
+    pub fn with_is_star_giveaway(mut self, value: bool) -> Self {
+        self.is_star_giveaway = Some(value);
         self
     }
 

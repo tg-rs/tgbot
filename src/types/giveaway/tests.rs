@@ -87,6 +87,7 @@ fn giveaway_completed() {
                 MessageData::Giveaway(Giveaway::new([chat], 0, 1)),
                 User::new(1, "test", false),
             ))
+            .with_is_star_giveaway(true)
             .with_unclaimed_prize_count(1),
         serde_json::json!({
             "winner_count": 1,
@@ -117,6 +118,7 @@ fn giveaway_completed() {
                 "has_protected_content": false,
                 "is_automatic_forward": false
             },
+            "is_star_giveaway": true,
             "unclaimed_prize_count": 1
         }),
     );

@@ -3,6 +3,7 @@ use crate::types::{
     ChannelChat,
     Giveaway,
     GiveawayCompleted,
+    GiveawayCreated,
     GiveawayWinners,
     Message,
     MessageData,
@@ -50,6 +51,19 @@ fn giveaway() {
             "prize_description": "test"
         }),
     )
+}
+
+#[test]
+fn giveaway_created() {
+    let expected_struct = GiveawayCreated::default();
+    assert_json_eq(expected_struct.clone(), serde_json::json!({}));
+    let expected_struct = expected_struct.with_prize_star_count(1);
+    assert_json_eq(
+        expected_struct.clone(),
+        serde_json::json!({
+            "prize_star_count": 1,
+        }),
+    );
 }
 
 #[test]

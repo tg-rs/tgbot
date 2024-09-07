@@ -12,6 +12,7 @@ use crate::types::{
     Game,
     Giveaway,
     GiveawayCompleted,
+    GiveawayCreated,
     GiveawayWinners,
     Invoice,
     Location,
@@ -406,7 +407,7 @@ fn giveaway_created() {
     let mut expected_struct = create_message_struct();
     let mut expected_value = create_message_value();
 
-    expected_struct.data = MessageData::GiveawayCreated;
+    expected_struct.data = MessageData::GiveawayCreated(GiveawayCreated::default());
     expected_value["giveaway_created"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }

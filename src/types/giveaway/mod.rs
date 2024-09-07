@@ -118,6 +118,28 @@ impl Giveaway {
     }
 }
 
+/// Represents a service message about the creation of a scheduled giveaway.
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct GiveawayCreated {
+    /// The number of Telegram Stars to be split between giveaway winners;
+    /// for Telegram Star giveaways only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prize_star_count: Option<Integer>,
+}
+
+impl GiveawayCreated {
+    /// Sets a new prize star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of Telegram Stars to be split between giveaway winners;
+    ///             for Telegram Star giveaways only.
+    pub fn with_prize_star_count(mut self, value: Integer) -> Self {
+        self.prize_star_count = Some(value);
+        self
+    }
+}
+
 /// Represents a service message about the completion of a giveaway without public winners.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct GiveawayCompleted {

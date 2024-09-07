@@ -158,6 +158,7 @@ fn send_paid_media() {
         .with_caption_entities(caption_entities.clone())
         .unwrap()
         .with_disable_notification(true)
+        .with_payload("payload")
         .with_protect_content(true)
         .with_reply_parameters(reply_parameters.clone())
         .unwrap()
@@ -177,6 +178,7 @@ fn send_paid_media() {
                 .into(),
         ),
         ("disable_notification", true.into()),
+        ("payload", "payload".into()),
         ("protect_content", true.into()),
         (
             "reply_parameters",

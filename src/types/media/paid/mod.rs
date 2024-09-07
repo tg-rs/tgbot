@@ -295,6 +295,21 @@ impl SendPaidMedia {
         self
     }
 
+    /// Sets a new payload.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Bot-defined paid media payload;
+    ///             0-128 bytes;
+    ///             This will not be displayed to the user, use it for your internal processes.
+    pub fn with_payload<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.form.insert_field("payload", value.into());
+        self
+    }
+
     /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments

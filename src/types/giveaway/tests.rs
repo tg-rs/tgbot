@@ -33,7 +33,8 @@ fn giveaway() {
             .with_has_public_winners(true)
             .with_only_new_members(true)
             .with_premium_subscription_month_count(1)
-            .with_prize_description("test"),
+            .with_prize_description("test")
+            .with_prize_star_count(2),
         serde_json::json!({
             "chats": [
                 {
@@ -48,7 +49,8 @@ fn giveaway() {
             "has_public_winners": true,
             "only_new_members": true,
             "premium_subscription_month_count": 1,
-            "prize_description": "test"
+            "prize_description": "test",
+            "prize_star_count": 2,
         }),
     )
 }

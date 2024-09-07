@@ -13,15 +13,32 @@ use crate::{
         PaidMedia,
         PaidMediaInfo,
         PaidMediaPreview,
+        PaidMediaPurchased,
         PhotoSize,
         ReplyMarkup,
         ReplyParameters,
         SendPaidMedia,
         TextEntities,
         TextEntity,
+        User,
         Video,
     },
 };
+
+#[test]
+fn paid_media_purchased() {
+    assert_json_eq(
+        PaidMediaPurchased::new(User::new(1, "John", false), "payload"),
+        serde_json::json!({
+            "from": {
+                "id": 1,
+                "first_name": "John",
+                "is_bot": false,
+            },
+            "paid_media_payload": "payload"
+        }),
+    );
+}
 
 #[test]
 fn paid_media_info() {

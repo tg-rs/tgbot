@@ -19,12 +19,41 @@ use crate::{
         TextEntities,
         TextEntity,
         TextEntityError,
+        User,
         Video,
     },
 };
 
 #[cfg(test)]
 mod tests;
+
+/// Contains information about a paid media purchase.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct PaidMediaPurchased {
+    /// User who purchased the media.
+    pub from: User,
+    /// Bot-specified paid media payload.
+    #[serde(rename = "paid_media_payload")]
+    pub payload: String,
+}
+
+impl PaidMediaPurchased {
+    /// Creates a new `PaidMediaPurchased`.
+    ///
+    /// # Arguments
+    ///
+    /// * `from` - User who purchased the media.
+    /// * `payload` - Bot-specified paid media payload.
+    pub fn new<T>(from: User, payload: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            from,
+            payload: payload.into(),
+        }
+    }
+}
 
 /// Describes the paid media added to a message.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]

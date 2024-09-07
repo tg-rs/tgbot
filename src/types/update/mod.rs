@@ -23,6 +23,7 @@ use crate::{
         Message,
         MessageReactionCountUpdated,
         MessageReactionUpdated,
+        PaidMediaPurchased,
         Poll,
         PollAnswer,
         PollAnswerVoter,
@@ -116,6 +117,7 @@ impl Update {
                 PollAnswerVoter::Chat(_) => return None,
             },
             UpdateType::PreCheckoutQuery(ref x) => &x.from,
+            UpdateType::PurchasedPaidMedia(ref x) => &x.from,
             UpdateType::ShippingQuery(ref x) => &x.from,
             UpdateType::Unknown(_) => return None,
         })
@@ -231,6 +233,8 @@ pub enum UpdateType {
     ///
     /// Contains full information about checkout
     PreCheckoutQuery(PreCheckoutQuery),
+    /// A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat.
+    PurchasedPaidMedia(PaidMediaPurchased),
     /// A new incoming shipping query.
     ///
     /// Only for invoices with flexible price.
@@ -398,6 +402,18 @@ impl TryFrom<Update> for PreCheckoutQuery {
     }
 }
 
+impl TryFrom<Update> for PaidMediaPurchased {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            PurchasedPaidMedia(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
 impl TryFrom<Update> for ShippingQuery {
     type Error = UnexpectedUpdate;
 
@@ -457,6 +473,8 @@ pub enum AllowedUpdate {
     PollAnswer,
     /// A pre checkout query.
     PreCheckoutQuery,
+    /// A user purchased paid media.
+    PurchasedPaidMedia,
     /// A shipping query.
     ShippingQuery,
     /// A chat member status.

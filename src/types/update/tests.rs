@@ -26,6 +26,7 @@ use crate::{
         MessageData,
         MessageReactionCountUpdated,
         MessageReactionUpdated,
+        PaidMediaPurchased,
         Poll,
         PollAnswer,
         PollAnswerVoter,
@@ -62,6 +63,7 @@ fn allowed_update() {
         (Poll, serde_json::json!("poll")),
         (PollAnswer, serde_json::json!("poll_answer")),
         (PreCheckoutQuery, serde_json::json!("pre_checkout_query")),
+        (PurchasedPaidMedia, serde_json::json!("purchased_paid_media")),
         (ShippingQuery, serde_json::json!("shipping_query")),
         (UserStatus, serde_json::json!("chat_member")),
     ] {
@@ -920,6 +922,35 @@ fn pre_checkout_query() {
             }
         }),
     );
+}
+
+#[test]
+fn purchased_paid_media() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::PurchasedPaidMedia(PaidMediaPurchased::new(User::new(1, "John", false), "payload")),
+    );
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert!(PaidMediaPurchased::try_from(expected_struct.clone()).is_ok());
+
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "update_id": 1,
+            "purchased_paid_media": {
+                "from": {
+                    "id": 1,
+                    "first_name": "John",
+                    "is_bot": false,
+                },
+                "paid_media_payload": "payload"
+            }
+        }),
+    )
 }
 
 #[test]

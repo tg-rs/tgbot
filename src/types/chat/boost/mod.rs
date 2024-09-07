@@ -140,6 +140,10 @@ pub struct ChatBoostSourceGiveaway {
     /// Whether the giveaway was completed, but there was no user to win the prize.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_unclaimed: Option<bool>,
+    /// The number of Telegram Stars to be split between giveaway winners;
+    /// for Telegram Star giveaways only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prize_star_count: Option<Integer>,
     /// User that won the prize in the giveaway if any.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<User>,
@@ -155,6 +159,7 @@ impl ChatBoostSourceGiveaway {
         Self {
             giveaway_message_id,
             is_unclaimed: None,
+            prize_star_count: None,
             user: None,
         }
     }
@@ -166,6 +171,17 @@ impl ChatBoostSourceGiveaway {
     /// * `value` - Whether the giveaway was completed, but there was no user to win the prize.
     pub fn with_is_unclaimed(mut self, value: bool) -> Self {
         self.is_unclaimed = Some(value);
+        self
+    }
+
+    /// Sets a new prize star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of Telegram Stars to be split between giveaway winners;
+    ///             for Telegram Star giveaways only.
+    pub fn with_prize_star_count(mut self, value: Integer) -> Self {
+        self.prize_star_count = Some(value);
         self
     }
 

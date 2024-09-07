@@ -92,10 +92,15 @@ fn chat_boost_source() {
         }),
     );
     assert_json_eq(
-        ChatBoostSource::Giveaway(ChatBoostSourceGiveaway::new(1).with_user(User::new(1, "test", false))),
+        ChatBoostSource::Giveaway(
+            ChatBoostSourceGiveaway::new(1)
+                .with_prize_star_count(2)
+                .with_user(User::new(1, "test", false)),
+        ),
         serde_json::json!({
             "source": "giveaway",
             "giveaway_message_id": 1,
+            "prize_star_count": 2,
             "user": {
                 "id": 1,
                 "first_name": "test",

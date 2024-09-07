@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.30.0 (07.09.2024)
+
+### Dependencies
+
+- tokio 1.40
+
+### Bot API
+
+#### 7.10
+
+- Added fields:
+  - `ChatBoostSourceGiveaway`: `prize_star_count`.
+  - `Giveaway`: `prize_star_count`.
+  - `GiveawayCompleted`: `is_star_giveaway`.
+  - `GiveawayWinners`: `prize_star_count`.
+  - `TransactionPartner::User`: `paid_media_payload`.
+- Added methods:
+  - `ChatBoostSourceGiveaway`: `with_prize_star_count`.
+  - `Giveaway`: `with_prize_star_count`.
+  - `GiveawayCompleted`: `with_is_star_giveaway`.
+  - `GiveawayWinners`: `with_prize_star_count`.
+  - `SendPaidMedia`: `with_payload`.
+- Added types:
+  - `GiveawayCreated`.
+  - `PaidMediaPurchased`.
+- Added enum variants:
+  - `AllowedUpdate`: `PurchasedPaidMedia`.
+  - `UpdateType`: `PurchasedPaidMedia`.
+- Changed enum variants:
+  - `MessageData`: `GiveawayCreated` to `GiveawayCreated(GiveawayCreated)`.
+
 ## 0.29.0 (18.08.2024)
 
 ### Dependencies

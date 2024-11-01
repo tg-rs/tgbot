@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.31.0 (01.11.2024)
+
+### Dependencies
+
+- bytes 1.8
+- tokio 1.41
+
+### Bot API
+
+#### 7.11
+
+- Added enum variants:
+  - `InlineKeyboardButtonType`: `CopyText`.
+  - `TransactionPartner`: `TelegramApi`.
+- Added methods:
+  - `CopyMessage`: `allow_paid_broadcast`.
+  - `InlineKeyboardButton`: `for_copy_text`.
+  - `SendAnimation`: `allow_paid_broadcast`.
+  - `SendAudio`: `allow_paid_broadcast`.
+  - `SendContact`: `allow_paid_broadcast`.
+  - `SendDice`: `allow_paid_broadcast`.
+  - `SendDocument`: `allow_paid_broadcast`.
+  - `SendInvoice`: `allow_paid_broadcast`.
+  - `SendPhoto`: `allow_paid_broadcast`.
+  - `SendVoice`: `allow_paid_broadcast`.
+  - `SendGame`: `allow_paid_broadcast`.
+  - `SendLocation`: `allow_paid_broadcast`.
+  - `SendMediaGroup`: `allow_paid_broadcast`.
+  - `SendMessage`: `allow_paid_broadcast`.
+  - `SendPaidMedia`: `allow_paid_broadcast`.
+  - `SendPoll`: `allow_paid_broadcast`.
+  - `SendQuiz`: `allow_paid_broadcast`.
+  - `SendSticker`: `allow_paid_broadcast`.
+  - `SendVideo`: `allow_paid_broadcast`.
+  - `SendVideoNote`: `allow_paid_broadcast`.
+  - `SendVenue`: `allow_paid_broadcast`.
+
 ## 0.30.0 (07.09.2024)
 
 ### Dependencies

@@ -50,6 +50,7 @@ fn send_contact() {
                 "first_name": "John",
                 "last_name": "Doe",
                 "vcard": "BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD",
+                "allow_paid_broadcast": true,
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
@@ -64,6 +65,7 @@ fn send_contact() {
             }),
         ),
         method
+            .with_allow_paid_broadcast(true)
             .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_last_name("Doe")

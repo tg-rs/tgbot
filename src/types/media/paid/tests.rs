@@ -153,6 +153,7 @@ fn send_paid_media() {
     let reply_parameters = ReplyParameters::new(1);
     let reply_markup = ForceReply::new(true);
     let method = SendPaidMedia::new(1, media, 100)
+        .with_allow_paid_broadcast(true)
         .with_business_connection_id("c-id")
         .with_caption("caption")
         .with_caption_entities(caption_entities.clone())
@@ -169,6 +170,7 @@ fn send_paid_media() {
         ("chat_id", 1.into()),
         ("media", "[{\"type\":\"photo\",\"media\":\"file-id\"}]".into()),
         ("star_count", 100.into()),
+        ("allow_paid_broadcast", true.into()),
         ("business_connection_id", "c-id".into()),
         ("caption", "caption".into()),
         (

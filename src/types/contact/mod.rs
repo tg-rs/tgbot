@@ -91,6 +91,8 @@ pub struct SendContact {
     first_name: String,
     phone_number: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    allow_paid_broadcast: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
@@ -128,6 +130,7 @@ impl SendContact {
             chat_id: chat_id.into(),
             first_name: first_name.into(),
             phone_number: phone_number.into(),
+            allow_paid_broadcast: None,
             business_connection_id: None,
             disable_notification: None,
             last_name: None,
@@ -138,6 +141,18 @@ impl SendContact {
             reply_parameters: None,
             vcard: None,
         }
+    }
+
+    /// Sets a new value for an `allow_paid_broadcast` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
+    ///             for a fee of 0.1 Telegram Stars per message.
+    ///             The relevant Stars will be withdrawn from the bot's balance.
+    pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
+        self.allow_paid_broadcast = Some(value);
+        self
     }
 
     /// Sets a new business connection ID.

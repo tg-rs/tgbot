@@ -77,6 +77,7 @@ fn send_audio() {
                 ("performer", "Performer".into()),
                 ("title", "Title".into()),
                 ("thumbnail", InputFile::url("https://google.com/favicon.ico").into()),
+                ("allow_paid_broadcast", true.into()),
                 ("business_connection_id", "id".into()),
                 ("disable_notification", true.into()),
                 ("message_effect_id", "effect-id".into()),
@@ -90,6 +91,7 @@ fn send_audio() {
             ]),
         ),
         SendAudio::new(1, InputFile::file_id("file-id"))
+            .with_allow_paid_broadcast(true)
             .with_business_connection_id("id")
             .with_caption("Caption")
             .with_disable_notification(true)

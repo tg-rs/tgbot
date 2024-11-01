@@ -123,6 +123,7 @@ fn send_game() {
             serde_json::json!({
                 "chat_id": 1,
                 "game_short_name": "Game",
+                "allow_paid_broadcast": true,
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
@@ -139,6 +140,7 @@ fn send_game() {
             }),
         ),
         method
+            .with_allow_paid_broadcast(true)
             .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_message_effect_id("effect-id")

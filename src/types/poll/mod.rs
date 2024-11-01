@@ -579,6 +579,8 @@ struct PollParameters {
     options: Vec<InputPollOption>,
     question: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    allow_paid_broadcast: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     allows_multiple_answers: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
@@ -629,6 +631,7 @@ impl PollParameters {
             chat_id,
             options: options.into_iter().map(Into::into).collect(),
             question,
+            allow_paid_broadcast: None,
             allows_multiple_answers: None,
             business_connection_id: None,
             close_date: None,
@@ -680,6 +683,18 @@ impl SendQuiz {
         let mut parameters = PollParameters::new(chat_id.into(), question.into(), PollType::Quiz, options);
         parameters.correct_option_id = Some(correct_option_id);
         Self { inner: parameters }
+    }
+
+    /// Sets a new value for an `allow_paid_broadcast` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
+    ///             for a fee of 0.1 Telegram Stars per message.
+    ///             The relevant Stars will be withdrawn from the bot's balance.
+    pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
+        self.inner.allow_paid_broadcast = Some(value);
+        self
     }
 
     /// Sets a new business connection ID.
@@ -920,6 +935,18 @@ impl SendPoll {
         Self {
             inner: PollParameters::new(chat_id.into(), question.into(), PollType::Regular, options),
         }
+    }
+
+    /// Sets a new value for an `allow_paid_broadcast` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
+    ///             for a fee of 0.1 Telegram Stars per message.
+    ///             The relevant Stars will be withdrawn from the bot's balance.
+    pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
+        self.inner.allow_paid_broadcast = Some(value);
+        self
     }
 
     /// Sets a new value for an `allows_multiple_answers` flag.

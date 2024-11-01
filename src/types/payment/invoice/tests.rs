@@ -154,6 +154,7 @@ fn send_invoice() {
                 "send_phone_number_to_provider": true,
                 "send_email_to_provider": true,
                 "is_flexible": true,
+                "allow_paid_broadcast": true,
                 "disable_notification": true,
                 "message_effect_id": "effect-id",
                 "message_thread_id": 1,
@@ -169,6 +170,7 @@ fn send_invoice() {
             }),
         ),
         SendInvoice::new(1, "title", "description", "payload", "RUB", vec![])
+            .with_allow_paid_broadcast(true)
             .with_disable_notification(true)
             .with_message_effect_id("effect-id")
             .with_message_thread_id(1)

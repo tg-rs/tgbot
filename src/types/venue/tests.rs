@@ -52,6 +52,7 @@ fn send_venue() {
                 "foursquare_type": "f-type",
                 "google_place_id": "g-id",
                 "google_place_type": "g-type",
+                "allow_paid_broadcast": true,
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
@@ -68,6 +69,7 @@ fn send_venue() {
             .with_foursquare_type("f-type")
             .with_google_place_id("g-id")
             .with_google_place_type("g-type")
+            .with_allow_paid_broadcast(true)
             .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_protect_content(true)

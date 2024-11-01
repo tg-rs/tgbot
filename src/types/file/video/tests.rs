@@ -78,6 +78,7 @@ fn send_video() {
                 ("caption", "Caption".into()),
                 ("parse_mode", ParseMode::Markdown.into()),
                 ("supports_streaming", true.into()),
+                ("allow_paid_broadcast", true.into()),
                 ("business_connection_id", "id".into()),
                 ("disable_notification", true.into()),
                 ("has_spoiler", true.into()),
@@ -93,8 +94,9 @@ fn send_video() {
             ]),
         ),
         SendVideo::new(1, InputFile::file_id("file-id"))
-            .with_caption("Caption")
+            .with_allow_paid_broadcast(true)
             .with_business_connection_id("id")
+            .with_caption("Caption")
             .with_disable_notification(true)
             .with_duration(100)
             .with_has_spoiler(true)

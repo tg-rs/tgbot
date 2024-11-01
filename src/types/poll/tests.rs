@@ -192,6 +192,7 @@ fn send_quiz() {
                 "is_anonymous": false,
                 "is_closed": false,
                 "correct_option_id": 0,
+                "allow_paid_broadcast": true,
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "protect_content": true,
@@ -206,6 +207,7 @@ fn send_quiz() {
             }),
         ),
         SendQuiz::new(1, "Q", 0, ["O1", "O2"])
+            .with_allow_paid_broadcast(true)
             .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_is_anonymous(false)
@@ -281,6 +283,7 @@ fn send_poll() {
                 "options": [{"text": "O1"}, {"text": "O2"}],
                 "is_anonymous": false,
                 "is_closed": false,
+                "allow_paid_broadcast": true,
                 "allows_multiple_answers": true,
                 "business_connection_id": "id",
                 "disable_notification": true,
@@ -296,6 +299,7 @@ fn send_poll() {
             }),
         ),
         SendPoll::new(1, "Q", ["O1", "O2"])
+            .with_allow_paid_broadcast(true)
             .with_allows_multiple_answers(true)
             .with_business_connection_id("id")
             .with_disable_notification(true)

@@ -400,6 +400,8 @@ pub struct SendInvoice {
     prices: Vec<LabeledPrice>,
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    allow_paid_broadcast: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_effect_id: Option<String>,
@@ -447,6 +449,7 @@ impl SendInvoice {
             payload: payload.into(),
             currency: currency.into(),
             prices: prices.into_iter().collect(),
+            allow_paid_broadcast: None,
             disable_notification: None,
             message_effect_id: None,
             message_thread_id: None,
@@ -456,6 +459,18 @@ impl SendInvoice {
             reply_parameters: None,
             start_parameter: None,
         }
+    }
+
+    /// Sets a new value for an `allow_paid_broadcast` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
+    ///             for a fee of 0.1 Telegram Stars per message.
+    ///             The relevant Stars will be withdrawn from the bot's balance.
+    pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
+        self.allow_paid_broadcast = Some(value);
+        self
     }
 
     /// Sets a new value for a `disable_notification` flag.

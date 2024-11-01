@@ -99,6 +99,18 @@ impl SendPhoto {
         }
     }
 
+    /// Sets a new value for an `allow_paid_broadcast` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
+    ///             for a fee of 0.1 Telegram Stars per message.
+    ///             The relevant Stars will be withdrawn from the bot's balance.
+    pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
+        self.form.insert_field("allow_paid_broadcast", value);
+        self
+    }
+
     /// Sets a new business connection ID.
     ///
     /// # Arguments

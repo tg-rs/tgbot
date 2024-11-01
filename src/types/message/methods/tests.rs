@@ -48,6 +48,7 @@ fn copy_message() {
                 "chat_id": 1,
                 "from_chat_id": 2,
                 "message_id": 3,
+                "allow_paid_broadcast": true,
                 "caption": "caption",
                 "parse_mode": "Markdown",
                 "disable_notification": true,
@@ -62,6 +63,7 @@ fn copy_message() {
         ),
         method
             .clone()
+            .with_allow_paid_broadcast(true)
             .with_caption("caption")
             .with_disable_notification(true)
             .with_message_thread_id(1)
@@ -505,6 +507,7 @@ fn send_message() {
                 "link_preview_options": {
                     "is_disabled": true
                 },
+                "allow_paid_broadcast": true,
                 "business_connection_id": "id",
                 "disable_notification": true,
                 "message_effect_id": "effect-id",
@@ -519,6 +522,7 @@ fn send_message() {
             }),
         ),
         SendMessage::new(1, "text")
+            .with_allow_paid_broadcast(true)
             .with_business_connection_id("id")
             .with_disable_notification(true)
             .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))

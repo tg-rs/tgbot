@@ -127,6 +127,21 @@ impl InlineKeyboardButton {
     /// # Arguments
     ///
     /// * `text` - Text of the button.
+    /// * `value` - The text to be copied to the clipboard;
+    ///             1-256 characters.
+    pub fn for_copy_text<A, B>(text: A, value: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self::new(text, InlineKeyboardButtonType::CopyText(value.into()))
+    }
+
+    /// Creates a new `InlineKeyboardButton`.
+    ///
+    /// # Arguments
+    ///
+    /// * `text` - Text of the button.
     /// * `data` - An HTTPs URL used to automatically authorize the user.
     ///
     /// Can be used as a replacement for the [Telegram Login Widget][1].
@@ -286,6 +301,12 @@ pub enum InlineKeyboardButtonType {
         serialize_with = "RawButtonEmpty::serialize_value"
     )]
     CallbackGame,
+    /// Description of the button that copies the specified text to the clipboard.
+    #[serde(
+        deserialize_with = "RawButtonText::deserialize_value",
+        serialize_with = "RawButtonText::serialize_value"
+    )]
+    CopyText(String),
     /// An HTTP URL used to automatically authorize the user.
     ///
     /// Can be used as a replacement for the [Telegram Login Widget][1].
@@ -372,6 +393,30 @@ impl RawButtonFlag {
         S: Serializer,
     {
         True.serialize(serializer)
+    }
+}
+
+#[derive(Deserialize, Serialize)]
+struct RawButtonText {
+    text: String,
+}
+
+impl RawButtonText {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<String, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        RawButtonText::deserialize(deserializer).map(|RawButtonText { text }| text)
+    }
+
+    fn serialize_value<S>(value: &str, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        RawButtonText {
+            text: String::from(value),
+        }
+        .serialize(serializer)
     }
 }
 

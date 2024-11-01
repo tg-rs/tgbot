@@ -26,6 +26,7 @@ fn inline_keyboard() {
             InlineKeyboardButton::for_web_app("web app", WebAppInfo::from("https://example.com")),
             InlineKeyboardButton::for_callback_data("cd", "cd"),
             InlineKeyboardButton::for_callback_data_struct("cd", &callback_data).unwrap(),
+            InlineKeyboardButton::for_copy_text("cp", "val"),
             InlineKeyboardButton::for_switch_inline_query("siq", "siq"),
             InlineKeyboardButton::for_switch_inline_query_current_chat("siq_cc", "siq_cc"),
             InlineKeyboardButton::for_switch_inline_query_chosen_chat(
@@ -43,6 +44,7 @@ fn inline_keyboard() {
                     {"text": "web app", "web_app": {"url": "https://example.com"}},
                     {"text": "cd", "callback_data": "cd"},
                     {"text": "cd", "callback_data": "{\"value\":\"cd-struct\"}"},
+                    {"text": "cp", "copy_text": {"text": "val"}},
                     {"text": "siq", "switch_inline_query": "siq"},
                     {"text": "siq_cc", "switch_inline_query_current_chat": "siq_cc"},
                     {"text": "siq_chc", "switch_inline_query_chosen_chat": {

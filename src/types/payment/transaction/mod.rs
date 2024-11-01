@@ -102,6 +102,11 @@ pub enum TransactionPartner {
     Other,
     /// Describes a withdrawal transaction to the Telegram Ads platform.
     TelegramAds,
+    /// Describes a transaction with payment for paid broadcasting.
+    TelegramApi {
+        /// The number of successful requests that exceeded regular limits and were therefore billed.
+        request_count: Integer,
+    },
     /// Describes a transaction with a user.
     User {
         /// Information about the user.
@@ -124,6 +129,9 @@ enum RawTransactionPartner {
     },
     Other {},
     TelegramAds {},
+    TelegramApi {
+        request_count: Integer,
+    },
     User {
         user: User,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -141,6 +149,7 @@ impl From<RawTransactionPartner> for TransactionPartner {
             RawTransactionPartner::Fragment { withdrawal_state } => Self::Fragment(withdrawal_state),
             RawTransactionPartner::Other {} => Self::Other,
             RawTransactionPartner::TelegramAds {} => Self::TelegramAds,
+            RawTransactionPartner::TelegramApi { request_count } => Self::TelegramApi { request_count },
             RawTransactionPartner::User {
                 user,
                 invoice_payload,
@@ -162,6 +171,7 @@ impl From<TransactionPartner> for RawTransactionPartner {
             TransactionPartner::Fragment(withdrawal_state) => Self::Fragment { withdrawal_state },
             TransactionPartner::Other => Self::Other {},
             TransactionPartner::TelegramAds => Self::TelegramAds {},
+            TransactionPartner::TelegramApi { request_count } => Self::TelegramApi { request_count },
             TransactionPartner::User {
                 user,
                 invoice_payload,

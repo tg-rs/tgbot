@@ -114,6 +114,10 @@ fn transaction_partner() {
         serde_json::json!({"type": "telegram_ads"}),
     );
     assert_json_eq(
+        TransactionPartner::TelegramApi { request_count: 1 },
+        serde_json::json!({"type": "telegram_api", "request_count": 1}),
+    );
+    assert_json_eq(
         TransactionPartner::User {
             user: User::new(1, "John", false),
             invoice_payload: None,

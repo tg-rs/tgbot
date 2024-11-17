@@ -16,6 +16,7 @@ use crate::types::{
 };
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[allow(unreachable_patterns)]
 pub(super) enum RawInlineQueryResultType {
     #[serde(rename = "article")]
     Article,

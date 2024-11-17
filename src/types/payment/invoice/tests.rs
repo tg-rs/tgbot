@@ -89,14 +89,19 @@ fn create_invoice_link() {
                     }
                 ],
                 "provider_token": "provider-token",
-                "max_tip_amount": 100
+                "max_tip_amount": 100,
+                "business_connection_id": "id",
+                "subscription_period": 1,
             }),
         ),
-        method.with_parameters(
-            InvoiceParameters::default()
-                .with_max_tip_amount(100)
-                .with_provider_token("provider-token"),
-        ),
+        method
+            .with_business_connection_id("id")
+            .with_parameters(
+                InvoiceParameters::default()
+                    .with_max_tip_amount(100)
+                    .with_provider_token("provider-token"),
+            )
+            .with_subscription_period(1),
     );
 }
 

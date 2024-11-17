@@ -336,6 +336,10 @@ pub struct CreateInvoiceLink {
     payload: String,
     prices: Vec<LabeledPrice>,
     title: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_connection_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    subscription_period: Option<Integer>,
     #[serde(flatten)]
     parameters: Option<InvoiceParameters>,
 }
@@ -367,8 +371,23 @@ impl CreateInvoiceLink {
             payload: payload.into(),
             prices: prices.into_iter().collect(),
             title: title.into(),
+            business_connection_id: None,
+            subscription_period: None,
             parameters: None,
         }
+    }
+
+    /// Sets a new business connection ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the business connection on behalf of which the link will be created.
+    pub fn with_business_connection_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.business_connection_id = Some(value.into());
+        self
     }
 
     /// Sets a new invoice parameters.
@@ -378,6 +397,18 @@ impl CreateInvoiceLink {
     /// * `value` - Invoice parameters.
     pub fn with_parameters(mut self, value: InvoiceParameters) -> Self {
         self.parameters = Some(value);
+        self
+    }
+
+    /// Sets a new subscription period.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of seconds the subscription will be active for before the next payment.
+    ///             The currency must be set to “XTR” (Telegram Stars) if the parameter is used.
+    ///             Currently, it must always be 2592000 (30 days) if specified.
+    pub fn with_subscription_period(mut self, value: Integer) -> Self {
+        self.subscription_period = Some(value);
         self
     }
 }

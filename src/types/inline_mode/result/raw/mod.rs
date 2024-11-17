@@ -1,3 +1,4 @@
+#![allow(unreachable_patterns)]
 use std::{
     error::Error,
     fmt::{Display, Formatter},

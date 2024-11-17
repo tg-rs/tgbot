@@ -16,46 +16,59 @@ use crate::types::{
 };
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
-#[allow(unreachable_patterns)]
 pub(super) enum RawInlineQueryResultType {
     #[serde(rename = "article")]
     Article,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "audio")]
     Audio,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "audio")]
     CachedAudio,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "document")]
     CachedDocument,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "gif")]
     CachedGif,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "mpeg4_gif")]
     CachedMpeg4Gif,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "photo")]
     CachedPhoto,
     #[serde(rename = "sticker")]
     CachedSticker,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "video")]
     CachedVideo,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "voice")]
     CachedVoice,
     #[serde(rename = "contact")]
     Contact,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "document")]
     Document,
     #[serde(rename = "game")]
     Game,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "gif")]
     Gif,
     #[serde(rename = "location")]
     Location,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "mpeg4_gif")]
     Mpeg4Gif,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "photo")]
     Photo,
     #[serde(rename = "venue")]
     Venue,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "video")]
     Video,
+    #[allow(unreachable_patterns)]
     #[serde(rename = "voice")]
     Voice,
 }

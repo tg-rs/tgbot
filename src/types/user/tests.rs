@@ -8,6 +8,7 @@ use crate::{
         GetUserProfilePhotos,
         ParseMode,
         PhotoSize,
+        SetUserEmojiStatus,
         SharedUser,
         User,
         UserId,
@@ -224,4 +225,29 @@ fn get_user_profile_photos() {
         ),
         method.with_offset(5).with_limit(10),
     )
+}
+
+#[test]
+fn set_user_emoji_status() {
+    let method = SetUserEmojiStatus::new(1);
+    assert_payload_eq(
+        Payload::json(
+            "setUserEmojiStatus",
+            serde_json::json!({
+                "user_id": 1,
+            }),
+        ),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setUserEmojiStatus",
+            serde_json::json!({
+                "user_id": 1,
+                "emoji_status_custom_emoji_id": "emoji-id",
+                "emoji_status_expiration_date": 1,
+            }),
+        ),
+        method.with_emoji_id("emoji-id").with_expiration_date(1),
+    );
 }

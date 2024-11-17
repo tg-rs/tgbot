@@ -507,3 +507,62 @@ impl Method for GetUserProfilePhotos {
         Payload::json("getUserProfilePhotos", self)
     }
 }
+
+/// Changes the emoji status for a given user
+/// that previously allowed the bot to manage their emoji status
+/// via the Mini App method `requestEmojiStatusAccess`.
+#[derive(Clone, Debug, Serialize)]
+pub struct SetUserEmojiStatus {
+    user_id: Integer,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    emoji_status_custom_emoji_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    emoji_status_expiration_date: Option<Integer>,
+}
+
+impl SetUserEmojiStatus {
+    /// Creates a new `SetUserEmojiStatus`.
+    ///
+    /// # Arguments
+    ///
+    /// * `user_id` - Unique identifier of the target user
+    pub fn new(user_id: Integer) -> Self {
+        Self {
+            user_id,
+            emoji_status_custom_emoji_id: None,
+            emoji_status_expiration_date: None,
+        }
+    }
+
+    /// Sets a new emoji ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Custom emoji identifier of the emoji status to set.
+    ///             Pass an empty string to remove the status.
+    pub fn with_emoji_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.emoji_status_custom_emoji_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new expiration date.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Expiration date of the emoji status, if any.
+    pub fn with_expiration_date(mut self, value: Integer) -> Self {
+        self.emoji_status_expiration_date = Some(value);
+        self
+    }
+}
+
+impl Method for SetUserEmojiStatus {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setUserEmojiStatus", self)
+    }
+}

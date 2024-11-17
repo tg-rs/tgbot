@@ -92,6 +92,91 @@ impl StarTransaction {
     }
 }
 
+/// Describes a transaction with a user.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct TransactionPartnerUserParameters {
+    /// Information about the user.
+    pub user: User,
+    /// Bot-specified invoice payload.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_payload: Option<String>,
+    /// Information about the paid media bought by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media: Option<Vec<PaidMedia>>,
+    /// Bot-specified paid media payload.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media_payload: Option<String>,
+    /// The duration of the paid subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_period: Option<Integer>,
+}
+
+impl TransactionPartnerUserParameters {
+    /// Creates a new `TransactionPartnerUserParameters`.
+    ///
+    /// # Arguments
+    ///
+    /// * `user` - Information about the user.
+    pub fn new(user: User) -> Self {
+        Self {
+            user,
+            invoice_payload: None,
+            paid_media: None,
+            paid_media_payload: None,
+            subscription_period: None,
+        }
+    }
+
+    /// Sets a new invoice payload
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Bot-specified invoice payload.
+    pub fn with_invoice_payload<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.invoice_payload = Some(value.into());
+        self
+    }
+
+    /// Sets a new paid media
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about the paid media bought by the user.
+    pub fn with_paid_media<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = PaidMedia>,
+    {
+        self.paid_media = Some(value.into_iter().collect());
+        self
+    }
+
+    /// Sets a new paid media payload
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Bot-specified paid media payload.
+    pub fn with_paid_media_payload<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.paid_media_payload = Some(value.into());
+        self
+    }
+
+    /// Sets a new subscription period.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The duration of the paid subscription.
+    pub fn with_subscription_period(mut self, value: Integer) -> Self {
+        self.subscription_period = Some(value);
+        self
+    }
+}
+
 /// Describes the source of a transaction, or its recipient for outgoing transactions.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(from = "RawTransactionPartner", into = "RawTransactionPartner")]
@@ -108,16 +193,7 @@ pub enum TransactionPartner {
         request_count: Integer,
     },
     /// Describes a transaction with a user.
-    User {
-        /// Information about the user.
-        user: User,
-        /// Bot-specified invoice payload.
-        invoice_payload: Option<String>,
-        /// Information about the paid media bought by the user.
-        paid_media: Option<Vec<PaidMedia>>,
-        /// Bot-specified paid media payload.
-        paid_media_payload: Option<String>,
-    },
+    User(TransactionPartnerUserParameters),
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -132,15 +208,7 @@ enum RawTransactionPartner {
     TelegramApi {
         request_count: Integer,
     },
-    User {
-        user: User,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        invoice_payload: Option<String>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        paid_media: Option<Vec<PaidMedia>>,
-        #[serde(skip_serializing_if = "Option::is_none")]
-        paid_media_payload: Option<String>,
-    },
+    User(TransactionPartnerUserParameters),
 }
 
 impl From<RawTransactionPartner> for TransactionPartner {
@@ -150,17 +218,7 @@ impl From<RawTransactionPartner> for TransactionPartner {
             RawTransactionPartner::Other {} => Self::Other,
             RawTransactionPartner::TelegramAds {} => Self::TelegramAds,
             RawTransactionPartner::TelegramApi { request_count } => Self::TelegramApi { request_count },
-            RawTransactionPartner::User {
-                user,
-                invoice_payload,
-                paid_media,
-                paid_media_payload,
-            } => Self::User {
-                user,
-                invoice_payload,
-                paid_media,
-                paid_media_payload,
-            },
+            RawTransactionPartner::User(parameters) => Self::User(parameters),
         }
     }
 }
@@ -172,17 +230,7 @@ impl From<TransactionPartner> for RawTransactionPartner {
             TransactionPartner::Other => Self::Other {},
             TransactionPartner::TelegramAds => Self::TelegramAds {},
             TransactionPartner::TelegramApi { request_count } => Self::TelegramApi { request_count },
-            TransactionPartner::User {
-                user,
-                invoice_payload,
-                paid_media,
-                paid_media_payload,
-            } => Self::User {
-                user,
-                invoice_payload,
-                paid_media,
-                paid_media_payload,
-            },
+            TransactionPartner::User(parameters) => Self::User(parameters),
         }
     }
 }

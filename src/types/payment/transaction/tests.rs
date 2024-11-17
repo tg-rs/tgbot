@@ -9,6 +9,7 @@ use crate::{
         StarTransaction,
         StarTransactions,
         TransactionPartner,
+        TransactionPartnerUserParameters,
         User,
     },
 };
@@ -118,12 +119,7 @@ fn transaction_partner() {
         serde_json::json!({"type": "telegram_api", "request_count": 1}),
     );
     assert_json_eq(
-        TransactionPartner::User {
-            user: User::new(1, "John", false),
-            invoice_payload: None,
-            paid_media: None,
-            paid_media_payload: None,
-        },
+        TransactionPartner::User(TransactionPartnerUserParameters::new(User::new(1, "John", false))),
         serde_json::json!({
             "type": "user",
             "user" : {
@@ -134,12 +130,13 @@ fn transaction_partner() {
         }),
     );
     assert_json_eq(
-        TransactionPartner::User {
-            user: User::new(1, "John", false),
-            invoice_payload: Some(String::from("invoice-payload")),
-            paid_media: Some(vec![PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))]),
-            paid_media_payload: Some(String::from("media-payload")),
-        },
+        TransactionPartner::User(
+            TransactionPartnerUserParameters::new(User::new(1, "John", false))
+                .with_invoice_payload(String::from("invoice-payload"))
+                .with_paid_media([PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))])
+                .with_paid_media_payload(String::from("media-payload"))
+                .with_subscription_period(1),
+        ),
         serde_json::json!({
             "type": "user",
             "user" : {
@@ -155,6 +152,7 @@ fn transaction_partner() {
                 }
             ],
             "paid_media_payload": "media-payload",
+            "subscription_period": 1,
         }),
     );
 }

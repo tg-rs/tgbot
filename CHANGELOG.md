@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.32.0 (17.11.2024)
+
+### Bot API
+
+#### 8.0
+
+- Added types: `EditUserStarSubscription`, `GetAvailableGifts`, `Gift`, `Gifts`, `PreparedInlineMessage`,
+  `SavePreparedInlineMessage`, `SendGift`, `SetUserEmojiStatus`, `TransactionPartnerUserParameters`.
+- Added fields:
+  - `SuccessfulPayment`: `is_first_recurring`, `is_recurring`, `subscription_expiration_date`.
+- Added methods:
+  - `CreateInvoiceLink`: `with_business_connection_id`, `with_subscription_period`.
+  - `SuccessfulPayment`: `with_is_first_recurring`, `with_is_recurring`, `with_subscription_expiration_date`.
+- Changed enum variants:
+  - `TransactionPartner::User`: Move all fields to `TransactionPartnerUserParameters`
+     with additional `gift` and `subscription_period` fields introduced in Bot API 8.0.
+
 ## 0.31.0 (01.11.2024)
 
 ### Dependencies

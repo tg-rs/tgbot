@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub use self::{checkout::*, invoice::*, order::*, refund::*, shipping::*, transaction::*};
+pub use self::{checkout::*, invoice::*, order::*, refund::*, shipping::*, subscription::*, transaction::*};
 use crate::types::Integer;
 
 #[cfg(test)]
@@ -11,6 +11,7 @@ mod invoice;
 mod order;
 mod refund;
 mod shipping;
+mod subscription;
 mod transaction;
 
 /// Represents a successful payment.

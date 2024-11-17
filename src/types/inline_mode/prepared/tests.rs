@@ -1,4 +1,7 @@
-use crate::types::{tests::assert_json_eq, PreparedInlineMessage};
+use crate::{
+    api::{assert_payload_eq, Payload},
+    types::{tests::assert_json_eq, InlineQueryResultContact, PreparedInlineMessage, SavePreparedInlineMessage},
+};
 
 #[test]
 fn prepared_inline_message() {
@@ -8,5 +11,48 @@ fn prepared_inline_message() {
             "id": "id",
             "expiration_date": 1,
         }),
+    );
+}
+
+#[test]
+fn save_prepared_inline_message() {
+    let method = SavePreparedInlineMessage::new(1, InlineQueryResultContact::new("test", "result-id", "+1000"));
+    assert_payload_eq(
+        Payload::json(
+            "savePreparedInlineMessage",
+            serde_json::json!({
+                "user_id": 1,
+                "result": {
+                    "type": "contact",
+                    "first_name": "test",
+                    "id": "result-id",
+                    "phone_number": "+1000",
+                },
+            }),
+        ),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "savePreparedInlineMessage",
+            serde_json::json!({
+                "user_id": 1,
+                "result": {
+                    "type": "contact",
+                    "first_name": "test",
+                    "id": "result-id",
+                    "phone_number": "+1000",
+                },
+                "allow_bot_chats": true,
+                "allow_channel_chats": true,
+                "allow_group_chats": true,
+                "allow_user_chats": true,
+            }),
+        ),
+        method
+            .with_allow_bot_chats(true)
+            .with_allow_channel_chats(true)
+            .with_allow_group_chats(true)
+            .with_allow_user_chats(true),
     );
 }

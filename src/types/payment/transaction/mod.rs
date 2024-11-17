@@ -97,6 +97,9 @@ impl StarTransaction {
 pub struct TransactionPartnerUserParameters {
     /// Information about the user.
     pub user: User,
+    /// The gift sent to the user by the bot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<String>,
     /// Bot-specified invoice payload.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_payload: Option<String>,
@@ -120,6 +123,7 @@ impl TransactionPartnerUserParameters {
     pub fn new(user: User) -> Self {
         Self {
             user,
+            gift: None,
             invoice_payload: None,
             paid_media: None,
             paid_media_payload: None,
@@ -127,7 +131,20 @@ impl TransactionPartnerUserParameters {
         }
     }
 
-    /// Sets a new invoice payload
+    /// Sets a new gift.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The gift sent to the user by the bot.
+    pub fn with_gift<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.gift = Some(value.into());
+        self
+    }
+
+    /// Sets a new invoice payload.
     ///
     /// # Arguments
     ///
@@ -140,7 +157,7 @@ impl TransactionPartnerUserParameters {
         self
     }
 
-    /// Sets a new paid media
+    /// Sets a new paid media.
     ///
     /// # Arguments
     ///
@@ -153,7 +170,7 @@ impl TransactionPartnerUserParameters {
         self
     }
 
-    /// Sets a new paid media payload
+    /// Sets a new paid media payload.
     ///
     /// # Arguments
     ///

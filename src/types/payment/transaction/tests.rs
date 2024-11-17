@@ -132,6 +132,7 @@ fn transaction_partner() {
     assert_json_eq(
         TransactionPartner::User(
             TransactionPartnerUserParameters::new(User::new(1, "John", false))
+                .with_gift("test-gift")
                 .with_invoice_payload(String::from("invoice-payload"))
                 .with_paid_media([PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))])
                 .with_paid_media_payload(String::from("media-payload"))
@@ -144,6 +145,7 @@ fn transaction_partner() {
                 "first_name": "John",
                 "is_bot": false
             },
+            "gift": "test-gift",
             "invoice_payload": "invoice-payload",
             "paid_media": [
                 {

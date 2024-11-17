@@ -12,6 +12,7 @@ pub use self::{
     file::*,
     forum::*,
     game::*,
+    gift::*,
     giveaway::*,
     inline_mode::*,
     link::*,
@@ -47,6 +48,7 @@ mod dice;
 mod file;
 mod forum;
 mod game;
+mod gift;
 mod giveaway;
 mod inline_mode;
 mod link;

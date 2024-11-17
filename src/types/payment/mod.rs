@@ -32,12 +32,21 @@ pub struct SuccessfulPayment {
     ///
     /// [1]: https://core.telegram.org/bots/payments/currencies.json
     pub total_amount: Integer,
+    /// Whether the payment is the first payment for a subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_first_recurring: Option<bool>,
+    /// Whether the payment is a recurring payment for a subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_recurring: Option<bool>,
     /// Order info provided by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_info: Option<OrderInfo>,
     /// Identifier of the shipping option chosen by the user.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_option_id: Option<String>,
+    /// Expiration date of the subscription, in Unix time; for recurring payments only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_expiration_date: Option<Integer>,
 }
 
 impl SuccessfulPayment {
@@ -68,10 +77,33 @@ impl SuccessfulPayment {
             invoice_payload: invoice_payload.into(),
             provider_payment_charge_id: provider_payment_charge_id.into(),
             telegram_payment_charge_id: telegram_payment_charge_id.into(),
+            is_first_recurring: None,
+            is_recurring: None,
             total_amount,
             order_info: None,
             shipping_option_id: None,
+            subscription_expiration_date: None,
         }
+    }
+
+    /// Sets a new value for an `is_first_recurring` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the payment is the first payment for a subscription.
+    pub fn with_is_first_recurring(mut self, value: bool) -> Self {
+        self.is_first_recurring = Some(value);
+        self
+    }
+
+    /// Sets a new value for an `is_recurring` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the payment is a recurring payment for a subscription.
+    pub fn with_is_recurring(mut self, value: bool) -> Self {
+        self.is_recurring = Some(value);
+        self
     }
 
     /// Sets a new order info.
@@ -94,6 +126,16 @@ impl SuccessfulPayment {
         T: Into<String>,
     {
         self.shipping_option_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new subscription expiration date
+    ///
+    /// # Arguments
+    ///
+    /// * `value` -  Expiration date of the subscription, in Unix time; for recurring payments only.
+    pub fn with_subscription_expiration_date(mut self, value: Integer) -> Self {
+        self.subscription_expiration_date = Some(value);
         self
     }
 }

@@ -6,8 +6,11 @@ fn successful_payment() {
     assert_json_eq(
         expected_struct
             .clone()
+            .with_is_first_recurring(true)
+            .with_is_recurring(true)
             .with_order_info(OrderInfo::default())
-            .with_shipping_option_id("option id"),
+            .with_shipping_option_id("option id")
+            .with_subscription_expiration_date(0),
         serde_json::json!({
             "currency": "RUB",
             "total_amount": 145,
@@ -15,7 +18,10 @@ fn successful_payment() {
             "shipping_option_id": "option id",
             "order_info": {},
             "telegram_payment_charge_id": "tg-charge-id",
-            "provider_payment_charge_id": "provider-charge-id"
+            "provider_payment_charge_id": "provider-charge-id",
+            "is_first_recurring": true,
+            "is_recurring": true,
+            "subscription_expiration_date": 0,
         }),
     );
     assert_json_eq(

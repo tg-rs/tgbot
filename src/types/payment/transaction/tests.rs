@@ -2,6 +2,8 @@ use crate::{
     api::{assert_payload_eq, Payload},
     types::{
         tests::assert_json_eq,
+        AffiliateInfo,
+        ChannelChat,
         GetStarTransactions,
         PaidMedia,
         PaidMediaPreview,
@@ -156,6 +158,7 @@ fn transaction_partner() {
     assert_json_eq(
         TransactionPartner::User(
             TransactionPartnerUserParameters::new(User::new(1, "John", false))
+                .with_affiliate(AffiliateInfo::new(1, 1))
                 .with_gift("test-gift")
                 .with_invoice_payload(String::from("invoice-payload"))
                 .with_paid_media([PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))])
@@ -169,6 +172,10 @@ fn transaction_partner() {
                 "first_name": "John",
                 "is_bot": false
             },
+            "affiliate": {
+                "amount": 1,
+                "commission_per_mille": 1,
+            },
             "gift": "test-gift",
             "invoice_payload": "invoice-payload",
             "paid_media": [
@@ -179,6 +186,39 @@ fn transaction_partner() {
             ],
             "paid_media_payload": "media-payload",
             "subscription_period": 1,
+        }),
+    );
+}
+
+#[test]
+fn affiliate_info() {
+    let expected_struct = AffiliateInfo::new(1, 1);
+    assert_json_eq(
+        expected_struct.clone(),
+        serde_json::json!({
+            "amount": 1,
+            "commission_per_mille": 1,
+        }),
+    );
+    assert_json_eq(
+        expected_struct
+            .with_affiliate_chat(ChannelChat::new(1, "test"))
+            .with_affiliate_user(User::new(1, "John", true))
+            .with_nanostar_amount(1),
+        serde_json::json!({
+            "amount": 1,
+            "commission_per_mille": 1,
+            "affiliate_chat": {
+                "type": "channel",
+                "id": 1,
+                "title": "test",
+            },
+            "affiliate_user": {
+                "id": 1,
+                "first_name": "John",
+                "is_bot": true,
+            },
+            "nanostar_amount": 1,
         }),
     );
 }

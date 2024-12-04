@@ -2,14 +2,14 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Integer, PaidMedia, User},
+    types::{Chat, Integer, PaidMedia, User},
 };
 
 #[cfg(test)]
 mod tests;
 
 /// Contains a list of Telegram Star transactions.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct StarTransactions {
     /// The list of transactions.
     pub transactions: Vec<StarTransaction>,
@@ -27,7 +27,7 @@ where
 }
 
 /// Describes a Telegram Star transaction.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct StarTransaction {
     amount: Integer,
     date: Integer,
@@ -136,11 +136,86 @@ impl TransactionPartnerAffiliateProgramParameters {
     }
 }
 
+/// Contains information about the affiliate that received a commission via this transaction.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct AffiliateInfo {
+    /// Integer amount of Telegram Stars received by the affiliate from the transaction,
+    /// rounded to 0; can be negative for refunds.
+    pub amount: Integer,
+    /// The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars
+    /// received by the bot from referred users.
+    pub commission_per_mille: Integer,
+    /// The chat that received an affiliate commission if it was received by a chat.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate_chat: Option<Chat>,
+    /// The bot or the user that received an affiliate commission if it was received by a bot or a user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate_user: Option<User>,
+    /// The number of 1/1000000000 shares of Telegram Stars received by the affiliate;
+    /// from -999999999 to 999999999; can be negative for refunds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nanostar_amount: Option<Integer>,
+}
+
+impl AffiliateInfo {
+    /// Creates a new `AffiliateInfo`.
+    ///
+    /// # Arguments
+    ///
+    /// * `amount` - Integer amount of Telegram Stars received by the affiliate from the transaction
+    /// * `comission_per_mille` - The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars
+    pub fn new(amount: Integer, commission_per_mille: Integer) -> Self {
+        Self {
+            amount,
+            commission_per_mille,
+            affiliate_chat: None,
+            affiliate_user: None,
+            nanostar_amount: None,
+        }
+    }
+
+    /// Sets a new affiliate chat.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The chat that received an affiliate commission if it was received by a chat.
+    pub fn with_affiliate_chat<T>(mut self, value: T) -> Self
+    where
+        T: Into<Chat>,
+    {
+        self.affiliate_chat = Some(value.into());
+        self
+    }
+
+    /// Sets a new affiliate user.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The bot or the user that received an affiliate commission if it was received by a bot or a user.
+    pub fn with_affiliate_user(mut self, value: User) -> Self {
+        self.affiliate_user = Some(value);
+        self
+    }
+
+    /// Sets a new nanostar amount.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of 1/1000000000 shares of Telegram Stars received by the affiliate.
+    pub fn with_nanostar_amount(mut self, value: Integer) -> Self {
+        self.nanostar_amount = Some(value);
+        self
+    }
+}
+
 /// Describes a transaction with a user.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TransactionPartnerUserParameters {
     /// Information about the user.
     pub user: User,
+    /// Information about the affiliate that received a commission via this transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affiliate: Option<AffiliateInfo>,
     /// The gift sent to the user by the bot.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<String>,
@@ -167,12 +242,23 @@ impl TransactionPartnerUserParameters {
     pub fn new(user: User) -> Self {
         Self {
             user,
+            affiliate: None,
             gift: None,
             invoice_payload: None,
             paid_media: None,
             paid_media_payload: None,
             subscription_period: None,
         }
+    }
+
+    /// Sets a new affiliate.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about the affiliate that received a commission via this transaction.
+    pub fn with_affiliate(mut self, value: AffiliateInfo) -> Self {
+        self.affiliate = Some(value);
+        self
     }
 
     /// Sets a new gift.
@@ -239,7 +325,7 @@ impl TransactionPartnerUserParameters {
 }
 
 /// Describes the source of a transaction, or its recipient for outgoing transactions.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(from = "RawTransactionPartner", into = "RawTransactionPartner")]
 pub enum TransactionPartner {
     /// Describes the affiliate program that issued the affiliate commission received via this transaction.
@@ -259,7 +345,7 @@ pub enum TransactionPartner {
     User(TransactionPartnerUserParameters),
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 enum RawTransactionPartner {
     AffiliateProgram(TransactionPartnerAffiliateProgramParameters),

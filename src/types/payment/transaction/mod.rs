@@ -101,6 +101,41 @@ impl StarTransaction {
     }
 }
 
+/// Describes the affiliate program that issued the affiliate commission received via this transaction.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct TransactionPartnerAffiliateProgramParameters {
+    /// The number of Telegram Stars received by the bot for each 1000 Telegram Stars
+    /// received by the affiliate program sponsor from referred users.
+    pub commission_per_mille: Integer,
+    /// Information about the bot that sponsored the affiliate program
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sponsor_user: Option<User>,
+}
+
+impl TransactionPartnerAffiliateProgramParameters {
+    /// Creates a new `TransactionPartnerAffiliateProgramParameters`.
+    ///
+    /// # Arguments
+    ///
+    /// * `commission_per_mille` - The number of Telegram Stars received by the bot.
+    pub fn new(commission_per_mille: Integer) -> Self {
+        Self {
+            commission_per_mille,
+            sponsor_user: None,
+        }
+    }
+
+    /// Sets a new sponsor user.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about the bot that sponsored the affiliate program.
+    pub fn with_sponsor_user(mut self, value: User) -> Self {
+        self.sponsor_user = Some(value);
+        self
+    }
+}
+
 /// Describes a transaction with a user.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct TransactionPartnerUserParameters {
@@ -207,6 +242,8 @@ impl TransactionPartnerUserParameters {
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(from = "RawTransactionPartner", into = "RawTransactionPartner")]
 pub enum TransactionPartner {
+    /// Describes the affiliate program that issued the affiliate commission received via this transaction.
+    AffiliateProgram(TransactionPartnerAffiliateProgramParameters),
     /// Describes a withdrawal transaction with Fragment.
     Fragment(Option<RevenueWithdrawalState>),
     /// Describes a transaction with an unknown source or recipient.
@@ -225,6 +262,7 @@ pub enum TransactionPartner {
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 enum RawTransactionPartner {
+    AffiliateProgram(TransactionPartnerAffiliateProgramParameters),
     Fragment {
         #[serde(skip_serializing_if = "Option::is_none")]
         withdrawal_state: Option<RevenueWithdrawalState>,
@@ -240,6 +278,7 @@ enum RawTransactionPartner {
 impl From<RawTransactionPartner> for TransactionPartner {
     fn from(value: RawTransactionPartner) -> Self {
         match value {
+            RawTransactionPartner::AffiliateProgram(parameters) => Self::AffiliateProgram(parameters),
             RawTransactionPartner::Fragment { withdrawal_state } => Self::Fragment(withdrawal_state),
             RawTransactionPartner::Other {} => Self::Other,
             RawTransactionPartner::TelegramAds {} => Self::TelegramAds,
@@ -252,6 +291,7 @@ impl From<RawTransactionPartner> for TransactionPartner {
 impl From<TransactionPartner> for RawTransactionPartner {
     fn from(value: TransactionPartner) -> Self {
         match value {
+            TransactionPartner::AffiliateProgram(parameters) => Self::AffiliateProgram(parameters),
             TransactionPartner::Fragment(withdrawal_state) => Self::Fragment { withdrawal_state },
             TransactionPartner::Other => Self::Other {},
             TransactionPartner::TelegramAds => Self::TelegramAds {},

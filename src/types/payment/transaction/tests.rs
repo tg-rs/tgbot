@@ -9,6 +9,7 @@ use crate::{
         StarTransaction,
         StarTransactions,
         TransactionPartner,
+        TransactionPartnerAffiliateProgramParameters,
         TransactionPartnerUserParameters,
         User,
     },
@@ -98,6 +99,27 @@ fn star_transactions() {
 
 #[test]
 fn transaction_partner() {
+    assert_json_eq(
+        TransactionPartner::AffiliateProgram(TransactionPartnerAffiliateProgramParameters::new(1)),
+        serde_json::json!({
+            "type": "affiliate_program",
+            "commission_per_mille": 1,
+        }),
+    );
+    assert_json_eq(
+        TransactionPartner::AffiliateProgram(
+            TransactionPartnerAffiliateProgramParameters::new(1).with_sponsor_user(User::new(1, "John", true)),
+        ),
+        serde_json::json!({
+            "type": "affiliate_program",
+            "commission_per_mille": 1,
+            "sponsor_user": {
+                "id": 1,
+                "first_name": "John",
+                "is_bot": true,
+            }
+        }),
+    );
     assert_json_eq(
         TransactionPartner::Fragment(None),
         serde_json::json!({"type": "fragment"}),

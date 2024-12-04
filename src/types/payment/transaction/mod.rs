@@ -29,23 +29,13 @@ where
 /// Describes a Telegram Star transaction.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct StarTransaction {
-    /// Number of Telegram Stars transferred by the transaction.
     amount: Integer,
-    /// Date the transaction was created in Unix time.
     date: Integer,
-    /// Unique identifier of the transaction.
-    ///
-    /// Coincides with the identifer of the original transaction for refund transactions.
-    /// Coincides with `telegram_payment_charge_id` of [`crate::types::SuccessfulPayment`] for successful incoming payments from users.
     id: String,
-    /// Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal).
-    ///
-    /// Only for incoming transactions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    nanostar_amount: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
     source: Option<TransactionPartner>,
-    ///  Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal).
-    ///
-    /// Only for outgoing transactions.
     #[serde(skip_serializing_if = "Option::is_none")]
     receiver: Option<TransactionPartner>,
 }
@@ -58,6 +48,9 @@ impl StarTransaction {
     /// * `amount` - Number of Telegram Stars transferred by the transaction.
     /// * `date` - Date the transaction was created in Unix time.
     /// * `id` -  Unique identifier of the transaction.
+    ///           Coincides with the identifer of the original transaction for refund transactions.
+    ///           Coincides with `telegram_payment_charge_id` of [`crate::types::SuccessfulPayment`]
+    ///           for successful incoming payments from users.
     pub fn new<T>(amount: Integer, date: Integer, id: T) -> Self
     where
         T: Into<String>,
@@ -66,9 +59,21 @@ impl StarTransaction {
             amount,
             date,
             id: id.into(),
+            nanostar_amount: None,
             source: None,
             receiver: None,
         }
+    }
+
+    /// Sets a new nanostar amount.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of 1/1000000000 shares of Telegram Stars transferred by the transaction;
+    ///             from 0 to 999999999.
+    pub fn with_nanostar_amount(mut self, value: Integer) -> Self {
+        self.nanostar_amount = Some(value);
+        self
     }
 
     /// Sets a new source.
@@ -76,6 +81,8 @@ impl StarTransaction {
     /// # Arguments
     ///
     /// * `value` - Source of an incoming transaction.
+    ///             E.g., a user purchasing goods or services, Fragment refunding a failed withdrawal.
+    ///             Only for incoming transactions.
     pub fn with_source(mut self, value: TransactionPartner) -> Self {
         self.source = Some(value);
         self
@@ -86,6 +93,8 @@ impl StarTransaction {
     /// # Arguments
     ///
     /// * `value` - Receiver of an outgoing transaction.
+    ///             E.g., a user for a purchase refund, Fragment for a withdrawal.
+    ///             Only for outgoing transactions.
     pub fn with_receiver(mut self, value: TransactionPartner) -> Self {
         self.receiver = Some(value);
         self

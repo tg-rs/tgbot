@@ -60,6 +60,7 @@ fn star_transaction() {
     );
 
     expected_struct = expected_struct
+        .with_nanostar_amount(233)
         .with_source(TransactionPartner::Other)
         .with_receiver(TransactionPartner::Other);
     assert_json_eq(
@@ -68,6 +69,7 @@ fn star_transaction() {
             "amount": 10,
             "date": 0,
             "id": "tx-id",
+            "nanostar_amount": 233,
             "source": {
                 "type": "other"
             },

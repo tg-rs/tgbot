@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.33.0 (04.12.2024)
+
+### Dependencies
+
+- bytes 1.9
+- tokio 1.42
+
+### Bot API
+
+#### 8.1
+
+- Added types: `AffiliateInfo`, `TransactionPartnerAffiliateProgramParameters`.
+- Added fields:
+  - `TransactionPartnerUserParameters`: `affiliate`.
+- Added enum variants:
+  - `TransactionPartner`: `AffiliateProgram`.
+- Added methods:
+  - `StarTransaction`: `with_nanostar_amount`.
+  - `TransactionPartnerUserParameters`: `with_affiliate`.
+
 ## 0.32.0 (17.11.2024)
 
 ### Bot API

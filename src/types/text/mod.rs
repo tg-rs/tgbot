@@ -104,7 +104,7 @@ impl<'a> From<&'a Text> for TextRepr<'a> {
     }
 }
 
-impl<'a> TextRepr<'a> {
+impl TextRepr<'_> {
     fn get_entity_content(&self, position: TextEntityPosition) -> String {
         let (offset, length) = (position.offset as usize, position.length as usize);
         String::from_utf16_lossy(&self.iter.clone().skip(offset).take(length).collect::<Vec<u16>>())

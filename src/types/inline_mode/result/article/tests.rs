@@ -15,7 +15,6 @@ fn inline_query_result_article() {
                 .clone()
                 .with_description("desc")
                 .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-                .with_hide_url(true)
                 .with_thumbnail_url("thumb-url")
                 .with_thumbnail_width(200)
                 .with_thumbnail_height(200)
@@ -28,7 +27,6 @@ fn inline_query_result_article() {
             "input_message_content": {"message_text": "text"},
             "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
             "url": "URL",
-            "hide_url": true,
             "description": "desc",
             "thumbnail_url": "thumb-url",
             "thumbnail_width": 200,

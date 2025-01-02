@@ -20,8 +20,6 @@ pub struct InlineQueryResultArticle {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    hide_url: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_height: Option<Integer>,
@@ -52,7 +50,6 @@ impl InlineQueryResultArticle {
             input_message_content: input_message_content.into(),
             title: title.into(),
             description: None,
-            hide_url: None,
             reply_markup: None,
             thumbnail_url: None,
             thumbnail_width: None,
@@ -71,16 +68,6 @@ impl InlineQueryResultArticle {
         T: Into<String>,
     {
         self.description = Some(value.into());
-        self
-    }
-
-    /// Sets a new value for a `hide_url` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the URL must to be shown in the message.
-    pub fn with_hide_url(mut self, value: bool) -> Self {
-        self.hide_url = Some(value);
         self
     }
 
@@ -133,6 +120,7 @@ impl InlineQueryResultArticle {
     /// Sets a new URL.
     ///
     /// * `value` - URL of the result.
+    ///             Pass an empty string to hide the URL.
     pub fn with_url<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -148,7 +136,6 @@ impl TryFrom<RawInlineQueryResult> for InlineQueryResultArticle {
     fn try_from(value: RawInlineQueryResult) -> Result<Self, Self::Error> {
         Ok(Self {
             description: value.data.description,
-            hide_url: value.data.hide_url,
             id: value.id,
             input_message_content: value.data.input_message_content.ok_or(MissingField("content"))?,
             reply_markup: value.data.reply_markup,
@@ -166,7 +153,6 @@ impl From<InlineQueryResultArticle> for RawInlineQueryResult {
         Self {
             data: RawInlineQueryResultData {
                 description: value.description,
-                hide_url: value.hide_url,
                 input_message_content: Some(value.input_message_content),
                 reply_markup: value.reply_markup,
                 thumbnail_url: value.thumbnail_url,

@@ -105,8 +105,6 @@ pub(super) struct RawInlineQueryResultData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) heading: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(super) hide_url: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) horizontal_accuracy: Option<Float>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) input_message_content: Option<InputMessageContent>,

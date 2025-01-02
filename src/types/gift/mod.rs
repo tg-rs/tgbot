@@ -25,6 +25,9 @@ pub struct Gift {
     /// for limited gifts only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_count: Option<Integer>,
+    /// The number of Telegram Stars that must be paid to upgrade the gift to a unique one.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upgrade_star_count: Option<Integer>,
 }
 
 impl Gift {
@@ -45,6 +48,7 @@ impl Gift {
             star_count,
             total_count: None,
             remaining_count: None,
+            upgrade_star_count: None,
         }
     }
 
@@ -65,6 +69,16 @@ impl Gift {
     /// * `value` - The total number of the gifts of this type that can be sent.
     pub fn with_total_count(mut self, value: Integer) -> Self {
         self.total_count = Some(value);
+        self
+    }
+
+    /// Sets a new upgrade star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of Telegram Stars that must be paid to upgrade the gift to a unique one.
+    pub fn with_upgrade_star_count(mut self, value: Integer) -> Self {
+        self.upgrade_star_count = Some(value);
         self
     }
 }

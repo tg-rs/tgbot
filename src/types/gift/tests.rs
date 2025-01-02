@@ -28,7 +28,10 @@ fn gift() {
         }),
     );
     assert_json_eq(
-        expected_struct.with_remaining_count(10).with_total_count(20),
+        expected_struct
+            .with_remaining_count(10)
+            .with_total_count(20)
+            .with_upgrade_star_count(30),
         serde_json::json!({
             "id": "id",
             "sticker": {
@@ -43,6 +46,7 @@ fn gift() {
             "star_count": 100,
             "remaining_count": 10,
             "total_count": 20,
+            "upgrade_star_count": 30,
         }),
     );
 }

@@ -14,7 +14,7 @@ webhook = ["dep:axum"]
 
 [dependencies]
 async-stream = "0.3"
-axum = { version = "0.7", optional = true }
+axum = { version = "0.8", optional = true }
 bytes = "1.9"
 derive_more = { version = "1.0", features = ["from"] }
 futures-util = "0.3"

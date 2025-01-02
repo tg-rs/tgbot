@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.34.0 (02.01.2025)
+
+### Dependencies
+
+- axum 0.8
+
+### Bot API
+
+#### 8.2
+
+- Added types: `RemoveChatVerification`, `RemoveUserVerification`, `VerifyChat`, `VerifyUser`.
+- Added fields:
+  - `Gift`: `upgrade_star_count`.
+- Added methods:
+  - `Gift`: `with_upgrade_star_count`.
+  - `SendGift`: `with_pay_for_upgrade`.
+- Removed methods:
+  - `InlineQueryResultArticle`: `with_hide_url`.
+
 ## 0.33.0 (04.12.2024)
 
 ### Dependencies

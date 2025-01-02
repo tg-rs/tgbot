@@ -98,13 +98,17 @@ fn send_gift() {
         ),
         method.clone(),
     );
-    let method = method.with_text("test").with_text_parse_mode(ParseMode::Markdown);
+    let method = method
+        .with_pay_for_upgrade(true)
+        .with_text("test")
+        .with_text_parse_mode(ParseMode::Markdown);
     assert_payload_eq(
         Payload::json(
             "sendGift",
             serde_json::json!({
                 "user_id": 1,
                 "gift_id": "test",
+                "pay_for_upgrade": true,
                 "text": "test",
                 "text_parse_mode": "Markdown",
             }),
@@ -118,6 +122,7 @@ fn send_gift() {
             serde_json::json!({
                 "user_id": 1,
                 "gift_id": "test",
+                "pay_for_upgrade": true,
                 "text": "test",
                 "text_entities": [
                     {
@@ -136,6 +141,7 @@ fn send_gift() {
             serde_json::json!({
                 "user_id": 1,
                 "gift_id": "test",
+                "pay_for_upgrade": true,
                 "text": "test",
                 "text_parse_mode": "Markdown",
             }),

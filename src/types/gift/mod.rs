@@ -120,6 +120,8 @@ pub struct SendGift {
     user_id: Integer,
     gift_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pay_for_upgrade: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     text_parse_mode: Option<ParseMode>,
@@ -141,10 +143,22 @@ impl SendGift {
         Self {
             user_id,
             gift_id: gift_id.into(),
+            pay_for_upgrade: None,
             text: None,
             text_parse_mode: None,
             text_entities: None,
         }
+    }
+
+    /// Sets a new value for a `pay_for_upgrade` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to pay for the gift upgrade from the bot's balance,
+    ///             thereby making the upgrade free for the receiver.
+    pub fn with_pay_for_upgrade(mut self, value: bool) -> Self {
+        self.pay_for_upgrade = Some(value);
+        self
     }
 
     /// Sets a new text.

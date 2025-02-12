@@ -62,7 +62,7 @@ fn input_media_form() {
 }
 
 #[test]
-fn create_input_media() {
+fn create_input_media_animation() {
     InputMedia::new(InputMediaType::for_animation(
         InputFile::file_id("animation-file-id"),
         InputMediaAnimation::default().with_caption("test"),
@@ -79,6 +79,17 @@ fn create_input_media() {
     )
     .unwrap();
 
+    let err = InputMediaType::for_animation(
+        InputFileReader::from(Cursor::new("animation-file-data")),
+        InputMediaAnimation::default(),
+    )
+    .with_cover(InputFile::file_id("cover-id"))
+    .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
+}
+
+#[test]
+fn create_input_media_audio() {
     InputMedia::new(InputMediaType::for_audio(
         InputFile::file_id("audio-file-id"),
         InputMediaAudio::default().with_caption("test"),
@@ -95,6 +106,17 @@ fn create_input_media() {
     )
     .unwrap();
 
+    let err = InputMediaType::for_audio(
+        InputFile::file_id("audio-file-id"),
+        InputMediaAudio::default().with_caption("test"),
+    )
+    .with_cover(InputFile::file_id("cover-id"))
+    .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
+}
+
+#[test]
+fn create_input_media_document() {
     InputMedia::new(InputMediaType::for_document(
         InputFile::file_id("audio-file-id"),
         InputMediaDocument::default().with_caption("test"),
@@ -111,6 +133,17 @@ fn create_input_media() {
     )
     .unwrap();
 
+    let err = InputMediaType::for_document(
+        InputFile::file_id("audio-file-id"),
+        InputMediaDocument::default().with_caption("test"),
+    )
+    .with_cover(InputFile::file_id("cover-id"))
+    .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
+}
+
+#[test]
+fn create_input_media_photo() {
     InputMedia::new(InputMediaType::for_photo(
         InputFile::file_id("photo-file-id"),
         InputMediaPhoto::default().with_caption("test"),
@@ -124,6 +157,17 @@ fn create_input_media() {
     .unwrap_err();
     assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
 
+    let err = InputMediaType::for_photo(
+        InputFile::file_id("photo-file-id"),
+        InputMediaPhoto::default().with_caption("test"),
+    )
+    .with_cover(InputFile::file_id("cover-id"))
+    .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
+}
+
+#[test]
+fn create_input_media_video() {
     InputMedia::new(InputMediaType::for_video(
         InputFile::file_id("video-file-id"),
         InputMediaVideo::default().with_caption("test"),
@@ -136,6 +180,8 @@ fn create_input_media() {
             InputMediaVideo::default(),
         )
         .with_thumbnail(InputFileReader::from(Cursor::new("video-thumb-data")))
+        .unwrap()
+        .with_cover(InputFile::file_id("cover-id"))
         .unwrap(),
     )
     .unwrap();

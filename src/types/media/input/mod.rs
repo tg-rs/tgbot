@@ -133,10 +133,44 @@ impl InputMediaType {
             form,
             data: InputMediaData::Video {
                 media,
+                cover: None,
                 thumbnail: None,
                 info,
             },
         }
+    }
+
+    /// Sets a new cover for the media type.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The new thumbnail.
+    ///
+    /// # Errors
+    ///
+    /// It is considered an error when the media type is not a video.
+    pub fn with_cover<T>(mut self, value: T) -> Result<Self, InputMediaError>
+    where
+        T: Into<InputFile>,
+    {
+        match &mut self.data {
+            InputMediaData::Animation { .. }
+            | InputMediaData::Audio { .. }
+            | InputMediaData::Document { .. }
+            | InputMediaData::Photo { .. } => return Err(InputMediaError::CoverNotAcceptable),
+            InputMediaData::Video { cover, .. } => {
+                let new_cover = match value.into() {
+                    InputFile::Id(text) | InputFile::Url(text) => text,
+                    value => {
+                        let key = "tgbot_im_cover";
+                        self.form.insert_field(key, value);
+                        format!("attach://{}", key)
+                    }
+                };
+                *cover = Some(new_cover);
+            }
+        };
+        Ok(self)
     }
 
     /// Sets a new thumbnail for the media type.
@@ -228,6 +262,8 @@ enum InputMediaData {
     Video {
         media: String,
         #[serde(skip_serializing_if = "Option::is_none")]
+        cover: Option<String>,
+        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaVideo,
@@ -237,6 +273,8 @@ enum InputMediaData {
 /// An error occurred with [`InputMedia`].
 #[derive(Debug)]
 pub enum InputMediaError {
+    /// Can not set a cover for the media type.
+    CoverNotAcceptable,
     /// Can not serialize media info.
     SerializeInfo(JsonError),
     /// Can not set a thumbnail for the media type.
@@ -246,6 +284,7 @@ pub enum InputMediaError {
 impl Error for InputMediaError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
+            Self::CoverNotAcceptable => None,
             Self::SerializeInfo(err) => Some(err),
             Self::ThumbnailNotAcceptable => None,
         }
@@ -255,6 +294,7 @@ impl Error for InputMediaError {
 impl fmt::Display for InputMediaError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            Self::CoverNotAcceptable => write!(out, "can not set a cover"),
             Self::SerializeInfo(err) => write!(out, "failed to serialize input media info: {}", err),
             Self::ThumbnailNotAcceptable => write!(out, "can not set a thumbnail"),
         }

@@ -259,6 +259,20 @@ impl SendVideo {
         self
     }
 
+    /// Sets a new cover.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Cover for the video in the message.
+    pub fn with_cover<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputFile>,
+    {
+        let value = value.into();
+        self.form.insert_field("cover", value);
+        self
+    }
+
     /// Sets a new value for a `disable_notification` flag.
     ///
     /// # Arguments
@@ -366,6 +380,16 @@ impl SendVideo {
     /// `value` - Whether the caption must be shown above the message media.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.form.insert_field("show_caption_above_media", value);
+        self
+    }
+
+    /// Sets a new start timestamp.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Start timestamp for the video in the message.
+    pub fn with_start_timestamp(mut self, value: Integer) -> Self {
+        self.form.insert_field("start_timestamp", value);
         self
     }
 

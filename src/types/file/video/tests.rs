@@ -102,6 +102,8 @@ fn send_video() {
                 ),
                 ("reply_parameters", reply_parameters.serialize().unwrap().into()),
                 ("show_caption_above_media", true.into()),
+                ("start_timestamp", 20.into()),
+                ("cover", InputFile::file_id("cover-id").into()),
             ]),
         ),
         SendVideo::new(1, InputFile::file_id("file-id"))
@@ -124,7 +126,9 @@ fn send_video() {
             .with_supports_streaming(true)
             .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
             .unwrap()
-            .with_width(200),
+            .with_width(200)
+            .with_start_timestamp(20)
+            .with_cover(InputFile::file_id("cover-id")),
     );
 }
 

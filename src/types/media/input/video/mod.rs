@@ -6,27 +6,18 @@ use crate::types::{Integer, ParseMode, TextEntities, TextEntity};
 mod tests;
 
 /// Represents a video to be sent.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMediaVideo {
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     has_spoiler: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     start_timestamp: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     show_caption_above_media: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     supports_streaming: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     width: Option<Integer>,
 }
 

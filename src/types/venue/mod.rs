@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents a venue.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Venue {
     /// Address of the venue.
@@ -18,21 +19,17 @@ pub struct Venue {
     /// Name of the venue.
     pub title: String,
     /// Foursquare identifier.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_id: Option<String>,
     /// Foursquare type.
     ///
     /// Example: “arts_entertainment/default”,
     /// “arts_entertainment/aquarium” or “food/ice-cream”.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_type: Option<String>,
     /// Google Places identifier.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub google_place_id: Option<String>,
     /// Google Places type.
     ///
     /// <https://developers.google.com/places/web-service/supported_types>
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub google_place_type: Option<String>,
 }
 
@@ -119,6 +116,7 @@ impl Venue {
 }
 
 /// Sends information about a venue.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendVenue {
     chat_id: ChatId,
@@ -126,29 +124,17 @@ pub struct SendVenue {
     longitude: Float,
     title: String,
     address: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_paid_broadcast: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     google_place_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     google_place_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_effect_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
 }
 

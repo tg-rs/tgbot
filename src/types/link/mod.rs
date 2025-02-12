@@ -4,22 +4,18 @@ use serde::{Deserialize, Serialize};
 mod tests;
 
 /// Represents the options used for link preview generation.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct LinkPreviewOptions {
     /// Whether the link preview is disabled.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_disabled: Option<bool>,
     /// Whether the media in the link preview is suppposed to be enlarged.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prefer_large_media: Option<bool>,
     /// Whether the media in the link preview is suppposed to be shrunk.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prefer_small_media: Option<bool>,
     /// Whether the link preview must be shown above the message text.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub show_above_text: Option<bool>,
     /// URL to use for the link preview.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 

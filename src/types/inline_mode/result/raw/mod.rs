@@ -60,125 +60,67 @@ pub(super) struct RawInlineQueryResult {
     pub(super) result_type: RawInlineQueryResultType,
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub(super) struct RawInlineQueryResultData {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) address: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) audio_duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) audio_file_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) audio_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) document_file_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) document_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) first_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) foursquare_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) foursquare_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) game_short_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) gif_duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) gif_file_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) gif_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) gif_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) gif_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) google_place_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) google_place_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) heading: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) horizontal_accuracy: Option<Float>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) last_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) latitude: Option<Float>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) live_period: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) longitude: Option<Float>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) mime_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) mpeg4_duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) mpeg4_file_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) mpeg4_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) mpeg4_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) mpeg4_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) performer: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) photo_file_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) photo_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) phone_number: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) photo_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) photo_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) proximity_alert_radius: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) show_caption_above_media: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) sticker_file_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) thumbnail_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) thumbnail_mime_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) thumbnail_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) thumbnail_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) title: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) vcard: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) video_duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) video_file_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) video_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) video_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) video_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) voice_duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) voice_file_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) voice_url: Option<String>,
 }
 

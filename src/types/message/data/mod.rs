@@ -258,6 +258,7 @@ impl MessageDataAutoDeleteTimer {
 
 /// Represents an audio message data.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde_with::skip_serializing_none]
 pub struct MessageDataAudio {
     /// Audio data.
     #[serde(rename = "audio")]
@@ -266,8 +267,7 @@ pub struct MessageDataAudio {
     #[serde(
         flatten,
         deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value",
-        skip_serializing_if = "Option::is_none"
+        serialize_with = "RawCaption::serialize_value"
     )]
     pub caption: Option<Text>,
 }
@@ -299,6 +299,7 @@ impl MessageDataAudio {
 /// Represents an information about the chat
 /// whose identifier was shared with the bot
 /// using a [`crate::types::KeyboardButtonRequestChat`] button.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MessageDataChatShared {
     /// Identifier of the shared chat.
@@ -309,13 +310,10 @@ pub struct MessageDataChatShared {
     /// Identifier of the request.
     pub request_id: Integer,
     /// Available sizes of the chat photo, if the photo was requested by the bot.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<Vec<PhotoSize>>,
     /// Title of the chat, if the title was requested by the bot.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     /// Username of the chat, if the username was requested by the bot and available.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
@@ -377,6 +375,7 @@ impl MessageDataChatShared {
 }
 
 /// Represents an document message data.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageDataDocument {
     /// Document data.
@@ -386,8 +385,7 @@ pub struct MessageDataDocument {
     #[serde(
         flatten,
         deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value",
-        skip_serializing_if = "Option::is_none"
+        serialize_with = "RawCaption::serialize_value"
     )]
     pub caption: Option<Text>,
 }
@@ -417,6 +415,7 @@ impl MessageDataDocument {
 }
 
 /// Represents a service message about a new forum topic created in the chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MessageDataForumTopicCreated {
     /// Color of the icon of the topic.
@@ -424,7 +423,6 @@ pub struct MessageDataForumTopicCreated {
     /// Name of the topic.
     pub name: String,
     /// Unique identifier of the custom emoji shown as the topic icon.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_custom_emoji_id: Option<String>,
 }
 
@@ -462,14 +460,13 @@ impl MessageDataForumTopicCreated {
 }
 
 /// Represents a service message about an edited forum topic.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MessageDataForumTopicEdited {
     /// New name, if it was edited.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// New identifier of the custom emoji shown as the topic icon,
     /// if it was edited; an empty string if the icon was removed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_custom_emoji_id: Option<String>,
 }
 
@@ -502,6 +499,7 @@ impl MessageDataForumTopicEdited {
 }
 
 /// Represents a list of available sizes of the photo.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageDataPhoto {
     /// Photo sizes.
@@ -511,8 +509,7 @@ pub struct MessageDataPhoto {
     #[serde(
         flatten,
         deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value",
-        skip_serializing_if = "Option::is_none"
+        serialize_with = "RawCaption::serialize_value"
     )]
     pub caption: Option<Text>,
 }
@@ -604,6 +601,7 @@ impl MessageDataUsersShared {
 }
 
 /// Represents a video message data.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageDataVideo {
     /// Video data.
@@ -613,8 +611,7 @@ pub struct MessageDataVideo {
     #[serde(
         flatten,
         deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value",
-        skip_serializing_if = "Option::is_none"
+        serialize_with = "RawCaption::serialize_value"
     )]
     pub caption: Option<Text>,
 }
@@ -662,10 +659,10 @@ impl MessageDataVideoChatEnded {
 }
 
 /// A service message about new members invited to a video chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct MessageDataVideoChatParticipantsInvited {
     /// New members that were invited to the voice chat.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<User>>,
 }
 
@@ -713,6 +710,7 @@ impl MessageDataVideoChatScheduled {
 }
 
 /// Message is a voice message, information about the file.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageDataVoice {
     /// Voice data.
@@ -722,8 +720,7 @@ pub struct MessageDataVoice {
     #[serde(
         flatten,
         deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value",
-        skip_serializing_if = "Option::is_none"
+        serialize_with = "RawCaption::serialize_value"
     )]
     pub caption: Option<Text>,
 }
@@ -757,18 +754,16 @@ impl MessageDataVoice {
 /// launching a Web App from a link,
 /// or accepting an explicit request from a Web App
 /// sent by the method `requestWriteAccess`.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MessageDataWriteAccess {
     /// Indicates whether access was granted when the bot was added to the attachment or side menu.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub from_attachment_menu: Option<bool>,
     /// Indicates whether access was granted after the user accepted an explicit request
     /// from a Web App sent by the method `requestWriteAccess`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub from_request: Option<bool>,
     /// Name of the Web App,
     /// if the access was granted when the Web App was launched from a link.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub web_app_name: Option<String>,
 }
 

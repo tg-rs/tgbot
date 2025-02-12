@@ -22,6 +22,7 @@ use crate::{
 mod tests;
 
 /// Represents a voice file.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Voice {
     /// Duration in seconds as defined by sender.
@@ -36,10 +37,8 @@ pub struct Voice {
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
     /// File size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// MIME type as defined by sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
 }
 

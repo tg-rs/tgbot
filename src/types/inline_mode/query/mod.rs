@@ -11,6 +11,7 @@ mod tests;
 /// Represents an incoming inline query.
 ///
 /// When the user sends an empty query, your bot could return some default or trending results.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InlineQuery {
     /// Sender of the query.
@@ -28,10 +29,8 @@ pub struct InlineQuery {
     /// The chat type should be always known for requests sent from official
     /// clients and most third-party clients,
     /// unless the request was sent from a secret chat.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_type: Option<InlineQueryChatType>,
     /// Sender location, only for bots that request user location.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<Location>,
 }
 
@@ -100,17 +99,14 @@ pub enum InlineQueryChatType {
 /// Sends an answer to an inline query.
 ///
 /// No more than 50 results per query are allowed.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct AnswerInlineQuery {
     inline_query_id: String,
     results: Vec<InlineQueryResult>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     button: Option<InlineQueryResultsButton>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     is_personal: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     next_offset: Option<String>,
 }
 

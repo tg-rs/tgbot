@@ -91,25 +91,18 @@ impl fmt::Display for DiceType {
 }
 
 /// Sends a dice.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendDice {
     chat_id: ChatId,
     emoji: DiceType,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_paid_broadcast: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_effect_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
 }
 

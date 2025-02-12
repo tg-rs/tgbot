@@ -6,6 +6,7 @@ use crate::types::{Integer, Text, TextEntities};
 mod tests;
 
 /// Contains information about the quoted part of a message that is replied to by the given message.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct TextQuote {
     /// Approximate quote position in the original message in UTF-16 code units as specified by the sender.
@@ -18,7 +19,6 @@ pub struct TextQuote {
     )]
     pub text: Text,
     /// Whether the quote was chosen manually by the message sender or was added automatically by the server.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_manual: Option<bool>,
 }
 
@@ -52,10 +52,10 @@ impl TextQuote {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Deserialize, Serialize)]
 struct RawText {
     text: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     entities: Option<TextEntities>,
 }
 

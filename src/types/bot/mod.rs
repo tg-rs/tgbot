@@ -11,6 +11,7 @@ use crate::{
 mod tests;
 
 /// Represents information about a bot returned in [`GetBot`].
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Bot {
     /// The first name of the bot.
@@ -28,7 +29,6 @@ pub struct Bot {
     /// Indicates whether the bot has a main Web App.
     pub has_main_web_app: bool,
     /// The last name of the bot.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
     /// Indicates whether the bot supports inline queries.
     pub supports_inline_queries: bool,
@@ -397,11 +397,10 @@ impl Method for Close {
 /// Deletes a list of a bot commands of a given scope and user language.
 ///
 /// After deletion, higher level commands will be shown to affected users.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct DeleteBotCommands {
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     scope: Option<BotCommandScope>,
 }
 
@@ -451,11 +450,10 @@ impl Method for GetBot {
 }
 
 /// Returns the current list of bot commands.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotCommands {
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     scope: Option<BotCommandScope>,
 }
 
@@ -493,9 +491,9 @@ impl Method for GetBotCommands {
 }
 
 /// Returns the current default administrator rights of a bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Default, Serialize)]
 pub struct GetBotDefaultAdministratorRights {
-    #[serde(skip_serializing_if = "Option::is_none")]
     for_channels: Option<bool>,
 }
 
@@ -520,9 +518,9 @@ impl Method for GetBotDefaultAdministratorRights {
 }
 
 /// Returns the current description of a bot for a given user language.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotDescription {
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
 }
 
@@ -550,9 +548,9 @@ impl Method for GetBotDescription {
 }
 
 /// Returns the current name of a bot for a given user language.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotName {
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
 }
 
@@ -580,9 +578,9 @@ impl Method for GetBotName {
 }
 
 /// Returns the current short description of a bot for a given user language.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetBotShortDescription {
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
 }
 
@@ -628,12 +626,11 @@ impl Method for LogOut {
 }
 
 /// Changes a list of commands of a bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetBotCommands {
     commands: Vec<BotCommand>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     scope: Option<BotCommandScope>,
 }
 
@@ -691,11 +688,10 @@ impl Method for SetBotCommands {
 ///
 /// These rights will be suggested to users,
 /// but they are free to modify the list before adding the bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Default, Serialize)]
 pub struct SetBotDefaultAdministratorRights {
-    #[serde(skip_serializing_if = "Option::is_none")]
     for_channels: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     rights: Option<ChatAdministratorRights>,
 }
 
@@ -731,11 +727,10 @@ impl Method for SetBotDefaultAdministratorRights {
 }
 
 /// Changes the description of a bot, which is shown in a chat with the bot if the chat is empty.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct SetBotDescription {
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
 }
 
@@ -780,11 +775,10 @@ impl Method for SetBotDescription {
 }
 
 /// Changes the name of a bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct SetBotName {
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
 
@@ -830,11 +824,10 @@ impl Method for SetBotName {
 
 /// Changes the short description of a bot, which is shown on the bot profile page
 /// and is sent together with the link when users share the bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct SetBotShortDescription {
-    #[serde(skip_serializing_if = "Option::is_none")]
     language_code: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     short_description: Option<String>,
 }
 

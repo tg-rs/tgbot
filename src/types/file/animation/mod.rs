@@ -25,6 +25,7 @@ use crate::{
 mod tests;
 
 /// Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Animation {
     /// Duration in seconds as defined by sender.
@@ -43,16 +44,12 @@ pub struct Animation {
     /// Width as defined by sender.
     pub width: Integer,
     /// Original filename as defined by sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
     /// File size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// MIME type as defined by sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// Thumbnail as defined by sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 

@@ -17,32 +17,22 @@ mod tests;
 /// will be sent by the user with optional caption.
 /// Alternatively, you can use [Self::with_input_message_content]
 /// to send a message with the specified content instead of the animation.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultGif {
     gif_url: String,
     id: String,
     thumbnail_url: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     gif_duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     gif_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     gif_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     show_caption_above_media: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_mime_type: Option<String>,
 }
 
@@ -220,23 +210,17 @@ impl InlineQueryResultGif {
 /// By default, this animated GIF file will be sent by the user with an optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send
 /// a message with specified content instead of the animation.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedGif {
     gif_file_id: String,
     id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     show_caption_above_media: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
 }
 

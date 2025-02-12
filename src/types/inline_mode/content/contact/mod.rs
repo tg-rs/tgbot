@@ -6,13 +6,12 @@ use crate::types::Contact;
 mod tests;
 
 /// Represents a contact message to be sent as the result of an inline query.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentContact {
     first_name: String,
     phone_number: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     last_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     vcard: Option<String>,
 }
 

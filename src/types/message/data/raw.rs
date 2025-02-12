@@ -24,10 +24,10 @@ impl RawDataBoostAdded {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Deserialize, Serialize)]
 pub(super) struct RawCaption {
     caption: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
 }
 
@@ -96,10 +96,10 @@ impl RawDataFlag {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Deserialize, Serialize)]
 pub(super) struct RawDataText {
     text: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     entities: Option<TextEntities>,
 }
 

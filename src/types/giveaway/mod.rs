@@ -6,6 +6,7 @@ use crate::types::{Chat, Integer, Message, User};
 mod tests;
 
 /// Represents a message about a scheduled giveaway.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Giveaway {
     /// The list of chats which the user must join to participate in the giveaway.
@@ -19,23 +20,17 @@ pub struct Giveaway {
     ///
     /// If empty, then all users can participate in the giveaway.
     /// Users with a phone number that was bought on Fragment can always participate in giveaways.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub country_codes: Option<Vec<String>>,
     /// Whether the list of giveaway winners will be visible to everyone.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub has_public_winners: Option<bool>,
     /// Whether only users who join the chats after the giveaway started should be eligible to win.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub only_new_members: Option<bool>,
     /// The number of months the Telegram Premium subscription won from the giveaway will be active for.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub premium_subscription_month_count: Option<Integer>,
     /// Description of additional giveaway prize.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prize_description: Option<String>,
     /// The number of Telegram Stars to be split between giveaway winners;
     /// for Telegram Star giveaways only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prize_star_count: Option<Integer>,
 }
 
@@ -135,11 +130,11 @@ impl Giveaway {
 }
 
 /// Represents a service message about the creation of a scheduled giveaway.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct GiveawayCreated {
     /// The number of Telegram Stars to be split between giveaway winners;
     /// for Telegram Star giveaways only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prize_star_count: Option<Integer>,
 }
 
@@ -157,20 +152,18 @@ impl GiveawayCreated {
 }
 
 /// Represents a service message about the completion of a giveaway without public winners.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct GiveawayCompleted {
     /// Number of winners in the giveaway.
     pub winner_count: Integer,
     /// Message with the giveaway that was completed, if it wasn't deleted.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub giveaway_message: Option<Box<Message>>,
     /// Whether the giveaway is a Telegram Star giveaway.
     ///
     /// Otherwise, currently, the giveaway is a Telegram Premium giveaway.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_star_giveaway: Option<bool>,
     /// Number of undistributed prizes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unclaimed_prize_count: Option<Integer>,
 }
 
@@ -222,6 +215,7 @@ impl GiveawayCompleted {
 }
 
 /// Represents a message about the completion of a giveaway with public winners.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct GiveawayWinners {
     /// The chat that created the giveaway.
@@ -235,26 +229,19 @@ pub struct GiveawayWinners {
     /// Point in time (Unix timestamp) when winners of the giveaway were selected.
     pub winners_selection_date: Integer,
     /// The number of other chats the user had to join in order to be eligible for the giveaway.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_chat_count: Option<Integer>,
     /// Whether only users who had joined the chats after the giveaway started were eligible to win.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub only_new_members: Option<bool>,
     /// The number of months the Telegram Premium subscription won from the giveaway will be active for.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub premium_subscription_month_count: Option<Integer>,
     /// Description of additional giveaway prize.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prize_description: Option<String>,
     /// The number of Telegram Stars that were split between giveaway winners;
     /// for Telegram Star giveaways only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prize_star_count: Option<Integer>,
     /// Number of undistributed prizes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unclaimed_prize_count: Option<Integer>,
     /// Whether the giveaway was canceled because the payment for it was refunded.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub was_refunded: Option<bool>,
 }
 

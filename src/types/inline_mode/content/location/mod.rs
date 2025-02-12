@@ -6,17 +6,14 @@ use crate::types::{Float, Integer, Location};
 mod tests;
 
 /// Represents a location message to be sent as the result of an inline query.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentLocation {
     latitude: Float,
     longitude: Float,
-    #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     horizontal_accuracy: Option<Float>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     proximity_alert_radius: Option<Integer>,
 }
 

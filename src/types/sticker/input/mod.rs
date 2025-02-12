@@ -173,13 +173,12 @@ impl fmt::Display for InputStickerError {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 struct InputStickerMetadata {
     sticker: String,
     emoji_list: Vec<String>,
     format: StickerFormat,
-    #[serde(skip_serializing_if = "Option::is_none")]
     mask_position: Option<MaskPosition>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     keywords: Option<Vec<String>>,
 }

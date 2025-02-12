@@ -124,6 +124,7 @@ impl EncryptedPassportElementAddress {
 }
 
 /// Represents a bank statement.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementBankStatement {
     /// An array of encrypted files with
@@ -140,7 +141,6 @@ pub struct EncryptedPassportElementBankStatement {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 
@@ -178,6 +178,7 @@ impl EncryptedPassportElementBankStatement {
 }
 
 /// Represents a driver license.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementDriverLicense {
     /// A base64-encoded encrypted
@@ -212,7 +213,6 @@ pub struct EncryptedPassportElementDriverLicense {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 
@@ -292,6 +292,7 @@ impl EncryptedPassportElementEmail {
 
 /// Represents an identity card.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde_with::skip_serializing_none]
 pub struct EncryptedPassportElementIdentityCard {
     /// A base64-encoded encrypted
     /// Telegram Passport element data provided by a user.
@@ -325,7 +326,6 @@ pub struct EncryptedPassportElementIdentityCard {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 
@@ -375,6 +375,7 @@ impl EncryptedPassportElementIdentityCard {
 }
 
 /// Represents an internal passport.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementInternalPassport {
     /// A base64-encoded encrypted
@@ -403,7 +404,6 @@ pub struct EncryptedPassportElementInternalPassport {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 
@@ -445,6 +445,7 @@ impl EncryptedPassportElementInternalPassport {
 }
 
 /// Represents a passport.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementPassport {
     /// A base64-encoded encrypted
@@ -473,7 +474,6 @@ pub struct EncryptedPassportElementPassport {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 
@@ -515,6 +515,7 @@ impl EncryptedPassportElementPassport {
 }
 
 /// Represents a passport registration.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementPassportRegistration {
     /// Array of encrypted files with
@@ -531,7 +532,6 @@ pub struct EncryptedPassportElementPassportRegistration {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 
@@ -631,6 +631,7 @@ impl EncryptedPassportElementPhoneNumber {
 }
 
 /// Represents a rental agreement.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementRentalAgreement {
     /// An array of encrypted files with
@@ -647,7 +648,6 @@ pub struct EncryptedPassportElementRentalAgreement {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 
@@ -685,6 +685,7 @@ impl EncryptedPassportElementRentalAgreement {
 }
 
 /// Represents a temporary registration.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementTemporaryRegistration {
     /// Array of encrypted files with
@@ -701,7 +702,6 @@ pub struct EncryptedPassportElementTemporaryRegistration {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 
@@ -739,6 +739,7 @@ impl EncryptedPassportElementTemporaryRegistration {
 }
 
 /// Represents an utility bill.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementUtilityBill {
     /// Array of encrypted files with
@@ -755,7 +756,6 @@ pub struct EncryptedPassportElementUtilityBill {
     ///
     /// Files can be decrypted and verified
     /// using the accompanying [`EncryptedCredentials`].
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub translation: Option<Vec<PassportFile>>,
 }
 

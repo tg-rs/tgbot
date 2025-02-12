@@ -6,14 +6,12 @@ use crate::types::{LinkPreviewOptions, ParseMode, Text, TextEntities, TextEntity
 mod tests;
 
 /// Represents a text message to be sent as the result of an inline query.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentText {
     message_text: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     link_preview_options: Option<LinkPreviewOptions>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
 }
 

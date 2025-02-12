@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents a gift that can be sent by the bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Gift {
     /// Unique identifier of the gift.
@@ -19,14 +20,11 @@ pub struct Gift {
     pub star_count: Integer,
     /// The number of remaining gifts of this type that can be sent;
     /// for limited gifts only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub remaining_count: Option<Integer>,
     /// The total number of the gifts of this type that can be sent;
     /// for limited gifts only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub total_count: Option<Integer>,
     /// The number of Telegram Stars that must be paid to upgrade the gift to a unique one.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub upgrade_star_count: Option<Integer>,
 }
 
@@ -115,20 +113,15 @@ impl Method for GetAvailableGifts {
 /// Sends a gift to the given user.
 ///
 /// The gift can't be converted to Telegram Stars by the user.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendGift {
     gift_id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<ChatId>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pay_for_upgrade: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     text_parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     text_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     user_id: Option<Integer>,
 }
 

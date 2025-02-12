@@ -96,16 +96,14 @@ pub enum PaidMedia {
 }
 
 /// The paid media isn't available before the payment.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PaidMediaPreview {
     /// Duration of the media in seconds as defined by the sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<Integer>,
     /// Media height as defined by the sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<Integer>,
     /// Media width as defined by the sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub width: Option<Integer>,
 }
 
@@ -141,6 +139,7 @@ impl PaidMediaPreview {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
 enum RawPaidMedia {
@@ -148,11 +147,8 @@ enum RawPaidMedia {
         photo: Vec<PhotoSize>,
     },
     Preview {
-        #[serde(skip_serializing_if = "Option::is_none")]
         duration: Option<Integer>,
-        #[serde(skip_serializing_if = "Option::is_none")]
         height: Option<Integer>,
-        #[serde(skip_serializing_if = "Option::is_none")]
         width: Option<Integer>,
     },
     Video {
@@ -565,6 +561,7 @@ enum InputPaidMediaGroupItemType {
     Video(InputPaidMediaVideo),
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
 enum InputPaidMediaGroupItemData {
@@ -573,9 +570,7 @@ enum InputPaidMediaGroupItemData {
     },
     Video {
         media: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
         cover: Option<String>,
-        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputPaidMediaVideo,
@@ -583,17 +578,13 @@ enum InputPaidMediaGroupItemData {
 }
 
 /// The paid media to send is a video.
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Default, Serialize)]
 pub struct InputPaidMediaVideo {
-    #[serde(skip_serializing_if = "Option::is_none")]
     duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     start_timestamp: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     supports_streaming: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     width: Option<Integer>,
 }
 

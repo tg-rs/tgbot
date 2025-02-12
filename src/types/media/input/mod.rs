@@ -229,27 +229,25 @@ where
     (media, form)
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "lowercase")]
 enum InputMediaData {
     Animation {
         media: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaAnimation,
     },
     Audio {
         media: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaAudio,
     },
     Document {
         media: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaDocument,
@@ -261,9 +259,7 @@ enum InputMediaData {
     },
     Video {
         media: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
         cover: Option<String>,
-        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaVideo,

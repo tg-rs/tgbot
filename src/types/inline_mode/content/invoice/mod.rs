@@ -7,6 +7,7 @@ use crate::types::{Integer, LabeledPrice};
 mod tests;
 
 /// Represents an invoice message to be sent as the result of an inline query.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentInvoice {
     currency: String,
@@ -14,35 +15,20 @@ pub struct InputMessageContentInvoice {
     payload: String,
     prices: Vec<LabeledPrice>,
     title: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     is_flexible: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     max_tip_amount: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     need_email: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     need_name: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     need_phone_number: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     need_shipping_address: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     photo_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     photo_size: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     photo_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     photo_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     provider_data: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     provider_token: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     send_email_to_provider: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     send_phone_number_to_provider: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     suggested_tip_amounts: Option<Vec<Integer>>,
 }
 

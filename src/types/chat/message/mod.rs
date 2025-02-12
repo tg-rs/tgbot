@@ -13,13 +13,12 @@ mod tests;
 /// If the chat is not a private chat, the bot must be an administrator
 /// in the chat for this to work and must have the `can_pin_messages`
 /// admin right in a supergroup or `can_edit_messages` admin right in a channel.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct PinChatMessage {
     chat_id: ChatId,
     message_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
 }
 
@@ -81,12 +80,11 @@ impl Method for PinChatMessage {
 /// If the chat is not a private chat, the bot must be an administrator
 /// in the chat for this to work and must have the `can_pin_messages`
 /// admin right in a supergroup or `can_edit_messages` admin right in a channel.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct UnpinChatMessage {
     chat_id: ChatId,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_id: Option<Integer>,
 }
 

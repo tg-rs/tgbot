@@ -16,30 +16,21 @@ mod tests;
 /// By default, a photo will be sent by the user with optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`]
 /// to send a message with the specified content instead of the photo.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultPhoto {
     id: String,
     photo_url: String,
     thumbnail_url: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     photo_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     photo_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     show_caption_above_media: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
 }
 
@@ -204,25 +195,18 @@ impl InlineQueryResultPhoto {
 /// By default, this photo will be sent by the user with an optional caption.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send
 /// a message with the specified content instead of the photo.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedPhoto {
     id: String,
     photo_file_id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     show_caption_above_media: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     title: Option<String>,
 }
 

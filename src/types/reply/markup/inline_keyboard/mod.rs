@@ -453,14 +453,12 @@ impl fmt::Display for InlineKeyboardError {
 ///
 /// Serves as a great replacement for the
 /// Telegram Login Widget when the user is coming from Telegram.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct LoginUrl {
     url: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     bot_username: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     forward_text: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     request_write_access: Option<bool>,
 }
 
@@ -553,16 +551,13 @@ where
 
 /// Represents an inline button that switches the current user
 /// to inline mode in a chosen chat, with an optional default inline query.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct SwitchInlineQueryChosenChat {
     query: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_bot_chats: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_channel_chats: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_group_chats: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_user_chats: Option<bool>,
 }
 

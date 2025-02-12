@@ -16,6 +16,7 @@ mod tests;
 /// By default, the venue will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`]
 /// to send a message with the specified content instead of the venue.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultVenue {
     address: String,
@@ -23,23 +24,14 @@ pub struct InlineQueryResultVenue {
     latitude: Float,
     longitude: Float,
     title: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     google_place_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     google_place_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_width: Option<Integer>,
 }
 

@@ -48,13 +48,12 @@ pub enum ChatAction {
 ///
 /// We only recommend using this method when a response from the bot
 /// will take a noticeable amount of time to arrive.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendChatAction {
     action: ChatAction,
     chat_id: ChatId,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
 }
 

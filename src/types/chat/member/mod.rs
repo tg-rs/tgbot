@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents a member of a chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "status")]
@@ -28,7 +29,6 @@ pub enum ChatMember {
         /// Information about the user
         user: User,
         /// Date when the user's subscription will expire; Unix time
-        #[serde(skip_serializing_if = "Option::is_none")]
         until_date: Option<Integer>,
     },
     /// Represents a restricted user.
@@ -83,6 +83,7 @@ impl ChatMemberUser {
 }
 
 /// Represents a chat administrator.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberAdministrator {
     /// Information about the user.
@@ -95,14 +96,11 @@ pub struct ChatMemberAdministrator {
     pub can_delete_messages: bool,
     /// Indicates whether the administrator can delete stories posted by other users;
     /// channels only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_delete_stories: Option<bool>,
     /// Indicates whether the administrator can edit messages
     /// of other users and can pin messages; channels only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_messages: Option<bool>,
     /// Indicates whether the administrator can edit stories posted by other users; channels only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_stories: Option<bool>,
     /// Indicates whether the administrator can invite new users to the chat.
     pub can_invite_users: bool,
@@ -113,18 +111,14 @@ pub struct ChatMemberAdministrator {
     pub can_manage_chat: bool,
     /// Indicates whether the administrator is allowed to
     /// create, rename, close, and reopen forum topics; supergroups only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_manage_topics: Option<bool>,
     /// Indicates whether the administrator can manage video chats.
     pub can_manage_video_chats: bool,
     /// Indicates whether the administrator can pin messages; groups and supergroups only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
     /// Indicates whether the administrator can post in the channel; channels only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
     /// Indicates whether the administrator can post stories in the channel; channels only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_stories: Option<bool>,
     /// Indicates whether the administrator can add new administrators with a subset
     /// of his own privileges or demote administrators that he has promoted,
@@ -133,7 +127,6 @@ pub struct ChatMemberAdministrator {
     /// Indicates whether the administrator can restrict, ban or unban chat members.
     pub can_restrict_members: bool,
     /// Custom title for the administrator.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_title: Option<String>,
     /// Indicates whether the administrator's presence in the chat is hidden.
     pub is_anonymous: bool,
@@ -356,6 +349,7 @@ impl ChatMemberAdministrator {
 }
 
 /// Represents a chat member that owns the chat and has all administrator privileges.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberCreator {
     /// Indicates whether the creator's presence in the chat is hidden.
@@ -363,7 +357,6 @@ pub struct ChatMemberCreator {
     /// Information about the user.
     pub user: User,
     /// Custom title for the creator.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_title: Option<String>,
 }
 
@@ -427,6 +420,7 @@ impl ChatMemberKicked {
 }
 
 /// Represents a restricted user.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatMemberRestricted {
     /// Information about the user.
@@ -440,31 +434,24 @@ pub struct ChatMemberRestricted {
     /// Indicates whether the user is allowed to create forum topics.
     pub can_manage_topics: bool,
     /// Indicates whether the user allowed to pin messages; groups and supergroups only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
     /// Indicates whether the user is allowed to send audios.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_audios: Option<bool>,
     /// Indicates whether the user is allowed to send documents.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_documents: Option<bool>,
     /// Indicates whether the user can send text messages, contacts, locations and venues.
     pub can_send_messages: bool,
     /// Indicates whether the user can send animations, games, stickers and use inline bots.
     pub can_send_other_messages: bool,
     /// Indicates whether the user is allowed to send photos.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_photos: Option<bool>,
     /// Indicates whether the user is allowed to send polls.
     pub can_send_polls: bool,
     /// Indicates whether the user is allowed to send video notes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_video_notes: Option<bool>,
     /// Indicates whether the user is allowed to send videos.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_videos: Option<bool>,
     /// Indicates whether the user is allowed to send voice notes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_voice_notes: Option<bool>,
     /// Indicates whether the user is a member of the chat at the moment of the request.
     pub is_member: bool,
@@ -657,6 +644,7 @@ impl ChatMemberRestricted {
 }
 
 /// Represents changes in a status of a chat member.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChatMemberUpdated {
     /// Chat the user belongs to.
@@ -671,14 +659,11 @@ pub struct ChatMemberUpdated {
     pub old_chat_member: ChatMember,
     /// Chat invite link, which was used by the user to join the chat;
     /// for joining by invite link events only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<ChatInviteLink>,
     /// Indicates whether the user joined the chat via a chat folder invite link.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub via_chat_folder_invite_link: Option<bool>,
     /// Indicates whether the user joined the chat after sending a direct join request
     /// and being approved by an administrator.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub via_join_request: Option<bool>,
 }
 
@@ -751,13 +736,12 @@ impl ChatMemberUpdated {
 ///
 /// The bot must be an administrator in the chat
 /// for this to work and must have the appropriate admin rights.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct BanChatMember {
     chat_id: ChatId,
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     revoke_messages: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     until_date: Option<Integer>,
 }
 
@@ -918,39 +902,25 @@ impl Method for GetChatMemberCount {
 ///
 /// The bot must be an administrator in the chat
 /// for this to work and must have the appropriate admin rights.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct PromoteChatMember {
     chat_id: ChatId,
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_change_info: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_delete_messages: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_delete_stories: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_edit_messages: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_edit_stories: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_invite_users: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_manage_chat: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_manage_topics: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_manage_video_chats: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_pin_messages: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_post_messages: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_post_stories: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_promote_members: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     can_restrict_members: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     is_anonymous: Option<bool>,
 }
 
@@ -1204,14 +1174,13 @@ impl Method for PromoteChatMember {
 ///
 /// The bot must be an administrator in the supergroup
 /// for this to work and must have the appropriate admin rights.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct RestrictChatMember {
     chat_id: ChatId,
     permissions: ChatPermissions,
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     until_date: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     use_independent_chat_permissions: Option<bool>,
 }
 
@@ -1339,11 +1308,11 @@ impl Method for SetChatAdministratorCustomTitle {
 /// automatically, but will be able to join via link, etc.
 ///
 /// The bot must be an administrator for this to work
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct UnbanChatMember {
     chat_id: ChatId,
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     only_if_banned: Option<bool>,
 }
 

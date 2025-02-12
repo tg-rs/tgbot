@@ -482,16 +482,13 @@ pub enum AllowedUpdate {
     UserStatus,
 }
 
+#[serde_with::skip_serializing_none]
 /// Returns incoming updates using long polling.
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetUpdates {
-    #[serde(skip_serializing_if = "Option::is_none")]
     allowed_updates: Option<HashSet<AllowedUpdate>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     timeout: Option<Integer>,
 }
 

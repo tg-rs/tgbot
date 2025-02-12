@@ -16,24 +16,18 @@ mod tests;
 /// By default, this audio file will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send
 /// a message with the specified content instead of the audio.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultAudio {
     audio_url: String,
     id: String,
     title: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     audio_duration: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     performer: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
@@ -162,19 +156,15 @@ impl InlineQueryResultAudio {
 /// By default, this audio file will be sent by the user.
 /// Alternatively, you can use [Self::with_input_message_content]
 /// to send a message with the specified content instead of the audio.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedAudio {
     id: String,
     audio_file_id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 

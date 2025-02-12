@@ -6,19 +6,16 @@ use crate::types::{Float, Venue};
 mod tests;
 
 /// Represents a venue message to be sent as the result of an inline query.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMessageContentVenue {
     address: String,
     latitude: Float,
     longitude: Float,
     title: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     foursquare_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     google_place_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     google_place_type: Option<String>,
 }
 

@@ -20,6 +20,7 @@ mod tests;
 /// the field `inline_message_id` will be present.
 ///
 /// Exactly one of the fields data or `game_short_name` will be present.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct CallbackQuery {
     /// Sender of the query.
@@ -31,26 +32,21 @@ pub struct CallbackQuery {
     /// callback button was sent.
     ///
     /// Useful for high scores in games.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_instance: Option<String>,
     /// Data associated with the callback button.
     ///
     /// Be aware that a bad client can send arbitrary data in this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
     /// Short name of a Game to be returned,
     /// serves as the unique identifier for the game.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub game_short_name: Option<String>,
     /// Identifier of the message sent via the bot
     /// in inline mode, that originated the query.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
     /// Message with the callback button that originated the query.
     ///
     /// Note that message content and message date
     /// will not be available if the message is too old.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<MaybeInaccessibleMessage>,
 }
 
@@ -182,16 +178,13 @@ impl fmt::Display for CallbackQueryError {
 /// For this option to work, you must first create a game for your bot via Bot Father and accept the terms.
 ///
 /// Otherwise, you may use links like `t.me/your_bot?start=XXX` that open your bot with a parameter.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct AnswerCallbackQuery {
     callback_query_id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     cache_time: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     show_alert: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     text: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<String>,
 }
 

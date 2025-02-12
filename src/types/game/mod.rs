@@ -23,6 +23,7 @@ mod tests;
 ///
 /// Use BotFather to create and edit games,
 /// their short names will act as unique identifiers.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Game {
     /// Description of the game.
@@ -34,7 +35,6 @@ pub struct Game {
     /// Animation that will be displayed in the game message in chats.
     ///
     /// Upload via BotFather.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub animation: Option<Animation>,
     /// Brief description or high scores included in the game message; 0-4096 characters.
     ///
@@ -44,8 +44,7 @@ pub struct Game {
     #[serde(
         flatten,
         deserialize_with = "GameText::deserialize_value",
-        serialize_with = "GameText::serialize_value",
-        skip_serializing_if = "Option::is_none"
+        serialize_with = "GameText::serialize_value"
     )]
     pub text: Option<Text>,
 }
@@ -162,14 +161,12 @@ impl GameHighScore {
 /// plus two of his closest neighbors on each side.
 /// Will also return the top three users if the user and his neighbors are not among them.
 /// Please note that this behavior is subject to change.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct GetGameHighScores {
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     inline_message_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_id: Option<Integer>,
 }
 
@@ -218,25 +215,18 @@ impl Method for GetGameHighScores {
 }
 
 /// Sends a game.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendGame {
     chat_id: Integer,
     game_short_name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_paid_broadcast: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_effect_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
 }
 
@@ -372,19 +362,15 @@ impl Method for SendGame {
 ///
 /// Returns an error, if the new score is not greater
 /// than the user's current score in the chat and force is `false`.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetGameScore {
     user_id: Integer,
     score: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     force: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_edit_message: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     inline_message_id: Option<String>,
 }
 

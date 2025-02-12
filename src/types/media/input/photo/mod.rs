@@ -6,17 +6,13 @@ use crate::types::{ParseMode, TextEntities, TextEntity};
 mod tests;
 
 /// Represents a photo to be sent.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputMediaPhoto {
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     has_spoiler: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     show_caption_above_media: Option<bool>,
 }
 

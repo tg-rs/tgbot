@@ -11,6 +11,7 @@ use crate::{
 mod tests;
 
 /// Represents the date of birth of a user.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Birthdate {
     /// Day of the user's birth; 1-31
@@ -18,7 +19,6 @@ pub struct Birthdate {
     /// Month of the user's birth; 1-12
     pub month: Integer,
     /// Year of the user's birth
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub year: Option<Integer>,
 }
 
@@ -46,6 +46,7 @@ impl Birthdate {
 
 /// Contains information about a user that
 /// was shared with the bot using a [`crate::types::KeyboardButtonRequestUsers`] button.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct SharedUser {
     /// Identifier of the shared user.
@@ -54,16 +55,12 @@ pub struct SharedUser {
     /// unless the user is already known to the bot by some other means.
     pub user_id: Integer,
     /// First name of the user, if the name was requested by the bot.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name: Option<String>,
     /// Last name of the user, if the name was requested by the bot.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
     /// Available sizes of the user photo, if the photo was requested by the bot
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub photo: Option<Vec<PhotoSize>>,
     /// Username of the user, if the username was requested by the bot.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
 }
 
@@ -137,6 +134,7 @@ impl SharedUser {
 }
 
 /// Represents a user.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct User {
     /// First name of the user.
@@ -146,21 +144,16 @@ pub struct User {
     /// Indicates whether the user is a bot.
     pub is_bot: bool,
     /// Indicates whether the user added the bot to the attachment menu.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub added_to_attachment_menu: Option<bool>,
     /// Indicates whether the user is a Telegram Premium user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_premium: Option<bool>,
     /// [IETF language tag][1] of the user's language.
     ///
     /// [1]: https://en.wikipedia.org/wiki/IETF_language_tag
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub language_code: Option<String>,
     /// Last name of the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
     /// Username of the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<UserUsername>,
 }
 
@@ -454,12 +447,11 @@ impl From<UserUsername> for UserId {
 }
 
 /// Returns a list of profile pictures for a user.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct GetUserProfilePhotos {
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<Integer>,
 }
 
@@ -511,12 +503,11 @@ impl Method for GetUserProfilePhotos {
 /// Changes the emoji status for a given user
 /// that previously allowed the bot to manage their emoji status
 /// via the Mini App method `requestEmojiStatusAccess`.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetUserEmojiStatus {
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     emoji_status_custom_emoji_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     emoji_status_expiration_date: Option<Integer>,
 }
 

@@ -22,6 +22,7 @@ use crate::{
 mod tests;
 
 /// Represents a size of a photo or a file / sticker thumbnail.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PhotoSize {
     /// Identifier of the file.
@@ -38,7 +39,6 @@ pub struct PhotoSize {
     /// Width of the photo.
     pub width: Integer,
     /// File size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
 }
 

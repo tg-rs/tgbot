@@ -131,6 +131,7 @@ impl ChatBoostSourceUser {
 /// The boost was obtained by the creation of a Telegram Premium giveaway.
 ///
 /// This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatBoostSourceGiveaway {
     /// Identifier of a message in the chat with the giveaway;
@@ -138,14 +139,11 @@ pub struct ChatBoostSourceGiveaway {
     /// May be 0 if the message isn't sent yet.
     pub giveaway_message_id: Integer,
     /// Whether the giveaway was completed, but there was no user to win the prize.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_unclaimed: Option<bool>,
     /// The number of Telegram Stars to be split between giveaway winners;
     /// for Telegram Star giveaways only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prize_star_count: Option<Integer>,
     /// User that won the prize in the giveaway if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<User>,
 }
 

@@ -25,6 +25,7 @@ mod mask;
 mod set;
 
 /// Represents a sticker.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Sticker {
     /// Identifier of the file.
@@ -51,30 +52,22 @@ pub struct Sticker {
     /// Sticker width.
     pub width: Integer,
     /// For custom emoji stickers, unique identifier of the custom emoji.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_emoji_id: Option<String>,
     /// Emoji associated with the sticker.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub emoji: Option<String>,
     /// File size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// For mask stickers, the position where the mask should be placed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub mask_position: Option<MaskPosition>,
     /// Indicates whether the sticker must be repainted to a text color in messages,
     /// the color of the Telegram Premium badge in emoji status,
     /// white color on chat photos, or another appropriate color in other places.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub needs_repainting: Option<bool>,
     /// For premium regular stickers, premium animation for the sticker.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub premium_animation: Option<File>,
     /// Name of the sticker set to which the sticker belongs.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub set_name: Option<String>,
     /// Sticker thumbnail in the WEBP or JPEG format.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 
@@ -511,10 +504,10 @@ impl Method for SetStickerKeywords {
 /// Changes the mask position of a mask sticker.
 ///
 /// The sticker must belong to a sticker set created by the bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetStickerMaskPosition {
     sticker: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     mask_position: Option<MaskPosition>,
 }
 

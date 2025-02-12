@@ -42,10 +42,10 @@ pub enum PollType {
     Regular,
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Deserialize, Serialize)]
 struct RawQuestion {
     question: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     question_entities: Option<TextEntities>,
 }
 
@@ -74,6 +74,7 @@ impl RawQuestion {
 }
 
 /// Represents a regular poll.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct RegularPoll {
     /// Indicates whether the poll allows multiple answers.
@@ -96,10 +97,8 @@ pub struct RegularPoll {
     /// Total number of users that voted in the poll.
     pub total_voter_count: Integer,
     /// Point in time (Unix timestamp) when the poll will be automatically closed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub close_date: Option<Integer>,
     /// Amount of time in seconds the poll will be active after creation.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub open_period: Option<Integer>,
 }
 
@@ -203,6 +202,7 @@ impl RegularPoll {
 }
 
 /// Represents a quiz.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Quiz {
     /// 0-based identifier of the correct answer option.
@@ -229,19 +229,16 @@ pub struct Quiz {
     /// Total number of users that answered to the quiz.
     pub total_voter_count: Integer,
     /// Point in time (Unix timestamp) when the quiz will be automatically closed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub close_date: Option<Integer>,
     /// Text that is shown when a user chooses an incorrect answer or
     /// taps on the lamp icon; 0-200 characters.
     #[serde(
         flatten,
         deserialize_with = "QuizExplanation::deserialize_value",
-        serialize_with = "QuizExplanation::serialize_value",
-        skip_serializing_if = "Option::is_none"
+        serialize_with = "QuizExplanation::serialize_value"
     )]
     pub explanation: Option<Text>,
     /// Amount of time in seconds the quiz will be active after creation.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub open_period: Option<Integer>,
 }
 
@@ -360,10 +357,10 @@ impl Quiz {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Deserialize, Serialize)]
 struct QuizExplanation {
     explanation: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     explanation_entities: Option<TextEntities>,
 }
 
@@ -392,10 +389,10 @@ impl QuizExplanation {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Deserialize, Serialize)]
 struct RawPollOptionText {
     text: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     text_entities: Option<TextEntities>,
 }
 
@@ -502,12 +499,11 @@ pub enum PollAnswerVoter {
 }
 
 /// Contains information about one answer option in a poll to send.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct InputPollOption {
     text: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     text_parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     text_entities: Option<TextEntities>,
 }
 
@@ -573,51 +569,32 @@ where
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 struct PollParameters {
     chat_id: ChatId,
     options: Vec<InputPollOption>,
     question: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_paid_broadcast: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allows_multiple_answers: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     close_date: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     correct_option_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     explanation: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     explanation_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     explanation_parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     is_anonymous: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     is_closed: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_effect_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     open_period: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "type")]
     poll_type: Option<PollType>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     question_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     question_parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
 }
 
@@ -1129,13 +1106,12 @@ impl Method for SendPoll {
 /// Stops a poll which was sent by the bot.
 ///
 /// On success, the stopped [`Poll`] with the final results is returned.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct StopPoll {
     chat_id: ChatId,
     message_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 

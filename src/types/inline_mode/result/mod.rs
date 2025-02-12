@@ -141,6 +141,7 @@ enum InlineQueryResultsButtonType {
 
 /// Represents a result of an inline query
 /// that was chosen by the user and sent to their chat partner.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChosenInlineResult {
     /// The user that chose the result.
@@ -153,10 +154,8 @@ pub struct ChosenInlineResult {
     ///
     /// Available only if there is an inline keyboard attached to the message.
     /// Will be also received in callback queries and can be used to edit the message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
     /// Sender location, only for bots that require user location.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<Location>,
 }
 

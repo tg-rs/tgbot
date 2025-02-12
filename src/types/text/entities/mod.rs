@@ -263,6 +263,7 @@ struct RawTextEntity {
     entity_type: RawTextEntityType,
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "type")]
@@ -272,30 +273,18 @@ enum RawTextEntityType {
     BotCommand,
     Cashtag,
     Code,
-    CustomEmoji {
-        #[serde(skip_serializing_if = "Option::is_none")]
-        custom_emoji_id: Option<String>,
-    },
+    CustomEmoji { custom_emoji_id: Option<String> },
     Email,
     ExpandableBlockquote,
     Hashtag,
     Italic,
     Mention,
     PhoneNumber,
-    Pre {
-        #[serde(skip_serializing_if = "Option::is_none")]
-        language: Option<String>,
-    },
+    Pre { language: Option<String> },
     Spoiler,
     Strikethrough,
-    TextLink {
-        #[serde(skip_serializing_if = "Option::is_none")]
-        url: Option<String>,
-    },
-    TextMention {
-        #[serde(skip_serializing_if = "Option::is_none")]
-        user: Option<User>,
-    },
+    TextLink { url: Option<String> },
+    TextMention { user: Option<User> },
     Underline,
     Url,
 }

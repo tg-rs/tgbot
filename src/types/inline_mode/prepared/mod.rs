@@ -37,17 +37,14 @@ impl PreparedInlineMessage {
 }
 
 /// Stores a message that can be sent by a user of a Mini App.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SavePreparedInlineMessage {
     result: InlineQueryResult,
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_bot_chats: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_channel_chats: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_group_chats: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_user_chats: Option<bool>,
 }
 

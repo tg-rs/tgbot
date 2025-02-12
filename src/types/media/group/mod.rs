@@ -213,20 +213,19 @@ enum MediaGroupItemType {
     Video(InputMediaVideo),
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "lowercase")]
 enum MediaGroupItemData {
     Audio {
         media: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaAudio,
     },
     Document {
         media: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaDocument,
@@ -238,9 +237,7 @@ enum MediaGroupItemData {
     },
     Video {
         media: String,
-        #[serde(skip_serializing_if = "Option::is_none")]
         cover: Option<String>,
-        #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaVideo,

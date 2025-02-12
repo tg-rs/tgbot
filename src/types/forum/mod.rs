@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents a forum topic.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ForumTopic {
     /// Color of the icon.
@@ -18,7 +19,6 @@ pub struct ForumTopic {
     /// Name.
     pub name: String,
     /// Unique identifier of the custom emoji shown as the topic icon.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_custom_emoji_id: Option<String>,
 }
 
@@ -98,13 +98,12 @@ impl Method for CloseForumTopic {
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the can_manage_topics administrator rights.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateForumTopic {
     chat_id: ChatId,
     name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     icon_color: Option<ForumTopicIconColor>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     icon_custom_emoji_id: Option<String>,
 }
 
@@ -236,13 +235,12 @@ impl Method for DeleteForumTopic {
 /// The bot must be an administrator in the chat for this to work
 /// and must have can_manage_topics administrator rights,
 /// unless it is the creator of the topic.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct EditForumTopic {
     chat_id: ChatId,
     message_thread_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     icon_custom_emoji_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
 

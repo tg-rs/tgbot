@@ -15,6 +15,7 @@ mod subscription;
 mod transaction;
 
 /// Represents a successful payment.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct SuccessfulPayment {
     /// Three-letter ISO 4217 currency code.
@@ -34,19 +35,14 @@ pub struct SuccessfulPayment {
     /// [1]: https://core.telegram.org/bots/payments/currencies.json
     pub total_amount: Integer,
     /// Whether the payment is the first payment for a subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_first_recurring: Option<bool>,
     /// Whether the payment is a recurring payment for a subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_recurring: Option<bool>,
     /// Order info provided by the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub order_info: Option<OrderInfo>,
     /// Identifier of the shipping option chosen by the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_option_id: Option<String>,
     /// Expiration date of the subscription, in Unix time; for recurring payments only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_expiration_date: Option<Integer>,
 }
 

@@ -21,6 +21,7 @@ use crate::{
 mod tests;
 
 /// Represents a video message.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct VideoNote {
     /// Duration in seconds.
@@ -37,10 +38,8 @@ pub struct VideoNote {
     /// Width and height (diameter).
     pub length: Integer,
     /// File size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// Thumbnail.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 

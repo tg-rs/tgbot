@@ -25,6 +25,7 @@ use crate::{
 mod tests;
 
 /// Represents a video file.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Video {
     /// Duration in seconds as defined by sender.
@@ -43,22 +44,16 @@ pub struct Video {
     /// Width as defined by sender.
     pub width: Integer,
     /// Available sizes of the cover of the video in the message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cover: Option<Vec<PhotoSize>>,
     /// Original filename as defined by sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
     /// File size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// MIME type as defined by sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// Timestamp in seconds from which the video will play in the message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub start_timestamp: Option<Integer>,
     /// Thumbnail.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 

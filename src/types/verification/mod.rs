@@ -64,11 +64,11 @@ impl Method for RemoveUserVerification {
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
 /// Verifies a chat on behalf of the organization which is represented by the bot.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
 pub struct VerifyChat {
     chat_id: ChatId,
-    #[serde(skip_serializing_if = "Option::is_none")]
     custom_description: Option<String>,
 }
 
@@ -112,11 +112,11 @@ impl Method for VerifyChat {
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
 /// Verifies a user on behalf of the organization which is represented by the bot.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
 pub struct VerifyUser {
     user_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     custom_description: Option<String>,
 }
 

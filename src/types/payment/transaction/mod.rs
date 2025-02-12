@@ -27,16 +27,14 @@ where
 }
 
 /// Describes a Telegram Star transaction.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct StarTransaction {
     amount: Integer,
     date: Integer,
     id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     nanostar_amount: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     source: Option<TransactionPartner>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     receiver: Option<TransactionPartner>,
 }
 
@@ -102,13 +100,13 @@ impl StarTransaction {
 }
 
 /// Describes the affiliate program that issued the affiliate commission received via this transaction.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct TransactionPartnerAffiliateProgramParameters {
     /// The number of Telegram Stars received by the bot for each 1000 Telegram Stars
     /// received by the affiliate program sponsor from referred users.
     pub commission_per_mille: Integer,
     /// Information about the bot that sponsored the affiliate program
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sponsor_user: Option<User>,
 }
 
@@ -137,6 +135,7 @@ impl TransactionPartnerAffiliateProgramParameters {
 }
 
 /// Contains information about the affiliate that received a commission via this transaction.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct AffiliateInfo {
     /// Integer amount of Telegram Stars received by the affiliate from the transaction,
@@ -146,14 +145,11 @@ pub struct AffiliateInfo {
     /// received by the bot from referred users.
     pub commission_per_mille: Integer,
     /// The chat that received an affiliate commission if it was received by a chat.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub affiliate_chat: Option<Chat>,
     /// The bot or the user that received an affiliate commission if it was received by a bot or a user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub affiliate_user: Option<User>,
     /// The number of 1/1000000000 shares of Telegram Stars received by the affiliate;
     /// from -999999999 to 999999999; can be negative for refunds.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub nanostar_amount: Option<Integer>,
 }
 
@@ -209,12 +205,12 @@ impl AffiliateInfo {
 }
 
 /// Describes a transaction with a chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TransactionPartnerChatParameters {
     /// Information about the chat.
     pub chat: Chat,
     /// The gift sent to the chat by the bot.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<Gift>,
 }
 
@@ -246,27 +242,22 @@ impl TransactionPartnerChatParameters {
 }
 
 /// Describes a transaction with a user.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TransactionPartnerUserParameters {
     /// Information about the user.
     pub user: User,
     /// Information about the affiliate that received a commission via this transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub affiliate: Option<AffiliateInfo>,
     /// The gift sent to the user by the bot.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<String>,
     /// Bot-specified invoice payload.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_payload: Option<String>,
     /// Information about the paid media bought by the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub paid_media: Option<Vec<PaidMedia>>,
     /// Bot-specified paid media payload.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub paid_media_payload: Option<String>,
     /// The duration of the paid subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_period: Option<Integer>,
 }
 
@@ -385,6 +376,7 @@ pub enum TransactionPartner {
     User(TransactionPartnerUserParameters),
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 #[allow(clippy::large_enum_variant)]
@@ -392,7 +384,6 @@ enum RawTransactionPartner {
     AffiliateProgram(TransactionPartnerAffiliateProgramParameters),
     Chat(TransactionPartnerChatParameters),
     Fragment {
-        #[serde(skip_serializing_if = "Option::is_none")]
         withdrawal_state: Option<RevenueWithdrawalState>,
     },
     Other {},
@@ -479,11 +470,10 @@ impl From<RevenueWithdrawalState> for RawRevenueWithdrawalState {
 }
 
 /// Returns the bot's Telegram Star transactions in chronological order.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Default, Serialize)]
 pub struct GetStarTransactions {
-    #[serde(skip_serializing_if = "Option::is_none")]
     offset: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<Integer>,
 }
 

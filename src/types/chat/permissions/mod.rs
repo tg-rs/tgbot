@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents the rights of an administrator in a chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatAdministratorRights {
     /// Indicates whether the user is allowed to change the chat title, photo and other settings.
@@ -16,14 +17,11 @@ pub struct ChatAdministratorRights {
     /// Indicates whether the administrator can delete messages of other users.
     pub can_delete_messages: bool,
     /// Indicates whether the administrator can delete stories posted by other users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_delete_stories: Option<bool>,
     /// Indicates whether the administrator can edit messages of other users
     /// and can pin messages; channels only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_messages: Option<bool>,
     /// Indicates whether the administrator can edit stories posted by other users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_stories: Option<bool>,
     /// Indicates whether the user is allowed to invite new users to the chat.
     pub can_invite_users: bool,
@@ -36,19 +34,15 @@ pub struct ChatAdministratorRights {
     pub can_manage_chat: bool,
     /// Indicates whether the user is allowed to create, rename,
     /// close, and reopen forum topics; supergroups only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_manage_topics: Option<bool>,
     /// Indicates whether the administrator can manage video chats.
     pub can_manage_video_chats: bool,
     /// Indicates whether the user is allowed to pin messages; groups and supergroups only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
     /// Indicates whether the administrator can post messages in the channel,
     /// or access channel statistics; channels only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
     /// Indicates whether the administrator can post stories in the chat.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_stories: Option<bool>,
     /// Indicates whether the administrator can
     /// add new administrators with a subset of their own privileges
@@ -267,56 +261,43 @@ impl ChatAdministratorRights {
 }
 
 /// Represents actions that a non-administrator user is allowed to take in a chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatPermissions {
     /// Indicates whether the user is allowed to add web page previews to their messages.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_add_web_page_previews: Option<bool>,
     /// Indicates whether the user is allowed to change the chat title, photo and other settings.
     ///
     /// Ignored in public supergroups.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_change_info: Option<bool>,
     /// Indicates whether the user is allowed to invite new users to the chat.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_invite_users: Option<bool>,
     /// Indicates whether the user is allowed to create forum topics.
     ///
     /// If omitted defaults to the value of `can_pin_messages`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_manage_topics: Option<bool>,
     /// Indicates whether the user is allowed to pin messages.
     ///
     /// Ignored in public supergroups.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
     /// Indicates whether the user is allowed to send audios.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_audios: Option<bool>,
     /// Indicates whether the user is allowed to send documents.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_documents: Option<bool>,
     /// Indicates whether the user is allowed to send text messages, contacts, locations and venues.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_messages: Option<bool>,
     /// Indicates whether the user is allowed to send animations,
     /// games, stickers and use inline bots.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_other_messages: Option<bool>,
     /// Indicates whether the user is allowed to send photos.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_photos: Option<bool>,
     /// Indicates whether the user is allowed to send polls, implies `can_send_messages`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_polls: Option<bool>,
     /// Indicates whether the user is allowed to send video notes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_video_notes: Option<bool>,
     /// Indicates whether the user is allowed to send videos.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_videos: Option<bool>,
     /// Indicates whether the user is allowed to send voice notes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub can_send_voice_notes: Option<bool>,
 }
 
@@ -506,11 +487,11 @@ impl ChatPermissions {
 ///
 /// The bot must be an administrator in the group or a supergroup
 /// for this to work and must have the `can_restrict_members` admin rights.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetChatPermissions {
     chat_id: ChatId,
     permissions: ChatPermissions,
-    #[serde(skip_serializing_if = "Option::is_none")]
     use_independent_chat_permissions: Option<bool>,
 }
 

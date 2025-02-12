@@ -72,11 +72,10 @@ impl MessageSender {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct RawMessageSender {
-    #[serde(skip_serializing_if = "Option::is_none")]
     sender_chat: Option<Chat>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     from: Option<User>,
 }
 

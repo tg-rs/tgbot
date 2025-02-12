@@ -12,11 +12,11 @@ use crate::types::InlineKeyboardMarkup;
 mod tests;
 
 /// Represents a game.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultGame {
     game_short_name: String,
     id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 

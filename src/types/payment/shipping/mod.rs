@@ -149,13 +149,12 @@ impl ShippingQuery {
 /// If you sent an invoice requesting a shipping address
 /// and the parameter `is_flexible` was specified,
 /// the Bot API will send an [`crate::types::UpdateType::ShippingQuery`] to the bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct AnswerShippingQuery {
     ok: bool,
     shipping_query_id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     error_message: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     shipping_options: Option<Vec<ShippingOption>>,
 }
 

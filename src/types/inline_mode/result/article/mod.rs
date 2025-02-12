@@ -12,22 +12,17 @@ use crate::types::{InlineKeyboardMarkup, InputMessageContent, Integer};
 mod tests;
 
 /// Represents a link to an article or a web page.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultArticle {
     id: String,
     title: String,
     input_message_content: InputMessageContent,
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<String>,
 }
 

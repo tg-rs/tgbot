@@ -31,6 +31,7 @@ pub enum BackgroundFill {
 }
 
 /// This object describes the type of a background.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
 pub enum BackgroundType {
@@ -56,10 +57,8 @@ pub enum BackgroundType {
         /// Intensity of the pattern when it is shown above the filled background; 0-100.
         intensity: Integer,
         ///  Whether the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only.
-        #[serde(skip_serializing_if = "Option::is_none")]
         is_inverted: Option<bool>,
         /// Whether the background moves slightly when the device is tilted.
-        #[serde(skip_serializing_if = "Option::is_none")]
         is_moving: Option<bool>,
     },
     /// The background is a wallpaper in the JPEG format.
@@ -69,10 +68,8 @@ pub enum BackgroundType {
         /// Document with the wallpaper.
         document: Document,
         /// Whether the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12.
-        #[serde(skip_serializing_if = "Option::is_none")]
         is_blurred: Option<bool>,
         /// Whether the background moves slightly when the device is tilted.
-        #[serde(skip_serializing_if = "Option::is_none")]
         is_moving: Option<bool>,
     },
 }

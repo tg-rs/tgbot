@@ -31,6 +31,7 @@ mod voice;
 /// It is guaranteed that the link will be valid for at least 1 hour.
 /// When the link expires, a new one can be requested by calling [`GetFile`].
 /// Maximum file size to download is 20 MB.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct File {
     /// Identifier of the file.
@@ -43,12 +44,10 @@ pub struct File {
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
     /// File size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// File path.
     ///
     /// Use [`crate::api::Client::download_file`] to get the file.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_path: Option<String>,
 }
 

@@ -25,6 +25,7 @@ use crate::{
 mod tests;
 
 /// Represents an audio file to be treated as music by the Telegram clients.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Audio {
     /// Duration of the audio in seconds as defined by sender.
@@ -39,22 +40,16 @@ pub struct Audio {
     /// Can't be used to download or reuse the file.
     pub file_unique_id: String,
     /// Original filename as defined by sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
     /// File size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub file_size: Option<Integer>,
     /// MIME type of the file as defined by sender.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
     /// Performer of the audio as defined by sender or by audio tags.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub performer: Option<String>,
     /// Title of the audio as defined by sender or by audio tags.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
     /// Thumbnail of the album cover to which the music file belongs.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 

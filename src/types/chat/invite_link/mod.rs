@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents an invite link for a chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ChatInviteLink {
     /// Indicates whether users joining the chat via the link
@@ -26,18 +27,14 @@ pub struct ChatInviteLink {
     /// Indicates whether the link is revoked.
     pub is_revoked: bool,
     /// The point in time (Unix timestamp) when the link will expire or has been expired.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub expire_date: Option<Integer>,
     /// The maximum number of users that can be members
     /// of the chat simultaneously after joining
     /// the chat via this invite link; 1-99999.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub member_limit: Option<Integer>,
     /// The name of the invite link.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The number of pending join requests created using this link.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_join_request_count: Option<Integer>,
 }
 
@@ -148,16 +145,13 @@ impl ChatInviteLink {
 /// and must have the appropriate admin rights.
 /// The link can be revoked using the method [`RevokeChatInviteLink`].
 /// Returns the new invite link as [`ChatInviteLink`] object.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateChatInviteLink {
     chat_id: ChatId,
-    #[serde(skip_serializing_if = "Option::is_none")]
     creates_join_request: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     expire_date: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     member_limit: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
 
@@ -238,12 +232,12 @@ impl Method for CreateChatInviteLink {
 /// The bot must have the `can_invite_users` administrator rights.
 /// The link can be edited using the method [`crate::types::EditChatSubscriptionInviteLink`]
 /// or revoked using the method [`crate::types::RevokeChatInviteLink`].
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateChatSubscriptionInviteLink {
     chat_id: ChatId,
     subscription_period: Integer,
     subscription_price: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
 
@@ -297,17 +291,14 @@ impl Method for CreateChatSubscriptionInviteLink {
 /// The bot must be an administrator in the chat for this to work
 /// and must have the appropriate admin rights.
 /// Returns the edited invite link as a [`ChatInviteLink`] object.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct EditChatInviteLink {
     chat_id: ChatId,
     invite_link: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     creates_join_request: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     expire_date: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     member_limit: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
 
@@ -391,11 +382,11 @@ impl Method for EditChatInviteLink {
 /// Allows to edit a subscription invite link created by the bot.
 ///
 /// The bot must have the `can_invite_users` administrator rights.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct EditChatSubscriptionInviteLink {
     chat_id: ChatId,
     invite_link: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
 

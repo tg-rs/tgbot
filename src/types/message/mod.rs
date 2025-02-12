@@ -63,6 +63,7 @@ impl<'de> Deserialize<'de> for MaybeInaccessibleMessage {
 }
 
 /// Represents a message.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Message {
     /// Chat the message belongs to.
@@ -70,7 +71,6 @@ pub struct Message {
     /// Date the message was sent in Unix time.
     pub date: Integer,
     /// Date the message was last edited in Unix time.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub edit_date: Option<Integer>,
     /// Indicates whether the message can't be forwarded.
     #[serde(default)]
@@ -87,70 +87,52 @@ pub struct Message {
     #[serde(flatten)]
     pub sender: MessageSender,
     /// Author signature.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
     /// Unique identifier of the business connection from which the message was received.
     ///
     /// If non-empty, the message belongs to a chat of the corresponding business account
     /// that is independent from any potential bot chat which might share the same identifier.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub business_connection_id: Option<String>,
     /// Unique identifier of the message effect added to the message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub effect_id: Option<String>,
     /// Information about the message that is being replied to, which may come from another chat or forum topic.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub external_reply: Option<ExternalReplyInfo>,
     /// formation about the original message for forwarded messages.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub forward_origin: Option<MessageOrigin>,
     /// Indicates whether the message media is covered by a spoiler animation.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub has_media_spoiler: Option<bool>,
     /// Whether the message was sent by an implicit action.
     ///
     /// For example, as an away or a greeting business message, or as a scheduled message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_from_offline: Option<bool>,
     /// Indicates whether the message is sent to a forum topic.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_topic_message: Option<bool>,
     /// Options used for link preview generation for the message,
     /// if it is a text message and link preview options were changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub link_preview_options: Option<LinkPreviewOptions>,
     /// Unique identifier of a media message group this message belongs to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub media_group_id: Option<String>,
     /// Unique identifier of a message thread to which the message belongs;
     /// for supergroups only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub message_thread_id: Option<Integer>,
     /// For replies that quote part of the original message, the quoted part of the message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub quote: Option<TextQuote>,
     /// Inline keyboard attached to the message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// For replies, the original message or story.
     #[serde(flatten)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to: Option<ReplyTo>,
     /// Number of boosts added by the user.
     ///
     /// Contains a value only if the sender of the message boosted the chat.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sender_boost_count: Option<Integer>,
     /// The bot that actually sent the message on behalf of the business account.
     ///
     /// Available only for outgoing messages sent on behalf of the connected business account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sender_business_bot: Option<User>,
     /// Whether the caption must be shown above the message media.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub show_caption_above_media: Option<bool>,
     /// Bot through which the message was sent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub via_bot: Option<User>,
 
     /// Contains message data.

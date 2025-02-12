@@ -16,22 +16,17 @@ mod tests;
 /// By default, this voice recording will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`] to send
 /// a message with the specified content instead of the the voice message.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultVoice {
     id: String,
     title: String,
     voice_url: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     voice_duration: Option<Integer>,
 }
 
@@ -146,20 +141,16 @@ impl InlineQueryResultVoice {
 /// By default, this voice message will be sent by the user.
 /// Alternatively, you can use [`Self::with_input_message_content`]
 /// to send a message with the specified content instead of the voice message.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedVoice {
     id: String,
     voice_file_id: String,
     title: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
 }
 

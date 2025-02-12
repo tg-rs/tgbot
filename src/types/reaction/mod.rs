@@ -136,6 +136,7 @@ impl From<RawReactionType> for ReactionType {
 }
 
 /// Represents a change of a reaction on a message performed by a user.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageReactionUpdated {
     /// The chat containing the message the user reacted to.
@@ -149,10 +150,8 @@ pub struct MessageReactionUpdated {
     /// Previous list of reaction types that were set by the user.
     pub old_reaction: Vec<ReactionType>,
     /// The chat on behalf of which the reaction was changed, if the user is anonymous.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub actor_chat: Option<Chat>,
     /// The user that changed the reaction, if the user isn't anonymous.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<User>,
 }
 
@@ -213,12 +212,12 @@ impl MessageReactionUpdated {
 /// Automatically forwarded messages from a channel to its discussion group have
 /// the same available reactions as messages in the channel.
 /// Bots can't use paid reactions.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetMessageReaction {
     chat_id: ChatId,
     is_big: bool,
     message_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reaction: Option<Vec<ReactionType>>,
 }
 

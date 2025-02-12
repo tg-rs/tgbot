@@ -9,12 +9,12 @@ use crate::{
 mod tests;
 
 /// Represents an inline message sent by a Web App on behalf of a user
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct SentWebAppMessage {
     /// Identifier of the sent inline message
     ///
     /// Available only if there is an inline keyboard attached to the message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
 }
 

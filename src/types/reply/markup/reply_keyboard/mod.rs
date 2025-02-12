@@ -8,6 +8,7 @@ use crate::types::{ChatAdministratorRights, Integer, PollType, True, WebAppInfo}
 mod tests;
 
 /// Represents a custom keyboard with reply options.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ReplyKeyboardMarkup {
     keyboard: Vec<Vec<KeyboardButton>>,
@@ -17,9 +18,7 @@ pub struct ReplyKeyboardMarkup {
     resize_keyboard: bool,
     #[serde(default, skip_serializing_if = "Not::not")]
     selective: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_field_placeholder: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     is_persistent: Option<bool>,
 }
 
@@ -135,11 +134,11 @@ where
 }
 
 /// Represents a button of the reply keyboard.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct KeyboardButton {
     text: String,
     #[serde(flatten)]
-    #[serde(skip_serializing_if = "Option::is_none")]
     button_type: Option<KeyboardButtonType>,
 }
 
@@ -263,9 +262,9 @@ impl KeyboardButton {
 
 /// Represents a type of a poll which is allowed to be created
 /// and sent when the corresponding button is pressed.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct KeyboardButtonPollType {
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "type")]
     poll_type: Option<PollType>,
 }
@@ -288,27 +287,19 @@ impl From<Option<PollType>> for KeyboardButtonPollType {
 /// the bot when the corresponding button is pressed.
 ///
 /// [More about requesting chats](https://core.telegram.org/bots/features#chat-and-user-selection)
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct KeyboardButtonRequestChat {
     request_id: Integer,
     chat_is_channel: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     bot_administrator_rights: Option<ChatAdministratorRights>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     bot_is_member: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_is_created: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_is_forum: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_has_username: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     request_photo: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     request_title: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     request_username: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     user_administrator_rights: Option<ChatAdministratorRights>,
 }
 
@@ -450,20 +441,15 @@ impl KeyboardButtonRequestChat {
 /// the bot when the corresponding button is pressed.
 ///
 /// [More about requesting users](https://core.telegram.org/bots/features#chat-and-user-selection)
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct KeyboardButtonRequestUsers {
     request_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     max_quantity: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     request_name: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     request_photo: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     request_username: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     user_is_bot: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     user_is_premium: Option<bool>,
 }
 
@@ -558,10 +544,10 @@ impl KeyboardButtonRequestUsers {
 /// User will not be able to summon this keyboard.
 /// If you want to hide the keyboard from sight but keep it accessible,
 /// use [`ReplyKeyboardMarkup::with_one_time_keyboard`].
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ReplyKeyboardRemove {
     remove_keyboard: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     selective: Option<bool>,
 }
 

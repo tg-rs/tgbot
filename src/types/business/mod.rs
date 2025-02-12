@@ -71,16 +71,14 @@ impl BusinessConnection {
 }
 
 /// Represents the intro of the business.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Default, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BusinessIntro {
     /// Message text of the business intro.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Sticker of the business intro.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub sticker: Option<Sticker>,
     /// Title text of the business intro.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }
 
@@ -123,12 +121,12 @@ impl BusinessIntro {
 }
 
 /// Provides information about address and location of the business.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BusinessLocation {
     /// Address of the business.
     pub address: String,
     /// Location of the business.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<Location>,
 }
 

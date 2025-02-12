@@ -93,10 +93,10 @@ impl LabeledPrice {
 }
 
 /// Represents an invoice parameters used in [`CreateInvoiceLink`] and [`SendInvoice`].
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InvoiceParameters {
     /// Indicates whether the final price depends on the shipping method.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_flexible: Option<bool>,
     /// The maximum accepted amount for tips in the smallest units of the currency.
     ///
@@ -108,56 +108,42 @@ pub struct InvoiceParameters {
     /// Defaults to 0.
     ///
     /// [1]: (https://core.telegram.org/bots/payments/currencies.json)
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_tip_amount: Option<Integer>,
     /// Indicates whether the user's email address is required to complete the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub need_email: Option<bool>,
     /// Indicates whether the user's full name is required to complete the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub need_name: Option<bool>,
     /// Indicates whether the user's phone number is required to complete the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub need_phone_number: Option<bool>,
     /// Indicates whether the user's shipping address is required to complete the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub need_shipping_address: Option<bool>,
     /// Photo height.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_height: Option<Integer>,
     /// Photo size in bytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_size: Option<Integer>,
     /// URL of the product photo for the invoice.
     ///
     /// Can be a photo of the goods or a marketing image for a service.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_url: Option<String>,
     /// Photo width.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_width: Option<Integer>,
     /// Data about the invoice, which will be shared with the payment provider.
     ///
     /// A detailed description of required fields should be provided by the payment provider.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub provider_data: Option<String>,
     /// Payment provider token, obtained via @BotFather.
     ///
     /// Pass an empty string for payments in Telegram Stars.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub provider_token: Option<String>,
     /// Indicates whether the user's phone number should be sent to the provider.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub send_phone_number_to_provider: Option<bool>,
     /// Indicates whether the user's email address should be sent to the provider.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub send_email_to_provider: Option<bool>,
     /// An array of suggested amounts of tips in the smallest units of the currency.
     ///
     /// At most 4 suggested tip amounts can be specified.
     /// The suggested tip amounts must be positive,
     /// passed in a strictly increased order and must not exceed `max_tip_amount`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub suggested_tip_amounts: Option<Vec<Integer>>,
 }
 
@@ -329,6 +315,7 @@ impl InvoiceParameters {
 /// Creates a link for an invoice.
 ///
 /// Returns the created invoice link as String on success.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoiceLink {
     currency: String,
@@ -336,9 +323,7 @@ pub struct CreateInvoiceLink {
     payload: String,
     prices: Vec<LabeledPrice>,
     title: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     subscription_period: Option<Integer>,
     #[serde(flatten)]
     parameters: Option<InvoiceParameters>,
@@ -422,6 +407,7 @@ impl Method for CreateInvoiceLink {
 }
 
 /// Sends an invoice.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendInvoice {
     chat_id: ChatId,
@@ -430,23 +416,15 @@ pub struct SendInvoice {
     payload: String,
     prices: Vec<LabeledPrice>,
     title: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_paid_broadcast: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_effect_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
     #[serde(flatten)]
     parameters: Option<InvoiceParameters>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     start_parameter: Option<String>,
 }
 

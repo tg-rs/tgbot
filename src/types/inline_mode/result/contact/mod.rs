@@ -16,24 +16,18 @@ mod tests;
 /// By default, this contact will be sent by the user.
 /// Alternatively, you can use [Self::with_input_message_content]
 /// to send a message with the specified content instead of the contact.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultContact {
     first_name: String,
     id: String,
     phone_number: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     last_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_width: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     vcard: Option<String>,
 }
 

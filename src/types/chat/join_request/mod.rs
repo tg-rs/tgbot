@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents a join request sent to a chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChatJoinRequest {
     /// Chat to which the request was sent.
@@ -18,17 +19,14 @@ pub struct ChatJoinRequest {
     /// User that sent the join request.
     pub from: User,
     /// Bio of the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub bio: Option<String>,
     /// Chat invite link that was used by the user to send the join request.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invite_link: Option<ChatInviteLink>,
     /// Identifier of a private chat with the user who sent the join request.
     ///
     /// A bot can use this identifier for 5 minutes to
     /// send messages until the join request is processed,
     /// assuming no other administrator contacted the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub user_chat_id: Option<Integer>,
 }
 

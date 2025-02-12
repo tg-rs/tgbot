@@ -11,12 +11,11 @@ mod tests;
 /// without having to sacrifice [privacy mode][1].
 ///
 /// [1]: https://core.telegram.org/bots/features#privacy-mode
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ForceReply {
     force_reply: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_field_placeholder: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     selective: Option<bool>,
 }
 

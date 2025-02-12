@@ -11,6 +11,7 @@ use crate::{
 mod tests;
 
 /// Represents a current status of a webhook.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct WebhookInfo {
     /// Indicates whether a custom certificate was provided for webhook certificate checks.
@@ -22,26 +23,20 @@ pub struct WebhookInfo {
     /// A list of update types the bot is subscribed to.
     ///
     /// Defaults to all update types.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_updates: Option<Vec<AllowedUpdate>>,
     /// Currently used webhook IP address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
     /// Unix time for the most recent error that happened
     /// when trying to deliver an update via webhook.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_error_date: Option<Integer>,
     /// Error message in human-readable format for the most recent error
     /// that happened when trying to deliver an update via webhook.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_error_message: Option<String>,
     /// Unix time of the most recent error that happened
     /// when trying to synchronize available updates with Telegram datacenters.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_synchronization_error_date: Option<Integer>,
     /// Maximum allowed number of simultaneous HTTPS connections
     /// to the webhook for update delivery.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_connections: Option<Integer>,
 }
 
@@ -191,20 +186,15 @@ impl Method for GetWebhookInfo {
 /// If you'd like to make sure that the Webhook request comes from Telegram,
 /// we recommend using a secret path in the URL, e.g. `https://www.example.com/<token>`
 /// Since nobody else knows your bot‘s token, you can be pretty sure it’s us.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetWebhook {
     url: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allowed_updates: Option<HashSet<AllowedUpdate>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     certificate: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     drop_pending_updates: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     ip_address: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     max_connections: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     secret_token: Option<String>,
 }
 

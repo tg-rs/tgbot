@@ -9,14 +9,13 @@ use crate::types::{ChatId, Integer, ParseMode, TextEntities, TextEntity};
 mod tests;
 
 /// Describes reply parameters for the message that is being sent.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ReplyParameters {
     message_id: Integer,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_sending_without_reply: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<ChatId>,
-    #[serde(flatten, skip_serializing_if = "Option::is_none")]
+    #[serde(flatten)]
     quote: Option<ReplyQuote>,
 }
 
@@ -82,15 +81,16 @@ impl ReplyParameters {
 /// The quote must be an exact substring of the message to be replied to,
 /// including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities.
 /// The message will fail to send if the quote isn't found in the original message.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ReplyQuote {
     #[serde(rename = "quote_position")]
     position: Integer,
     #[serde(rename = "quote")]
     text: String,
-    #[serde(rename = "quote_entities", skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "quote_entities")]
     entities: Option<TextEntities>,
-    #[serde(rename = "quote_parse_mode", skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "quote_parse_mode")]
     parse_mode: Option<ParseMode>,
 }
 

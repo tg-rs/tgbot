@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents an incoming pre-checkout query.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialOrd, PartialEq, Serialize)]
 pub struct PreCheckoutQuery {
     /// Three-letter ISO 4217 currency code.
@@ -28,10 +29,8 @@ pub struct PreCheckoutQuery {
     /// [1]: https://core.telegram.org/bots/payments/currencies.json
     pub total_amount: Integer,
     /// Order info provided by the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub order_info: Option<OrderInfo>,
     /// Identifier of the shipping option chosen by the user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_option_id: Option<String>,
 }
 
@@ -94,11 +93,11 @@ impl PreCheckoutQuery {
 /// # Notes
 ///
 /// The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct AnswerPreCheckoutQuery {
     ok: bool,
     pre_checkout_query_id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     error_message: Option<String>,
 }
 

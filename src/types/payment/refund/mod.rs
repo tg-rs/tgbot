@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Contains basic information about a refunded payment.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct RefundedPayment {
     /// Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars. Currently, always “XTR”.
@@ -26,7 +27,6 @@ pub struct RefundedPayment {
     /// [1]: https://core.telegram.org/bots/payments/currencies.json
     pub total_amount: Integer,
     /// Provider payment identifier.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub provider_payment_charge_id: Option<String>,
 }
 

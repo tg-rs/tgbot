@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents a phone contact.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Contact {
     /// First name.
@@ -16,13 +17,10 @@ pub struct Contact {
     /// Phone number.
     pub phone_number: String,
     /// Last name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
     /// Identifier in Telegram.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub user_id: Option<Integer>,
     /// Additional data in the form of a vCard.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub vcard: Option<String>,
 }
 
@@ -85,30 +83,21 @@ impl Contact {
 }
 
 /// Sends a phone contact.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendContact {
     chat_id: ChatId,
     first_name: String,
     phone_number: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_paid_broadcast: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     last_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_effect_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     vcard: Option<String>,
 }
 

@@ -75,6 +75,7 @@ impl Chat {
 }
 
 /// Represents a channel chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChannelChat {
     /// Unique identifier of the channel.
@@ -82,7 +83,6 @@ pub struct ChannelChat {
     /// Title of the channel.
     pub title: String,
     /// Username of the channel.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<ChatUsername>,
 }
 
@@ -148,6 +148,7 @@ impl GroupChat {
 }
 
 /// Represents a private chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PrivateChat {
     /// Unique identifier of the chat.
@@ -155,10 +156,8 @@ pub struct PrivateChat {
     /// First name of the other party.
     pub first_name: String,
     /// Last name of the other party.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
     /// Username of the target chat.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<ChatUsername>,
 }
 
@@ -210,6 +209,7 @@ impl PrivateChat {
 }
 
 /// Represents a supergroup chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct SupergroupChat {
     /// Unique identifier of the supergroup.
@@ -217,10 +217,8 @@ pub struct SupergroupChat {
     /// Title of the supergroup.
     pub title: String,
     /// Whether the supergroup has topic enabled.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_forum: Option<bool>,
     /// Username of the supergroup.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub username: Option<ChatUsername>,
 }
 
@@ -346,10 +344,10 @@ impl Method for LeaveChat {
 ///
 /// The bot must be an administrator in the chat for this to work
 /// and must have the appropriate admin rights.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetChatDescription {
     chat_id: ChatId,
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
 }
 

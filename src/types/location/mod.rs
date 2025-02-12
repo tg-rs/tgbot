@@ -9,6 +9,7 @@ use crate::{
 mod tests;
 
 /// Represents a point on a map.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Location {
     /// Latitude as defined by sender.
@@ -18,22 +19,18 @@ pub struct Location {
     /// The direction in which user is moving; in degrees; 1-360.
     ///
     /// For active live locations only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub heading: Option<Integer>,
     /// The radius of uncertainty for the location, measured in meters; 0-1500.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub horizontal_accuracy: Option<Float>,
     /// Time relative to the message sending date,
     /// during which the location can be updated, in seconds.
     ///
     /// For active live locations only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub live_period: Option<Integer>,
     /// Maximum distance for proximity alerts about
     /// approaching another chat member; in meters.
     ///
     /// For sent live locations only.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub proximity_alert_radius: Option<Integer>,
 }
 
@@ -98,34 +95,23 @@ impl Location {
 }
 
 /// Sends a point on a map.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendLocation {
     chat_id: ChatId,
     latitude: Float,
     longitude: Float,
-    #[serde(skip_serializing_if = "Option::is_none")]
     allow_paid_broadcast: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     business_connection_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     disable_notification: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     heading: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     horizontal_accuracy: Option<Float>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     live_period: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_effect_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     protect_content: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     proximity_alert_radius: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<ReplyMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_parameters: Option<ReplyParameters>,
 }
 

@@ -20,6 +20,7 @@ pub enum MessageOrigin {
 }
 
 /// The message was originally sent to a channel chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageOriginChannel {
     /// Chat that sent the message originally.
@@ -29,7 +30,6 @@ pub struct MessageOriginChannel {
     /// Unique message identifier inside the chat.
     pub message_id: Integer,
     /// Signature of the original post author.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
 }
 
@@ -68,6 +68,7 @@ impl MessageOriginChannel {
 }
 
 /// The message was originally sent on behalf of a chat to a group chat.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageOriginChat {
     /// Date the message was sent originally in Unix time.
@@ -75,7 +76,6 @@ pub struct MessageOriginChat {
     /// Chat that sent the message originally.
     pub sender_chat: Chat,
     /// For messages originally sent by an anonymous chat administrator, original message author signature.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub author_signature: Option<String>,
 }
 

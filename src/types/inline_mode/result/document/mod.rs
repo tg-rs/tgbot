@@ -17,29 +17,21 @@ mod tests;
 /// Alternatively, you can use [`Self::with_input_message_content`] to send a message
 /// with the specified content instead of the file.
 /// Currently, only .PDF and .ZIP files can be sent using this method.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultDocument {
     document_url: String,
     id: String,
     mime_type: String,
     title: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_height: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     thumbnail_width: Option<Integer>,
 }
 
@@ -197,22 +189,17 @@ impl InlineQueryResultDocument {
 /// By default, this file will be sent by the user with an optional caption.
 /// Alternatively, you can use [Self::with_input_message_content]
 /// to send a message with the specified content instead of the file.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineQueryResultCachedDocument {
     id: String,
     title: String,
     document_file_id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     caption_entities: Option<TextEntities>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     reply_markup: Option<InlineKeyboardMarkup>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     input_message_content: Option<InputMessageContent>,
 }
 

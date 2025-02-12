@@ -85,9 +85,9 @@ impl From<MenuButton> for MenuButtonRaw {
 }
 
 /// Returns the current value of the bot menu button in a private chat, or the default menu button.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetChatMenuButton {
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<Integer>,
 }
 
@@ -114,11 +114,10 @@ impl Method for GetChatMenuButton {
 }
 
 /// Changes a button of a menu of a bot in a private chat, or a default menu button.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct SetChatMenuButton {
-    #[serde(skip_serializing_if = "Option::is_none")]
     chat_id: Option<Integer>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     menu_button: Option<MenuButton>,
 }
 

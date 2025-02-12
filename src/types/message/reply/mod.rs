@@ -58,6 +58,7 @@ impl From<Story> for ReplyTo {
 }
 
 /// Contains information about a message that is being replied to, which may come from another chat or forum topic.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ExternalReplyInfo {
     /// Origin of the message replied to by the given message.
@@ -65,18 +66,14 @@ pub struct ExternalReplyInfo {
     /// Chat the original message belongs to.
     ///
     /// Available only if the chat is a supergroup or a channel.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub chat: Option<Chat>,
     /// Whether the message media is covered by a spoiler animation.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub has_media_spoiler: Option<bool>,
     /// Options used for link preview generation for the original message, if it is a text message.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub link_preview_options: Option<LinkPreviewOptions>,
     /// Unique message identifier inside the original chat.
     ///
     /// Available only if the original chat is a supergroup or a channel.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<Integer>,
 
     /// Contains data of the message.

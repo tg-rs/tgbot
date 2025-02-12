@@ -19,6 +19,7 @@ use crate::{
 mod tests;
 
 /// Represents a sticker set.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct StickerSet {
     /// Name of the sticker set.
@@ -30,7 +31,6 @@ pub struct StickerSet {
     /// Title of the sticker set.
     pub title: String,
     /// Sticker set thumbnail in the WEBP or TGS format.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
 }
 
@@ -308,10 +308,10 @@ impl Method for ReplaceStickerInSet {
 }
 
 /// Sets the thumbnail of a custom emoji sticker set.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetCustomEmojiStickerSetThumbnail {
     name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
     custom_emoji_id: Option<String>,
 }
 

@@ -234,14 +234,15 @@ fn input_paid_media_group() {
                 .with_supports_streaming(true)
                 .with_width(3),
         )
+        .with_cover(InputFile::url("cover-url"))
         .with_thumbnail(InputFile::from(Cursor::new("video-2-thumbnail-data"))),
     ])
     .unwrap();
     let actual_form: Form = group.into();
     let mut media = String::from("[{\"type\":\"photo\",\"media\":\"photo-file-id\"}");
     media += ",{\"type\":\"video\",\"media\":\"https://example.com/video-file-1.mp4\",\"thumbnail\":\"video-1-thumbnail-id\"}";
-    media += ",{\"type\":\"video\",\"media\":\"attach://tgbot_ipm_file_2\",\"thumbnail\"";
-    media += ":\"attach://tgbot_ipm_thumb_2\",\"duration\":1,\"height\":2,";
+    media += ",{\"type\":\"video\",\"media\":\"attach://tgbot_ipm_file_2\",\"cover\":\"cover-url\",";
+    media += "\"thumbnail\":\"attach://tgbot_ipm_thumb_2\",\"duration\":1,\"height\":2,";
     media += "\"start_timestamp\":20,\"supports_streaming\":true,\"width\":3}]";
     let expected_form = Form::from([
         ("media", media.into()),

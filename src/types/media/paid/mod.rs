@@ -423,9 +423,14 @@ impl InputPaidMediaGroup {
                 .map(|thumbnail| add_file(format!("tgbot_ipm_thumb_{}", idx), thumbnail));
             let data = match item.item_type {
                 InputPaidMediaGroupItemType::Photo => InputPaidMediaGroupItemData::Photo { media },
-                InputPaidMediaGroupItemType::Video(info) => {
-                    InputPaidMediaGroupItemData::Video { media, thumbnail, info }
-                }
+                InputPaidMediaGroupItemType::Video(info) => InputPaidMediaGroupItemData::Video {
+                    media,
+                    cover: item
+                        .cover
+                        .map(|cover| add_file(format!("tgbot_ipm_cover_{}", idx), cover)),
+                    thumbnail,
+                    info,
+                },
             };
             info.push(data);
         }
@@ -481,6 +486,7 @@ impl fmt::Display for InputPaidMediaGroupError {
 pub struct InputPaidMediaGroupItem {
     file: InputFile,
     item_type: InputPaidMediaGroupItemType,
+    cover: Option<InputFile>,
     thumbnail: Option<InputFile>,
 }
 
@@ -510,6 +516,21 @@ impl InputPaidMediaGroupItem {
         Self::new(file, InputPaidMediaGroupItemType::Video(metadata))
     }
 
+    /// Sets a new cover.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Cover.
+    ///
+    /// Note that the cover is ignored if the media type is not a video.
+    pub fn with_cover<T>(mut self, file: T) -> Self
+    where
+        T: Into<InputFile>,
+    {
+        self.cover = Some(file.into());
+        self
+    }
+
     /// Sets a new thumbnail.
     ///
     /// # Arguments
@@ -532,6 +553,7 @@ impl InputPaidMediaGroupItem {
         Self {
             item_type,
             file: file.into(),
+            cover: None,
             thumbnail: None,
         }
     }
@@ -551,6 +573,8 @@ enum InputPaidMediaGroupItemData {
     },
     Video {
         media: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        cover: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]

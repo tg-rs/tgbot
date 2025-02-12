@@ -87,7 +87,31 @@ fn get_available_gifts() {
 
 #[test]
 fn send_gift() {
-    let method = SendGift::new(1, "test");
+    let method = SendGift::for_chat_id(1, "test");
+    assert_payload_eq(
+        Payload::json(
+            "sendGift",
+            serde_json::json!({
+                "chat_id": 1,
+                "gift_id": "test",
+            }),
+        ),
+        method.clone(),
+    );
+
+    let method = SendGift::for_chat_id("@chat", "test");
+    assert_payload_eq(
+        Payload::json(
+            "sendGift",
+            serde_json::json!({
+                "chat_id": "@chat",
+                "gift_id": "test",
+            }),
+        ),
+        method.clone(),
+    );
+
+    let method = SendGift::for_user_id(1, "test");
     assert_payload_eq(
         Payload::json(
             "sendGift",

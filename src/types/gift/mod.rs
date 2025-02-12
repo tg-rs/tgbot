@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Integer, ParseMode, Sticker, TextEntities, TextEntity},
+    types::{ChatId, Integer, ParseMode, Sticker, TextEntities, TextEntity},
 };
 
 #[cfg(test)]
@@ -117,8 +117,9 @@ impl Method for GetAvailableGifts {
 /// The gift can't be converted to Telegram Stars by the user.
 #[derive(Clone, Debug, Serialize)]
 pub struct SendGift {
-    user_id: Integer,
     gift_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    chat_id: Option<ChatId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pay_for_upgrade: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -127,26 +128,51 @@ pub struct SendGift {
     text_parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     text_entities: Option<TextEntities>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    user_id: Option<Integer>,
 }
 
 impl SendGift {
-    /// Creates a new `SendGift`.
+    /// Creates a new `SendGift` with a `user_id`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier of the target chat that will receive the gift.
+    /// * `gift_id` - Identifier of the gift
+    pub fn for_chat_id<A, B>(chat_id: A, gift_id: B) -> Self
+    where
+        A: Into<ChatId>,
+        B: Into<String>,
+    {
+        Self {
+            gift_id: gift_id.into(),
+            chat_id: Some(chat_id.into()),
+            pay_for_upgrade: None,
+            text: None,
+            text_parse_mode: None,
+            text_entities: None,
+            user_id: None,
+        }
+    }
+
+    /// Creates a new `SendGift` with a `user_id`.
     ///
     /// # Arguments
     ///
     /// * `user_id` - Unique identifier of the target user that will receive the gift.
     /// * `gift_id` - Identifier of the gift
-    pub fn new<T>(user_id: Integer, gift_id: T) -> Self
+    pub fn for_user_id<T>(user_id: Integer, gift_id: T) -> Self
     where
         T: Into<String>,
     {
         Self {
-            user_id,
             gift_id: gift_id.into(),
+            chat_id: None,
             pay_for_upgrade: None,
             text: None,
             text_parse_mode: None,
             text_entities: None,
+            user_id: Some(user_id),
         }
     }
 

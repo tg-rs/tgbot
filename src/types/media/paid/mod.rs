@@ -86,6 +86,7 @@ impl PaidMediaInfo {
 /// Describes paid media.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(from = "RawPaidMedia", into = "RawPaidMedia")]
+#[allow(clippy::large_enum_variant)]
 pub enum PaidMedia {
     /// The paid media is a photo.
     Photo(Vec<PhotoSize>),
@@ -142,6 +143,7 @@ impl PaidMediaPreview {
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
+#[allow(clippy::large_enum_variant)]
 enum RawPaidMedia {
     Photo {
         photo: Vec<PhotoSize>,

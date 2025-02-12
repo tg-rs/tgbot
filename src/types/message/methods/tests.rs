@@ -439,13 +439,15 @@ fn forward_message() {
                 "message_id": 3,
                 "disable_notification": true,
                 "protect_content": true,
-                "message_thread_id": 1
+                "message_thread_id": 1,
+                "video_start_timestamp": 200,
             }),
         ),
         ForwardMessage::new(1, 2, 3)
             .with_disable_notification(true)
             .with_message_thread_id(1)
-            .with_protect_content(true),
+            .with_protect_content(true)
+            .with_video_start_timestamp(200),
     );
 }
 

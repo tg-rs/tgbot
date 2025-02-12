@@ -1052,6 +1052,8 @@ pub struct ForwardMessage {
     protect_content: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     message_thread_id: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    video_start_timestamp: Option<Integer>,
 }
 
 impl ForwardMessage {
@@ -1074,6 +1076,7 @@ impl ForwardMessage {
             disable_notification: None,
             protect_content: None,
             message_thread_id: None,
+            video_start_timestamp: None,
         }
     }
 
@@ -1107,6 +1110,16 @@ impl ForwardMessage {
     ///             of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a new video start timestamp.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - New start timestamp for the forwarded video in the message.
+    pub fn with_video_start_timestamp(mut self, value: Integer) -> Self {
+        self.video_start_timestamp = Some(value);
         self
     }
 }

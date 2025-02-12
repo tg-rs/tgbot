@@ -18,16 +18,26 @@ use crate::{
 fn video() {
     assert_json_eq(
         Video::new(3, "file-id", "file-unique-id", 2, 1)
+            .with_cover([PhotoSize::new("cover-file-id", "cover-file-unique-id", 24, 24)])
             .with_thumbnail(PhotoSize::new("thumb-file-id", "thumb-file-unique-id", 24, 24).with_file_size(1024))
             .with_file_name("File Name")
             .with_mime_type("video/mpeg")
-            .with_file_size(10240),
+            .with_file_size(10240)
+            .with_start_timestamp(20),
         serde_json::json!({
             "file_id": "file-id",
             "file_unique_id": "file-unique-id",
             "width": 1,
             "height": 2,
             "duration": 3,
+            "cover": [
+                {
+                    "file_id": "cover-file-id",
+                    "file_unique_id": "cover-file-unique-id",
+                    "width": 24,
+                    "height": 24
+                }
+            ],
             "thumbnail": {
                 "file_id": "thumb-file-id",
                 "file_unique_id": "thumb-file-unique-id",
@@ -37,7 +47,8 @@ fn video() {
             },
             "file_name": "File Name",
             "mime_type": "video/mpeg",
-            "file_size": 10240
+            "file_size": 10240,
+            "start_timestamp": 20
         }),
     );
     assert_json_eq(

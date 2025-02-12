@@ -42,6 +42,9 @@ pub struct Video {
     pub height: Integer,
     /// Width as defined by sender.
     pub width: Integer,
+    /// Available sizes of the cover of the video in the message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cover: Option<Vec<PhotoSize>>,
     /// Original filename as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub file_name: Option<String>,
@@ -51,6 +54,9 @@ pub struct Video {
     /// MIME type as defined by sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mime_type: Option<String>,
+    /// Timestamp in seconds from which the video will play in the message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_timestamp: Option<Integer>,
     /// Thumbnail.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumbnail: Option<PhotoSize>,
@@ -77,11 +83,26 @@ impl Video {
             file_unique_id: file_unique_id.into(),
             height,
             width,
+            cover: None,
             file_name: None,
             file_size: None,
             mime_type: None,
+            start_timestamp: None,
             thumbnail: None,
         }
+    }
+
+    /// Sets a new cover.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Available sizes of the cover of the video in the message.
+    pub fn with_cover<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = PhotoSize>,
+    {
+        self.cover = Some(value.into_iter().collect());
+        self
     }
 
     /// Sets a new name of the file.
@@ -117,6 +138,16 @@ impl Video {
         T: Into<String>,
     {
         self.mime_type = Some(value.into());
+        self
+    }
+
+    /// Sets a new start timestamp.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Timestamp in seconds from which the video will play in the message.
+    pub fn with_start_timestamp(mut self, value: Integer) -> Self {
+        self.start_timestamp = Some(value);
         self
     }
 

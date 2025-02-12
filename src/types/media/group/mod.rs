@@ -73,7 +73,14 @@ impl MediaGroup {
                 MediaGroupItemType::Audio(info) => MediaGroupItemData::Audio { media, thumbnail, info },
                 MediaGroupItemType::Document(info) => MediaGroupItemData::Document { media, thumbnail, info },
                 MediaGroupItemType::Photo(info) => MediaGroupItemData::Photo { media, info },
-                MediaGroupItemType::Video(info) => MediaGroupItemData::Video { media, thumbnail, info },
+                MediaGroupItemType::Video(info) => MediaGroupItemData::Video {
+                    media,
+                    cover: item
+                        .cover
+                        .map(|cover| add_file(format!("tgbot_im_cover_{}", idx), cover)),
+                    thumbnail,
+                    info,
+                },
             };
             info.push(data);
         }
@@ -98,6 +105,7 @@ impl From<MediaGroup> for Form {
 pub struct MediaGroupItem {
     file: InputFile,
     item_type: MediaGroupItemType,
+    cover: Option<InputFile>,
     thumbnail: Option<InputFile>,
 }
 
@@ -154,6 +162,21 @@ impl MediaGroupItem {
         Self::new(file, MediaGroupItemType::Video(metadata))
     }
 
+    /// Sets a new cover.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Cover.
+    ///
+    /// Note that the cover is ignored when the media type is not a video.
+    pub fn with_cover<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputFile>,
+    {
+        self.cover = Some(value.into());
+        self
+    }
+
     /// Sets a new thumbnail.
     ///
     /// # Arguments
@@ -161,11 +184,11 @@ impl MediaGroupItem {
     /// * `value` - Thumbnail.
     ///
     /// Note that photo can not have thumbnail and it will be ignored.
-    pub fn with_thumbnail<T>(mut self, file: T) -> Self
+    pub fn with_thumbnail<T>(mut self, value: T) -> Self
     where
         T: Into<InputFile>,
     {
-        self.thumbnail = Some(file.into());
+        self.thumbnail = Some(value.into());
         self
     }
 
@@ -176,6 +199,7 @@ impl MediaGroupItem {
         Self {
             item_type,
             file: file.into(),
+            cover: None,
             thumbnail: None,
         }
     }
@@ -214,6 +238,8 @@ enum MediaGroupItemData {
     },
     Video {
         media: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        cover: Option<String>,
         #[serde(skip_serializing_if = "Option::is_none")]
         thumbnail: Option<String>,
         #[serde(flatten)]

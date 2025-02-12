@@ -64,7 +64,8 @@ fn media_group_new() {
             InputFileReader::from(Cursor::new("test")),
             InputMediaPhoto::default().with_caption("caption"),
         ),
-        MediaGroupItem::for_video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
+        MediaGroupItem::for_video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default())
+            .with_cover(InputFile::url("cover-url")),
         MediaGroupItem::for_audio(InputFile::file_id("file-id"), InputMediaAudio::default())
             .with_thumbnail(InputFile::url("thumb-url")),
         MediaGroupItem::for_document(InputFile::file_id("file-id"), InputMediaDocument::default())

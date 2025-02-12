@@ -21,6 +21,8 @@ pub struct InputMediaVideo {
     #[serde(skip_serializing_if = "Option::is_none")]
     parse_mode: Option<ParseMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    start_timestamp: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     show_caption_above_media: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     supports_streaming: Option<bool>,
@@ -108,6 +110,16 @@ impl InputMediaVideo {
     /// * `value` - Whether the caption must be shown above the message media.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.show_caption_above_media = Some(value);
+        self
+    }
+
+    /// Sets a new start timestamp.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Start timestamp for the video in the message.
+    pub fn with_start_timestamp(mut self, value: Integer) -> Self {
+        self.start_timestamp = Some(value);
         self
     }
 

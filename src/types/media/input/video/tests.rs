@@ -10,6 +10,7 @@ fn input_media_video() {
             .with_has_spoiler(true)
             .with_height(200)
             .with_show_caption_above_media(true)
+            .with_start_timestamp(450)
             .with_supports_streaming(true)
             .with_width(200),
         serde_json::json!({
@@ -19,6 +20,7 @@ fn input_media_video() {
             "height": 200,
             "parse_mode": "Markdown",
             "show_caption_above_media": true,
+            "start_timestamp": 450,
             "supports_streaming": true,
             "width": 200,
         }),

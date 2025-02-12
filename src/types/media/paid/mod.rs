@@ -566,6 +566,8 @@ pub struct InputPaidMediaVideo {
     #[serde(skip_serializing_if = "Option::is_none")]
     height: Option<Integer>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    start_timestamp: Option<Integer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     supports_streaming: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     width: Option<Integer>,
@@ -589,6 +591,16 @@ impl InputPaidMediaVideo {
     /// `value` - Video height.
     pub fn with_height(mut self, value: Integer) -> Self {
         self.height = Some(value);
+        self
+    }
+
+    /// Sets a new start timestamp.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Start timestamp for the video in the message.
+    pub fn with_start_timestamp(mut self, value: Integer) -> Self {
+        self.start_timestamp = Some(value);
         self
     }
 

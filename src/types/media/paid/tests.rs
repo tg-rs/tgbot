@@ -230,6 +230,7 @@ fn input_paid_media_group() {
             InputPaidMediaVideo::default()
                 .with_duration(1)
                 .with_height(2)
+                .with_start_timestamp(20)
                 .with_supports_streaming(true)
                 .with_width(3),
         )
@@ -240,7 +241,8 @@ fn input_paid_media_group() {
     let mut media = String::from("[{\"type\":\"photo\",\"media\":\"photo-file-id\"}");
     media += ",{\"type\":\"video\",\"media\":\"https://example.com/video-file-1.mp4\",\"thumbnail\":\"video-1-thumbnail-id\"}";
     media += ",{\"type\":\"video\",\"media\":\"attach://tgbot_ipm_file_2\",\"thumbnail\"";
-    media += ":\"attach://tgbot_ipm_thumb_2\",\"duration\":1,\"height\":2,\"supports_streaming\":true,\"width\":3}]";
+    media += ":\"attach://tgbot_ipm_thumb_2\",\"duration\":1,\"height\":2,";
+    media += "\"start_timestamp\":20,\"supports_streaming\":true,\"width\":3}]";
     let expected_form = Form::from([
         ("media", media.into()),
         (

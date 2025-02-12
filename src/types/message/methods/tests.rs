@@ -18,6 +18,7 @@ use crate::{
         InputFile,
         InputMedia,
         InputMediaPhoto,
+        InputMediaType,
         LinkPreviewOptions,
         ParseMode,
         ReplyParameters,
@@ -273,10 +274,17 @@ fn edit_message_live_location() {
 
 #[test]
 fn edit_message_media() {
-    let input_media = InputMedia::new(InputFile::file_id("file-id"), InputMediaPhoto::default()).unwrap();
-    let mut form: Form = InputMedia::new(InputFile::file_id("file-id"), InputMediaPhoto::default())
-        .unwrap()
-        .into();
+    let input_media = InputMedia::new(InputMediaType::for_photo(
+        InputFile::file_id("file-id"),
+        InputMediaPhoto::default(),
+    ))
+    .unwrap();
+    let mut form: Form = InputMedia::new(InputMediaType::for_photo(
+        InputFile::file_id("file-id"),
+        InputMediaPhoto::default(),
+    ))
+    .unwrap()
+    .into();
     let markup: InlineKeyboardMarkup = [[InlineKeyboardButton::for_url("text", "url")]].into();
     form.insert_field("chat_id", 1);
     form.insert_field("message_id", 2);
@@ -289,10 +297,17 @@ fn edit_message_media() {
             .with_reply_markup(markup)
             .unwrap(),
     );
-    let input_media = InputMedia::new(InputFile::file_id("file-id"), InputMediaPhoto::default()).unwrap();
-    let mut form: Form = InputMedia::new(InputFile::file_id("file-id"), InputMediaPhoto::default())
-        .unwrap()
-        .into();
+    let input_media = InputMedia::new(InputMediaType::for_photo(
+        InputFile::file_id("file-id"),
+        InputMediaPhoto::default(),
+    ))
+    .unwrap();
+    let mut form: Form = InputMedia::new(InputMediaType::for_photo(
+        InputFile::file_id("file-id"),
+        InputMediaPhoto::default(),
+    ))
+    .unwrap()
+    .into();
     form.insert_field("inline_message_id", "msg-id");
     assert_payload_eq(
         Payload::form("editMessageMedia", form),

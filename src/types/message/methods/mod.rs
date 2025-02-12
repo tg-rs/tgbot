@@ -56,6 +56,8 @@ pub struct CopyMessage {
     reply_parameters: Option<ReplyParameters>,
     #[serde(skip_serializing_if = "Option::is_none")]
     show_caption_above_media: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    video_start_timestamp: Option<Integer>,
 }
 
 impl CopyMessage {
@@ -85,6 +87,7 @@ impl CopyMessage {
             reply_markup: None,
             reply_parameters: None,
             show_caption_above_media: None,
+            video_start_timestamp: None,
         }
     }
 
@@ -208,6 +211,16 @@ impl CopyMessage {
     ///           Ignored if a new caption isn't specified.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.show_caption_above_media = Some(value);
+        self
+    }
+
+    /// Sets a new video start timestamp.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - New start timestamp for the copied video in the message.
+    pub fn with_video_start_timestamp(mut self, value: Integer) -> Self {
+        self.video_start_timestamp = Some(value);
         self
     }
 }

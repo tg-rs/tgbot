@@ -58,7 +58,8 @@ fn copy_message() {
                 "reply_parameters": {
                     "message_id": 1
                 },
-                "show_caption_above_media": true
+                "show_caption_above_media": true,
+                "video_start_timestamp": 200,
             }),
         ),
         method
@@ -71,7 +72,8 @@ fn copy_message() {
             .with_protect_content(true)
             .with_reply_markup(ForceReply::new(true))
             .with_reply_parameters(ReplyParameters::new(1))
-            .with_show_caption_above_media(true),
+            .with_show_caption_above_media(true)
+            .with_video_start_timestamp(200),
     );
     assert_payload_eq(
         Payload::json(

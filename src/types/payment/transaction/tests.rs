@@ -5,13 +5,18 @@ use crate::{
         AffiliateInfo,
         ChannelChat,
         GetStarTransactions,
+        Gift,
         PaidMedia,
         PaidMediaPreview,
+        PrivateChat,
         RevenueWithdrawalState,
         StarTransaction,
         StarTransactions,
+        Sticker,
+        StickerType,
         TransactionPartner,
         TransactionPartnerAffiliateProgramParameters,
+        TransactionPartnerChatParameters,
         TransactionPartnerUserParameters,
         User,
     },
@@ -119,6 +124,36 @@ fn transaction_partner() {
                 "id": 1,
                 "first_name": "John",
                 "is_bot": true,
+            }
+        }),
+    );
+    assert_json_eq(
+        TransactionPartner::Chat(TransactionPartnerChatParameters::new(PrivateChat::new(1, "test"))),
+        serde_json::json!({"type": "chat", "chat": {"type": "private", "id": 1, "first_name": "test"}}),
+    );
+    assert_json_eq(
+        TransactionPartner::Chat(
+            TransactionPartnerChatParameters::new(PrivateChat::new(1, "test")).with_gift(Gift::new(
+                "gift-id",
+                Sticker::new("file-id", "file-unique-id", StickerType::Mask, 512, 512),
+                2,
+            )),
+        ),
+        serde_json::json!({
+            "type": "chat",
+            "chat": {"type": "private", "id": 1, "first_name": "test"},
+            "gift": {
+                "id": "gift-id",
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "mask",
+                    "width": 512,
+                    "height": 512,
+                    "is_animated": false,
+                    "is_video": false,
+                },
+                "star_count": 2
             }
         }),
     );

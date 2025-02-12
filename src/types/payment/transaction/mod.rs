@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Chat, Integer, PaidMedia, User},
+    types::{Chat, Gift, Integer, PaidMedia, User},
 };
 
 #[cfg(test)]
@@ -208,6 +208,43 @@ impl AffiliateInfo {
     }
 }
 
+/// Describes a transaction with a chat.
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct TransactionPartnerChatParameters {
+    /// Information about the chat.
+    pub chat: Chat,
+    /// The gift sent to the chat by the bot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gift: Option<Gift>,
+}
+
+impl TransactionPartnerChatParameters {
+    /// Creates a new `TransactionPartnerChatParameters`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat` - Information about the chat.
+    pub fn new<T>(chat: T) -> Self
+    where
+        T: Into<Chat>,
+    {
+        Self {
+            chat: chat.into(),
+            gift: None,
+        }
+    }
+
+    /// Sets a new gift
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The gift sent to the chat by the bot.
+    pub fn with_gift(mut self, value: Gift) -> Self {
+        self.gift = Some(value);
+        self
+    }
+}
+
 /// Describes a transaction with a user.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TransactionPartnerUserParameters {
@@ -331,6 +368,8 @@ impl TransactionPartnerUserParameters {
 pub enum TransactionPartner {
     /// Describes the affiliate program that issued the affiliate commission received via this transaction.
     AffiliateProgram(TransactionPartnerAffiliateProgramParameters),
+    /// Describes a transaction with a chat.
+    Chat(TransactionPartnerChatParameters),
     /// Describes a withdrawal transaction with Fragment.
     Fragment(Option<RevenueWithdrawalState>),
     /// Describes a transaction with an unknown source or recipient.
@@ -351,6 +390,7 @@ pub enum TransactionPartner {
 #[allow(clippy::large_enum_variant)]
 enum RawTransactionPartner {
     AffiliateProgram(TransactionPartnerAffiliateProgramParameters),
+    Chat(TransactionPartnerChatParameters),
     Fragment {
         #[serde(skip_serializing_if = "Option::is_none")]
         withdrawal_state: Option<RevenueWithdrawalState>,
@@ -367,6 +407,7 @@ impl From<RawTransactionPartner> for TransactionPartner {
     fn from(value: RawTransactionPartner) -> Self {
         match value {
             RawTransactionPartner::AffiliateProgram(parameters) => Self::AffiliateProgram(parameters),
+            RawTransactionPartner::Chat(parameters) => Self::Chat(parameters),
             RawTransactionPartner::Fragment { withdrawal_state } => Self::Fragment(withdrawal_state),
             RawTransactionPartner::Other {} => Self::Other,
             RawTransactionPartner::TelegramAds {} => Self::TelegramAds,
@@ -380,6 +421,7 @@ impl From<TransactionPartner> for RawTransactionPartner {
     fn from(value: TransactionPartner) -> Self {
         match value {
             TransactionPartner::AffiliateProgram(parameters) => Self::AffiliateProgram(parameters),
+            TransactionPartner::Chat(parameters) => Self::Chat(parameters),
             TransactionPartner::Fragment(withdrawal_state) => Self::Fragment { withdrawal_state },
             TransactionPartner::Other => Self::Other {},
             TransactionPartner::TelegramAds => Self::TelegramAds {},

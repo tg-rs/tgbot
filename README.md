@@ -10,12 +10,12 @@ A full-featured Telegram Bot API client.
 
 ```toml
 [dependencies]
-tgbot = "0.34.0"
+tgbot = "0.35.0"
 ```
 
 ## Examples
 
-See examples in the [examples](https://github.com/tg-rs/tgbot/tree/0.34.0/examples) directory.
+See examples in the [examples](https://github.com/tg-rs/tgbot/tree/0.35.0/examples) directory.
 
 To run an example you need to create a `.env` file:
 
@@ -34,8 +34,8 @@ This project adheres to [ZeroVer](https://0ver.org/).
 - [Latest documentation](https://docs.rs/tgbot)
 - [Master documentation](https://tg-rs.github.io/tgbot/tgbot/)
 - [Telegram Chat](https://t.me/tgrsusers)
-- [Changelog](https://github.com/tg-rs/tgbot/tree/0.34.0/CHANGELOG.md)
-- [Code of Conduct](https://github.com/tg-rs/tgbot/tree/0.34.0/CODE_OF_CONDUCT.md)
+- [Changelog](https://github.com/tg-rs/tgbot/tree/0.35.0/CHANGELOG.md)
+- [Code of Conduct](https://github.com/tg-rs/tgbot/tree/0.35.0/CODE_OF_CONDUCT.md)
 
 ## LICENSE
 

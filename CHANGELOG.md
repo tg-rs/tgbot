@@ -1,5 +1,46 @@
 # Changelog
 
+## 0.35.0 (12.02.2025)
+
+### Dependencies
+
+- Added:
+  - serde_with 3.12
+- Updated:
+  - bytes 1.10
+  - derive_more 2.0
+  - tokio 1.43
+
+### Bot API
+
+#### 8.3
+
+- Removed methods:
+  - `InputMedia`: `with_thumbnail`.
+  - `SendGift`: `new`.
+- Changed types:
+  - `InputMediaType`: from enum to struct.
+- Added types: `TransactionPartnerChatParameters`.
+- Added fields:
+  - `ChatFullInfo`: `can_send_gift`.
+  - `Video`: `cover`, `start_timestamp`.
+- Added methods:
+  - `CopyMessage`: `with_video_start_timestamp`.
+  - `ForwardMessage`: `with_video_start_timestamp`.
+  - `InputMedia`: `with_cover`.
+  - `InputMediaVideo`: `with_start_timestamp`.
+  - `InputPaidMediaGroupItem`: `with_cover`.
+  - `InputPaidMediaVideo`: `with_start_timestamp`.
+  - `MediaGroupItem`: `with_cover`.
+  - `SendGift`: `for_chat_id`, `for_user_id`.
+  - `SendVideo`: `with_cover`, `with_start_timestamp`.
+  - `Video`: `with_cover`, `with_start_timestamp`.
+- Added enum variants:
+  - `InputMediaError`: `CoverNotAcceptable`, `ThumbnailNotAcceptable`.
+  - `TransactionPartner`: `Chat`.
+- Changed signature:
+  - `InputMedia`: `new` from `(file: A, media_type: B)` to `(mut media_type: InputMediaType)`.
+
 ## 0.34.0 (02.01.2025)
 
 ### Dependencies

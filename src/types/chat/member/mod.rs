@@ -40,12 +40,12 @@ impl ChatMember {
     pub fn get_user(&self) -> &User {
         use self::ChatMember::*;
         match self {
-            Administrator(ref admin) => &admin.user,
-            Creator(ref creator) => &creator.user,
-            Kicked(ref kicked) => &kicked.user,
-            Left(ref user) => user,
-            Member { ref user, .. } => user,
-            Restricted(ref restricted) => &restricted.user,
+            Administrator(admin) => &admin.user,
+            Creator(creator) => &creator.user,
+            Kicked(kicked) => &kicked.user,
+            Left(user) => user,
+            Member { user, .. } => user,
+            Restricted(restricted) => &restricted.user,
         }
     }
 
@@ -55,7 +55,7 @@ impl ChatMember {
         match self {
             Administrator(_) | Creator(_) | Member { .. } => true,
             Kicked(_) | Left(_) => false,
-            Restricted(ref restricted) => restricted.is_member,
+            Restricted(restricted) => restricted.is_member,
         }
     }
 }

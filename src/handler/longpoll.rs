@@ -127,11 +127,11 @@ impl LongPollHandle {
 }
 
 fn get_error_timeout(err: ExecuteError, default_timeout: Duration) -> Duration {
-    if let ExecuteError::Response(err) = err {
+    match err { ExecuteError::Response(err) => {
         err.retry_after().map(Duration::from_secs).unwrap_or(default_timeout)
-    } else {
+    } _ => {
         default_timeout
-    }
+    }}
 }
 
 /// Represents options for configuring long polling behavior.

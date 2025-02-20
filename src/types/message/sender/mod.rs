@@ -38,7 +38,7 @@ impl MessageSender {
     /// Returns the sender user.
     pub fn get_user(&self) -> Option<&User> {
         match self {
-            MessageSender::User(ref user) => Some(user),
+            MessageSender::User(user) => Some(user),
             _ => None,
         }
     }
@@ -56,7 +56,7 @@ impl MessageSender {
     /// Returns the sender chat.
     pub fn get_chat(&self) -> Option<&Chat> {
         match self {
-            MessageSender::Chat(ref chat) => Some(chat),
+            MessageSender::Chat(chat) => Some(chat),
             _ => None,
         }
     }

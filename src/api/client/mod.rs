@@ -101,7 +101,7 @@ impl Client {
     pub async fn download_file<P>(
         &self,
         file_path: P,
-    ) -> Result<impl Stream<Item = Result<Bytes, HttpError>>, DownloadFileError>
+    ) -> Result<impl Stream<Item = Result<Bytes, HttpError>> + use<P>, DownloadFileError>
     where
         P: AsRef<str>,
     {

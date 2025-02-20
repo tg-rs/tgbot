@@ -883,7 +883,7 @@ impl PassportData {
     {
         Self {
             credentials,
-            data: data.into_iter().map(Into::into).collect(),
+            data: data.into_iter().collect(),
         }
     }
 }

@@ -1,5 +1,4 @@
 use crate::types::{
-    tests::assert_json_eq,
     EncryptedCredentials,
     EncryptedPassportElementAddress,
     EncryptedPassportElementBankStatement,
@@ -16,6 +15,7 @@ use crate::types::{
     EncryptedPassportElementUtilityBill,
     PassportData,
     PassportFile,
+    tests::assert_json_eq,
 };
 
 #[test]

@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, GetChatMenuButton, MenuButton, MenuButtonWebApp, SetChatMenuButton, WebAppInfo},
+    api::{Payload, assert_payload_eq},
+    types::{GetChatMenuButton, MenuButton, MenuButtonWebApp, SetChatMenuButton, WebAppInfo, tests::assert_json_eq},
 };
 
 #[test]

@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, PrivateChat, Story};
+use crate::types::{PrivateChat, Story, tests::assert_json_eq};
 
 #[test]
 fn story() {

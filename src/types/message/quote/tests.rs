@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, Text, TextEntities, TextEntity, TextQuote};
+use crate::types::{Text, TextEntities, TextEntity, TextQuote, tests::assert_json_eq};
 
 #[test]
 fn text_quote() {

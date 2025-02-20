@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, InlineQueryResultContact, PreparedInlineMessage, SavePreparedInlineMessage},
+    api::{Payload, assert_payload_eq},
+    types::{InlineQueryResultContact, PreparedInlineMessage, SavePreparedInlineMessage, tests::assert_json_eq},
 };
 
 #[test]

@@ -1,7 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Form, FormValue, Payload},
+    api::{Form, FormValue, Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         File,
         ForceReply,
         GetCustomEmojiStickers,
@@ -19,6 +18,7 @@ use crate::{
         StickerFormat,
         StickerType,
         UploadStickerFile,
+        tests::assert_json_eq,
     },
 };
 

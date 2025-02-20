@@ -1,8 +1,8 @@
 use std::io::Cursor;
 
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, File, GetFile, InputFile, InputFileReader},
+    api::{Payload, assert_payload_eq},
+    types::{File, GetFile, InputFile, InputFileReader, tests::assert_json_eq},
 };
 
 #[test]

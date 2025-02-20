@@ -2,9 +2,9 @@ use std::{collections::HashMap, error::Error, fmt, fmt::Formatter};
 
 use mime::Mime;
 use reqwest::{
-    multipart::{Form as MultipartForm, Part},
     Body,
     Error as ReqwestError,
+    multipart::{Form as MultipartForm, Part},
 };
 use tokio::io::AsyncRead;
 use tokio_util::codec::{BytesCodec, FramedRead};

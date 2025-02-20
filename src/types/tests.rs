@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use pretty_assertions::assert_eq;
-use serde::{de::DeserializeOwned, Serialize};
+use serde::{Serialize, de::DeserializeOwned};
 use serde_json::Value as JsonValue;
 
 pub(crate) fn assert_json_eq<S>(expected_struct: S, expected_value: JsonValue)

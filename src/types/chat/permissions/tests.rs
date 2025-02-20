@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, ChatAdministratorRights, ChatPermissions, SetChatPermissions},
+    api::{Payload, assert_payload_eq},
+    types::{ChatAdministratorRights, ChatPermissions, SetChatPermissions, tests::assert_json_eq},
 };
 
 #[test]

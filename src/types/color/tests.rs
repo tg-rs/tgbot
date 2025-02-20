@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, AccentColor, ForumTopicIconColor, Integer, ProfileAccentColor};
+use crate::types::{AccentColor, ForumTopicIconColor, Integer, ProfileAccentColor, tests::assert_json_eq};
 
 #[test]
 fn accent_color() {

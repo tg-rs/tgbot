@@ -1,5 +1,4 @@
 use crate::types::{
-    tests::assert_json_eq,
     Animation,
     Audio,
     BackgroundType,
@@ -59,6 +58,7 @@ use crate::types::{
     VideoNote,
     Voice,
     WebAppData,
+    tests::assert_json_eq,
 };
 
 fn create_message_struct() -> Message {

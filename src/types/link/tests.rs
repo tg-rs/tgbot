@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, LinkPreviewOptions};
+use crate::types::{LinkPreviewOptions, tests::assert_json_eq};
 
 #[test]
 fn link_preview_options() {

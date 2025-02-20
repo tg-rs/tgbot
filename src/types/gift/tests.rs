@@ -1,7 +1,7 @@
 use super::GetAvailableGifts;
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, Gift, Gifts, ParseMode, SendGift, Sticker, StickerType, TextEntity},
+    api::{Payload, assert_payload_eq},
+    types::{Gift, Gifts, ParseMode, SendGift, Sticker, StickerType, TextEntity, tests::assert_json_eq},
 };
 
 #[test]

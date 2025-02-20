@@ -1,5 +1,4 @@
 use crate::types::{
-    tests::assert_json_eq,
     ChatAdministratorRights,
     KeyboardButton,
     KeyboardButtonRequestChat,
@@ -9,6 +8,7 @@ use crate::types::{
     ReplyKeyboardRemove,
     ReplyMarkup,
     WebAppInfo,
+    tests::assert_json_eq,
 };
 
 #[test]

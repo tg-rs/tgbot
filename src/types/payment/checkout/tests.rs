@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, AnswerPreCheckoutQuery, OrderInfo, PreCheckoutQuery, User},
+    api::{Payload, assert_payload_eq},
+    types::{AnswerPreCheckoutQuery, OrderInfo, PreCheckoutQuery, User, tests::assert_json_eq},
 };
 
 #[test]

@@ -1,13 +1,13 @@
 use serde::Serialize;
 
 use crate::types::{
-    tests::assert_json_eq,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     LoginUrl,
     ReplyMarkup,
     SwitchInlineQueryChosenChat,
     WebAppInfo,
+    tests::assert_json_eq,
 };
 
 #[derive(Serialize)]

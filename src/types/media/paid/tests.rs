@@ -1,9 +1,8 @@
 use std::io::Cursor;
 
 use crate::{
-    api::{assert_payload_eq, Form, Payload},
+    api::{Form, Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         ForceReply,
         InputFile,
         InputPaidMediaGroup,
@@ -22,6 +21,7 @@ use crate::{
         TextEntity,
         User,
         Video,
+        tests::assert_json_eq,
     },
 };
 

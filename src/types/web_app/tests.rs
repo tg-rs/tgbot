@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, WebAppData, WebAppInfo};
+use crate::types::{WebAppData, WebAppInfo, tests::assert_json_eq};
 
 #[test]
 fn web_app_info() {

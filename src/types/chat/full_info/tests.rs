@@ -1,5 +1,4 @@
 use crate::types::{
-    tests::assert_json_eq,
     AccentColor,
     Birthdate,
     BusinessIntro,
@@ -22,6 +21,7 @@ use crate::types::{
     SupergroupChat,
     Text,
     User,
+    tests::assert_json_eq,
 };
 
 fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {

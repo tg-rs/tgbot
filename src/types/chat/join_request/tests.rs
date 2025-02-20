@@ -1,7 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         ApproveChatJoinRequest,
         ChannelChat,
         Chat,
@@ -9,6 +8,7 @@ use crate::{
         ChatJoinRequest,
         DeclineChatJoinRequest,
         User,
+        tests::assert_json_eq,
     },
 };
 

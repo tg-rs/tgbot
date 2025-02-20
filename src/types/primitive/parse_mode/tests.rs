@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, ParseMode};
+use crate::types::{ParseMode, tests::assert_json_eq};
 
 #[test]
 fn parse_mode() {

@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, InputMediaVideo, ParseMode, TextEntity};
+use crate::types::{InputMediaVideo, ParseMode, TextEntity, tests::assert_json_eq};
 
 #[test]
 fn input_media_video() {

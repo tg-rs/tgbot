@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use crate::{
-    api::{assert_payload_eq, Form, Payload},
+    api::{Form, Payload, assert_payload_eq},
     types::{
         InputFile,
         InputFileReader,

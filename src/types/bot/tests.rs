@@ -1,7 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         Bot,
         BotCommand,
         BotCommandScope,
@@ -23,6 +22,7 @@ use crate::{
         SetBotDescription,
         SetBotName,
         SetBotShortDescription,
+        tests::assert_json_eq,
     },
 };
 

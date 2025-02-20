@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, AllowedUpdate, DeleteWebhook, GetWebhookInfo, SetWebhook, WebhookInfo},
+    api::{Payload, assert_payload_eq},
+    types::{AllowedUpdate, DeleteWebhook, GetWebhookInfo, SetWebhook, WebhookInfo, tests::assert_json_eq},
 };
 
 #[test]

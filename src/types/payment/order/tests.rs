@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, OrderInfo, ShippingAddress};
+use crate::types::{OrderInfo, ShippingAddress, tests::assert_json_eq};
 
 #[test]
 fn order_info() {

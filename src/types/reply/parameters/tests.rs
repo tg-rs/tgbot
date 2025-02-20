@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, ParseMode, ReplyParameters, ReplyQuote, TextEntity};
+use crate::types::{ParseMode, ReplyParameters, ReplyQuote, TextEntity, tests::assert_json_eq};
 
 #[test]
 fn reply_parameters() {

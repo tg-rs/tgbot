@@ -1,6 +1,6 @@
 use std::{error::Error, fmt};
 
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use serde_json::Error as JsonError;
 
 use crate::{

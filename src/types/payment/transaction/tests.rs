@@ -1,7 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         AffiliateInfo,
         ChannelChat,
         GetStarTransactions,
@@ -19,6 +18,7 @@ use crate::{
         TransactionPartnerChatParameters,
         TransactionPartnerUserParameters,
         User,
+        tests::assert_json_eq,
     },
 };
 

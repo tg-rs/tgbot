@@ -5,7 +5,7 @@ use futures_util::{pin_mut, stream::StreamExt};
 use log::error;
 use tokio::{
     spawn,
-    sync::mpsc::{channel, Receiver, Sender},
+    sync::mpsc::{Receiver, Sender, channel},
     time::sleep,
 };
 
@@ -127,11 +127,10 @@ impl LongPollHandle {
 }
 
 fn get_error_timeout(err: ExecuteError, default_timeout: Duration) -> Duration {
-    match err { ExecuteError::Response(err) => {
-        err.retry_after().map(Duration::from_secs).unwrap_or(default_timeout)
-    } _ => {
-        default_timeout
-    }}
+    match err {
+        ExecuteError::Response(err) => err.retry_after().map(Duration::from_secs).unwrap_or(default_timeout),
+        _ => default_timeout,
+    }
 }
 
 /// Represents options for configuring long polling behavior.

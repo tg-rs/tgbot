@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, ChatLocation, Location};
+use crate::types::{ChatLocation, Location, tests::assert_json_eq};
 
 #[test]
 fn chat_location() {

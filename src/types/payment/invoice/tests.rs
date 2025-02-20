@@ -1,9 +1,8 @@
 use serde::Serialize;
 
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         CreateInvoiceLink,
         InlineKeyboardButton,
         Invoice,
@@ -11,6 +10,7 @@ use crate::{
         LabeledPrice,
         ReplyParameters,
         SendInvoice,
+        tests::assert_json_eq,
     },
 };
 

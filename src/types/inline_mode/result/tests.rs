@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, ChosenInlineResult, InlineQueryResultsButton, Location, User, WebAppInfo};
+use crate::types::{ChosenInlineResult, InlineQueryResultsButton, Location, User, WebAppInfo, tests::assert_json_eq};
 
 #[test]
 fn chosen_inline_result() {

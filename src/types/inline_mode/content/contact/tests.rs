@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, InputMessageContent, InputMessageContentContact};
+use crate::types::{InputMessageContent, InputMessageContentContact, tests::assert_json_eq};
 
 #[test]
 fn input_message_content_contact() {

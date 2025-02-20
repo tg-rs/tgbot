@@ -1,7 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         BackgroundType,
         ChannelChat,
         Chat,
@@ -14,6 +13,7 @@ use crate::{
         SetChatDescription,
         SetChatTitle,
         SupergroupChat,
+        tests::assert_json_eq,
     },
 };
 

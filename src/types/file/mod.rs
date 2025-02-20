@@ -1,6 +1,6 @@
 use std::{fmt, path::Path};
 
-use mime::{Mime, APPLICATION_OCTET_STREAM};
+use mime::{APPLICATION_OCTET_STREAM, Mime};
 use serde::{Deserialize, Serialize};
 use tokio::{
     fs,

@@ -1,9 +1,8 @@
 use std::{collections::HashSet, time::Duration};
 
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         AllowedUpdate,
         BusinessConnection,
         BusinessMessagesDeleted,
@@ -42,6 +41,7 @@ use crate::{
         Update,
         UpdateType,
         User,
+        tests::assert_json_eq,
     },
 };
 

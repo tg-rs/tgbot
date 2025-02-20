@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, BackgroundFill, BackgroundType, Document};
+use crate::types::{BackgroundFill, BackgroundType, Document, tests::assert_json_eq};
 
 #[test]
 fn background_fill() {

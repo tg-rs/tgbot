@@ -1,5 +1,4 @@
 use crate::types::{
-    tests::assert_json_eq,
     EditMessageResult,
     InaccessibleMessage,
     LinkPreviewOptions,
@@ -9,6 +8,7 @@ use crate::types::{
     ReplyTo,
     SupergroupChat,
     User,
+    tests::assert_json_eq,
 };
 
 #[test]

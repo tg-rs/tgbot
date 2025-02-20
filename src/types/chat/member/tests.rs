@@ -1,7 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         BanChatMember,
         Chat,
         ChatInviteLink,
@@ -21,6 +20,7 @@ use crate::{
         SetChatAdministratorCustomTitle,
         UnbanChatMember,
         User,
+        tests::assert_json_eq,
     },
 };
 

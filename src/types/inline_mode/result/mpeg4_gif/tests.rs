@@ -1,11 +1,11 @@
 use crate::types::{
-    tests::assert_json_eq,
     InlineKeyboardButton,
     InlineQueryResult,
     InlineQueryResultCachedMpeg4Gif,
     InlineQueryResultMpeg4Gif,
     InputMessageContentText,
     ParseMode,
+    tests::assert_json_eq,
 };
 
 #[test]

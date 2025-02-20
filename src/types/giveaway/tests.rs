@@ -1,5 +1,4 @@
 use crate::types::{
-    tests::assert_json_eq,
     ChannelChat,
     Giveaway,
     GiveawayCompleted,
@@ -8,6 +7,7 @@ use crate::types::{
     Message,
     MessageData,
     User,
+    tests::assert_json_eq,
 };
 
 #[test]

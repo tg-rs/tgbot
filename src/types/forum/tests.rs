@@ -1,7 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         CloseForumTopic,
         CloseGeneralForumTopic,
         CreateForumTopic,
@@ -17,6 +16,7 @@ use crate::{
         UnhideGeneralForumTopic,
         UnpinAllForumTopicMessages,
         UnpinAllGeneralForumTopicMessages,
+        tests::assert_json_eq,
     },
 };
 

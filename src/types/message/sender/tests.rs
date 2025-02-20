@@ -1,5 +1,4 @@
 use crate::types::{
-    tests::assert_json_eq,
     ChannelChat,
     Chat,
     GroupChat,
@@ -9,6 +8,7 @@ use crate::types::{
     PrivateChat,
     SupergroupChat,
     User,
+    tests::assert_json_eq,
 };
 
 fn create_message_struct(chat: Chat) -> Message {

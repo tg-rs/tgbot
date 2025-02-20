@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, EncryptedPassportElementType, PassportElementError, SetPassportDataErrors},
+    api::{Payload, assert_payload_eq},
+    types::{EncryptedPassportElementType, PassportElementError, SetPassportDataErrors, tests::assert_json_eq},
 };
 
 #[test]

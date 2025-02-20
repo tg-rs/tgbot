@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, ForceReply, ReplyMarkup};
+use crate::types::{ForceReply, ReplyMarkup, tests::assert_json_eq};
 
 #[test]
 fn force_reply() {

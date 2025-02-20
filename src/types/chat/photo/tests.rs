@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, ChatPhoto, DeleteChatPhoto, InputFile, SetChatPhoto},
+    api::{Form, FormValue, Payload, assert_payload_eq},
+    types::{ChatPhoto, DeleteChatPhoto, InputFile, SetChatPhoto, tests::assert_json_eq},
 };
 
 #[test]

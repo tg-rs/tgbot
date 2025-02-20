@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use crate::types::{tests::assert_json_eq, InputMessageContent, InputMessageContentInvoice, LabeledPrice};
+use crate::types::{InputMessageContent, InputMessageContentInvoice, LabeledPrice, tests::assert_json_eq};
 
 #[derive(Serialize)]
 struct InvoiceProviderData {

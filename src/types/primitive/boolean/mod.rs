@@ -1,11 +1,11 @@
 use std::fmt;
 
 use serde::{
-    de::{Error, Unexpected},
     Deserialize,
     Deserializer,
     Serialize,
     Serializer,
+    de::{Error, Unexpected},
 };
 
 #[cfg(test)]

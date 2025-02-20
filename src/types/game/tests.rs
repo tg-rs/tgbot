@@ -1,7 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         Animation,
         Game,
         GameHighScore,
@@ -15,6 +14,7 @@ use crate::{
         TextEntities,
         TextEntity,
         User,
+        tests::assert_json_eq,
     },
 };
 

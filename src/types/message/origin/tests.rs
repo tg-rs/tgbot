@@ -1,5 +1,4 @@
 use crate::types::{
-    tests::assert_json_eq,
     ChannelChat,
     GroupChat,
     MessageOrigin,
@@ -8,6 +7,7 @@ use crate::types::{
     MessageOriginHiddenUser,
     MessageOriginUser,
     User,
+    tests::assert_json_eq,
 };
 
 #[test]

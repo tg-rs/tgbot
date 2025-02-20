@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Form, FormValue, Payload},
-    types::{tests::assert_json_eq, ForceReply, InputFile, ParseMode, ReplyParameters, SendVoice, TextEntity, Voice},
+    api::{Form, FormValue, Payload, assert_payload_eq},
+    types::{ForceReply, InputFile, ParseMode, ReplyParameters, SendVoice, TextEntity, Voice, tests::assert_json_eq},
 };
 
 #[test]

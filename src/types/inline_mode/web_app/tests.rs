@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, AnswerWebAppQuery, InlineQueryResultArticle, SentWebAppMessage},
+    api::{Payload, assert_payload_eq},
+    types::{AnswerWebAppQuery, InlineQueryResultArticle, SentWebAppMessage, tests::assert_json_eq},
 };
 
 #[test]

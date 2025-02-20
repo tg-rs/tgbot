@@ -1,6 +1,6 @@
 use crate::{
-    api::{assert_payload_eq, Payload},
-    types::{tests::assert_json_eq, ChatAction, SendChatAction},
+    api::{Payload, assert_payload_eq},
+    types::{ChatAction, SendChatAction, tests::assert_json_eq},
 };
 
 #[test]

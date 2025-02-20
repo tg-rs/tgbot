@@ -1,10 +1,10 @@
 use crate::types::{
-    tests::assert_json_eq,
     InputMessageContent,
     InputMessageContentText,
     LinkPreviewOptions,
     ParseMode,
     TextEntity,
+    tests::assert_json_eq,
 };
 
 #[test]

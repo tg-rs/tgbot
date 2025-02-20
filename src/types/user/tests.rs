@@ -1,9 +1,8 @@
 use std::collections::HashMap;
 
 use crate::{
-    api::{assert_payload_eq, Payload},
+    api::{Payload, assert_payload_eq},
     types::{
-        tests::assert_json_eq,
         Birthdate,
         GetUserProfilePhotos,
         ParseMode,
@@ -13,6 +12,7 @@ use crate::{
         User,
         UserId,
         UserProfilePhotos,
+        tests::assert_json_eq,
     },
 };
 

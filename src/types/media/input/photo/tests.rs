@@ -1,4 +1,4 @@
-use crate::types::{tests::assert_json_eq, InputMediaPhoto, ParseMode, TextEntity};
+use crate::types::{InputMediaPhoto, ParseMode, TextEntity, tests::assert_json_eq};
 
 #[test]
 fn input_media_photo() {

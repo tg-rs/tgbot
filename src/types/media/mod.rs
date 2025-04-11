@@ -1,5 +1,4 @@
-pub use self::{group::*, input::*, paid::*};
+pub use self::{group::*, paid::*};
 
 mod group;
-mod input;
 mod paid;

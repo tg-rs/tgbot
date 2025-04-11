@@ -15,6 +15,7 @@ pub use self::{
     gift::*,
     giveaway::*,
     inline_mode::*,
+    input::*,
     link::*,
     location::*,
     media::*,
@@ -52,6 +53,7 @@ mod game;
 mod gift;
 mod giveaway;
 mod inline_mode;
+mod input;
 mod link;
 mod location;
 mod media;

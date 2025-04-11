@@ -541,3 +541,55 @@ impl Method for ReadBusinessMessage {
         Payload::json("readBusinessMessage", self)
     }
 }
+
+/// Changes the first and last name of a managed business account.
+///
+/// Requires the can_change_name business bot right.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct SetBusinessAccountName {
+    business_connection_id: String,
+    first_name: String,
+    last_name: Option<String>,
+}
+
+impl SetBusinessAccountName {
+    /// Creates a new `SetBusinessAccountName`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `first_name` - The new value of the first name for the business account; 1-64 characters.
+    pub fn new<A, B>(business_connection_id: A, first_name: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            first_name: first_name.into(),
+            last_name: None,
+        }
+    }
+
+    /// Sets a new last name.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The new value of the last name for the business account; 0-64 characters.
+    pub fn with_last_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.last_name = Some(value.into());
+        self
+    }
+}
+
+impl Method for SetBusinessAccountName {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setBusinessAccountName", self)
+    }
+}

@@ -593,3 +593,51 @@ impl Method for SetBusinessAccountName {
         Payload::json("setBusinessAccountName", self)
     }
 }
+
+/// Changes the username of a managed business account.
+///
+/// Requires the can_change_username business bot right.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct SetBusinessAccountUsername {
+    business_connection_id: String,
+    username: Option<String>,
+}
+
+impl SetBusinessAccountUsername {
+    /// Creates a new `SetBusinessAccountUsername`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    pub fn new<T>(business_connection_id: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            username: None,
+        }
+    }
+
+    /// Sets a new username
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The new value of the username for the business account; 0-32 characters.
+    pub fn with_username<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.username = Some(value.into());
+        self
+    }
+}
+
+impl Method for SetBusinessAccountUsername {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setBusinessAccountUsername", self)
+    }
+}

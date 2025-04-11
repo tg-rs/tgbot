@@ -13,6 +13,7 @@ use crate::{
         PrivateChat,
         ReadBusinessMessage,
         SetBusinessAccountName,
+        SetBusinessAccountUsername,
         Sticker,
         StickerType,
         User,
@@ -231,5 +232,29 @@ fn set_business_account_name() {
             }),
         ),
         actual_method.with_last_name("Doe"),
+    );
+}
+
+#[test]
+fn set_business_account_username() {
+    let actual_method = SetBusinessAccountUsername::new("id");
+    assert_payload_eq(
+        Payload::json(
+            "setBusinessAccountUsername",
+            serde_json::json!({
+                "business_connection_id": "id",
+            }),
+        ),
+        actual_method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setBusinessAccountUsername",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "username": "johndoe",
+            }),
+        ),
+        actual_method.with_username("johndoe"),
     );
 }

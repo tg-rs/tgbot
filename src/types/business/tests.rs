@@ -7,6 +7,7 @@ use crate::{
         BusinessLocation,
         BusinessMessagesDeleted,
         BusinessOpeningHours,
+        DeleteBusinessMessages,
         GetBusinessConnection,
         Location,
         PrivateChat,
@@ -164,6 +165,20 @@ fn business_opening_hours() {
         ]
     });
     assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn delete_business_messages() {
+    assert_payload_eq(
+        Payload::json(
+            "deleteBusinessMessages",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "message_ids": [1, 2, 3]
+            }),
+        ),
+        DeleteBusinessMessages::new("id", [1, 2, 3]),
+    );
 }
 
 #[test]

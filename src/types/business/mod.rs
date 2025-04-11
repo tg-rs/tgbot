@@ -432,6 +432,46 @@ impl BusinessOpeningHours {
     }
 }
 
+/// Deletes messages on behalf of a business account.
+///
+/// Requires the `can_delete_outgoing_messages` business bot right to delete messages sent by the bot itself,
+/// or the `can_delete_all_messages` business bot right to delete any message.
+#[derive(Clone, Debug, Serialize)]
+pub struct DeleteBusinessMessages {
+    business_connection_id: String,
+    message_ids: Vec<Integer>,
+}
+
+impl DeleteBusinessMessages {
+    /// Creates a new `DeleteBusinessMessages`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection
+    ///   on behalf of which to delete the messages.
+    /// * `message_ids` - A list of 1-100 identifiers of messages to delete;
+    ///   all messages must be from the same chat;
+    ///   see deleteMessage for limitations on which messages can be deleted.
+    pub fn new<A, B>(business_connection_id: A, message_ids: B) -> Self
+    where
+        A: Into<String>,
+        B: IntoIterator<Item = Integer>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            message_ids: message_ids.into_iter().collect(),
+        }
+    }
+}
+
+impl Method for DeleteBusinessMessages {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteBusinessMessages", self)
+    }
+}
+
 /// Returns information about the connection of the bot with a business account.
 #[derive(Clone, Debug, Serialize)]
 pub struct GetBusinessConnection {

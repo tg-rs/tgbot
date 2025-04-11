@@ -220,7 +220,7 @@ impl User {
         })
     }
 
-    /// Sets a new value for an `added_to_attachment_menu` flag.
+    /// Sets a new value for the `added_to_attachment_menu` flag.
     ///
     /// # Arguments
     ///
@@ -230,7 +230,7 @@ impl User {
         self
     }
 
-    /// Sets a new value for an `is_premium` flag.
+    /// Sets a new value for the `is_premium` flag.
     ///
     /// # Arguments
     ///
@@ -530,7 +530,7 @@ impl SetUserEmojiStatus {
     /// # Arguments
     ///
     /// * `value` - Custom emoji identifier of the emoji status to set.
-    ///             Pass an empty string to remove the status.
+    ///   Pass an empty string to remove the status.
     pub fn with_emoji_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

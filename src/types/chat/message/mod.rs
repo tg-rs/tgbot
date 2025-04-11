@@ -46,7 +46,7 @@ impl PinChatMessage {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the business connection
-    ///             on behalf of which the message will be pinned.
+    ///   on behalf of which the message will be pinned.
     pub fn with_business_connection_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -55,12 +55,12 @@ impl PinChatMessage {
         self
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to notify all chat members about the new pinned message;
-    ///             notifications are always disabled in channels and private chats.
+    ///   notifications are always disabled in channels and private chats.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
@@ -110,7 +110,7 @@ impl UnpinChatMessage {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the business connection
-    ///             on behalf of which the message will be unpinned.
+    ///   on behalf of which the message will be unpinned.
     pub fn with_business_connection_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

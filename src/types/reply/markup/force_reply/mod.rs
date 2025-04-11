@@ -25,8 +25,7 @@ impl ForceReply {
     /// # Arguments
     ///
     /// * `force_reply` - Indicates whether to show reply interface to the user,
-    ///                   as if they manually selected the bot‘s message
-    ///                   and tapped ’Reply'.
+    ///   as if they manually selected the bot‘s message and tapped ’Reply'.
     pub fn new(force_reply: bool) -> Self {
         ForceReply {
             force_reply,
@@ -40,9 +39,9 @@ impl ForceReply {
     /// # Arguments
     ///
     /// * `value` - The placeholder to be shown
-    ///             in the input field when
-    ///             the keyboard is active;
-    ///             1-64 characters.
+    ///   in the input field when
+    ///   the keyboard is active;
+    ///   1-64 characters.
     pub fn with_input_field_placeholder<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -51,7 +50,7 @@ impl ForceReply {
         self
     }
 
-    /// Sets a new value for a `selective` flag.
+    /// Sets a new value for the `selective` flag.
     ///
     /// # Arguments
     ///
@@ -62,8 +61,7 @@ impl ForceReply {
     /// Targets:
     ///
     /// 1. users that are `@mentioned` in the text of the Message object.
-    /// 2. if the bot message is a reply (has `reply_to_message_id`),
-    ///    sender of the original message.
+    /// 2. if the bot message is a reply (has `reply_to_message_id`), sender of the original message.
     pub fn with_selective(mut self, selective: bool) -> Self {
         self.selective = Some(selective);
         self

@@ -274,7 +274,7 @@ impl Message {
         self
     }
 
-    /// Sets a new value for a `has_protected_content` flag.
+    /// Sets a new value for the `has_protected_content` flag.
     ///
     /// # Arguments
     ///
@@ -294,7 +294,7 @@ impl Message {
         self
     }
 
-    /// Sets a new value for an `is_automatic_forward` flag.
+    /// Sets a new value for the `is_automatic_forward` flag.
     ///
     /// # Arguments
     ///
@@ -348,7 +348,7 @@ impl Message {
     /// # Arguments
     ///
     /// * `value` - Information about the message that is being replied to,
-    ///             which may come from another chat or forum topic.
+    ///   which may come from another chat or forum topic.
     pub fn with_external_reply(mut self, value: ExternalReplyInfo) -> Self {
         self.external_reply = Some(value);
         self
@@ -364,7 +364,7 @@ impl Message {
         self
     }
 
-    /// Sets a new value for a `has_media_spoiler` flag.
+    /// Sets a new value for the `has_media_spoiler` flag.
     ///
     /// # Arguments
     ///
@@ -374,7 +374,7 @@ impl Message {
         self
     }
 
-    /// Sets a new value for an `is_from_offline` flag.
+    /// Sets a new value for the `is_from_offline` flag.
     ///
     /// # Arguments
     ///
@@ -384,7 +384,7 @@ impl Message {
         self
     }
 
-    /// Sets a new value for an `is_topic_message` flag.
+    /// Sets a new value for the `is_topic_message` flag.
     ///
     /// # Arguments
     ///
@@ -422,7 +422,7 @@ impl Message {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self

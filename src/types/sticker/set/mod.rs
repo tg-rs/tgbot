@@ -122,11 +122,11 @@ impl CreateNewStickerSet {
     ///
     /// * `user_id` - User identifier of created sticker set owner.
     /// * `name` - Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals);
-    ///            can contain only english letters, digits and underscores;
-    ///            must begin with a letter, can't contain consecutive underscores
-    ///            and must end in `_by_<bot username>`;
-    ///            <bot_username> is case insensitive;
-    ///            1-64 characters.
+    ///   can contain only english letters, digits and underscores;
+    ///   must begin with a letter, can't contain consecutive underscores
+    ///   and must end in `_by_<bot username>`;
+    ///   <bot_username> is case insensitive;
+    ///   1-64 characters.
     /// * `title` - Sticker set title; 1-64 characters.
     /// * `stickers` - A list of 1-50 initial stickers to be added to the sticker set.
     pub fn new<A, B>(user_id: Integer, name: A, title: B, stickers: InputStickers) -> Result<Self, InputStickerError>
@@ -141,14 +141,14 @@ impl CreateNewStickerSet {
         Ok(Self { form })
     }
 
-    /// Sets a new value for a `needs_repainting` flag.
+    /// Sets a new value for the `needs_repainting` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether stickers in the sticker set must be repainted to the color
-    ///             of text when used in messages, the accent color if used as emoji status,
-    ///             white on chat photos, or another appropriate color based on context;
-    ///             for custom emoji sticker sets only.
+    ///   of text when used in messages, the accent color if used as emoji status,
+    ///   white on chat photos, or another appropriate color based on context;
+    ///   for custom emoji sticker sets only.
     pub fn with_needs_repainting(mut self, value: bool) -> Self {
         self.form.insert_field("needs_repainting", value);
         self
@@ -278,8 +278,8 @@ impl ReplaceStickerInSet {
     ///
     /// * `name` - Sticker set name.
     /// * `old_sticker` - File identifier of the replaced sticker.
-    /// * `sticker` -  Information about the added sticker.
-    ///                If exactly the same sticker had already been added to the set, then the set remains unchanged.
+    /// * `sticker` -  Information about the added sticker;
+    ///   if exactly the same sticker had already been added to the set, then the set remains unchanged.
     /// * `user_id` - User identifier of the sticker set owner.
     pub fn new<A, B>(
         name: A,

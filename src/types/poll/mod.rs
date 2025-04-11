@@ -127,7 +127,7 @@ impl RegularPoll {
         }
     }
 
-    /// Sets a new value for an `allows_multiple_answers` flag.
+    /// Sets a new value for the `allows_multiple_answers` flag.
     ///
     /// # Arguments
     ///
@@ -147,7 +147,7 @@ impl RegularPoll {
         self
     }
 
-    /// Sets a new value for an `is_anonymous` flag.
+    /// Sets a new value for the `is_anonymous` flag.
     ///
     /// # Arguments
     ///
@@ -157,7 +157,7 @@ impl RegularPoll {
         self
     }
 
-    /// Sets a new value for an `is_closed` flag.
+    /// Sets a new value for the `is_closed` flag.
     ///
     /// # Arguments
     ///
@@ -293,8 +293,8 @@ impl Quiz {
     /// # Arguments
     ///
     /// * `value` - Text that is shown when a user chooses
-    ///             an incorrect answer or
-    ///             taps on the lamp icon; 0-200 characters.
+    ///   an incorrect answer or
+    ///   taps on the lamp icon; 0-200 characters.
     pub fn with_explanation<T>(mut self, value: T) -> Self
     where
         T: Into<Text>,
@@ -662,13 +662,13 @@ impl SendQuiz {
         Self { inner: parameters }
     }
 
-    /// Sets a new value for an `allow_paid_broadcast` flag.
+    /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
-    ///             for a fee of 0.1 Telegram Stars per message.
-    ///             The relevant Stars will be withdrawn from the bot's balance.
+    ///   for a fee of 0.1 Telegram Stars per message.
+    ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.inner.allow_paid_broadcast = Some(value);
         self
@@ -701,12 +701,12 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.inner.disable_notification = Some(value);
         self
@@ -717,8 +717,8 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * `value` - Text that is shown when a user chooses
-    ///             an incorrect answer or taps on the lamp icon;
-    ///             0-200 characters with at most 2 line feeds after entities parsing.
+    ///   an incorrect answer or taps on the lamp icon;
+    ///   0-200 characters with at most 2 line feeds after entities parsing.
     pub fn with_explanation<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -756,7 +756,7 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new value for an `is_anonymous` flag.
+    /// Sets a new value for the `is_anonymous` flag.
     ///
     /// # Arguments
     ///
@@ -766,7 +766,7 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new value for an `is_closed` flag.
+    /// Sets a new value for the `is_closed` flag.
     ///
     /// # Arguments
     ///
@@ -794,7 +794,7 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.inner.message_thread_id = Some(value);
         self
@@ -813,12 +813,12 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.inner.protect_content = Some(value);
         self
@@ -914,19 +914,19 @@ impl SendPoll {
         }
     }
 
-    /// Sets a new value for an `allow_paid_broadcast` flag.
+    /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
-    ///             for a fee of 0.1 Telegram Stars per message.
-    ///             The relevant Stars will be withdrawn from the bot's balance.
+    ///   for a fee of 0.1 Telegram Stars per message.
+    ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.inner.allow_paid_broadcast = Some(value);
         self
     }
 
-    /// Sets a new value for an `allows_multiple_answers` flag.
+    /// Sets a new value for the `allows_multiple_answers` flag.
     ///
     /// # Arguments
     ///
@@ -963,18 +963,18 @@ impl SendPoll {
         self
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.inner.disable_notification = Some(value);
         self
     }
 
-    /// Sets a new value for an `is_anonymous` flag.
+    /// Sets a new value for the `is_anonymous` flag.
     ///
     /// # Arguments
     ///
@@ -984,7 +984,7 @@ impl SendPoll {
         self
     }
 
-    /// Sets a new value for an `is_closed` flag.
+    /// Sets a new value for the `is_closed` flag.
     ///
     /// # Arguments
     ///
@@ -1012,7 +1012,7 @@ impl SendPoll {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.inner.message_thread_id = Some(value);
         self
@@ -1031,12 +1031,12 @@ impl SendPoll {
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.inner.protect_content = Some(value);
         self

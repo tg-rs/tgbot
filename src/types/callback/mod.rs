@@ -212,21 +212,21 @@ impl AnswerCallbackQuery {
     /// # Arguments
     ///
     /// * `value` - The maximum amount of time in seconds that the result
-    ///             of the callback query may be cached client-side;
-    ///             telegram apps will support caching starting in version 3.14;
-    ///             default - 0.
+    ///   of the callback query may be cached client-side;
+    ///   telegram apps will support caching starting in version 3.14;
+    ///   default - 0.
     pub fn with_cache_time(mut self, value: Integer) -> Self {
         self.cache_time = Some(value);
         self
     }
 
-    /// Sets a new value for a `short_alert` flag.
+    /// Sets a new value for the `short_alert` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - An alert will be shown by the client instead
-    ///             of a notification at the top of the chat screen;
-    ///             default - `false`.
+    ///   of a notification at the top of the chat screen;
+    ///   default - `false`.
     pub fn with_show_alert(mut self, value: bool) -> Self {
         self.show_alert = Some(value);
         self
@@ -237,8 +237,8 @@ impl AnswerCallbackQuery {
     /// # Arguments
     ///
     /// * `value` - Text of the notification;
-    ///             if not specified, nothing will be shown to the user;
-    ///             0-200 characters.
+    ///   if not specified, nothing will be shown to the user;
+    ///   0-200 characters.
     pub fn with_text<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

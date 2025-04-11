@@ -40,10 +40,10 @@ impl InputMessageContentInvoice {
     /// * `currency` - Three-letter ISO 4217 currency code.
     /// * `description` - Product description; 1-255 characters.
     /// * `payload` - Bot-defined invoice payload; 1-128 bytes;
-    ///               this will not be displayed to the user,
-    ///               use for your internal processes.
+    ///   this will not be displayed to the user,
+    ///   use for your internal processes.
     /// * `prices` - Price breakdown (e.g. product price, tax, discount,
-    ///              delivery cost, delivery tax, bonus, etc.).
+    ///   delivery cost, delivery tax, bonus, etc.).
     /// * `title` - Product name; 1-32 characters.
     pub fn new<A, B, C, D, E>(currency: A, description: B, payload: C, prices: D, title: E) -> Self
     where
@@ -77,7 +77,7 @@ impl InputMessageContentInvoice {
         }
     }
 
-    /// Sets a new value for an `is_flexible` flag.
+    /// Sets a new value for the `is_flexible` flag.
     ///
     /// # Arguments
     ///
@@ -91,8 +91,7 @@ impl InputMessageContentInvoice {
     ///
     /// # Arguments
     ///
-    /// * `value` - Maximum accepted amount for tips in the smallest units of the currency;
-    ///             default - 0.
+    /// * `value` - Maximum accepted amount for tips in the smallest units of the currency; default - 0.
     ///
     /// For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145.
     /// See the exp parameter in [currencies.json], it shows the number
@@ -105,7 +104,7 @@ impl InputMessageContentInvoice {
         self
     }
 
-    /// Sets a new value for a `need_email` flag.
+    /// Sets a new value for the `need_email` flag.
     ///
     /// # Arguments
     ///
@@ -115,7 +114,7 @@ impl InputMessageContentInvoice {
         self
     }
 
-    /// Sets a new value for a `need_name` flag.
+    /// Sets a new value for the `need_name` flag.
     ///
     /// # Arguments
     ///
@@ -125,7 +124,7 @@ impl InputMessageContentInvoice {
         self
     }
 
-    /// Sets a new value for a `need_phone_number` flag.
+    /// Sets a new value for the `need_phone_number` flag.
     ///
     /// # Arguments
     ///
@@ -135,12 +134,12 @@ impl InputMessageContentInvoice {
         self
     }
 
-    /// Sets a new value for a `need_shipping_address` flag.
+    /// Sets a new value for the `need_shipping_address` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether a shipping address of a user
-    ///             is required to complete the order.
+    ///   is required to complete the order.
     pub fn with_need_shipping_address(mut self, value: bool) -> Self {
         self.need_shipping_address = Some(value);
         self
@@ -197,7 +196,7 @@ impl InputMessageContentInvoice {
     /// # Arguments
     ///
     /// * `value` - An object for data about the invoice,
-    ///             which will be shared with the payment provider.
+    ///   which will be shared with the payment provider.
     ///
     /// A detailed description of the required fields should be provided by the payment provider.
     pub fn with_provider_data<T>(mut self, value: &T) -> Result<Self, JsonError>
@@ -212,8 +211,8 @@ impl InputMessageContentInvoice {
     ///
     /// # Arguments
     ///
-    /// * `value` - Payment provider token, obtained via @BotFather.
-    ///             Pass an empty string for payments in Telegram Stars.
+    /// * `value` - Payment provider token, obtained via @BotFather;
+    ///   pass an empty string for payments in Telegram Stars.
     pub fn with_provider_token<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -222,7 +221,7 @@ impl InputMessageContentInvoice {
         self
     }
 
-    /// Sets a new value for a `send_email_to_provider` flag.
+    /// Sets a new value for the `send_email_to_provider` flag.
     ///
     /// # Arguments
     ///
@@ -232,7 +231,7 @@ impl InputMessageContentInvoice {
         self
     }
 
-    /// Sets a new value for a `send_phone_number_to_provider` flag.
+    /// Sets a new value for the `send_phone_number_to_provider` flag.
     ///
     /// # Arguments
     ///

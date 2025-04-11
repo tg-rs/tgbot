@@ -74,7 +74,7 @@ impl Giveaway {
         self
     }
 
-    /// Sets a new value for a `has_public_winners` flag.
+    /// Sets a new value for the `has_public_winners` flag.
     ///
     /// # Arguments
     ///
@@ -84,7 +84,7 @@ impl Giveaway {
         self
     }
 
-    /// Sets a new value for an `only_new_members` flag.
+    /// Sets a new value for the `only_new_members` flag.
     ///
     /// # Arguments
     ///
@@ -122,7 +122,7 @@ impl Giveaway {
     /// # Arguments
     ///
     /// * `value` - The number of Telegram Stars to be split between giveaway winners;
-    ///             for Telegram Star giveaways only.
+    ///   for Telegram Star giveaways only.
     pub fn with_prize_star_count(mut self, value: Integer) -> Self {
         self.prize_star_count = Some(value);
         self
@@ -144,7 +144,7 @@ impl GiveawayCreated {
     /// # Arguments
     ///
     /// * `value` - The number of Telegram Stars to be split between giveaway winners;
-    ///             for Telegram Star giveaways only.
+    ///   for Telegram Star giveaways only.
     pub fn with_prize_star_count(mut self, value: Integer) -> Self {
         self.prize_star_count = Some(value);
         self
@@ -192,12 +192,12 @@ impl GiveawayCompleted {
         self
     }
 
-    /// Sets a new value for an `is_star_giveaway` flag.
+    /// Sets a new value for the `is_star_giveaway` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether the giveaway is a Telegram Star giveaway.
-    ///             Otherwise, currently, the giveaway is a Telegram Premium giveaway.
+    ///   Otherwise, currently, the giveaway is a Telegram Premium giveaway.
     pub fn with_is_star_giveaway(mut self, value: bool) -> Self {
         self.is_star_giveaway = Some(value);
         self
@@ -293,7 +293,7 @@ impl GiveawayWinners {
         self
     }
 
-    /// Sets a new value for an `only_new_members` flag.
+    /// Sets a new value for the `only_new_members` flag.
     ///
     /// # Arguments
     ///
@@ -331,7 +331,7 @@ impl GiveawayWinners {
     /// # Arguments
     ///
     /// * `value` - The number of Telegram Stars to be split between giveaway winners;
-    ///             for Telegram Star giveaways only.
+    ///   for Telegram Star giveaways only.
     pub fn with_prize_star_count(mut self, value: Integer) -> Self {
         self.prize_star_count = Some(value);
         self
@@ -347,7 +347,7 @@ impl GiveawayWinners {
         self
     }
 
-    /// Sets a new value for a `was_refunded` flag.
+    /// Sets a new value for the `was_refunded` flag.
     ///
     /// # Arguments
     ///

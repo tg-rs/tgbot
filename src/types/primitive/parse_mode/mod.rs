@@ -35,8 +35,8 @@ impl ParseMode {
     ///
     /// For MarkdownV2 you must escape characters with `\` by yourself in the following cases:
     ///
-    /// * all \` and `\` characters in 'pre' and 'code'.
-    /// * `(...)` - part of inline link definition, all `)` and `\` characters.
+    /// - all \` and `\` characters in 'pre' and 'code'.
+    /// - `(...)` - part of inline link definition, all `)` and `\` characters.
     ///
     /// In all other places use this method to escape special characters.
     pub fn escape<T>(self, input: T) -> String

@@ -53,7 +53,7 @@ impl BusinessConnection {
     /// # Arguments
     ///
     /// * `value` - Whether the bot can act on behalf of the business account
-    ///             in chats that were active in the last 24 hours.
+    ///   in chats that were active in the last 24 hours.
     pub fn with_can_reply(mut self, value: bool) -> Self {
         self.can_reply = value;
         self

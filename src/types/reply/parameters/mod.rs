@@ -25,7 +25,7 @@ impl ReplyParameters {
     /// # Arguments
     ///
     /// * `message_id` - Identifier of the message that will be replied to in the current chat,
-    ///                  or in the chat chat_id if it is specified.
+    ///   or in the chat chat_id if it is specified.
     pub fn new(message_id: Integer) -> Self {
         Self {
             message_id,
@@ -35,7 +35,7 @@ impl ReplyParameters {
         }
     }
 
-    /// Sets a new value for an `allow_sending_without_reply` flag.
+    /// Sets a new value for the `allow_sending_without_reply` flag.
     ///
     /// # Arguments
     ///

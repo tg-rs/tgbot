@@ -105,7 +105,7 @@ impl Sticker {
         }
     }
 
-    /// Sets a new value for an `is_animated` flag.
+    /// Sets a new value for the `is_animated` flag.
     ///
     /// # Arguments
     ///
@@ -115,7 +115,7 @@ impl Sticker {
         self
     }
 
-    /// Sets a new value for an `is_video` flag.
+    /// Sets a new value for the `is_video` flag.
     ///
     /// # Arguments
     ///
@@ -170,7 +170,7 @@ impl Sticker {
         self.mask_position = Some(value);
         self
     }
-    /// Sets a new value for a `needs_repainting` flag.
+    /// Sets a new value for the `needs_repainting` flag.
     ///
     /// # Arguments
     ///
@@ -269,8 +269,7 @@ impl GetCustomEmojiStickers {
     ///
     /// # Arguments
     ///
-    /// * `custom_emoji_ids` - List of custom emoji identifiers;
-    ///                        at most 200 custom emoji identifiers can be specified.
+    /// * `custom_emoji_ids` - List of custom emoji identifiers; at most 200 custom emoji identifiers can be specified.
     pub fn new<A, B>(custom_emoji_ids: A) -> Self
     where
         A: IntoIterator<Item = B>,
@@ -313,13 +312,13 @@ impl SendSticker {
         }
     }
 
-    /// Sets a new value for an `allow_paid_broadcast` flag.
+    /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
-    ///             for a fee of 0.1 Telegram Stars per message.
-    ///             The relevant Stars will be withdrawn from the bot's balance.
+    ///   for a fee of 0.1 Telegram Stars per message.
+    ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.form.insert_field("allow_paid_broadcast", value);
         self
@@ -338,12 +337,12 @@ impl SendSticker {
         self
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.form.insert_field("disable_notification", value);
         self
@@ -380,18 +379,18 @@ impl SendSticker {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.form.insert_field("message_thread_id", value);
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.form.insert_field("protect_content", value.to_string());
         self
@@ -479,7 +478,7 @@ impl SetStickerKeywords {
     ///
     /// * `sticker` - File identifier of the sticker.
     /// * `keywords` - A list of 0-20 search keywords for the sticker
-    ///                with total length of up to 64 characters.
+    ///   with total length of up to 64 characters.
     pub fn new<A, B, C>(sticker: A, keywords: B) -> Self
     where
         A: Into<String>,

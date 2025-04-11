@@ -237,7 +237,7 @@ impl InlineQueryResultCachedAudio {
     ///
     /// # Arguments
     ///
-    /// * value - Content of the message to be sent instead of the audio.
+    /// * `value` - Content of the message to be sent instead of the audio.
     pub fn with_input_message_content<T>(mut self, value: T) -> Self
     where
         T: Into<InputMessageContent>,

@@ -116,7 +116,7 @@ impl ExternalReplyInfo {
         self
     }
 
-    /// Sets a new value for a `has_media_spoiler` flag.
+    /// Sets a new value for the `has_media_spoiler` flag.
     ///
     /// # Arguments
     ///

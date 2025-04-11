@@ -42,8 +42,7 @@ impl InlineQueryResultDocument {
     ///
     /// * `document_url` - A valid URL for the file.
     /// * `id` - Unique identifier of the result; 1-64 bytes.
-    /// * `mime_type` - MIME type of the content of the file,
-    ///                 either “application/pdf” or “application/zip”.
+    /// * `mime_type` - MIME type of the content of the file, either “application/pdf” or “application/zip”.
     /// * `title` - Title of the result.
     pub fn new<A, B, C, D>(document_url: A, id: B, mime_type: C, title: D) -> Self
     where
@@ -276,7 +275,7 @@ impl InlineQueryResultCachedDocument {
     ///
     /// # Arguments
     ///
-    /// * value - Short description of the result.
+    /// * `value` - Short description of the result.
     pub fn with_description<T>(mut self, description: T) -> Self
     where
         T: Into<String>,

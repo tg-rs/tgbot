@@ -62,12 +62,12 @@ impl ChatInviteLink {
         }
     }
 
-    /// Sets a new value for a `creates_join_request` flag.
+    /// Sets a new value for the `creates_join_request` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether users joining the chat via the link need
-    ///             to be approved by chat administrators.
+    ///   to be approved by chat administrators.
     pub fn with_creates_join_request(mut self, value: bool) -> Self {
         self.creates_join_request = value;
         self
@@ -83,7 +83,7 @@ impl ChatInviteLink {
         self
     }
 
-    /// Sets a new value for an `is_primary` flag.
+    /// Sets a new value for the `is_primary` flag.
     ///
     /// # Arguments
     ///
@@ -93,7 +93,7 @@ impl ChatInviteLink {
         self
     }
 
-    /// Sets a new value for an `is_revoked` flag.
+    /// Sets a new value for the `is_revoked` flag.
     ///
     /// # Arguments
     ///
@@ -108,8 +108,8 @@ impl ChatInviteLink {
     /// # Arguments
     ///
     /// * `value` - The maximum number of users that can be members
-    ///             of the chat simultaneously after joining
-    ///             the chat via this invite link; 1-99999.
+    ///   of the chat simultaneously after joining
+    ///   the chat via this invite link; 1-99999.
     pub fn with_member_limit(mut self, value: Integer) -> Self {
         self.member_limit = Some(value);
         self
@@ -174,11 +174,11 @@ impl CreateChatInviteLink {
         }
     }
 
-    /// Sets a new value for a `creates_join_request` flag.
+    /// Sets a new value for the `creates_join_request` flag.
     ///
     /// * `value` - Indicates whether users joining the chat via the link need
-    ///             to be approved by chat administrators;
-    ///             if `true`, member_limit can't be specified.
+    ///   to be approved by chat administrators;
+    ///   if `true`, member_limit can't be specified.
     pub fn with_creates_join_request(mut self, value: bool) -> Self {
         self.creates_join_request = Some(value);
         self
@@ -199,7 +199,7 @@ impl CreateChatInviteLink {
     /// # Arguments
     ///
     /// * `value` - The maximum number of users that can be members of the chat simultaneously
-    ///             after joining the chat via this invite link; 1-99999.
+    ///   after joining the chat via this invite link; 1-99999.
     pub fn with_member_limit(mut self, value: Integer) -> Self {
         self.member_limit = Some(value);
         self
@@ -248,10 +248,9 @@ impl CreateChatSubscriptionInviteLink {
     ///
     /// * `chat_id` - Unique identifier for the target channel chat.
     /// * `subscription_period` - The number of seconds the subscription will be active for before the next payment.
-    ///                           Currently, it must always be 2592000 (30 days).
+    ///   Currently, it must always be 2592000 (30 days).
     /// * `subscription_price` - The amount of Telegram Stars a user must pay initially
-    ///                          and after each subsequent subscription period to be a member of the chat;
-    ///                          1-2500.
+    ///   and after each subsequent subscription period to be a member of the chat; 1-2500.
     pub fn new<T>(chat_id: T, subscription_period: Integer, subscription_price: Integer) -> Self
     where
         T: Into<ChatId>,
@@ -324,13 +323,13 @@ impl EditChatInviteLink {
         }
     }
 
-    /// Sets a new value for a `creates_join_request` flag.
+    /// Sets a new value for the `creates_join_request` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether users joining the chat via the link need
-    ///             to be approved by chat administrators;
-    ///             if `true`, `member_limit` can't be specified.
+    ///   to be approved by chat administrators;
+    ///   if `true`, `member_limit` can't be specified.
     pub fn with_creates_join_request(mut self, value: bool) -> Self {
         self.creates_join_request = Some(value);
         self
@@ -351,7 +350,7 @@ impl EditChatInviteLink {
     /// # Arguments
     ///
     /// * `value` - The maximum number of users that can be members of the chat simultaneously
-    ///             after joining the chat via this invite link; 1-99999.
+    ///   after joining the chat via this invite link; 1-99999.
     pub fn with_member_limit(mut self, value: Integer) -> Self {
         self.member_limit = Some(value);
         self

@@ -116,13 +116,13 @@ impl SendVideoNote {
         }
     }
 
-    /// Sets a new value for an `allow_paid_broadcast` flag.
+    /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
-    ///             for a fee of 0.1 Telegram Stars per message.
-    ///             The relevant Stars will be withdrawn from the bot's balance.
+    ///   for a fee of 0.1 Telegram Stars per message.
+    ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.form.insert_field("allow_paid_broadcast", value);
         self
@@ -141,12 +141,12 @@ impl SendVideoNote {
         self
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.form.insert_field("disable_notification", value);
         self
@@ -190,18 +190,18 @@ impl SendVideoNote {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.form.insert_field("message_thread_id", value);
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.form.insert_field("protect_content", value.to_string());
         self

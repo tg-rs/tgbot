@@ -74,7 +74,7 @@ impl InputMediaVideo {
         self
     }
 
-    /// Sets a new value for a `has_spoiler` flag.
+    /// Sets a new value for the `has_spoiler` flag.
     ///
     /// # Arguments
     ///
@@ -114,7 +114,7 @@ impl InputMediaVideo {
         self
     }
 
-    /// Sets a new value for a `supports_streaming` flag.
+    /// Sets a new value for the `supports_streaming` flag.
     ///
     /// # Arguments
     ///

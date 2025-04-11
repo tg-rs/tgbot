@@ -574,10 +574,8 @@ impl GetUpdates {
     ///
     /// # Arguments
     ///
-    /// * `value` - Timeout for long polling;
-    ///           default - 0, i.e. usual short polling;
-    ///           should be positive;
-    ///           short polling should be used for testing purposes only.
+    /// * `value` - Timeout for long polling; default - 0, i.e. usual short polling; should be positive;
+    ///   short polling should be used for testing purposes only.
     pub fn with_timeout(mut self, value: Duration) -> Self {
         self.timeout = Some(value.as_secs() as i64);
         self

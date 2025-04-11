@@ -242,7 +242,7 @@ impl SupergroupChat {
         }
     }
 
-    /// Sets a new value for an `is_forum` flag.
+    /// Sets a new value for the `is_forum` flag.
     ///
     /// # Arguments
     ///

@@ -115,7 +115,7 @@ impl InlineQueryResultArticle {
     /// Sets a new URL.
     ///
     /// * `value` - URL of the result.
-    ///             Pass an empty string to hide the URL.
+    ///   Pass an empty string to hide the URL.
     pub fn with_url<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

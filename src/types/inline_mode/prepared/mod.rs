@@ -69,7 +69,7 @@ impl SavePreparedInlineMessage {
         }
     }
 
-    /// Sets a new value for an `allow_bot_chats` flag.
+    /// Sets a new value for the `allow_bot_chats` flag.
     ///
     /// # Arguments
     ///
@@ -79,7 +79,7 @@ impl SavePreparedInlineMessage {
         self
     }
 
-    /// Sets a new value for an `allow_channel_chats` flag.
+    /// Sets a new value for the `allow_channel_chats` flag.
     ///
     /// # Arguments
     ///
@@ -89,7 +89,7 @@ impl SavePreparedInlineMessage {
         self
     }
 
-    /// Sets a new value for an `allow_group_chats` flag.
+    /// Sets a new value for the `allow_group_chats` flag.
     ///
     /// # Arguments
     ///
@@ -99,7 +99,7 @@ impl SavePreparedInlineMessage {
         self
     }
 
-    /// Sets a new value for an `allow_user_chats` flag.
+    /// Sets a new value for the `allow_user_chats` flag.
     ///
     /// # Arguments
     ///

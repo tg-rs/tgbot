@@ -771,8 +771,8 @@ impl MessageDataWriteAccess {
     /// Sets a new value of the `from_attachment_menu` flag.
     ///
     /// * `value` - Indicates whether access was granted
-    ///             when the bot was added to the attachment
-    ///             or side menu.
+    ///   when the bot was added to the attachment
+    ///   or side menu.
     pub fn with_from_attachment_menu(mut self, value: bool) -> Self {
         self.from_attachment_menu = Some(value);
         self
@@ -780,8 +780,8 @@ impl MessageDataWriteAccess {
 
     /// Sets a new value of the `from_request` flag.
     ///
-    /// * value - Indicates whether access was granted after the user accepted an explicit request
-    ///           from a Web App sent by the method `requestWriteAccess`.
+    /// * `value` - Indicates whether access was granted after the user accepted an explicit request
+    ///   from a Web App sent by the method `requestWriteAccess`.
     pub fn with_from_request(mut self, value: bool) -> Self {
         self.from_request = Some(value);
         self
@@ -791,7 +791,7 @@ impl MessageDataWriteAccess {
     ///
     /// # Arguments
     ///
-    /// * value - Name of the Web App.
+    /// * `value` - Name of the Web App.
     pub fn with_web_app_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

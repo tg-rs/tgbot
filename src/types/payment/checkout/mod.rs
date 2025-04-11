@@ -124,7 +124,7 @@ impl AnswerPreCheckoutQuery {
     ///
     /// * `id` - Unique identifier of the query to be answered.
     /// * `message` - Error message in human readable form
-    ///               that explains the reason for failure to proceed with the checkout.
+    ///   that explains the reason for failure to proceed with the checkout.
     pub fn error<A, B>(id: A, message: B) -> Self
     where
         A: Into<String>,

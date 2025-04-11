@@ -20,7 +20,7 @@ impl RemoveChatVerification {
     /// # Arguments
     ///
     /// * `chat_id` - Unique identifier for the target chat
-    ///               or username of the target channel (in the format @channelusername).
+    ///   or username of the target channel (in the format @channelusername).
     pub fn new<T>(chat_id: T) -> Self
     where
         T: Into<ChatId>,
@@ -78,7 +78,7 @@ impl VerifyChat {
     /// # Arguments
     ///
     /// * `chat_id` - Unique identifier for the target chat
-    ///               or username of the target channel (in the format @channelusername).
+    ///   or username of the target channel (in the format @channelusername).
     pub fn new<T>(chat_id: T) -> Self
     where
         T: Into<ChatId>,
@@ -94,7 +94,7 @@ impl VerifyChat {
     /// # Arguments
     ///
     /// * `value` - Custom description for the verification; 0-70 characters.
-    ///             Must be empty if the organization isn't allowed to provide a custom verification description.
+    ///   Must be empty if the organization isn't allowed to provide a custom verification description.
     pub fn with_custom_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -138,7 +138,7 @@ impl VerifyUser {
     /// # Arguments
     ///
     /// * `value` - Custom description for the verification; 0-70 characters.
-    ///             Must be empty if the organization isn't allowed to provide a custom verification description.
+    ///   Must be empty if the organization isn't allowed to provide a custom verification description.
     pub fn with_custom_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

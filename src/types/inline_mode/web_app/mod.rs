@@ -23,7 +23,7 @@ impl SentWebAppMessage {
     ///
     /// # Arguments
     ///
-    /// * value - Inline message ID
+    /// * `value` - Inline message ID
     pub fn with_inline_message_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -47,8 +47,8 @@ impl AnswerWebAppQuery {
     ///
     /// # Arguments
     ///
-    /// * web_app_query_id - Unique identifier of the query to be answered
-    /// * result - An object describing the message to be sent
+    /// * `web_app_query_id` - Unique identifier of the query to be answered
+    /// * `result` - An object describing the message to be sent
     pub fn new<A, B>(result: A, web_app_query_id: B) -> Self
     where
         A: Into<InlineQueryResult>,

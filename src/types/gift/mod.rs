@@ -169,12 +169,12 @@ impl SendGift {
         }
     }
 
-    /// Sets a new value for a `pay_for_upgrade` flag.
+    /// Sets a new value for the `pay_for_upgrade` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to pay for the gift upgrade from the bot's balance,
-    ///             thereby making the upgrade free for the receiver.
+    ///   thereby making the upgrade free for the receiver.
     pub fn with_pay_for_upgrade(mut self, value: bool) -> Self {
         self.pay_for_upgrade = Some(value);
         self

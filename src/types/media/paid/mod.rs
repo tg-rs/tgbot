@@ -228,13 +228,13 @@ impl SendPaidMedia {
         Self { form }
     }
 
-    /// Sets a new value for an `allow_paid_broadcast` flag.
+    /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
-    ///             for a fee of 0.1 Telegram Stars per message.
-    ///             The relevant Stars will be withdrawn from the bot's balance.
+    ///   for a fee of 0.1 Telegram Stars per message.
+    ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.form.insert_field("allow_paid_broadcast", value);
         self
@@ -245,7 +245,7 @@ impl SendPaidMedia {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the business connection
-    ///             on behalf of which the message will be sent.
+    ///   on behalf of which the message will be sent.
     pub fn with_business_connection_id<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -310,8 +310,8 @@ impl SendPaidMedia {
     /// # Arguments
     ///
     /// * `value` - Bot-defined paid media payload;
-    ///             0-128 bytes;
-    ///             This will not be displayed to the user, use it for your internal processes.
+    ///   0-128 bytes;
+    ///   This will not be displayed to the user, use it for your internal processes.
     pub fn with_payload<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

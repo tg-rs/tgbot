@@ -49,8 +49,8 @@ impl InputSticker {
     /// # Arguments
     ///
     /// * `value` - List of 0-20 search keywords for the sticker
-    ///             with total length of up to 64 characters;
-    ///             for “regular” and “custom_emoji” stickers only.
+    ///   with total length of up to 64 characters;
+    ///   for “regular” and “custom_emoji” stickers only.
     pub fn with_keywords<A, B>(mut self, value: A) -> Self
     where
         A: IntoIterator<Item = B>,
@@ -65,7 +65,7 @@ impl InputSticker {
     /// # Arguments
     ///
     /// * `value` - Position where the mask should be placed on faces;
-    ///             for “mask” stickers only.
+    ///   for “mask” stickers only.
     pub fn with_mask_position(mut self, value: MaskPosition) -> Self {
         self.mask_position = Some(value);
         self

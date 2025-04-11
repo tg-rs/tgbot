@@ -94,7 +94,7 @@ impl SendChatAction {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self

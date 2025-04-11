@@ -186,7 +186,7 @@ impl InputFileReader {
     ///
     /// # Arguments
     ///
-    /// * value - The MIME type of the file.
+    /// * `value` - The MIME type of the file.
     pub fn with_mime_type(mut self, value: Mime) -> Self {
         self.mime_type = Some(value);
         self

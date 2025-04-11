@@ -40,12 +40,12 @@ impl TextQuote {
         }
     }
 
-    /// Sets a new value for an `is_manual` flag.
+    /// Sets a new value for the `is_manual` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether the quote was chosen manually by the message sender
-    ///             or was added automatically by the server.
+    ///   or was added automatically by the server.
     pub fn with_is_manual(mut self, value: bool) -> Self {
         self.is_manual = Some(value);
         self

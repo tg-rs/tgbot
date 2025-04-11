@@ -75,8 +75,7 @@ impl InlineKeyboardButton {
     /// # Arguments
     ///
     /// * `text` - Text of the button.
-    /// * `data` - Data to be sent in a callback query to the bot when button is pressed;
-    ///            1-64 bytes.
+    /// * `data` - Data to be sent in a callback query to the bot when button is pressed; 1-64 bytes.
     pub fn for_callback_data<A, B>(text: A, data: B) -> Self
     where
         A: Into<String>,
@@ -128,7 +127,7 @@ impl InlineKeyboardButton {
     ///
     /// * `text` - Text of the button.
     /// * `value` - The text to be copied to the clipboard;
-    ///             1-256 characters.
+    ///   1-256 characters.
     pub fn for_copy_text<A, B>(text: A, value: B) -> Self
     where
         A: Into<String>,
@@ -264,9 +263,7 @@ impl InlineKeyboardButton {
     /// # Arguments
     ///
     /// * `text` - Text of the button.
-    /// * `data` - Description of the Web App
-    ///            that will be launched when
-    ///            the user presses the button.
+    /// * `data` - Description of the Web App that will be launched when the user presses the button.
     pub fn for_web_app<T>(text: T, data: WebAppInfo) -> Self
     where
         T: Into<String>,
@@ -468,7 +465,7 @@ impl LoginUrl {
     /// # Arguments
     ///
     /// * `value` - An HTTP URL to be opened with user authorization data
-    ///             added to the query string when the button is pressed.
+    ///   added to the query string when the button is pressed.
     ///
     /// If the user refuses to provide authorization data,
     /// the original URL without information about the user will be opened.
@@ -528,12 +525,12 @@ impl LoginUrl {
         self
     }
 
-    /// Sets a new value for a `request_write_access` flag.
+    /// Sets a new value for the `request_write_access` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to request the permission
-    ///             for your bot to send messages to the user.
+    ///   for your bot to send messages to the user.
     pub fn with_request_write_access(mut self, value: bool) -> Self {
         self.request_write_access = Some(value);
         self
@@ -567,7 +564,7 @@ impl SwitchInlineQueryChosenChat {
     /// # Arguments
     ///
     /// * `query` - The default inline query to be inserted in the input field.
-    ///             If left empty, only the bot username will be inserted.
+    ///   If left empty, only the bot username will be inserted.
     pub fn new<T>(query: T) -> Self
     where
         T: Into<String>,
@@ -581,7 +578,7 @@ impl SwitchInlineQueryChosenChat {
         }
     }
 
-    /// Sets a new value for an `allow_bot_chats` flag.
+    /// Sets a new value for the `allow_bot_chats` flag.
     ///
     /// # Arguments
     ///
@@ -591,7 +588,7 @@ impl SwitchInlineQueryChosenChat {
         self
     }
 
-    /// Sets a new value for an `allow_channel_chats` flag.
+    /// Sets a new value for the `allow_channel_chats` flag.
     ///
     /// # Arguments
     ///
@@ -601,7 +598,7 @@ impl SwitchInlineQueryChosenChat {
         self
     }
 
-    /// Sets a new value for an `allow_group_chats` flag.
+    /// Sets a new value for the `allow_group_chats` flag.
     ///
     /// # Arguments
     ///
@@ -611,7 +608,7 @@ impl SwitchInlineQueryChosenChat {
         self
     }
 
-    /// Sets a new value for an `allow_user_chats` flag.
+    /// Sets a new value for the `allow_user_chats` flag.
     ///
     /// # Arguments
     ///

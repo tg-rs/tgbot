@@ -81,13 +81,13 @@ impl CopyMessage {
         }
     }
 
-    /// Sets a new value for an `allow_paid_broadcast` flag.
+    /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
-    ///             for a fee of 0.1 Telegram Stars per message.
-    ///             The relevant Stars will be withdrawn from the bot's balance.
+    ///   for a fee of 0.1 Telegram Stars per message.
+    ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.allow_paid_broadcast = Some(value);
         self
@@ -137,12 +137,12 @@ impl CopyMessage {
         self
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
@@ -153,18 +153,18 @@ impl CopyMessage {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
@@ -197,8 +197,8 @@ impl CopyMessage {
     ///
     /// # Arguments
     ///
-    /// `value` - Whether the caption must be shown above the message media.
-    ///           Ignored if a new caption isn't specified.
+    /// `value` - Whether the caption must be shown above the message media;
+    ///   ignored if a new caption isn't specified.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.show_caption_above_media = Some(value);
         self
@@ -252,7 +252,7 @@ impl CopyMessages {
     /// * `chat_id` - Unique identifier for the target chat.
     /// * `from_chat_id` - Unique identifier for the chat where the original messages were sent.
     /// * `message_ids` - Identifiers of 1-100 messages in the chat from_chat_id to copy;
-    ///                   the identifiers must be specified in a strictly increasing order.
+    ///   the identifiers must be specified in a strictly increasing order.
     pub fn new<A, B, C>(chat_id: A, from_chat_id: B, message_ids: C) -> Self
     where
         A: Into<ChatId>,
@@ -270,12 +270,12 @@ impl CopyMessages {
         }
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
@@ -286,24 +286,24 @@ impl CopyMessages {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
     }
 
-    /// Sets a new value for a `remove_caption` flag.
+    /// Sets a new value for the `remove_caption` flag.
     ///
     /// # Arguments
     ///
@@ -538,8 +538,8 @@ impl EditMessageCaption {
     ///
     /// # Arguments
     ///
-    /// `value` - Whether the caption must be shown above the message media.
-    ///           Supported only for animation, photo and video messages.
+    /// `value` - Whether the caption must be shown above the message media;
+    ///   supported only for animation, photo and video messages.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.show_caption_above_media = Some(value);
         self
@@ -666,11 +666,11 @@ impl EditMessageLiveLocation {
     /// # Arguments
     ///
     /// * `value` - New period in seconds during which the location can be updated,
-    ///             starting from the message send date.
-    ///             If 0x7FFFFFFF is specified, then the location can be updated forever.
-    ///             Otherwise, the new value must not exceed the current live_period by more than a day,
-    ///             and the live location expiration date must remain within the next 90 days.
-    ///             If not specified, then live_period remains unchanged
+    ///   starting from the message send date.
+    ///   If 0x7FFFFFFF is specified, then the location can be updated forever.
+    ///   Otherwise, the new value must not exceed the current live_period by more than a day,
+    ///   and the live location expiration date must remain within the next 90 days.
+    ///   If not specified, then live_period remains unchanged
     pub fn with_live_period(mut self, value: Integer) -> Self {
         self.live_period = Some(value);
         self
@@ -681,7 +681,7 @@ impl EditMessageLiveLocation {
     /// # Arguments
     ///
     /// * `value` - A maximum distance for proximity alerts
-    ///             about approaching another chat member; in meters; 1-100000.
+    ///   about approaching another chat member; in meters; 1-100000.
     pub fn with_proximity_alert_radius(mut self, value: Integer) -> Self {
         self.proximity_alert_radius = Some(value);
         self
@@ -1050,12 +1050,12 @@ impl ForwardMessage {
         }
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
@@ -1066,18 +1066,18 @@ impl ForwardMessage {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
@@ -1126,7 +1126,7 @@ impl ForwardMessages {
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `from_chat_id` - Unique identifier for the chat where the original message was sent.
     /// * `message_ids` - Identifiers of 1-100 messages in the chat `from_chat_id` to forward;
-    ///                   the identifiers must be specified in a strictly increasing order.
+    ///   the identifiers must be specified in a strictly increasing order.
     pub fn new<A, B, C>(chat_id: A, from_chat_id: B, message_ids: C) -> Self
     where
         A: Into<ChatId>,
@@ -1143,12 +1143,12 @@ impl ForwardMessages {
         }
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
@@ -1159,18 +1159,18 @@ impl ForwardMessages {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self
@@ -1233,13 +1233,13 @@ impl SendMessage {
         }
     }
 
-    /// Sets a new value for an `allow_paid_broadcast` flag.
+    /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
-    ///             for a fee of 0.1 Telegram Stars per message.
-    ///             The relevant Stars will be withdrawn from the bot's balance.
+    ///   for a fee of 0.1 Telegram Stars per message.
+    ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.allow_paid_broadcast = Some(value);
         self
@@ -1258,12 +1258,12 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
@@ -1313,7 +1313,7 @@ impl SendMessage {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
@@ -1332,12 +1332,12 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self

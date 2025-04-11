@@ -148,7 +148,7 @@ pub struct InvoiceParameters {
 }
 
 impl InvoiceParameters {
-    /// Sets a new value for an `is_flexible` flag.
+    /// Sets a new value for the `is_flexible` flag.
     ///
     /// # Arguments
     ///
@@ -168,7 +168,7 @@ impl InvoiceParameters {
         self
     }
 
-    /// Sets a new value for a `need_email` flag.
+    /// Sets a new value for the `need_email` flag.
     ///
     /// # Arguments
     ///
@@ -178,7 +178,7 @@ impl InvoiceParameters {
         self
     }
 
-    /// Sets a new value for a `need_name` flag.
+    /// Sets a new value for the `need_name` flag.
     ///
     /// # Arguments
     ///
@@ -188,7 +188,7 @@ impl InvoiceParameters {
         self
     }
 
-    /// Sets a new value for a `need_phone_number` flag.
+    /// Sets a new value for the `need_phone_number` flag.
     ///
     /// # Arguments
     ///
@@ -198,7 +198,7 @@ impl InvoiceParameters {
         self
     }
 
-    /// Sets a new value for a `need_shipping_address` flag.
+    /// Sets a new value for the `need_shipping_address` flag.
     ///
     /// # Arguments
     ///
@@ -269,7 +269,7 @@ impl InvoiceParameters {
     /// # Arguments
     ///
     /// * `value` - Payment provider token, obtained via @BotFather.
-    ///             Pass an empty string for payments in Telegram Stars.
+    ///   Pass an empty string for payments in Telegram Stars.
     pub fn with_provider_token<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -278,7 +278,7 @@ impl InvoiceParameters {
         self
     }
 
-    /// Sets a new value for a `send_phone_number_to_provider` flag.
+    /// Sets a new value for the `send_phone_number_to_provider` flag.
     ///
     /// # Arguments
     ///
@@ -288,7 +288,7 @@ impl InvoiceParameters {
         self
     }
 
-    /// Sets a new value for a `send_email_to_provider` flag.
+    /// Sets a new value for the `send_email_to_provider` flag.
     ///
     /// # Arguments
     ///
@@ -337,11 +337,11 @@ impl CreateInvoiceLink {
     /// * `title` - Product name; 1-32 characters.
     /// * `description` - Product description; 1-255 characters.
     /// * `payload` - Bot-defined invoice payload; 1-128 bytes;
-    ///               this will not be displayed to the user;
-    ///               use for your internal processes.
+    ///   this will not be displayed to the user;
+    ///   use for your internal processes.
     /// * `currency` - Three-letter ISO 4217 currency code, see more on currencies.
     /// * `prices` - Price breakdown
-    ///              (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.).
+    ///   (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.).
     pub fn new<A, B, C, D, E>(title: A, description: B, payload: C, currency: D, prices: E) -> Self
     where
         A: Into<String>,
@@ -390,8 +390,8 @@ impl CreateInvoiceLink {
     /// # Arguments
     ///
     /// * `value` - The number of seconds the subscription will be active for before the next payment.
-    ///             The currency must be set to “XTR” (Telegram Stars) if the parameter is used.
-    ///             Currently, it must always be 2592000 (30 days) if specified.
+    ///   The currency must be set to “XTR” (Telegram Stars) if the parameter is used.
+    ///   Currently, it must always be 2592000 (30 days) if specified.
     pub fn with_subscription_period(mut self, value: Integer) -> Self {
         self.subscription_period = Some(value);
         self
@@ -437,11 +437,11 @@ impl SendInvoice {
     /// * `title` - Product name; 1-32 characters.
     /// * `description` - Product description; 1-255 characters.
     /// * `payload` - Bot-defined invoice payload; 1-128 bytes
-    ///               this will not be displayed to the user;
-    ///               use for your internal processes.
+    ///   this will not be displayed to the user;
+    ///   use for your internal processes.
     /// * `currency` - Three-letter ISO 4217 currency code, see more on currencies.
     /// * `prices` - Price breakdown, a list of components
-    ///              (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.).
+    ///   (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.).
     pub fn new<A, B, C, D, E, F>(chat_id: A, title: B, description: C, payload: D, currency: E, prices: F) -> Self
     where
         A: Into<ChatId>,
@@ -470,24 +470,24 @@ impl SendInvoice {
         }
     }
 
-    /// Sets a new value for an `allow_paid_broadcast` flag.
+    /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether to allow up to 1000 messages per second, ignoring broadcasting limits
-    ///             for a fee of 0.1 Telegram Stars per message.
-    ///             The relevant Stars will be withdrawn from the bot's balance.
+    ///   for a fee of 0.1 Telegram Stars per message.
+    ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.allow_paid_broadcast = Some(value);
         self
     }
 
-    /// Sets a new value for a `disable_notification` flag.
+    /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to send the message silently or not;
-    ///             a user will receive a notification without sound.
+    ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
         self
@@ -511,7 +511,7 @@ impl SendInvoice {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///             supergroups only.
+    ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self
@@ -527,12 +527,12 @@ impl SendInvoice {
         self
     }
 
-    /// Sets a new value for a `protect_content` flag.
+    /// Sets a new value for the `protect_content` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to protect the contents
-    ///             of the sent message from forwarding and saving.
+    ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
         self

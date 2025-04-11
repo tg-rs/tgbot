@@ -118,7 +118,7 @@ impl SetChatPhoto {
     ///
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `photo` - New chat photo, uploaded using `multipart/form-data`
-    ///             (url and file_id are not supported).
+    ///   (url and file_id are not supported).
     pub fn new<A, B>(chat_id: A, photo: B) -> Self
     where
         A: Into<ChatId>,

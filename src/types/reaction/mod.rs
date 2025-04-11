@@ -240,7 +240,7 @@ impl SetMessageReaction {
         }
     }
 
-    /// Sets a new value for an `is_big` flag.
+    /// Sets a new value for the `is_big` flag.
     ///
     /// # Arguments
     ///

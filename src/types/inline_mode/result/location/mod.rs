@@ -103,8 +103,8 @@ impl InlineQueryResultLocation {
     /// # Arguments
     ///
     /// * `value` - Period in seconds during which the location can be updated,
-    ///             should be between 60 and 86400,
-    ///             or 0x7FFFFFFF for live locations that can be edited indefinitely.
+    ///   should be between 60 and 86400,
+    ///   or 0x7FFFFFFF for live locations that can be edited indefinitely.
     pub fn with_live_period(mut self, value: Integer) -> Self {
         self.live_period = Some(value);
         self
@@ -115,7 +115,7 @@ impl InlineQueryResultLocation {
     /// # Arguments
     ///
     /// * `value` - A maximum distance for proximity alerts
-    ///             about approaching another chat member; in meters; 1-100000.
+    ///   about approaching another chat member; in meters; 1-100000.
     pub fn with_proximity_alert_radius(mut self, value: Integer) -> Self {
         self.proximity_alert_radius = Some(value);
         self

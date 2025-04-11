@@ -72,7 +72,7 @@ impl InputMediaAnimation {
         self
     }
 
-    /// Sets a new value for a `has_spoiler` flag.
+    /// Sets a new value for the `has_spoiler` flag.
     ///
     /// # Arguments
     ///

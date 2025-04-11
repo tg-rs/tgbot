@@ -83,7 +83,7 @@ impl SuccessfulPayment {
         }
     }
 
-    /// Sets a new value for an `is_first_recurring` flag.
+    /// Sets a new value for the `is_first_recurring` flag.
     ///
     /// # Arguments
     ///
@@ -93,7 +93,7 @@ impl SuccessfulPayment {
         self
     }
 
-    /// Sets a new value for an `is_recurring` flag.
+    /// Sets a new value for the `is_recurring` flag.
     ///
     /// # Arguments
     ///

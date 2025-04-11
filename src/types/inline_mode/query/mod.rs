@@ -147,20 +147,20 @@ impl AnswerInlineQuery {
     /// # Arguments
     ///
     /// * `value` - Maximum amount of time in seconds that the result
-    ///             of the inline query may be cached on the server;
-    ///             default - 300.
+    ///   of the inline query may be cached on the server;
+    ///   default - 300.
     pub fn with_cache_time(mut self, value: Integer) -> Self {
         self.cache_time = Some(value);
         self
     }
 
-    /// Sets a new value for an `is_personal` flag.
+    /// Sets a new value for the `is_personal` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the cache results on the server side
-    ///             are only for the user that sent the query;
-    ///             by default, results may be returned to any user who sends the same query.
+    ///   are only for the user that sent the query;
+    ///   by default, results may be returned to any user who sends the same query.
     pub fn with_is_personal(mut self, value: bool) -> Self {
         self.is_personal = Some(value);
         self
@@ -172,7 +172,7 @@ impl AnswerInlineQuery {
     /// # Arguments
     ///
     /// * `value` - Offset that a client should send in the next query with
-    ///             the same text to receive more results.
+    ///   the same text to receive more results.
     ///
     /// Pass an empty string if there are no more results or if you don‘t support pagination.
     /// Offset length can’t exceed 64 bytes.

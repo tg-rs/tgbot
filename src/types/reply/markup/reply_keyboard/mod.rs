@@ -41,9 +41,9 @@ impl ReplyKeyboardMarkup {
     /// # Arguments
     ///
     /// * `value` - The placeholder to be shown
-    ///             in the input field
-    ///             when the keyboard is active;
-    ///             1-64 characters.
+    ///   in the input field
+    ///   when the keyboard is active;
+    ///   1-64 characters.
     pub fn with_input_field_placeholder<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -52,12 +52,12 @@ impl ReplyKeyboardMarkup {
         self
     }
 
-    /// Sets a new value for an `one_time_keyboard` flag.
+    /// Sets a new value for the `one_time_keyboard` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to request clients to hide the keyboard
-    ///             as soon as it's been used; default - false.
+    ///   as soon as it's been used; default - false.
     ///
     /// The keyboard will still be available, but clients will automatically
     /// display the usual letter-keyboard in the chat – the user
@@ -67,12 +67,12 @@ impl ReplyKeyboardMarkup {
         self
     }
 
-    /// Sets a new value for an `is_persistent` flag.
+    /// Sets a new value for the `is_persistent` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to request clients to always show
-    ///             the keyboard when the regular keyboard is hidden.
+    ///   the keyboard when the regular keyboard is hidden.
     ///
     /// Defaults to false, in which case the custom keyboard can be hidden
     /// and opened with a keyboard icon.
@@ -81,12 +81,12 @@ impl ReplyKeyboardMarkup {
         self
     }
 
-    /// Sets a new value for a `resize_keyboard` flag.
+    /// Sets a new value for the `resize_keyboard` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to request clients
-    ///             to resize the keyboard vertically for optimal fit.
+    ///   to resize the keyboard vertically for optimal fit.
     ///
     /// E.g., make the keyboard smaller if there are just two rows of buttons.
     /// Defaults to false, in which case the custom keyboard
@@ -96,7 +96,7 @@ impl ReplyKeyboardMarkup {
         self
     }
 
-    /// Sets a new value for a `selective` flag.
+    /// Sets a new value for the `selective` flag.
     ///
     /// # Arguments
     ///
@@ -308,12 +308,9 @@ impl KeyboardButtonRequestChat {
     ///
     /// # Arguments
     ///
-    /// * `request_id` - Signed 32-bit identifier of the request,
-    ///                  which will be received back
-    ///                  in the [`crate::types::MessageDataChatShared`] object;
-    ///                  must be unique within the message.
-    /// * `chat_is_channel` - Indicates whether to request a channel chat
-    ///                       or a group/supergroup chat.
+    /// * `request_id` - Signed 32-bit identifier of the request, which will be received back
+    ///   in the [`crate::types::MessageDataChatShared`] object; must be unique within the message.
+    /// * `chat_is_channel` - Indicates whether to request a channel chat or a group/supergroup chat.
     pub fn new(request_id: Integer, chat_is_channel: bool) -> Self {
         Self {
             request_id,
@@ -343,7 +340,7 @@ impl KeyboardButtonRequestChat {
         self
     }
 
-    /// Sets a new value for a `bot_is_member` flag.
+    /// Sets a new value for the `bot_is_member` flag.
     ///
     /// # Arguments
     ///
@@ -355,7 +352,7 @@ impl KeyboardButtonRequestChat {
         self
     }
 
-    /// Sets a new value for a `chat_is_created` flag.
+    /// Sets a new value for the `chat_is_created` flag.
     ///
     /// # Arguments
     ///
@@ -367,7 +364,7 @@ impl KeyboardButtonRequestChat {
         self
     }
 
-    /// Sets a new value for a `chat_is_forum` flag.
+    /// Sets a new value for the `chat_is_forum` flag.
     ///
     /// # Arguments
     ///
@@ -379,7 +376,7 @@ impl KeyboardButtonRequestChat {
         self
     }
 
-    /// Sets a new value for a `chat_has_username` flag.
+    /// Sets a new value for the `chat_has_username` flag.
     ///
     /// # Arguments
     ///
@@ -391,7 +388,7 @@ impl KeyboardButtonRequestChat {
         self
     }
 
-    /// Sets a new value for a `request_photo` flag.
+    /// Sets a new value for the `request_photo` flag.
     ///
     /// # Arguments
     ///
@@ -401,7 +398,7 @@ impl KeyboardButtonRequestChat {
         self
     }
 
-    /// Sets a new value for a `request_title` flag.
+    /// Sets a new value for the `request_title` flag.
     ///
     /// # Arguments
     ///
@@ -411,7 +408,7 @@ impl KeyboardButtonRequestChat {
         self
     }
 
-    /// Sets a new value for a `request_username` flag.
+    /// Sets a new value for the `request_username` flag.
     ///
     /// # Arguments
     ///
@@ -459,9 +456,9 @@ impl KeyboardButtonRequestUsers {
     /// # Arguments
     ///
     /// * `request_id` - Signed 32-bit identifier of the request,
-    ///                  which will be received back
-    ///                  in the [`crate::types::MessageDataUsersShared`] object;
-    ///                  must be unique within the message.
+    ///   which will be received back
+    ///   in the [`crate::types::MessageDataUsersShared`] object;
+    ///   must be unique within the message.
     pub fn new(request_id: Integer) -> Self {
         Self {
             request_id,
@@ -514,7 +511,7 @@ impl KeyboardButtonRequestUsers {
         self
     }
 
-    /// Sets a new value for a `user_is_bot` flag.
+    /// Sets a new value for the `user_is_bot` flag.
     ///
     /// # Arguments
     ///
@@ -526,7 +523,7 @@ impl KeyboardButtonRequestUsers {
         self
     }
 
-    /// Sets a new value for a `user_is_premium` flag.
+    /// Sets a new value for the `user_is_premium` flag.
     ///
     /// # Arguments
     ///
@@ -561,7 +558,7 @@ impl Default for ReplyKeyboardRemove {
 }
 
 impl ReplyKeyboardRemove {
-    /// Sets a new value for a `selective` flag.
+    /// Sets a new value for the `selective` flag.
     ///
     ///# Arguments
     ///
@@ -570,8 +567,7 @@ impl ReplyKeyboardRemove {
     /// Targets:
     ///
     /// 1. users that are @mentioned in the text of the Message object;
-    /// 2. if the bot message is a reply (has `reply_to_message_id`),
-    ///    sender of the original message
+    /// 2. if the bot message is a reply (has `reply_to_message_id`), sender of the original message
     ///
     /// Example: A user votes in a poll, bot returns confirmation message
     /// in reply to the vote and removes the keyboard for that user,

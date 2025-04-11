@@ -142,7 +142,7 @@ pub struct DeleteWebhook {
 }
 
 impl DeleteWebhook {
-    /// Sets a new value for a `drop_pending_updates` flag.
+    /// Sets a new value for the `drop_pending_updates` flag.
     ///
     /// # Arguments
     ///
@@ -203,8 +203,7 @@ impl SetWebhook {
     ///
     /// # Arguments
     ///
-    /// * `url` - HTTPS url to send updates to;
-    ///           use an empty string to remove webhook integration.
+    /// * `url` - HTTPS url to send updates to; use an empty string to remove webhook integration.
     pub fn new<T>(url: T) -> Self
     where
         T: Into<String>,
@@ -286,7 +285,7 @@ impl SetWebhook {
     /// # Arguments
     ///
     /// * `value` - The fixed IP address which will be used to send webhook requests
-    ///             instead of the IP address resolved through DNS.
+    ///   instead of the IP address resolved through DNS.
     pub fn with_ip_address<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -300,7 +299,7 @@ impl SetWebhook {
     /// # Arguments
     ///
     /// * `value` - Maximum allowed number of simultaneous HTTPS connections
-    ///             to the webhook for update delivery; 1-100; default - 40.
+    ///   to the webhook for update delivery; 1-100; default - 40.
     ///
     /// Use lower values to limit the load on your bot‘s server,
     /// and higher values to increase your bot’s throughput.

@@ -179,8 +179,8 @@ impl LongPollOptions {
     /// # Arguments
     ///
     /// * `value` - Timeout for long polling in seconds;
-    ///             0 - usual short polling;
-    ///             default - 10.
+    ///   0 - usual short polling;
+    ///   default - 10.
     ///
     /// Should be positive, short polling should be used for testing purposes only.
     pub fn with_poll_timeout(mut self, value: Duration) -> Self {

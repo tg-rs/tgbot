@@ -20,7 +20,7 @@ pub struct LinkPreviewOptions {
 }
 
 impl LinkPreviewOptions {
-    /// Sets a new value for an `is_disabled` flag.
+    /// Sets a new value for the `is_disabled` flag.
     ///
     /// # Arguments
     ///
@@ -30,34 +30,34 @@ impl LinkPreviewOptions {
         self
     }
 
-    /// Sets a new value for a `prefer_large_media` flag.
+    /// Sets a new value for the `prefer_large_media` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether the media in the link preview is suppposed to be enlarged;
-    ///             ignored if the URL isn't explicitly specified or media size change isn't supported for the preview.
+    ///   ignored if the URL isn't explicitly specified or media size change isn't supported for the preview.
     pub fn with_prefer_large_media(mut self, value: bool) -> Self {
         self.prefer_large_media = Some(value);
         self
     }
 
-    /// Sets a new value for a `prefer_small_media` flag.
+    /// Sets a new value for the `prefer_small_media` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether the media in the link preview is suppposed to be shrunk;
-    ///             ignored if the URL isn't explicitly specified or media size change isn't supported for the preview.
+    ///   ignored if the URL isn't explicitly specified or media size change isn't supported for the preview.
     pub fn with_prefer_small_media(mut self, value: bool) -> Self {
         self.prefer_small_media = Some(value);
         self
     }
 
-    /// Sets a new value for a `show_above_text` flag.
+    /// Sets a new value for the `show_above_text` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Whether the link preview must be shown above the message text;
-    ///             otherwise, the link preview will be shown below the message text.
+    ///   otherwise, the link preview will be shown below the message text.
     pub fn with_show_above_text(mut self, value: bool) -> Self {
         self.show_above_text = Some(value);
         self

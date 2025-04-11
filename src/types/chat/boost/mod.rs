@@ -30,7 +30,7 @@ impl ChatBoost {
     /// * `add_date` - Point in time (Unix timestamp) when the chat was boosted.
     /// * `boost_id` - Unique identifier of the boost.
     /// * `expiration_date` - Point in time (Unix timestamp) when the boost will automatically expire,
-    ///                       unless the booster's Telegram Premium subscription is prolonged.
+    ///   unless the booster's Telegram Premium subscription is prolonged.
     /// * `source` - Source of the added boost.
     pub fn new<T>(add_date: Integer, boost_id: T, expiration_date: Integer, source: ChatBoostSource) -> Self
     where
@@ -162,7 +162,7 @@ impl ChatBoostSourceGiveaway {
         }
     }
 
-    /// Sets a new value for an `is_unclaimed` flag.
+    /// Sets a new value for the `is_unclaimed` flag.
     ///
     /// # Arguments
     ///
@@ -177,7 +177,7 @@ impl ChatBoostSourceGiveaway {
     /// # Arguments
     ///
     /// * `value` - The number of Telegram Stars to be split between giveaway winners;
-    ///             for Telegram Star giveaways only.
+    ///   for Telegram Star giveaways only.
     pub fn with_prize_star_count(mut self, value: Integer) -> Self {
         self.prize_star_count = Some(value);
         self

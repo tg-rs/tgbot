@@ -80,176 +80,176 @@ impl ChatAdministratorRights {
         }
     }
 
-    /// Sets a new value for a `can_change_info` flag.
+    /// Sets a new value for the `can_change_info` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the user is allowed
-    ///             to change the chat title,
-    ///             photo and other settings.
+    ///   to change the chat title,
+    ///   photo and other settings.
     pub fn with_can_change_info(mut self, value: bool) -> Self {
         self.can_change_info = value;
         self
     }
 
-    /// Sets a new value for a `can_delete_messages` flag.
+    /// Sets a new value for the `can_delete_messages` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             delete messages of other users.
+    ///   delete messages of other users.
     pub fn with_can_delete_messages(mut self, value: bool) -> Self {
         self.can_delete_messages = value;
         self
     }
 
-    /// Sets a new value for a `can_delete_stories` flag.
+    /// Sets a new value for the `can_delete_stories` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             delete stories posted by other users;
-    ///             channels only.
+    ///   delete stories posted by other users;
+    ///   channels only.
     pub fn with_can_delete_stories(mut self, value: bool) -> Self {
         self.can_delete_stories = Some(value);
         self
     }
 
-    /// Sets a new value for a `can_edit_messages` flag.
+    /// Sets a new value for the `can_edit_messages` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             edit messages of other users and can pin messages;
-    ///             channels only.
+    ///   edit messages of other users and can pin messages;
+    ///   channels only.
     pub fn with_can_edit_messages(mut self, value: bool) -> Self {
         self.can_edit_messages = Some(value);
         self
     }
 
-    /// Sets a new value for a `can_edit_stories` flag.
+    /// Sets a new value for the `can_edit_stories` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             edit stories posted by other users;
-    ///             channels only.
+    ///   edit stories posted by other users;
+    ///   channels only.
     pub fn with_can_edit_stories(mut self, value: bool) -> Self {
         self.can_edit_stories = Some(value);
         self
     }
 
-    /// Sets a new value for a `can_invite_users` flag.
+    /// Sets a new value for the `can_invite_users` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the user is allowed to
-    ///             invite new users to the chat.
+    ///   invite new users to the chat.
     pub fn with_can_invite_users(mut self, value: bool) -> Self {
         self.can_invite_users = value;
         self
     }
 
-    /// Sets a new value for a `can_manage_chat` flag.
+    /// Sets a new value for the `can_manage_chat` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             access the chat event log, boost list in channels,
-    ///             see channel members, report spam messages,
-    ///             see anonymous administrators in supergroups and ignore slow mode.
+    ///   access the chat event log, boost list in channels,
+    ///   see channel members, report spam messages,
+    ///   see anonymous administrators in supergroups and ignore slow mode.
     pub fn with_can_manage_chat(mut self, value: bool) -> Self {
         self.can_manage_chat = value;
         self
     }
 
-    /// Sets a new value for a `can_manage_topics` flag.
+    /// Sets a new value for the `can_manage_topics` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the user is allowed to
-    ///             create, rename, close, and reopen forum topics;
-    ///             supergroups only.
+    ///   create, rename, close, and reopen forum topics;
+    ///   supergroups only.
     pub fn with_can_manage_topics(mut self, value: bool) -> Self {
         self.can_manage_topics = Some(value);
         self
     }
 
-    /// Sets a new value for a `can_manage_video_chats` flag.
+    /// Sets a new value for the `can_manage_video_chats` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             manage video chats.
+    ///   manage video chats.
     pub fn with_can_manage_video_chats(mut self, value: bool) -> Self {
         self.can_manage_video_chats = value;
         self
     }
 
-    /// Sets a new value for a `can_pin_messages` flag.
+    /// Sets a new value for the `can_pin_messages` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the user is allowed to
-    ///             pin messages;
-    ///             groups and supergroups only.
+    ///   pin messages;
+    ///   groups and supergroups only.
     pub fn with_can_pin_messages(mut self, value: bool) -> Self {
         self.can_pin_messages = Some(value);
         self
     }
 
-    /// Sets a new value for a `can_post_messages` flag.
+    /// Sets a new value for the `can_post_messages` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             post messages in the channel,
-    ///             or access channel statistics;
-    ///             channels only.
+    ///   post messages in the channel,
+    ///   or access channel statistics;
+    ///   channels only.
     pub fn with_can_post_messages(mut self, value: bool) -> Self {
         self.can_post_messages = Some(value);
         self
     }
 
-    /// Sets a new value for a `can_post_stories` flag.
+    /// Sets a new value for the `can_post_stories` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             post stories in the channel;
-    ///             channels only.
+    ///   post stories in the channel;
+    ///   channels only.
     pub fn with_can_post_stories(mut self, value: bool) -> Self {
         self.can_post_stories = Some(value);
         self
     }
 
-    /// Sets a new value for a `can_promote_members` flag.
+    /// Sets a new value for the `can_promote_members` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             add new administrators with a subset of their own privileges
-    ///             or demote administrators that they have promoted,
-    ///             directly or indirectly (promoted by administrators that
-    ///             were appointed by the user).
+    ///   add new administrators with a subset of their own privileges
+    ///   or demote administrators that they have promoted,
+    ///   directly or indirectly (promoted by administrators that
+    ///   were appointed by the user).
     pub fn with_can_promote_members(mut self, value: bool) -> Self {
         self.can_promote_members = value;
         self
     }
 
-    /// Sets a new value for a `can_restrict_members` flag.
+    /// Sets a new value for the `can_restrict_members` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether the administrator can
-    ///             restrict, ban or unban chat members,
-    ///             or access supergroup statistics.
+    ///   restrict, ban or unban chat members,
+    ///   or access supergroup statistics.
     pub fn with_can_restrict_members(mut self, value: bool) -> Self {
         self.can_restrict_members = value;
         self
     }
 
-    /// Sets a new value for a `is_anonymous` flag.
+    /// Sets a new value for the `is_anonymous` flag.
     ///
     /// # Arguments
     ///
@@ -342,7 +342,7 @@ impl ChatPermissions {
         }
     }
 
-    /// Sets a new value for a `can_add_web_page_previews` flag.
+    /// Sets a new value for the `can_add_web_page_previews` flag.
     ///
     /// # Arguments
     ///
@@ -352,7 +352,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_change_info` flag.
+    /// Sets a new value for the `can_change_info` flag.
     ///
     /// # Arguments
     ///
@@ -362,7 +362,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_invite_users` flag.
+    /// Sets a new value for the `can_invite_users` flag.
     ///
     /// # Arguments
     ///
@@ -372,7 +372,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_manage_topics` flag.
+    /// Sets a new value for the `can_manage_topics` flag.
     ///
     /// # Arguments
     ///
@@ -382,7 +382,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_pin_messages` flag.
+    /// Sets a new value for the `can_pin_messages` flag.
     ///
     /// # Arguments
     ///
@@ -392,7 +392,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_audios` flag.
+    /// Sets a new value for the `can_send_audios` flag.
     ///
     /// # Arguments
     ///
@@ -402,7 +402,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_documents` flag.
+    /// Sets a new value for the `can_send_documents` flag.
     ///
     /// # Arguments
     ///
@@ -412,7 +412,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_messages` flag.
+    /// Sets a new value for the `can_send_messages` flag.
     ///
     /// # Arguments
     ///
@@ -422,7 +422,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_other_messages` flag.
+    /// Sets a new value for the `can_send_other_messages` flag.
     ///
     /// # Arguments
     ///
@@ -432,7 +432,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_photos` flag.
+    /// Sets a new value for the `can_send_photos` flag.
     ///
     /// # Arguments
     ///
@@ -442,7 +442,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_polls` flag.
+    /// Sets a new value for the `can_send_polls` flag.
     ///
     /// # Arguments
     ///
@@ -452,7 +452,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_video_notes` flag.
+    /// Sets a new value for the `can_send_video_notes` flag.
     ///
     /// # Arguments
     ///
@@ -462,7 +462,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_videos` flag.
+    /// Sets a new value for the `can_send_videos` flag.
     ///
     /// # Arguments
     ///
@@ -472,7 +472,7 @@ impl ChatPermissions {
         self
     }
 
-    /// Sets a new value for a `can_send_voice_notes` flag.
+    /// Sets a new value for the `can_send_voice_notes` flag.
     ///
     /// # Arguments
     ///
@@ -513,7 +513,7 @@ impl SetChatPermissions {
         }
     }
 
-    /// Sets a new value for a `use_independent_chat_permissions` flag.
+    /// Sets a new value for the `use_independent_chat_permissions` flag.
     ///
     /// # Arguments
     ///

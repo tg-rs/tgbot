@@ -58,12 +58,12 @@ impl InputMediaDocument {
         self
     }
 
-    /// Sets a new value for a `disable_content_type_detection` flag.
+    /// Sets a new value for the `disable_content_type_detection` flag.
     ///
     /// # Arguments
     ///
     /// * `value` - Indicates whether to disable automatic server-side content type detection
-    ///             for files uploaded using `multipart/form-data`.
+    ///   for files uploaded using `multipart/form-data`.
     ///
     /// Always [`true`], if the document is sent as part of an album.
     pub fn with_disable_content_type_detection(mut self, value: bool) -> Self {

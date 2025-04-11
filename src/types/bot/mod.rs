@@ -60,7 +60,7 @@ impl Bot {
         }
     }
 
-    /// Sets a new value for a `can_connect_to_business` flag.
+    /// Sets a new value for the `can_connect_to_business` flag.
     ///
     /// # Arguments
     ///
@@ -70,7 +70,7 @@ impl Bot {
         self
     }
 
-    /// Sets a new value for a `can_join_groups` flag.
+    /// Sets a new value for the `can_join_groups` flag.
     ///
     /// # Arguments
     ///
@@ -80,7 +80,7 @@ impl Bot {
         self
     }
 
-    /// Sets a new value for a `can_read_all_group_messages` flag.
+    /// Sets a new value for the `can_read_all_group_messages` flag.
     ///
     /// # Arguments
     ///
@@ -90,7 +90,7 @@ impl Bot {
         self
     }
 
-    /// Sets a new value for a `has_main_web_app` flag.
+    /// Sets a new value for the `has_main_web_app` flag.
     ///
     /// # Arguments
     ///
@@ -113,7 +113,7 @@ impl Bot {
         self
     }
 
-    /// Sets a new value for a `supports_inline_queries` flag.
+    /// Sets a new value for the `supports_inline_queries` flag.
     ///
     /// # Arguments
     ///
@@ -143,7 +143,7 @@ impl BotCommand {
     /// # Arguments
     ///
     /// * `name` - The name of the command; 1-32 characters;
-    ///            can contain only lowercase English letters, digits and underscores.
+    ///   can contain only lowercase English letters, digits and underscores.
     /// * `description` - The description of the command; 3-256 characters.
     pub fn new<C, D>(name: C, description: D) -> Result<Self, BotCommandError>
     where
@@ -653,8 +653,8 @@ impl SetBotCommands {
     /// # Arguments
     ///
     /// * `value` - Two-letter ISO 639-1 language code;
-    ///             if empty, commands will be applied to all users from the given scope,
-    ///             for whose language there are no dedicated commands.
+    ///   if empty, commands will be applied to all users from the given scope,
+    ///   for whose language there are no dedicated commands.
     pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -668,7 +668,7 @@ impl SetBotCommands {
     /// # Arguments
     ///
     /// * `value` - Scope of users for which the commands are relevant;
-    ///             default - [`BotCommandScope::Default`].
+    ///   default - [`BotCommandScope::Default`].
     pub fn with_scope(mut self, value: BotCommandScope) -> Self {
         self.scope = Some(value);
         self
@@ -711,7 +711,7 @@ impl SetBotDefaultAdministratorRights {
     /// # Arguments
     ///
     /// * `value` - Default administrator rights;
-    ///             if not specified, the default administrator rights will be cleared.
+    ///   if not specified, the default administrator rights will be cleared.
     pub fn with_rights(mut self, value: ChatAdministratorRights) -> Self {
         self.rights = Some(value);
         self
@@ -740,8 +740,8 @@ impl SetBotDescription {
     /// # Arguments
     ///
     /// * `value` - Description of the bot; 0-512 characters;
-    ///             pass an empty string to remove the dedicated description
-    ///             of the given language.
+    ///   pass an empty string to remove the dedicated description
+    ///   of the given language.
     pub fn with_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -755,8 +755,8 @@ impl SetBotDescription {
     /// # Arguments
     ///
     /// * `value` - Two-letter ISO 639-1 language code;
-    ///             if empty, the description will be applied to all users
-    ///             for whose language there is no dedicated description.
+    ///   if empty, the description will be applied to all users
+    ///   for whose language there is no dedicated description.
     pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -788,8 +788,8 @@ impl SetBotName {
     /// # Arguments
     ///
     /// * `value` - Two-letter ISO 639-1 language code;
-    ///             if empty, the name will be shown to all users
-    ///             for whose language there is no dedicated name.
+    ///   if empty, the name will be shown to all users
+    ///   for whose language there is no dedicated name.
     pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -803,8 +803,8 @@ impl SetBotName {
     /// # Arguments
     ///
     /// * `value` - New name of the bot; 0-64 characters;
-    ///             pass an empty string to remove the dedicated name
-    ///             of the given language.
+    ///   pass an empty string to remove the dedicated name
+    ///   of the given language.
     pub fn with_name<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -837,8 +837,8 @@ impl SetBotShortDescription {
     /// # Arguments
     ///
     /// * `value` - Two-letter ISO 639-1 language code;
-    ///             if empty, the short description will be applied
-    ///             to all users for whose language there is no dedicated short description.
+    ///   if empty, the short description will be applied
+    ///   to all users for whose language there is no dedicated short description.
     pub fn with_language_code<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -852,8 +852,8 @@ impl SetBotShortDescription {
     /// # Arguments
     ///
     /// * `value` - Short description of a bot; 0-120 characters;
-    ///             pass an empty string to remove the dedicated short description
-    ///             of the given language.
+    ///   pass an empty string to remove the dedicated short description
+    ///   of the given language.
     pub fn with_short_description<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

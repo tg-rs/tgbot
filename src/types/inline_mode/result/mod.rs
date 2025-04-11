@@ -99,9 +99,9 @@ impl InlineQueryResultsButton {
     ///
     /// * `text` - Label text on the button.
     /// * `web_app_info` - Description of the Web App that will be launched
-    ///                    when the user presses the button;
-    ///                    the Web App will be able to switch back to the inline mode
-    ///                    using the method `switchInlineQuery` inside the Web App.
+    ///   when the user presses the button;
+    ///   the Web App will be able to switch back to the inline mode
+    ///   using the method `switchInlineQuery` inside the Web App.
     pub fn for_web_app<T>(text: T, web_app_info: WebAppInfo) -> Self
     where
         T: Into<String>,
@@ -118,8 +118,8 @@ impl InlineQueryResultsButton {
     ///
     /// * `text` - Label text on the button.
     /// * `start_parameter` - Deep-linking parameter for the `/start` message
-    ///                       sent to the bot when a user presses the button;
-    ///                       1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.
+    ///   sent to the bot when a user presses the button;
+    ///   1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.
     pub fn for_start_parameter<A, B>(text: A, start_parameter: B) -> Self
     where
         A: Into<String>,

@@ -542,6 +542,54 @@ impl Method for ReadBusinessMessage {
     }
 }
 
+/// Changes the bio of a managed business account.
+///
+/// Requires the can_change_bio business bot right.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct SetBusinessAccountBio {
+    business_connection_id: String,
+    bio: Option<String>,
+}
+
+impl SetBusinessAccountBio {
+    /// Creates a new `SetBusinessAccountBio`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection
+    pub fn new<T>(business_connection_id: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            bio: None,
+        }
+    }
+
+    /// Sets a new bio
+    ///
+    /// # Arguments
+    ///
+    // * `value` - The new value of the bio for the business account; 0-140 characters.
+    pub fn with_bio<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.bio = Some(value.into());
+        self
+    }
+}
+
+impl Method for SetBusinessAccountBio {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setBusinessAccountBio", self)
+    }
+}
+
 /// Changes the first and last name of a managed business account.
 ///
 /// Requires the can_change_name business bot right.

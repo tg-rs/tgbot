@@ -12,6 +12,7 @@ use crate::{
         Location,
         PrivateChat,
         ReadBusinessMessage,
+        SetBusinessAccountBio,
         SetBusinessAccountName,
         SetBusinessAccountUsername,
         Sticker,
@@ -206,6 +207,30 @@ fn read_business_message() {
             }),
         ),
         ReadBusinessMessage::new("id", 1, 2),
+    );
+}
+
+#[test]
+fn set_business_account_bio() {
+    let actual_method = SetBusinessAccountBio::new("id");
+    assert_payload_eq(
+        Payload::json(
+            "setBusinessAccountBio",
+            serde_json::json!({
+                "business_connection_id": "id",
+            }),
+        ),
+        actual_method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "setBusinessAccountBio",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "bio": "Test",
+            }),
+        ),
+        actual_method.with_bio("Test"),
     );
 }
 

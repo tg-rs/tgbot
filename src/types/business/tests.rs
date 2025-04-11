@@ -1,6 +1,7 @@
 use crate::{
     api::{Payload, assert_payload_eq},
     types::{
+        BusinessBotRights,
         BusinessConnection,
         BusinessIntro,
         BusinessLocation,
@@ -15,6 +16,47 @@ use crate::{
         tests::assert_json_eq,
     },
 };
+
+#[test]
+fn business_bot_rights() {
+    let expected_struct = BusinessBotRights::default();
+    assert_json_eq(expected_struct, serde_json::json!({}));
+
+    let expected_struct = expected_struct
+        .with_can_change_gift_settings(true)
+        .with_can_convert_gifts_to_stars(true)
+        .with_can_delete_all_messages(true)
+        .with_can_delete_outgoing_messages(true)
+        .with_can_edit_bio(true)
+        .with_can_edit_name(true)
+        .with_can_edit_profile_photo(true)
+        .with_can_edit_username(true)
+        .with_can_manage_stories(true)
+        .with_can_read_messages(true)
+        .with_can_reply(true)
+        .with_can_transfer_and_upgrade_gifts(true)
+        .with_can_transfer_stars(true)
+        .with_can_view_gifts_and_stars(true);
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "can_change_gift_settings": true,
+            "can_convert_gifts_to_stars": true,
+            "can_delete_all_messages": true,
+            "can_delete_outgoing_messages": true,
+            "can_edit_bio": true,
+            "can_edit_name": true,
+            "can_edit_profile_photo": true,
+            "can_edit_username": true,
+            "can_manage_stories": true,
+            "can_read_messages": true,
+            "can_reply": true,
+            "can_transfer_and_upgrade_gifts": true,
+            "can_transfer_stars": true,
+            "can_view_gifts_and_stars": true,
+        }),
+    );
+}
 
 #[test]
 fn business_connection() {

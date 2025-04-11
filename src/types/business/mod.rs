@@ -8,6 +8,186 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
+/// Represents the rights of a business bot
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct BusinessBotRights {
+    /// Whether the bot can change the privacy settings pertaining to gifts for the business account.
+    pub can_change_gift_settings: Option<bool>,
+    /// Whether the bot can convert regular gifts owned by the business account to Telegram Stars.
+    pub can_convert_gifts_to_stars: Option<bool>,
+    /// Whether the bot can delete all private messages in managed chats.
+    pub can_delete_all_messages: Option<bool>,
+    /// Whether the bot can delete messages sent by the bot.
+    pub can_delete_outgoing_messages: Option<bool>,
+    /// Whether the bot can edit the bio of the business account.
+    pub can_edit_bio: Option<bool>,
+    /// Whether the bot can edit the first and last name of the business account.
+    pub can_edit_name: Option<bool>,
+    /// Whether the bot can edit the profile photo of the business account.
+    pub can_edit_profile_photo: Option<bool>,
+    /// Whether the bot can edit the username of the business account.
+    pub can_edit_username: Option<bool>,
+    /// Whether the bot can post, edit and delete stories on behalf of the business account.
+    pub can_manage_stories: Option<bool>,
+    /// Whether the bot can mark incoming private messages as read.
+    pub can_read_messages: Option<bool>,
+    /// Whether the bot can send and edit messages in the private chats
+    /// that had incoming messages in the last 24 hours.
+    pub can_reply: Option<bool>,
+    /// Whether the bot can transfer and upgrade gifts owned by the business account.
+    pub can_transfer_and_upgrade_gifts: Option<bool>,
+    /// Whether the bot can transfer Telegram Stars received by the business account to its own account,
+    /// or use them to upgrade and transfer gifts.
+    pub can_transfer_stars: Option<bool>,
+    /// Whether the bot can view gifts and the amount of Telegram Stars owned by the business account.
+    pub can_view_gifts_and_stars: Option<bool>,
+}
+
+impl BusinessBotRights {
+    /// Sets a new value for the `can_change_gift_settings` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can change the privacy settings pertaining to gifts for the business account.
+    pub fn with_can_change_gift_settings(mut self, value: bool) -> Self {
+        self.can_change_gift_settings = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_convert_gifts_to_stars` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can convert regular gifts owned by the business account to Telegram Stars.
+    pub fn with_can_convert_gifts_to_stars(mut self, value: bool) -> Self {
+        self.can_convert_gifts_to_stars = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_delete_all_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can delete all private messages in managed chats.
+    pub fn with_can_delete_all_messages(mut self, value: bool) -> Self {
+        self.can_delete_all_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_delete_outgoing_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can delete messages sent by the bot.
+    pub fn with_can_delete_outgoing_messages(mut self, value: bool) -> Self {
+        self.can_delete_outgoing_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_edit_bio` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can edit the bio of the business account.
+    pub fn with_can_edit_bio(mut self, value: bool) -> Self {
+        self.can_edit_bio = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_edit_name` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can edit the first and last name of the business account.
+    pub fn with_can_edit_name(mut self, value: bool) -> Self {
+        self.can_edit_name = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_edit_profile_photo` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can edit the profile photo of the business account.
+    pub fn with_can_edit_profile_photo(mut self, value: bool) -> Self {
+        self.can_edit_profile_photo = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_edit_username` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can edit the username of the business account.
+    pub fn with_can_edit_username(mut self, value: bool) -> Self {
+        self.can_edit_username = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_manage_stories` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can post, edit and delete stories on behalf of the business account.
+    pub fn with_can_manage_stories(mut self, value: bool) -> Self {
+        self.can_manage_stories = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_read_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can mark incoming private messages as read.
+    pub fn with_can_read_messages(mut self, value: bool) -> Self {
+        self.can_read_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_reply` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can send and edit messages in the private chats
+    ///   that had incoming messages in the last 24 hours.
+    pub fn with_can_reply(mut self, value: bool) -> Self {
+        self.can_reply = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_transfer_and_upgrade_gifts` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can transfer and upgrade gifts owned by the business account.
+    pub fn with_can_transfer_and_upgrade_gifts(mut self, value: bool) -> Self {
+        self.can_transfer_and_upgrade_gifts = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_transfer_stars` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can transfer Telegram Stars received by the business account to its own account,
+    ///   or use them to upgrade and transfer gifts.
+    pub fn with_can_transfer_stars(mut self, value: bool) -> Self {
+        self.can_transfer_stars = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_view_gifts_and_stars` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot can view gifts and the amount of Telegram Stars owned by the business account.
+    pub fn with_can_view_gifts_and_stars(mut self, value: bool) -> Self {
+        self.can_view_gifts_and_stars = Some(value);
+        self
+    }
+}
+
 /// Describes the connection of the bot with a business account.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BusinessConnection {
@@ -48,7 +228,7 @@ impl BusinessConnection {
         }
     }
 
-    /// Sets a new value for a `can_reply` flag.
+    /// Sets a new value for the `can_reply` flag.
     ///
     /// # Arguments
     ///
@@ -59,7 +239,7 @@ impl BusinessConnection {
         self
     }
 
-    /// Sets a new value for an `is_enabled` flag.
+    /// Sets a new value for the `is_enabled` flag.
     ///
     /// # Arguments
     ///

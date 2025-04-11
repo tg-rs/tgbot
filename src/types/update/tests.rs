@@ -150,7 +150,6 @@ fn business_connection() {
         serde_json::json!({
             "update_id": 1,
             "business_connection": {
-                "can_reply": false,
                 "date": 0,
                 "id": "id",
                 "is_enabled": false,

@@ -461,3 +461,43 @@ impl Method for GetBusinessConnection {
         Payload::json("getBusinessConnection", self)
     }
 }
+
+/// Marks incoming message as read on behalf of a business account.
+///
+/// Requires the can_read_messages business bot right.
+#[derive(Clone, Debug, Serialize)]
+pub struct ReadBusinessMessage {
+    business_connection_id: String,
+    chat_id: Integer,
+    message_id: Integer,
+}
+
+impl ReadBusinessMessage {
+    /// Creates a new `ReadBusinessMessage`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection
+    ///   on behalf of which to read the message.
+    /// * `chat_id` - Unique identifier of the chat in which the message was received;
+    ///   the chat must have been active in the last 24 hours.
+    /// * `message_id` - Unique identifier of the message to mark as read.
+    pub fn new<T>(business_connection_id: T, chat_id: Integer, message_id: Integer) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            chat_id,
+            message_id,
+        }
+    }
+}
+
+impl Method for ReadBusinessMessage {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("readBusinessMessage", self)
+    }
+}

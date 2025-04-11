@@ -10,6 +10,7 @@ use crate::{
         GetBusinessConnection,
         Location,
         PrivateChat,
+        ReadBusinessMessage,
         Sticker,
         StickerType,
         User,
@@ -174,4 +175,19 @@ fn get_business_connection() {
         ),
         GetBusinessConnection::new("id"),
     )
+}
+
+#[test]
+fn read_business_message() {
+    assert_payload_eq(
+        Payload::json(
+            "readBusinessMessage",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "chat_id": 1,
+                "message_id": 2,
+            }),
+        ),
+        ReadBusinessMessage::new("id", 1, 2),
+    );
 }

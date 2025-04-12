@@ -528,6 +528,41 @@ impl Method for DeleteBusinessMessages {
     }
 }
 
+/// Deletes a story previously posted by the bot on behalf of a managed business account.
+///
+/// Requires the can_manage_stories business bot right.
+#[derive(Clone, Debug, Serialize)]
+pub struct DeleteStory {
+    business_connection_id: String,
+    story_id: Integer,
+}
+
+impl DeleteStory {
+    /// Creates a new `DeleteStory`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `story_id` - Unique identifier of the story to delete.
+    pub fn new<T>(business_connection_id: T, story_id: Integer) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            story_id,
+        }
+    }
+}
+
+impl Method for DeleteStory {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteStory", self)
+    }
+}
+
 /// Edits a story previously posted by the bot on behalf of a managed business account.
 ///
 /// Requires the `can_manage_stories` business bot right.

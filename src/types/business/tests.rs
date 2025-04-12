@@ -10,6 +10,7 @@ use crate::{
         BusinessOpeningHours,
         ConvertGiftToStars,
         DeleteBusinessMessages,
+        DeleteStory,
         EditStory,
         GetBusinessAccountGifts,
         GetBusinessAccountStarBalance,
@@ -216,6 +217,20 @@ fn delete_business_messages() {
             }),
         ),
         DeleteBusinessMessages::new("id", [1, 2, 3]),
+    );
+}
+
+#[test]
+fn delete_story() {
+    assert_payload_eq(
+        Payload::json(
+            "deleteStory",
+            serde_json::json!({
+                "business_connection_id": "id",
+                 "story_id": 1
+            }),
+        ),
+        DeleteStory::new("id", 1),
     );
 }
 

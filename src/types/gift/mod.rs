@@ -686,6 +686,74 @@ pub struct UniqueGiftSymbol {
     pub sticker: Sticker,
 }
 
+/// Origin of the unique gift.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UniqueGiftOrigin {
+    /// Transfer.
+    Transfer,
+    /// Upgrade.
+    Upgrade,
+}
+
+/// Describes a service message about a unique gift that was sent or received.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct UniqueGiftInfo {
+    /// Information about the gift.
+    pub gift: UniqueGift,
+    /// Origin of the gift.
+    pub origin: UniqueGiftOrigin,
+    /// Unique identifier of the received gift for the bot;
+    /// only present for gifts received on behalf of business accounts.
+    pub owned_gift_id: Option<String>,
+    /// Number of Telegram Stars that must be paid to transfer the gift;
+    /// omitted if the bot cannot transfer the gift.
+    pub transfer_star_count: Option<Integer>,
+}
+
+impl UniqueGiftInfo {
+    /// Creates a new `UniqueGiftInfo`.
+    ///
+    /// # Arguments
+    ///
+    /// * `gift` - Information about the gift.
+    /// * `origin` - Origin of the gift.
+    pub fn new(gift: UniqueGift, origin: UniqueGiftOrigin) -> Self {
+        Self {
+            gift,
+            origin,
+            owned_gift_id: None,
+            transfer_star_count: None,
+        }
+    }
+
+    /// Sets a new owned gift ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the received gift for the bot;
+    ///   only present for gifts received on behalf of business accounts.
+    pub fn with_owned_gift_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.owned_gift_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new transfer star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Number of Telegram Stars that must be paid to transfer the gift;
+    ///   omitted if the bot cannot transfer the gift.
+    pub fn with_transfer_star_count(mut self, value: Integer) -> Self {
+        self.transfer_star_count = Some(value);
+        self
+    }
+}
+
 /// Sends a gift to the given user.
 ///
 /// The gift can't be converted to Telegram Stars by the user.

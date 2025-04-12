@@ -94,6 +94,78 @@ impl Location {
     }
 }
 
+/// Describes the physical address of a location.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct LocationAddress {
+    /// The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located.
+    pub country_code: String,
+    /// State of the location.
+    pub state: Option<String>,
+    /// City of the location.
+    pub city: Option<String>,
+    /// Street address of the location.
+    pub street: Option<String>,
+}
+
+impl LocationAddress {
+    /// Creates a new `LocationAddress`.
+    ///
+    /// # Arguments
+    ///
+    /// * `country_code` - The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located.
+    pub fn new<T>(country_code: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            country_code: country_code.into(),
+            state: None,
+            city: None,
+            street: None,
+        }
+    }
+
+    /// Sets a new state.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - State of the location.
+    pub fn with_state<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.state = Some(value.into());
+        self
+    }
+
+    /// Sets a new city.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - City of the location.
+    pub fn with_city<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.city = Some(value.into());
+        self
+    }
+
+    /// Sets a new street.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Street address of the location.
+    pub fn with_street<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.street = Some(value.into());
+        self
+    }
+}
+
 /// Sends a point on a map.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]

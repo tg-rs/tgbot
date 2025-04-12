@@ -1,6 +1,6 @@
 use crate::{
     api::{Payload, assert_payload_eq},
-    types::{ForceReply, Location, ReplyParameters, SendLocation, tests::assert_json_eq},
+    types::{ForceReply, Location, LocationAddress, ReplyParameters, SendLocation, tests::assert_json_eq},
 };
 
 #[test]
@@ -25,6 +25,24 @@ fn location() {
         serde_json::json!({
             "longitude": 1.0,
             "latitude": 2.0
+        }),
+    );
+}
+
+#[test]
+fn location_address() {
+    let expected_struct = LocationAddress::new("RU");
+    assert_json_eq(expected_struct.clone(), serde_json::json!({"country_code": "RU"}));
+    assert_json_eq(
+        expected_struct
+            .with_state("Sakha Republic")
+            .with_city("Yakutsk")
+            .with_street("Lenina, 1"),
+        serde_json::json!({
+            "country_code": "RU",
+            "state": "Sakha Republic",
+            "city": "Yakutsk",
+            "street": "Lenina, 1",
         }),
     );
 }

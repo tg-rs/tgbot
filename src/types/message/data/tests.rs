@@ -55,6 +55,13 @@ use crate::types::{
     Text,
     TextEntities,
     TextEntity,
+    UniqueGift,
+    UniqueGiftBackdrop,
+    UniqueGiftBackdropColors,
+    UniqueGiftInfo,
+    UniqueGiftModel,
+    UniqueGiftOrigin,
+    UniqueGiftSymbol,
     User,
     Venue,
     Video,
@@ -880,6 +887,86 @@ fn text() {
 
     expected_struct.data = MessageData::Text(Text::from("text"));
     expected_value["text"] = serde_json::json!("text");
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn unique_gift() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::UniqueGift(UniqueGiftInfo::new(
+        UniqueGift {
+            backdrop: UniqueGiftBackdrop {
+                colors: UniqueGiftBackdropColors {
+                    center_color: 1,
+                    edge_color: 2,
+                    symbol_color: 3,
+                    text_color: 4,
+                },
+                name: String::from("name"),
+                rarity_per_mille: 5,
+            },
+            base_name: String::from("base-name"),
+            model: UniqueGiftModel {
+                name: String::from("name"),
+                rarity_per_mille: 6,
+                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            },
+            name: String::from("name"),
+            number: 7,
+            symbol: UniqueGiftSymbol {
+                name: String::from("name"),
+                rarity_per_mille: 8,
+                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            },
+        },
+        UniqueGiftOrigin::Transfer,
+    ));
+    expected_value["unique_gift"] = serde_json::json!({
+        "gift": {
+            "backdrop": {
+                "colors": {
+                    "center_color": 1,
+                    "edge_color": 2,
+                    "symbol_color": 3,
+                    "text_color": 4,
+                },
+                "name": "name",
+                "rarity_per_mille": 5,
+            },
+            "base_name": "base-name",
+            "model": {
+                "name": "name",
+                "rarity_per_mille": 6,
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "regular",
+                    "is_animated": false,
+                    "is_video": false,
+                    "height": 512,
+                    "width": 512,
+                },
+            },
+            "name": "name",
+            "number": 7,
+            "symbol": {
+                "name": "name",
+                "rarity_per_mille": 8,
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "regular",
+                    "is_animated": false,
+                    "is_video": false,
+                    "height": 512,
+                    "width": 512,
+                },
+            },
+        },
+        "origin": "transfer",
+    });
     assert_json_eq(expected_struct, expected_value);
 }
 

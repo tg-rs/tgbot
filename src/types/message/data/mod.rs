@@ -30,6 +30,7 @@ use crate::types::{
     Story,
     SuccessfulPayment,
     Text,
+    UniqueGiftInfo,
     User,
     Venue,
     Video,
@@ -189,6 +190,8 @@ pub enum MessageData {
         serialize_with = "RawDataFlag::serialize_value"
     )]
     SupergroupChatCreated,
+    /// A service message about a sent or received unique gift.
+    UniqueGift(UniqueGiftInfo),
     /// A user was shared with the bot.
     UsersShared(MessageDataUsersShared),
     /// Information about the venue.

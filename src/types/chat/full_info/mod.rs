@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::{
     AccentColor,
+    AcceptedGiftTypes,
     Birthdate,
     BusinessIntro,
     BusinessLocation,
@@ -148,6 +149,6 @@ pub struct ChatFullInfo {
     /// Default chat member permissions, for groups and supergroups.
     pub permissions: Option<ChatPermissions>,
 
-    /// Undocumented.
-    pub can_send_gift: Option<bool>,
+    /// Information about types of gifts that are accepted by the chat or by the corresponding user for private chats.
+    pub accepted_gift_types: Option<AcceptedGiftTypes>,
 }

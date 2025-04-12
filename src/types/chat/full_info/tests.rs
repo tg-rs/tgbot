@@ -70,7 +70,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         sticker_set_name: None,
         unrestrict_boost_count: None,
         permissions: None,
-        can_send_gift: None,
+        accepted_gift_types: None,
     }
 }
 

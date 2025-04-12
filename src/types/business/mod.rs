@@ -935,6 +935,61 @@ impl Method for TransferBusinessAccountStars {
     }
 }
 
+/// Transfers an owned unique gift to another user.
+///
+/// Requires the `can_transfer_and_upgrade_gifts` business bot right.
+/// Requires `can_transfer_stars` business bot right if the transfer is paid.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct TransferGift {
+    business_connection_id: String,
+    owned_gift_id: String,
+    new_owner_chat_id: Integer,
+    star_count: Option<Integer>,
+}
+
+impl TransferGift {
+    /// Creates a new `TransferGift`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `owned_gift_id` - Unique identifier of the regular gift that should be transferred.
+    /// * `new_owner_chat_id` - Unique identifier of the chat which will own the gift;
+    ///   the chat must be active in the last 24 hours.
+    pub fn new<A, B>(business_connection_id: A, owned_gift_id: B, new_owner_chat_id: Integer) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            owned_gift_id: owned_gift_id.into(),
+            new_owner_chat_id,
+            star_count: None,
+        }
+    }
+
+    /// Sets a new star count
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The amount of Telegram Stars that will be paid for the transfer from the business account balance;
+    ///   if positive, then the can_transfer_stars business bot right is required.
+    pub fn with_star_count(mut self, value: Integer) -> Self {
+        self.star_count = Some(value);
+        self
+    }
+}
+
+impl Method for TransferGift {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("transferGift", self)
+    }
+}
+
 /// Upgrades a given regular gift to a unique gift.
 ///
 /// Requires the can_transfer_and_upgrade_gifts business bot right.

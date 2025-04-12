@@ -26,6 +26,7 @@ use crate::{
         Sticker,
         StickerType,
         TransferBusinessAccountStars,
+        TransferGift,
         UpgradeGift,
         User,
         tests::assert_json_eq,
@@ -407,6 +408,30 @@ fn transfer_business_account_stars() {
             serde_json::json!({"business_connection_id": "id", "star_count": 1}),
         ),
         actual_method,
+    );
+}
+
+#[test]
+fn transfer_gift() {
+    let actual_method = TransferGift::new("id", "id", 1);
+    assert_payload_eq(
+        Payload::json(
+            "transferGift",
+            serde_json::json!({"business_connection_id": "id", "owned_gift_id": "id", "new_owner_chat_id": 1}),
+        ),
+        actual_method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "transferGift",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "owned_gift_id": "id",
+                "new_owner_chat_id": 1,
+                "star_count": 1
+            }),
+        ),
+        actual_method.with_star_count(1),
     );
 }
 

@@ -8,6 +8,7 @@ use crate::{
         BusinessLocation,
         BusinessMessagesDeleted,
         BusinessOpeningHours,
+        ConvertGiftToStars,
         DeleteBusinessMessages,
         GetBusinessAccountStarBalance,
         GetBusinessConnection,
@@ -176,6 +177,21 @@ fn business_opening_hours() {
         ]
     });
     assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn convert_gift_to_stars() {
+    let actual_method = ConvertGiftToStars::new("id", "id");
+    assert_payload_eq(
+        Payload::json(
+            "convertGiftToStars",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "owned_gift_id": "id",
+            }),
+        ),
+        actual_method,
+    );
 }
 
 #[test]

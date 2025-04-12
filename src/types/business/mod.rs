@@ -442,6 +442,35 @@ impl BusinessOpeningHours {
     }
 }
 
+/// Converts a given regular gift to Telegram Stars.
+///
+/// Requires the can_convert_gifts_to_stars business bot right.
+#[derive(Clone, Debug, Serialize)]
+pub struct ConvertGiftToStars {
+    business_connection_id:  String,
+    owned_gift_id:   String,
+}
+
+impl ConvertGiftToStars {
+    /// Creates a new `ConvertGiftToStars`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `owned_gift_id` - Unique identifier of the regular gift that should be converted to Telegram Stars.
+    pub fn new<A, B>(business_connection_id: A, owned_gift_id: B) -> Self where A: Into<String>, B: Into<String> {
+        Self {business_connection_id: business_connection_id.into(), owned_gift_id: owned_gift_id.into()}
+    }
+}
+
+impl Method for ConvertGiftToStars {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("convertGiftToStars", self)
+    }
+}
+
 /// Deletes messages on behalf of a business account.
 ///
 /// Requires the `can_delete_outgoing_messages` business bot right to delete messages sent by the bot itself,

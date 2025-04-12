@@ -1,6 +1,7 @@
 use crate::{
     api::{Form, Payload, assert_payload_eq},
     types::{
+        AcceptedGiftTypes,
         BusinessBotRights,
         BusinessConnection,
         BusinessIntro,
@@ -16,6 +17,7 @@ use crate::{
         ReadBusinessMessage,
         RemoveBusinessAccountProfilePhoto,
         SetBusinessAccountBio,
+        SetBusinessAccountGiftSettings,
         SetBusinessAccountName,
         SetBusinessAccountProfilePhoto,
         SetBusinessAccountUsername,
@@ -259,6 +261,27 @@ fn set_business_account_bio() {
             }),
         ),
         actual_method.with_bio("Test"),
+    );
+}
+
+#[test]
+fn set_business_account_gift_settings() {
+    let actual_method = SetBusinessAccountGiftSettings::new("id", true, AcceptedGiftTypes::default());
+    assert_payload_eq(
+        Payload::json(
+            "setBusinessAccountGiftSettings",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "show_gift_button": true,
+                "accepted_gift_types": {
+                    "limited_gifts": false,
+                    "premium_subscription": false,
+                    "unique_gifts": false,
+                    "unlimited_gifts": false,
+                }
+            }),
+        ),
+        actual_method.clone(),
     );
 }
 

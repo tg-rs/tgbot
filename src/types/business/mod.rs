@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Form, Method, Payload},
-    types::{Chat, InputProfilePhoto, InputProfilePhotoError, Integer, Location, Sticker, User},
+    types::{AcceptedGiftTypes, Chat, InputProfilePhoto, InputProfilePhotoError, Integer, Location, Sticker, User},
 };
 
 #[cfg(test)]
@@ -634,6 +634,45 @@ impl Method for SetBusinessAccountBio {
 
     fn into_payload(self) -> Payload {
         Payload::json("setBusinessAccountBio", self)
+    }
+}
+
+/// Changes the privacy settings pertaining to incoming gifts in a managed business account.
+///
+/// Requires the can_change_gift_settings business bot right.
+#[derive(Clone, Debug, Serialize)]
+pub struct SetBusinessAccountGiftSettings {
+    accepted_gift_types: AcceptedGiftTypes,
+    business_connection_id: String,
+    show_gift_button: bool,
+}
+
+impl SetBusinessAccountGiftSettings {
+    /// Creates a new `SetBusinessAccountGiftSettings`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `show_gift_button` - Whether a button for sending a gift to the user
+    ///   or by the business account must always be shown in the input field
+    /// * `accepted_gift_types` - Types of gifts accepted by the business account.
+    pub fn new<T>(business_connection_id: T, show_gift_button: bool, accepted_gift_types: AcceptedGiftTypes) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            show_gift_button,
+            accepted_gift_types,
+        }
+    }
+}
+
+impl Method for SetBusinessAccountGiftSettings {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setBusinessAccountGiftSettings", self)
     }
 }
 

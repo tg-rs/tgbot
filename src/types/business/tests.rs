@@ -9,6 +9,7 @@ use crate::{
         BusinessMessagesDeleted,
         BusinessOpeningHours,
         DeleteBusinessMessages,
+        GetBusinessAccountStarBalance,
         GetBusinessConnection,
         InputFile,
         InputProfilePhotoStatic,
@@ -187,6 +188,19 @@ fn delete_business_messages() {
             }),
         ),
         DeleteBusinessMessages::new("id", [1, 2, 3]),
+    );
+}
+
+#[test]
+fn get_business_account_star_balance() {
+    assert_payload_eq(
+        Payload::json(
+            "getBusinessAccountStarBalance",
+            serde_json::json!({
+                "business_connection_id": "id",
+            }),
+        ),
+        GetBusinessAccountStarBalance::new("id"),
     );
 }
 

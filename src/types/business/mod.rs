@@ -2,7 +2,17 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Form, Method, Payload},
-    types::{AcceptedGiftTypes, Chat, InputProfilePhoto, InputProfilePhotoError, Integer, Location, Sticker, User},
+    types::{
+        AcceptedGiftTypes,
+        Chat,
+        InputProfilePhoto,
+        InputProfilePhotoError,
+        Integer,
+        Location,
+        StarAmount,
+        Sticker,
+        User,
+    },
 };
 
 #[cfg(test)]
@@ -469,6 +479,38 @@ impl Method for DeleteBusinessMessages {
 
     fn into_payload(self) -> Payload {
         Payload::json("deleteBusinessMessages", self)
+    }
+}
+
+/// Returns the amount of Telegram Stars owned by a managed business account.
+///
+/// Requires the can_view_gifts_and_stars business bot right.
+#[derive(Clone, Debug, Serialize)]
+pub struct GetBusinessAccountStarBalance {
+    business_connection_id: String,
+}
+
+impl GetBusinessAccountStarBalance {
+    /// Creates a new `GetBusinessAccountStarBalance`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    pub fn new<T>(business_connection_id: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+        }
+    }
+}
+
+impl Method for GetBusinessAccountStarBalance {
+    type Response = StarAmount;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getBusinessAccountStarBalance", self)
     }
 }
 

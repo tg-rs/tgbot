@@ -14,6 +14,7 @@ use crate::{
         Location,
         PrivateChat,
         ReadBusinessMessage,
+        RemoveBusinessAccountProfilePhoto,
         SetBusinessAccountBio,
         SetBusinessAccountName,
         SetBusinessAccountProfilePhoto,
@@ -210,6 +211,30 @@ fn read_business_message() {
             }),
         ),
         ReadBusinessMessage::new("id", 1, 2),
+    );
+}
+
+#[test]
+fn remove_business_account_profile_photo() {
+    let actual_method = RemoveBusinessAccountProfilePhoto::new("id");
+    assert_payload_eq(
+        Payload::json(
+            "removeBusinessAccountProfilePhoto",
+            serde_json::json!({
+                "business_connection_id": "id"
+            }),
+        ),
+        actual_method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "removeBusinessAccountProfilePhoto",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "is_public": true
+            }),
+        ),
+        actual_method.with_is_public(true),
     );
 }
 

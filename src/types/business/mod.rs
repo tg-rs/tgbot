@@ -542,6 +542,53 @@ impl Method for ReadBusinessMessage {
     }
 }
 
+/// Removes the current profile photo of a managed business account.
+///
+/// Requires the can_edit_profile_photo business bot right.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct RemoveBusinessAccountProfilePhoto {
+    business_connection_id: String,
+    is_public: Option<bool>,
+}
+
+impl RemoveBusinessAccountProfilePhoto {
+    /// Creates a new `RemoveBusinessAccountProfilePhoto`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection
+    pub fn new<T>(business_connection_id: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            is_public: None,
+        }
+    }
+
+    /// Sets a new value for the `is_public` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to remove the public photo,
+    ///   which is visible even if the main photo is hidden by the business account's privacy settings;
+    ///   after the main photo is removed, the previous profile photo (if present) becomes the main photo.
+    pub fn with_is_public(mut self, value: bool) -> Self {
+        self.is_public = Some(value);
+        self
+    }
+}
+
+impl Method for RemoveBusinessAccountProfilePhoto {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("removeBusinessAccountProfilePhoto", self)
+    }
+}
+
 /// Changes the bio of a managed business account.
 ///
 /// Requires the can_change_bio business bot right.

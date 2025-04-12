@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+use super::{InputStoryContent, InputStoryContentError};
 use crate::{
     api::{Form, Method, Payload},
     types::{
@@ -10,8 +11,15 @@ use crate::{
         Integer,
         Location,
         OwnedGifts,
+        ParseMode,
         StarAmount,
         Sticker,
+        Story,
+        StoryAreas,
+        StoryAreasError,
+        TextEntities,
+        TextEntity,
+        TextEntityError,
         User,
     },
 };
@@ -712,6 +720,120 @@ impl Method for GetBusinessConnection {
 
     fn into_payload(self) -> Payload {
         Payload::json("getBusinessConnection", self)
+    }
+}
+
+/// Posts a story on behalf of a managed business account.
+///
+/// Requires the `can_manage_stories` business bot right.
+pub struct PostStory {
+    form: Form,
+}
+
+impl PostStory {
+    /// Creates a new `PostStory`.
+    ///
+    /// # Arguments
+    ///
+    /// * `active_period` - Period after which the story is moved to the archive, in seconds;
+    ///   must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400.
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `content` - Content of the story.
+    pub fn new<A, B>(
+        active_period: Integer,
+        business_connection_id: A,
+        content: B,
+    ) -> Result<Self, InputStoryContentError>
+    where
+        A: Into<String>,
+        B: Into<InputStoryContent>,
+    {
+        let mut form: Form = content.into().try_into()?;
+        form.insert_field("active_period", active_period);
+        form.insert_field("business_connection_id", business_connection_id.into());
+        Ok(Self { form })
+    }
+
+    /// Sets a new list of areas.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of clickable areas to be shown on the story.
+    pub fn with_areas<T>(mut self, value: T) -> Result<Self, StoryAreasError>
+    where
+        T: Into<StoryAreas>,
+    {
+        let value = value.into().serialize()?;
+        self.form.insert_field("areas", value);
+        Ok(self)
+    }
+
+    /// Sets a new caption.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` -  Caption of the story, 0-2048 characters after entities parsing.
+    pub fn with_caption<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.form.insert_field("caption", value.into());
+        self
+    }
+
+    /// Sets a new list of caption entities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of special entities that appear in the caption.
+    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        let value = TextEntities::from_iter(value);
+        let value = value.serialize()?;
+        self.form.remove_field("parse_mode");
+        self.form.insert_field("caption_entities", value);
+        Ok(self)
+    }
+
+    /// Sets a new parse mode.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Mode for parsing entities in the story caption.
+    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
+        self.form.remove_field("caption_entities");
+        self.form.insert_field("parse_mode", value);
+        self
+    }
+
+    /// Sets a new value for the `post_to_chat_page` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to keep the story accessible after it expires.
+    pub fn with_post_to_chat_page(mut self, value: bool) -> Self {
+        self.form.insert_field("post_to_chat_page", value);
+        self
+    }
+
+    /// Sets a new value for the `protect_content` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` Whether the content of the story must be protected from forwarding and screenshotting.
+    pub fn with_protect_content(mut self, value: bool) -> Self {
+        self.form.insert_field("protect_content", value);
+        self
+    }
+}
+
+impl Method for PostStory {
+    type Response = Story;
+
+    fn into_payload(self) -> Payload {
+        Payload::form("postStory", self.form)
     }
 }
 

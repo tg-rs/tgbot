@@ -1,4 +1,7 @@
+use std::{error::Error, fmt};
+
 use serde::{Deserialize, Serialize};
+use serde_json::Error as JsonError;
 
 use crate::types::{Chat, Float, Integer, LocationAddress, ReactionType};
 
@@ -49,6 +52,51 @@ impl Story {
     pub fn with_id(mut self, value: Integer) -> Self {
         self.id = value;
         self
+    }
+}
+
+/// Describes a list of clickable areas on a story media.
+pub struct StoryAreas {
+    items: Vec<StoryArea>,
+}
+
+impl StoryAreas {
+    pub(crate) fn serialize(&self) -> Result<String, StoryAreasError> {
+        serde_json::to_string(&self.items).map_err(StoryAreasError::Serialize)
+    }
+}
+
+impl<T> From<T> for StoryAreas
+where
+    T: IntoIterator<Item = StoryArea>,
+{
+    fn from(value: T) -> Self {
+        Self {
+            items: value.into_iter().collect(),
+        }
+    }
+}
+
+/// Represents a story areas error
+#[derive(Debug)]
+pub enum StoryAreasError {
+    /// Can not serialize to JSON
+    Serialize(JsonError),
+}
+
+impl fmt::Display for StoryAreasError {
+    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Serialize(err) => write!(out, "can not serialize: {}", err),
+        }
+    }
+}
+
+impl Error for StoryAreasError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        Some(match self {
+            Self::Serialize(err) => err,
+        })
     }
 }
 

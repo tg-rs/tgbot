@@ -15,7 +15,10 @@ use crate::{
         GetBusinessConnection,
         InputFile,
         InputProfilePhotoStatic,
+        InputStoryContentPhoto,
         Location,
+        ParseMode,
+        PostStory,
         PrivateChat,
         ReadBusinessMessage,
         RemoveBusinessAccountProfilePhoto,
@@ -26,6 +29,10 @@ use crate::{
         SetBusinessAccountUsername,
         Sticker,
         StickerType,
+        StoryArea,
+        StoryAreaPosition,
+        StoryAreaTypeLink,
+        TextEntity,
         TransferBusinessAccountStars,
         TransferGift,
         UpgradeGift,
@@ -272,6 +279,56 @@ fn get_business_connection() {
         ),
         GetBusinessConnection::new("id"),
     )
+}
+
+#[test]
+fn post_story() {
+    assert_payload_eq(
+        Payload::form(
+            "postStory",
+            Form::from([
+                ("active_period", 60.into()),
+                ("business_connection_id", "id".into()),
+                ("content", r#"{"type":"photo","photo":"url"}"#.into()),
+            ]),
+        ),
+        PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url"))).unwrap(),
+    );
+    assert_payload_eq(
+        Payload::form(
+            "postStory",
+            Form::from([
+                ("active_period", 60.into()),
+                ("business_connection_id", "id".into()),
+                ("content", r#"{"type":"photo","photo":"url"}"#.into()),
+                ("areas", r#"[{"type":{"type":"link","url":"url"},"position":{"corner_radius_percentage":1.0,"height_percentage":2.0,"rotation_angle":3.0,"width_percentage":4.0,"x_percentage":5.0,"y_percentage":6.0}}]"#.into()),
+                ("caption", "test".into()),
+                ("caption_entities", r#"[{"offset":0,"length":2,"type":"bold"}]"#.into()),
+                ("post_to_chat_page", true.into()),
+                ("protect_content", true.into()),
+            ]),
+        ),
+        PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url")))
+            .unwrap()
+            .with_areas([StoryArea::new(
+                StoryAreaTypeLink::new("url"),
+                StoryAreaPosition {
+                    corner_radius_percentage: 1.0,
+                    height_percentage: 2.0,
+                    rotation_angle: 3.0,
+                    width_percentage: 4.0,
+                    x_percentage: 5.0,
+                    y_percentage: 6.0,
+                },
+            )])
+            .unwrap()
+            .with_caption("test")
+            .with_parse_mode(ParseMode::Markdown)
+            .with_caption_entities([TextEntity::bold(0..2)])
+            .unwrap()
+            .with_post_to_chat_page(true)
+            .with_protect_content(true),
+    );
 }
 
 #[test]

@@ -11,7 +11,7 @@ fn input_story_content() {
     assert!(matches!(content, InputStoryContent::Photo(_)));
     let form: Form = content.try_into().unwrap();
     assert_eq!(
-        Form::from([("story", r#"{"type":"photo","photo":"url"}"#.into())]),
+        Form::from([("content", r#"{"type":"photo","photo":"url"}"#.into())]),
         form
     );
 
@@ -20,7 +20,10 @@ fn input_story_content() {
     let form: Form = content.try_into().unwrap();
     assert_eq!(
         Form::from([
-            ("story", r#"{"type":"photo","photo":"attach://tgbot_isc_file"}"#.into()),
+            (
+                "content",
+                r#"{"type":"photo","photo":"attach://tgbot_isc_file"}"#.into()
+            ),
             ("tgbot_isc_file", InputFile::from(Cursor::new("test")).into())
         ]),
         form
@@ -30,7 +33,7 @@ fn input_story_content() {
     assert!(matches!(content, InputStoryContent::Video(_)));
     let form: Form = content.try_into().unwrap();
     assert_eq!(
-        Form::from([("story", r#"{"type":"video","video":"url"}"#.into())]),
+        Form::from([("content", r#"{"type":"video","video":"url"}"#.into())]),
         form
     );
 
@@ -39,7 +42,10 @@ fn input_story_content() {
     let form: Form = content.try_into().unwrap();
     assert_eq!(
         Form::from([
-            ("story", r#"{"type":"video","video":"attach://tgbot_isc_file"}"#.into()),
+            (
+                "content",
+                r#"{"type":"video","video":"attach://tgbot_isc_file"}"#.into()
+            ),
             ("tgbot_isc_file", InputFile::from(Cursor::new("test")).into())
         ]),
         form
@@ -55,7 +61,7 @@ fn input_story_content() {
     let form: Form = content.try_into().unwrap();
     assert_eq!(
         Form::from([(
-            "story",
+            "content",
             r#"{"type":"video","video":"url","cover_frame_timestamp":1.0,"duration":1.0,"is_animation":true}"#.into()
         )]),
         form

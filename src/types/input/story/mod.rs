@@ -66,7 +66,7 @@ impl TryFrom<InputStoryContentPhoto> for Form {
         };
         let info = RawInputStoryContent::Photo { photo };
         result.insert_field(
-            "story",
+            "content",
             serde_json::to_string(&info).map_err(InputStoryContentError::Serialize)?,
         );
         Ok(result)
@@ -154,7 +154,7 @@ impl TryFrom<InputStoryContentVideo> for Form {
             is_animation: value.is_animation,
         };
         result.insert_field(
-            "story",
+            "content",
             serde_json::to_string(&info).map_err(InputStoryContentError::Serialize)?,
         );
         Ok(result)

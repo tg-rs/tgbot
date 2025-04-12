@@ -863,3 +863,38 @@ impl Method for SetBusinessAccountUsername {
         Payload::json("setBusinessAccountUsername", self)
     }
 }
+
+/// Transfers Telegram Stars from the business account balance to the bot's balance.
+///
+/// Requires the can_transfer_stars business bot right.
+#[derive(Clone, Debug, Serialize)]
+pub struct TransferBusinessAccountStars {
+    business_connection_id: String,
+    star_count: Integer,
+}
+
+impl TransferBusinessAccountStars {
+    /// Creates a new `TransferBusinessAccountStars`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `star_count` - Number of Telegram Stars to transfer; 1-10000.
+    pub fn new<T>(business_connection_id: T, star_count: Integer) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            star_count,
+        }
+    }
+}
+
+impl Method for TransferBusinessAccountStars {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("transferBusinessAccountStars", self)
+    }
+}

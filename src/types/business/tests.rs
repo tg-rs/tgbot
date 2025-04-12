@@ -24,6 +24,7 @@ use crate::{
         SetBusinessAccountUsername,
         Sticker,
         StickerType,
+        TransferBusinessAccountStars,
         User,
         tests::assert_json_eq,
     },
@@ -377,5 +378,17 @@ fn set_business_account_username() {
             }),
         ),
         actual_method.with_username("johndoe"),
+    );
+}
+
+#[test]
+fn transfer_business_account_stars() {
+    let actual_method = TransferBusinessAccountStars::new("id", 1);
+    assert_payload_eq(
+        Payload::json(
+            "transferBusinessAccountStars",
+            serde_json::json!({"business_connection_id": "id", "star_count": 1}),
+        ),
+        actual_method,
     );
 }

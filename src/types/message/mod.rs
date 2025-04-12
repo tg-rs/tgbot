@@ -115,6 +115,8 @@ pub struct Message {
     /// Unique identifier of a message thread to which the message belongs;
     /// for supergroups only.
     pub message_thread_id: Option<Integer>,
+    /// The number of Telegram Stars that were paid by the sender of the message to send it.
+    pub paid_star_count: Option<Integer>,
     /// For replies that quote part of the original message, the quoted part of the message.
     pub quote: Option<TextQuote>,
     /// Inline keyboard attached to the message.
@@ -175,6 +177,7 @@ impl Message {
             link_preview_options: None,
             media_group_id: None,
             message_thread_id: None,
+            paid_star_count: None,
             quote: None,
             reply_markup: None,
             reply_to: None,
@@ -425,6 +428,16 @@ impl Message {
     ///   supergroups only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
+        self
+    }
+
+    /// Sets a new paid star count
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of Telegram Stars that were paid by the sender of the message to send it.
+    pub fn with_paid_star_count(mut self, value: Integer) -> Self {
+        self.paid_star_count = Some(value);
         self
     }
 

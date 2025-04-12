@@ -447,8 +447,8 @@ impl BusinessOpeningHours {
 /// Requires the can_convert_gifts_to_stars business bot right.
 #[derive(Clone, Debug, Serialize)]
 pub struct ConvertGiftToStars {
-    business_connection_id:  String,
-    owned_gift_id:   String,
+    business_connection_id: String,
+    owned_gift_id: String,
 }
 
 impl ConvertGiftToStars {
@@ -458,8 +458,15 @@ impl ConvertGiftToStars {
     ///
     /// * `business_connection_id` - Unique identifier of the business connection.
     /// * `owned_gift_id` - Unique identifier of the regular gift that should be converted to Telegram Stars.
-    pub fn new<A, B>(business_connection_id: A, owned_gift_id: B) -> Self where A: Into<String>, B: Into<String> {
-        Self {business_connection_id: business_connection_id.into(), owned_gift_id: owned_gift_id.into()}
+    pub fn new<A, B>(business_connection_id: A, owned_gift_id: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            owned_gift_id: owned_gift_id.into(),
+        }
     }
 }
 
@@ -925,5 +932,68 @@ impl Method for TransferBusinessAccountStars {
 
     fn into_payload(self) -> Payload {
         Payload::json("transferBusinessAccountStars", self)
+    }
+}
+
+/// Upgrades a given regular gift to a unique gift.
+///
+/// Requires the can_transfer_and_upgrade_gifts business bot right.
+/// Additionally requires the can_transfer_stars business bot right if the upgrade is paid.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct UpgradeGift {
+    business_connection_id: String,
+    owned_gift_id: String,
+    keep_original_details: Option<bool>,
+    star_count: Option<Integer>,
+}
+
+impl UpgradeGift {
+    /// Creates a new `UpgradeGift`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `owned_gift_id` - Unique identifier of the regular gift that should be upgraded to a unique one.
+    pub fn new<A, B>(business_connection_id: A, owned_gift_id: B) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            owned_gift_id: owned_gift_id.into(),
+            keep_original_details: None,
+            star_count: None,
+        }
+    }
+
+    /// Sets a new value for the `keep_original_details` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to keep the original gift text, sender and receiver in the upgraded gift.
+    pub fn with_keep_original_details(mut self, value: bool) -> Self {
+        self.keep_original_details = Some(value);
+        self
+    }
+
+    /// Sets a new star count.
+    ///
+    /// If `gift.prepaid_upgrade_star_count > 0`, then pass 0,
+    /// otherwise, the `can_transfer_stars` business bot right is required and `gift.upgrade_star_count` must be passed.
+    ///
+    /// * `value` - The amount of Telegram Stars that will be paid for the upgrade from the business account balance.
+    pub fn with_star_count(mut self, value: Integer) -> Self {
+        self.star_count = Some(value);
+        self
+    }
+}
+
+impl Method for UpgradeGift {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("upgradeGift", self)
     }
 }

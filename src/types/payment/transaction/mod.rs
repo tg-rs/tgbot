@@ -241,10 +241,28 @@ impl TransactionPartnerChatParameters {
     }
 }
 
+/// Type of the partner user transaction.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TransactionPartnerUserType {
+    /// For direct transfers from managed business accounts.
+    BusinessAccountTransfer,
+    /// For gifts sent by the bot.
+    GiftPurchase,
+    /// For payments via invoices.
+    InvoicePayment,
+    /// For payments for paid media.
+    PaidMediaPayment,
+    /// For Telegram Premium subscriptions gifted by the bot.
+    PremiumPurchase,
+}
+
 /// Describes a transaction with a user.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct TransactionPartnerUserParameters {
+    /// Type of the transaction.
+    pub transaction_type: TransactionPartnerUserType,
     /// Information about the user.
     pub user: User,
     /// Information about the affiliate that received a commission via this transaction.
@@ -257,6 +275,9 @@ pub struct TransactionPartnerUserParameters {
     pub paid_media: Option<Vec<PaidMedia>>,
     /// Bot-specified paid media payload.
     pub paid_media_payload: Option<String>,
+    /// Number of months the gifted Telegram Premium subscription will be active for;
+    /// for “premium_purchase” transactions only.
+    pub premium_subscription_duration: Option<Integer>,
     /// The duration of the paid subscription.
     pub subscription_period: Option<Integer>,
 }
@@ -266,15 +287,18 @@ impl TransactionPartnerUserParameters {
     ///
     /// # Arguments
     ///
+    /// * `transaction_type` - Type of the transaction.
     /// * `user` - Information about the user.
-    pub fn new(user: User) -> Self {
+    pub fn new(transaction_type: TransactionPartnerUserType, user: User) -> Self {
         Self {
+            transaction_type,
             user,
             affiliate: None,
             gift: None,
             invoice_payload: None,
             paid_media: None,
             paid_media_payload: None,
+            premium_subscription_duration: None,
             subscription_period: None,
         }
     }
@@ -338,6 +362,17 @@ impl TransactionPartnerUserParameters {
         T: Into<String>,
     {
         self.paid_media_payload = Some(value.into());
+        self
+    }
+
+    /// Sets a new premium subscription duration.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Number of months the gifted Telegram Premium subscription will be active for;
+    ///   for “premium_purchase” transactions only.
+    pub fn with_premium_subscription_duration(mut self, value: Integer) -> Self {
+        self.premium_subscription_duration = Some(value);
         self
     }
 

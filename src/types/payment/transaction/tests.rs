@@ -17,6 +17,7 @@ use crate::{
         TransactionPartnerAffiliateProgramParameters,
         TransactionPartnerChatParameters,
         TransactionPartnerUserParameters,
+        TransactionPartnerUserType,
         User,
         tests::assert_json_eq,
     },
@@ -180,9 +181,13 @@ fn transaction_partner() {
         serde_json::json!({"type": "telegram_api", "request_count": 1}),
     );
     assert_json_eq(
-        TransactionPartner::User(TransactionPartnerUserParameters::new(User::new(1, "John", false))),
+        TransactionPartner::User(TransactionPartnerUserParameters::new(
+            TransactionPartnerUserType::PaidMediaPayment,
+            User::new(1, "John", false),
+        )),
         serde_json::json!({
             "type": "user",
+            "transaction_type": "paid_media_payment",
             "user" : {
                 "id": 1,
                 "first_name": "John",
@@ -192,16 +197,21 @@ fn transaction_partner() {
     );
     assert_json_eq(
         TransactionPartner::User(
-            TransactionPartnerUserParameters::new(User::new(1, "John", false))
-                .with_affiliate(AffiliateInfo::new(1, 1))
-                .with_gift("test-gift")
-                .with_invoice_payload(String::from("invoice-payload"))
-                .with_paid_media([PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))])
-                .with_paid_media_payload(String::from("media-payload"))
-                .with_subscription_period(1),
+            TransactionPartnerUserParameters::new(
+                TransactionPartnerUserType::PremiumPurchase,
+                User::new(1, "John", false),
+            )
+            .with_affiliate(AffiliateInfo::new(1, 1))
+            .with_gift("test-gift")
+            .with_invoice_payload(String::from("invoice-payload"))
+            .with_paid_media([PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))])
+            .with_paid_media_payload(String::from("media-payload"))
+            .with_premium_subscription_duration(5)
+            .with_subscription_period(1),
         ),
         serde_json::json!({
             "type": "user",
+            "transaction_type": "premium_purchase",
             "user" : {
                 "id": 1,
                 "first_name": "John",
@@ -220,6 +230,7 @@ fn transaction_partner() {
                 }
             ],
             "paid_media_payload": "media-payload",
+            "premium_subscription_duration": 5,
             "subscription_period": 1,
         }),
     );

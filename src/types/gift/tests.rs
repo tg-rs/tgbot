@@ -4,6 +4,7 @@ use crate::{
         AcceptedGiftTypes,
         GetAvailableGifts,
         Gift,
+        GiftInfo,
         Gifts,
         OwnedGift,
         OwnedGiftRegular,
@@ -95,6 +96,69 @@ fn gift() {
             "remaining_count": 10,
             "total_count": 20,
             "upgrade_star_count": 30,
+        }),
+    );
+}
+
+#[test]
+fn gift_info() {
+    let expected_struct = GiftInfo::new(Gift::new(
+        "id",
+        Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+        100,
+    ));
+    assert_json_eq(
+        expected_struct.clone(),
+        serde_json::json!({
+            "gift": {
+                "id": "id",
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "regular",
+                    "is_animated": false,
+                    "is_video": false,
+                    "height": 512,
+                    "width": 512,
+                },
+                "star_count": 100,
+            }
+        }),
+    );
+    assert_json_eq(
+        expected_struct
+            .with_can_be_upgraded(true)
+            .with_convert_star_count(100)
+            .with_entities([TextEntity::bold(0..2)])
+            .with_is_private(true)
+            .with_owned_gift_id("id")
+            .with_prepaid_upgrade_star_count(100)
+            .with_text("test"),
+        serde_json::json!({
+            "gift": {
+                "id": "id",
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "regular",
+                    "is_animated": false,
+                    "is_video": false,
+                    "height": 512,
+                    "width": 512,
+                },
+                "star_count": 100,
+            },
+            "can_be_upgraded": true,
+            "convert_star_count": 100,
+            "entities": [{
+                "type": "bold",
+                "offset": 0,
+                "length": 2,
+            }],
+            "is_private": true,
+            "owned_gift_id": "id",
+            "prepaid_upgrade_star_count": 100,
+            "text": "test",
         }),
     );
 }

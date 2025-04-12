@@ -136,6 +136,133 @@ impl Gift {
     }
 }
 
+/// Describes a service message about a regular gift that was sent or received.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct GiftInfo {
+    /// Information about the gift.
+    pub gift: Gift,
+    /// Whether the gift can be upgraded to a unique gift.
+    pub can_be_upgraded: Option<bool>,
+    /// Number of Telegram Stars that can be claimed by the receiver by converting the gift;
+    /// omitted if conversion to Telegram Stars is impossible.
+    pub convert_star_count: Option<Integer>,
+    /// Special entities that appear in the text.
+    pub entities: Option<TextEntities>,
+    /// Whether the sender and gift text are shown only to the gift receiver;
+    /// otherwise, everyone will be able to see them.
+    pub is_private: Option<bool>,
+    /// Unique identifier of the received gift for the bot;
+    /// only present for gifts received on behalf of business accounts.
+    pub owned_gift_id: Option<String>,
+    /// Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift.
+    pub prepaid_upgrade_star_count: Option<Integer>,
+    /// Text of the message that was added to the gift.
+    pub text: Option<String>,
+}
+
+impl GiftInfo {
+    /// Creates a new `GiftInfo`.
+    ///
+    /// # Arguments
+    ///
+    /// * `gift` - Information about the gift.
+    pub fn new(gift: Gift) -> Self {
+        Self {
+            gift,
+            can_be_upgraded: None,
+            convert_star_count: None,
+            entities: None,
+            is_private: None,
+            owned_gift_id: None,
+            prepaid_upgrade_star_count: None,
+            text: None,
+        }
+    }
+
+    /// Sets a new value for the `can_be_upgraded` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the gift can be upgraded to a unique gift.
+    pub fn with_can_be_upgraded(mut self, value: bool) -> Self {
+        self.can_be_upgraded = Some(value);
+        self
+    }
+
+    /// Sets a new convert star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Number of Telegram Stars that can be claimed by the receiver by converting the gift;
+    ///   omitted if conversion to Telegram Stars is impossible.
+    pub fn with_convert_star_count(mut self, value: Integer) -> Self {
+        self.convert_star_count = Some(value);
+        self
+    }
+
+    /// Sets a new list of entities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Special entities that appear in the text.
+    pub fn with_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.entities = Some(TextEntities::from_iter(value));
+        self
+    }
+
+    /// Sets a new value for the `is_private` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the sender and gift text are shown only to the gift receiver;
+    ///   otherwise, everyone will be able to see them.
+    pub fn with_is_private(mut self, value: bool) -> Self {
+        self.is_private = Some(value);
+        self
+    }
+
+    /// Sets a new owned gift ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the received gift for the bot;
+    ///   only present for gifts received on behalf of business accounts.
+    pub fn with_owned_gift_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.owned_gift_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new prepaid upgrade star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift.
+    pub fn with_prepaid_upgrade_star_count(mut self, value: Integer) -> Self {
+        self.prepaid_upgrade_star_count = Some(value);
+        self
+    }
+
+    /// Sets a new text.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Text of the message that was added to the gift.
+    pub fn with_text<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.text = Some(value.into());
+        self
+    }
+}
+
 /// Represent a list of gifts.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Gifts {

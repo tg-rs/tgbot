@@ -5,6 +5,7 @@ use crate::{
         GetAvailableGifts,
         Gift,
         GiftInfo,
+        GiftPremiumSubscription,
         Gifts,
         OwnedGift,
         OwnedGiftRegular,
@@ -439,8 +440,139 @@ fn owned_gifts() {
 }
 
 #[test]
+fn unique_gift_info() {
+    let expected_struct = UniqueGiftInfo::new(
+        UniqueGift {
+            backdrop: UniqueGiftBackdrop {
+                colors: UniqueGiftBackdropColors {
+                    center_color: 1,
+                    edge_color: 2,
+                    symbol_color: 3,
+                    text_color: 4,
+                },
+                name: String::from("name"),
+                rarity_per_mille: 5,
+            },
+            base_name: String::from("base-name"),
+            model: UniqueGiftModel {
+                name: String::from("name"),
+                rarity_per_mille: 6,
+                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            },
+            name: String::from("name"),
+            number: 7,
+            symbol: UniqueGiftSymbol {
+                name: String::from("name"),
+                rarity_per_mille: 8,
+                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            },
+        },
+        UniqueGiftOrigin::Transfer,
+    );
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "gift": {
+                "backdrop": {
+                    "colors": {
+                        "center_color": 1,
+                        "edge_color": 2,
+                        "symbol_color": 3,
+                        "text_color": 4,
+                    },
+                    "name": "name",
+                    "rarity_per_mille": 5,
+                },
+                "base_name": "base-name",
+                "model": {
+                    "name": "name",
+                    "rarity_per_mille": 6,
+                    "sticker": {
+                        "file_id": "file-id",
+                        "file_unique_id": "file-unique-id",
+                        "type": "regular",
+                        "is_animated": false,
+                        "is_video": false,
+                        "height": 512,
+                        "width": 512,
+                    },
+                },
+                "name": "name",
+                "number": 7,
+                "symbol": {
+                    "name": "name",
+                    "rarity_per_mille": 8,
+                    "sticker": {
+                        "file_id": "file-id",
+                        "file_unique_id": "file-unique-id",
+                        "type": "regular",
+                        "is_animated": false,
+                        "is_video": false,
+                        "height": 512,
+                        "width": 512,
+                    },
+                },
+            },
+            "origin": "transfer",
+        }),
+    );
+}
+
+#[test]
 fn get_available_gifts() {
     assert_payload_eq(Payload::empty("getAvailableGifts"), GetAvailableGifts);
+}
+
+#[test]
+fn gift_premium_subscription() {
+    let method = GiftPremiumSubscription::new(1, 2, 3);
+    assert_payload_eq(
+        Payload::json(
+            "giftPremiumSubscription",
+            serde_json::json!({
+                "month_count": 1,
+                "star_count": 2,
+                "user_id": 3
+            }),
+        ),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "giftPremiumSubscription",
+            serde_json::json!({
+                "month_count": 1,
+                "star_count": 2,
+                "user_id": 3,
+                "text": "text",
+                "text_entities": [
+                    {"type": "bold", "offset": 0, "length": 2}
+                ]
+            }),
+        ),
+        method
+            .clone()
+            .with_text("text")
+            .with_text_parse_mode(ParseMode::Markdown)
+            .with_text_entities([TextEntity::bold(0..2)]),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "giftPremiumSubscription",
+            serde_json::json!({
+                "month_count": 1,
+                "star_count": 2,
+                "user_id": 3,
+                "text": "text",
+                "text_parse_mode": "Markdown",
+            }),
+        ),
+        method
+            .clone()
+            .with_text("text")
+            .with_text_entities([TextEntity::bold(0..2)])
+            .with_text_parse_mode(ParseMode::Markdown),
+    );
 }
 
 #[test]
@@ -529,84 +661,5 @@ fn send_gift() {
             }),
         ),
         method.with_text_parse_mode(ParseMode::Markdown),
-    );
-}
-
-#[test]
-fn unique_gift_info() {
-    let expected_struct = UniqueGiftInfo::new(
-        UniqueGift {
-            backdrop: UniqueGiftBackdrop {
-                colors: UniqueGiftBackdropColors {
-                    center_color: 1,
-                    edge_color: 2,
-                    symbol_color: 3,
-                    text_color: 4,
-                },
-                name: String::from("name"),
-                rarity_per_mille: 5,
-            },
-            base_name: String::from("base-name"),
-            model: UniqueGiftModel {
-                name: String::from("name"),
-                rarity_per_mille: 6,
-                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
-            },
-            name: String::from("name"),
-            number: 7,
-            symbol: UniqueGiftSymbol {
-                name: String::from("name"),
-                rarity_per_mille: 8,
-                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
-            },
-        },
-        UniqueGiftOrigin::Transfer,
-    );
-    assert_json_eq(
-        expected_struct,
-        serde_json::json!({
-            "gift": {
-                "backdrop": {
-                    "colors": {
-                        "center_color": 1,
-                        "edge_color": 2,
-                        "symbol_color": 3,
-                        "text_color": 4,
-                    },
-                    "name": "name",
-                    "rarity_per_mille": 5,
-                },
-                "base_name": "base-name",
-                "model": {
-                    "name": "name",
-                    "rarity_per_mille": 6,
-                    "sticker": {
-                        "file_id": "file-id",
-                        "file_unique_id": "file-unique-id",
-                        "type": "regular",
-                        "is_animated": false,
-                        "is_video": false,
-                        "height": 512,
-                        "width": 512,
-                    },
-                },
-                "name": "name",
-                "number": 7,
-                "symbol": {
-                    "name": "name",
-                    "rarity_per_mille": 8,
-                    "sticker": {
-                        "file_id": "file-id",
-                        "file_unique_id": "file-unique-id",
-                        "type": "regular",
-                        "is_animated": false,
-                        "is_video": false,
-                        "height": 512,
-                        "width": 512,
-                    },
-                },
-            },
-            "origin": "transfer",
-        }),
     );
 }

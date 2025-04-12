@@ -754,6 +754,90 @@ impl UniqueGiftInfo {
     }
 }
 
+/// Gifts a Telegram Premium subscription to the given user.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct GiftPremiumSubscription {
+    month_count: Integer,
+    star_count: Integer,
+    user_id: Integer,
+    text: Option<String>,
+    text_entities: Option<TextEntities>,
+    text_parse_mode: Option<ParseMode>,
+}
+
+impl GiftPremiumSubscription {
+    /// Creates a new `GiftPremiumSubscription`.
+    ///
+    /// # Arguments
+    ///
+    /// * `month_count` - Number of months the Telegram Premium subscription will be active for the user;
+    ///   must be one of 3, 6, or 12.
+    /// * `star_count` - Number of Telegram Stars to pay for the Telegram Premium subscription;
+    ///   must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months.
+    /// * `user_id` - Unique identifier of the target user who will receive a Telegram Premium subscription.
+    pub fn new(month_count: Integer, star_count: Integer, user_id: Integer) -> Self {
+        Self {
+            month_count,
+            star_count,
+            user_id,
+            text: None,
+            text_entities: None,
+            text_parse_mode: None,
+        }
+    }
+
+    /// Sets a new text.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Text that will be shown along with the service message about the subscription; 0-128 characters
+    pub fn with_text<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.text = Some(value.into());
+        self
+    }
+
+    /// Sets a new list of text entities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of special entities that appear in the gift text.
+    ///   Entities other than “bold”, “italic”, “underline”,
+    ///   “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    pub fn with_text_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.text_parse_mode = None;
+        self.text_entities = Some(TextEntities::from_iter(value));
+        self
+    }
+
+    /// Sets a new text parse mode.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Mode for parsing entities in the text.
+    ///   Entities other than “bold”, “italic”, “underline”,
+    ///   “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    pub fn with_text_parse_mode(mut self, value: ParseMode) -> Self {
+        self.text_entities = None;
+        self.text_parse_mode = Some(value);
+        self
+    }
+}
+
+impl Method for GiftPremiumSubscription {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("giftPremiumSubscription", self)
+    }
+}
+
 /// Sends a gift to the given user.
 ///
 /// The gift can't be converted to Telegram Stars by the user.

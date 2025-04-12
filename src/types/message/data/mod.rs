@@ -153,6 +153,8 @@ pub enum MessageData {
     NewChatTitle(String),
     /// Message contains paid media; information about the paid media.
     PaidMedia(PaidMediaInfo),
+    /// A service message about the changed price for paid messages.
+    PaidMessagePriceChanged(MessageDataPaidMessagePriceChanged),
     /// Telegram Passport data.
     PassportData(PassportData),
     /// Specified message was pinned.
@@ -496,6 +498,14 @@ impl MessageDataForumTopicEdited {
         self.icon_custom_emoji_id = Some(value.into());
         self
     }
+}
+
+/// Describes a service message about a change in the price of paid messages within a chat.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataPaidMessagePriceChanged {
+    /// The new number of Telegram Stars
+    /// that must be paid by non-administrator users of the supergroup chat for each sent message.
+    pub paid_message_star_count: Integer,
 }
 
 /// Represents a list of available sizes of the photo.

@@ -24,6 +24,7 @@ use crate::types::{
     MessageDataDocument,
     MessageDataForumTopicCreated,
     MessageDataForumTopicEdited,
+    MessageDataPaidMessagePriceChanged,
     MessageDataPhoto,
     MessageDataProximityAlert,
     MessageDataUsersShared,
@@ -605,6 +606,21 @@ fn paid_media() {
                 "type": "preview"
             }
         ]
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn paid_message_price_changed() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::PaidMessagePriceChanged(MessageDataPaidMessagePriceChanged {
+        paid_message_star_count: 1,
+    });
+    expected_value["paid_message_price_changed"] = serde_json::json!({
+        "paid_message_star_count": 1,
+
     });
     assert_json_eq(expected_struct, expected_value);
 }

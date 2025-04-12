@@ -9,6 +9,8 @@ use crate::types::{
     EncryptedCredentials,
     ForumTopicIconColor,
     Game,
+    Gift,
+    GiftInfo,
     Giveaway,
     GiveawayCompleted,
     GiveawayCreated,
@@ -359,6 +361,34 @@ fn game() {
         "title": "Game",
         "description": "Description",
         "photo": []
+    });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn gift() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::Gift(GiftInfo::new(Gift::new(
+        "id",
+        Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+        100,
+    )));
+    expected_value["gift"] = serde_json::json!({
+        "gift": {
+            "id": "id",
+            "sticker": {
+                "file_id": "file-id",
+                "file_unique_id": "file-unique-id",
+                "type": "regular",
+                "is_animated": false,
+                "is_video": false,
+                "height": 512,
+                "width": 512,
+            },
+            "star_count": 100,
+        }
     });
     assert_json_eq(expected_struct, expected_value);
 }

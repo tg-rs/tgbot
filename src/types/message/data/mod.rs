@@ -11,6 +11,7 @@ use crate::types::{
     Document,
     ForumTopicIconColor,
     Game,
+    GiftInfo,
     Giveaway,
     GiveawayCompleted,
     GiveawayCreated,
@@ -105,6 +106,8 @@ pub enum MessageData {
     ForumTopicReopened,
     /// Information about the game.
     Game(Game),
+    /// A service message about a sent or received regular gift.
+    Gift(GiftInfo),
     /// The 'General' forum topic hidden.
     #[serde(
         deserialize_with = "RawDataEmpty::deserialize_value",

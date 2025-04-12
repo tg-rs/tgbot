@@ -1,5 +1,46 @@
 # Changelog
 
+## 0.36.0 (12.04.2025)
+
+### Dependencies
+
+- Updated:
+  - tokio 1.44
+
+### Bot API
+
+#### 9.0
+
+- Added types: `AcceptedGiftTypes`, `BusinessBotRights`, `ConvertGiftToStars`, `DeleteBusinessMessages`, `DeleteStory`,
+  `EditStory`, `GetBusinessAccountGifts`, `GetBusinessAccountStarBalance`, `GiftInfo`, `GiftPremiumSubscription`,
+  `InputProfilePhoto`, `InputProfilePhotoAnimated`, `InputProfilePhotoStatic`, `InputStoryContent`,
+  `InputStoryContentPhoto`, `InputStoryContentVideo`, `LocationAddress`, `MessageDataPaidMessagePriceChanged`,
+  `OwnedGift`, `OwnedGiftRegular`, `OwnedGifts`, `OwnedGiftUnique`, `PostStory`, `ReadBusinessMessage`,
+  `RemoveBusinessAccountProfilePhoto`, `SetBusinessAccountBio`, `SetBusinessAccountGiftSettings`,
+  `SetBusinessAccountName`, `SetBusinessAccountProfilePhoto`, `SetBusinessAccountUsername`, `StarAmount`, `StoryArea`,
+  `StoryAreaPosition`, `StoryAreaType`, `StoryAreaTypeLink`, `StoryAreaTypeLocation`, `StoryAreaTypeSuggestedReaction`,
+  `StoryAreaTypeUniqueGift`, `StoryAreaTypeWeather`, `TransactionPartnerUserType`, `TransferBusinessAccountStars`,
+  `TransferGift`, `UniqueGift`, `UniqueGiftBackdrop`, `UniqueGiftBackdropColors`, `UniqueGiftInfo`, `UniqueGiftModel`,
+  `UniqueGiftSymbol`, `UpgradeGift`.
+- Added fields:
+  - `BusinessConnection`: `rights`.
+  - `ChatFullInfo`: `accepted_gift_types`.
+  - `Message`: `paid_star_count`.
+  - `TransactionPartnerUserParameters`: `premium_subscription_duration`, `transaction_type`.
+- Added methods:
+  - `BusinessConnection`: `with_rights`.
+  - `Message`: `with_paid_star_count`.
+  - `TransactionPartnerUserParameters`: `with_premium_subscription_duration`.
+- Added enum variants:
+  - `MessageData`: `Gift`, `PaidMessagePriceChanged`, `UniqueGift`.
+- Removed fields:
+  - `BusinessConnection`: `can_reply`.
+  - `ChatFullInfo`: `can_send_gift`.
+- Removed methods:
+  - `BusinessConnection`: `with_can_reply`.
+- Changed signature:
+  - `TransactionPartnerUserParameters`: `new(User) -> Self` to `new(TransactionPartnerUserType, User) -> Self`.
+
 ## 0.35.0 (12.02.2025)
 
 ### Dependencies

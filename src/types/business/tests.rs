@@ -10,6 +10,7 @@ use crate::{
         BusinessOpeningHours,
         ConvertGiftToStars,
         DeleteBusinessMessages,
+        EditStory,
         GetBusinessAccountGifts,
         GetBusinessAccountStarBalance,
         GetBusinessConnection,
@@ -215,6 +216,52 @@ fn delete_business_messages() {
             }),
         ),
         DeleteBusinessMessages::new("id", [1, 2, 3]),
+    );
+}
+
+#[test]
+fn edit_story() {
+    assert_payload_eq(
+        Payload::form(
+            "editStory",
+            Form::from([
+                ("business_connection_id", "id".into()),
+                ("content", r#"{"type":"photo","photo":"url"}"#.into()),
+                ("story_id", 1.into()),
+            ]),
+        ),
+        EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1).unwrap(),
+    );
+    assert_payload_eq(
+        Payload::form(
+            "editStory",
+            Form::from([
+                ("business_connection_id", "id".into()),
+                ("content", r#"{"type":"photo","photo":"url"}"#.into()),
+                ("story_id", 1.into()),
+                ("areas", r#"[{"type":{"type":"link","url":"url"},"position":{"corner_radius_percentage":1.0,"height_percentage":2.0,"rotation_angle":3.0,"width_percentage":4.0,"x_percentage":5.0,"y_percentage":6.0}}]"#.into()),
+                ("caption", "test".into()),
+                ("caption_entities", r#"[{"offset":0,"length":2,"type":"bold"}]"#.into()),
+            ]),
+        ),
+        EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1)
+            .unwrap()
+            .with_areas([StoryArea::new(
+                StoryAreaTypeLink::new("url"),
+                StoryAreaPosition {
+                    corner_radius_percentage: 1.0,
+                    height_percentage: 2.0,
+                    rotation_angle: 3.0,
+                    width_percentage: 4.0,
+                    x_percentage: 5.0,
+                    y_percentage: 6.0,
+                },
+            )])
+            .unwrap()
+            .with_caption("test")
+            .with_parse_mode(ParseMode::Markdown)
+            .with_caption_entities([TextEntity::bold(0..2)])
+            .unwrap()
     );
 }
 

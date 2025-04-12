@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
-    types::{Chat, Integer, Location, Sticker, User},
+    api::{Form, Method, Payload},
+    types::{Chat, InputProfilePhoto, InputProfilePhotoError, Integer, Location, Sticker, User},
 };
 
 #[cfg(test)]
@@ -639,6 +639,52 @@ impl Method for SetBusinessAccountName {
 
     fn into_payload(self) -> Payload {
         Payload::json("setBusinessAccountName", self)
+    }
+}
+
+/// Changes the profile photo of a managed business account.
+///
+/// Requires the can_edit_profile_photo business bot right.
+#[derive(Debug)]
+pub struct SetBusinessAccountProfilePhoto {
+    form: Form,
+}
+
+impl SetBusinessAccountProfilePhoto {
+    /// Creates a new `SetBusinessAccountProfilePhoto`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    /// * `photo` - The new profile photo to set.
+    pub fn new<A, B>(business_connection_id: A, photo: B) -> Result<Self, InputProfilePhotoError>
+    where
+        A: Into<String>,
+        B: Into<InputProfilePhoto>,
+    {
+        let mut form = Form::try_from(photo.into())?;
+        form.insert_field("business_connection_id", business_connection_id.into());
+        Ok(Self { form })
+    }
+
+    /// Sets a new value for the `is_public` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to set the public photo,
+    ///   which will be visible even if the main photo is hidden by the business account's privacy settings;
+    ///   an account can have only one public photo.
+    pub fn with_is_public(mut self, value: bool) -> Self {
+        self.form.insert_field("is_public", value);
+        self
+    }
+}
+
+impl Method for SetBusinessAccountProfilePhoto {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::form("setBusinessAccountProfilePhoto", self.form)
     }
 }
 

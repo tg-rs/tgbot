@@ -1,5 +1,5 @@
 use crate::{
-    api::{Payload, assert_payload_eq},
+    api::{Form, Payload, assert_payload_eq},
     types::{
         BusinessBotRights,
         BusinessConnection,
@@ -9,11 +9,14 @@ use crate::{
         BusinessOpeningHours,
         DeleteBusinessMessages,
         GetBusinessConnection,
+        InputFile,
+        InputProfilePhotoStatic,
         Location,
         PrivateChat,
         ReadBusinessMessage,
         SetBusinessAccountBio,
         SetBusinessAccountName,
+        SetBusinessAccountProfilePhoto,
         SetBusinessAccountUsername,
         Sticker,
         StickerType,
@@ -257,6 +260,37 @@ fn set_business_account_name() {
             }),
         ),
         actual_method.with_last_name("Doe"),
+    );
+}
+
+#[test]
+fn set_business_account_profile_photo() {
+    let actual_method =
+        SetBusinessAccountProfilePhoto::new("id", InputProfilePhotoStatic::new(InputFile::url("test"))).unwrap();
+    assert_payload_eq(
+        Payload::form(
+            "setBusinessAccountProfilePhoto",
+            Form::from([
+                ("business_connection_id", "id".into()),
+                ("photo", r#"{"type":"static","photo":"test"}"#.into()),
+            ]),
+        ),
+        actual_method,
+    );
+
+    let actual_method = SetBusinessAccountProfilePhoto::new("id", InputProfilePhotoStatic::new(InputFile::url("test")))
+        .unwrap()
+        .with_is_public(true);
+    assert_payload_eq(
+        Payload::form(
+            "setBusinessAccountProfilePhoto",
+            Form::from([
+                ("business_connection_id", "id".into()),
+                ("photo", r#"{"type":"static","photo":"test"}"#.into()),
+                ("is_public", true.into()),
+            ]),
+        ),
+        actual_method,
     );
 }
 

@@ -1,8 +1,46 @@
 use super::GetAvailableGifts;
 use crate::{
     api::{Payload, assert_payload_eq},
-    types::{Gift, Gifts, ParseMode, SendGift, Sticker, StickerType, TextEntity, tests::assert_json_eq},
+    types::{
+        AcceptedGiftTypes,
+        Gift,
+        Gifts,
+        ParseMode,
+        SendGift,
+        Sticker,
+        StickerType,
+        TextEntity,
+        tests::assert_json_eq,
+    },
 };
+
+#[test]
+fn accepted_gift_types() {
+    let expected_struct = AcceptedGiftTypes::default();
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "limited_gifts": false,
+            "premium_subscription": false,
+            "unique_gifts": false,
+            "unlimited_gifts": false,
+        }),
+    );
+    let expected_struct = expected_struct
+        .with_limited_gifts(true)
+        .with_premium_subscription(true)
+        .with_unique_gifts(true)
+        .with_unlimited_gifts(true);
+    assert_json_eq(
+        expected_struct,
+        serde_json::json!({
+            "limited_gifts": true,
+            "premium_subscription": true,
+            "unique_gifts": true,
+            "unlimited_gifts": true,
+        }),
+    );
+}
 
 #[test]
 fn gift() {

@@ -8,6 +8,61 @@ use crate::{
 #[cfg(test)]
 mod tests;
 
+/// Describes the types of gifts that can be gifted to a user or a chat.
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct AcceptedGiftTypes {
+    /// Whether limited regular gifts are accepted.
+    pub limited_gifts: bool,
+    /// Whether a Telegram Premium subscription is accepted.
+    pub premium_subscription: bool,
+    /// Whether unique gifts or gifts that can be upgraded to unique for free are accepted.
+    pub unique_gifts: bool,
+    /// Whether unlimited regular gifts are accepted.
+    pub unlimited_gifts: bool,
+}
+
+impl AcceptedGiftTypes {
+    /// Sets a new value for the `limited_gifts` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether limited regular gifts are accepted.
+    pub fn with_limited_gifts(mut self, value: bool) -> Self {
+        self.limited_gifts = value;
+        self
+    }
+
+    /// Sets a new value for the `premium_subscription` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether a Telegram Premium subscription is accepted.
+    pub fn with_premium_subscription(mut self, value: bool) -> Self {
+        self.premium_subscription = value;
+        self
+    }
+
+    /// Sets a new value for the `unique_gifts` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether unique gifts or gifts that can be upgraded to unique for free are accepted.
+    pub fn with_unique_gifts(mut self, value: bool) -> Self {
+        self.unique_gifts = value;
+        self
+    }
+
+    /// Sets a new value for the `unlimited_gifts` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether unlimited regular gifts are accepted.
+    pub fn with_unlimited_gifts(mut self, value: bool) -> Self {
+        self.unlimited_gifts = value;
+        self
+    }
+}
+
 /// Represents a gift that can be sent by the bot.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]

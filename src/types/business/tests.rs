@@ -10,6 +10,7 @@ use crate::{
         BusinessOpeningHours,
         ConvertGiftToStars,
         DeleteBusinessMessages,
+        GetBusinessAccountGifts,
         GetBusinessAccountStarBalance,
         GetBusinessConnection,
         InputFile,
@@ -207,6 +208,45 @@ fn delete_business_messages() {
             }),
         ),
         DeleteBusinessMessages::new("id", [1, 2, 3]),
+    );
+}
+
+#[test]
+fn get_business_account_gifts() {
+    let actual_method = GetBusinessAccountGifts::new("id");
+    assert_payload_eq(
+        Payload::json(
+            "getBusinessAccountGifts",
+            serde_json::json!({
+                "business_connection_id": "id"
+            }),
+        ),
+        actual_method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "getBusinessAccountGifts",
+            serde_json::json!({
+                "business_connection_id": "id",
+                "exclude_limited": true,
+                "exclude_saved": true,
+                "exclude_unique": true,
+                "exclude_unlimited": true,
+                "exclude_unsaved": true,
+                "limit": 10,
+                "offset": "test",
+                "sort_by_price": true,
+            }),
+        ),
+        actual_method
+            .with_exclude_limited(true)
+            .with_exclude_saved(true)
+            .with_exclude_unique(true)
+            .with_exclude_unlimited(true)
+            .with_exclude_unsaved(true)
+            .with_limit(10)
+            .with_offset("test")
+            .with_sort_by_price(true),
     );
 }
 

@@ -9,6 +9,7 @@ use crate::{
         InputProfilePhotoError,
         Integer,
         Location,
+        OwnedGifts,
         StarAmount,
         Sticker,
         User,
@@ -515,6 +516,140 @@ impl Method for DeleteBusinessMessages {
 
     fn into_payload(self) -> Payload {
         Payload::json("deleteBusinessMessages", self)
+    }
+}
+
+/// Returns the gifts received and owned by a managed business account.
+///
+/// Requires the `can_view_gifts_and_stars` business bot right.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct GetBusinessAccountGifts {
+    business_connection_id: String,
+    exclude_limited: Option<bool>,
+    exclude_saved: Option<bool>,
+    exclude_unique: Option<bool>,
+    exclude_unlimited: Option<bool>,
+    exclude_unsaved: Option<bool>,
+    limit: Option<Integer>,
+    offset: Option<String>,
+    sort_by_price: Option<bool>,
+}
+
+impl GetBusinessAccountGifts {
+    /// Creates a new `GetBusinessAccountGifts`.
+    ///
+    /// # Arguments
+    ///
+    /// * `business_connection_id` - Unique identifier of the business connection.
+    pub fn new<T>(business_connection_id: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            business_connection_id: business_connection_id.into(),
+            exclude_limited: None,
+            exclude_saved: None,
+            exclude_unique: None,
+            exclude_unlimited: None,
+            exclude_unsaved: None,
+            limit: None,
+            offset: None,
+            sort_by_price: None,
+        }
+    }
+
+    /// Sets a new value for the `exclude_limited` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased a limited number of times.
+    pub fn with_exclude_limited(mut self, value: bool) -> Self {
+        self.exclude_limited = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_saved` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that are saved to the account's profile page.
+    pub fn with_exclude_saved(mut self, value: bool) -> Self {
+        self.exclude_saved = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_unique` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude unique gifts.
+    pub fn with_exclude_unique(mut self, value: bool) -> Self {
+        self.exclude_unique = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_unlimited` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased an unlimited number of times.
+    pub fn with_exclude_unlimited(mut self, value: bool) -> Self {
+        self.exclude_unlimited = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_unsaved` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that aren't saved to the account's profile page.
+    pub fn with_exclude_unsaved(mut self, value: bool) -> Self {
+        self.exclude_unsaved = Some(value);
+        self
+    }
+
+    /// Sets a new limit.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The maximum number of gifts to be returned; 1-100; defaults to 100.
+    pub fn with_limit(mut self, value: Integer) -> Self {
+        self.limit = Some(value);
+        self
+    }
+
+    /// Sets a new offset.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Offset of the first entry to return as received from the previous request;
+    ///   use empty string to get the first chunk of results.
+    pub fn with_offset<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.offset = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `sort_by_price` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to sort results by gift price instead of send date;
+    ///   sorting is applied before pagination.
+    pub fn with_sort_by_price(mut self, value: bool) -> Self {
+        self.sort_by_price = Some(value);
+        self
+    }
+}
+
+impl Method for GetBusinessAccountGifts {
+    type Response = OwnedGifts;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getBusinessAccountGifts", self)
     }
 }
 

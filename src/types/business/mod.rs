@@ -841,7 +841,7 @@ impl GetBusinessConnection {
 }
 
 impl Method for GetBusinessConnection {
-    type Response = bool;
+    type Response = BusinessConnection;
 
     fn into_payload(self) -> Payload {
         Payload::json("getBusinessConnection", self)

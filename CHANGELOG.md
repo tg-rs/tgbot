@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.36.1 (05.05.2025)
+
+### Fixed
+
+- Fixed incorrect response type for `GetBusinessConnection`.
+
 ## 0.36.0 (12.04.2025)
 
 ### Dependencies

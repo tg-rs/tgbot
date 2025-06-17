@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.37.0 (17.06.2025)
+
+### Client
+
+- Changed type of `Client::with_max_retries` argument to `u8`.
+- Removed `ExecuteError::TooManyRequests` enum variant, use `ResponseError::retry_after()` method instead.
+- Fixed: always sleep before sending a request in `Client::execute` method.
+
 ## 0.36.2 (17.06.2025)
 
 ### Client

@@ -1,4 +1,4 @@
-use std::{error::Error, fmt, time::Duration};
+use std::{error::Error, fmt, num::NonZero, time::Duration};
 
 use bytes::Bytes;
 use futures_util::stream::Stream;
@@ -19,6 +19,7 @@ use crate::types::{Response, ResponseError};
 mod tests;
 
 const DEFAULT_HOST: &str = "https://api.telegram.org";
+const DEFAULT_MAX_RETRIES: u8 = 2;
 
 /// A client for interacting with the Telegram Bot API.
 #[derive(Clone)]
@@ -26,6 +27,7 @@ pub struct Client {
     host: String,
     http_client: HttpClient,
     token: String,
+    max_retries: u8,
 }
 
 impl Client {
@@ -60,6 +62,7 @@ impl Client {
             http_client,
             host: String::from(DEFAULT_HOST),
             token: token.into(),
+            max_retries: DEFAULT_MAX_RETRIES,
         }
     }
 
@@ -73,6 +76,16 @@ impl Client {
         T: Into<String>,
     {
         self.host = host.into();
+        self
+    }
+
+    /// Overrides the default number of max retries.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The new number of max retries
+    pub fn with_max_retries(mut self, value: NonZero<u8>) -> Self {
+        self.max_retries = value.into();
         self
     }
 
@@ -138,7 +151,7 @@ impl Client {
         let builder = method
             .into_payload()
             .into_http_request_builder(&self.http_client, &self.host, &self.token)?;
-        for i in 0..2 {
+        for i in 0..self.max_retries {
             if i != 0 {
                 debug!("Retrying request after timeout error");
             }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.36.2 (17.06.2025)
+
+### Client
+
+- Added `with_max_retries` method.
+
 ## 0.36.1 (05.05.2025)
 
 ### Fixed

@@ -1,4 +1,4 @@
-use std::{error::Error, fmt, num::NonZero, time::Duration};
+use std::{error::Error, fmt, time::Duration};
 
 use bytes::Bytes;
 use futures_util::stream::Stream;
@@ -84,8 +84,8 @@ impl Client {
     /// # Arguments
     ///
     /// * `value` - The new number of max retries
-    pub fn with_max_retries(mut self, value: NonZero<u8>) -> Self {
-        self.max_retries = value.into();
+    pub fn with_max_retries(mut self, value: u8) -> Self {
+        self.max_retries = value;
         self
     }
 
@@ -148,40 +148,80 @@ impl Client {
         M: Method,
         M::Response: DeserializeOwned + Send + 'static,
     {
-        let builder = method
+        let request = method
             .into_payload()
             .into_http_request_builder(&self.http_client, &self.host, &self.token)?;
-        for i in 0..self.max_retries {
-            if i != 0 {
-                debug!("Retrying request after timeout error");
-            }
-            match builder.try_clone() {
-                Some(builder) => {
-                    let response = self.send_request(builder).await?;
-                    match response.retry_after() {
-                        Some(retry_after) => {
-                            debug!("Got a timeout error (retry_after={retry_after})");
-                            sleep(Duration::from_secs(retry_after)).await
+        let response = match send_request_retry(Box::new(request)).await? {
+            RetryResponse::Ok(response) => response,
+            RetryResponse::Retry {
+                mut request,
+                mut response,
+                mut retry_after,
+            } => {
+                for i in 0..self.max_retries {
+                    debug!("Retry attempt {i}, sleeping for {retry_after} second(s)");
+                    sleep(Duration::from_secs(retry_after)).await;
+                    match send_request_retry(request).await? {
+                        RetryResponse::Ok(new_response) => {
+                            response = new_response;
+                            break;
                         }
-                        None => return Ok(response.into_result()?),
+                        RetryResponse::Retry {
+                            request: new_request,
+                            response: new_response,
+                            retry_after: new_retry_after,
+                        } => {
+                            request = new_request;
+                            response = new_response;
+                            retry_after = new_retry_after;
+                        }
                     }
                 }
-                None => {
-                    debug!("Could not clone builder, sending request without retry");
-                    return Ok(self.send_request(builder).await?.into_result()?);
-                }
+                response
+            }
+        };
+        Ok(response.into_result()?)
+    }
+}
+
+enum RetryResponse<T> {
+    Ok(Response<T>),
+    Retry {
+        request: Box<HttpRequestBuilder>,
+        response: Response<T>,
+        retry_after: u64,
+    },
+}
+
+async fn send_request_retry<T>(request: Box<HttpRequestBuilder>) -> Result<RetryResponse<T>, ExecuteError>
+where
+    T: DeserializeOwned,
+{
+    Ok(match request.try_clone() {
+        Some(try_request) => {
+            let response = send_request(try_request).await?;
+            match response.retry_after() {
+                Some(retry_after) => RetryResponse::Retry {
+                    request,
+                    response,
+                    retry_after,
+                },
+                None => RetryResponse::Ok(response),
             }
         }
-        Err(ExecuteError::TooManyRequests)
-    }
+        None => {
+            debug!("Could not clone builder, sending request without retry");
+            RetryResponse::Ok(send_request(*request).await?)
+        }
+    })
+}
 
-    async fn send_request<T>(&self, http_request: HttpRequestBuilder) -> Result<Response<T>, ExecuteError>
-    where
-        T: DeserializeOwned,
-    {
-        let response = http_request.send().await?;
-        Ok(response.json::<Response<T>>().await?)
-    }
+async fn send_request<T>(request: HttpRequestBuilder) -> Result<Response<T>, ExecuteError>
+where
+    T: DeserializeOwned,
+{
+    let response = request.send().await?;
+    Ok(response.json::<Response<T>>().await?)
 }
 
 impl fmt::Debug for Client {
@@ -277,8 +317,6 @@ pub enum ExecuteError {
     Payload(PayloadError),
     /// An error received from the Telegram server in response to the execution request.
     Response(ResponseError),
-    /// An error indicating that the client has exceeded the rate limit for API requests.
-    TooManyRequests,
 }
 
 impl Error for ExecuteError {
@@ -288,7 +326,6 @@ impl Error for ExecuteError {
             Http(err) => err,
             Payload(err) => err,
             Response(err) => err,
-            TooManyRequests => return None,
         })
     }
 }
@@ -303,7 +340,6 @@ impl fmt::Display for ExecuteError {
                 Http(err) => err.to_string(),
                 Payload(err) => err.to_string(),
                 Response(err) => err.to_string(),
-                TooManyRequests => "too many requests".to_string(),
             }
         )
     }

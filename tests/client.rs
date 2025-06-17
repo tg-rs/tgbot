@@ -1,4 +1,6 @@
 #![allow(missing_docs)]
+use std::sync::Mutex;
+
 use futures_util::stream::StreamExt;
 use mockito::Server;
 use tgbot::{api::Client, types::Close};
@@ -34,12 +36,33 @@ async fn execute() {
         "failed to execute method: error decoding response body"
     );
 
+    let counter = Mutex::new(0u8);
     server
         .mock("GET", "/bot-token/close")
-        .with_body(r#"{"ok": false, "description": "test", "parameters": {"retry_after": 0}}"#)
+        .with_body_from_request(move |_| {
+            let mut val = counter.lock().unwrap();
+            if *val < 2 {
+                *val += 1;
+                serde_json::to_string(&serde_json::json!({
+                    "ok": false,
+                    "description": format!("test {val}"),
+                    "parameters": {"retry_after": 0}
+                }))
+                .unwrap()
+                .into()
+            } else {
+                *val = 0;
+                r#"{"ok": true, "result": true}"#.into()
+            }
+        })
         .create();
-    let err = client.execute(Close).await.unwrap_err();
-    assert_eq!(err.to_string(), "failed to execute method: too many requests");
+    client.execute(Close).await.unwrap();
+    let err = client.clone().with_max_retries(0).execute(Close).await.unwrap_err();
+    assert_eq!(
+        err.to_string(),
+        "failed to execute method: a telegram error has occurred: description=test 1; retry_after=0"
+    );
+    client.execute(Close).await.unwrap();
 }
 
 #[tokio::test]

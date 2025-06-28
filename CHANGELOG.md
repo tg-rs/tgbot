@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.38.0 (17.06.2025)
+
+### Bot API
+
+- Fixed parsing of `ChatFullInfo.photo` field.
+
 ## 0.37.0 (17.06.2025)
 
 ### Client

@@ -80,7 +80,7 @@ impl Error for AccentColorError {}
 impl fmt::Display for AccentColorError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            AccentColorError::UnknownId(value) => write!(out, "unknown accent color ID: {}", value),
+            AccentColorError::UnknownId(value) => write!(out, "unknown accent color ID: {value}"),
         }
     }
 }
@@ -174,7 +174,7 @@ impl Error for ProfileAccentColorError {}
 impl fmt::Display for ProfileAccentColorError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ProfileAccentColorError::UnknownId(value) => write!(out, "unknown profile accent color ID: {}", value),
+            ProfileAccentColorError::UnknownId(value) => write!(out, "unknown profile accent color ID: {value}"),
         }
     }
 }

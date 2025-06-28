@@ -71,7 +71,7 @@ impl Error for ReplyMarkupError {
 impl fmt::Display for ReplyMarkupError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ReplyMarkupError::Serialize(err) => write!(out, "can not serialize reply markup: {}", err),
+            ReplyMarkupError::Serialize(err) => write!(out, "can not serialize reply markup: {err}"),
         }
     }
 }

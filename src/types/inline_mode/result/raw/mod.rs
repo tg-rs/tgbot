@@ -223,7 +223,7 @@ pub(super) enum RawInlineQueryResultDataError {
 impl Display for RawInlineQueryResultDataError {
     fn fmt(&self, out: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            RawInlineQueryResultDataError::MissingField(field_name) => write!(out, "Field {} is missing", field_name),
+            RawInlineQueryResultDataError::MissingField(field_name) => write!(out, "Field {field_name} is missing"),
         }
     }
 }

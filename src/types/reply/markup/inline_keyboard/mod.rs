@@ -440,8 +440,8 @@ impl fmt::Display for InlineKeyboardError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         use self::InlineKeyboardError::*;
         match self {
-            SerializeCallbackData(err) => write!(out, "failed to serialize callback data: {}", err),
-            SerializeMarkup(err) => write!(out, "failed to serialize markup: {}", err),
+            SerializeCallbackData(err) => write!(out, "failed to serialize callback data: {err}"),
+            SerializeMarkup(err) => write!(out, "failed to serialize markup: {err}"),
         }
     }
 }

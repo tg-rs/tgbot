@@ -52,9 +52,9 @@ async fn handle_update(client: &Client, update: Update) -> Option<Message> {
 
 impl UpdateHandler for Handler {
     async fn handle(&self, update: Update) {
-        log::info!("Got an update: {:?}", update);
+        log::info!("Got an update: {update:?}");
         if let Some(msg) = handle_update(&self.client, update).await {
-            log::info!("Message sent: {:?}", msg);
+            log::info!("Message sent: {msg:?}");
         }
     }
 }

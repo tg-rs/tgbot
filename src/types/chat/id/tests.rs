@@ -8,7 +8,7 @@ fn chat_id() {
     if let ChatId::Id(chat_id) = chat_id {
         assert_eq!(chat_id, 1);
     } else {
-        panic!("Unexpected chat id: {:?}", chat_id);
+        panic!("Unexpected chat id: {chat_id:?}");
     }
     assert_eq!(serde_json::to_string(&chat_id).unwrap(), r#"1"#);
     assert_eq!(chat_id.to_string(), "1");
@@ -17,7 +17,7 @@ fn chat_id() {
     if let ChatId::Username(ref username) = chat_id {
         assert_eq!(username, "username");
     } else {
-        panic!("Unexpected chat id: {:?}", chat_id);
+        panic!("Unexpected chat id: {chat_id:?}");
     }
     assert_eq!(serde_json::to_string(&chat_id).unwrap(), r#""username""#);
     assert_eq!(chat_id.to_string(), "username");
@@ -26,7 +26,7 @@ fn chat_id() {
     if let ChatId::Username(ref username) = chat_id {
         assert_eq!(username, "username");
     } else {
-        panic!("Unexpected chat id: {:?}", chat_id);
+        panic!("Unexpected chat id: {chat_id:?}");
     }
     assert_eq!(serde_json::to_string(&chat_id).unwrap(), r#""username""#);
     assert_eq!(chat_id.to_string(), "username");

@@ -67,12 +67,12 @@ impl Payload {
         Ok(match self.payload_data {
             PayloadData::Form(form) => {
                 let form = form.try_into()?;
-                debug!("Sending multipart body: {:?}", form);
+                debug!("Sending multipart body: {form:?}");
                 builder.multipart(form)
             }
             PayloadData::Json(data) => {
                 let data = data?;
-                debug!("Sending JSON body: {:?}", data);
+                debug!("Sending JSON body: {data:?}");
                 builder.header("Content-Type", "application/json").body(data)
             }
             PayloadData::Empty => {

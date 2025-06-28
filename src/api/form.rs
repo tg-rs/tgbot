@@ -156,7 +156,7 @@ impl Error for FormError {
 impl fmt::Display for FormError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            FormError::Mime(err) => write!(out, "can not set MIME type: {}", err),
+            FormError::Mime(err) => write!(out, "can not set MIME type: {err}"),
         }
     }
 }

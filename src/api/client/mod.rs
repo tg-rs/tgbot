@@ -120,7 +120,7 @@ impl Client {
     {
         let payload = Payload::empty(file_path.as_ref());
         let url = payload.build_url(&format!("{}/file", &self.host), &self.token);
-        debug!("Downloading file from {}", url);
+        debug!("Downloading file from {url}");
         let rep = self.http_client.get(&url).send().await?;
         let status = rep.status();
         if !status.is_success() {
@@ -261,7 +261,7 @@ impl Error for ClientError {
 impl fmt::Display for ClientError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ClientError::BuildClient(err) => write!(out, "can not build HTTP client: {}", err),
+            ClientError::BuildClient(err) => write!(out, "can not build HTTP client: {err}"),
         }
     }
 }
@@ -299,9 +299,9 @@ impl Error for DownloadFileError {
 impl fmt::Display for DownloadFileError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            DownloadFileError::Http(err) => write!(out, "failed to download file: {}", err),
+            DownloadFileError::Http(err) => write!(out, "failed to download file: {err}"),
             DownloadFileError::Response { status, text } => {
-                write!(out, "failed to download file: status={} text={}", status, text)
+                write!(out, "failed to download file: status={status} text={text}")
             }
         }
     }

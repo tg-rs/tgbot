@@ -321,7 +321,7 @@ impl fmt::Display for TextEntityError {
                 NoCustomEmoji => String::from("Custom emoji is required for custom_emoji entity"),
                 NoUrl => String::from("URL is required for text_link entity"),
                 NoUser => String::from("user is required for text_mention entity"),
-                Serialize(err) => format!("failed to serialize text entities: {}", err),
+                Serialize(err) => format!("failed to serialize text entities: {err}"),
             }
         )
     }

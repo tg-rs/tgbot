@@ -161,7 +161,7 @@ impl Error for ReplyParametersError {
 impl fmt::Display for ReplyParametersError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ReplyParametersError::Serialize(err) => write!(out, "can not serialize reply parameters: {}", err),
+            ReplyParametersError::Serialize(err) => write!(out, "can not serialize reply parameters: {err}"),
         }
     }
 }

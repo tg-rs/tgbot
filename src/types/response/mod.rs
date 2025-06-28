@@ -96,13 +96,13 @@ impl fmt::Display for ResponseError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         write!(out, "a telegram error has occurred: description={}", self.description)?;
         if let Some(code) = self.error_code {
-            write!(out, "; error_code={}", code)?;
+            write!(out, "; error_code={code}")?;
         }
         if let Some(chat_id) = self.migrate_to_chat_id {
-            write!(out, "; migrate_to_chat_id={}", chat_id)?;
+            write!(out, "; migrate_to_chat_id={chat_id}")?;
         }
         if let Some(retry_after) = self.retry_after {
-            write!(out, "; retry_after={}", retry_after)?;
+            write!(out, "; retry_after={retry_after}")?;
         }
         Ok(())
     }

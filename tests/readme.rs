@@ -28,8 +28,7 @@ fn readme_versions() {
                 let line_version = &captures[1];
                 assert_eq!(
                     line_version, version,
-                    "Expects version {} at line {} '{}', found {}",
-                    version, line_number, line_data, line_version
+                    "Expects version {version} at line {line_number} '{line_data}', found {line_version}"
                 );
             }
         }

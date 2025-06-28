@@ -58,26 +58,24 @@ impl MediaGroup {
                 InputFile::Id(text) | InputFile::Url(text) => text.clone(),
                 _ => {
                     form.insert_field(&key, file);
-                    format!("attach://{}", key)
+                    format!("attach://{key}")
                 }
             }
         };
 
         let mut info = Vec::new();
         for (idx, item) in items {
-            let media = add_file(format!("tgbot_im_file_{}", idx), item.file);
+            let media = add_file(format!("tgbot_im_file_{idx}"), item.file);
             let thumbnail = item
                 .thumbnail
-                .map(|thumbnail| add_file(format!("tgbot_im_thumb_{}", idx), thumbnail));
+                .map(|thumbnail| add_file(format!("tgbot_im_thumb_{idx}"), thumbnail));
             let data = match item.item_type {
                 MediaGroupItemType::Audio(info) => MediaGroupItemData::Audio { media, thumbnail, info },
                 MediaGroupItemType::Document(info) => MediaGroupItemData::Document { media, thumbnail, info },
                 MediaGroupItemType::Photo(info) => MediaGroupItemData::Photo { media, info },
                 MediaGroupItemType::Video(info) => MediaGroupItemData::Video {
                     media,
-                    cover: item
-                        .cover
-                        .map(|cover| add_file(format!("tgbot_im_cover_{}", idx), cover)),
+                    cover: item.cover.map(|cover| add_file(format!("tgbot_im_cover_{idx}"), cover)),
                     thumbnail,
                     info,
                 },
@@ -268,12 +266,12 @@ impl fmt::Display for MediaGroupError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
             MediaGroupError::NotEnoughAttachments(number) => {
-                write!(out, "media group must contain at least {} attachments", number)
+                write!(out, "media group must contain at least {number} attachments")
             }
             MediaGroupError::TooManyAttachments(number) => {
-                write!(out, "media group must contain no more than {} attachments", number)
+                write!(out, "media group must contain no more than {number} attachments")
             }
-            MediaGroupError::Serialize(err) => write!(out, "can not serialize media group items: {}", err),
+            MediaGroupError::Serialize(err) => write!(out, "can not serialize media group items: {err}"),
         }
     }
 }

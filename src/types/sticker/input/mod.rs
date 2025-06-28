@@ -89,7 +89,7 @@ impl TryFrom<InputSticker> for Form {
             _ => {
                 let name = "tgbot_input_sticker";
                 form.insert_field(name, sticker);
-                format!("attach://{}", name)
+                format!("attach://{name}")
             }
         };
         form.insert_field(
@@ -132,9 +132,9 @@ impl InputStickers {
             InputFile::Id(x) | InputFile::Url(x) => x,
             _ => {
                 let idx = self.metadata.len() + 1;
-                let name = format!("tgbot_input_sticker_{}", idx);
+                let name = format!("tgbot_input_sticker_{idx}");
                 self.form.insert_field(&name, sticker);
-                format!("attach://{}", name)
+                format!("attach://{name}")
             }
         };
         self.metadata.push(InputStickerMetadata {
@@ -168,7 +168,7 @@ pub enum InputStickerError {
 impl fmt::Display for InputStickerError {
     fn fmt(&self, out: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            Self::Serialize(err) => write!(out, "could not serialize a list of input stickers: {}", err),
+            Self::Serialize(err) => write!(out, "could not serialize a list of input stickers: {err}"),
         }
     }
 }

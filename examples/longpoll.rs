@@ -14,7 +14,7 @@ struct Handler {
 
 impl UpdateHandler for Handler {
     async fn handle(&self, update: Update) {
-        log::info!("Got an update: {:?}", update);
+        log::info!("Got an update: {update:?}");
         let chat_id = update.get_chat_id();
         let message = update.get_message();
         let text = message.and_then(|x| x.get_text());

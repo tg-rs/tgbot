@@ -32,7 +32,7 @@ async fn handle_document(client: &Client, tmpdir: &Path, document: Document) {
     let file = client.execute(GetFile::new(document.file_id.as_str())).await.unwrap();
     let source_path = file.file_path.unwrap();
 
-    log::info!("Downloading a document from {:?}", source_path);
+    log::info!("Downloading a document from {source_path:?}");
 
     let mut stream = client.download_file(source_path).await.unwrap();
     let mut file = File::create(target_path.clone()).await.unwrap();
@@ -40,12 +40,12 @@ async fn handle_document(client: &Client, tmpdir: &Path, document: Document) {
         let chunk = chunk.unwrap();
         file.write_all(&chunk).await.unwrap();
     }
-    log::info!("The document saved to {:?}", target_path);
+    log::info!("The document saved to {target_path:?}");
 }
 
 impl UpdateHandler for Handler {
     async fn handle(&self, update: Update) {
-        log::info!("Got an update: {:?}", update);
+        log::info!("Got an update: {update:?}");
         if let UpdateType::Message(message) = update.update_type {
             if let MessageData::Document(document) = message.data {
                 handle_document(&self.client, &self.tmpdir, document.data).await;

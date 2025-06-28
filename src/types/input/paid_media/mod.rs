@@ -46,23 +46,23 @@ impl InputPaidMediaGroup {
                 InputFile::Id(text) | InputFile::Url(text) => text.clone(),
                 _ => {
                     form.insert_field(&key, file);
-                    format!("attach://{}", key)
+                    format!("attach://{key}")
                 }
             }
         };
         let mut info = Vec::new();
         for (idx, item) in items {
-            let media = add_file(format!("tgbot_ipm_file_{}", idx), item.file);
+            let media = add_file(format!("tgbot_ipm_file_{idx}"), item.file);
             let thumbnail = item
                 .thumbnail
-                .map(|thumbnail| add_file(format!("tgbot_ipm_thumb_{}", idx), thumbnail));
+                .map(|thumbnail| add_file(format!("tgbot_ipm_thumb_{idx}"), thumbnail));
             let data = match item.item_type {
                 InputPaidMediaGroupItemType::Photo => InputPaidMediaGroupItemData::Photo { media },
                 InputPaidMediaGroupItemType::Video(info) => InputPaidMediaGroupItemData::Video {
                     media,
                     cover: item
                         .cover
-                        .map(|cover| add_file(format!("tgbot_ipm_cover_{}", idx), cover)),
+                        .map(|cover| add_file(format!("tgbot_ipm_cover_{idx}"), cover)),
                     thumbnail,
                     info,
                 },
@@ -109,9 +109,9 @@ impl fmt::Display for InputPaidMediaGroupError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         use self::InputPaidMediaGroupError::*;
         match self {
-            NotEnoughItems(number) => write!(out, "group must contain at least {} items", number),
-            TooManyItems(number) => write!(out, "group must contain no more than {} items", number),
-            Serialize(err) => write!(out, "can not serialize group items: {}", err),
+            NotEnoughItems(number) => write!(out, "group must contain at least {number} items"),
+            TooManyItems(number) => write!(out, "group must contain no more than {number} items"),
+            Serialize(err) => write!(out, "can not serialize group items: {err}"),
         }
     }
 }

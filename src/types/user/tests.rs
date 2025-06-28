@@ -172,14 +172,14 @@ fn user_id() {
     if let UserId::Username(ref username) = username {
         assert_eq!(username, "username");
     } else {
-        panic!("Unexpected username: {:?}", username);
+        panic!("Unexpected username: {username:?}");
     }
 
     let username = UserId::from(String::from("username"));
     if let UserId::Username(ref username) = username {
         assert_eq!(username, "username");
     } else {
-        panic!("Unexpected username: {:?}", username);
+        panic!("Unexpected username: {username:?}");
     }
     assert_eq!(serde_json::to_string(&username).unwrap(), r#""username""#);
     assert_eq!(username.to_string(), "username");
@@ -188,7 +188,7 @@ fn user_id() {
     if let UserId::Id(user_id) = user_id {
         assert_eq!(user_id, 1);
     } else {
-        panic!("Unexpected user_id: {:?}", user_id);
+        panic!("Unexpected user_id: {user_id:?}");
     }
     assert_eq!(serde_json::to_string(&user_id).unwrap(), r#"1"#);
     assert_eq!(user_id.to_string(), "1");

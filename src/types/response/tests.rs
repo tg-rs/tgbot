@@ -18,7 +18,7 @@ fn deserialize() {
     if let Response::Success(ref obj) = success {
         assert_eq!(obj.name, String::from("test"));
     } else {
-        panic!("Unexpected response: {:?}", success);
+        panic!("Unexpected response: {success:?}");
     }
 
     let error: Response<Object> = serde_json::from_value(serde_json::json!({
@@ -38,7 +38,7 @@ fn deserialize() {
         assert_eq!(err.retry_after(), Some(3));
         assert_eq!(err.migrate_to_chat_id(), Some(2));
     } else {
-        panic!("Unexpected response: {:?}", success);
+        panic!("Unexpected response: {success:?}");
     }
 
     let error: Response<Object> = serde_json::from_value(serde_json::json!({
@@ -53,6 +53,6 @@ fn deserialize() {
         assert!(err.error_code().is_none());
         assert!(err.migrate_to_chat_id().is_none());
     } else {
-        panic!("Unexpected response: {:?}", success);
+        panic!("Unexpected response: {success:?}");
     }
 }

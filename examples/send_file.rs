@@ -15,7 +15,7 @@ struct Handler {
 
 impl UpdateHandler for Handler {
     async fn handle(&self, update: Update) {
-        log::info!("Got an update: {:?}", update);
+        log::info!("Got an update: {update:?}");
         let chat_id = update.get_chat_id().unwrap();
         self.client
             .execute(SendDocument::new(chat_id, InputFile::url(&self.file_url)))

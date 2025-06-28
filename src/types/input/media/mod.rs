@@ -164,7 +164,7 @@ impl InputMediaType {
                     value => {
                         let key = "tgbot_im_cover";
                         self.form.insert_field(key, value);
-                        format!("attach://{}", key)
+                        format!("attach://{key}")
                     }
                 };
                 *cover = Some(new_cover);
@@ -191,7 +191,7 @@ impl InputMediaType {
             value => {
                 let key = "tgbot_im_thumb";
                 self.form.insert_field(key, value);
-                format!("attach://{}", key)
+                format!("attach://{key}")
             }
         };
         match &mut self.data {
@@ -223,7 +223,7 @@ where
         media => {
             let key = "tgbot_im_file";
             form.insert_field(key, media);
-            format!("attach://{}", key)
+            format!("attach://{key}")
         }
     };
     (media, form)
@@ -291,7 +291,7 @@ impl fmt::Display for InputMediaError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::CoverNotAcceptable => write!(out, "can not set a cover"),
-            Self::SerializeInfo(err) => write!(out, "failed to serialize input media info: {}", err),
+            Self::SerializeInfo(err) => write!(out, "failed to serialize input media info: {err}"),
             Self::ThumbnailNotAcceptable => write!(out, "can not set a thumbnail"),
         }
     }

@@ -215,8 +215,8 @@ impl User {
         let user_link = self.get_link();
         Ok(match parse_mode {
             ParseMode::Markdown => return Err(MentionError::UnsupportedParseMode(parse_mode)),
-            ParseMode::MarkdownV2 => format!(r#"[{}]({})"#, full_name, user_link),
-            ParseMode::Html => format!(r#"<a href="{}">{}</a>"#, user_link, full_name),
+            ParseMode::MarkdownV2 => format!(r#"[{full_name}]({user_link})"#),
+            ParseMode::Html => format!(r#"<a href="{user_link}">{full_name}</a>"#),
         })
     }
 
@@ -293,7 +293,7 @@ impl fmt::Display for MentionError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
             MentionError::UnsupportedParseMode(parse_mode) => {
-                write!(out, "can not mention with {} parse mode", parse_mode)
+                write!(out, "can not mention with {parse_mode} parse mode")
             }
         }
     }

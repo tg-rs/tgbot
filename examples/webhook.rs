@@ -9,7 +9,7 @@ struct Handler;
 
 impl UpdateHandler for Handler {
     async fn handle(&self, update: Update) {
-        log::info!("Got an update: {:?}", update);
+        log::info!("Got an update: {update:?}");
     }
 }
 

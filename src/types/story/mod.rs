@@ -87,7 +87,7 @@ pub enum StoryAreasError {
 impl fmt::Display for StoryAreasError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::Serialize(err) => write!(out, "can not serialize: {}", err),
+            Self::Serialize(err) => write!(out, "can not serialize: {err}"),
         }
     }
 }

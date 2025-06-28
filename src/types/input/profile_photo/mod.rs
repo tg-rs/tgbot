@@ -155,7 +155,7 @@ pub enum InputProfilePhotoError {
 impl fmt::Display for InputProfilePhotoError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::Serialize(err) => write!(out, "can not serialize input profile photo: {}", err),
+            Self::Serialize(err) => write!(out, "can not serialize input profile photo: {err}"),
         }
     }
 }

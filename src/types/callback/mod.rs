@@ -164,7 +164,7 @@ impl Error for CallbackQueryError {
 impl fmt::Display for CallbackQueryError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::ParseJsonData(err) => write!(out, "failed to parse callback query data: {}", err),
+            Self::ParseJsonData(err) => write!(out, "failed to parse callback query data: {err}"),
         }
     }
 }

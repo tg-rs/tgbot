@@ -63,7 +63,7 @@ pub struct ChatFullInfo {
     /// The time after which all messages sent to the chat will be automatically deleted; in seconds.
     pub message_auto_delete_time: Option<Integer>,
     /// Chat photo.
-    pub photo: Option<Vec<ChatPhoto>>,
+    pub photo: Option<ChatPhoto>,
     /// The most recent pinned message (by sending date).
     pub pinned_message: Option<Message>,
     /// Identifier of the accent color for the chat's profile background.

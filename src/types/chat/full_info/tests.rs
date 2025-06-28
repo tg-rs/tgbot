@@ -93,12 +93,12 @@ fn chat_full_info_channel() {
     expected_struct.background_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.has_protected_content = Some(true);
     expected_struct.message_auto_delete_time = Some(86400);
-    expected_struct.photo = Some(vec![ChatPhoto::new(
+    expected_struct.photo = Some(ChatPhoto::new(
         "big-file-id",
         "big-file-unique-id",
         "small-file-id",
         "small-file-unique-id",
-    )]);
+    ));
     expected_struct.pinned_message = Some(Message::new(
         1,
         0,
@@ -125,14 +125,12 @@ fn chat_full_info_channel() {
             "type": "channel",
             "title": "Channel",
             "username": "channel_username",
-            "photo": [
-                {
-                    "small_file_id": "small-file-id",
-                    "small_file_unique_id": "small-file-unique-id",
-                    "big_file_id": "big-file-id",
-                    "big_file_unique_id": "big-file-unique-id",
-                }
-            ],
+            "photo": {
+                "small_file_id": "small-file-id",
+                "small_file_unique_id": "small-file-unique-id",
+                "big_file_id": "big-file-id",
+                "big_file_unique_id": "big-file-unique-id",
+            },
             "can_send_paid_media": true,
             "description": "Description",
             "invite_link": "example.com/join/channel",
@@ -191,12 +189,12 @@ fn group_chat() {
 
     let mut expected_struct = expected_struct;
     expected_struct.title = Some(String::from("Group"));
-    expected_struct.photo = Some(vec![ChatPhoto::new(
+    expected_struct.photo = Some(ChatPhoto::new(
         "big-file-id",
         "big-file-unique-id",
         "small-file-id",
         "small-file-unique-id",
-    )]);
+    ));
     expected_struct.invite_link = Some(String::from("example.com/join/group"));
     expected_struct.pinned_message = Some(Message::new(
         1,
@@ -223,14 +221,12 @@ fn group_chat() {
             "id": 1,
             "type": "group",
             "title": "Group",
-            "photo": [
-                {
-                    "small_file_id": "small-file-id",
-                    "small_file_unique_id": "small-file-unique-id",
-                    "big_file_id": "big-file-id",
-                    "big_file_unique_id": "big-file-unique-id",
-                }
-            ],
+            "photo": {
+                "small_file_id": "small-file-id",
+                "small_file_unique_id": "small-file-unique-id",
+                "big_file_id": "big-file-id",
+                "big_file_unique_id": "big-file-unique-id",
+            },
             "invite_link": "example.com/join/group",
             "pinned_message": {
                 "message_id": 1,
@@ -304,12 +300,12 @@ fn private_chat() {
     expected_struct.first_name = Some(String::from("John"));
     expected_struct.last_name = Some(String::from("Doe"));
     expected_struct.username = Some(String::from("john_doe"));
-    expected_struct.photo = Some(vec![ChatPhoto::new(
+    expected_struct.photo = Some(ChatPhoto::new(
         "big-file-id",
         "big-file-unique-id",
         "small-file-id",
         "small-file-unique-id",
-    )]);
+    ));
     expected_struct.bio = Some(String::from("Bio"));
     expected_struct.birthdate = Some(Birthdate::new(1, 1));
     expected_struct.business_intro = Some(BusinessIntro::default());
@@ -348,14 +344,12 @@ fn private_chat() {
             "username": "john_doe",
             "first_name": "John",
             "last_name": "Doe",
-            "photo": [
-                {
-                    "small_file_id": "small-file-id",
-                    "small_file_unique_id": "small-file-unique-id",
-                    "big_file_id": "big-file-id",
-                    "big_file_unique_id": "big-file-unique-id",
-                }
-            ],
+            "photo": {
+                "small_file_id": "small-file-id",
+                "small_file_unique_id": "small-file-unique-id",
+                "big_file_id": "big-file-id",
+                "big_file_unique_id": "big-file-unique-id",
+            },
             "bio": "Bio",
             "birthdate": {
                 "day": 1,
@@ -433,12 +427,12 @@ fn supergroup_chat() {
     let mut expected_struct = expected_struct.clone();
     expected_struct.title = Some(String::from("Supergroup Chat"));
     expected_struct.username = Some(String::from("supergroup_chat"));
-    expected_struct.photo = Some(vec![ChatPhoto::new(
+    expected_struct.photo = Some(ChatPhoto::new(
         "big-file-id",
         "big-file-unique-id",
         "small-file-id",
         "small-file-unique-id",
-    )]);
+    ));
     expected_struct.description = Some(String::from("Description"));
     expected_struct.emoji_status_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.emoji_status_expiration_date = Some(0);
@@ -488,14 +482,12 @@ fn supergroup_chat() {
             "type": "supergroup",
             "title": "Supergroup Chat",
             "username": "supergroup_chat",
-            "photo": [
-                {
-                    "small_file_id": "small-file-id",
-                    "small_file_unique_id": "small-file-unique-id",
-                    "big_file_id": "big-file-id",
-                    "big_file_unique_id": "big-file-unique-id",
-                }
-            ],
+            "photo": {
+                "small_file_id": "small-file-id",
+                "small_file_unique_id": "small-file-unique-id",
+                "big_file_id": "big-file-id",
+                "big_file_unique_id": "big-file-unique-id",
+            },
             "description": "Description",
             "invite_link": "example.com/join/supergroup",
             "sticker_set_name": "Sticker Set",

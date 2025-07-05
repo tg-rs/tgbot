@@ -26,6 +26,7 @@ use crate::types::{
     MessageDataAudio,
     MessageDataAutoDeleteTimer,
     MessageDataChatShared,
+    MessageDataDirectMessagePriceChanged,
     MessageDataDocument,
     MessageDataForumTopicCreated,
     MessageDataForumTopicEdited,
@@ -310,6 +311,27 @@ fn dice() {
     });
     expected_struct.data = MessageData::Dice(serde_json::from_value(raw_dice.clone()).unwrap());
     expected_value["dice"] = raw_dice;
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn direct_message_price_changed() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_value["direct_message_price_changed"] = serde_json::json!({
+        "are_direct_messages_enabled": true,
+    });
+    expected_struct.data = MessageData::DirectMessagePriceChanged(MessageDataDirectMessagePriceChanged::new(true));
+    assert_json_eq(expected_struct.clone(), expected_value.clone());
+
+    expected_value["direct_message_price_changed"] = serde_json::json!({
+        "are_direct_messages_enabled": true,
+        "direct_message_star_count": 200,
+    });
+    expected_struct.data = MessageData::DirectMessagePriceChanged(
+        MessageDataDirectMessagePriceChanged::new(true).with_direct_message_star_count(200),
+    );
     assert_json_eq(expected_struct, expected_value);
 }
 

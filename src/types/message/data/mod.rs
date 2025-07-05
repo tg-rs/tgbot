@@ -98,6 +98,8 @@ pub enum MessageData {
     DeleteChatPhoto,
     /// A dice with a random value.
     Dice(Dice),
+    /// The price for paid messages in the corresponding direct messages chat of a channel has changed.
+    DirectMessagePriceChanged(MessageDataDirectMessagePriceChanged),
     /// Forum topic closed.
     #[serde(
         deserialize_with = "RawDataEmpty::deserialize_value",
@@ -521,6 +523,43 @@ pub struct MessageDataPaidMessagePriceChanged {
     /// The new number of Telegram Stars
     /// that must be paid by non-administrator users of the supergroup chat for each sent message.
     pub paid_message_star_count: Integer,
+}
+
+/// Describes a service message about a change in the price of direct messages sent to a channel chat.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataDirectMessagePriceChanged {
+    /// Whether the direct messages are enabled for the channel chat.
+    pub are_direct_messages_enabled: bool,
+    /// The new number of Telegram Stars that must be paid by users for each direct message sent to the channel.
+    ///
+    /// Does not apply to users who have been exempted by administrators.
+    /// Defaults to 0.
+    pub direct_message_star_count: Option<Integer>,
+}
+
+impl MessageDataDirectMessagePriceChanged {
+    /// Creates a new `MessageDataDirectMessagePriceChanged`.
+    ///
+    /// # Arguments
+    ///
+    /// * `are_direct_messages_enabled` - Whether the direct messages are enabled for the channel chat.
+    pub fn new(are_direct_messages_enabled: bool) -> Self {
+        Self {
+            are_direct_messages_enabled,
+            direct_message_star_count: None,
+        }
+    }
+
+    /// Sets a new direct message star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The new number of Telegram Stars.
+    pub fn with_direct_message_star_count(mut self, value: Integer) -> Self {
+        self.direct_message_star_count = Some(value);
+        self
+    }
 }
 
 /// Represents a list of available sizes of the photo.

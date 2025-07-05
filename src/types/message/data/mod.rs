@@ -6,6 +6,9 @@ use crate::types::{
     Animation,
     Audio,
     ChatBackground,
+    Checklist,
+    ChecklistTasksAdded,
+    ChecklistTasksDone,
     Contact,
     Dice,
     Document,
@@ -77,6 +80,12 @@ pub enum MessageData {
     ChatBackgroundSet(ChatBackground),
     /// A chat was shared with the bot.
     ChatShared(MessageDataChatShared),
+    /// Message is a checklist.
+    Checklist(Checklist),
+    /// Tasks were added to a checklist.
+    ChecklistTasksAdded(ChecklistTasksAdded),
+    /// Some tasks in a checklist were marked as done or not done.
+    ChecklistTasksDone(ChecklistTasksDone),
     /// The domain name of the website on which the user has logged in.
     ConnectedWebsite(String),
     /// Information about the shared contact.

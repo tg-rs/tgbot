@@ -4,6 +4,9 @@ use crate::types::{
     BackgroundType,
     ChannelChat,
     ChatBackground,
+    Checklist,
+    ChecklistTasksAdded,
+    ChecklistTasksDone,
     Contact,
     Document,
     EncryptedCredentials,
@@ -230,6 +233,36 @@ fn chat_shared() {
         "title": "title",
         "username": "username"
     });
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn checklist() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::Checklist(Checklist::new([], "test"));
+    expected_value["checklist"] = serde_json::json!({"tasks": [], "title": "test"});
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn checklist_tasks_added() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::ChecklistTasksAdded(ChecklistTasksAdded::new([]));
+    expected_value["checklist_tasks_added"] = serde_json::json!({"tasks": []});
+    assert_json_eq(expected_struct, expected_value);
+}
+
+#[test]
+fn checklist_tasks_done() {
+    let mut expected_struct = create_message_struct();
+    let mut expected_value = create_message_value();
+
+    expected_struct.data = MessageData::ChecklistTasksDone(ChecklistTasksDone::default());
+    expected_value["checklist_tasks_done"] = serde_json::json!({});
     assert_json_eq(expected_struct, expected_value);
 }
 

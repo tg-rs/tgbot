@@ -5,6 +5,7 @@ use crate::types::{
     Animation,
     Audio,
     Chat,
+    Checklist,
     Contact,
     Dice,
     Document,
@@ -155,6 +156,8 @@ pub enum ExternalReplyData {
     Animation(Animation),
     /// Message is an audio file, information about the file.
     Audio(Audio),
+    /// Message is a checklist
+    Checklist(Checklist),
     /// Message is a shared contact, information about the contact.
     Contact(Contact),
     /// Message is a dice with random value.

@@ -2,6 +2,7 @@ use crate::types::{
     Animation,
     Audio,
     ChannelChat,
+    Checklist,
     Contact,
     Dice,
     DiceType,
@@ -75,6 +76,25 @@ fn external_reply_info_audio() {
                 "duration": 10,
                 "file_id": "file-id",
                 "file_unique_id": "file-unique-id"
+            }
+        }),
+    );
+}
+
+#[test]
+fn external_reply_info_checklist() {
+    let origin = create_origin();
+    assert_json_eq(
+        ExternalReplyInfo::new(Checklist::new([], "test"), origin),
+        serde_json::json!({
+            "origin": {
+                "type": "hidden_user",
+                "date": 1,
+                "sender_user_name": "test"
+            },
+            "checklist": {
+                "tasks": [],
+                "title": "test",
             }
         }),
     );

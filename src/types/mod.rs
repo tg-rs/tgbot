@@ -6,6 +6,7 @@ pub use self::{
     business::*,
     callback::*,
     chat::*,
+    checklist::*,
     color::*,
     contact::*,
     dice::*,
@@ -44,6 +45,7 @@ mod bot;
 mod business;
 mod callback;
 mod chat;
+mod checklist;
 mod color;
 mod contact;
 mod dice;

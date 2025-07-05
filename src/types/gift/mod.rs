@@ -493,6 +493,10 @@ pub struct OwnedGiftUnique {
     /// Whether the gift is displayed on the account's profile page;
     /// for gifts received on behalf of business accounts only.
     pub is_saved: Option<bool>,
+    /// Point in time (Unix timestamp) when the gift can be transferred.
+    ///
+    /// If it is in the past, then the gift can be transferred now.
+    pub next_transfer_date: Option<Integer>,
     /// Unique identifier of the received gift for the bot;
     /// for gifts received on behalf of business accounts only.
     pub owned_gift_id: Option<String>,
@@ -514,6 +518,7 @@ impl OwnedGiftUnique {
             transfer_star_count: None,
             can_be_transferred: None,
             is_saved: None,
+            next_transfer_date: None,
             owned_gift_id: None,
             sender_user: None,
         }
@@ -549,6 +554,16 @@ impl OwnedGiftUnique {
     ///   for gifts received on behalf of business accounts only.
     pub fn with_is_saved(mut self, value: bool) -> Self {
         self.is_saved = Some(value);
+        self
+    }
+
+    /// Sets a new next transfer date.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Point in time (Unix timestamp) when the gift can be transferred.
+    pub fn with_next_transfer_date(mut self, value: Integer) -> Self {
+        self.next_transfer_date = Some(value);
         self
     }
 
@@ -690,9 +705,11 @@ pub struct UniqueGiftSymbol {
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UniqueGiftOrigin {
-    /// Transfer.
+    /// Resale for gifts bought from other users.
+    Resale,
+    /// Transfer for gifts transferred from other users or channels.
     Transfer,
-    /// Upgrade.
+    /// Upgrade for gifts upgraded from regular gifts.
     Upgrade,
 }
 
@@ -704,6 +721,12 @@ pub struct UniqueGiftInfo {
     pub gift: UniqueGift,
     /// Origin of the gift.
     pub origin: UniqueGiftOrigin,
+    /// For gifts bought from other users, the price paid for the gift.
+    pub last_resale_star_count: Option<Integer>,
+    /// Point in time (Unix timestamp) when the gift can be transferred.
+    ///
+    /// If it is in the past, then the gift can be transferred now.
+    pub next_transfer_date: Option<Integer>,
     /// Unique identifier of the received gift for the bot;
     /// only present for gifts received on behalf of business accounts.
     pub owned_gift_id: Option<String>,
@@ -723,9 +746,31 @@ impl UniqueGiftInfo {
         Self {
             gift,
             origin,
+            last_resale_star_count: None,
+            next_transfer_date: None,
             owned_gift_id: None,
             transfer_star_count: None,
         }
+    }
+
+    /// Sets a new last resale star count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The price paid for the gift.
+    pub fn with_last_resale_star_count(mut self, value: Integer) -> Self {
+        self.last_resale_star_count = Some(value);
+        self
+    }
+
+    /// Sets a new next transfer date.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Point in time (Unix timestamp) when the gift can be transferred.
+    pub fn with_next_transfer_date(mut self, value: Integer) -> Self {
+        self.next_transfer_date = Some(value);
+        self
     }
 
     /// Sets a new owned gift ID.

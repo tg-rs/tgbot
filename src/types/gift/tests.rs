@@ -225,7 +225,7 @@ fn owned_gift() {
             "send_date": 2,
         }),
     );
-    let expected_struct = OwnedGift::from(OwnedGiftUnique::new(
+    let unique = OwnedGiftUnique::new(
         UniqueGift {
             backdrop: UniqueGiftBackdrop {
                 colors: UniqueGiftBackdropColors {
@@ -252,54 +252,75 @@ fn owned_gift() {
             },
         },
         9,
-    ));
-    assert_json_eq(
-        expected_struct,
-        serde_json::json!({
-            "type": "unique",
-            "gift": {
-                "backdrop": {
-                    "colors": {
-                        "center_color": 1,
-                        "edge_color": 2,
-                        "symbol_color": 3,
-                        "text_color": 4,
-                    },
-                    "name": "name",
-                    "rarity_per_mille": 5,
-                },
-                "base_name": "base-name",
-                "model": {
-                    "name": "name",
-                    "rarity_per_mille": 6,
-                    "sticker": {
-                        "file_id": "file-id",
-                        "file_unique_id": "file-unique-id",
-                        "type": "regular",
-                        "is_animated": false,
-                        "is_video": false,
-                        "height": 512,
-                        "width": 512,
-                    },
+    );
+    let mut expected_value = serde_json::json!({
+        "type": "unique",
+        "gift": {
+            "backdrop": {
+                "colors": {
+                    "center_color": 1,
+                    "edge_color": 2,
+                    "symbol_color": 3,
+                    "text_color": 4,
                 },
                 "name": "name",
-                "number": 7,
-                "symbol": {
-                    "name": "name",
-                    "rarity_per_mille": 8,
-                    "sticker": {
-                        "file_id": "file-id",
-                        "file_unique_id": "file-unique-id",
-                        "type": "regular",
-                        "is_animated": false,
-                        "is_video": false,
-                        "height": 512,
-                        "width": 512,
-                    },
+                "rarity_per_mille": 5,
+            },
+            "base_name": "base-name",
+            "model": {
+                "name": "name",
+                "rarity_per_mille": 6,
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "regular",
+                    "is_animated": false,
+                    "is_video": false,
+                    "height": 512,
+                    "width": 512,
                 },
             },
-            "send_date": 9
-        }),
+            "name": "name",
+            "number": 7,
+            "symbol": {
+                "name": "name",
+                "rarity_per_mille": 8,
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "regular",
+                    "is_animated": false,
+                    "is_video": false,
+                    "height": 512,
+                    "width": 512,
+                },
+            },
+        },
+        "send_date": 9
+    });
+    assert_json_eq(OwnedGift::from(unique.clone()), expected_value.clone());
+
+    expected_value["transfer_star_count"] = serde_json::json!(1);
+    expected_value["can_be_transferred"] = serde_json::json!(true);
+    expected_value["is_saved"] = serde_json::json!(true);
+    expected_value["next_transfer_date"] = serde_json::json!(500);
+    expected_value["owned_gift_id"] = serde_json::json!("test-id");
+    expected_value["sender_user"] = serde_json::json!({
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+    });
+    assert_json_eq(
+        OwnedGift::from(
+            unique
+                .with_transfer_star_count(1)
+                .with_can_be_transferred(true)
+                .with_is_saved(true)
+                .with_next_transfer_date(500)
+                .with_owned_gift_id("test-id")
+                .with_sender_user(User::new(1, "John", false)),
+        ),
+        expected_value,
     );
 }
 
@@ -469,52 +490,63 @@ fn unique_gift_info() {
         },
         UniqueGiftOrigin::Transfer,
     );
-    assert_json_eq(
-        expected_struct,
-        serde_json::json!({
-            "gift": {
-                "backdrop": {
-                    "colors": {
-                        "center_color": 1,
-                        "edge_color": 2,
-                        "symbol_color": 3,
-                        "text_color": 4,
-                    },
-                    "name": "name",
-                    "rarity_per_mille": 5,
-                },
-                "base_name": "base-name",
-                "model": {
-                    "name": "name",
-                    "rarity_per_mille": 6,
-                    "sticker": {
-                        "file_id": "file-id",
-                        "file_unique_id": "file-unique-id",
-                        "type": "regular",
-                        "is_animated": false,
-                        "is_video": false,
-                        "height": 512,
-                        "width": 512,
-                    },
+    let mut expected_value = serde_json::json!({
+        "gift": {
+            "backdrop": {
+                "colors": {
+                    "center_color": 1,
+                    "edge_color": 2,
+                    "symbol_color": 3,
+                    "text_color": 4,
                 },
                 "name": "name",
-                "number": 7,
-                "symbol": {
-                    "name": "name",
-                    "rarity_per_mille": 8,
-                    "sticker": {
-                        "file_id": "file-id",
-                        "file_unique_id": "file-unique-id",
-                        "type": "regular",
-                        "is_animated": false,
-                        "is_video": false,
-                        "height": 512,
-                        "width": 512,
-                    },
+                "rarity_per_mille": 5,
+            },
+            "base_name": "base-name",
+            "model": {
+                "name": "name",
+                "rarity_per_mille": 6,
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "regular",
+                    "is_animated": false,
+                    "is_video": false,
+                    "height": 512,
+                    "width": 512,
                 },
             },
-            "origin": "transfer",
-        }),
+            "name": "name",
+            "number": 7,
+            "symbol": {
+                "name": "name",
+                "rarity_per_mille": 8,
+                "sticker": {
+                    "file_id": "file-id",
+                    "file_unique_id": "file-unique-id",
+                    "type": "regular",
+                    "is_animated": false,
+                    "is_video": false,
+                    "height": 512,
+                    "width": 512,
+                },
+            },
+        },
+        "origin": "transfer",
+    });
+    assert_json_eq(expected_struct.clone(), expected_value.clone());
+
+    expected_value["next_transfer_date"] = serde_json::json!(500);
+    expected_value["owned_gift_id"] = serde_json::json!("test-id");
+    expected_value["transfer_star_count"] = serde_json::json!(400);
+    expected_value["last_resale_star_count"] = serde_json::json!(430);
+    assert_json_eq(
+        expected_struct
+            .with_next_transfer_date(500)
+            .with_owned_gift_id("test-id")
+            .with_transfer_star_count(400)
+            .with_last_resale_star_count(430),
+        expected_value,
     );
 }
 

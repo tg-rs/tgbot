@@ -649,7 +649,7 @@ impl SendQuiz {
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `question` - Question; 1-300 characters.
     /// * `correct_option_id` - 0-based identifier of the correct answer option.
-    /// * `options` - Answer options; 2-10 strings 1-100 characters each.
+    /// * `options` - Answer options; 2-12.
     pub fn new<A, B, C, D>(chat_id: A, question: B, correct_option_id: Integer, options: C) -> Self
     where
         A: Into<ChatId>,
@@ -901,7 +901,7 @@ impl SendPoll {
     ///
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `question` - Question; 1-300 characters.
-    /// * `options` - Answer options; 2-10 strings 1-100 characters each.
+    /// * `options` - Answer options; 2-12.
     pub fn new<A, B, C, D>(chat_id: A, question: B, options: C) -> Self
     where
         A: Into<ChatId>,

@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.39.0 (05.07.2025)
+
+### Dependencies
+
+- Set bytes version to 1.
+- Set derive_more version to 2.
+- Set mime_guess version to 2.
+- Set serde version to 1.
+- Set serde_json version to 1.
+- Set serde_with version to 3.
+- Set shellwords version to 1.
+- Set tokio version to 1.
+
+### Bot API
+
+#### 9.1
+
+- Added types: `Checklist`, `ChecklistTask`, `ChecklistTasksAdded`, `ChecklistTasksDone`, `EditMessageChecklist`,
+  `GetBotStarBalance`, `InputChecklist`, `InputChecklistTask`, `MessageDataDirectMessagePriceChanged`. `SendChecklist`.
+
+- Added enum variants: `ExternalReplyData::Checklist`, `MessageData::Checklist`, `MessageData::ChecklistTasksAdded`,
+  `MessageData::ChecklistTasksDone`, `MessageData::DirectMessagePriceChanged`, `UniqueGiftOrigin::Resale`.
+
+- Added fields:
+  - `OwnedGiftUnique`: `next_transfer_date`.
+  - `UniqueGiftInfo`: `last_resale_star_count`, `next_transfer_date`.
+
+- Added methods:
+  - `OwnedGiftUnique`: `with_next_transfer_date`.
+  - `UniqueGiftInfo`: `with_last_resale_star_count`, `with_next_transfer_date`.
+
 ## 0.38.0 (17.06.2025)
 
 ### Bot API

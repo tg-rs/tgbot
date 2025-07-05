@@ -16,6 +16,7 @@ use crate::{
         GetBotDescription,
         GetBotName,
         GetBotShortDescription,
+        GetBotStarBalance,
         LogOut,
         SetBotCommands,
         SetBotDefaultAdministratorRights,
@@ -245,6 +246,12 @@ fn get_bot_short_description() {
         ),
         method.with_language_code("RU"),
     );
+}
+
+#[test]
+fn get_bot_star_balance() {
+    let method = GetBotStarBalance;
+    assert_payload_eq(Payload::empty("getMyStarBalance"), method);
 }
 
 #[test]

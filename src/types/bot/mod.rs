@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{ChatAdministratorRights, ChatId, Integer},
+    types::{ChatAdministratorRights, ChatId, Integer, StarAmount},
 };
 
 #[cfg(test)]
@@ -604,6 +604,18 @@ impl Method for GetBotShortDescription {
 
     fn into_payload(self) -> Payload {
         Payload::json("getMyShortDescription", self)
+    }
+}
+
+/// Returns the current Telegram Stars balance of the bot.
+#[derive(Clone, Copy, Debug)]
+pub struct GetBotStarBalance;
+
+impl Method for GetBotStarBalance {
+    type Response = StarAmount;
+
+    fn into_payload(self) -> Payload {
+        Payload::empty("getMyStarBalance")
     }
 }
 

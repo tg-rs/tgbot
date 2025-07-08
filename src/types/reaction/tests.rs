@@ -30,10 +30,10 @@ fn reaction_count() {
 #[test]
 fn reaction_type() {
     assert_json_eq(
-        ReactionType::custom_emoji("🤡"),
+        ReactionType::custom_emoji("5420319826440644296"),
         serde_json::json!({
             "type": "custom_emoji",
-            "custom_emoji": "🤡"
+            "custom_emoji_id": "5420319826440644296"
         }),
     );
     assert_json_eq(

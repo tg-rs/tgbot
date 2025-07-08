@@ -110,7 +110,7 @@ impl ReactionType {
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
 enum RawReactionType {
-    CustomEmoji { custom_emoji: String },
+    CustomEmoji { custom_emoji_id: String },
     Emoji { emoji: String },
     Paid,
 }
@@ -118,7 +118,7 @@ enum RawReactionType {
 impl From<ReactionType> for RawReactionType {
     fn from(value: ReactionType) -> Self {
         match value {
-            ReactionType::CustomEmoji(custom_emoji) => Self::CustomEmoji { custom_emoji },
+            ReactionType::CustomEmoji(custom_emoji_id) => Self::CustomEmoji { custom_emoji_id },
             ReactionType::Emoji(emoji) => Self::Emoji { emoji },
             ReactionType::Paid => Self::Paid,
         }
@@ -128,7 +128,7 @@ impl From<ReactionType> for RawReactionType {
 impl From<RawReactionType> for ReactionType {
     fn from(value: RawReactionType) -> Self {
         match value {
-            RawReactionType::CustomEmoji { custom_emoji } => Self::CustomEmoji(custom_emoji),
+            RawReactionType::CustomEmoji { custom_emoji_id } => Self::CustomEmoji(custom_emoji_id),
             RawReactionType::Emoji { emoji } => Self::Emoji(emoji),
             RawReactionType::Paid => Self::Paid,
         }

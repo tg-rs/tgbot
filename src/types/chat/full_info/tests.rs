@@ -89,7 +89,11 @@ fn chat_full_info_channel() {
     );
 
     let mut expected_struct = expected_struct;
-    expected_struct.available_reactions = Some(vec![ReactionType::emoji("👍")]);
+    expected_struct.available_reactions = Some(vec![
+        ReactionType::emoji("👍"),
+        ReactionType::Paid,
+        ReactionType::custom_emoji("5420319826440644296"),
+    ]);
     expected_struct.background_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.has_protected_content = Some(true);
     expected_struct.message_auto_delete_time = Some(86400);
@@ -160,7 +164,9 @@ fn chat_full_info_channel() {
                 {
                     "type": "emoji",
                     "emoji": "👍"
-                }
+                },
+                {"type": "paid"},
+                {"type": "custom_emoji", "custom_emoji_id": "5420319826440644296"},
             ],
             "emoji_status_custom_emoji_id": "emoji-id",
             "emoji_status_expiration_date": 0,

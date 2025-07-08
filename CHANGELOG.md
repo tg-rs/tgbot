@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.39.1 (08.07.2025)
+
+### Bot API
+
+- Changed internal RawResponse type to struct to avoid obscure deserialization errors.
+- Fixed custom emoji reaction type deserialization.
+
 ## 0.39.0 (05.07.2025)
 
 ### Dependencies

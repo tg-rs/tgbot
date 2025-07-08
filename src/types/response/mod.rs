@@ -2,7 +2,7 @@ use std::{error::Error, fmt};
 
 use serde::Deserialize;
 
-use crate::types::{False, Integer, True};
+use crate::types::Integer;
 
 #[cfg(test)]
 mod tests;
@@ -37,19 +37,24 @@ impl<T> Response<T> {
 
 impl<T> From<RawResponse<T>> for Response<T> {
     fn from(raw: RawResponse<T>) -> Self {
-        match raw {
-            RawResponse::Success { result, .. } => Response::Success(result),
-            RawResponse::Error {
-                description,
-                error_code,
-                parameters,
-                ..
-            } => Response::Error(ResponseError {
-                description,
-                error_code,
-                migrate_to_chat_id: parameters.and_then(|x| x.migrate_to_chat_id),
-                retry_after: parameters.and_then(|x| x.retry_after),
-            }),
+        if raw.ok {
+            if let Some(result) = raw.result {
+                Response::Success(result)
+            } else {
+                Response::Error(ResponseError {
+                    description: String::from("response is ok, but result is not provided"),
+                    error_code: None,
+                    migrate_to_chat_id: None,
+                    retry_after: None,
+                })
+            }
+        } else {
+            Response::Error(ResponseError {
+                description: raw.description.unwrap_or_else(|| String::from("no description")),
+                error_code: raw.error_code,
+                migrate_to_chat_id: raw.parameters.and_then(|x| x.migrate_to_chat_id),
+                retry_after: raw.parameters.and_then(|x| x.retry_after),
+            })
         }
     }
 }
@@ -109,20 +114,12 @@ impl fmt::Display for ResponseError {
 }
 
 #[derive(Clone, Debug, Deserialize)]
-#[serde(untagged)]
-enum RawResponse<T> {
-    Success {
-        #[allow(dead_code)]
-        ok: True,
-        result: T,
-    },
-    Error {
-        #[allow(dead_code)]
-        ok: False,
-        description: String,
-        error_code: Option<Integer>,
-        parameters: Option<RawResponseParameters>,
-    },
+struct RawResponse<T> {
+    ok: bool,
+    result: Option<T>,
+    description: Option<String>,
+    error_code: Option<Integer>,
+    parameters: Option<RawResponseParameters>,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]

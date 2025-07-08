@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub(crate) use self::boolean::{False, True};
+pub(crate) use self::boolean::True;
 pub use self::parse_mode::*;
 
 mod boolean;

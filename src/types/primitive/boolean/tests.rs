@@ -1,4 +1,5 @@
-use crate::types::{False, True, tests::assert_json_eq};
+use super::{False, True};
+use crate::types::tests::assert_json_eq;
 
 #[test]
 fn ok() {

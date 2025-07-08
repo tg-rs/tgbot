@@ -1,0 +1,8 @@
+---
+source: src/types/tests/input.rs
+expression: content
+---
+{
+  "first_name": "V",
+  "phone_number": "+79001231212"
+}

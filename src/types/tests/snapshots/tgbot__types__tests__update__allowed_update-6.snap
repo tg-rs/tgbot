@@ -1,0 +1,5 @@
+---
+source: src/types/tests/update.rs
+expression: value
+---
+"chosen_inline_result"

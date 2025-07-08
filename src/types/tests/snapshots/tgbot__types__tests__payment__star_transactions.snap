@@ -1,0 +1,13 @@
+---
+source: src/types/tests/payment.rs
+expression: "StarTransactions::from(vec![StarTransaction::new(10, 0, \"tx-id\")])"
+---
+{
+  "transactions": [
+    {
+      "amount": 10,
+      "date": 0,
+      "id": "tx-id"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result.clone().with_input_message_content(InputMessageContentText::new(\"text\")).with_live_period(100).with_reply_markup([[InlineKeyboardButton::for_url(\"text\",\n\"url\")]]).with_thumbnail_url(\"thumb-url\").with_thumbnail_width(200).with_thumbnail_height(300),)"
+---
+{
+  "input_message_content": {
+    "message_text": "text"
+  },
+  "latitude": 1.0,
+  "live_period": 100,
+  "longitude": 2.0,
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "thumbnail_height": 300,
+  "thumbnail_url": "thumb-url",
+  "thumbnail_width": 200,
+  "title": "title",
+  "id": "id",
+  "type": "location"
+}

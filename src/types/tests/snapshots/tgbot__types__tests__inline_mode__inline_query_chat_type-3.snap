@@ -1,0 +1,5 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: value
+---
+"group"

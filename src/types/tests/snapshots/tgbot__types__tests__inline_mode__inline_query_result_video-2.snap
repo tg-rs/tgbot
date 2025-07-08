@@ -1,0 +1,12 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "mime_type": "mime",
+  "thumbnail_url": "thumb-url",
+  "title": "title",
+  "video_url": "url",
+  "id": "id",
+  "type": "video"
+}

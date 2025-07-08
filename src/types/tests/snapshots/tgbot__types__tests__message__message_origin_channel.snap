@@ -1,0 +1,14 @@
+---
+source: src/types/tests/message.rs
+expression: "MessageOrigin::from(MessageOriginChannel::new(ChannelChat::new(1, \"test\"), 0,\n1))"
+---
+{
+  "type": "channel",
+  "chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "test"
+  },
+  "date": 0,
+  "message_id": 1
+}

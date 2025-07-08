@@ -1,0 +1,49 @@
+---
+source: src/types/tests/gift.rs
+expression: "OwnedGift::from(unique.clone())"
+---
+{
+  "type": "unique",
+  "gift": {
+    "backdrop": {
+      "colors": {
+        "center_color": 1,
+        "edge_color": 2,
+        "symbol_color": 3,
+        "text_color": 4
+      },
+      "name": "name",
+      "rarity_per_mille": 5
+    },
+    "base_name": "base-name",
+    "model": {
+      "name": "name",
+      "rarity_per_mille": 6,
+      "sticker": {
+        "file_id": "file-id",
+        "file_unique_id": "file-unique-id",
+        "height": 512,
+        "is_animated": false,
+        "is_video": false,
+        "type": "regular",
+        "width": 512
+      }
+    },
+    "name": "name",
+    "number": 7,
+    "symbol": {
+      "name": "name",
+      "rarity_per_mille": 8,
+      "sticker": {
+        "file_id": "file-id",
+        "file_unique_id": "file-unique-id",
+        "height": 512,
+        "is_animated": false,
+        "is_video": false,
+        "type": "regular",
+        "width": 512
+      }
+    }
+  },
+  "send_date": 9
+}

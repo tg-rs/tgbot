@@ -1,0 +1,28 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result.clone().with_input_message_content(InputMessageContentText::new(\"text\")).with_last_name(\"last name\").with_reply_markup([[InlineKeyboardButton::for_url(\"text\",\n\"url\")]]).with_thumbnail_url(\"url\").with_thumbnail_width(200).with_thumbnail_height(200).with_vcard(\"vcard\"),)"
+---
+{
+  "first_name": "name",
+  "input_message_content": {
+    "message_text": "text"
+  },
+  "last_name": "last name",
+  "phone_number": "phone",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "thumbnail_height": 200,
+  "thumbnail_url": "url",
+  "thumbnail_width": 200,
+  "vcard": "vcard",
+  "id": "id",
+  "type": "contact"
+}

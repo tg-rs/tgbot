@@ -1,0 +1,5 @@
+---
+source: src/types/tests/giveaway.rs
+expression: expected_struct.clone()
+---
+{}

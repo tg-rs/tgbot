@@ -1,0 +1,11 @@
+---
+source: src/types/tests/passport.rs
+expression: value.unwrap()
+---
+{
+  "source": "data",
+  "type": "address",
+  "field_name": "address",
+  "data_hash": "data_hash",
+  "message": "bad address"
+}

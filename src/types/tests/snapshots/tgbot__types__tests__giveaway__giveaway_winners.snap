@@ -1,0 +1,21 @@
+---
+source: src/types/tests/giveaway.rs
+expression: expected_struct.clone()
+---
+{
+  "chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "test"
+  },
+  "giveaway_message_id": 1,
+  "winner_count": 1,
+  "winners": [
+    {
+      "first_name": "test",
+      "id": 1,
+      "is_bot": false
+    }
+  ],
+  "winners_selection_date": 0
+}

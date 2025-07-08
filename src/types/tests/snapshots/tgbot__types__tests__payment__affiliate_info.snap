@@ -1,0 +1,8 @@
+---
+source: src/types/tests/payment.rs
+expression: expected_struct.clone()
+---
+{
+  "amount": 1,
+  "commission_per_mille": 1
+}

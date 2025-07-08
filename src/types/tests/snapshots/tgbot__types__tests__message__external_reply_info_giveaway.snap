@@ -1,0 +1,22 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(Giveaway::new([ChannelChat::new(1, \"test\")], 1, 1),\norigin)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "giveaway": {
+    "chats": [
+      {
+        "type": "channel",
+        "id": 1,
+        "title": "test"
+      }
+    ],
+    "winners_selection_date": 1,
+    "winner_count": 1
+  }
+}

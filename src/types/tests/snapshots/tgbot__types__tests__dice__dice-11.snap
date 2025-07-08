@@ -1,0 +1,5 @@
+---
+source: src/types/tests/dice.rs
+expression: value.dice_type().to_string()
+---
+🎯

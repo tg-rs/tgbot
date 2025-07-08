@@ -1,0 +1,21 @@
+---
+source: src/types/tests/chat.rs
+expression: "UserChatBoosts::from([ChatBoost::new(0, \"id\", 0,\nChatBoostSource::GiftCode(User::new(1, \"test\", false)),)])"
+---
+{
+  "boosts": [
+    {
+      "add_date": 0,
+      "boost_id": "id",
+      "expiration_date": 0,
+      "source": {
+        "source": "gift_code",
+        "user": {
+          "first_name": "test",
+          "id": 1,
+          "is_bot": false
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+---
+source: src/types/tests/game.rs
+expression: "Game::new(\"Description\",\n[PhotoSize::new(\"photo-file-id\", \"photo-file-unique-id\", 200, 200)],\n\"Game\",).with_animation(Animation::new(24, \"animation-file-id\",\n\"animation-file-unique-id\", 200,\n200,)).with_text(Text::from(\"text\").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..2)])))"
+---
+{
+  "description": "Description",
+  "photo": [
+    {
+      "file_id": "photo-file-id",
+      "file_unique_id": "photo-file-unique-id",
+      "height": 200,
+      "width": 200
+    }
+  ],
+  "title": "Game",
+  "animation": {
+    "duration": 24,
+    "file_id": "animation-file-id",
+    "file_unique_id": "animation-file-unique-id",
+    "height": 200,
+    "width": 200
+  },
+  "text": "text",
+  "text_entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ]
+}

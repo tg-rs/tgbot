@@ -1,0 +1,10 @@
+---
+source: src/types/tests/gift.rs
+expression: expected_struct
+---
+{
+  "limited_gifts": false,
+  "premium_subscription": false,
+  "unique_gifts": false,
+  "unlimited_gifts": false
+}

@@ -1,0 +1,10 @@
+---
+source: src/types/tests/passport.rs
+expression: value.unwrap()
+---
+{
+  "source": "front_side",
+  "type": "driver_license",
+  "file_hash": "file_hash",
+  "message": "bad file"
+}

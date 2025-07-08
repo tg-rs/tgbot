@@ -1,0 +1,8 @@
+---
+source: src/types/tests/message.rs
+expression: "TextQuote::new(0, \"test\")"
+---
+{
+  "position": 0,
+  "text": "test"
+}

@@ -1,0 +1,30 @@
+---
+source: src/types/tests/reaction.rs
+expression: "expected_struct.clone().with_user(User::new(1, \"test\", false))"
+---
+{
+  "chat": {
+    "type": "private",
+    "id": 1,
+    "first_name": "test"
+  },
+  "date": 0,
+  "message_id": 1,
+  "new_reaction": [
+    {
+      "type": "emoji",
+      "emoji": "🤡"
+    }
+  ],
+  "old_reaction": [
+    {
+      "type": "emoji",
+      "emoji": "🤮"
+    }
+  ],
+  "user": {
+    "first_name": "test",
+    "id": 1,
+    "is_bot": false
+  }
+}

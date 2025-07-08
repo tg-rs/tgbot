@@ -1,0 +1,40 @@
+---
+source: src/types/tests/gift.rs
+expression: "expected_struct.with_can_be_upgraded(true).with_convert_star_count(3).with_entities([TextEntity::bold(0..2)]).with_is_private(true).with_is_saved(true).with_owned_gift_id(\"id\").with_prepaid_upgrade_star_count(4).with_sender_user(User::new(1,\n\"John\", false)).with_text(\"test\").with_was_refunded(false)"
+---
+{
+  "gift": {
+    "id": "id",
+    "sticker": {
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id",
+      "height": 512,
+      "is_animated": false,
+      "is_video": false,
+      "type": "regular",
+      "width": 512
+    },
+    "star_count": 100
+  },
+  "send_date": 2,
+  "can_be_upgraded": true,
+  "convert_star_count": 3,
+  "entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ],
+  "is_private": true,
+  "is_saved": true,
+  "owned_gift_id": "id",
+  "prepaid_upgrade_star_count": 4,
+  "sender_user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false
+  },
+  "text": "test",
+  "was_refunded": false
+}

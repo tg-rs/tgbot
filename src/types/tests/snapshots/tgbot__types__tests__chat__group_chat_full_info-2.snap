@@ -1,0 +1,66 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "id": 1,
+  "type": "group",
+  "accent_color_id": 0,
+  "max_reaction_count": 0,
+  "available_reactions": [
+    {
+      "type": "emoji",
+      "emoji": "👍"
+    }
+  ],
+  "background_custom_emoji_id": "emoji-id",
+  "has_hidden_members": true,
+  "has_protected_content": true,
+  "has_visible_history": true,
+  "message_auto_delete_time": 86400,
+  "photo": {
+    "big_file_id": "big-file-id",
+    "big_file_unique_id": "big-file-unique-id",
+    "small_file_id": "small-file-id",
+    "small_file_unique_id": "small-file-unique-id"
+  },
+  "pinned_message": {
+    "chat": {
+      "type": "group",
+      "id": 1,
+      "title": "Group"
+    },
+    "date": 0,
+    "has_protected_content": false,
+    "message_id": 1,
+    "is_automatic_forward": false,
+    "from": {
+      "first_name": "User",
+      "id": 1,
+      "is_bot": false
+    },
+    "text": "text"
+  },
+  "profile_accent_color_id": 1,
+  "profile_background_custom_emoji_id": "emoji-id",
+  "invite_link": "example.com/join/group",
+  "title": "Group",
+  "emoji_status_custom_emoji_id": "emoji-id",
+  "emoji_status_expiration_date": 0,
+  "permissions": {
+    "can_add_web_page_previews": true,
+    "can_change_info": true,
+    "can_invite_users": true,
+    "can_manage_topics": true,
+    "can_pin_messages": true,
+    "can_send_audios": true,
+    "can_send_documents": true,
+    "can_send_messages": true,
+    "can_send_other_messages": true,
+    "can_send_photos": true,
+    "can_send_polls": true,
+    "can_send_video_notes": true,
+    "can_send_videos": true,
+    "can_send_voice_notes": true
+  }
+}

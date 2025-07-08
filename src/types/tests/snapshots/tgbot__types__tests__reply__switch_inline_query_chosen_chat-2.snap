@@ -1,0 +1,11 @@
+---
+source: src/types/tests/reply.rs
+expression: expected_struct.with_allow_bot_chats(true).with_allow_channel_chats(true).with_allow_group_chats(true).with_allow_user_chats(true)
+---
+{
+  "query": "query",
+  "allow_bot_chats": true,
+  "allow_channel_chats": true,
+  "allow_group_chats": true,
+  "allow_user_chats": true
+}

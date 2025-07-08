@@ -1,0 +1,12 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "input_message_content": {
+    "message_text": "text"
+  },
+  "title": "title",
+  "id": "id",
+  "type": "article"
+}

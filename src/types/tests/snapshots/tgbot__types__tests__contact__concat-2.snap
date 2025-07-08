@@ -1,0 +1,8 @@
+---
+source: src/types/tests/contact.rs
+expression: "Contact::new(\"John\", \"+79001231212\")"
+---
+{
+  "first_name": "John",
+  "phone_number": "+79001231212"
+}

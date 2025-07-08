@@ -1,0 +1,24 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "removed_chat_boost": {
+    "boost_id": "id",
+    "chat": {
+      "type": "channel",
+      "id": 1,
+      "title": "test"
+    },
+    "remove_date": 0,
+    "source": {
+      "source": "gift_code",
+      "user": {
+        "first_name": "test",
+        "id": 1,
+        "is_bot": false
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+---
+source: src/types/tests/bot.rs
+expression: "Bot::new(1, \"loo_maclin_bot\",\n\"Loo\").with_last_name(\"Maclin\").with_can_connect_to_business(true).with_can_join_groups(true).with_can_read_all_group_messages(true).with_has_main_web_app(true).with_supports_inline_queries(false)"
+---
+{
+  "first_name": "Loo",
+  "id": 1,
+  "username": "loo_maclin_bot",
+  "can_connect_to_business": true,
+  "can_join_groups": true,
+  "can_read_all_group_messages": true,
+  "has_main_web_app": true,
+  "last_name": "Maclin",
+  "supports_inline_queries": false
+}

@@ -1,0 +1,8 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMessageContent::from(InputMessageContentLocation::new(1.0, 2.0))"
+---
+{
+  "latitude": 1.0,
+  "longitude": 2.0
+}

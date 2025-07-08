@@ -1,0 +1,16 @@
+---
+source: src/types/tests/payment.rs
+expression: expected_struct
+---
+{
+  "amount": 10,
+  "date": 0,
+  "id": "tx-id",
+  "nanostar_amount": 233,
+  "source": {
+    "type": "other"
+  },
+  "receiver": {
+    "type": "other"
+  }
+}

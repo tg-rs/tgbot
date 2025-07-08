@@ -1,0 +1,47 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatMemberUpdated::new(Chat::Group(GroupChat::new(1, \"group-title\")), 0,\nUser::new(1, \"John\", true),\nChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, \"John\", false))),\nChatMember::Member\n{\n    user: User::new(2, \"John\", false), until_date: None,\n},).with_invite_link(ChatInviteLink::new(\"https://t.me/joinchat/o8oIBrbCI3U2OGJi\",\nUser::new(1, \"John\",\nfalse)).with_is_primary(true),).with_via_chat_folder_invite_link(true).with_via_join_request(true)"
+---
+{
+  "chat": {
+    "type": "group",
+    "id": 1,
+    "title": "group-title"
+  },
+  "date": 0,
+  "from": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": true
+  },
+  "new_chat_member": {
+    "status": "kicked",
+    "until_date": 0,
+    "user": {
+      "first_name": "John",
+      "id": 2,
+      "is_bot": false
+    }
+  },
+  "old_chat_member": {
+    "status": "member",
+    "user": {
+      "first_name": "John",
+      "id": 2,
+      "is_bot": false
+    }
+  },
+  "invite_link": {
+    "creates_join_request": false,
+    "creator": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    },
+    "invite_link": "https://t.me/joinchat/o8oIBrbCI3U2OGJi",
+    "is_primary": true,
+    "is_revoked": false
+  },
+  "via_chat_folder_invite_link": true,
+  "via_join_request": true
+}

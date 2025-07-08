@@ -1,0 +1,17 @@
+---
+source: src/types/tests/payment.rs
+expression: "OrderInfo::default().with_email(\"gela@kobakhidze.ge\").with_name(\"Gela\").with_phone_number(\"+995 32 217 00 00\").with_shipping_address(ShippingAddress::new(\"Tbilisi\",\n\"GE\", \"\", \"\", \"7 A. Politkovskaya st.\", \"\",))"
+---
+{
+  "email": "gela@kobakhidze.ge",
+  "name": "Gela",
+  "phone_number": "+995 32 217 00 00",
+  "shipping_address": {
+    "city": "Tbilisi",
+    "country_code": "GE",
+    "post_code": "",
+    "state": "",
+    "street_line1": "7 A. Politkovskaya st.",
+    "street_line2": ""
+  }
+}

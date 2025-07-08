@@ -1,0 +1,13 @@
+---
+source: src/types/tests/payment.rs
+expression: "TransactionPartner::AffiliateProgram(TransactionPartnerAffiliateProgramParameters::new(1).with_sponsor_user(User::new(1,\n\"John\", true)),)"
+---
+{
+  "type": "affiliate_program",
+  "commission_per_mille": 1,
+  "sponsor_user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": true
+  }
+}

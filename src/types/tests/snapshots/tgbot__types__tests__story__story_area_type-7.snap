@@ -1,0 +1,10 @@
+---
+source: src/types/tests/story.rs
+expression: expected_struct
+---
+{
+  "type": "weather",
+  "background_color": 1,
+  "emoji": "test",
+  "temperature": 2.0
+}

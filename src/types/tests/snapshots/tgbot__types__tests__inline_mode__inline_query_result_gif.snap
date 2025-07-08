@@ -1,0 +1,31 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result.clone().with_caption(\"caption\").with_gif_width(200).with_gif_height(300).with_gif_duration(400).with_input_message_content(InputMessageContentText::new(\"text\")).with_caption_parse_mode(ParseMode::Markdown).with_reply_markup([[InlineKeyboardButton::for_url(\"text\",\n\"url\")]]).with_show_caption_above_media(true).with_thumbnail_mime_type(\"video/mp4\").with_title(\"title\"),)"
+---
+{
+  "caption": "caption",
+  "gif_duration": 400,
+  "gif_height": 300,
+  "gif_url": "url",
+  "gif_width": 200,
+  "input_message_content": {
+    "message_text": "text"
+  },
+  "parse_mode": "Markdown",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "show_caption_above_media": true,
+  "thumbnail_mime_type": "video/mp4",
+  "thumbnail_url": "thumb-url",
+  "title": "title",
+  "id": "id",
+  "type": "gif"
+}

@@ -1,0 +1,17 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatJoinRequest::new(Chat::Channel(ChannelChat::new(1, \"Channel\")), 0,\nUser::new(1, \"User\", false),)"
+---
+{
+  "chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "Channel"
+  },
+  "date": 0,
+  "from": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  }
+}

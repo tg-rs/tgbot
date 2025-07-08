@@ -1,0 +1,9 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(InlineQueryResultGame::new(\"name\", \"id\"))"
+---
+{
+  "game_short_name": "name",
+  "id": "id",
+  "type": "game"
+}

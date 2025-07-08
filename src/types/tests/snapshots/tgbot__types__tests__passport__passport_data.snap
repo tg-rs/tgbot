@@ -1,0 +1,245 @@
+---
+source: src/types/tests/passport.rs
+expression: expected_struct
+---
+{
+  "credentials": {
+    "data": "d",
+    "hash": "h",
+    "secret": "s"
+  },
+  "data": [
+    {
+      "type": "address",
+      "data": "d",
+      "hash": "h"
+    },
+    {
+      "type": "bank_statement",
+      "files": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ],
+      "hash": "h",
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    },
+    {
+      "type": "driver_license",
+      "data": "d",
+      "front_side": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "hash": "h",
+      "selfie": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "reverse_side": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    },
+    {
+      "type": "email",
+      "email": "u@h.z",
+      "hash": "h"
+    },
+    {
+      "type": "identity_card",
+      "data": "d",
+      "front_side": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "hash": "h",
+      "reverse_side": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "selfie": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    },
+    {
+      "type": "internal_passport",
+      "data": "d",
+      "front_side": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "hash": "h",
+      "selfie": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    },
+    {
+      "type": "passport",
+      "data": "d",
+      "front_side": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "hash": "h",
+      "selfie": {
+        "file_date": 0,
+        "file_id": "f",
+        "file_size": 1,
+        "file_unique_id": "uf"
+      },
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    },
+    {
+      "type": "passport_registration",
+      "files": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ],
+      "hash": "h",
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    },
+    {
+      "type": "personal_details",
+      "data": "d",
+      "hash": "h"
+    },
+    {
+      "type": "phone_number",
+      "hash": "h",
+      "phone_number": "+79270000000"
+    },
+    {
+      "type": "rental_agreement",
+      "files": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ],
+      "hash": "h",
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    },
+    {
+      "type": "temporary_registration",
+      "files": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ],
+      "hash": "h",
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    },
+    {
+      "type": "utility_bill",
+      "files": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ],
+      "hash": "h",
+      "translation": [
+        {
+          "file_date": 0,
+          "file_id": "f",
+          "file_size": 1,
+          "file_unique_id": "uf"
+        }
+      ]
+    }
+  ]
+}

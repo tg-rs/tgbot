@@ -1,0 +1,10 @@
+---
+source: src/types/tests/payment.rs
+expression: "TransactionPartner::Fragment(Some(RevenueWithdrawalState::Pending))"
+---
+{
+  "type": "fragment",
+  "withdrawal_state": {
+    "type": "pending"
+  }
+}

@@ -1,0 +1,30 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatJoinRequest::new(Chat::Channel(ChannelChat::new(1, \"Channel\")), 0,\nUser::new(1, \"User\",\nfalse),).with_bio(\"Bio\").with_invite_link(ChatInviteLink::new(\"example.com/join/channel\",\nUser::new(2, \"User\", false)).with_is_primary(true),).with_user_chat_id(1)"
+---
+{
+  "chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "Channel"
+  },
+  "date": 0,
+  "from": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  },
+  "bio": "Bio",
+  "invite_link": {
+    "creates_join_request": false,
+    "creator": {
+      "first_name": "User",
+      "id": 2,
+      "is_bot": false
+    },
+    "invite_link": "example.com/join/channel",
+    "is_primary": true,
+    "is_revoked": false
+  },
+  "user_chat_id": 1
+}

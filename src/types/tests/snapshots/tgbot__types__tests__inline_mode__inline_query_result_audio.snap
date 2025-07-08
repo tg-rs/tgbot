@@ -1,0 +1,27 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result.clone().with_audio_duration(100).with_caption(\"caption\").with_caption_parse_mode(ParseMode::Html).with_input_message_content(InputMessageContentText::new(\"text\")).with_performer(\"performer\").with_reply_markup([[InlineKeyboardButton::for_url(\"text\",\n\"url\")]]),)"
+---
+{
+  "audio_duration": 100,
+  "audio_url": "url",
+  "caption": "caption",
+  "input_message_content": {
+    "message_text": "text"
+  },
+  "parse_mode": "HTML",
+  "performer": "performer",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "title": "title",
+  "id": "id",
+  "type": "audio"
+}

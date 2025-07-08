@@ -1,0 +1,8 @@
+---
+source: src/types/tests/story.rs
+expression: expected_struct
+---
+{
+  "type": "unique_gift",
+  "name": "test"
+}

@@ -1,0 +1,17 @@
+---
+source: src/types/tests/payment.rs
+expression: "expected_struct.clone().with_shipping_option_id(\"option id\").with_order_info(OrderInfo::default())"
+---
+{
+  "currency": "GEL",
+  "from": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  },
+  "id": "query id",
+  "invoice_payload": "invoice payload",
+  "total_amount": 100,
+  "order_info": {},
+  "shipping_option_id": "option id"
+}

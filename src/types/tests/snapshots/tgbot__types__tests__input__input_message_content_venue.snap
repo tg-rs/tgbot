@@ -1,0 +1,14 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMessageContent::from(content.clone().with_foursquare_id(\"f-id\").with_foursquare_type(\"f-type\").with_google_place_id(\"g-id\").with_google_place_type(\"g-type\"),)"
+---
+{
+  "address": "addr",
+  "latitude": 1.0,
+  "longitude": 2.0,
+  "title": "title",
+  "foursquare_id": "f-id",
+  "foursquare_type": "f-type",
+  "google_place_id": "g-id",
+  "google_place_type": "g-type"
+}

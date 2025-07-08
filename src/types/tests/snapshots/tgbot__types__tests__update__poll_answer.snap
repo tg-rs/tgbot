@@ -1,0 +1,18 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "poll_answer": {
+    "option_ids": [
+      0
+    ],
+    "poll_id": "poll-id",
+    "user": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    }
+  }
+}

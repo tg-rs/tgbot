@@ -1,0 +1,10 @@
+---
+source: src/types/tests/background.rs
+expression: "BackgroundFill::Gradient\n{ bottom_color: 1, rotation_angle: 90, top_color: 2, }"
+---
+{
+  "type": "gradient",
+  "bottom_color": 1,
+  "rotation_angle": 90,
+  "top_color": 2
+}

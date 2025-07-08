@@ -1,0 +1,12 @@
+---
+source: src/types/tests/media.rs
+expression: "PaidMediaPurchased::new(User::new(1, \"John\", false), \"payload\")"
+---
+{
+  "from": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false
+  },
+  "paid_media_payload": "payload"
+}

@@ -1,0 +1,21 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "status": "restricted",
+  "user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": true
+  },
+  "can_add_web_page_previews": false,
+  "can_change_info": true,
+  "can_invite_users": false,
+  "can_manage_topics": false,
+  "can_send_messages": true,
+  "can_send_other_messages": true,
+  "can_send_polls": true,
+  "is_member": false,
+  "until_date": 0
+}

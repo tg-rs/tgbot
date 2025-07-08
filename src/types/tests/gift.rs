@@ -1,0 +1,342 @@
+use crate::{
+    api::{Payload, assert_payload_eq},
+    types::*,
+};
+
+#[test]
+fn accepted_gift_types() {
+    let expected_struct = AcceptedGiftTypes::default();
+    insta::assert_json_snapshot!(expected_struct);
+    let expected_struct = expected_struct
+        .with_limited_gifts(true)
+        .with_premium_subscription(true)
+        .with_unique_gifts(true)
+        .with_unlimited_gifts(true);
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn gift() {
+    let expected_struct = Gift::new(
+        "id",
+        Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+        100,
+    );
+    insta::assert_json_snapshot!(expected_struct.clone());
+    insta::assert_json_snapshot!(
+        expected_struct
+            .with_remaining_count(10)
+            .with_total_count(20)
+            .with_upgrade_star_count(30)
+    );
+}
+
+#[test]
+fn gift_info() {
+    let expected_struct = GiftInfo::new(Gift::new(
+        "id",
+        Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+        100,
+    ));
+    insta::assert_json_snapshot!(expected_struct.clone());
+    insta::assert_json_snapshot!(
+        expected_struct
+            .with_can_be_upgraded(true)
+            .with_convert_star_count(100)
+            .with_entities([TextEntity::bold(0..2)])
+            .with_is_private(true)
+            .with_owned_gift_id("id")
+            .with_prepaid_upgrade_star_count(100)
+            .with_text("test")
+    );
+}
+
+#[test]
+fn gifts() {
+    let expected_struct = Gifts::from([Gift::new(
+        "id",
+        Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+        100,
+    )]);
+    insta::assert_json_snapshot!(expected_struct.clone());
+}
+
+#[test]
+fn owned_gift() {
+    let expected_struct = OwnedGift::from(OwnedGiftRegular::new(
+        Gift::new(
+            "id",
+            Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            100,
+        ),
+        2,
+    ));
+    insta::assert_json_snapshot!(expected_struct);
+    let unique = OwnedGiftUnique::new(
+        UniqueGift {
+            backdrop: UniqueGiftBackdrop {
+                colors: UniqueGiftBackdropColors {
+                    center_color: 1,
+                    edge_color: 2,
+                    symbol_color: 3,
+                    text_color: 4,
+                },
+                name: String::from("name"),
+                rarity_per_mille: 5,
+            },
+            base_name: String::from("base-name"),
+            model: UniqueGiftModel {
+                name: String::from("name"),
+                rarity_per_mille: 6,
+                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            },
+            name: String::from("name"),
+            number: 7,
+            symbol: UniqueGiftSymbol {
+                name: String::from("name"),
+                rarity_per_mille: 8,
+                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            },
+        },
+        9,
+    );
+    insta::assert_json_snapshot!(OwnedGift::from(unique.clone()));
+    insta::assert_json_snapshot!(OwnedGift::from(
+        unique
+            .with_transfer_star_count(1)
+            .with_can_be_transferred(true)
+            .with_is_saved(true)
+            .with_next_transfer_date(500)
+            .with_owned_gift_id("test-id")
+            .with_sender_user(User::new(1, "John", false)),
+    ));
+}
+
+#[test]
+fn owned_gift_regular() {
+    let expected_struct = OwnedGiftRegular::new(
+        Gift::new(
+            "id",
+            Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            100,
+        ),
+        2,
+    );
+    insta::assert_json_snapshot!(expected_struct.clone(),);
+    insta::assert_json_snapshot!(
+        expected_struct
+            .with_can_be_upgraded(true)
+            .with_convert_star_count(3)
+            .with_entities([TextEntity::bold(0..2)])
+            .with_is_private(true)
+            .with_is_saved(true)
+            .with_owned_gift_id("id")
+            .with_prepaid_upgrade_star_count(4)
+            .with_sender_user(User::new(1, "John", false))
+            .with_text("test")
+            .with_was_refunded(false),
+    );
+}
+
+#[test]
+fn owned_gifts() {
+    let expected_struct = OwnedGifts::new(
+        [OwnedGift::from(OwnedGiftRegular::new(
+            Gift::new(
+                "id",
+                Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+                100,
+            ),
+            2,
+        ))],
+        1,
+    );
+    insta::assert_json_snapshot!(expected_struct.clone());
+    insta::assert_json_snapshot!(expected_struct.with_next_offset("next"));
+}
+
+#[test]
+fn unique_gift_info() {
+    let expected_struct = UniqueGiftInfo::new(
+        UniqueGift {
+            backdrop: UniqueGiftBackdrop {
+                colors: UniqueGiftBackdropColors {
+                    center_color: 1,
+                    edge_color: 2,
+                    symbol_color: 3,
+                    text_color: 4,
+                },
+                name: String::from("name"),
+                rarity_per_mille: 5,
+            },
+            base_name: String::from("base-name"),
+            model: UniqueGiftModel {
+                name: String::from("name"),
+                rarity_per_mille: 6,
+                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            },
+            name: String::from("name"),
+            number: 7,
+            symbol: UniqueGiftSymbol {
+                name: String::from("name"),
+                rarity_per_mille: 8,
+                sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+            },
+        },
+        UniqueGiftOrigin::Transfer,
+    );
+    insta::assert_json_snapshot!(expected_struct.clone());
+    insta::assert_json_snapshot!(
+        expected_struct
+            .with_next_transfer_date(500)
+            .with_owned_gift_id("test-id")
+            .with_transfer_star_count(400)
+            .with_last_resale_star_count(430)
+    );
+}
+
+#[test]
+fn get_available_gifts() {
+    assert_payload_eq(Payload::empty("getAvailableGifts"), GetAvailableGifts);
+}
+
+#[test]
+fn gift_premium_subscription() {
+    let method = GiftPremiumSubscription::new(1, 2, 3);
+    assert_payload_eq(
+        Payload::json(
+            "giftPremiumSubscription",
+            serde_json::json!({
+                "month_count": 1,
+                "star_count": 2,
+                "user_id": 3
+            }),
+        ),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "giftPremiumSubscription",
+            serde_json::json!({
+                "month_count": 1,
+                "star_count": 2,
+                "user_id": 3,
+                "text": "text",
+                "text_entities": [
+                    {"type": "bold", "offset": 0, "length": 2}
+                ]
+            }),
+        ),
+        method
+            .clone()
+            .with_text("text")
+            .with_text_parse_mode(ParseMode::Markdown)
+            .with_text_entities([TextEntity::bold(0..2)]),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "giftPremiumSubscription",
+            serde_json::json!({
+                "month_count": 1,
+                "star_count": 2,
+                "user_id": 3,
+                "text": "text",
+                "text_parse_mode": "Markdown",
+            }),
+        ),
+        method
+            .clone()
+            .with_text("text")
+            .with_text_entities([TextEntity::bold(0..2)])
+            .with_text_parse_mode(ParseMode::Markdown),
+    );
+}
+
+#[test]
+fn send_gift() {
+    let method = SendGift::for_chat_id(1, "test");
+    assert_payload_eq(
+        Payload::json(
+            "sendGift",
+            serde_json::json!({
+                "chat_id": 1,
+                "gift_id": "test",
+            }),
+        ),
+        method.clone(),
+    );
+
+    let method = SendGift::for_chat_id("@chat", "test");
+    assert_payload_eq(
+        Payload::json(
+            "sendGift",
+            serde_json::json!({
+                "chat_id": "@chat",
+                "gift_id": "test",
+            }),
+        ),
+        method.clone(),
+    );
+
+    let method = SendGift::for_user_id(1, "test");
+    assert_payload_eq(
+        Payload::json(
+            "sendGift",
+            serde_json::json!({
+                "user_id": 1,
+                "gift_id": "test",
+            }),
+        ),
+        method.clone(),
+    );
+    let method = method
+        .with_pay_for_upgrade(true)
+        .with_text("test")
+        .with_text_parse_mode(ParseMode::Markdown);
+    assert_payload_eq(
+        Payload::json(
+            "sendGift",
+            serde_json::json!({
+                "user_id": 1,
+                "gift_id": "test",
+                "pay_for_upgrade": true,
+                "text": "test",
+                "text_parse_mode": "Markdown",
+            }),
+        ),
+        method.clone(),
+    );
+    let method = method.with_text_entities([TextEntity::bold(0..2)]);
+    assert_payload_eq(
+        Payload::json(
+            "sendGift",
+            serde_json::json!({
+                "user_id": 1,
+                "gift_id": "test",
+                "pay_for_upgrade": true,
+                "text": "test",
+                "text_entities": [
+                    {
+                        "type": "bold",
+                        "offset": 0,
+                        "length": 2,
+                    }
+                ],
+            }),
+        ),
+        method.clone(),
+    );
+    assert_payload_eq(
+        Payload::json(
+            "sendGift",
+            serde_json::json!({
+                "user_id": 1,
+                "gift_id": "test",
+                "pay_for_upgrade": true,
+                "text": "test",
+                "text_parse_mode": "Markdown",
+            }),
+        ),
+        method.with_text_parse_mode(ParseMode::Markdown),
+    );
+}

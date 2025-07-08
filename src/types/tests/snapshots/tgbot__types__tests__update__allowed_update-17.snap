@@ -1,0 +1,5 @@
+---
+source: src/types/tests/update.rs
+expression: value
+---
+"chat_member"

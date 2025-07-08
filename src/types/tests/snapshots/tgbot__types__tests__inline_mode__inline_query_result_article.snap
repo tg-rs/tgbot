@@ -1,0 +1,27 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result.clone().with_description(\"desc\").with_reply_markup([[InlineKeyboardButton::for_url(\"text\",\n\"url\")]]).with_thumbnail_url(\"thumb-url\").with_thumbnail_width(200).with_thumbnail_height(200).with_url(\"URL\"),)"
+---
+{
+  "description": "desc",
+  "input_message_content": {
+    "message_text": "text"
+  },
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "thumbnail_height": 200,
+  "thumbnail_url": "thumb-url",
+  "thumbnail_width": 200,
+  "title": "title",
+  "url": "URL",
+  "id": "id",
+  "type": "article"
+}

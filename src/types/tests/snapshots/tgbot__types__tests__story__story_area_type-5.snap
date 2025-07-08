@@ -1,0 +1,12 @@
+---
+source: src/types/tests/story.rs
+expression: expected_struct
+---
+{
+  "type": "suggested_reaction",
+  "reaction_type": {
+    "type": "paid"
+  },
+  "is_dark": true,
+  "is_flipped": true
+}

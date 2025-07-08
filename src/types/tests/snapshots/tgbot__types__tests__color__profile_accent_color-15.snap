@@ -1,0 +1,5 @@
+---
+source: src/types/tests/color.rs
+expression: expected_struct
+---
+14

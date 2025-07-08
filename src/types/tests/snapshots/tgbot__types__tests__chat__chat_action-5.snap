@@ -1,0 +1,5 @@
+---
+source: src/types/tests/chat.rs
+expression: value
+---
+"record_voice"

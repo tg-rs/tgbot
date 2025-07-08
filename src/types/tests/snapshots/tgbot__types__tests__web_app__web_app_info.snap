@@ -1,0 +1,7 @@
+---
+source: src/types/tests/web_app.rs
+expression: "WebAppInfo::from(\"https://example.com\")"
+---
+{
+  "url": "https://example.com"
+}

@@ -1,0 +1,11 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMessageContent::from(InputMessageContentText::new(\"text\").with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true)).with_entities(vec![TextEntity::bold(0..10)]).with_parse_mode(ParseMode::Html),)"
+---
+{
+  "message_text": "text",
+  "link_preview_options": {
+    "is_disabled": true
+  },
+  "parse_mode": "HTML"
+}

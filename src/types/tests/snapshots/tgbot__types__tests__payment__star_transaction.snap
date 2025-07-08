@@ -1,0 +1,9 @@
+---
+source: src/types/tests/payment.rs
+expression: expected_struct.clone()
+---
+{
+  "amount": 10,
+  "date": 0,
+  "id": "tx-id"
+}

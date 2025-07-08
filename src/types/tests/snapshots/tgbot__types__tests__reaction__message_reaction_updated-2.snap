@@ -1,0 +1,30 @@
+---
+source: src/types/tests/reaction.rs
+expression: "expected_struct.clone().with_actor_chat(ChannelChat::new(1, \"test\"))"
+---
+{
+  "chat": {
+    "type": "private",
+    "id": 1,
+    "first_name": "test"
+  },
+  "date": 0,
+  "message_id": 1,
+  "new_reaction": [
+    {
+      "type": "emoji",
+      "emoji": "🤡"
+    }
+  ],
+  "old_reaction": [
+    {
+      "type": "emoji",
+      "emoji": "🤮"
+    }
+  ],
+  "actor_chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "test"
+  }
+}

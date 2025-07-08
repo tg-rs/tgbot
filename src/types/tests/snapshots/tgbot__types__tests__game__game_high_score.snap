@@ -1,0 +1,13 @@
+---
+source: src/types/tests/game.rs
+expression: "GameHighScore::new(1, 3, User::new(2, \"John\", false))"
+---
+{
+  "position": 1,
+  "score": 3,
+  "user": {
+    "first_name": "John",
+    "id": 2,
+    "is_bot": false
+  }
+}

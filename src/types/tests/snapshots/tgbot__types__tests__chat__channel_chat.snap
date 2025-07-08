@@ -1,0 +1,10 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "type": "channel",
+  "id": 1,
+  "title": "Channel",
+  "username": "channel_username"
+}

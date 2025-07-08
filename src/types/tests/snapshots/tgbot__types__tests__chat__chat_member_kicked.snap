@@ -1,0 +1,16 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "status": "kicked",
+  "until_date": 0,
+  "user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false,
+    "language_code": "RU",
+    "last_name": "Doe",
+    "username": "john_doe"
+  }
+}

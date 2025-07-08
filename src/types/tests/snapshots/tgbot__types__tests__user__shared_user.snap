@@ -1,0 +1,7 @@
+---
+source: src/types/tests/user.rs
+expression: "SharedUser::new(1)"
+---
+{
+  "user_id": 1
+}

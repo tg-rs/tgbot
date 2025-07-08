@@ -1,0 +1,19 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(ExternalReplyData::Story(Story::new(PrivateChat::new(1,\n\"test\"), 1)), origin,)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "story": {
+    "chat": {
+      "type": "private",
+      "id": 1,
+      "first_name": "test"
+    },
+    "id": 1
+  }
+}

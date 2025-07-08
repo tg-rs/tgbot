@@ -1,0 +1,14 @@
+---
+source: src/types/tests/checklist.rs
+expression: expected_struct.clone()
+---
+{
+  "tasks": [
+    {
+      "id": 1,
+      "text": "test"
+    }
+  ],
+  "title": "test",
+  "parse_mode": "MarkdownV2"
+}

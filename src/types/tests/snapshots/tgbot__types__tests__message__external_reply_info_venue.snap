@@ -1,0 +1,19 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(Venue::new(\"title\", \"address\",\nLocation::new(1.0, 2.0)), origin)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "venue": {
+    "address": "address",
+    "location": {
+      "latitude": 1.0,
+      "longitude": 2.0
+    },
+    "title": "title"
+  }
+}

@@ -1,0 +1,21 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatBoostRemoved::new(\"id\", ChannelChat::new(1, \"test\"), 0,\nChatBoostSource::GiftCode(User::new(1, \"test\", false)),)"
+---
+{
+  "boost_id": "id",
+  "chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "test"
+  },
+  "remove_date": 0,
+  "source": {
+    "source": "gift_code",
+    "user": {
+      "first_name": "test",
+      "id": 1,
+      "is_bot": false
+    }
+  }
+}

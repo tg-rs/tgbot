@@ -1,0 +1,9 @@
+---
+source: src/types/tests/reply.rs
+expression: value
+---
+{
+  "force_reply": true,
+  "input_field_placeholder": "placeholder",
+  "selective": true
+}

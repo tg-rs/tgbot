@@ -1,0 +1,8 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "key": "value"
+}

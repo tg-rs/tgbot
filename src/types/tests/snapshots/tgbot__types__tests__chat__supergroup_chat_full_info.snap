@@ -1,0 +1,10 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct.clone()
+---
+{
+  "id": 1,
+  "type": "supergroup",
+  "accent_color_id": 0,
+  "max_reaction_count": 0
+}

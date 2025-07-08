@@ -1,0 +1,15 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "purchased_paid_media": {
+    "from": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    },
+    "paid_media_payload": "payload"
+  }
+}

@@ -1,0 +1,10 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "photo_url": "url",
+  "thumbnail_url": "thumb-url",
+  "id": "id",
+  "type": "photo"
+}

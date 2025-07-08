@@ -1,0 +1,10 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "mpeg4_url": "url",
+  "thumbnail_url": "thumb-url",
+  "id": "id",
+  "type": "mpeg4_gif"
+}

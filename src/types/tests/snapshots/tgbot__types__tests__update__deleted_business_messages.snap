@@ -1,0 +1,19 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "deleted_business_messages": {
+    "business_connection_id": "id",
+    "chat": {
+      "type": "private",
+      "id": 1,
+      "first_name": "John",
+      "username": "john_doe"
+    },
+    "message_ids": [
+      2
+    ]
+  }
+}

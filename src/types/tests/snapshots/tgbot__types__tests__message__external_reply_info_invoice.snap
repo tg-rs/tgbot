@@ -1,0 +1,18 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(Invoice::new(\"RUB\", \"description\", \"start-parameter\",\n\"title\", 1), origin,)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "invoice": {
+    "currency": "RUB",
+    "description": "description",
+    "start_parameter": "start-parameter",
+    "title": "title",
+    "total_amount": 1
+  }
+}

@@ -1,0 +1,14 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatBoostSource::Giveaway(ChatBoostSourceGiveaway::new(1).with_prize_star_count(2).with_user(User::new(1,\n\"test\", false)),)"
+---
+{
+  "source": "giveaway",
+  "giveaway_message_id": 1,
+  "prize_star_count": 2,
+  "user": {
+    "first_name": "test",
+    "id": 1,
+    "is_bot": false
+  }
+}

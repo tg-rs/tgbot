@@ -1,0 +1,5 @@
+---
+source: src/types/tests/message.rs
+expression: expected_struct
+---
+true

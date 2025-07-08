@@ -1,0 +1,19 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(PaidMediaInfo::new(100,\n[PaidMedia::Preview(PaidMediaPreview::default())]), origin,)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "paid_media": {
+    "star_count": 100,
+    "paid_media": [
+      {
+        "type": "preview"
+      }
+    ]
+  }
+}

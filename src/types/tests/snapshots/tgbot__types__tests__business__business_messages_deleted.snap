@@ -1,0 +1,15 @@
+---
+source: src/types/tests/business.rs
+expression: "BusinessMessagesDeleted::new(\"id\", PrivateChat::new(1, \"test\"), [2])"
+---
+{
+  "business_connection_id": "id",
+  "chat": {
+    "type": "private",
+    "id": 1,
+    "first_name": "test"
+  },
+  "message_ids": [
+    2
+  ]
+}

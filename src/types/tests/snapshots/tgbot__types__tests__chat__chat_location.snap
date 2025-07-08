@@ -1,0 +1,11 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatLocation::new(\"Address\", Location::new(1.0, 0.0))"
+---
+{
+  "address": "Address",
+  "location": {
+    "latitude": 1.0,
+    "longitude": 0.0
+  }
+}

@@ -1,0 +1,10 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatPhoto::new(\"big-file-id\", \"big-file-unique-id\", \"small-file-id\",\n\"small-file-unique-id\",)"
+---
+{
+  "big_file_id": "big-file-id",
+  "big_file_unique_id": "big-file-unique-id",
+  "small_file_id": "small-file-id",
+  "small_file_unique_id": "small-file-unique-id"
+}

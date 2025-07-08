@@ -1,0 +1,15 @@
+---
+source: src/types/tests/checklist.rs
+expression: "expected_struct.with_text_entities([TextEntity::bold(0..2)])"
+---
+{
+  "id": 1,
+  "text": "test",
+  "text_entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ]
+}

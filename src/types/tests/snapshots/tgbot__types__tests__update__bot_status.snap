@@ -1,0 +1,37 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "my_chat_member": {
+    "chat": {
+      "type": "group",
+      "id": 1,
+      "title": "Group"
+    },
+    "date": 0,
+    "from": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    },
+    "new_chat_member": {
+      "status": "kicked",
+      "until_date": 0,
+      "user": {
+        "first_name": "John",
+        "id": 2,
+        "is_bot": true
+      }
+    },
+    "old_chat_member": {
+      "status": "member",
+      "user": {
+        "first_name": "John",
+        "id": 2,
+        "is_bot": true
+      }
+    }
+  }
+}

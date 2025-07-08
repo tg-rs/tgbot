@@ -1,0 +1,11 @@
+---
+source: src/types/tests/poll.rs
+expression: "PollAnswerVoter::from(User::new(1, \"User\", false))"
+---
+{
+  "user": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  }
+}

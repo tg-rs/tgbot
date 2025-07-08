@@ -1,0 +1,9 @@
+---
+source: src/types/tests/webhook.rs
+expression: "WebhookInfo::new(\"https://example.com/tg-webhook\", true, 1)"
+---
+{
+  "has_custom_certificate": true,
+  "pending_update_count": 1,
+  "url": "https://example.com/tg-webhook"
+}

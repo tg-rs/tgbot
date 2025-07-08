@@ -1,0 +1,15 @@
+---
+source: src/types/tests/poll.rs
+expression: "PollAnswer::new([0], \"poll-id\", User::new(1, \"User\", false))"
+---
+{
+  "option_ids": [
+    0
+  ],
+  "poll_id": "poll-id",
+  "user": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  }
+}

@@ -1,0 +1,10 @@
+---
+source: src/types/tests/payment.rs
+expression: expected_struct.clone()
+---
+{
+  "currency": "RUB",
+  "invoice_payload": "payload",
+  "telegram_payment_charge_id": "charge-id",
+  "total_amount": 100
+}

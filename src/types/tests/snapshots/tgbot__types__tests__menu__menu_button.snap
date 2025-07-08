@@ -1,0 +1,7 @@
+---
+source: src/types/tests/menu.rs
+expression: "MenuButton::Commands"
+---
+{
+  "type": "commands"
+}

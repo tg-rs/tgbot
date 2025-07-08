@@ -1,0 +1,13 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "ChosenInlineResult::new(User::new(1, \"test\", false), \"q\", \"result-id\")"
+---
+{
+  "from": {
+    "first_name": "test",
+    "id": 1,
+    "is_bot": false
+  },
+  "query": "q",
+  "result_id": "result-id"
+}

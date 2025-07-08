@@ -1,0 +1,10 @@
+---
+source: src/types/tests/passport.rs
+expression: "PassportElementError::unspecified(EncryptedPassportElementType::BankStatement,\n\"element_hash\", \"bad file\")"
+---
+{
+  "source": "unspecified",
+  "type": "bank_statement",
+  "element_hash": "element_hash",
+  "message": "bad file"
+}

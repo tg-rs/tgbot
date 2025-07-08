@@ -1,0 +1,7 @@
+---
+source: src/types/tests/payment.rs
+expression: "RevenueWithdrawalState::Pending"
+---
+{
+  "type": "pending"
+}

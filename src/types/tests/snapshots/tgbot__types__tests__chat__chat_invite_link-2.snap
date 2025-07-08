@@ -1,0 +1,15 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatInviteLink::new(\"example.com/join/chat\", User::new(1, \"User\", false))"
+---
+{
+  "creates_join_request": false,
+  "creator": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  },
+  "invite_link": "example.com/join/chat",
+  "is_primary": false,
+  "is_revoked": false
+}

@@ -1,0 +1,8 @@
+---
+source: src/types/tests/dice.rs
+expression: value
+---
+{
+  "emoji": "⚽",
+  "value": 5
+}

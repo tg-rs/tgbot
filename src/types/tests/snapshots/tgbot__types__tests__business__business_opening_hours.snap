@@ -1,0 +1,17 @@
+---
+source: src/types/tests/business.rs
+expression: "BusinessOpeningHours::new(\"UTC\", [(1, 2), (3, 4)])"
+---
+{
+  "time_zone_name": "UTC",
+  "opening_hours": [
+    {
+      "opening_minute": 1,
+      "closing_minute": 2
+    },
+    {
+      "opening_minute": 3,
+      "closing_minute": 4
+    }
+  ]
+}

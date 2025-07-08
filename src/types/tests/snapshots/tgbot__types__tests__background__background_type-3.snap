@@ -1,0 +1,16 @@
+---
+source: src/types/tests/background.rs
+expression: "BackgroundType::Pattern\n{\n    document: Document::new(\"file-id\", \"file-unique-id\"), fill:\n    BackgroundFill::Solid { color: 1 }, intensity: 0, is_inverted: None,\n    is_moving: None,\n}"
+---
+{
+  "type": "pattern",
+  "document": {
+    "file_id": "file-id",
+    "file_unique_id": "file-unique-id"
+  },
+  "fill": {
+    "type": "solid",
+    "color": 1
+  },
+  "intensity": 0
+}

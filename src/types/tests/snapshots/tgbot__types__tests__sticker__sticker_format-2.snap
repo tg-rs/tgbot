@@ -1,0 +1,5 @@
+---
+source: src/types/tests/sticker.rs
+expression: expected_struct
+---
+"static"

@@ -1,0 +1,9 @@
+---
+source: src/types/tests/user.rs
+expression: "Birthdate::new(1, 1).with_year(1970)"
+---
+{
+  "day": 1,
+  "month": 1,
+  "year": 1970
+}

@@ -1,0 +1,21 @@
+---
+source: src/types/tests/checklist.rs
+expression: "expected_struct.with_completed_by_user(User::new(1, \"John\",\nfalse)).with_completion_date(1).with_text_entities([TextEntity::bold(0..2)])"
+---
+{
+  "id": 1,
+  "text": "test",
+  "completed_by_user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false
+  },
+  "completion_date": 1,
+  "text_entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ]
+}

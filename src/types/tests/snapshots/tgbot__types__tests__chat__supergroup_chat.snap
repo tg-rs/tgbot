@@ -1,0 +1,11 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "type": "supergroup",
+  "id": 1,
+  "title": "Supergroup Chat",
+  "is_forum": true,
+  "username": "supergroup_chat"
+}

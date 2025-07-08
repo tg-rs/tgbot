@@ -1,0 +1,11 @@
+---
+source: src/types/tests/reply.rs
+expression: "ReplyParameters::new(1).with_allow_sending_without_reply(true).with_chat_id(1).with_quote(quote.clone())"
+---
+{
+  "message_id": 1,
+  "allow_sending_without_reply": true,
+  "chat_id": 1,
+  "quote_position": 1,
+  "quote": "test"
+}

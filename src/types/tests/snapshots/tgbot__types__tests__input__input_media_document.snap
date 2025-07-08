@@ -1,0 +1,9 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMediaDocument::default().with_caption(\"caption\").with_caption_parse_mode(ParseMode::Markdown).with_disable_content_type_detection(true)"
+---
+{
+  "caption": "caption",
+  "disable_content_type_detection": true,
+  "parse_mode": "Markdown"
+}

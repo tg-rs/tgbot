@@ -1,0 +1,18 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "pre_checkout_query": {
+    "currency": "GEL",
+    "from": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    },
+    "id": "query-id",
+    "invoice_payload": "invoice payload",
+    "total_amount": 100
+  }
+}

@@ -1,0 +1,8 @@
+---
+source: src/types/tests/reaction.rs
+expression: "ReactionType::custom_emoji(\"5420319826440644296\")"
+---
+{
+  "type": "custom_emoji",
+  "custom_emoji_id": "5420319826440644296"
+}

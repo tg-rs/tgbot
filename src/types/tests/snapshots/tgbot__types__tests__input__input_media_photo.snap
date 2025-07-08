@@ -1,0 +1,10 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMediaPhoto::default().with_caption(\"caption\").with_has_spoiler(true).with_caption_parse_mode(ParseMode::Markdown).with_show_caption_above_media(true)"
+---
+{
+  "caption": "caption",
+  "has_spoiler": true,
+  "parse_mode": "Markdown",
+  "show_caption_above_media": true
+}

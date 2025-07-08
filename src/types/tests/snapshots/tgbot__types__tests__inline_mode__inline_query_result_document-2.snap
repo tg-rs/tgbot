@@ -1,0 +1,11 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "document_url": "url",
+  "mime_type": "mime",
+  "title": "title",
+  "id": "id",
+  "type": "document"
+}

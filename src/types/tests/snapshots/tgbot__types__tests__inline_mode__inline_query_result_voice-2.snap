@@ -1,0 +1,10 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "title": "voice-title",
+  "voice_url": "voice-url",
+  "id": "voice-id",
+  "type": "voice"
+}

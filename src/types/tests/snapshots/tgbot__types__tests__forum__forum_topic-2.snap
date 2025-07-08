@@ -1,0 +1,10 @@
+---
+source: src/types/tests/forum.rs
+expression: "expected_struct.with_icon_custom_emoji_id(\"emoji-id\")"
+---
+{
+  "icon_color": 16478047,
+  "message_thread_id": 1,
+  "name": "topic-name",
+  "icon_custom_emoji_id": "emoji-id"
+}

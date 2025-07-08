@@ -1,0 +1,8 @@
+---
+source: src/types/tests/payment.rs
+expression: "LabeledPrice::new(145, \"price label\")"
+---
+{
+  "amount": 145,
+  "label": "price label"
+}

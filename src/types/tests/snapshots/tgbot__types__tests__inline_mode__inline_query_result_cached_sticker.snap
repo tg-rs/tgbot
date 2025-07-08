@@ -1,0 +1,22 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result.clone().with_input_message_content(InputMessageContentText::new(\"text\")).with_reply_markup([[InlineKeyboardButton::for_url(\"text\",\n\"url\")]]),)"
+---
+{
+  "input_message_content": {
+    "message_text": "text"
+  },
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "sticker_file_id": "file-id",
+  "id": "id",
+  "type": "sticker"
+}

@@ -1,0 +1,12 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(ExternalReplyData::Unknown(serde_json::json!({\"key\":\n    \"value\"})), origin.clone(),)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "key": "value"
+}

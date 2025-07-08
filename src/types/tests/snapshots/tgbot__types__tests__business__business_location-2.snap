@@ -1,0 +1,11 @@
+---
+source: src/types/tests/business.rs
+expression: "BusinessLocation::new(\"address\").with_location(Location::new(1.0, 2.0))"
+---
+{
+  "address": "address",
+  "location": {
+    "latitude": 1.0,
+    "longitude": 2.0
+  }
+}

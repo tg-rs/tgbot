@@ -1,0 +1,116 @@
+---
+source: src/types/tests/reply.rs
+expression: "ReplyMarkup::from(ReplyKeyboardMarkup::default().add_row(row))"
+---
+{
+  "keyboard": [
+    [
+      {
+        "text": "test"
+      },
+      {
+        "text": "request contact",
+        "request_contact": true
+      },
+      {
+        "text": "request chat 1",
+        "request_chat": {
+          "request_id": 1,
+          "chat_is_channel": true
+        }
+      },
+      {
+        "text": "request chat 2",
+        "request_chat": {
+          "request_id": 1,
+          "chat_is_channel": false,
+          "bot_administrator_rights": {
+            "can_change_info": true,
+            "can_delete_messages": true,
+            "can_delete_stories": true,
+            "can_edit_messages": true,
+            "can_edit_stories": true,
+            "can_invite_users": true,
+            "can_manage_chat": true,
+            "can_manage_topics": true,
+            "can_manage_video_chats": true,
+            "can_pin_messages": true,
+            "can_post_messages": true,
+            "can_post_stories": true,
+            "can_promote_members": true,
+            "can_restrict_members": true,
+            "is_anonymous": true
+          },
+          "bot_is_member": true,
+          "chat_is_created": true,
+          "chat_is_forum": true,
+          "chat_has_username": true,
+          "request_photo": true,
+          "request_title": true,
+          "request_username": true,
+          "user_administrator_rights": {
+            "can_change_info": true,
+            "can_delete_messages": true,
+            "can_delete_stories": true,
+            "can_edit_messages": true,
+            "can_edit_stories": true,
+            "can_invite_users": true,
+            "can_manage_chat": true,
+            "can_manage_topics": true,
+            "can_manage_video_chats": true,
+            "can_pin_messages": true,
+            "can_post_messages": true,
+            "can_post_stories": true,
+            "can_promote_members": true,
+            "can_restrict_members": true,
+            "is_anonymous": true
+          }
+        }
+      },
+      {
+        "text": "request location",
+        "request_location": true
+      },
+      {
+        "text": "request quiz",
+        "request_poll": {
+          "type": "quiz"
+        }
+      },
+      {
+        "text": "request regular poll",
+        "request_poll": {
+          "type": "regular"
+        }
+      },
+      {
+        "text": "request any poll",
+        "request_poll": {}
+      },
+      {
+        "text": "request user 1",
+        "request_users": {
+          "request_id": 1
+        }
+      },
+      {
+        "text": "request user 2",
+        "request_users": {
+          "request_id": 1,
+          "max_quantity": 2,
+          "request_name": true,
+          "request_photo": true,
+          "request_username": true,
+          "user_is_bot": true,
+          "user_is_premium": true
+        }
+      },
+      {
+        "text": "web app",
+        "web_app": {
+          "url": "https://example.com"
+        }
+      }
+    ]
+  ]
+}

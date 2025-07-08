@@ -1,0 +1,8 @@
+---
+source: src/types/tests/payment.rs
+expression: "TransactionPartner::TelegramApi { request_count: 1 }"
+---
+{
+  "type": "telegram_api",
+  "request_count": 1
+}

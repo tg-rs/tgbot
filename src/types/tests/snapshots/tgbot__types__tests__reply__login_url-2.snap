@@ -1,0 +1,8 @@
+---
+source: src/types/tests/reply.rs
+expression: url.clone()
+---
+{
+  "url": "url",
+  "forward_text": "forward text"
+}

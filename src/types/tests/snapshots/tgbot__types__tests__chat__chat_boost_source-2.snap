@@ -1,0 +1,8 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatBoostSource::Giveaway(ChatBoostSourceGiveaway::new(1))"
+---
+{
+  "source": "giveaway",
+  "giveaway_message_id": 1
+}

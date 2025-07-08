@@ -1,0 +1,15 @@
+---
+source: src/types/tests/payment.rs
+expression: expected_struct
+---
+{
+  "currency": "GEL",
+  "from": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  },
+  "id": "query id",
+  "invoice_payload": "invoice payload",
+  "total_amount": 100
+}

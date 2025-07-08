@@ -1,0 +1,26 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "poll": {
+    "type": "regular",
+    "allows_multiple_answers": false,
+    "id": "poll-id",
+    "is_anonymous": true,
+    "is_closed": true,
+    "options": [
+      {
+        "text": "Yes",
+        "voter_count": 1000
+      },
+      {
+        "text": "No",
+        "voter_count": 0
+      }
+    ],
+    "question": "Rust?",
+    "total_voter_count": 1000
+  }
+}

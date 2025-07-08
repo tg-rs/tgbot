@@ -1,0 +1,10 @@
+---
+source: src/types/tests/reply.rs
+expression: url
+---
+{
+  "url": "url",
+  "bot_username": "bot_username",
+  "forward_text": "forward text",
+  "request_write_access": true
+}

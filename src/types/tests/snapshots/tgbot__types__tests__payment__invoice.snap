@@ -1,0 +1,11 @@
+---
+source: src/types/tests/payment.rs
+expression: "Invoice::new(\"RUB\", \"invoice description\", \"invoice start parameter\",\n\"invoice title\", 100,)"
+---
+{
+  "currency": "RUB",
+  "description": "invoice description",
+  "start_parameter": "invoice start parameter",
+  "title": "invoice title",
+  "total_amount": 100
+}

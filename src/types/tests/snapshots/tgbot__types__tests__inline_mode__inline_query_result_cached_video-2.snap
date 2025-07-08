@@ -1,0 +1,10 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "title": "title",
+  "video_file_id": "file-id",
+  "id": "id",
+  "type": "video"
+}

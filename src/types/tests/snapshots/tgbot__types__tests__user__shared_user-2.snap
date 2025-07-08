@@ -1,0 +1,18 @@
+---
+source: src/types/tests/user.rs
+expression: "SharedUser::new(1).with_first_name(\"John\").with_last_name(\"Doe\").with_photo([PhotoSize::new(\"file-id\",\n\"file-unique-id\", 100, 100)]).with_username(\"john_doe\")"
+---
+{
+  "user_id": 1,
+  "first_name": "John",
+  "last_name": "Doe",
+  "photo": [
+    {
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id",
+      "height": 100,
+      "width": 100
+    }
+  ],
+  "username": "john_doe"
+}

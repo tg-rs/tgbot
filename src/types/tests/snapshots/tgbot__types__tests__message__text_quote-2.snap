@@ -1,0 +1,16 @@
+---
+source: src/types/tests/message.rs
+expression: "TextQuote::new(0,\nText::from(\"test\").with_entities(TextEntities::from_iter([TextEntity::bold(0..2)])),).with_is_manual(true)"
+---
+{
+  "position": 0,
+  "text": "test",
+  "entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ],
+  "is_manual": true
+}

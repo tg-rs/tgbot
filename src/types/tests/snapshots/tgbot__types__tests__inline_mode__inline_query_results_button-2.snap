@@ -1,0 +1,10 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResultsButton::for_web_app(\"text\",\nWebAppInfo::from(\"https://example.com\"))"
+---
+{
+  "text": "text",
+  "web_app": {
+    "url": "https://example.com"
+  }
+}

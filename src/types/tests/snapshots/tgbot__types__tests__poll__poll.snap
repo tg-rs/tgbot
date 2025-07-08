@@ -1,0 +1,23 @@
+---
+source: src/types/tests/poll.rs
+expression: "Poll::from(RegularPoll::new(\"poll-id\",\n\"Rust?\").with_is_anonymous(true).with_is_closed(true).with_options([PollOption::new(\"Yes\",\n1000), PollOption::new(\"No\", 0)]).with_total_voter_count(1000),)"
+---
+{
+  "type": "regular",
+  "allows_multiple_answers": false,
+  "id": "poll-id",
+  "is_anonymous": true,
+  "is_closed": true,
+  "options": [
+    {
+      "text": "Yes",
+      "voter_count": 1000
+    },
+    {
+      "text": "No",
+      "voter_count": 0
+    }
+  ],
+  "question": "Rust?",
+  "total_voter_count": 1000
+}

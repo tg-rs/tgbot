@@ -1,0 +1,11 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMediaAudio::default().with_caption(\"caption\").with_duration(10).with_caption_parse_mode(ParseMode::Markdown).with_performer(\"test performer\").with_title(\"test title\")"
+---
+{
+  "caption": "caption",
+  "duration": 10,
+  "parse_mode": "Markdown",
+  "performer": "test performer",
+  "title": "test title"
+}

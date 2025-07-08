@@ -1,0 +1,12 @@
+---
+source: src/types/tests/passport.rs
+expression: value.unwrap()
+---
+{
+  "source": "translation_files",
+  "type": "bank_statement",
+  "file_hashes": [
+    "file_hash"
+  ],
+  "message": "bad file"
+}

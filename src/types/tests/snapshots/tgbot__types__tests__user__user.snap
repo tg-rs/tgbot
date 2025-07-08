@@ -1,0 +1,14 @@
+---
+source: src/types/tests/user.rs
+expression: "User::new(1, \"Vladimir\",\nfalse).with_added_to_attachment_menu(true).with_is_premium(true).with_last_name(\"Zelenskiy\").with_language_code(\"UA\").with_username(\"zelenskiy\")"
+---
+{
+  "first_name": "Vladimir",
+  "id": 1,
+  "is_bot": false,
+  "added_to_attachment_menu": true,
+  "is_premium": true,
+  "language_code": "UA",
+  "last_name": "Zelenskiy",
+  "username": "zelenskiy"
+}

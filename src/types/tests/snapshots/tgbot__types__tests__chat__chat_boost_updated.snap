@@ -1,0 +1,24 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatBoostUpdated::new(ChatBoost::new(0, \"id\", 0,\nChatBoostSource::GiftCode(User::new(1, \"test\", false))),\nChannelChat::new(1, \"test\"),)"
+---
+{
+  "boost": {
+    "add_date": 0,
+    "boost_id": "id",
+    "expiration_date": 0,
+    "source": {
+      "source": "gift_code",
+      "user": {
+        "first_name": "test",
+        "id": 1,
+        "is_bot": false
+      }
+    }
+  },
+  "chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "test"
+  }
+}

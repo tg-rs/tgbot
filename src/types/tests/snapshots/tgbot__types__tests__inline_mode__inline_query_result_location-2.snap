@@ -1,0 +1,11 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "latitude": 1.0,
+  "longitude": 2.0,
+  "title": "title",
+  "id": "id",
+  "type": "location"
+}

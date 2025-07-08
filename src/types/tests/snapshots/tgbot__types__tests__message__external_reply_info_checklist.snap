@@ -1,0 +1,15 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(Checklist::new([], \"test\"), origin)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "checklist": {
+    "tasks": [],
+    "title": "test"
+  }
+}

@@ -1,0 +1,23 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(Game::new(\"description\",\n[PhotoSize::new(\"file-id\", \"file-unique-id\", 10, 20)], \"title\",), origin,)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "game": {
+    "description": "description",
+    "photo": [
+      {
+        "file_id": "file-id",
+        "file_unique_id": "file-unique-id",
+        "height": 10,
+        "width": 20
+      }
+    ],
+    "title": "title"
+  }
+}

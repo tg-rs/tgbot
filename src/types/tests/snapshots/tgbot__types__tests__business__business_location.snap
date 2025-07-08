@@ -1,0 +1,7 @@
+---
+source: src/types/tests/business.rs
+expression: "BusinessLocation::new(\"address\")"
+---
+{
+  "address": "address"
+}

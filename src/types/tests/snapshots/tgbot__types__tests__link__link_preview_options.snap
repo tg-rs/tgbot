@@ -1,0 +1,5 @@
+---
+source: src/types/tests/link.rs
+expression: "LinkPreviewOptions::default()"
+---
+{}

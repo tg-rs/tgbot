@@ -1,0 +1,12 @@
+---
+source: src/types/tests/payment.rs
+expression: "TransactionPartner::Chat(TransactionPartnerChatParameters::new(PrivateChat::new(1,\n\"test\")))"
+---
+{
+  "type": "chat",
+  "chat": {
+    "type": "private",
+    "id": 1,
+    "first_name": "test"
+  }
+}

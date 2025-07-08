@@ -1,0 +1,15 @@
+---
+source: src/types/tests/business.rs
+expression: expected_struct.clone()
+---
+{
+  "date": 0,
+  "id": "id",
+  "is_enabled": false,
+  "user": {
+    "first_name": "test",
+    "id": 1,
+    "is_bot": false
+  },
+  "user_chat_id": 2
+}

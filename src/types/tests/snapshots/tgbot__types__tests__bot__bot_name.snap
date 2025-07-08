@@ -1,0 +1,7 @@
+---
+source: src/types/tests/bot.rs
+expression: "BotName::new(\"test_bot\")"
+---
+{
+  "name": "test_bot"
+}

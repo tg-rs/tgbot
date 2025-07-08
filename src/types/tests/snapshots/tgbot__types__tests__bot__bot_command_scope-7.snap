@@ -1,0 +1,9 @@
+---
+source: src/types/tests/bot.rs
+expression: value
+---
+{
+  "type": "chat_member",
+  "chat_id": 1,
+  "user_id": 1
+}

@@ -1,0 +1,10 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMessageContent::from(content)"
+---
+{
+  "address": "addr",
+  "latitude": 1.0,
+  "longitude": 2.0,
+  "title": "title"
+}

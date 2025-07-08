@@ -1,0 +1,7 @@
+---
+source: src/types/tests/reply.rs
+expression: "ReplyParameters::new(1)"
+---
+{
+  "message_id": 1
+}

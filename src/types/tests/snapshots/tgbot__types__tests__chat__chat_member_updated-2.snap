@@ -1,0 +1,34 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatMemberUpdated::new(Chat::Group(GroupChat::new(1, \"group-title\")), 0,\nUser::new(1, \"John\", true),\nChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, \"John\", false))),\nChatMember::Member { user: User::new(2, \"John\", false), until_date: None, },)"
+---
+{
+  "chat": {
+    "type": "group",
+    "id": 1,
+    "title": "group-title"
+  },
+  "date": 0,
+  "from": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": true
+  },
+  "new_chat_member": {
+    "status": "kicked",
+    "until_date": 0,
+    "user": {
+      "first_name": "John",
+      "id": 2,
+      "is_bot": false
+    }
+  },
+  "old_chat_member": {
+    "status": "member",
+    "user": {
+      "first_name": "John",
+      "id": 2,
+      "is_bot": false
+    }
+  }
+}

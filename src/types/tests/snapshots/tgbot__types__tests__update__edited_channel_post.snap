@@ -1,0 +1,27 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "edited_channel_post": {
+    "chat": {
+      "type": "channel",
+      "id": 1,
+      "title": "Channel",
+      "username": "channel_username"
+    },
+    "date": 0,
+    "has_protected_content": false,
+    "message_id": 1111,
+    "is_automatic_forward": false,
+    "sender_chat": {
+      "type": "channel",
+      "id": 1,
+      "title": "Channel",
+      "username": "channel_username"
+    },
+    "author_signature": "John D.",
+    "text": "test message from channel"
+  }
+}

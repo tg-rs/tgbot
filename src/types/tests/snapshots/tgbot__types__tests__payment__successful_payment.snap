@@ -1,0 +1,16 @@
+---
+source: src/types/tests/payment.rs
+expression: "expected_struct.clone().with_is_first_recurring(true).with_is_recurring(true).with_order_info(OrderInfo::default()).with_shipping_option_id(\"option id\").with_subscription_expiration_date(0)"
+---
+{
+  "currency": "RUB",
+  "invoice_payload": "invoice payload",
+  "provider_payment_charge_id": "provider-charge-id",
+  "telegram_payment_charge_id": "tg-charge-id",
+  "total_amount": 145,
+  "is_first_recurring": true,
+  "is_recurring": true,
+  "order_info": {},
+  "shipping_option_id": "option id",
+  "subscription_expiration_date": 0
+}

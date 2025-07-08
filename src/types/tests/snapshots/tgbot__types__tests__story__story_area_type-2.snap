@@ -1,0 +1,9 @@
+---
+source: src/types/tests/story.rs
+expression: expected_struct
+---
+{
+  "type": "location",
+  "latitude": 1.0,
+  "longitude": 2.0
+}

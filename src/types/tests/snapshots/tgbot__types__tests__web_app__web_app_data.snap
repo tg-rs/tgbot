@@ -1,0 +1,8 @@
+---
+source: src/types/tests/web_app.rs
+expression: "WebAppData::new(\"web-app-data\", \"web-app-button-text\")"
+---
+{
+  "data": "web-app-data",
+  "button_text": "web-app-button-text"
+}

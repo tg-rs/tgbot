@@ -1,0 +1,12 @@
+---
+source: src/types/tests/story.rs
+expression: "Story::new(chat, 1)"
+---
+{
+  "chat": {
+    "type": "private",
+    "id": 1,
+    "first_name": "test"
+  },
+  "id": 1
+}

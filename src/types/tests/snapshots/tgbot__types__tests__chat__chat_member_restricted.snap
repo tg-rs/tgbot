@@ -1,0 +1,28 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "status": "restricted",
+  "user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false
+  },
+  "can_add_web_page_previews": false,
+  "can_change_info": true,
+  "can_invite_users": false,
+  "can_manage_topics": false,
+  "can_pin_messages": false,
+  "can_send_audios": true,
+  "can_send_documents": false,
+  "can_send_messages": true,
+  "can_send_other_messages": true,
+  "can_send_photos": true,
+  "can_send_polls": true,
+  "can_send_video_notes": true,
+  "can_send_videos": false,
+  "can_send_voice_notes": false,
+  "is_member": true,
+  "until_date": 0
+}

@@ -1,0 +1,16 @@
+---
+source: src/types/tests/reply.rs
+expression: "ReplyParameters::new(1).with_quote(quote.clone())"
+---
+{
+  "message_id": 1,
+  "quote_position": 1,
+  "quote": "test",
+  "quote_entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "inline_query": {
+    "from": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    },
+    "id": "query-id",
+    "offset": "query offset",
+    "query": "query query"
+  }
+}

@@ -1,0 +1,11 @@
+---
+source: src/types/tests/reaction.rs
+expression: "ReactionCount::new(ReactionType::emoji(\"🤡\"), 1)"
+---
+{
+  "type": {
+    "type": "emoji",
+    "emoji": "🤡"
+  },
+  "total_count": 1
+}

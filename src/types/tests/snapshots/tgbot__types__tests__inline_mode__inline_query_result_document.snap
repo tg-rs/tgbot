@@ -1,0 +1,30 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result.clone().with_caption(\"caption\").with_description(\"desc\").with_input_message_content(InputMessageContentText::new(\"text\")).with_caption_parse_mode(ParseMode::Markdown).with_reply_markup([[InlineKeyboardButton::for_url(\"text\",\n\"url\")]]).with_thumbnail_height(200).with_thumbnail_url(\"thumb-url\").with_thumbnail_width(200),)"
+---
+{
+  "caption": "caption",
+  "description": "desc",
+  "document_url": "url",
+  "input_message_content": {
+    "message_text": "text"
+  },
+  "mime_type": "mime",
+  "parse_mode": "Markdown",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "thumbnail_height": 200,
+  "thumbnail_url": "thumb-url",
+  "thumbnail_width": 200,
+  "title": "title",
+  "id": "id",
+  "type": "document"
+}

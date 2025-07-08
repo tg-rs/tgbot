@@ -1,0 +1,12 @@
+---
+source: src/types/tests/callback.rs
+expression: expected_struct.clone()
+---
+{
+  "from": {
+    "first_name": "test",
+    "id": 1,
+    "is_bot": false
+  },
+  "id": "test"
+}

@@ -1,0 +1,7 @@
+---
+source: src/types/tests/payment.rs
+expression: "TransactionPartner::TelegramAds"
+---
+{
+  "type": "telegram_ads"
+}

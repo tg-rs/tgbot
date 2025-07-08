@@ -1,0 +1,32 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "status": "administrator",
+  "user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false,
+    "language_code": "RU",
+    "last_name": "Doe",
+    "username": "john_doe"
+  },
+  "can_be_edited": true,
+  "can_change_info": false,
+  "can_delete_messages": true,
+  "can_delete_stories": true,
+  "can_edit_messages": false,
+  "can_edit_stories": true,
+  "can_invite_users": false,
+  "can_manage_chat": true,
+  "can_manage_topics": true,
+  "can_manage_video_chats": false,
+  "can_pin_messages": false,
+  "can_post_messages": true,
+  "can_post_stories": true,
+  "can_promote_members": true,
+  "can_restrict_members": true,
+  "custom_title": "Alpha",
+  "is_anonymous": false
+}

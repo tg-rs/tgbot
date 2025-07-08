@@ -1,0 +1,15 @@
+---
+source: src/types/tests/giveaway.rs
+expression: expected_struct.clone()
+---
+{
+  "chats": [
+    {
+      "type": "channel",
+      "id": 1,
+      "title": "test"
+    }
+  ],
+  "winners_selection_date": 0,
+  "winner_count": 1
+}

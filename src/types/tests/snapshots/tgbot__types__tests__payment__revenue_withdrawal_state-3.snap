@@ -1,0 +1,9 @@
+---
+source: src/types/tests/payment.rs
+expression: "RevenueWithdrawalState::Succeeded\n{ date: 0, url: String::from(\"https://google.com\"), }"
+---
+{
+  "type": "succeeded",
+  "date": 0,
+  "url": "https://google.com"
+}

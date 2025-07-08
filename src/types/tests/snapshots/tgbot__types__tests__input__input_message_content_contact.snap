@@ -1,0 +1,10 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMessageContent::from(content.clone().with_last_name(\"P\").with_vcard(\"vcard\"))"
+---
+{
+  "first_name": "V",
+  "phone_number": "+79001231212",
+  "last_name": "P",
+  "vcard": "vcard"
+}

@@ -1,0 +1,28 @@
+---
+source: src/types/tests/payment.rs
+expression: "TransactionPartner::User(TransactionPartnerUserParameters::new(TransactionPartnerUserType::PremiumPurchase,\nUser::new(1, \"John\",\nfalse),).with_affiliate(AffiliateInfo::new(1,\n1)).with_gift(\"test-gift\").with_invoice_payload(String::from(\"invoice-payload\")).with_paid_media([PaidMedia::Preview(PaidMediaPreview::default().with_duration(1))]).with_paid_media_payload(String::from(\"media-payload\")).with_premium_subscription_duration(5).with_subscription_period(1),)"
+---
+{
+  "type": "user",
+  "transaction_type": "premium_purchase",
+  "user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false
+  },
+  "affiliate": {
+    "amount": 1,
+    "commission_per_mille": 1
+  },
+  "gift": "test-gift",
+  "invoice_payload": "invoice-payload",
+  "paid_media": [
+    {
+      "type": "preview",
+      "duration": 1
+    }
+  ],
+  "paid_media_payload": "media-payload",
+  "premium_subscription_duration": 5,
+  "subscription_period": 1
+}

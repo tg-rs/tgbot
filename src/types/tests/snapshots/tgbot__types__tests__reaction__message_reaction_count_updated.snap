@@ -1,0 +1,22 @@
+---
+source: src/types/tests/reaction.rs
+expression: "MessageReactionCountUpdated::new(PrivateChat::new(1, \"test\"), 0, 1,\n[ReactionCount::new(ReactionType::emoji(\"🤡\"), 1)],)"
+---
+{
+  "chat": {
+    "type": "private",
+    "id": 1,
+    "first_name": "test"
+  },
+  "date": 0,
+  "message_id": 1,
+  "reactions": [
+    {
+      "type": {
+        "type": "emoji",
+        "emoji": "🤡"
+      },
+      "total_count": 1
+    }
+  ]
+}

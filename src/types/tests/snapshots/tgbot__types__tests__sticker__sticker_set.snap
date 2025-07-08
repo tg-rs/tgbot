@@ -1,0 +1,17 @@
+---
+source: src/types/tests/sticker.rs
+expression: "StickerSet::new(\"test\", StickerType::Regular, vec![],\n\"test\").with_thumbnail(PhotoSize::new(\"thumb-file-id\", \"thumb-file-unique-id\",\n512, 512).with_file_size(2048))"
+---
+{
+  "name": "test",
+  "sticker_type": "regular",
+  "stickers": [],
+  "title": "test",
+  "thumbnail": {
+    "file_id": "thumb-file-id",
+    "file_unique_id": "thumb-file-unique-id",
+    "height": 512,
+    "width": 512,
+    "file_size": 2048
+  }
+}

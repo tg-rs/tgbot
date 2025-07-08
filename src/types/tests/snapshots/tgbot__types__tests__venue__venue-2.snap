@@ -1,0 +1,12 @@
+---
+source: src/types/tests/venue.rs
+expression: "Venue::new(\"venue title\", \"venue address\", Location::new(1.0, 2.0))"
+---
+{
+  "address": "venue address",
+  "location": {
+    "latitude": 1.0,
+    "longitude": 2.0
+  },
+  "title": "venue title"
+}

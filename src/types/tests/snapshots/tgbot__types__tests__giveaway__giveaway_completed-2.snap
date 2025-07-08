@@ -1,0 +1,36 @@
+---
+source: src/types/tests/giveaway.rs
+expression: "expected_struct.with_giveaway_message(Message::new(1, 0, chat.clone(),\nMessageData::Giveaway(Giveaway::new([chat], 0, 1)),\nUser::new(1, \"test\",\nfalse),)).with_is_star_giveaway(true).with_unclaimed_prize_count(1)"
+---
+{
+  "winner_count": 1,
+  "giveaway_message": {
+    "chat": {
+      "type": "channel",
+      "id": 1,
+      "title": "test"
+    },
+    "date": 0,
+    "has_protected_content": false,
+    "message_id": 1,
+    "is_automatic_forward": false,
+    "from": {
+      "first_name": "test",
+      "id": 1,
+      "is_bot": false
+    },
+    "giveaway": {
+      "chats": [
+        {
+          "type": "channel",
+          "id": 1,
+          "title": "test"
+        }
+      ],
+      "winners_selection_date": 0,
+      "winner_count": 1
+    }
+  },
+  "is_star_giveaway": true,
+  "unclaimed_prize_count": 1
+}

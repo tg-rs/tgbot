@@ -1,0 +1,15 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMediaVideo::default().with_caption(\"caption\").with_duration(100).with_caption_parse_mode(ParseMode::Markdown).with_has_spoiler(true).with_height(200).with_show_caption_above_media(true).with_start_timestamp(450).with_supports_streaming(true).with_width(200)"
+---
+{
+  "caption": "caption",
+  "duration": 100,
+  "has_spoiler": true,
+  "height": 200,
+  "parse_mode": "Markdown",
+  "start_timestamp": 450,
+  "show_caption_above_media": true,
+  "supports_streaming": true,
+  "width": 200
+}

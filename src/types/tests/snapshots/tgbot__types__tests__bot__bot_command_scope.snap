@@ -1,0 +1,7 @@
+---
+source: src/types/tests/bot.rs
+expression: value
+---
+{
+  "type": "default"
+}

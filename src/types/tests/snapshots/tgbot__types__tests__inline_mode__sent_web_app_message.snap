@@ -1,0 +1,7 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "SentWebAppMessage::default().with_inline_message_id(\"id\")"
+---
+{
+  "inline_message_id": "id"
+}

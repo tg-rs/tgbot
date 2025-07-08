@@ -1,0 +1,33 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMessageContent::from(InputMessageContentInvoice::new(\"RUB\",\n\"description\", \"payload\", [LabeledPrice::new(100, \"item\")],\n\"title\",).with_is_flexible(true).with_need_email(false).with_need_name(true).with_need_phone_number(true).with_need_shipping_address(false).with_provider_data(&InvoiceProviderData\n{\n    key: String::from(\"value\"),\n}).unwrap().with_provider_token(\"provider-token\").with_photo_height(24).with_photo_size(100).with_photo_width(24).with_photo_url(\"https://google.com/favicon.ico\").with_max_tip_amount(1).with_send_email_to_provider(false).with_send_phone_number_to_provider(true).with_suggested_tip_amounts([2]),)"
+---
+{
+  "currency": "RUB",
+  "description": "description",
+  "payload": "payload",
+  "prices": [
+    {
+      "amount": 100,
+      "label": "item"
+    }
+  ],
+  "title": "title",
+  "is_flexible": true,
+  "max_tip_amount": 1,
+  "need_email": false,
+  "need_name": true,
+  "need_phone_number": true,
+  "need_shipping_address": false,
+  "photo_height": 24,
+  "photo_size": 100,
+  "photo_width": 24,
+  "photo_url": "https://google.com/favicon.ico",
+  "provider_data": "{\"key\":\"value\"}",
+  "provider_token": "provider-token",
+  "send_email_to_provider": false,
+  "send_phone_number_to_provider": true,
+  "suggested_tip_amounts": [
+    2
+  ]
+}

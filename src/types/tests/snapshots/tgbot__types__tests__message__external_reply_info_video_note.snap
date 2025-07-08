@@ -1,0 +1,17 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(VideoNote::new(10, \"file-id\", \"file-unique-id\", 20),\norigin.clone())"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "video_note": {
+    "duration": 10,
+    "file_id": "file-id",
+    "file_unique_id": "file-unique-id",
+    "length": 20
+  }
+}

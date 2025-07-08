@@ -1,0 +1,13 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "status": "member",
+  "user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false
+  },
+  "until_date": 1
+}

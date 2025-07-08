@@ -1,0 +1,16 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "chosen_inline_result": {
+    "from": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    },
+    "query": "q",
+    "result_id": "chosen-inline-result-id"
+  }
+}

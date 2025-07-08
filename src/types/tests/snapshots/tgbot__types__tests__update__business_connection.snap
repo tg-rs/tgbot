@@ -1,0 +1,18 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "business_connection": {
+    "date": 0,
+    "id": "id",
+    "is_enabled": false,
+    "user": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    },
+    "user_chat_id": 2
+  }
+}

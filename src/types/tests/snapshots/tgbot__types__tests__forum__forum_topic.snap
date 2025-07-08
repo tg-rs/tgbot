@@ -1,0 +1,9 @@
+---
+source: src/types/tests/forum.rs
+expression: expected_struct.clone()
+---
+{
+  "icon_color": 16478047,
+  "message_thread_id": 1,
+  "name": "topic-name"
+}

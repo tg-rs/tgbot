@@ -1,0 +1,25 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "message_reaction_count": {
+    "chat": {
+      "type": "private",
+      "id": 1,
+      "first_name": "test"
+    },
+    "date": 0,
+    "message_id": 1,
+    "reactions": [
+      {
+        "type": {
+          "type": "emoji",
+          "emoji": "🤡"
+        },
+        "total_count": 1
+      }
+    ]
+  }
+}

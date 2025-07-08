@@ -1,0 +1,18 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(Video::new(10, \"file-id\", \"file-unique-id\", 20, 30),\norigin)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "video": {
+    "duration": 10,
+    "file_id": "file-id",
+    "file_unique_id": "file-unique-id",
+    "height": 20,
+    "width": 30
+  }
+}

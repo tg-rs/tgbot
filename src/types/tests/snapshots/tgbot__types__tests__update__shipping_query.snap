@@ -1,0 +1,24 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "shipping_query": {
+    "id": "query-id",
+    "from": {
+      "first_name": "Ramazan",
+      "id": 1,
+      "is_bot": false
+    },
+    "invoice_payload": "payload",
+    "shipping_address": {
+      "city": "Gudermes",
+      "country_code": "RU",
+      "post_code": "366200",
+      "state": "Chechen Republic",
+      "street_line1": "Nuradilov st., 12",
+      "street_line2": ""
+    }
+  }
+}

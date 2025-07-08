@@ -1,0 +1,16 @@
+---
+source: src/types/tests/venue.rs
+expression: "Venue::new(\"venue title\", \"venue address\",\nLocation::new(1.0,\n2.0)).with_foursquare_id(\"f-id\").with_foursquare_type(\"f-type\").with_google_place_id(\"g-id\").with_google_place_type(\"g-type\")"
+---
+{
+  "address": "venue address",
+  "location": {
+    "latitude": 1.0,
+    "longitude": 2.0
+  },
+  "title": "venue title",
+  "foursquare_id": "f-id",
+  "foursquare_type": "f-type",
+  "google_place_id": "g-id",
+  "google_place_type": "g-type"
+}

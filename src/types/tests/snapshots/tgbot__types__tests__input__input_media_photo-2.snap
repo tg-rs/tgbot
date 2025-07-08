@@ -1,0 +1,5 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMediaPhoto::default()"
+---
+{}

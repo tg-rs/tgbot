@@ -1,0 +1,9 @@
+---
+source: src/types/tests/message.rs
+expression: "MessageOrigin::from(MessageOriginHiddenUser::new(0, \"test\"))"
+---
+{
+  "type": "hidden_user",
+  "date": 0,
+  "sender_user_name": "test"
+}

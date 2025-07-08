@@ -1,0 +1,11 @@
+---
+source: src/types/tests/contact.rs
+expression: "Contact::new(\"John\",\n\"+79001231212\").with_last_name(\"Doe\").with_user_id(1).with_vcard(\"BEGIN:VCARD\\nVERSION:4.0\\nFN:John Doe\\n\\nEND:VCARD\")"
+---
+{
+  "first_name": "John",
+  "phone_number": "+79001231212",
+  "last_name": "Doe",
+  "user_id": 1,
+  "vcard": "BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD"
+}

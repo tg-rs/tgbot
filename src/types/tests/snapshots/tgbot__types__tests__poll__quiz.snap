@@ -1,0 +1,31 @@
+---
+source: src/types/tests/poll.rs
+expression: "Poll::from(Quiz::new(\"poll-id\",\n\"Rust?\").with_correct_option_id(0).with_explanation(Text::from(\"text\").with_entities(vec![TextEntity::bold(0..2)].into_iter().collect())).with_is_anonymous(true).with_is_closed(true).with_options([PollOption::new(\"Yes\",\n1000), PollOption::new(\"No\", 0)]).with_total_voter_count(100),)"
+---
+{
+  "type": "quiz",
+  "correct_option_id": 0,
+  "id": "poll-id",
+  "is_anonymous": true,
+  "is_closed": true,
+  "options": [
+    {
+      "text": "Yes",
+      "voter_count": 1000
+    },
+    {
+      "text": "No",
+      "voter_count": 0
+    }
+  ],
+  "question": "Rust?",
+  "total_voter_count": 100,
+  "explanation": "text",
+  "explanation_entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ]
+}

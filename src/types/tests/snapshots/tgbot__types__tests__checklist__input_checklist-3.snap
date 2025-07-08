@@ -1,0 +1,22 @@
+---
+source: src/types/tests/checklist.rs
+expression: "expected_struct.with_title_entities([TextEntity::bold(0..2)]).with_others_can_add_tasks(true).with_others_can_mark_tasks_as_done(true)"
+---
+{
+  "tasks": [
+    {
+      "id": 1,
+      "text": "test"
+    }
+  ],
+  "title": "test",
+  "others_can_add_tasks": true,
+  "others_can_mark_tasks_as_done": true,
+  "title_entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ]
+}

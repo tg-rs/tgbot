@@ -1,0 +1,10 @@
+---
+source: src/types/tests/location.rs
+expression: "expected_struct.with_state(\"Sakha Republic\").with_city(\"Yakutsk\").with_street(\"Lenina, 1\")"
+---
+{
+  "country_code": "RU",
+  "state": "Sakha Republic",
+  "city": "Yakutsk",
+  "street": "Lenina, 1"
+}

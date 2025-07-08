@@ -1,0 +1,8 @@
+---
+source: src/types/tests/reply.rs
+expression: "ReplyMarkup::from(ReplyKeyboardRemove::default().with_selective(true))"
+---
+{
+  "remove_keyboard": true,
+  "selective": true
+}

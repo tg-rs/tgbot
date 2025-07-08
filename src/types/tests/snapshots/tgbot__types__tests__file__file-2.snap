@@ -1,0 +1,8 @@
+---
+source: src/types/tests/file.rs
+expression: "File::new(\"file-id\", \"file-unique-id\")"
+---
+{
+  "file_id": "file-id",
+  "file_unique_id": "file-unique-id"
+}

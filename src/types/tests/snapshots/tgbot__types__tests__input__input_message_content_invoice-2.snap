@@ -1,0 +1,16 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMessageContent::from(InputMessageContentInvoice::new(\"RUB\",\n\"description\", \"payload\", [LabeledPrice::new(100, \"item\")], \"title\",))"
+---
+{
+  "currency": "RUB",
+  "description": "description",
+  "payload": "payload",
+  "prices": [
+    {
+      "amount": 100,
+      "label": "item"
+    }
+  ],
+  "title": "title"
+}

@@ -1,0 +1,18 @@
+---
+source: src/types/tests/webhook.rs
+expression: "WebhookInfo::new(\"https://example.com/tg-webhook\", true,\n1).with_ip_address(\"127.0.0.1\").with_last_error_date(0).with_last_error_message(\"error\").with_last_synchronization_error_date(0).with_max_connections(10).with_allowed_updates([AllowedUpdate::Message,\nAllowedUpdate::Poll])"
+---
+{
+  "has_custom_certificate": true,
+  "pending_update_count": 1,
+  "url": "https://example.com/tg-webhook",
+  "allowed_updates": [
+    "message",
+    "poll"
+  ],
+  "ip_address": "127.0.0.1",
+  "last_error_date": 0,
+  "last_error_message": "error",
+  "last_synchronization_error_date": 0,
+  "max_connections": 10
+}

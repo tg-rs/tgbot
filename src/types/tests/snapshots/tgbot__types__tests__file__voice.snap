@@ -1,0 +1,11 @@
+---
+source: src/types/tests/file.rs
+expression: "Voice::new(500, \"file-id\",\n\"file-unique-id\").with_mime_type(\"audio/ogg\").with_file_size(40960)"
+---
+{
+  "duration": 500,
+  "file_id": "file-id",
+  "file_unique_id": "file-unique-id",
+  "file_size": 40960,
+  "mime_type": "audio/ogg"
+}

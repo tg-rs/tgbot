@@ -1,0 +1,8 @@
+---
+source: src/types/tests/payment.rs
+expression: "TransactionPartner::AffiliateProgram(TransactionPartnerAffiliateProgramParameters::new(1))"
+---
+{
+  "type": "affiliate_program",
+  "commission_per_mille": 1
+}

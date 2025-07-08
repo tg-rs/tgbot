@@ -1,0 +1,75 @@
+---
+source: src/types/tests/chat.rs
+expression: expected_struct
+---
+{
+  "id": 1,
+  "type": "private",
+  "accent_color_id": 0,
+  "max_reaction_count": 0,
+  "background_custom_emoji_id": "emoji-id",
+  "message_auto_delete_time": 86400,
+  "photo": {
+    "big_file_id": "big-file-id",
+    "big_file_unique_id": "big-file-unique-id",
+    "small_file_id": "small-file-id",
+    "small_file_unique_id": "small-file-unique-id"
+  },
+  "pinned_message": {
+    "chat": {
+      "type": "private",
+      "id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "username": "john_doe"
+    },
+    "date": 0,
+    "edit_date": 0,
+    "has_protected_content": false,
+    "message_id": 1,
+    "is_automatic_forward": false,
+    "from": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false,
+      "last_name": "Doe",
+      "username": "john_doe"
+    },
+    "text": "message-text"
+  },
+  "profile_accent_color_id": 1,
+  "profile_background_custom_emoji_id": "emoji-id",
+  "active_usernames": [
+    "john_doe"
+  ],
+  "username": "john_doe",
+  "bio": "Bio",
+  "birthdate": {
+    "day": 1,
+    "month": 1
+  },
+  "business_intro": {},
+  "business_location": {
+    "address": "address"
+  },
+  "business_opening_hours": {
+    "time_zone_name": "UTC",
+    "opening_hours": [
+      {
+        "opening_minute": 0,
+        "closing_minute": 1
+      }
+    ]
+  },
+  "emoji_status_custom_emoji_id": "emoji-id",
+  "emoji_status_expiration_date": 0,
+  "first_name": "John",
+  "has_private_forwards": true,
+  "has_restricted_voice_and_video_messages": true,
+  "last_name": "Doe",
+  "personal_chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "test"
+  }
+}

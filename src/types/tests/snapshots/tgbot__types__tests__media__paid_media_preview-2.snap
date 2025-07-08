@@ -1,0 +1,10 @@
+---
+source: src/types/tests/media.rs
+expression: "PaidMedia::Preview(PaidMediaPreview::default().with_duration(100).with_height(200).with_width(300),)"
+---
+{
+  "type": "preview",
+  "duration": 100,
+  "height": 200,
+  "width": 300
+}

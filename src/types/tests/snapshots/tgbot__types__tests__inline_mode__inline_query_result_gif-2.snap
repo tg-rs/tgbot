@@ -1,0 +1,10 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "gif_url": "url",
+  "thumbnail_url": "thumb-url",
+  "id": "id",
+  "type": "gif"
+}

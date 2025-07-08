@@ -1,0 +1,19 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatInviteLink::new(\"example.com/join/chat\",\nUser::new(1, \"User\",\nfalse)).with_creates_join_request(true).with_is_primary(true).with_is_revoked(false).with_name(\"Link\").with_expire_date(0).with_member_limit(10).with_pending_join_request_count(0)"
+---
+{
+  "creates_join_request": true,
+  "creator": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  },
+  "invite_link": "example.com/join/chat",
+  "is_primary": true,
+  "is_revoked": false,
+  "expire_date": 0,
+  "member_limit": 10,
+  "name": "Link",
+  "pending_join_request_count": 0
+}

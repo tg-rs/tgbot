@@ -1,0 +1,10 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(result)"
+---
+{
+  "first_name": "name",
+  "phone_number": "phone",
+  "id": "id",
+  "type": "contact"
+}

@@ -1,0 +1,8 @@
+---
+source: src/types/tests/checklist.rs
+expression: expected_struct.clone()
+---
+{
+  "tasks": [],
+  "title": "test"
+}

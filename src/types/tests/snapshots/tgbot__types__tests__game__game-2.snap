@@ -1,0 +1,9 @@
+---
+source: src/types/tests/game.rs
+expression: "Game::new(\"Description\", [], \"Game\")"
+---
+{
+  "description": "Description",
+  "photo": [],
+  "title": "Game"
+}

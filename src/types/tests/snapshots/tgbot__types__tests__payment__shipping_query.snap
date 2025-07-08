@@ -1,0 +1,21 @@
+---
+source: src/types/tests/payment.rs
+expression: "ShippingQuery::new(\"query-id\", User::new(1, \"User\", false), \"payload\",\nShippingAddress::new(\"Gudermes\", \"RU\", \"366200\", \"Chechen Republic\",\n\"Nuradilov st., 12\", \"\"),)"
+---
+{
+  "id": "query-id",
+  "from": {
+    "first_name": "User",
+    "id": 1,
+    "is_bot": false
+  },
+  "invoice_payload": "payload",
+  "shipping_address": {
+    "city": "Gudermes",
+    "country_code": "RU",
+    "post_code": "366200",
+    "state": "Chechen Republic",
+    "street_line1": "Nuradilov st., 12",
+    "street_line2": ""
+  }
+}

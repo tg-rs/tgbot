@@ -1,0 +1,19 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResult::from(InlineQueryResultGame::new(\"name\",\n\"id\").with_reply_markup([[InlineKeyboardButton::for_url(\"text\", \"url\")]]),)"
+---
+{
+  "game_short_name": "name",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "id": "id",
+  "type": "game"
+}

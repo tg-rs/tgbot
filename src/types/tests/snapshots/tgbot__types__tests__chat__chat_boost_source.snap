@@ -1,0 +1,12 @@
+---
+source: src/types/tests/chat.rs
+expression: "ChatBoostSource::GiftCode(User::new(1, \"test\", false))"
+---
+{
+  "source": "gift_code",
+  "user": {
+    "first_name": "test",
+    "id": 1,
+    "is_bot": false
+  }
+}

@@ -1,0 +1,8 @@
+---
+source: src/types/tests/background.rs
+expression: "BackgroundType::ChatTheme { theme_name: String::from(\"test\"), }"
+---
+{
+  "type": "chat_theme",
+  "theme_name": "test"
+}

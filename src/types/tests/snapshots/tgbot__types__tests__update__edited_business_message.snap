@@ -1,0 +1,29 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "edited_business_message": {
+    "chat": {
+      "type": "private",
+      "id": 1111,
+      "first_name": "John",
+      "last_name": "Doe",
+      "username": "john_doe"
+    },
+    "date": 1441,
+    "edit_date": 1441,
+    "has_protected_content": false,
+    "message_id": 1365,
+    "is_automatic_forward": false,
+    "from": {
+      "first_name": "John",
+      "id": 1111,
+      "is_bot": false,
+      "last_name": "Doe",
+      "username": "john_doe"
+    },
+    "text": "Edited text"
+  }
+}

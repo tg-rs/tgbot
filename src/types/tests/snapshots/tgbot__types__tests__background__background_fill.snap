@@ -1,0 +1,12 @@
+---
+source: src/types/tests/background.rs
+expression: "BackgroundFill::FreeformGradient { colors: vec![1, 2, 3] }"
+---
+{
+  "type": "freeform_gradient",
+  "colors": [
+    1,
+    2,
+    3
+  ]
+}

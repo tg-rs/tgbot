@@ -1,0 +1,9 @@
+---
+source: src/types/tests/payment.rs
+expression: expected_struct.clone()
+---
+{
+  "id": "id",
+  "title": "title",
+  "prices": []
+}

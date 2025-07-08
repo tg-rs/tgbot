@@ -1,0 +1,8 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "InlineQueryResultsButton::for_start_parameter(\"text\", \"param\")"
+---
+{
+  "text": "text",
+  "start_parameter": "param"
+}

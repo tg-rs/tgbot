@@ -1,0 +1,32 @@
+---
+source: src/types/tests/checklist.rs
+expression: "expected_struct.with_checklist_message(Message::new(1, 0,\nSupergroupChat::new(1, \"test\"), MessageData::Unknown(serde_json::json!({})),\nUser::new(1, \"test\",\nfalse),)).with_marked_as_done_task_ids([1, 2,\n3]).with_marked_as_not_done_task_ids([4, 5, 6])"
+---
+{
+  "checklist_message": {
+    "chat": {
+      "type": "supergroup",
+      "id": 1,
+      "title": "test"
+    },
+    "date": 0,
+    "has_protected_content": false,
+    "message_id": 1,
+    "is_automatic_forward": false,
+    "from": {
+      "first_name": "test",
+      "id": 1,
+      "is_bot": false
+    }
+  },
+  "marked_as_done_task_ids": [
+    1,
+    2,
+    3
+  ],
+  "marked_as_not_done_task_ids": [
+    4,
+    5,
+    6
+  ]
+}

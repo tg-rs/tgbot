@@ -1,0 +1,12 @@
+---
+source: src/types/tests/background.rs
+expression: "BackgroundType::Fill\n{ dark_theme_dimming: 4, fill: BackgroundFill::Solid { color: 1 }, }"
+---
+{
+  "type": "fill",
+  "dark_theme_dimming": 4,
+  "fill": {
+    "type": "solid",
+    "color": 1
+  }
+}

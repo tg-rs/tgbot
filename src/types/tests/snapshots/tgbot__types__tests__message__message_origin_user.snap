@@ -1,0 +1,13 @@
+---
+source: src/types/tests/message.rs
+expression: "MessageOrigin::from(MessageOriginUser::new(0, User::new(1, \"test\", false)))"
+---
+{
+  "type": "user",
+  "date": 0,
+  "sender_user": {
+    "first_name": "test",
+    "id": 1,
+    "is_bot": false
+  }
+}

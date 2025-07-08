@@ -1,0 +1,19 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: "expected_struct.clone().with_chat_type(InlineQueryChatType::Private).with_location(Location::new(1.0,\n2.0))"
+---
+{
+  "from": {
+    "first_name": "test",
+    "id": 1,
+    "is_bot": false
+  },
+  "id": "query id",
+  "offset": "query offset",
+  "query": "query string",
+  "chat_type": "private",
+  "location": {
+    "latitude": 1.0,
+    "longitude": 2.0
+  }
+}

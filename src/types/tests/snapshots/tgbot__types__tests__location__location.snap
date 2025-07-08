@@ -1,0 +1,12 @@
+---
+source: src/types/tests/location.rs
+expression: "Location::new(2.0,\n1.0).with_heading(5).with_horizontal_accuracy(3.0).with_live_period(4).with_proximity_alert_radius(6)"
+---
+{
+  "latitude": 2.0,
+  "longitude": 1.0,
+  "heading": 5,
+  "horizontal_accuracy": 3.0,
+  "live_period": 4,
+  "proximity_alert_radius": 6
+}

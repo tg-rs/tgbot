@@ -1,0 +1,15 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(Document::new(\"file-id\", \"file-unique-id\"), origin)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "document": {
+    "file_id": "file-id",
+    "file_unique_id": "file-unique-id"
+  }
+}

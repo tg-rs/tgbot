@@ -1,0 +1,28 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "message_reaction": {
+    "chat": {
+      "type": "private",
+      "id": 1,
+      "first_name": "test"
+    },
+    "date": 0,
+    "message_id": 1,
+    "new_reaction": [
+      {
+        "type": "emoji",
+        "emoji": "🤡"
+      }
+    ],
+    "old_reaction": [
+      {
+        "type": "emoji",
+        "emoji": "🤮"
+      }
+    ]
+  }
+}

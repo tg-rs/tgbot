@@ -1,0 +1,7 @@
+---
+source: src/types/tests/bot.rs
+expression: "BotDescription::new(\"test-description\")"
+---
+{
+  "description": "test-description"
+}

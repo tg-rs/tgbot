@@ -1,0 +1,13 @@
+---
+source: src/types/tests/message.rs
+expression: "MessageOrigin::from(MessageOriginChat::new(0, GroupChat::new(1, \"test\")))"
+---
+{
+  "type": "chat",
+  "date": 0,
+  "sender_chat": {
+    "type": "group",
+    "id": 1,
+    "title": "test"
+  }
+}

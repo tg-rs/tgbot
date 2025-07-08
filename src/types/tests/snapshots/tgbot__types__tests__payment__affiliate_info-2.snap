@@ -1,0 +1,19 @@
+---
+source: src/types/tests/payment.rs
+expression: "expected_struct.with_affiliate_chat(ChannelChat::new(1,\n\"test\")).with_affiliate_user(User::new(1, \"John\",\ntrue)).with_nanostar_amount(1)"
+---
+{
+  "amount": 1,
+  "commission_per_mille": 1,
+  "affiliate_chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "test"
+  },
+  "affiliate_user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": true
+  },
+  "nanostar_amount": 1
+}

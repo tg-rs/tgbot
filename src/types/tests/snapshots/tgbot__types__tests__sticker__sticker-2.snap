@@ -1,0 +1,13 @@
+---
+source: src/types/tests/sticker.rs
+expression: "Sticker::new(\"test file id\", \"unique-id\", StickerType::Regular, 512, 512)"
+---
+{
+  "file_id": "test file id",
+  "file_unique_id": "unique-id",
+  "height": 512,
+  "is_animated": false,
+  "is_video": false,
+  "type": "regular",
+  "width": 512
+}

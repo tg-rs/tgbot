@@ -1,0 +1,7 @@
+---
+source: src/types/tests/reply.rs
+expression: expected_struct.clone()
+---
+{
+  "query": "query"
+}

@@ -1,0 +1,14 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMessageContent::from(InputMessageContentText::new(\"text\").with_parse_mode(ParseMode::Markdown).with_entities(vec![TextEntity::bold(0..10)]),)"
+---
+{
+  "message_text": "text",
+  "entities": [
+    {
+      "offset": 0,
+      "length": 10,
+      "type": "bold"
+    }
+  ]
+}

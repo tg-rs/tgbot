@@ -1,0 +1,11 @@
+---
+source: src/types/tests/payment.rs
+expression: "expected_struct.with_provider_payment_charge_id(\"provider-charge-id\")"
+---
+{
+  "currency": "RUB",
+  "invoice_payload": "payload",
+  "telegram_payment_charge_id": "charge-id",
+  "total_amount": 100,
+  "provider_payment_charge_id": "provider-charge-id"
+}

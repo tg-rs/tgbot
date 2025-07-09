@@ -1,17 +1,24 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "parse_mode": FormValue::Text(
-            "Markdown",
-        ),
-        "chat_id": FormValue::Text(
+[
+    (
+        "chat_id",
+        FormValue::Text(
             "1",
         ),
-        "video": FormValue::Text(
+    ),
+    (
+        "parse_mode",
+        FormValue::Text(
+            "Markdown",
+        ),
+    ),
+    (
+        "video",
+        FormValue::Text(
             "file-id",
         ),
-    },
-}
+    ),
+]

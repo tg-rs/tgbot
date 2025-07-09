@@ -1,14 +1,18 @@
 ---
 source: src/types/tests/business.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "photo": FormValue::Text(
-            "{\"type\":\"static\",\"photo\":\"test\"}",
-        ),
-        "business_connection_id": FormValue::Text(
+[
+    (
+        "business_connection_id",
+        FormValue::Text(
             "id",
         ),
-    },
-}
+    ),
+    (
+        "photo",
+        FormValue::Text(
+            "{\"type\":\"static\",\"photo\":\"test\"}",
+        ),
+    ),
+]

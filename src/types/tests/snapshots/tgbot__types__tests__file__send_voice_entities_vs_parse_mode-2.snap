@@ -1,17 +1,24 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "caption_entities": FormValue::Text(
+[
+    (
+        "caption_entities",
+        FormValue::Text(
             "[{\"offset\":0,\"length\":10,\"type\":\"bold\"}]",
         ),
-        "chat_id": FormValue::Text(
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
             "1",
         ),
-        "voice": FormValue::Text(
+    ),
+    (
+        "voice",
+        FormValue::Text(
             "file-id",
         ),
-    },
-}
+    ),
+]

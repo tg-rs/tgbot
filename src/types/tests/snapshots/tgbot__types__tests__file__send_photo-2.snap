@@ -1,50 +1,90 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "has_spoiler": FormValue::Text(
+[
+    (
+        "allow_paid_broadcast",
+        FormValue::Text(
             "true",
         ),
-        "message_thread_id": FormValue::Text(
-            "1",
-        ),
-        "message_effect_id": FormValue::Text(
-            "effect-id",
-        ),
-        "protect_content": FormValue::Text(
-            "true",
-        ),
-        "disable_notification": FormValue::Text(
-            "true",
-        ),
-        "photo": FormValue::Text(
-            "file-id",
-        ),
-        "chat_id": FormValue::Text(
-            "1",
-        ),
-        "reply_markup": FormValue::Text(
-            "{\"force_reply\":true}",
-        ),
-        "show_caption_above_media": FormValue::Text(
-            "true",
-        ),
-        "reply_parameters": FormValue::Text(
-            "{\"message_id\":1}",
-        ),
-        "parse_mode": FormValue::Text(
-            "Markdown",
-        ),
-        "caption": FormValue::Text(
-            "Caption",
-        ),
-        "business_connection_id": FormValue::Text(
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
             "id",
         ),
-        "allow_paid_broadcast": FormValue::Text(
+    ),
+    (
+        "caption",
+        FormValue::Text(
+            "Caption",
+        ),
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "disable_notification",
+        FormValue::Text(
             "true",
         ),
-    },
-}
+    ),
+    (
+        "has_spoiler",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "message_effect_id",
+        FormValue::Text(
+            "effect-id",
+        ),
+    ),
+    (
+        "message_thread_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "parse_mode",
+        FormValue::Text(
+            "Markdown",
+        ),
+    ),
+    (
+        "photo",
+        FormValue::Text(
+            "file-id",
+        ),
+    ),
+    (
+        "protect_content",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "reply_markup",
+        FormValue::Text(
+            "{\"force_reply\":true}",
+        ),
+    ),
+    (
+        "reply_parameters",
+        FormValue::Text(
+            "{\"message_id\":1}",
+        ),
+    ),
+    (
+        "show_caption_above_media",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+]

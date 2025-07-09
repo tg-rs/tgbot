@@ -1,43 +1,74 @@
 ---
 source: src/types/tests/media.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "message_thread_id": FormValue::Text(
-            "1",
-        ),
-        "tgbot_im_file_0": FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-        "protect_content": FormValue::Text(
+[
+    (
+        "allow_paid_broadcast",
+        FormValue::Text(
             "true",
         ),
-        "disable_notification": FormValue::Text(
-            "true",
-        ),
-        "reply_parameters": FormValue::Text(
-            "{\"message_id\":1}",
-        ),
-        "allow_paid_broadcast": FormValue::Text(
-            "true",
-        ),
-        "tgbot_im_file_1": FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-        "business_connection_id": FormValue::Text(
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
             "id",
         ),
-        "message_effect_id": FormValue::Text(
-            "effect-id",
-        ),
-        "media": FormValue::Text(
-            "[{\"type\":\"photo\",\"media\":\"attach://tgbot_im_file_0\"},{\"type\":\"video\",\"media\":\"attach://tgbot_im_file_1\"},{\"type\":\"video\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"}]",
-        ),
-        "chat_id": FormValue::Text(
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
             "1",
         ),
-    },
-}
+    ),
+    (
+        "disable_notification",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "media",
+        FormValue::Text(
+            "[{\"type\":\"photo\",\"media\":\"attach://tgbot_im_file_0\"},{\"type\":\"video\",\"media\":\"attach://tgbot_im_file_1\"},{\"type\":\"video\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"}]",
+        ),
+    ),
+    (
+        "message_effect_id",
+        FormValue::Text(
+            "effect-id",
+        ),
+    ),
+    (
+        "message_thread_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "protect_content",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "reply_parameters",
+        FormValue::Text(
+            "{\"message_id\":1}",
+        ),
+    ),
+    (
+        "tgbot_im_file_0",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "tgbot_im_file_1",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+]

@@ -1,14 +1,18 @@
 ---
 source: src/types/tests/chat.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "chat_id": FormValue::Text(
+[
+    (
+        "chat_id",
+        FormValue::Text(
             "1",
         ),
-        "photo": FormValue::Text(
+    ),
+    (
+        "photo",
+        FormValue::Text(
             "photo-id",
         ),
-    },
-}
+    ),
+]

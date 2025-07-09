@@ -1,62 +1,114 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "message_effect_id": FormValue::Text(
-            "effect-id",
-        ),
-        "message_thread_id": FormValue::Text(
-            "1",
-        ),
-        "disable_notification": FormValue::Text(
+[
+    (
+        "allow_paid_broadcast",
+        FormValue::Text(
             "true",
         ),
-        "thumbnail": FormValue::Text(
-            "https://google.com/favicon.ico",
-        ),
-        "width": FormValue::Text(
-            "200",
-        ),
-        "caption": FormValue::Text(
-            "Caption",
-        ),
-        "reply_parameters": FormValue::Text(
-            "{\"message_id\":1}",
-        ),
-        "protect_content": FormValue::Text(
-            "true",
-        ),
-        "parse_mode": FormValue::Text(
-            "Markdown",
-        ),
-        "has_spoiler": FormValue::Text(
-            "true",
-        ),
-        "duration": FormValue::Text(
-            "100",
-        ),
-        "animation": FormValue::Text(
+    ),
+    (
+        "animation",
+        FormValue::Text(
             "file-id",
         ),
-        "business_connection_id": FormValue::Text(
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
             "id",
         ),
-        "show_caption_above_media": FormValue::Text(
-            "true",
+    ),
+    (
+        "caption",
+        FormValue::Text(
+            "Caption",
         ),
-        "chat_id": FormValue::Text(
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
             "1",
         ),
-        "allow_paid_broadcast": FormValue::Text(
+    ),
+    (
+        "disable_notification",
+        FormValue::Text(
             "true",
         ),
-        "height": FormValue::Text(
+    ),
+    (
+        "duration",
+        FormValue::Text(
+            "100",
+        ),
+    ),
+    (
+        "has_spoiler",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "height",
+        FormValue::Text(
             "300",
         ),
-        "reply_markup": FormValue::Text(
+    ),
+    (
+        "message_effect_id",
+        FormValue::Text(
+            "effect-id",
+        ),
+    ),
+    (
+        "message_thread_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "parse_mode",
+        FormValue::Text(
+            "Markdown",
+        ),
+    ),
+    (
+        "protect_content",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "reply_markup",
+        FormValue::Text(
             "{\"force_reply\":true}",
         ),
-    },
-}
+    ),
+    (
+        "reply_parameters",
+        FormValue::Text(
+            "{\"message_id\":1}",
+        ),
+    ),
+    (
+        "show_caption_above_media",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "thumbnail",
+        FormValue::Text(
+            "https://google.com/favicon.ico",
+        ),
+    ),
+    (
+        "width",
+        FormValue::Text(
+            "200",
+        ),
+    ),
+]

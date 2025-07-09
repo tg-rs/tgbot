@@ -1,14 +1,18 @@
 ---
 source: src/types/tests/message.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "media": FormValue::Text(
-            "{\"type\":\"photo\",\"media\":\"file-id\"}",
-        ),
-        "inline_message_id": FormValue::Text(
+[
+    (
+        "inline_message_id",
+        FormValue::Text(
             "msg-id",
         ),
-    },
-}
+    ),
+    (
+        "media",
+        FormValue::Text(
+            "{\"type\":\"photo\",\"media\":\"file-id\"}",
+        ),
+    ),
+]

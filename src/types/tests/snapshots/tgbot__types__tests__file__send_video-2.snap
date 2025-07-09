@@ -1,71 +1,132 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "video": FormValue::Text(
-            "file-id",
-        ),
-        "cover": FormValue::Text(
-            "cover-id",
-        ),
-        "height": FormValue::Text(
-            "300",
-        ),
-        "show_caption_above_media": FormValue::Text(
+[
+    (
+        "allow_paid_broadcast",
+        FormValue::Text(
             "true",
         ),
-        "start_timestamp": FormValue::Text(
-            "20",
-        ),
-        "protect_content": FormValue::Text(
-            "true",
-        ),
-        "caption": FormValue::Text(
-            "Caption",
-        ),
-        "message_thread_id": FormValue::Text(
-            "1",
-        ),
-        "allow_paid_broadcast": FormValue::Text(
-            "true",
-        ),
-        "thumbnail": FormValue::Text(
-            "https://example.com/image.jpg",
-        ),
-        "has_spoiler": FormValue::Text(
-            "true",
-        ),
-        "chat_id": FormValue::Text(
-            "1",
-        ),
-        "width": FormValue::Text(
-            "200",
-        ),
-        "disable_notification": FormValue::Text(
-            "true",
-        ),
-        "duration": FormValue::Text(
-            "100",
-        ),
-        "parse_mode": FormValue::Text(
-            "Markdown",
-        ),
-        "message_effect_id": FormValue::Text(
-            "effect-id",
-        ),
-        "reply_markup": FormValue::Text(
-            "{\"force_reply\":true}",
-        ),
-        "business_connection_id": FormValue::Text(
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
             "id",
         ),
-        "supports_streaming": FormValue::Text(
+    ),
+    (
+        "caption",
+        FormValue::Text(
+            "Caption",
+        ),
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "cover",
+        FormValue::Text(
+            "cover-id",
+        ),
+    ),
+    (
+        "disable_notification",
+        FormValue::Text(
             "true",
         ),
-        "reply_parameters": FormValue::Text(
+    ),
+    (
+        "duration",
+        FormValue::Text(
+            "100",
+        ),
+    ),
+    (
+        "has_spoiler",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "height",
+        FormValue::Text(
+            "300",
+        ),
+    ),
+    (
+        "message_effect_id",
+        FormValue::Text(
+            "effect-id",
+        ),
+    ),
+    (
+        "message_thread_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "parse_mode",
+        FormValue::Text(
+            "Markdown",
+        ),
+    ),
+    (
+        "protect_content",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "reply_markup",
+        FormValue::Text(
+            "{\"force_reply\":true}",
+        ),
+    ),
+    (
+        "reply_parameters",
+        FormValue::Text(
             "{\"message_id\":1}",
         ),
-    },
-}
+    ),
+    (
+        "show_caption_above_media",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "start_timestamp",
+        FormValue::Text(
+            "20",
+        ),
+    ),
+    (
+        "supports_streaming",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "thumbnail",
+        FormValue::Text(
+            "https://example.com/image.jpg",
+        ),
+    ),
+    (
+        "video",
+        FormValue::Text(
+            "file-id",
+        ),
+    ),
+    (
+        "width",
+        FormValue::Text(
+            "200",
+        ),
+    ),
+]

@@ -1,17 +1,24 @@
 ---
 source: src/types/tests/sticker.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "sticker_format": FormValue::Text(
-            "static",
-        ),
-        "user_id": FormValue::Text(
-            "1",
-        ),
-        "sticker": FormValue::Text(
+[
+    (
+        "sticker",
+        FormValue::Text(
             "sticker-id",
         ),
-    },
-}
+    ),
+    (
+        "sticker_format",
+        FormValue::Text(
+            "static",
+        ),
+    ),
+    (
+        "user_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+]

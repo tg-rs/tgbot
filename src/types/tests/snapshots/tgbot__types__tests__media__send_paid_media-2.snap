@@ -1,47 +1,84 @@
 ---
 source: src/types/tests/media.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "chat_id": FormValue::Text(
-            "1",
-        ),
-        "payload": FormValue::Text(
-            "payload",
-        ),
-        "show_caption_above_media": FormValue::Text(
+[
+    (
+        "allow_paid_broadcast",
+        FormValue::Text(
             "true",
         ),
-        "business_connection_id": FormValue::Text(
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
             "c-id",
         ),
-        "allow_paid_broadcast": FormValue::Text(
-            "true",
-        ),
-        "caption": FormValue::Text(
+    ),
+    (
+        "caption",
+        FormValue::Text(
             "caption",
         ),
-        "reply_markup": FormValue::Text(
-            "{\"force_reply\":true}",
-        ),
-        "media": FormValue::Text(
-            "[{\"type\":\"photo\",\"media\":\"file-id\"}]",
-        ),
-        "protect_content": FormValue::Text(
-            "true",
-        ),
-        "star_count": FormValue::Text(
-            "100",
-        ),
-        "caption_entities": FormValue::Text(
+    ),
+    (
+        "caption_entities",
+        FormValue::Text(
             "[{\"offset\":0,\"length\":1,\"type\":\"bold\"}]",
         ),
-        "reply_parameters": FormValue::Text(
-            "{\"message_id\":1}",
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
         ),
-        "disable_notification": FormValue::Text(
+    ),
+    (
+        "disable_notification",
+        FormValue::Text(
             "true",
         ),
-    },
-}
+    ),
+    (
+        "media",
+        FormValue::Text(
+            "[{\"type\":\"photo\",\"media\":\"file-id\"}]",
+        ),
+    ),
+    (
+        "payload",
+        FormValue::Text(
+            "payload",
+        ),
+    ),
+    (
+        "protect_content",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "reply_markup",
+        FormValue::Text(
+            "{\"force_reply\":true}",
+        ),
+    ),
+    (
+        "reply_parameters",
+        FormValue::Text(
+            "{\"message_id\":1}",
+        ),
+    ),
+    (
+        "show_caption_above_media",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "star_count",
+        FormValue::Text(
+            "100",
+        ),
+    ),
+]

@@ -1,41 +1,72 @@
 ---
 source: src/types/tests/sticker.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "disable_notification": FormValue::Text(
+[
+    (
+        "allow_paid_broadcast",
+        FormValue::Text(
             "true",
         ),
-        "allow_paid_broadcast": FormValue::Text(
-            "true",
-        ),
-        "message_effect_id": FormValue::Text(
-            "effect-id",
-        ),
-        "reply_markup": FormValue::Text(
-            "{\"force_reply\":true}",
-        ),
-        "sticker": FormValue::Text(
-            "sticker-id",
-        ),
-        "emoji": FormValue::Text(
-            "😱",
-        ),
-        "business_connection_id": FormValue::Text(
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
             "id",
         ),
-        "chat_id": FormValue::Text(
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
             "1",
         ),
-        "protect_content": FormValue::Text(
+    ),
+    (
+        "disable_notification",
+        FormValue::Text(
             "true",
         ),
-        "message_thread_id": FormValue::Text(
+    ),
+    (
+        "emoji",
+        FormValue::Text(
+            "😱",
+        ),
+    ),
+    (
+        "message_effect_id",
+        FormValue::Text(
+            "effect-id",
+        ),
+    ),
+    (
+        "message_thread_id",
+        FormValue::Text(
             "1",
         ),
-        "reply_parameters": FormValue::Text(
+    ),
+    (
+        "protect_content",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "reply_markup",
+        FormValue::Text(
+            "{\"force_reply\":true}",
+        ),
+    ),
+    (
+        "reply_parameters",
+        FormValue::Text(
             "{\"message_id\":1}",
         ),
-    },
-}
+    ),
+    (
+        "sticker",
+        FormValue::Text(
+            "sticker-id",
+        ),
+    ),
+]

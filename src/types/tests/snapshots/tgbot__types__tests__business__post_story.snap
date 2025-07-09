@@ -1,17 +1,24 @@
 ---
 source: src/types/tests/business.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "active_period": FormValue::Text(
+[
+    (
+        "active_period",
+        FormValue::Text(
             "60",
         ),
-        "content": FormValue::Text(
-            "{\"type\":\"photo\",\"photo\":\"url\"}",
-        ),
-        "business_connection_id": FormValue::Text(
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
             "id",
         ),
-    },
-}
+    ),
+    (
+        "content",
+        FormValue::Text(
+            "{\"type\":\"photo\",\"photo\":\"url\"}",
+        ),
+    ),
+]

@@ -1,56 +1,102 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form
+expression: actual_form.into_fields()
 ---
-Form {
-    fields: {
-        "parse_mode": FormValue::Text(
-            "Markdown",
+[
+    (
+        "allow_paid_broadcast",
+        FormValue::Text(
+            "true",
         ),
-        "reply_parameters": FormValue::Text(
-            "{\"message_id\":1}",
-        ),
-        "audio": FormValue::Text(
+    ),
+    (
+        "audio",
+        FormValue::Text(
             "file-id",
         ),
-        "thumbnail": FormValue::Text(
-            "https://google.com/favicon.ico",
-        ),
-        "duration": FormValue::Text(
-            "100",
-        ),
-        "allow_paid_broadcast": FormValue::Text(
-            "true",
-        ),
-        "chat_id": FormValue::Text(
-            "1",
-        ),
-        "performer": FormValue::Text(
-            "Performer",
-        ),
-        "disable_notification": FormValue::Text(
-            "true",
-        ),
-        "protect_content": FormValue::Text(
-            "true",
-        ),
-        "reply_markup": FormValue::Text(
-            "{\"force_reply\":true}",
-        ),
-        "business_connection_id": FormValue::Text(
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
             "id",
         ),
-        "caption": FormValue::Text(
+    ),
+    (
+        "caption",
+        FormValue::Text(
             "Caption",
         ),
-        "message_effect_id": FormValue::Text(
-            "effect-id",
-        ),
-        "title": FormValue::Text(
-            "Title",
-        ),
-        "message_thread_id": FormValue::Text(
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
             "1",
         ),
-    },
-}
+    ),
+    (
+        "disable_notification",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "duration",
+        FormValue::Text(
+            "100",
+        ),
+    ),
+    (
+        "message_effect_id",
+        FormValue::Text(
+            "effect-id",
+        ),
+    ),
+    (
+        "message_thread_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "parse_mode",
+        FormValue::Text(
+            "Markdown",
+        ),
+    ),
+    (
+        "performer",
+        FormValue::Text(
+            "Performer",
+        ),
+    ),
+    (
+        "protect_content",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "reply_markup",
+        FormValue::Text(
+            "{\"force_reply\":true}",
+        ),
+    ),
+    (
+        "reply_parameters",
+        FormValue::Text(
+            "{\"message_id\":1}",
+        ),
+    ),
+    (
+        "thumbnail",
+        FormValue::Text(
+            "https://google.com/favicon.ico",
+        ),
+    ),
+    (
+        "title",
+        FormValue::Text(
+            "Title",
+        ),
+    ),
+]

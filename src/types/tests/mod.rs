@@ -44,7 +44,7 @@ macro_rules! assert_payload_eq {
                 insta::assert_json_snapshot!(actual_data);
             }
             (crate::types::tests::ExpectedData::Form, crate::api::PayloadData::Form(actual_form)) => {
-                insta::assert_debug_snapshot!(actual_form);
+                insta::assert_debug_snapshot!(actual_form.into_fields());
             }
             (expected_data, actual_body) => {
                 assert!(matches!(expected_data, crate::types::tests::ExpectedData::Empty));

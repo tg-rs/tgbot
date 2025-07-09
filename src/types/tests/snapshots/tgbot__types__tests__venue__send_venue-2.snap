@@ -1,0 +1,11 @@
+---
+source: src/types/tests/venue.rs
+expression: actual_data
+---
+{
+  "address": "addr",
+  "chat_id": 1,
+  "latitude": 2.0,
+  "longitude": 3.0,
+  "title": "title"
+}

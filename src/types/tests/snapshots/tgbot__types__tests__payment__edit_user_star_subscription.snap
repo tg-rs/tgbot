@@ -1,0 +1,9 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "is_canceled": false,
+  "telegram_payment_charge_id": "id",
+  "user_id": 1
+}

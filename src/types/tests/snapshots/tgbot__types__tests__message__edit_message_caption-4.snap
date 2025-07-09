@@ -1,0 +1,14 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "caption_entities": [
+    {
+      "length": 10,
+      "offset": 0,
+      "type": "bold"
+    }
+  ],
+  "inline_message_id": "msg-id"
+}

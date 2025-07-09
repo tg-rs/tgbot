@@ -1,0 +1,9 @@
+---
+source: src/types/tests/chat.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "c-id",
+  "chat_id": 1,
+  "message_id": 2
+}

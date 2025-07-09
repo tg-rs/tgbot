@@ -1,0 +1,7 @@
+---
+source: src/types/tests/bot.rs
+expression: actual_data
+---
+{
+  "language_code": "RU"
+}

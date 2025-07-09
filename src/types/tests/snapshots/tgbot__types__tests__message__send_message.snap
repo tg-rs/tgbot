@@ -1,0 +1,8 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "text": "text"
+}

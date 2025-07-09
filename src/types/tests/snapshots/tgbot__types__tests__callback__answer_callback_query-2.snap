@@ -1,0 +1,11 @@
+---
+source: src/types/tests/callback.rs
+expression: actual_data
+---
+{
+  "cache_time": 10,
+  "callback_query_id": "id",
+  "show_alert": true,
+  "text": "text",
+  "url": "url"
+}

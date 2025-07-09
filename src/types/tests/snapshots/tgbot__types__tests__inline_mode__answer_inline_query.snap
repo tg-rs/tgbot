@@ -1,0 +1,17 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: actual_data
+---
+{
+  "inline_query_id": "id",
+  "results": [
+    {
+      "id": "id",
+      "input_message_content": {
+        "message_text": "text"
+      },
+      "title": "title",
+      "type": "article"
+    }
+  ]
+}

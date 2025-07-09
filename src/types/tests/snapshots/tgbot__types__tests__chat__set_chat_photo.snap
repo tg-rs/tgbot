@@ -1,0 +1,14 @@
+---
+source: src/types/tests/chat.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "chat_id": FormValue::Text(
+            "1",
+        ),
+        "photo": FormValue::Text(
+            "photo-id",
+        ),
+    },
+}

@@ -1,0 +1,9 @@
+---
+source: src/types/tests/business.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "id",
+  "new_owner_chat_id": 1,
+  "owned_gift_id": "id"
+}

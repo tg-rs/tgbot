@@ -1,0 +1,9 @@
+---
+source: src/types/tests/contact.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "first_name": "John",
+  "phone_number": "+79001231212"
+}

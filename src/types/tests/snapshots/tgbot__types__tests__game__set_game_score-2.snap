@@ -1,0 +1,12 @@
+---
+source: src/types/tests/game.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "disable_edit_message": true,
+  "force": true,
+  "message_id": 2,
+  "score": 100,
+  "user_id": 3
+}

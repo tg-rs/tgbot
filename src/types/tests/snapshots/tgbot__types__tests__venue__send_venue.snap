@@ -1,0 +1,27 @@
+---
+source: src/types/tests/venue.rs
+expression: actual_data
+---
+{
+  "address": "addr",
+  "allow_paid_broadcast": true,
+  "business_connection_id": "id",
+  "chat_id": 1,
+  "disable_notification": true,
+  "foursquare_id": "f-id",
+  "foursquare_type": "f-type",
+  "google_place_id": "g-id",
+  "google_place_type": "g-type",
+  "latitude": 2.0,
+  "longitude": 3.0,
+  "message_effect_id": "effect-id",
+  "message_thread_id": 1,
+  "protect_content": true,
+  "reply_markup": {
+    "force_reply": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  },
+  "title": "title"
+}

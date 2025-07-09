@@ -1,0 +1,9 @@
+---
+source: src/types/tests/gift.rs
+expression: actual_data
+---
+{
+  "month_count": 1,
+  "star_count": 2,
+  "user_id": 3
+}

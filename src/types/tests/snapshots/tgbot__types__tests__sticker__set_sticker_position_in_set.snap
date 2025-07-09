@@ -1,0 +1,8 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_data
+---
+{
+  "position": 1,
+  "sticker": "sticker"
+}

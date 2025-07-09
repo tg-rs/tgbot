@@ -1,0 +1,9 @@
+---
+source: src/types/tests/business.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "id",
+  "first_name": "John",
+  "last_name": "Doe"
+}

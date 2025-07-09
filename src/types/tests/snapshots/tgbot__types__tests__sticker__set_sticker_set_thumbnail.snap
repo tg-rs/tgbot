@@ -1,0 +1,20 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "name": FormValue::Text(
+            "name",
+        ),
+        "user_id": FormValue::Text(
+            "1",
+        ),
+        "thumbnail": FormValue::Text(
+            "file-id",
+        ),
+        "format": FormValue::Text(
+            "static",
+        ),
+    },
+}

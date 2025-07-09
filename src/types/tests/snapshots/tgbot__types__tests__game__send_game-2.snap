@@ -1,0 +1,27 @@
+---
+source: src/types/tests/game.rs
+expression: actual_data
+---
+{
+  "allow_paid_broadcast": true,
+  "business_connection_id": "id",
+  "chat_id": 1,
+  "disable_notification": true,
+  "game_short_name": "Game",
+  "message_effect_id": "effect-id",
+  "message_thread_id": 1,
+  "protect_content": true,
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "example.com"
+        }
+      ]
+    ]
+  },
+  "reply_parameters": {
+    "message_id": 1
+  }
+}

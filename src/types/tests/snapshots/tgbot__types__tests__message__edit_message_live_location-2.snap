@@ -1,0 +1,25 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "c-id",
+  "chat_id": 1,
+  "heading": 100,
+  "horizontal_accuracy": 5.0,
+  "latitude": 3.0,
+  "live_period": 10,
+  "longitude": 4.0,
+  "message_id": 2,
+  "proximity_alert_radius": 200,
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+---
+source: src/types/tests/message.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "reply_markup": FormValue::Text(
+            "{\"inline_keyboard\":[[{\"text\":\"text\",\"url\":\"url\"}]]}",
+        ),
+        "media": FormValue::Text(
+            "{\"type\":\"photo\",\"media\":\"file-id\"}",
+        ),
+        "chat_id": FormValue::Text(
+            "1",
+        ),
+        "message_id": FormValue::Text(
+            "2",
+        ),
+        "business_connection_id": FormValue::Text(
+            "c-id",
+        ),
+    },
+}

@@ -1,0 +1,10 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_data
+---
+{
+  "keywords": [
+    "kw"
+  ],
+  "sticker": "file-id"
+}

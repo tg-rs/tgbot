@@ -1,0 +1,9 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "ok": true,
+  "shipping_options": [],
+  "shipping_query_id": "id"
+}

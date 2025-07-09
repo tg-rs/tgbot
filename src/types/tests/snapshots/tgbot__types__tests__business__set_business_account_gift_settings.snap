@@ -1,0 +1,14 @@
+---
+source: src/types/tests/business.rs
+expression: actual_data
+---
+{
+  "accepted_gift_types": {
+    "limited_gifts": false,
+    "premium_subscription": false,
+    "unique_gifts": false,
+    "unlimited_gifts": false
+  },
+  "business_connection_id": "id",
+  "show_gift_button": true
+}

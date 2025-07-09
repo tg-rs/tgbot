@@ -1,0 +1,8 @@
+---
+source: src/types/tests/verification.rs
+expression: actual_data
+---
+{
+  "custom_description": "test",
+  "user_id": 1
+}

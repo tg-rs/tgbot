@@ -1,0 +1,23 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "allow_paid_broadcast": true,
+  "caption": "caption",
+  "chat_id": 1,
+  "disable_notification": true,
+  "from_chat_id": 2,
+  "message_id": 3,
+  "message_thread_id": 1,
+  "parse_mode": "Markdown",
+  "protect_content": true,
+  "reply_markup": {
+    "force_reply": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  },
+  "show_caption_above_media": true,
+  "video_start_timestamp": 200
+}

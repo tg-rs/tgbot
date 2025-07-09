@@ -1,0 +1,20 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "id",
+  "currency": "GEL",
+  "description": "product-description",
+  "max_tip_amount": 100,
+  "payload": "payload",
+  "prices": [
+    {
+      "amount": 100,
+      "label": "price-label"
+    }
+  ],
+  "provider_token": "provider-token",
+  "subscription_period": 1,
+  "title": "product-name"
+}

@@ -1,0 +1,50 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "allow_paid_broadcast": true,
+  "chat_id": 1,
+  "currency": "RUB",
+  "description": "description",
+  "disable_notification": true,
+  "is_flexible": true,
+  "max_tip_amount": 100,
+  "message_effect_id": "effect-id",
+  "message_thread_id": 1,
+  "need_email": true,
+  "need_name": true,
+  "need_phone_number": true,
+  "need_shipping_address": true,
+  "payload": "payload",
+  "photo_height": 300,
+  "photo_size": 100,
+  "photo_url": "url",
+  "photo_width": 200,
+  "prices": [],
+  "protect_content": true,
+  "provider_data": "{\"key\":\"value\"}",
+  "provider_token": "token",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "reply_parameters": {
+    "message_id": 1
+  },
+  "send_email_to_provider": true,
+  "send_phone_number_to_provider": true,
+  "start_parameter": "param",
+  "suggested_tip_amounts": [
+    10,
+    50,
+    100
+  ],
+  "title": "title"
+}

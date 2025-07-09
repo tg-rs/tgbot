@@ -1,0 +1,26 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "title": FormValue::Text(
+            "title",
+        ),
+        "stickers": FormValue::Text(
+            "[{\"sticker\":\"sticker-file-id\",\"emoji_list\":[\"😻\"],\"format\":\"static\"}]",
+        ),
+        "sticker_type": FormValue::Text(
+            "regular",
+        ),
+        "needs_repainting": FormValue::Text(
+            "true",
+        ),
+        "user_id": FormValue::Text(
+            "1",
+        ),
+        "name": FormValue::Text(
+            "name",
+        ),
+    },
+}

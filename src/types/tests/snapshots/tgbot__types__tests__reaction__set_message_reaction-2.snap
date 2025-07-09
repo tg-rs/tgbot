@@ -1,0 +1,15 @@
+---
+source: src/types/tests/reaction.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "is_big": true,
+  "message_id": 2,
+  "reaction": [
+    {
+      "emoji": "🤡",
+      "type": "emoji"
+    }
+  ]
+}

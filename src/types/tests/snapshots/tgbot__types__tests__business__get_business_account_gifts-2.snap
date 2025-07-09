@@ -1,0 +1,15 @@
+---
+source: src/types/tests/business.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "id",
+  "exclude_limited": true,
+  "exclude_saved": true,
+  "exclude_unique": true,
+  "exclude_unlimited": true,
+  "exclude_unsaved": true,
+  "limit": 10,
+  "offset": "test",
+  "sort_by_price": true
+}

@@ -1,0 +1,15 @@
+---
+source: src/types/tests/poll.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "options": [
+    {
+      "text": "X"
+    }
+  ],
+  "question": "Q",
+  "question_parse_mode": "MarkdownV2",
+  "type": "regular"
+}

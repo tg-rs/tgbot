@@ -1,0 +1,23 @@
+---
+source: src/types/tests/contact.rs
+expression: actual_data
+---
+{
+  "allow_paid_broadcast": true,
+  "business_connection_id": "id",
+  "chat_id": 1,
+  "disable_notification": true,
+  "first_name": "John",
+  "last_name": "Doe",
+  "message_effect_id": "effect-id",
+  "message_thread_id": 1,
+  "phone_number": "+79001231212",
+  "protect_content": true,
+  "reply_markup": {
+    "force_reply": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  },
+  "vcard": "BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD"
+}

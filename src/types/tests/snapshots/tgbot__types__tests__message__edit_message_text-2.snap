@@ -1,0 +1,24 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "c-id",
+  "chat_id": 1,
+  "link_preview_options": {
+    "is_disabled": true
+  },
+  "message_id": 2,
+  "parse_mode": "Markdown",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "text": "text"
+}

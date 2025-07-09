@@ -1,0 +1,18 @@
+---
+source: src/types/tests/checklist.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "c-id",
+  "chat_id": 1,
+  "checklist": {
+    "tasks": [
+      {
+        "id": 1,
+        "text": "test"
+      }
+    ],
+    "title": "test"
+  },
+  "message_id": 2
+}

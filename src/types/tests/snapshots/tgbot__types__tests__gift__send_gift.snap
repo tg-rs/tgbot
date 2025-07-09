@@ -1,0 +1,8 @@
+---
+source: src/types/tests/gift.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "gift_id": "test"
+}

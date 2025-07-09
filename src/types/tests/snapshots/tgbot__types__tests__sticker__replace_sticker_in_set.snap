@@ -1,0 +1,20 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "name": FormValue::Text(
+            "test",
+        ),
+        "old_sticker": FormValue::Text(
+            "old-sticker",
+        ),
+        "sticker": FormValue::Text(
+            "{\"sticker\":\"test\",\"emoji_list\":[\"😻\"],\"format\":\"static\"}",
+        ),
+        "user_id": FormValue::Text(
+            "1",
+        ),
+    },
+}

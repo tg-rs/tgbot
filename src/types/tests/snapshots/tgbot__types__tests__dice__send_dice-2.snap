@@ -1,0 +1,20 @@
+---
+source: src/types/tests/dice.rs
+expression: actual_data
+---
+{
+  "allow_paid_broadcast": true,
+  "business_connection_id": "id",
+  "chat_id": 1,
+  "disable_notification": true,
+  "emoji": "🎲",
+  "message_effect_id": "effect-id",
+  "message_thread_id": 1,
+  "protect_content": true,
+  "reply_markup": {
+    "force_reply": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  }
+}

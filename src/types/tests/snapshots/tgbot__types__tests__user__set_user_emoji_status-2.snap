@@ -1,0 +1,9 @@
+---
+source: src/types/tests/user.rs
+expression: actual_data
+---
+{
+  "emoji_status_custom_emoji_id": "emoji-id",
+  "emoji_status_expiration_date": 1,
+  "user_id": 1
+}

@@ -1,0 +1,7 @@
+---
+source: src/types/tests/file.rs
+expression: actual_data
+---
+{
+  "file_id": "file-id"
+}

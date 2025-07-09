@@ -1,0 +1,16 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "currency": "GEL",
+  "description": "product-description",
+  "payload": "payload",
+  "prices": [
+    {
+      "amount": 100,
+      "label": "price-label"
+    }
+  ],
+  "title": "product-name"
+}

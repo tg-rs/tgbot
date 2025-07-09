@@ -1,0 +1,15 @@
+---
+source: src/types/tests/webhook.rs
+expression: actual_data
+---
+{
+  "allowed_updates": [
+    "message"
+  ],
+  "certificate": "cert",
+  "drop_pending_updates": true,
+  "ip_address": "127.0.0.1",
+  "max_connections": 10,
+  "secret_token": "secret-token",
+  "url": "url"
+}

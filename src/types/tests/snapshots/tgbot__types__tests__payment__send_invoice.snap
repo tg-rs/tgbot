@@ -1,0 +1,17 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "chat_id": "@username",
+  "currency": "RUB",
+  "description": "description",
+  "payload": "payload",
+  "prices": [
+    {
+      "amount": 100,
+      "label": "item"
+    }
+  ],
+  "title": "title"
+}

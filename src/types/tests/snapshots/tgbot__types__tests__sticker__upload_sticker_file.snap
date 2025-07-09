@@ -1,0 +1,17 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "sticker_format": FormValue::Text(
+            "static",
+        ),
+        "user_id": FormValue::Text(
+            "1",
+        ),
+        "sticker": FormValue::Text(
+            "sticker-id",
+        ),
+    },
+}

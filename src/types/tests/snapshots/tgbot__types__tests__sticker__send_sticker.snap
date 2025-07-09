@@ -1,0 +1,41 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "disable_notification": FormValue::Text(
+            "true",
+        ),
+        "allow_paid_broadcast": FormValue::Text(
+            "true",
+        ),
+        "message_effect_id": FormValue::Text(
+            "effect-id",
+        ),
+        "reply_markup": FormValue::Text(
+            "{\"force_reply\":true}",
+        ),
+        "sticker": FormValue::Text(
+            "sticker-id",
+        ),
+        "emoji": FormValue::Text(
+            "😱",
+        ),
+        "business_connection_id": FormValue::Text(
+            "id",
+        ),
+        "chat_id": FormValue::Text(
+            "1",
+        ),
+        "protect_content": FormValue::Text(
+            "true",
+        ),
+        "message_thread_id": FormValue::Text(
+            "1",
+        ),
+        "reply_parameters": FormValue::Text(
+            "{\"message_id\":1}",
+        ),
+    },
+}

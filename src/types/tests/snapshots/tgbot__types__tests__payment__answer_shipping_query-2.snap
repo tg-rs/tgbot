@@ -1,0 +1,9 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "error_message": "msg",
+  "ok": false,
+  "shipping_query_id": "id"
+}

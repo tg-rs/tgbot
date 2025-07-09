@@ -1,0 +1,26 @@
+---
+source: src/types/tests/business.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "content": FormValue::Text(
+            "{\"type\":\"photo\",\"photo\":\"url\"}",
+        ),
+        "business_connection_id": FormValue::Text(
+            "id",
+        ),
+        "story_id": FormValue::Text(
+            "1",
+        ),
+        "areas": FormValue::Text(
+            "[{\"type\":{\"type\":\"link\",\"url\":\"url\"},\"position\":{\"corner_radius_percentage\":1.0,\"height_percentage\":2.0,\"rotation_angle\":3.0,\"width_percentage\":4.0,\"x_percentage\":5.0,\"y_percentage\":6.0}}]",
+        ),
+        "caption": FormValue::Text(
+            "test",
+        ),
+        "caption_entities": FormValue::Text(
+            "[{\"offset\":0,\"length\":2,\"type\":\"bold\"}]",
+        ),
+    },
+}

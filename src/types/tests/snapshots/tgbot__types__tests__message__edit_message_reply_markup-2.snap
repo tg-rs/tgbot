@@ -1,0 +1,18 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "message_id": 2,
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  }
+}

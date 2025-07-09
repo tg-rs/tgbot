@@ -1,0 +1,8 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_data
+---
+{
+  "custom_emoji_id": "emoji-id",
+  "name": "test"
+}

@@ -1,0 +1,13 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: actual_data
+---
+{
+  "result": {
+    "first_name": "test",
+    "id": "result-id",
+    "phone_number": "+1000",
+    "type": "contact"
+  },
+  "user_id": 1
+}

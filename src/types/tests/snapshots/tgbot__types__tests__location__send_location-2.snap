@@ -1,0 +1,25 @@
+---
+source: src/types/tests/location.rs
+expression: actual_data
+---
+{
+  "allow_paid_broadcast": true,
+  "business_connection_id": "id",
+  "chat_id": 1,
+  "disable_notification": true,
+  "heading": 120,
+  "horizontal_accuracy": 1.5,
+  "latitude": 2.0,
+  "live_period": 100,
+  "longitude": 3.0,
+  "message_effect_id": "effect-id",
+  "message_thread_id": 1,
+  "protect_content": true,
+  "proximity_alert_radius": 100,
+  "reply_markup": {
+    "force_reply": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  }
+}

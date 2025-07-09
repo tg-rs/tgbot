@@ -1,0 +1,7 @@
+---
+source: src/types/tests/webhook.rs
+expression: actual_data
+---
+{
+  "drop_pending_updates": false
+}

@@ -1,0 +1,8 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "ok": true,
+  "pre_checkout_query_id": "query-id"
+}

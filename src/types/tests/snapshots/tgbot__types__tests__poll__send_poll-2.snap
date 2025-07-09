@@ -1,0 +1,21 @@
+---
+source: src/types/tests/poll.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "options": [
+    {
+      "text": "X"
+    }
+  ],
+  "question": "Q",
+  "question_entities": [
+    {
+      "length": 1,
+      "offset": 0,
+      "type": "bold"
+    }
+  ],
+  "type": "regular"
+}

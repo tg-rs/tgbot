@@ -1,0 +1,18 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "c-id",
+  "inline_message_id": "msg-id",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  }
+}

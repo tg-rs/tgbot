@@ -1,0 +1,12 @@
+---
+source: src/types/tests/update.rs
+expression: actual_data
+---
+{
+  "allowed_updates": [
+    "message"
+  ],
+  "limit": 10,
+  "offset": 0,
+  "timeout": 10
+}

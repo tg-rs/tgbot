@@ -1,0 +1,8 @@
+---
+source: src/types/tests/dice.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "emoji": "🎲"
+}

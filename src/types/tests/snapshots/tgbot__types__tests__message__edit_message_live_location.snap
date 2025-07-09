@@ -1,0 +1,10 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "latitude": 3.0,
+  "longitude": 4.0,
+  "message_id": 2
+}

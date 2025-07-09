@@ -1,0 +1,10 @@
+---
+source: src/types/tests/business.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "id",
+  "keep_original_details": true,
+  "owned_gift_id": "id",
+  "star_count": 1
+}

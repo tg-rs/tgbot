@@ -1,0 +1,8 @@
+---
+source: src/types/tests/bot.rs
+expression: actual_data
+---
+{
+  "description": "test-description",
+  "language_code": "RU"
+}

@@ -1,0 +1,8 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "limit": 5,
+  "offset": 0
+}

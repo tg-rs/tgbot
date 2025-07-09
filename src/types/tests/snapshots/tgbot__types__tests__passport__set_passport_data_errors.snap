@@ -1,0 +1,8 @@
+---
+source: src/types/tests/passport.rs
+expression: actual_data
+---
+{
+  "errors": [],
+  "user_id": 1
+}

@@ -1,0 +1,16 @@
+---
+source: src/types/tests/bot.rs
+expression: actual_data
+---
+{
+  "commands": [
+    {
+      "command": "name",
+      "description": "description"
+    }
+  ],
+  "language_code": "ru",
+  "scope": {
+    "type": "all_private_chats"
+  }
+}

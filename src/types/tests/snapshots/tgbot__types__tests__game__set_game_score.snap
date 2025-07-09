@@ -1,0 +1,10 @@
+---
+source: src/types/tests/game.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "message_id": 2,
+  "score": 100,
+  "user_id": 3
+}

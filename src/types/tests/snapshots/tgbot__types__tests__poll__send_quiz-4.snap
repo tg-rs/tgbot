@@ -1,0 +1,32 @@
+---
+source: src/types/tests/poll.rs
+expression: actual_data
+---
+{
+  "allow_paid_broadcast": true,
+  "business_connection_id": "id",
+  "chat_id": 1,
+  "correct_option_id": 0,
+  "disable_notification": true,
+  "is_anonymous": false,
+  "is_closed": false,
+  "message_effect_id": "effect-id",
+  "message_thread_id": 1,
+  "options": [
+    {
+      "text": "O1"
+    },
+    {
+      "text": "O2"
+    }
+  ],
+  "protect_content": true,
+  "question": "Q",
+  "reply_markup": {
+    "force_reply": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  },
+  "type": "quiz"
+}

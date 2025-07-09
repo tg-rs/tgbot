@@ -1,0 +1,14 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "sticker": FormValue::Text(
+            "sticker-id",
+        ),
+        "chat_id": FormValue::Text(
+            "1",
+        ),
+    },
+}

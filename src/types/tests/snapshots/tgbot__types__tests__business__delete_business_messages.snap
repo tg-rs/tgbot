@@ -1,0 +1,12 @@
+---
+source: src/types/tests/business.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "id",
+  "message_ids": [
+    1,
+    2,
+    3
+  ]
+}

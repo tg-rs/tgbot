@@ -1,0 +1,7 @@
+---
+source: src/types/tests/forum.rs
+expression: actual_data
+---
+{
+  "chat_id": 1
+}

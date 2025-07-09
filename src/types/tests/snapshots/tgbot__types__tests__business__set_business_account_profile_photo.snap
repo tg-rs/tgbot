@@ -1,0 +1,14 @@
+---
+source: src/types/tests/business.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "photo": FormValue::Text(
+            "{\"type\":\"static\",\"photo\":\"test\"}",
+        ),
+        "business_connection_id": FormValue::Text(
+            "id",
+        ),
+    },
+}

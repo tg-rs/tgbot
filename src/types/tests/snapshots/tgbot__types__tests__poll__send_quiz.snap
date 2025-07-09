@@ -1,0 +1,15 @@
+---
+source: src/types/tests/poll.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "correct_option_id": 0,
+  "options": [
+    {
+      "text": "X"
+    }
+  ],
+  "question": "Q",
+  "type": "quiz"
+}

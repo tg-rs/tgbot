@@ -1,0 +1,9 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "inline_message_id": "msg-id",
+  "latitude": 3.0,
+  "longitude": 4.0
+}

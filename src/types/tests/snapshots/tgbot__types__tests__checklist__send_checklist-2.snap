@@ -1,0 +1,33 @@
+---
+source: src/types/tests/checklist.rs
+expression: actual_data
+---
+{
+  "business_connection_id": "c-id",
+  "chat_id": 1,
+  "checklist": {
+    "tasks": [
+      {
+        "id": 1,
+        "text": "test"
+      }
+    ],
+    "title": "test"
+  },
+  "disable_notification": true,
+  "message_effect_id": "effect-id",
+  "protect_content": true,
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "reply_parameters": {
+    "message_id": 1
+  }
+}

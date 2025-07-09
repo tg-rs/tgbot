@@ -1,0 +1,10 @@
+---
+source: src/types/tests/chat.rs
+expression: actual_data
+---
+{
+  "action": "typing",
+  "business_connection_id": "id",
+  "chat_id": 1,
+  "message_thread_id": 1
+}

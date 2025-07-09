@@ -1,0 +1,24 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: actual_data
+---
+{
+  "button": {
+    "start_parameter": "param",
+    "text": "text"
+  },
+  "cache_time": 300,
+  "inline_query_id": "id",
+  "is_personal": true,
+  "next_offset": "offset",
+  "results": [
+    {
+      "id": "id",
+      "input_message_content": {
+        "message_text": "text"
+      },
+      "title": "title",
+      "type": "article"
+    }
+  ]
+}

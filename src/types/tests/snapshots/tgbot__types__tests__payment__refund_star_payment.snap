@@ -1,0 +1,8 @@
+---
+source: src/types/tests/payment.rs
+expression: actual_data
+---
+{
+  "telegram_payment_charge_id": "test",
+  "user_id": 1
+}

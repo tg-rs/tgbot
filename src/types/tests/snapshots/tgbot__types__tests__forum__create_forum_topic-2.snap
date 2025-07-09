@@ -1,0 +1,10 @@
+---
+source: src/types/tests/forum.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "icon_color": 13338331,
+  "icon_custom_emoji_id": "emoji-id",
+  "name": "topic-name"
+}

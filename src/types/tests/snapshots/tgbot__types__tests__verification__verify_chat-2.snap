@@ -1,0 +1,8 @@
+---
+source: src/types/tests/verification.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "custom_description": "test"
+}

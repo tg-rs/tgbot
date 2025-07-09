@@ -1,0 +1,11 @@
+---
+source: src/types/tests/gift.rs
+expression: actual_data
+---
+{
+  "month_count": 1,
+  "star_count": 2,
+  "text": "text",
+  "text_parse_mode": "Markdown",
+  "user_id": 3
+}

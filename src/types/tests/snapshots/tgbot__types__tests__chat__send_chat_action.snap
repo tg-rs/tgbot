@@ -1,0 +1,8 @@
+---
+source: src/types/tests/chat.rs
+expression: actual_data
+---
+{
+  "action": "typing",
+  "chat_id": 1
+}

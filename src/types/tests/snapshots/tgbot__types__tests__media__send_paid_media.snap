@@ -1,0 +1,17 @@
+---
+source: src/types/tests/media.rs
+expression: actual_form
+---
+Form {
+    fields: {
+        "chat_id": FormValue::Text(
+            "1",
+        ),
+        "star_count": FormValue::Text(
+            "100",
+        ),
+        "media": FormValue::Text(
+            "[{\"type\":\"photo\",\"media\":\"file-id\"}]",
+        ),
+    },
+}

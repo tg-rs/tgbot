@@ -1,0 +1,15 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "disable_notification": true,
+  "from_chat_id": 2,
+  "message_ids": [
+    3
+  ],
+  "message_thread_id": 1,
+  "protect_content": true,
+  "remove_caption": true
+}

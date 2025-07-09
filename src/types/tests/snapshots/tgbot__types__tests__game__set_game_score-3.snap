@@ -1,0 +1,9 @@
+---
+source: src/types/tests/game.rs
+expression: actual_data
+---
+{
+  "inline_message_id": "inline-message-id",
+  "score": 100,
+  "user_id": 3
+}

@@ -1,0 +1,11 @@
+---
+source: src/types/tests/chat.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "creates_join_request": false,
+  "expire_date": 0,
+  "member_limit": 1,
+  "name": "Link"
+}

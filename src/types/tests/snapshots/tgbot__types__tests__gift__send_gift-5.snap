@@ -1,0 +1,17 @@
+---
+source: src/types/tests/gift.rs
+expression: actual_data
+---
+{
+  "gift_id": "test",
+  "pay_for_upgrade": true,
+  "text": "test",
+  "text_entities": [
+    {
+      "length": 2,
+      "offset": 0,
+      "type": "bold"
+    }
+  ],
+  "user_id": 1
+}

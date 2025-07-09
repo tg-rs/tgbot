@@ -1,0 +1,7 @@
+---
+source: src/types/tests/callback.rs
+expression: actual_data
+---
+{
+  "callback_query_id": "id"
+}

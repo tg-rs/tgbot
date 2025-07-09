@@ -5,15 +5,10 @@ use reqwest::{Client as HttpClient, Method as HttpMethod, RequestBuilder as Http
 use serde::ser::Serialize;
 use serde_json::Error as JsonError;
 
-#[cfg(test)]
-pub(crate) use self::tests::*;
 use super::form::{Form, FormError};
 
-#[cfg(test)]
-mod tests;
-
 #[derive(Debug)]
-enum PayloadData {
+pub(crate) enum PayloadData {
     Form(Form),
     Json(Result<String, JsonError>),
     Empty,
@@ -22,9 +17,9 @@ enum PayloadData {
 #[doc(hidden)]
 #[derive(Debug)]
 pub struct Payload {
-    http_method: HttpMethod,
-    payload_data: PayloadData,
-    url_path: String,
+    pub(crate) http_method: HttpMethod,
+    pub(crate) payload_data: PayloadData,
+    pub(crate) url_path: String,
 }
 
 impl Payload {
@@ -52,7 +47,7 @@ impl Payload {
         }
     }
 
-    pub(super) fn build_url(&self, base_url: &str, token: &str) -> String {
+    pub(crate) fn build_url(&self, base_url: &str, token: &str) -> String {
         format!("{}/bot{}/{}", base_url, token, self.url_path)
     }
 

@@ -1,9 +1,6 @@
 use std::collections::HashSet;
 
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn webhook_info() {
@@ -21,57 +18,29 @@ fn webhook_info() {
 
 #[test]
 fn delete_webhook() {
-    assert_payload_eq(Payload::empty("deleteWebhook"), DeleteWebhook::default());
-    assert_payload_eq(
-        Payload::json(
-            "deleteWebhook",
-            serde_json::json!({
-                "drop_pending_updates": false
-            }),
-        ),
-        DeleteWebhook::default().with_drop_pending_updates(false),
-    );
+    assert_payload_eq!(GET "deleteWebhook" => DeleteWebhook::default());
+    let method = DeleteWebhook::default().with_drop_pending_updates(false);
+    assert_payload_eq!(POST JSON "deleteWebhook" => method);
 }
 
 #[test]
 fn get_webhook_info() {
-    assert_payload_eq(Payload::empty("getWebhookInfo"), GetWebhookInfo);
+    assert_payload_eq!(GET "getWebhookInfo" => GetWebhookInfo);
 }
 
 #[test]
 fn set_webhook() {
-    assert_payload_eq(
-        Payload::json(
-            "setWebhook",
-            serde_json::json!({
-                "url": "url",
-            }),
-        ),
-        SetWebhook::new("url"),
-    );
+    assert_payload_eq!(POST JSON "setWebhook" => SetWebhook::new("url"));
 
     let mut updates = HashSet::new();
     updates.insert(AllowedUpdate::Message);
-    assert_payload_eq(
-        Payload::json(
-            "setWebhook",
-            serde_json::json!({
-                "url": "url",
-                "certificate": "cert",
-                "ip_address": "127.0.0.1",
-                "max_connections": 10,
-                "drop_pending_updates": true,
-                "allowed_updates": ["message"],
-                "secret_token": "secret-token"
-            }),
-        ),
-        SetWebhook::new("url")
-            .with_certificate("cert")
-            .with_ip_address("127.0.0.1")
-            .with_max_connections(10)
-            .with_allowed_updates(updates)
-            .add_allowed_update(AllowedUpdate::Message)
-            .with_drop_pending_updates(true)
-            .with_secret_token("secret-token"),
-    );
+    let method = SetWebhook::new("url")
+        .with_certificate("cert")
+        .with_ip_address("127.0.0.1")
+        .with_max_connections(10)
+        .with_allowed_updates(updates)
+        .add_allowed_update(AllowedUpdate::Message)
+        .with_drop_pending_updates(true)
+        .with_secret_token("secret-token");
+    assert_payload_eq!(POST JSON "setWebhook" => method);
 }

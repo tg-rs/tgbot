@@ -1,7 +1,4 @@
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn checklist() {
@@ -62,37 +59,9 @@ fn checklist_tasks_done() {
 fn edit_message_checklist() {
     let checklist = InputChecklist::new([InputChecklistTask::new(1, "test")], "test");
     let method = EditMessageChecklist::new("c-id", 1, checklist, 2);
-    assert_payload_eq(
-        Payload::json(
-            "editMessageChecklist",
-            serde_json::json!({
-                "business_connection_id": "c-id",
-                "chat_id": 1,
-                "checklist": {
-                    "tasks": [{"id": 1, "text": "test"}],
-                    "title": "test",
-                },
-                "message_id": 2,
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "editMessageChecklist",
-            serde_json::json!({
-                "business_connection_id": "c-id",
-                "chat_id": 1,
-                "checklist": {
-                    "tasks": [{"id": 1, "text": "test"}],
-                    "title": "test",
-                },
-                "message_id": 2,
-                "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
-            }),
-        ),
-        method.with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
-    );
+    assert_payload_eq!(POST JSON "editMessageChecklist" => method.clone());
+    let method = method.with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]);
+    assert_payload_eq!(POST JSON "editMessageChecklist" => method);
 }
 
 #[test]
@@ -122,42 +91,12 @@ fn input_checklist_task() {
 fn send_checklist() {
     let checklist = InputChecklist::new([InputChecklistTask::new(1, "test")], "test");
     let method = SendChecklist::new("c-id", 1, checklist);
-    assert_payload_eq(
-        Payload::json(
-            "sendChecklist",
-            serde_json::json!({
-                "business_connection_id": "c-id",
-                "chat_id": 1,
-                "checklist": {
-                    "tasks": [{"id": 1, "text": "test"}],
-                    "title": "test",
-                }
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "sendChecklist",
-            serde_json::json!({
-                "business_connection_id": "c-id",
-                "chat_id": 1,
-                "checklist": {
-                    "tasks": [{"id": 1, "text": "test"}],
-                    "title": "test",
-                },
-                "disable_notification": true,
-                "protect_content": true,
-                "reply_markup": {"inline_keyboard": [[{"text": "text", "url": "url"}]]},
-                "reply_parameters": {"message_id": 1},
-                "message_effect_id": "effect-id",
-            }),
-        ),
-        method
-            .with_disable_notification(true)
-            .with_protect_content(true)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_reply_parameters(ReplyParameters::new(1))
-            .with_message_effect_id("effect-id"),
-    );
+    assert_payload_eq!(POST JSON "sendChecklist" => method.clone());
+    let method = method
+        .with_disable_notification(true)
+        .with_protect_content(true)
+        .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+        .with_reply_parameters(ReplyParameters::new(1))
+        .with_message_effect_id("effect-id");
+    assert_payload_eq!(POST JSON "sendChecklist" => method);
 }

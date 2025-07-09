@@ -1,7 +1,4 @@
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn prepared_inline_message() {
@@ -11,44 +8,13 @@ fn prepared_inline_message() {
 #[test]
 fn save_prepared_inline_message() {
     let method = SavePreparedInlineMessage::new(1, InlineQueryResultContact::new("test", "result-id", "+1000"));
-    assert_payload_eq(
-        Payload::json(
-            "savePreparedInlineMessage",
-            serde_json::json!({
-                "user_id": 1,
-                "result": {
-                    "type": "contact",
-                    "first_name": "test",
-                    "id": "result-id",
-                    "phone_number": "+1000",
-                },
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "savePreparedInlineMessage",
-            serde_json::json!({
-                "user_id": 1,
-                "result": {
-                    "type": "contact",
-                    "first_name": "test",
-                    "id": "result-id",
-                    "phone_number": "+1000",
-                },
-                "allow_bot_chats": true,
-                "allow_channel_chats": true,
-                "allow_group_chats": true,
-                "allow_user_chats": true,
-            }),
-        ),
-        method
-            .with_allow_bot_chats(true)
-            .with_allow_channel_chats(true)
-            .with_allow_group_chats(true)
-            .with_allow_user_chats(true),
-    );
+    assert_payload_eq!(POST JSON "savePreparedInlineMessage" => method.clone());
+    let method = method
+        .with_allow_bot_chats(true)
+        .with_allow_channel_chats(true)
+        .with_allow_group_chats(true)
+        .with_allow_user_chats(true);
+    assert_payload_eq!(POST JSON "savePreparedInlineMessage" => method);
 }
 
 #[test]
@@ -76,57 +42,13 @@ fn answer_inline_query() {
     let text = InputMessageContent::Text(InputMessageContentText::new("text"));
     let article = InlineQueryResult::Article(InlineQueryResultArticle::new("id", text, "title"));
     let method = AnswerInlineQuery::new("id", [article]);
-
-    assert_payload_eq(
-        Payload::json(
-            "answerInlineQuery",
-            serde_json::json!({
-                "inline_query_id": "id",
-                "results": [
-                    {
-                        "type": "article",
-                        "id": "id",
-                        "title": "title",
-                        "input_message_content": {
-                            "message_text": "text"
-                        }
-                    }
-                ]
-            }),
-        ),
-        method.clone(),
-    );
-
-    assert_payload_eq(
-        Payload::json(
-            "answerInlineQuery",
-            serde_json::json!({
-                "inline_query_id": "id",
-                "results": [
-                    {
-                        "type": "article",
-                        "id": "id",
-                        "title": "title",
-                        "input_message_content": {
-                            "message_text": "text"
-                        }
-                    }
-                ],
-                "cache_time": 300,
-                "is_personal": true,
-                "next_offset": "offset",
-                "button": {
-                    "text": "text",
-                    "start_parameter": "param"
-                }
-            }),
-        ),
-        method
-            .with_button(InlineQueryResultsButton::for_start_parameter("text", "param"))
-            .with_cache_time(300)
-            .with_is_personal(true)
-            .with_next_offset("offset"),
-    );
+    assert_payload_eq!(POST JSON "answerInlineQuery" => method.clone());
+    let method = method
+        .with_button(InlineQueryResultsButton::for_start_parameter("text", "param"))
+        .with_cache_time(300)
+        .with_is_personal(true)
+        .with_next_offset("offset");
+    assert_payload_eq!(POST JSON "answerInlineQuery" => method);
 }
 
 #[test]
@@ -479,24 +401,9 @@ fn sent_web_app_message() {
 
 #[test]
 fn answer_web_app_query() {
-    assert_payload_eq(
-        Payload::json(
-            "answerWebAppQuery",
-            serde_json::json!({
-                "web_app_query_id": "query-id",
-                "result": {
-                    "type": "article",
-                    "id": "article-id",
-                    "title": "article-title",
-                    "input_message_content": {
-                        "message_text": "article-text"
-                    }
-                }
-            }),
-        ),
-        AnswerWebAppQuery::new(
-            InlineQueryResultArticle::new("article-id", "article-text", "article-title"),
-            "query-id",
-        ),
+    let method = AnswerWebAppQuery::new(
+        InlineQueryResultArticle::new("article-id", "article-text", "article-title"),
+        "query-id",
     );
+    assert_payload_eq!(POST JSON "answerWebAppQuery" => method);
 }

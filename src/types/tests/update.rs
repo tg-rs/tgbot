@@ -1,9 +1,6 @@
 use std::{collections::HashSet, time::Duration};
 
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn allowed_update() {
@@ -539,28 +536,14 @@ fn user_status() {
 
 #[test]
 fn get_updates() {
-    assert_payload_eq(
-        Payload::json("getUpdates", serde_json::json!({})),
-        GetUpdates::default(),
-    );
-
+    assert_payload_eq!(POST JSON "getUpdates" => GetUpdates::default());
     let mut updates = HashSet::new();
     updates.insert(AllowedUpdate::Message);
-    assert_payload_eq(
-        Payload::json(
-            "getUpdates",
-            serde_json::json!({
-                "offset": 0,
-                "limit": 10,
-                "timeout": 10,
-                "allowed_updates": ["message"]
-            }),
-        ),
-        GetUpdates::default()
-            .with_offset(0)
-            .with_limit(10)
-            .with_timeout(Duration::from_secs(10))
-            .with_allowed_updates(updates)
-            .add_allowed_update(AllowedUpdate::Message),
-    );
+    let method = GetUpdates::default()
+        .with_offset(0)
+        .with_limit(10)
+        .with_timeout(Duration::from_secs(10))
+        .with_allowed_updates(updates)
+        .add_allowed_update(AllowedUpdate::Message);
+    assert_payload_eq!(POST JSON "getUpdates" => method);
 }

@@ -1,7 +1,4 @@
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn passport_data() {
@@ -259,14 +256,5 @@ fn create_error_accepts_type() {
 
 #[test]
 fn set_passport_data_errors() {
-    assert_payload_eq(
-        Payload::json(
-            "setPassportDataErrors",
-            serde_json::json!({
-                "user_id": 1,
-                "errors": []
-            }),
-        ),
-        SetPassportDataErrors::new(1, vec![]),
-    );
+    assert_payload_eq!(POST JSON "setPassportDataErrors" => SetPassportDataErrors::new(1, vec![]));
 }

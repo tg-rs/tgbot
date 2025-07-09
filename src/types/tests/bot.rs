@@ -1,7 +1,4 @@
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn bot() {
@@ -70,272 +67,115 @@ fn bot_short_description() {
 
 #[test]
 fn close() {
-    assert_payload_eq(Payload::empty("close"), Close);
+    assert_payload_eq!(GET "close" => Close);
 }
 
 #[test]
 fn delete_bot_commands() {
     let method = DeleteBotCommands::default();
-    assert_payload_eq(Payload::json("deleteMyCommands", serde_json::json!({})), method.clone());
-    assert_payload_eq(
-        Payload::json(
-            "deleteMyCommands",
-            serde_json::json!({
-                "scope": {
-                    "type": "default"
-                },
-                "language_code": "ru"
-            }),
-        ),
-        method.with_scope(BotCommandScope::Default).with_language_code("ru"),
-    );
+    assert_payload_eq!(POST JSON "deleteMyCommands" => method.clone());
+    let method = method.with_scope(BotCommandScope::Default).with_language_code("ru");
+    assert_payload_eq!(POST JSON "deleteMyCommands" => method);
 }
 
 #[test]
 fn get_bot() {
-    assert_payload_eq(Payload::empty("getMe"), GetBot);
+    assert_payload_eq!(GET "getMe" => GetBot);
 }
 
 #[test]
 fn get_bot_commands() {
     let method = GetBotCommands::default();
-    assert_payload_eq(Payload::json("getMyCommands", serde_json::json!({})), method.clone());
-    assert_payload_eq(
-        Payload::json(
-            "getMyCommands",
-            serde_json::json!({
-                "scope": {
-                    "type": "default"
-                },
-                "language_code": "ru"
-            }),
-        ),
-        method.with_scope(BotCommandScope::Default).with_language_code("ru"),
-    );
+    assert_payload_eq!(POST JSON "getMyCommands" => method.clone());
+    let method = method.with_scope(BotCommandScope::Default).with_language_code("ru");
+    assert_payload_eq!(POST JSON "getMyCommands" => method);
 }
 
 #[test]
 fn get_bot_default_administrator_rights() {
     let method = GetBotDefaultAdministratorRights::default();
-    assert_payload_eq(
-        Payload::json("getMyDefaultAdministratorRights", serde_json::json!({})),
-        method,
-    );
-    assert_payload_eq(
-        Payload::json(
-            "getMyDefaultAdministratorRights",
-            serde_json::json!({
-                "for_channels": true
-            }),
-        ),
-        method.with_for_channels(true),
-    );
+    assert_payload_eq!(POST JSON "getMyDefaultAdministratorRights" => method);
+    assert_payload_eq!(POST JSON "getMyDefaultAdministratorRights" => method.with_for_channels(true));
 }
 
 #[test]
 fn get_bot_description() {
     let method = GetBotDescription::default();
-    assert_payload_eq(Payload::json("getMyDescription", serde_json::json!({})), method.clone());
-    assert_payload_eq(
-        Payload::json(
-            "getMyDescription",
-            serde_json::json!({
-                "language_code": "RU"
-            }),
-        ),
-        method.with_language_code("RU"),
-    );
+    assert_payload_eq!(POST JSON "getMyDescription" => method.clone());
+    assert_payload_eq!(POST JSON "getMyDescription" => method.with_language_code("RU"));
 }
 
 #[test]
 fn get_bot_name() {
     let method = GetBotName::default();
-    assert_payload_eq(Payload::json("getMyName", serde_json::json!({})), method.clone());
-    assert_payload_eq(
-        Payload::json(
-            "getMyName",
-            serde_json::json!({
-                "language_code": "RU"
-            }),
-        ),
-        method.with_language_code("RU"),
-    );
+    assert_payload_eq!(POST JSON "getMyName" => method.clone());
+    let method = method.with_language_code("RU");
+    assert_payload_eq!(POST JSON "getMyName" => method);
 }
 
 #[test]
 fn get_bot_short_description() {
     let method = GetBotShortDescription::default();
-    assert_payload_eq(
-        Payload::json("getMyShortDescription", serde_json::json!({})),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "getMyShortDescription",
-            serde_json::json!({
-                "language_code": "RU"
-            }),
-        ),
-        method.with_language_code("RU"),
-    );
+    assert_payload_eq!(POST JSON "getMyShortDescription" => method.clone());
+    assert_payload_eq!(POST JSON "getMyShortDescription" => method.with_language_code("RU"));
 }
 
 #[test]
 fn get_bot_star_balance() {
     let method = GetBotStarBalance;
-    assert_payload_eq(Payload::empty("getMyStarBalance"), method);
+    assert_payload_eq!(GET "getMyStarBalance" => method);
 }
 
 #[test]
 fn log_out() {
-    assert_payload_eq(Payload::empty("logOut"), LogOut);
+    assert_payload_eq!(GET "logOut" => LogOut);
 }
 
 #[test]
 fn set_bot_commands() {
     let method = SetBotCommands::new(vec![BotCommand::new("name", "description").unwrap()]);
-    assert_payload_eq(
-        Payload::json(
-            "setMyCommands",
-            serde_json::json!({
-                "commands": [
-                    {
-                        "command": "name",
-                        "description": "description"
-                    }
-                ]
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setMyCommands",
-            serde_json::json!({
-                "commands": [
-                    {
-                        "command": "name",
-                        "description": "description"
-                    }
-                ],
-                "scope": {
-                    "type": "all_private_chats"
-                },
-                "language_code": "ru"
-            }),
-        ),
-        method
-            .with_scope(BotCommandScope::AllPrivateChats)
-            .with_language_code("ru"),
-    );
+    assert_payload_eq!(POST JSON "setMyCommands" => method.clone());
+    let method = method
+        .with_scope(BotCommandScope::AllPrivateChats)
+        .with_language_code("ru");
+    assert_payload_eq!(POST JSON "setMyCommands" => method);
 }
 
 #[test]
 fn set_bot_default_administrator_rights() {
     let method = SetBotDefaultAdministratorRights::default();
-    assert_payload_eq(
-        Payload::json("setMyDefaultAdministratorRights", serde_json::json!({})),
-        method,
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setMyDefaultAdministratorRights",
-            serde_json::json!({
-                "rights": {
-                    "is_anonymous": false,
-                    "can_manage_chat": false,
-                    "can_delete_messages": false,
-                    "can_manage_video_chats": false,
-                    "can_restrict_members": false,
-                    "can_promote_members": false,
-                    "can_change_info": false,
-                    "can_invite_users": false,
-                }
-            }),
-        ),
-        method.with_rights(ChatAdministratorRights::default()),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setMyDefaultAdministratorRights",
-            serde_json::json!({
-                "for_channels": true
-            }),
-        ),
-        method.with_for_channels(true),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setMyDefaultAdministratorRights",
-            serde_json::json!({
-                "rights": {
-                    "is_anonymous": false,
-                    "can_manage_chat": false,
-                    "can_delete_messages": false,
-                    "can_manage_video_chats": false,
-                    "can_restrict_members": false,
-                    "can_promote_members": false,
-                    "can_change_info": false,
-                    "can_invite_users": false,
-                },
-                "for_channels": true
-            }),
-        ),
-        method
-            .with_rights(ChatAdministratorRights::default())
-            .with_for_channels(true),
-    );
+    assert_payload_eq!(POST JSON "setMyDefaultAdministratorRights" => method);
+    let method = method.with_rights(ChatAdministratorRights::default());
+    assert_payload_eq!(POST JSON "setMyDefaultAdministratorRights" => method);
+    assert_payload_eq!(POST JSON "setMyDefaultAdministratorRights" => method.with_for_channels(true));
+    let method = method
+        .with_rights(ChatAdministratorRights::default())
+        .with_for_channels(true);
+    assert_payload_eq!(POST JSON "setMyDefaultAdministratorRights" => method);
 }
 
 #[test]
 fn set_bot_description() {
     let method = SetBotDescription::default();
-    assert_payload_eq(Payload::json("setMyDescription", serde_json::json!({})), method.clone());
-    assert_payload_eq(
-        Payload::json(
-            "setMyDescription",
-            serde_json::json!({
-                "description": "test-description",
-                "language_code": "RU"
-            }),
-        ),
-        method.with_description("test-description").with_language_code("RU"),
-    );
+    assert_payload_eq!(POST JSON "setMyDescription" => method.clone());
+    let method = method.with_description("test-description").with_language_code("RU");
+    assert_payload_eq!(POST JSON "setMyDescription" => method);
 }
 
 #[test]
 fn set_bot_name() {
     let method = SetBotName::default();
-    assert_payload_eq(Payload::json("setMyName", serde_json::json!({})), method.clone());
-    assert_payload_eq(
-        Payload::json(
-            "setMyName",
-            serde_json::json!({
-                "name": "test_bot_name",
-                "language_code": "RU"
-            }),
-        ),
-        method.with_name("test_bot_name").with_language_code("RU"),
-    );
+    assert_payload_eq!(POST JSON "setMyName" => method.clone());
+    let method = method.with_name("test_bot_name").with_language_code("RU");
+    assert_payload_eq!(POST JSON "setMyName" => method);
 }
 
 #[test]
 fn set_bot_short_description() {
     let method = SetBotShortDescription::default();
-    assert_payload_eq(
-        Payload::json("setMyShortDescription", serde_json::json!({})),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setMyShortDescription",
-            serde_json::json!({
-                "short_description": "test-short-description",
-                "language_code": "RU"
-            }),
-        ),
-        method
-            .with_short_description("test-short-description")
-            .with_language_code("RU"),
-    );
+    assert_payload_eq!(POST JSON "setMyShortDescription" => method.clone());
+    let method = method
+        .with_short_description("test-short-description")
+        .with_language_code("RU");
+    assert_payload_eq!(POST JSON "setMyShortDescription" => method);
 }

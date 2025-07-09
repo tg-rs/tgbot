@@ -1,7 +1,4 @@
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn location() {
@@ -29,50 +26,20 @@ fn location_address() {
 
 #[test]
 fn send_location() {
-    assert_payload_eq(
-        Payload::json(
-            "sendLocation",
-            serde_json::json!({
-                "chat_id": 1,
-                "latitude": 2.0,
-                "longitude": 3.0
-            }),
-        ),
-        SendLocation::new(1, 2.0, 3.0),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "sendLocation",
-            serde_json::json!({
-                "chat_id": 1,
-                "latitude": 2.0,
-                "longitude": 3.0,
-                "horizontal_accuracy": 1.5,
-                "live_period": 100,
-                "heading": 120,
-                "proximity_alert_radius": 100,
-                "allow_paid_broadcast": true,
-                "business_connection_id": "id",
-                "disable_notification": true,
-                "protect_content": true,
-                "message_effect_id": "effect-id",
-                "message_thread_id": 1,
-                "reply_markup": {"force_reply": true},
-                "reply_parameters": {"message_id": 1}
-            }),
-        ),
-        SendLocation::new(1, 2.0, 3.0)
-            .with_allow_paid_broadcast(true)
-            .with_business_connection_id("id")
-            .with_disable_notification(true)
-            .with_heading(120)
-            .with_horizontal_accuracy(1.5)
-            .with_live_period(100)
-            .with_message_effect_id("effect-id")
-            .with_message_thread_id(1)
-            .with_protect_content(true)
-            .with_proximity_alert_radius(100)
-            .with_reply_markup(ForceReply::new(true))
-            .with_reply_parameters(ReplyParameters::new(1)),
-    );
+    let method = SendLocation::new(1, 2.0, 3.0);
+    assert_payload_eq!(POST JSON "sendLocation" => method);
+    let method = SendLocation::new(1, 2.0, 3.0)
+        .with_allow_paid_broadcast(true)
+        .with_business_connection_id("id")
+        .with_disable_notification(true)
+        .with_heading(120)
+        .with_horizontal_accuracy(1.5)
+        .with_live_period(100)
+        .with_message_effect_id("effect-id")
+        .with_message_thread_id(1)
+        .with_protect_content(true)
+        .with_proximity_alert_radius(100)
+        .with_reply_markup(ForceReply::new(true))
+        .with_reply_parameters(ReplyParameters::new(1));
+    assert_payload_eq!(POST JSON "sendLocation" => method);
 }

@@ -1,9 +1,6 @@
 use serde::Serialize;
 
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn pre_checkout_query() {
@@ -19,27 +16,10 @@ fn pre_checkout_query() {
 
 #[test]
 fn answer_pre_checkout_query() {
-    assert_payload_eq(
-        Payload::json(
-            "answerPreCheckoutQuery",
-            serde_json::json!({
-                "pre_checkout_query_id": "query-id",
-                "ok": true
-            }),
-        ),
-        AnswerPreCheckoutQuery::ok("query-id"),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "answerPreCheckoutQuery",
-            serde_json::json!({
-                "pre_checkout_query_id": "query-id",
-                "ok": false,
-                "error_message": "msg"
-            }),
-        ),
-        AnswerPreCheckoutQuery::error("query-id", "msg"),
-    );
+    let method = AnswerPreCheckoutQuery::ok("query-id");
+    assert_payload_eq!(POST JSON "answerPreCheckoutQuery" => method);
+    let method = AnswerPreCheckoutQuery::error("query-id", "msg");
+    assert_payload_eq!(POST JSON "answerPreCheckoutQuery" => method);
 }
 
 #[test]
@@ -72,155 +52,60 @@ fn create_invoice_link() {
         "GEL",
         [LabeledPrice::new(100, "price-label")],
     );
-    assert_payload_eq(
-        Payload::json(
-            "createInvoiceLink",
-            serde_json::json!({
-                "title": "product-name",
-                "description": "product-description",
-                "payload": "payload",
-                "currency": "GEL",
-                "prices": [
-                    {
-                        "label": "price-label",
-                        "amount": 100
-                    }
-                ]
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "createInvoiceLink",
-            serde_json::json!({
-                "title": "product-name",
-                "description": "product-description",
-                "payload": "payload",
-                "currency": "GEL",
-                "prices": [
-                    {
-                        "label": "price-label",
-                        "amount": 100
-                    }
-                ],
-                "provider_token": "provider-token",
-                "max_tip_amount": 100,
-                "business_connection_id": "id",
-                "subscription_period": 1,
-            }),
-        ),
-        method
-            .with_business_connection_id("id")
-            .with_parameters(
-                InvoiceParameters::default()
-                    .with_max_tip_amount(100)
-                    .with_provider_token("provider-token"),
-            )
-            .with_subscription_period(1),
-    );
+    assert_payload_eq!(POST JSON "createInvoiceLink" => method.clone());
+    let method = method
+        .with_business_connection_id("id")
+        .with_parameters(
+            InvoiceParameters::default()
+                .with_max_tip_amount(100)
+                .with_provider_token("provider-token"),
+        )
+        .with_subscription_period(1);
+    assert_payload_eq!(POST JSON "createInvoiceLink" => method);
 }
 
 #[test]
 fn send_invoice() {
-    assert_payload_eq(
-        Payload::json(
-            "sendInvoice",
-            serde_json::json!({
-                "chat_id": "@username",
-                "title": "title",
-                "description": "description",
-                "payload": "payload",
-                "currency": "RUB",
-                "prices": [
-                    {
-                        "label": "item",
-                        "amount": 100
-                    }
-                ],
-            }),
-        ),
-        SendInvoice::new(
-            "@username",
-            "title",
-            "description",
-            "payload",
-            "RUB",
-            vec![LabeledPrice::new(100, "item")],
-        ),
+    let method = SendInvoice::new(
+        "@username",
+        "title",
+        "description",
+        "payload",
+        "RUB",
+        vec![LabeledPrice::new(100, "item")],
     );
-    assert_payload_eq(
-        Payload::json(
-            "sendInvoice",
-            serde_json::json!({
-                "chat_id": 1,
-                "title": "title",
-                "description": "description",
-                "payload": "payload",
-                "provider_token": "token",
-                "start_parameter": "param",
-                "currency": "RUB",
-                "prices": [],
-                "max_tip_amount": 100,
-                "suggested_tip_amounts": [10, 50, 100],
-                "provider_data": "{\"key\":\"value\"}",
-                "photo_url": "url",
-                "photo_size": 100,
-                "photo_width": 200,
-                "photo_height": 300,
-                "need_name": true,
-                "need_phone_number": true,
-                "need_email": true,
-                "need_shipping_address": true,
-                "send_phone_number_to_provider": true,
-                "send_email_to_provider": true,
-                "is_flexible": true,
-                "allow_paid_broadcast": true,
-                "disable_notification": true,
-                "message_effect_id": "effect-id",
-                "message_thread_id": 1,
-                "protect_content": true,
-                "reply_markup": {
-                    "inline_keyboard": [[
-                        {"text": "text", "url": "url"}
-                    ]]
-                },
-                "reply_parameters": {
-                    "message_id": 1
-                }
-            }),
-        ),
-        SendInvoice::new(1, "title", "description", "payload", "RUB", vec![])
-            .with_allow_paid_broadcast(true)
-            .with_disable_notification(true)
-            .with_message_effect_id("effect-id")
-            .with_message_thread_id(1)
-            .with_parameters(
-                InvoiceParameters::default()
-                    .with_max_tip_amount(100)
-                    .with_need_email(true)
-                    .with_need_name(true)
-                    .with_need_phone_number(true)
-                    .with_need_shipping_address(true)
-                    .with_photo_height(300)
-                    .with_photo_size(100)
-                    .with_photo_url("url")
-                    .with_photo_width(200)
-                    .with_provider_data(&ProviderData {
-                        key: String::from("value"),
-                    })
-                    .unwrap()
-                    .with_provider_token("token")
-                    .with_send_email_to_provider(true)
-                    .with_send_phone_number_to_provider(true)
-                    .with_suggested_tip_amounts(vec![10, 50, 100])
-                    .with_flexible(true),
-            )
-            .with_protect_content(true)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_reply_parameters(ReplyParameters::new(1))
-            .with_start_parameter("param"),
-    );
+    assert_payload_eq!(POST JSON "sendInvoice" => method);
+    let method = SendInvoice::new(1, "title", "description", "payload", "RUB", vec![])
+        .with_allow_paid_broadcast(true)
+        .with_disable_notification(true)
+        .with_message_effect_id("effect-id")
+        .with_message_thread_id(1)
+        .with_parameters(
+            InvoiceParameters::default()
+                .with_max_tip_amount(100)
+                .with_need_email(true)
+                .with_need_name(true)
+                .with_need_phone_number(true)
+                .with_need_shipping_address(true)
+                .with_photo_height(300)
+                .with_photo_size(100)
+                .with_photo_url("url")
+                .with_photo_width(200)
+                .with_provider_data(&ProviderData {
+                    key: String::from("value"),
+                })
+                .unwrap()
+                .with_provider_token("token")
+                .with_send_email_to_provider(true)
+                .with_send_phone_number_to_provider(true)
+                .with_suggested_tip_amounts(vec![10, 50, 100])
+                .with_flexible(true),
+        )
+        .with_protect_content(true)
+        .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+        .with_reply_parameters(ReplyParameters::new(1))
+        .with_start_parameter("param");
+    assert_payload_eq!(POST JSON "sendInvoice" => method);
 }
 
 #[test]
@@ -251,13 +136,8 @@ fn refunded_payment() {
 
 #[test]
 fn refund_star_payment() {
-    assert_payload_eq(
-        Payload::json(
-            "refundStarPayment",
-            serde_json::json!({"user_id": 1, "telegram_payment_charge_id": "test"}),
-        ),
-        RefundStarPayment::new(1, "test"),
-    );
+    let method = RefundStarPayment::new(1, "test");
+    assert_payload_eq!(POST JSON "refundStarPayment" => method);
 }
 
 #[test]
@@ -294,60 +174,24 @@ fn shipping_query() {
 
 #[test]
 fn answer_shipping_query() {
-    assert_payload_eq(
-        Payload::json(
-            "answerShippingQuery",
-            serde_json::json!({
-                "shipping_query_id": "id",
-                "ok": true,
-                "shipping_options": []
-            }),
-        ),
-        AnswerShippingQuery::ok("id", vec![]),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "answerShippingQuery",
-            serde_json::json!({
-                "shipping_query_id": "id",
-                "ok": false,
-                "error_message": "msg"
-            }),
-        ),
-        AnswerShippingQuery::error("id", "msg"),
-    );
+    let method = AnswerShippingQuery::ok("id", vec![]);
+    assert_payload_eq!(POST JSON "answerShippingQuery" => method);
+    let method = AnswerShippingQuery::error("id", "msg");
+    assert_payload_eq!(POST JSON "answerShippingQuery" => method);
 }
 
 #[test]
 fn edit_user_star_subscription() {
     let method = EditUserStarSubscription::new(1, "id", false);
-    assert_payload_eq(
-        Payload::json(
-            "editUserStarSubscription",
-            serde_json::json!({
-                "user_id": 1,
-                "telegram_payment_charge_id": "id",
-                "is_canceled": false,
-            }),
-        ),
-        method,
-    );
+    assert_payload_eq!(POST JSON "editUserStarSubscription" => method);
 }
 
 #[test]
 fn get_star_transactions() {
     let method = GetStarTransactions::default();
-    assert_payload_eq(Payload::json("getStarTransactions", serde_json::json!({})), method);
-    assert_payload_eq(
-        Payload::json(
-            "getStarTransactions",
-            serde_json::json!({
-                "offset": 0,
-                "limit": 5,
-            }),
-        ),
-        method.with_offset(0).with_limit(5),
-    );
+    assert_payload_eq!(POST JSON "getStarTransactions" => method);
+    let method = method.with_offset(0).with_limit(5);
+    assert_payload_eq!(POST JSON "getStarTransactions" => method);
 }
 
 #[test]

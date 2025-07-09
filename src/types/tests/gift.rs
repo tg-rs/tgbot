@@ -1,7 +1,4 @@
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn accepted_gift_types() {
@@ -197,146 +194,44 @@ fn unique_gift_info() {
 
 #[test]
 fn get_available_gifts() {
-    assert_payload_eq(Payload::empty("getAvailableGifts"), GetAvailableGifts);
+    assert_payload_eq!(GET "getAvailableGifts" => GetAvailableGifts);
 }
 
 #[test]
 fn gift_premium_subscription() {
     let method = GiftPremiumSubscription::new(1, 2, 3);
-    assert_payload_eq(
-        Payload::json(
-            "giftPremiumSubscription",
-            serde_json::json!({
-                "month_count": 1,
-                "star_count": 2,
-                "user_id": 3
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "giftPremiumSubscription",
-            serde_json::json!({
-                "month_count": 1,
-                "star_count": 2,
-                "user_id": 3,
-                "text": "text",
-                "text_entities": [
-                    {"type": "bold", "offset": 0, "length": 2}
-                ]
-            }),
-        ),
-        method
-            .clone()
-            .with_text("text")
-            .with_text_parse_mode(ParseMode::Markdown)
-            .with_text_entities([TextEntity::bold(0..2)]),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "giftPremiumSubscription",
-            serde_json::json!({
-                "month_count": 1,
-                "star_count": 2,
-                "user_id": 3,
-                "text": "text",
-                "text_parse_mode": "Markdown",
-            }),
-        ),
-        method
-            .clone()
-            .with_text("text")
-            .with_text_entities([TextEntity::bold(0..2)])
-            .with_text_parse_mode(ParseMode::Markdown),
-    );
+    assert_payload_eq!(POST JSON "giftPremiumSubscription" => method.clone());
+    let method = method
+        .clone()
+        .with_text("text")
+        .with_text_parse_mode(ParseMode::Markdown)
+        .with_text_entities([TextEntity::bold(0..2)]);
+    assert_payload_eq!(POST JSON "giftPremiumSubscription" => method.clone());
+    let method = method
+        .clone()
+        .with_text("text")
+        .with_text_entities([TextEntity::bold(0..2)])
+        .with_text_parse_mode(ParseMode::Markdown);
+    assert_payload_eq!(POST JSON "giftPremiumSubscription" => method);
 }
 
 #[test]
 fn send_gift() {
     let method = SendGift::for_chat_id(1, "test");
-    assert_payload_eq(
-        Payload::json(
-            "sendGift",
-            serde_json::json!({
-                "chat_id": 1,
-                "gift_id": "test",
-            }),
-        ),
-        method.clone(),
-    );
+    assert_payload_eq!(POST JSON "sendGift" => method.clone());
 
     let method = SendGift::for_chat_id("@chat", "test");
-    assert_payload_eq(
-        Payload::json(
-            "sendGift",
-            serde_json::json!({
-                "chat_id": "@chat",
-                "gift_id": "test",
-            }),
-        ),
-        method.clone(),
-    );
+    assert_payload_eq!(POST JSON "sendGift" => method.clone());
 
     let method = SendGift::for_user_id(1, "test");
-    assert_payload_eq(
-        Payload::json(
-            "sendGift",
-            serde_json::json!({
-                "user_id": 1,
-                "gift_id": "test",
-            }),
-        ),
-        method.clone(),
-    );
+    assert_payload_eq!(POST JSON "sendGift" => method.clone());
     let method = method
         .with_pay_for_upgrade(true)
         .with_text("test")
         .with_text_parse_mode(ParseMode::Markdown);
-    assert_payload_eq(
-        Payload::json(
-            "sendGift",
-            serde_json::json!({
-                "user_id": 1,
-                "gift_id": "test",
-                "pay_for_upgrade": true,
-                "text": "test",
-                "text_parse_mode": "Markdown",
-            }),
-        ),
-        method.clone(),
-    );
+    assert_payload_eq!(POST JSON "sendGift" => method.clone());
     let method = method.with_text_entities([TextEntity::bold(0..2)]);
-    assert_payload_eq(
-        Payload::json(
-            "sendGift",
-            serde_json::json!({
-                "user_id": 1,
-                "gift_id": "test",
-                "pay_for_upgrade": true,
-                "text": "test",
-                "text_entities": [
-                    {
-                        "type": "bold",
-                        "offset": 0,
-                        "length": 2,
-                    }
-                ],
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "sendGift",
-            serde_json::json!({
-                "user_id": 1,
-                "gift_id": "test",
-                "pay_for_upgrade": true,
-                "text": "test",
-                "text_parse_mode": "Markdown",
-            }),
-        ),
-        method.with_text_parse_mode(ParseMode::Markdown),
-    );
+    assert_payload_eq!(POST JSON "sendGift" => method.clone());
+    let method = method.with_text_parse_mode(ParseMode::Markdown);
+    assert_payload_eq!(POST JSON "sendGift" => method);
 }

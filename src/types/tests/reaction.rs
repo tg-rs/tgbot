@@ -1,7 +1,4 @@
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn reaction_count() {
@@ -42,34 +39,7 @@ fn message_reaction_updated() {
 #[test]
 fn set_message_reaction() {
     let method = SetMessageReaction::new(1, 2);
-    assert_payload_eq(
-        Payload::json(
-            "setMessageReaction",
-            serde_json::json!({
-                "chat_id": 1,
-                "message_id": 2,
-                "is_big": false
-            }),
-        ),
-        method.clone(),
-    );
-
+    assert_payload_eq!(POST JSON "setMessageReaction" => method.clone());
     let method = method.with_is_big(true).with_reaction([ReactionType::emoji("🤡")]);
-    assert_payload_eq(
-        Payload::json(
-            "setMessageReaction",
-            serde_json::json!({
-                "chat_id": 1,
-                "message_id": 2,
-                "is_big": true,
-                "reaction": [
-                    {
-                        "type": "emoji",
-                        "emoji": "🤡"
-                    }
-                ]
-            }),
-        ),
-        method.clone(),
-    );
+    assert_payload_eq!(POST JSON "setMessageReaction" => method);
 }

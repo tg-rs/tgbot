@@ -1,7 +1,4 @@
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn menu_button() {
@@ -15,59 +12,22 @@ fn menu_button() {
 
 #[test]
 fn get_chat_menu_button() {
-    assert_payload_eq(
-        Payload::json("getChatMenuButton", serde_json::json!({})),
-        GetChatMenuButton::default(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "getChatMenuButton",
-            serde_json::json!({
-                "chat_id": 1,
-            }),
-        ),
-        GetChatMenuButton::default().with_chat_id(1),
-    );
+    let method = GetChatMenuButton::default();
+    assert_payload_eq!(POST JSON "getChatMenuButton" => method);
+    let method = GetChatMenuButton::default().with_chat_id(1);
+    assert_payload_eq!(POST JSON "getChatMenuButton" => method);
 }
 
 #[test]
 fn set_chat_menu_button() {
-    assert_payload_eq(
-        Payload::json("setChatMenuButton", serde_json::json!({})),
-        SetChatMenuButton::default(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setChatMenuButton",
-            serde_json::json!({
-                "chat_id": 1,
-            }),
-        ),
-        SetChatMenuButton::default().chat_id(1),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setChatMenuButton",
-            serde_json::json!({
-                "menu_button": {
-                    "type": "default"
-                },
-            }),
-        ),
-        SetChatMenuButton::default().menu_button(MenuButton::Default),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setChatMenuButton",
-            serde_json::json!({
-                "chat_id": 1,
-                "menu_button": {
-                    "type": "commands"
-                },
-            }),
-        ),
-        SetChatMenuButton::default()
-            .chat_id(1)
-            .menu_button(MenuButton::Commands),
-    );
+    let method = SetChatMenuButton::default();
+    assert_payload_eq!(POST JSON "setChatMenuButton" => method);
+    let method = SetChatMenuButton::default().chat_id(1);
+    assert_payload_eq!(POST JSON "setChatMenuButton" => method);
+    let method = SetChatMenuButton::default().menu_button(MenuButton::Default);
+    assert_payload_eq!(POST JSON "setChatMenuButton" => method);
+    let method = SetChatMenuButton::default()
+        .chat_id(1)
+        .menu_button(MenuButton::Commands);
+    assert_payload_eq!(POST JSON "setChatMenuButton" => method);
 }

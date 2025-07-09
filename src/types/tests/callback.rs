@@ -1,9 +1,6 @@
 use serde::Deserialize;
 
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[derive(Clone, Debug, Deserialize)]
 struct QueryData {
@@ -40,30 +37,11 @@ fn callback_query() {
 #[test]
 fn answer_callback_query() {
     let method = AnswerCallbackQuery::new("id");
-    assert_payload_eq(
-        Payload::json(
-            "answerCallbackQuery",
-            serde_json::json!({
-                "callback_query_id": "id"
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "answerCallbackQuery",
-            serde_json::json!({
-                "callback_query_id": "id",
-                "text": "text",
-                "show_alert": true,
-                "url": "url",
-                "cache_time": 10
-            }),
-        ),
-        method
-            .with_text("text")
-            .with_show_alert(true)
-            .with_url("url")
-            .with_cache_time(10),
-    );
+    assert_payload_eq!(POST JSON "answerCallbackQuery" => method.clone());
+    let method = method
+        .with_text("text")
+        .with_show_alert(true)
+        .with_url("url")
+        .with_cache_time(10);
+    assert_payload_eq!(POST JSON "answerCallbackQuery" => method.clone());
 }

@@ -1,7 +1,4 @@
-use crate::{
-    api::{Form, Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn business_bot_rights() {
@@ -72,427 +69,165 @@ fn business_opening_hours() {
 
 #[test]
 fn convert_gift_to_stars() {
-    let actual_method = ConvertGiftToStars::new("id", "id");
-    assert_payload_eq(
-        Payload::json(
-            "convertGiftToStars",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "owned_gift_id": "id",
-            }),
-        ),
-        actual_method,
-    );
+    assert_payload_eq!(POST JSON "convertGiftToStars" => ConvertGiftToStars::new("id", "id"));
 }
 
 #[test]
 fn delete_business_messages() {
-    assert_payload_eq(
-        Payload::json(
-            "deleteBusinessMessages",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "message_ids": [1, 2, 3]
-            }),
-        ),
-        DeleteBusinessMessages::new("id", [1, 2, 3]),
-    );
+    assert_payload_eq!(POST JSON "deleteBusinessMessages" => DeleteBusinessMessages::new("id", [1, 2, 3]));
 }
 
 #[test]
 fn delete_story() {
-    assert_payload_eq(
-        Payload::json(
-            "deleteStory",
-            serde_json::json!({
-                "business_connection_id": "id",
-                 "story_id": 1
-            }),
-        ),
-        DeleteStory::new("id", 1),
-    );
+    assert_payload_eq!(POST JSON "deleteStory" => DeleteStory::new("id", 1));
 }
 
 #[test]
 fn edit_story() {
-    assert_payload_eq(
-        Payload::form(
-            "editStory",
-            Form::from([
-                ("business_connection_id", "id".into()),
-                ("content", r#"{"type":"photo","photo":"url"}"#.into()),
-                ("story_id", 1.into()),
-            ]),
-        ),
-        EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1).unwrap(),
-    );
-    assert_payload_eq(
-        Payload::form(
-            "editStory",
-            Form::from([
-                ("business_connection_id", "id".into()),
-                ("content", r#"{"type":"photo","photo":"url"}"#.into()),
-                ("story_id", 1.into()),
-                ("areas", r#"[{"type":{"type":"link","url":"url"},"position":{"corner_radius_percentage":1.0,"height_percentage":2.0,"rotation_angle":3.0,"width_percentage":4.0,"x_percentage":5.0,"y_percentage":6.0}}]"#.into()),
-                ("caption", "test".into()),
-                ("caption_entities", r#"[{"offset":0,"length":2,"type":"bold"}]"#.into()),
-            ]),
-        ),
-        EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1)
-            .unwrap()
-            .with_areas([StoryArea::new(
-                StoryAreaTypeLink::new("url"),
-                StoryAreaPosition {
-                    corner_radius_percentage: 1.0,
-                    height_percentage: 2.0,
-                    rotation_angle: 3.0,
-                    width_percentage: 4.0,
-                    x_percentage: 5.0,
-                    y_percentage: 6.0,
-                },
-            )])
-            .unwrap()
-            .with_caption("test")
-            .with_parse_mode(ParseMode::Markdown)
-            .with_caption_entities([TextEntity::bold(0..2)])
-            .unwrap()
-    );
+    let method = EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1).unwrap();
+    assert_payload_eq!(POST FORM "editStory" => method);
+    let method = EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1)
+        .unwrap()
+        .with_areas([StoryArea::new(
+            StoryAreaTypeLink::new("url"),
+            StoryAreaPosition {
+                corner_radius_percentage: 1.0,
+                height_percentage: 2.0,
+                rotation_angle: 3.0,
+                width_percentage: 4.0,
+                x_percentage: 5.0,
+                y_percentage: 6.0,
+            },
+        )])
+        .unwrap()
+        .with_caption("test")
+        .with_parse_mode(ParseMode::Markdown)
+        .with_caption_entities([TextEntity::bold(0..2)])
+        .unwrap();
+    assert_payload_eq!(POST FORM "editStory" => method);
 }
 
 #[test]
 fn get_business_account_gifts() {
-    let actual_method = GetBusinessAccountGifts::new("id");
-    assert_payload_eq(
-        Payload::json(
-            "getBusinessAccountGifts",
-            serde_json::json!({
-                "business_connection_id": "id"
-            }),
-        ),
-        actual_method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "getBusinessAccountGifts",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "exclude_limited": true,
-                "exclude_saved": true,
-                "exclude_unique": true,
-                "exclude_unlimited": true,
-                "exclude_unsaved": true,
-                "limit": 10,
-                "offset": "test",
-                "sort_by_price": true,
-            }),
-        ),
-        actual_method
-            .with_exclude_limited(true)
-            .with_exclude_saved(true)
-            .with_exclude_unique(true)
-            .with_exclude_unlimited(true)
-            .with_exclude_unsaved(true)
-            .with_limit(10)
-            .with_offset("test")
-            .with_sort_by_price(true),
-    );
+    let method = GetBusinessAccountGifts::new("id");
+    assert_payload_eq!(POST JSON "getBusinessAccountGifts" => method.clone());
+    let method = method
+        .with_exclude_limited(true)
+        .with_exclude_saved(true)
+        .with_exclude_unique(true)
+        .with_exclude_unlimited(true)
+        .with_exclude_unsaved(true)
+        .with_limit(10)
+        .with_offset("test")
+        .with_sort_by_price(true);
+    assert_payload_eq!(POST JSON "getBusinessAccountGifts" => method);
 }
 
 #[test]
 fn get_business_account_star_balance() {
-    assert_payload_eq(
-        Payload::json(
-            "getBusinessAccountStarBalance",
-            serde_json::json!({
-                "business_connection_id": "id",
-            }),
-        ),
-        GetBusinessAccountStarBalance::new("id"),
-    );
+    assert_payload_eq!(POST JSON "getBusinessAccountStarBalance" => GetBusinessAccountStarBalance::new("id"));
 }
 
 #[test]
 fn get_business_connection() {
-    assert_payload_eq(
-        Payload::json(
-            "getBusinessConnection",
-            serde_json::json!({"business_connection_id": "id"}),
-        ),
-        GetBusinessConnection::new("id"),
-    )
+    assert_payload_eq!(POST JSON "getBusinessConnection" => GetBusinessConnection::new("id"));
 }
 
 #[test]
 fn post_story() {
-    assert_payload_eq(
-        Payload::form(
-            "postStory",
-            Form::from([
-                ("active_period", 60.into()),
-                ("business_connection_id", "id".into()),
-                ("content", r#"{"type":"photo","photo":"url"}"#.into()),
-            ]),
-        ),
-        PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url"))).unwrap(),
-    );
-    assert_payload_eq(
-        Payload::form(
-            "postStory",
-            Form::from([
-                ("active_period", 60.into()),
-                ("business_connection_id", "id".into()),
-                ("content", r#"{"type":"photo","photo":"url"}"#.into()),
-                ("areas", r#"[{"type":{"type":"link","url":"url"},"position":{"corner_radius_percentage":1.0,"height_percentage":2.0,"rotation_angle":3.0,"width_percentage":4.0,"x_percentage":5.0,"y_percentage":6.0}}]"#.into()),
-                ("caption", "test".into()),
-                ("caption_entities", r#"[{"offset":0,"length":2,"type":"bold"}]"#.into()),
-                ("post_to_chat_page", true.into()),
-                ("protect_content", true.into()),
-            ]),
-        ),
-        PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url")))
-            .unwrap()
-            .with_areas([StoryArea::new(
-                StoryAreaTypeLink::new("url"),
-                StoryAreaPosition {
-                    corner_radius_percentage: 1.0,
-                    height_percentage: 2.0,
-                    rotation_angle: 3.0,
-                    width_percentage: 4.0,
-                    x_percentage: 5.0,
-                    y_percentage: 6.0,
-                },
-            )])
-            .unwrap()
-            .with_caption("test")
-            .with_parse_mode(ParseMode::Markdown)
-            .with_caption_entities([TextEntity::bold(0..2)])
-            .unwrap()
-            .with_post_to_chat_page(true)
-            .with_protect_content(true),
-    );
+    let method = PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url"))).unwrap();
+    assert_payload_eq!(POST FORM "postStory" => method);
+    let method = PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url")))
+        .unwrap()
+        .with_areas([StoryArea::new(
+            StoryAreaTypeLink::new("url"),
+            StoryAreaPosition {
+                corner_radius_percentage: 1.0,
+                height_percentage: 2.0,
+                rotation_angle: 3.0,
+                width_percentage: 4.0,
+                x_percentage: 5.0,
+                y_percentage: 6.0,
+            },
+        )])
+        .unwrap()
+        .with_caption("test")
+        .with_parse_mode(ParseMode::Markdown)
+        .with_caption_entities([TextEntity::bold(0..2)])
+        .unwrap()
+        .with_post_to_chat_page(true)
+        .with_protect_content(true);
+    assert_payload_eq!(POST FORM "postStory" => method);
 }
 
 #[test]
 fn read_business_message() {
-    assert_payload_eq(
-        Payload::json(
-            "readBusinessMessage",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "chat_id": 1,
-                "message_id": 2,
-            }),
-        ),
-        ReadBusinessMessage::new("id", 1, 2),
-    );
+    assert_payload_eq!(POST JSON "readBusinessMessage" => ReadBusinessMessage::new("id", 1, 2));
 }
 
 #[test]
 fn remove_business_account_profile_photo() {
-    let actual_method = RemoveBusinessAccountProfilePhoto::new("id");
-    assert_payload_eq(
-        Payload::json(
-            "removeBusinessAccountProfilePhoto",
-            serde_json::json!({
-                "business_connection_id": "id"
-            }),
-        ),
-        actual_method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "removeBusinessAccountProfilePhoto",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "is_public": true
-            }),
-        ),
-        actual_method.with_is_public(true),
-    );
+    let method = RemoveBusinessAccountProfilePhoto::new("id");
+    assert_payload_eq!(POST JSON "removeBusinessAccountProfilePhoto" => method.clone());
+    assert_payload_eq!(POST JSON "removeBusinessAccountProfilePhoto" => method.with_is_public(true));
 }
 
 #[test]
 fn set_business_account_bio() {
-    let actual_method = SetBusinessAccountBio::new("id");
-    assert_payload_eq(
-        Payload::json(
-            "setBusinessAccountBio",
-            serde_json::json!({
-                "business_connection_id": "id",
-            }),
-        ),
-        actual_method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setBusinessAccountBio",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "bio": "Test",
-            }),
-        ),
-        actual_method.with_bio("Test"),
-    );
+    let method = SetBusinessAccountBio::new("id");
+    assert_payload_eq!(POST JSON "setBusinessAccountBio" => method.clone());
+    assert_payload_eq!(POST JSON "setBusinessAccountBio" => method.with_bio("Test"));
 }
 
 #[test]
 fn set_business_account_gift_settings() {
-    let actual_method = SetBusinessAccountGiftSettings::new("id", true, AcceptedGiftTypes::default());
-    assert_payload_eq(
-        Payload::json(
-            "setBusinessAccountGiftSettings",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "show_gift_button": true,
-                "accepted_gift_types": {
-                    "limited_gifts": false,
-                    "premium_subscription": false,
-                    "unique_gifts": false,
-                    "unlimited_gifts": false,
-                }
-            }),
-        ),
-        actual_method.clone(),
-    );
+    let method = SetBusinessAccountGiftSettings::new("id", true, AcceptedGiftTypes::default());
+    assert_payload_eq!(POST JSON "setBusinessAccountGiftSettings" => method.clone());
 }
 
 #[test]
 fn set_business_account_name() {
-    let actual_method = SetBusinessAccountName::new("id", "John");
-    assert_payload_eq(
-        Payload::json(
-            "setBusinessAccountName",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "first_name": "John",
-            }),
-        ),
-        actual_method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setBusinessAccountName",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "first_name": "John",
-                "last_name": "Doe",
-            }),
-        ),
-        actual_method.with_last_name("Doe"),
-    );
+    let method = SetBusinessAccountName::new("id", "John");
+    assert_payload_eq!(POST JSON "setBusinessAccountName" => method.clone());
+    assert_payload_eq!(POST JSON "setBusinessAccountName" => method.with_last_name("Doe"));
 }
 
 #[test]
 fn set_business_account_profile_photo() {
-    let actual_method =
+    let method =
         SetBusinessAccountProfilePhoto::new("id", InputProfilePhotoStatic::new(InputFile::url("test"))).unwrap();
-    assert_payload_eq(
-        Payload::form(
-            "setBusinessAccountProfilePhoto",
-            Form::from([
-                ("business_connection_id", "id".into()),
-                ("photo", r#"{"type":"static","photo":"test"}"#.into()),
-            ]),
-        ),
-        actual_method,
-    );
+    assert_payload_eq!(POST FORM "setBusinessAccountProfilePhoto" => method);
 
-    let actual_method = SetBusinessAccountProfilePhoto::new("id", InputProfilePhotoStatic::new(InputFile::url("test")))
+    let method = SetBusinessAccountProfilePhoto::new("id", InputProfilePhotoStatic::new(InputFile::url("test")))
         .unwrap()
         .with_is_public(true);
-    assert_payload_eq(
-        Payload::form(
-            "setBusinessAccountProfilePhoto",
-            Form::from([
-                ("business_connection_id", "id".into()),
-                ("photo", r#"{"type":"static","photo":"test"}"#.into()),
-                ("is_public", true.into()),
-            ]),
-        ),
-        actual_method,
-    );
+    assert_payload_eq!(POST FORM "setBusinessAccountProfilePhoto" => method);
 }
 
 #[test]
 fn set_business_account_username() {
-    let actual_method = SetBusinessAccountUsername::new("id");
-    assert_payload_eq(
-        Payload::json(
-            "setBusinessAccountUsername",
-            serde_json::json!({
-                "business_connection_id": "id",
-            }),
-        ),
-        actual_method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setBusinessAccountUsername",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "username": "johndoe",
-            }),
-        ),
-        actual_method.with_username("johndoe"),
-    );
+    let method = SetBusinessAccountUsername::new("id");
+    assert_payload_eq!(POST JSON "setBusinessAccountUsername" => method.clone());
+    assert_payload_eq!(POST JSON "setBusinessAccountUsername" => method.with_username("johndoe"));
 }
 
 #[test]
 fn transfer_business_account_stars() {
-    let actual_method = TransferBusinessAccountStars::new("id", 1);
-    assert_payload_eq(
-        Payload::json(
-            "transferBusinessAccountStars",
-            serde_json::json!({"business_connection_id": "id", "star_count": 1}),
-        ),
-        actual_method,
-    );
+    let method = TransferBusinessAccountStars::new("id", 1);
+    assert_payload_eq!(POST JSON "transferBusinessAccountStars" => method);
 }
 
 #[test]
 fn transfer_gift() {
-    let actual_method = TransferGift::new("id", "id", 1);
-    assert_payload_eq(
-        Payload::json(
-            "transferGift",
-            serde_json::json!({"business_connection_id": "id", "owned_gift_id": "id", "new_owner_chat_id": 1}),
-        ),
-        actual_method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "transferGift",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "owned_gift_id": "id",
-                "new_owner_chat_id": 1,
-                "star_count": 1
-            }),
-        ),
-        actual_method.with_star_count(1),
-    );
+    let method = TransferGift::new("id", "id", 1);
+    assert_payload_eq!(POST JSON "transferGift" => method.clone());
+    assert_payload_eq!(POST JSON "transferGift" => method.with_star_count(1));
 }
 
 #[test]
 fn upgrade_gift() {
-    let actual_method = UpgradeGift::new("id", "id");
-    assert_payload_eq(
-        Payload::json(
-            "upgradeGift",
-            serde_json::json!({"business_connection_id": "id", "owned_gift_id": "id"}),
-        ),
-        actual_method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "upgradeGift",
-            serde_json::json!({
-                "business_connection_id": "id",
-                "owned_gift_id": "id",
-                "keep_original_details": true,
-                "star_count": 1
-            }),
-        ),
-        actual_method.with_keep_original_details(true).with_star_count(1),
-    );
+    let method = UpgradeGift::new("id", "id");
+    assert_payload_eq!(POST JSON "upgradeGift" => method.clone());
+    let method = method.with_keep_original_details(true).with_star_count(1);
+    assert_payload_eq!(POST JSON "upgradeGift" => method);
 }

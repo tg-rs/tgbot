@@ -1,9 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{
-    api::{Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn birthdate() {
@@ -121,49 +118,15 @@ fn user_id() {
 #[test]
 fn get_user_profile_photos() {
     let method = GetUserProfilePhotos::new(1);
-    assert_payload_eq(
-        Payload::json(
-            "getUserProfilePhotos",
-            serde_json::json!({
-                "user_id": 1
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "getUserProfilePhotos",
-            serde_json::json!({
-                "user_id": 1,
-                "offset": 5,
-                "limit": 10
-            }),
-        ),
-        method.with_offset(5).with_limit(10),
-    )
+    assert_payload_eq!(POST JSON "getUserProfilePhotos" => method.clone());
+    let method = method.with_offset(5).with_limit(10);
+    assert_payload_eq!(POST JSON "getUserProfilePhotos" => method);
 }
 
 #[test]
 fn set_user_emoji_status() {
     let method = SetUserEmojiStatus::new(1);
-    assert_payload_eq(
-        Payload::json(
-            "setUserEmojiStatus",
-            serde_json::json!({
-                "user_id": 1,
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setUserEmojiStatus",
-            serde_json::json!({
-                "user_id": 1,
-                "emoji_status_custom_emoji_id": "emoji-id",
-                "emoji_status_expiration_date": 1,
-            }),
-        ),
-        method.with_emoji_id("emoji-id").with_expiration_date(1),
-    );
+    assert_payload_eq!(POST JSON "setUserEmojiStatus" => method.clone());
+    let method = method.with_emoji_id("emoji-id").with_expiration_date(1);
+    assert_payload_eq!(POST JSON "setUserEmojiStatus" => method);
 }

@@ -1,9 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{
-    api::{Form, FormValue, Payload, assert_payload_eq},
-    types::*,
-};
+use crate::types::*;
 
 #[test]
 fn channel_chat() {
@@ -71,66 +68,24 @@ fn chat_background() {
 
 #[test]
 fn get_chat() {
-    assert_payload_eq(
-        Payload::json(
-            "getChat",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        GetChat::new(1),
-    );
+    assert_payload_eq!(POST JSON "getChat" => GetChat::new(1));
 }
 
 #[test]
 fn leave_chat() {
-    assert_payload_eq(
-        Payload::json(
-            "leaveChat",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        LeaveChat::new(1),
-    );
+    assert_payload_eq!(POST JSON "leaveChat" => LeaveChat::new(1));
 }
 
 #[test]
 fn set_chat_description() {
     let method = SetChatDescription::new(1);
-    assert_payload_eq(
-        Payload::json(
-            "setChatDescription",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setChatDescription",
-            serde_json::json!({
-                "chat_id": 1,
-                "description": "Description"
-            }),
-        ),
-        method.with_description("Description"),
-    );
+    assert_payload_eq!(POST JSON "setChatDescription" => method.clone());
+    assert_payload_eq!(POST JSON "setChatDescription" => method.with_description("Description"));
 }
 
 #[test]
 fn set_chat_title() {
-    assert_payload_eq(
-        Payload::json(
-            "setChatTitle",
-            serde_json::json!({
-                "chat_id": 1,
-                "title": "Chat"
-            }),
-        ),
-        SetChatTitle::new(1, "Chat"),
-    );
+    assert_payload_eq!(POST JSON "setChatTitle" => SetChatTitle::new(1, "Chat"));
 }
 
 #[test]
@@ -155,28 +110,9 @@ fn chat_action() {
 #[test]
 fn send_chat_action() {
     let method = SendChatAction::new(1, ChatAction::Typing);
-    assert_payload_eq(
-        Payload::json(
-            "sendChatAction",
-            serde_json::json!({
-                "chat_id": 1,
-                "action": "typing"
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "sendChatAction",
-            serde_json::json!({
-                "chat_id": 1,
-                "action": "typing",
-                "business_connection_id": "id",
-                "message_thread_id": 1,
-            }),
-        ),
-        method.with_business_connection_id("id").with_message_thread_id(1),
-    );
+    assert_payload_eq!(POST JSON "sendChatAction" => method.clone());
+    let method = method.with_business_connection_id("id").with_message_thread_id(1);
+    assert_payload_eq!(POST JSON "sendChatAction" => method);
 }
 
 #[test]
@@ -234,16 +170,7 @@ fn user_chat_boosts() {
 
 #[test]
 fn get_user_chat_boosts() {
-    assert_payload_eq(
-        Payload::json(
-            "getUserChatBoosts",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-            }),
-        ),
-        GetUserChatBoosts::new(1, 2),
-    );
+    assert_payload_eq!(POST JSON "getUserChatBoosts" => GetUserChatBoosts::new(1, 2));
 }
 
 fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
@@ -544,150 +471,49 @@ fn chat_invite_link() {
 #[test]
 fn create_chat_invite_link() {
     let method = CreateChatInviteLink::new(1);
-    assert_payload_eq(
-        Payload::json(
-            "createChatInviteLink",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "createChatInviteLink",
-            serde_json::json!({
-                "chat_id": 1,
-                "name": "Link",
-                "expire_date": 0,
-                "member_limit": 1,
-                "creates_join_request": false
-            }),
-        ),
-        method
-            .with_name("Link")
-            .with_expire_date(0)
-            .with_member_limit(1)
-            .with_creates_join_request(false),
-    )
+    assert_payload_eq!(POST JSON "createChatInviteLink" => method.clone());
+    let method = method
+        .with_name("Link")
+        .with_expire_date(0)
+        .with_member_limit(1)
+        .with_creates_join_request(false);
+    assert_payload_eq!(POST JSON "createChatInviteLink" => method);
 }
 
 #[test]
 fn create_chat_subscription_invite_link() {
     let method = CreateChatSubscriptionInviteLink::new(1, 2592000, 1);
-
-    assert_payload_eq(
-        Payload::json(
-            "createChatSubscriptionInviteLink",
-            serde_json::json!({
-                "chat_id": 1,
-                "subscription_period": 2592000,
-                "subscription_price": 1,
-            }),
-        ),
-        method.clone(),
-    );
-
-    assert_payload_eq(
-        Payload::json(
-            "createChatSubscriptionInviteLink",
-            serde_json::json!({
-                "chat_id": 1,
-                "subscription_period": 2592000,
-                "subscription_price": 1,
-                "name": "test",
-            }),
-        ),
-        method.with_name("test"),
-    );
+    assert_payload_eq!(POST JSON "createChatSubscriptionInviteLink" => method.clone());
+    assert_payload_eq!(POST JSON "createChatSubscriptionInviteLink" => method.with_name("test"));
 }
 
 #[test]
 fn edit_chat_invite_link() {
     let method = EditChatInviteLink::new(1, "example.com/join/chat");
-    assert_payload_eq(
-        Payload::json(
-            "editChatInviteLink",
-            serde_json::json!({
-                "chat_id": 1,
-                "invite_link": "example.com/join/chat"
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "editChatInviteLink",
-            serde_json::json!({
-                "chat_id": 1,
-                "invite_link": "example.com/join/chat",
-                "name": "Link",
-                "expire_date": 0,
-                "member_limit": 1,
-                "creates_join_request": false
-            }),
-        ),
-        method
-            .with_name("Link")
-            .with_expire_date(0)
-            .with_member_limit(1)
-            .with_creates_join_request(false),
-    );
+    assert_payload_eq!(POST JSON "editChatInviteLink" => method.clone());
+    let method = method
+        .with_name("Link")
+        .with_expire_date(0)
+        .with_member_limit(1)
+        .with_creates_join_request(false);
+    assert_payload_eq!(POST JSON "editChatInviteLink" => method);
 }
 
 #[test]
 fn edit_chat_subscription_invite_link() {
     let method = EditChatSubscriptionInviteLink::new(1, "test");
-
-    assert_payload_eq(
-        Payload::json(
-            "editChatSubscriptionInviteLink",
-            serde_json::json!({
-                "chat_id": 1,
-                "invite_link": "test",
-            }),
-        ),
-        method.clone(),
-    );
-
-    assert_payload_eq(
-        Payload::json(
-            "editChatSubscriptionInviteLink",
-            serde_json::json!({
-                "chat_id": 1,
-                "invite_link": "test",
-                "name": "test",
-            }),
-        ),
-        method.with_name("test"),
-    );
+    assert_payload_eq!(POST JSON "editChatSubscriptionInviteLink" => method.clone());
+    assert_payload_eq!(POST JSON "editChatSubscriptionInviteLink" => method.with_name("test"));
 }
 
 #[test]
 fn export_chat_invite_link() {
-    assert_payload_eq(
-        Payload::json(
-            "exportChatInviteLink",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        ExportChatInviteLink::new(1),
-    );
+    assert_payload_eq!(POST JSON "exportChatInviteLink" => ExportChatInviteLink::new(1));
 }
 
 #[test]
 fn revoke_chat_invite_link() {
-    assert_payload_eq(
-        Payload::json(
-            "revokeChatInviteLink",
-            serde_json::json!({
-                "chat_id": 1,
-                "invite_link": "example.com/join/chat"
-            }),
-        ),
-        RevokeChatInviteLink::new(1, "example.com/join/chat"),
-    );
+    assert_payload_eq!(POST JSON "revokeChatInviteLink" => RevokeChatInviteLink::new(1, "example.com/join/chat"));
 }
 
 #[test]
@@ -713,30 +539,12 @@ fn chat_join_request() {
 
 #[test]
 fn approve_chat_join_request() {
-    assert_payload_eq(
-        Payload::json(
-            "approveChatJoinRequest",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 1,
-            }),
-        ),
-        ApproveChatJoinRequest::new(1, 1),
-    );
+    assert_payload_eq!(POST JSON "approveChatJoinRequest" => ApproveChatJoinRequest::new(1, 1));
 }
 
 #[test]
 fn decline_chat_join_request() {
-    assert_payload_eq(
-        Payload::json(
-            "declineChatJoinRequest",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 1,
-            }),
-        ),
-        DeclineChatJoinRequest::new(1, 1),
-    );
+    assert_payload_eq!(POST JSON "declineChatJoinRequest" => DeclineChatJoinRequest::new(1, 1));
 }
 
 #[test]
@@ -915,398 +723,105 @@ fn chat_member_updated() {
 #[test]
 fn ban_chat_member() {
     let method = BanChatMember::new(1, 2);
-    assert_payload_eq(
-        Payload::json(
-            "banChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "banChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "until_date": 3,
-                "revoke_messages": true,
-            }),
-        ),
-        method.with_until_date(3).with_revoke_messages(true),
-    );
+    assert_payload_eq!(POST JSON "banChatMember" => method.clone());
+    let method = method.with_until_date(3).with_revoke_messages(true);
+    assert_payload_eq!(POST JSON "banChatMember" => method);
 }
 
 #[test]
 fn get_chat_administrators() {
-    assert_payload_eq(
-        Payload::json(
-            "getChatAdministrators",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        GetChatAdministrators::new(1),
-    );
+    assert_payload_eq!(POST JSON "getChatAdministrators" => GetChatAdministrators::new(1));
 }
 
 #[test]
 fn get_chat_member() {
-    assert_payload_eq(
-        Payload::json(
-            "getChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2
-            }),
-        ),
-        GetChatMember::new(1, 2),
-    );
+    assert_payload_eq!(POST JSON "getChatMember" => GetChatMember::new(1, 2));
 }
 
 #[test]
 fn get_chat_members_count() {
-    assert_payload_eq(
-        Payload::json(
-            "getChatMemberCount",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        GetChatMemberCount::new(1),
-    );
+    assert_payload_eq!(POST JSON "getChatMemberCount" => GetChatMemberCount::new(1));
 }
 
 #[test]
 fn promote_chat_member() {
-    assert_payload_eq(
-        Payload::json(
-            "promoteChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "is_anonymous": true,
-                "can_change_info": true,
-                "can_delete_messages": true,
-                "can_edit_messages": true,
-                "can_invite_users": true,
-                "can_manage_chat": true,
-                "can_manage_video_chats": true,
-                "can_pin_messages": true,
-                "can_post_messages": true,
-                "can_promote_members": true,
-                "can_restrict_members": true,
-                "can_manage_topics": true,
-                "can_post_stories": true,
-                "can_edit_stories": true,
-                "can_delete_stories": true
-            }),
-        ),
-        PromoteChatMember::new(1, 2).promote_all(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "promoteChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "is_anonymous": false,
-                "can_change_info": false,
-                "can_delete_messages": false,
-                "can_edit_messages": false,
-                "can_invite_users": false,
-                "can_manage_chat": false,
-                "can_manage_video_chats": false,
-                "can_pin_messages": false,
-                "can_post_messages": false,
-                "can_promote_members": false,
-                "can_restrict_members": false,
-                "can_manage_topics": false,
-                "can_post_stories": false,
-                "can_edit_stories": false,
-                "can_delete_stories": false
-            }),
-        ),
-        PromoteChatMember::new(1, 2).demote_all(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "promoteChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "is_anonymous": false,
-                "can_change_info": true,
-                "can_delete_messages": false,
-                "can_edit_messages": true,
-                "can_invite_users": true,
-                "can_manage_chat": false,
-                "can_manage_video_chats": true,
-                "can_pin_messages": true,
-                "can_post_messages": false,
-                "can_promote_members": false,
-                "can_restrict_members": false,
-                "can_manage_topics": true,
-                "can_post_stories": true,
-                "can_edit_stories": true,
-                "can_delete_stories": true
-            }),
-        ),
-        PromoteChatMember::new(1, 2)
-            .with_is_anonymous(false)
-            .with_can_change_info(true)
-            .with_can_edit_messages(true)
-            .with_can_delete_messages(false)
-            .with_can_invite_users(true)
-            .with_can_manage_chat(false)
-            .with_can_manage_video_chats(true)
-            .with_can_pin_messages(true)
-            .with_can_post_messages(false)
-            .with_can_promote_members(false)
-            .with_can_restrict_members(false)
-            .with_can_manage_topics(true)
-            .with_can_post_stories(true)
-            .with_can_edit_stories(true)
-            .with_can_delete_stories(true),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "promoteChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2
-            }),
-        ),
-        PromoteChatMember::new(1, 2),
-    );
+    assert_payload_eq!(POST JSON "promoteChatMember" => PromoteChatMember::new(1, 2).promote_all());
+    assert_payload_eq!(POST JSON "promoteChatMember" => PromoteChatMember::new(1, 2).demote_all());
+    let method = PromoteChatMember::new(1, 2)
+        .with_is_anonymous(false)
+        .with_can_change_info(true)
+        .with_can_edit_messages(true)
+        .with_can_delete_messages(false)
+        .with_can_invite_users(true)
+        .with_can_manage_chat(false)
+        .with_can_manage_video_chats(true)
+        .with_can_pin_messages(true)
+        .with_can_post_messages(false)
+        .with_can_promote_members(false)
+        .with_can_restrict_members(false)
+        .with_can_manage_topics(true)
+        .with_can_post_stories(true)
+        .with_can_edit_stories(true)
+        .with_can_delete_stories(true);
+    assert_payload_eq!(POST JSON "promoteChatMember" => method);
+    assert_payload_eq!(POST JSON "promoteChatMember" => PromoteChatMember::new(1, 2));
 }
 
 #[test]
 fn restrict_chat_member() {
     let method = RestrictChatMember::new(1, 2);
-    assert_payload_eq(
-        Payload::json(
-            "restrictChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "permissions": {}
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "restrictChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "until_date": 100,
-                "permissions": {}
-            }),
-        ),
-        method.with_until_date(100),
-    );
+    assert_payload_eq!(POST JSON "restrictChatMember" => method.clone());
+    assert_payload_eq!(POST JSON "restrictChatMember" => method.with_until_date(100));
     let method = RestrictChatMember::new(1, 2).allow_all();
-    assert_payload_eq(
-        Payload::json(
-            "restrictChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "permissions": {
-                    "can_send_messages": true,
-                    "can_send_audios": true,
-                    "can_send_documents": true,
-                    "can_send_photos": true,
-                    "can_send_videos": true,
-                    "can_send_video_notes": true,
-                    "can_send_voice_notes": true,
-                    "can_send_polls": true,
-                    "can_send_other_messages": true,
-                    "can_add_web_page_previews": true,
-                    "can_change_info": true,
-                    "can_invite_users": true,
-                    "can_pin_messages": true,
-                    "can_manage_topics": true,
-                }
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "restrictChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "until_date": 100,
-                "permissions": {
-                    "can_send_messages": true,
-                    "can_send_audios": true,
-                    "can_send_documents": true,
-                    "can_send_photos": true,
-                    "can_send_videos": true,
-                    "can_send_video_notes": true,
-                    "can_send_voice_notes": true,
-                    "can_send_polls": true,
-                    "can_send_other_messages": true,
-                    "can_add_web_page_previews": true,
-                    "can_change_info": true,
-                    "can_invite_users": true,
-                    "can_pin_messages": true,
-                    "can_manage_topics": true,
-                }
-            }),
-        ),
-        method.with_until_date(100),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "restrictChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "until_date": 100,
-                "permissions": {
-                    "can_send_messages": true,
-                    "can_send_other_messages": true,
-                    "can_add_web_page_previews": false
-                },
-                "use_independent_chat_permissions": true
-            }),
-        ),
-        RestrictChatMember::new(1, 2)
-            .with_permissions(
-                ChatPermissions::default()
-                    .with_can_send_messages(true)
-                    .with_can_send_other_messages(true)
-                    .with_can_add_web_page_previews(false),
-            )
-            .with_until_date(100)
-            .with_use_independent_chat_permissions(true),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "restrictChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "permissions": {}
-            }),
-        ),
-        RestrictChatMember::new(1, 2),
-    );
+    assert_payload_eq!(POST JSON "restrictChatMember" => method.clone());
+    assert_payload_eq!(POST JSON "restrictChatMember" => method.with_until_date(100));
+    let method = RestrictChatMember::new(1, 2)
+        .with_permissions(
+            ChatPermissions::default()
+                .with_can_send_messages(true)
+                .with_can_send_other_messages(true)
+                .with_can_add_web_page_previews(false),
+        )
+        .with_until_date(100)
+        .with_use_independent_chat_permissions(true);
+    assert_payload_eq!(POST JSON "restrictChatMember" => method);
+    assert_payload_eq!(POST JSON "restrictChatMember" => RestrictChatMember::new(1, 2));
 }
 
 #[test]
 fn set_chat_administrator_custom_title() {
-    assert_payload_eq(
-        Payload::json(
-            "setChatAdministratorCustomTitle",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 1,
-                "custom_title": "Alpha"
-            }),
-        ),
-        SetChatAdministratorCustomTitle::new(1, "Alpha", 1),
-    );
+    let method = SetChatAdministratorCustomTitle::new(1, "Alpha", 1);
+    assert_payload_eq!(POST JSON "setChatAdministratorCustomTitle" => method);
 }
 
 #[test]
 fn unban_chat_member() {
     let method = UnbanChatMember::new(1, 2);
-    assert_payload_eq(
-        Payload::json(
-            "unbanChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "unbanChatMember",
-            serde_json::json!({
-                "chat_id": 1,
-                "user_id": 2,
-                "only_if_banned": true
-            }),
-        ),
-        method.with_only_if_banned(true),
-    );
+    assert_payload_eq!(POST JSON "unbanChatMember" => method.clone());
+    assert_payload_eq!(POST JSON "unbanChatMember" => method.with_only_if_banned(true));
 }
 
 #[test]
 fn pin_chat_message() {
     let method = PinChatMessage::new(1, 2);
-    assert_payload_eq(
-        Payload::json(
-            "pinChatMessage",
-            serde_json::json!({
-                "chat_id": 1,
-                "message_id": 2
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "pinChatMessage",
-            serde_json::json!({
-                "chat_id": 1,
-                "message_id": 2,
-                "business_connection_id": "c-id",
-                "disable_notification": true
-            }),
-        ),
-        method
-            .with_business_connection_id("c-id")
-            .with_disable_notification(true),
-    );
+    assert_payload_eq!(POST JSON "pinChatMessage" => method.clone());
+    let method = method
+        .with_business_connection_id("c-id")
+        .with_disable_notification(true);
+    assert_payload_eq!(POST JSON "pinChatMessage" => method);
 }
 
 #[test]
 fn unpin_chat_message() {
     let method = UnpinChatMessage::new(1);
-    assert_payload_eq(
-        Payload::json(
-            "unpinChatMessage",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "unpinChatMessage",
-            serde_json::json!({
-                "chat_id": 1,
-                "business_connection_id": "c-id",
-                "message_id": 2
-            }),
-        ),
-        method.with_business_connection_id("c-id").with_message_id(2),
-    );
+    assert_payload_eq!(POST JSON "unpinChatMessage" => method.clone());
+    let method = method.with_business_connection_id("c-id").with_message_id(2);
+    assert_payload_eq!(POST JSON "unpinChatMessage" => method);
 }
 
 #[test]
 fn unpin_all_chat_messages() {
-    assert_payload_eq(
-        Payload::json(
-            "unpinAllChatMessages",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        UnpinAllChatMessages::new(1),
-    );
+    assert_payload_eq!(POST JSON "unpinAllChatMessages" => UnpinAllChatMessages::new(1));
 }
 
 #[test]
@@ -1361,31 +876,8 @@ fn chat_permissions() {
 fn set_chat_permissions() {
     let permissions = ChatPermissions::default().with_can_send_messages(true);
     let method = SetChatPermissions::new(1, permissions);
-    assert_payload_eq(
-        Payload::json(
-            "setChatPermissions",
-            serde_json::json!({
-                "chat_id": 1,
-                "permissions": {
-                    "can_send_messages": true
-                }
-            }),
-        ),
-        method.clone(),
-    );
-    assert_payload_eq(
-        Payload::json(
-            "setChatPermissions",
-            serde_json::json!({
-                "chat_id": 1,
-                "permissions": {
-                    "can_send_messages": true
-                },
-                "use_independent_chat_permissions": true
-            }),
-        ),
-        method.with_use_independent_chat_permissions(true),
-    );
+    assert_payload_eq!(POST JSON "setChatPermissions" => method.clone());
+    assert_payload_eq!(POST JSON "setChatPermissions" => method.with_use_independent_chat_permissions(true));
 }
 
 #[test]
@@ -1400,79 +892,30 @@ fn chat_photo() {
 
 #[test]
 fn delete_chat_photo() {
-    assert_payload_eq(
-        Payload::json(
-            "deleteChatPhoto",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        DeleteChatPhoto::new(1),
-    );
+    assert_payload_eq!(POST JSON "deleteChatPhoto" => DeleteChatPhoto::new(1));
 }
 
 #[test]
 fn set_chat_photo() {
-    assert_payload_eq(
-        Payload::form(
-            "setChatPhoto",
-            Form::from([
-                ("chat_id", FormValue::from(1)),
-                ("photo", InputFile::file_id("photo-id").into()),
-            ]),
-        ),
-        SetChatPhoto::new(1, InputFile::file_id("photo-id")),
-    );
+    assert_payload_eq!(POST FORM "setChatPhoto" => SetChatPhoto::new(1, InputFile::file_id("photo-id")));
 }
 
 #[test]
 fn ban_chat_sender_chat() {
-    assert_payload_eq(
-        Payload::json(
-            "banChatSenderChat",
-            serde_json::json!({
-                "chat_id": 1,
-                "sender_chat_id": 1,
-            }),
-        ),
-        BanChatSenderChat::new(1, 1),
-    );
+    assert_payload_eq!(POST JSON "banChatSenderChat" => BanChatSenderChat::new(1, 1));
 }
 
 #[test]
 fn unban_chat_sender_chat() {
-    assert_payload_eq(
-        Payload::json(
-            "unbanChatSenderChat",
-            serde_json::json!({
-                "chat_id": 1,
-                "sender_chat_id": 1,
-            }),
-        ),
-        UnbanChatSenderChat::new(1, 1),
-    );
+    assert_payload_eq!(POST JSON "unbanChatSenderChat" => UnbanChatSenderChat::new(1, 1));
 }
 
 #[test]
 fn delete_chat_sticker_set() {
-    assert_payload_eq(
-        Payload::json(
-            "deleteChatStickerSet",
-            serde_json::json!({
-                "chat_id": 1
-            }),
-        ),
-        DeleteChatStickerSet::new(1),
-    );
+    assert_payload_eq!(POST JSON "deleteChatStickerSet" => DeleteChatStickerSet::new(1));
 }
 
 #[test]
 fn set_chat_sticker_set() {
-    assert_payload_eq(
-        Payload::json(
-            "setChatStickerSet",
-            serde_json::json!({"chat_id": 1, "sticker_set_name": "Sticker Set"}),
-        ),
-        SetChatStickerSet::new(1, "Sticker Set"),
-    );
+    assert_payload_eq!(POST JSON "setChatStickerSet" => SetChatStickerSet::new(1, "Sticker Set"));
 }

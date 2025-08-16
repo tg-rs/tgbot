@@ -328,6 +328,12 @@ fn invoice() {
 }
 
 #[test]
+fn is_paid_post() {
+    let expected_struct = create_message_struct().with_is_paid_post(true);
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn left_chat_member() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::LeftChatMember(User::new(1, "User", false));

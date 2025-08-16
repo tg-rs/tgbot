@@ -104,6 +104,10 @@ pub struct Message {
     ///
     /// For example, as an away or a greeting business message, or as a scheduled message.
     pub is_from_offline: Option<bool>,
+    /// Whether the message is a paid post.
+    ///
+    /// Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited.
+    pub is_paid_post: Option<bool>,
     /// Indicates whether the message is sent to a forum topic.
     pub is_topic_message: Option<bool>,
     /// Options used for link preview generation for the message,
@@ -175,6 +179,7 @@ impl Message {
             forward_origin: None,
             has_media_spoiler: None,
             is_from_offline: None,
+            is_paid_post: None,
             is_topic_message: None,
             link_preview_options: None,
             media_group_id: None,
@@ -397,6 +402,16 @@ impl Message {
     /// * `value` - Indicates whether the message was sent by an implicit action.
     pub fn with_is_from_offline(mut self, value: bool) -> Self {
         self.is_from_offline = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_paid_post` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the message is a paid post.
+    pub fn with_is_paid_post(mut self, value: bool) -> Self {
+        self.is_paid_post = Some(value);
         self
     }
 

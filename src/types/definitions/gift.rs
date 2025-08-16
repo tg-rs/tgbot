@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{ChatId, Integer, ParseMode, Sticker, TextEntities, TextEntity, User},
+    types::{Chat, ChatId, Integer, ParseMode, Sticker, TextEntities, TextEntity, User},
 };
 
 /// Describes the types of gifts that can be gifted to a user or a chat.
@@ -62,14 +62,16 @@ impl AcceptedGiftTypes {
 
 /// Represents a gift that can be sent by the bot.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Gift {
     /// Unique identifier of the gift.
     pub id: String,
-    /// The sticker that represents the gift.
-    pub sticker: Sticker,
     /// The number of Telegram Stars that must be paid to send the sticker.
     pub star_count: Integer,
+    /// The sticker that represents the gift.
+    pub sticker: Sticker,
+    /// Information about the chat that published the gift.
+    pub publisher_chat: Option<Chat>,
     /// The number of remaining gifts of this type that can be sent;
     /// for limited gifts only.
     pub remaining_count: Option<Integer>,
@@ -94,12 +96,26 @@ impl Gift {
     {
         Self {
             id: id.into(),
-            sticker,
             star_count,
-            total_count: None,
+            sticker,
+            publisher_chat: None,
             remaining_count: None,
+            total_count: None,
             upgrade_star_count: None,
         }
+    }
+
+    /// Sets a new publisher chat.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about the chat that published the gift.
+    pub fn with_publisher_chat<T>(mut self, value: T) -> Self
+    where
+        T: Into<Chat>,
+    {
+        self.publisher_chat = Some(value.into());
+        self
     }
 
     /// Sets a new remaining count.
@@ -135,7 +151,7 @@ impl Gift {
 
 /// Describes a service message about a regular gift that was sent or received.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct GiftInfo {
     /// Information about the gift.
     pub gift: Gift,
@@ -261,7 +277,7 @@ impl GiftInfo {
 }
 
 /// Represent a list of gifts.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Gifts {
     gifts: Vec<Gift>,
 }
@@ -290,7 +306,7 @@ impl Method for GetAvailableGifts {
 }
 
 /// Describes a gift received and owned by a user or a chat.
-#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 #[allow(clippy::large_enum_variant)]
 pub enum OwnedGift {
@@ -302,7 +318,7 @@ pub enum OwnedGift {
 
 /// Describes a regular gift owned by a user or a chat.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct OwnedGiftRegular {
     /// Information about the regular gift.
     pub gift: Gift,
@@ -591,7 +607,7 @@ impl OwnedGiftUnique {
 
 /// Contains the list of gifts received and owned by a user or a chat.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct OwnedGifts {
     /// The list of gifts.
     pub gifts: Vec<OwnedGift>,

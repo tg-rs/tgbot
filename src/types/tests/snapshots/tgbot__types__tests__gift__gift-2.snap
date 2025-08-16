@@ -1,9 +1,10 @@
 ---
 source: src/types/tests/gift.rs
-expression: expected_struct.with_remaining_count(10).with_total_count(20).with_upgrade_star_count(30)
+expression: "expected_struct.with_publisher_chat(PrivateChat::new(1,\n\"John\")).with_remaining_count(10).with_total_count(20).with_upgrade_star_count(30)"
 ---
 {
   "id": "id",
+  "star_count": 100,
   "sticker": {
     "file_id": "file-id",
     "file_unique_id": "file-unique-id",
@@ -13,7 +14,11 @@ expression: expected_struct.with_remaining_count(10).with_total_count(20).with_u
     "type": "regular",
     "width": 512
   },
-  "star_count": 100,
+  "publisher_chat": {
+    "type": "private",
+    "id": 1,
+    "first_name": "John"
+  },
   "remaining_count": 10,
   "total_count": 20,
   "upgrade_star_count": 30

@@ -11,6 +11,7 @@ expression: "TransactionPartner::Chat(TransactionPartnerChatParameters::new(Priv
   },
   "gift": {
     "id": "gift-id",
+    "star_count": 2,
     "sticker": {
       "file_id": "file-id",
       "file_unique_id": "file-unique-id",
@@ -19,7 +20,6 @@ expression: "TransactionPartner::Chat(TransactionPartnerChatParameters::new(Priv
       "is_video": false,
       "type": "mask",
       "width": 512
-    },
-    "star_count": 2
+    }
   }
 }

@@ -4,6 +4,7 @@ expression: expected_struct.clone()
 ---
 {
   "id": "id",
+  "star_count": 100,
   "sticker": {
     "file_id": "file-id",
     "file_unique_id": "file-unique-id",
@@ -12,6 +13,5 @@ expression: expected_struct.clone()
     "is_video": false,
     "type": "regular",
     "width": 512
-  },
-  "star_count": 100
+  }
 }

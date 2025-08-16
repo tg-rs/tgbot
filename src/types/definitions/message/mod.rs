@@ -121,6 +121,8 @@ pub struct Message {
     /// For replies, the original message or story.
     #[serde(flatten)]
     pub reply_to: Option<ReplyTo>,
+    /// Identifier of the specific checklist task that is being replied to.
+    pub reply_to_checklist_task_id: Option<Integer>,
     /// Number of boosts added by the user.
     ///
     /// Contains a value only if the sender of the message boosted the chat.
@@ -178,6 +180,7 @@ impl Message {
             quote: None,
             reply_markup: None,
             reply_to: None,
+            reply_to_checklist_task_id: None,
             sender_boost_count: None,
             sender_business_bot: None,
             show_caption_above_media: None,
@@ -471,6 +474,16 @@ impl Message {
         T: Into<ReplyTo>,
     {
         self.reply_to = Some(value.into());
+        self
+    }
+
+    /// Sets a new reply checklist task ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Identifier of the specific checklist task that is being replied to.
+    pub fn with_reply_to_checklist_task_id(mut self, value: Integer) -> Self {
+        self.reply_to_checklist_task_id = Some(value);
         self
     }
 

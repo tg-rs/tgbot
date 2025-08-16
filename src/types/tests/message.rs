@@ -1360,6 +1360,26 @@ fn link_peview_options() {
 }
 
 #[test]
+fn reply_to_checklist_task_id() {
+    let msg: Message = serde_json::from_value(serde_json::json!({
+        "message_id": 2, "date": 1,
+        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+        "text": "test",
+        "reply_to_checklist_task_id": 1,
+    }))
+    .unwrap();
+    if let Some(x) = msg.reply_to_checklist_task_id {
+        assert_eq!(x, 1);
+    } else {
+        panic!(
+            "Unexpected reply_to_checklist_task_id data: {:?}",
+            msg.reply_to_checklist_task_id
+        );
+    }
+}
+
+#[test]
 fn reply_to_message() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,

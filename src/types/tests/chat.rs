@@ -761,6 +761,7 @@ fn promote_chat_member() {
         .with_can_delete_messages(false)
         .with_can_invite_users(true)
         .with_can_manage_chat(false)
+        .with_can_manage_direct_messages(false)
         .with_can_manage_video_chats(true)
         .with_can_pin_messages(true)
         .with_can_post_messages(false)

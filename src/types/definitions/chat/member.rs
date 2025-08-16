@@ -926,6 +926,7 @@ pub struct PromoteChatMember {
     can_edit_stories: Option<bool>,
     can_invite_users: Option<bool>,
     can_manage_chat: Option<bool>,
+    can_manage_direct_messages: Option<bool>,
     can_manage_topics: Option<bool>,
     can_manage_video_chats: Option<bool>,
     can_pin_messages: Option<bool>,
@@ -957,6 +958,7 @@ impl PromoteChatMember {
             can_edit_stories: None,
             can_invite_users: None,
             can_manage_chat: None,
+            can_manage_direct_messages: None,
             can_manage_topics: None,
             can_manage_video_chats: None,
             can_pin_messages: None,
@@ -978,6 +980,7 @@ impl PromoteChatMember {
         self.can_edit_stories = Some(true);
         self.can_invite_users = Some(true);
         self.can_manage_chat = Some(true);
+        self.can_manage_direct_messages = Some(true);
         self.can_manage_topics = Some(true);
         self.can_manage_video_chats = Some(true);
         self.can_pin_messages = Some(true);
@@ -998,6 +1001,7 @@ impl PromoteChatMember {
         self.can_edit_stories = Some(false);
         self.can_invite_users = Some(false);
         self.can_manage_chat = Some(false);
+        self.can_manage_direct_messages = Some(false);
         self.can_manage_topics = Some(false);
         self.can_manage_video_chats = Some(false);
         self.can_pin_messages = Some(false);
@@ -1081,6 +1085,17 @@ impl PromoteChatMember {
     ///   implied by any other administrator privilege.
     pub fn with_can_manage_chat(mut self, value: bool) -> Self {
         self.can_manage_chat = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_manage_direct_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the administrator can manage direct messages
+    /// within the channel and decline suggested posts; for channels only.
+    pub fn with_can_manage_direct_messages(mut self, value: bool) -> Self {
+        self.can_manage_direct_messages = Some(value);
         self
     }
 

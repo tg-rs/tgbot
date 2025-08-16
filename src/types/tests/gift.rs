@@ -71,8 +71,8 @@ fn owned_gift() {
     ));
     insta::assert_json_snapshot!(expected_struct);
     let unique = OwnedGiftUnique::new(
-        UniqueGift {
-            backdrop: UniqueGiftBackdrop {
+        UniqueGift::new(
+            UniqueGiftBackdrop {
                 colors: UniqueGiftBackdropColors {
                     center_color: 1,
                     edge_color: 2,
@@ -82,20 +82,20 @@ fn owned_gift() {
                 name: String::from("name"),
                 rarity_per_mille: 5,
             },
-            base_name: String::from("base-name"),
-            model: UniqueGiftModel {
+            String::from("base-name"),
+            UniqueGiftModel {
                 name: String::from("name"),
                 rarity_per_mille: 6,
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             },
-            name: String::from("name"),
-            number: 7,
-            symbol: UniqueGiftSymbol {
+            String::from("name"),
+            7,
+            UniqueGiftSymbol {
                 name: String::from("name"),
                 rarity_per_mille: 8,
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             },
-        },
+        ),
         9,
     );
     insta::assert_json_snapshot!(OwnedGift::from(unique.clone()));
@@ -156,8 +156,8 @@ fn owned_gifts() {
 #[test]
 fn unique_gift_info() {
     let expected_struct = UniqueGiftInfo::new(
-        UniqueGift {
-            backdrop: UniqueGiftBackdrop {
+        UniqueGift::new(
+            UniqueGiftBackdrop {
                 colors: UniqueGiftBackdropColors {
                     center_color: 1,
                     edge_color: 2,
@@ -167,20 +167,21 @@ fn unique_gift_info() {
                 name: String::from("name"),
                 rarity_per_mille: 5,
             },
-            base_name: String::from("base-name"),
-            model: UniqueGiftModel {
+            String::from("base-name"),
+            UniqueGiftModel {
                 name: String::from("name"),
                 rarity_per_mille: 6,
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             },
-            name: String::from("name"),
-            number: 7,
-            symbol: UniqueGiftSymbol {
+            String::from("name"),
+            7,
+            UniqueGiftSymbol {
                 name: String::from("name"),
                 rarity_per_mille: 8,
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             },
-        },
+        )
+        .with_publisher_chat(PrivateChat::new(1, "John")),
         UniqueGiftOrigin::Transfer,
     );
     insta::assert_json_snapshot!(expected_struct.clone());

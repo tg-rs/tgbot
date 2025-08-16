@@ -491,7 +491,7 @@ impl OwnedGiftRegular {
 
 /// Describes a unique gift received and owned by a user or a chat.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct OwnedGiftUnique {
     /// Information about the unique gift.
     pub gift: UniqueGift,
@@ -652,7 +652,8 @@ impl OwnedGifts {
 }
 
 /// Describes a unique gift that was upgraded from a regular gift.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct UniqueGift {
     /// Backdrop of the gift.
     pub backdrop: UniqueGiftBackdrop,
@@ -664,8 +665,58 @@ pub struct UniqueGift {
     pub name: String,
     /// Unique number of the upgraded gift among gifts upgraded from the same regular gift.
     pub number: Integer,
-    ///  Symbol of the gift.
+    /// Symbol of the gift.
     pub symbol: UniqueGiftSymbol,
+    /// Information about the chat that published the gift.
+    pub publisher_chat: Option<Chat>,
+}
+
+impl UniqueGift {
+    /// Creates a new `UniqueGift`.
+    ///
+    /// # Arguments
+    ///
+    /// * `backdrop` - Backdrop of the gift.
+    /// * `base_name` - Human-readable name of the regular gift from which this unique gift was upgraded.
+    /// * `model` - Model of the gift.
+    /// * `name` - Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas.
+    /// * `number` - Unique number of the upgraded gift among gifts upgraded from the same regular gift.
+    /// * `symbol` - Symbol of the gift.
+    pub fn new<A, B>(
+        backdrop: UniqueGiftBackdrop,
+        base_name: A,
+        model: UniqueGiftModel,
+        name: B,
+        number: Integer,
+        symbol: UniqueGiftSymbol,
+    ) -> Self
+    where
+        A: Into<String>,
+        B: Into<String>,
+    {
+        Self {
+            backdrop,
+            base_name: base_name.into(),
+            model,
+            name: name.into(),
+            number,
+            symbol,
+            publisher_chat: None,
+        }
+    }
+
+    /// Sets a new publisher chat.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about the chat that published the gift.
+    pub fn with_publisher_chat<T>(mut self, value: T) -> Self
+    where
+        T: Into<Chat>,
+    {
+        self.publisher_chat = Some(value.into());
+        self
+    }
 }
 
 /// Describes the backdrop of a unique gift.
@@ -728,7 +779,7 @@ pub enum UniqueGiftOrigin {
 
 /// Describes a service message about a unique gift that was sent or received.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct UniqueGiftInfo {
     /// Information about the gift.
     pub gift: UniqueGift,

@@ -42,6 +42,11 @@ expression: "expected_struct.with_next_transfer_date(500).with_owned_gift_id(\"t
         "type": "regular",
         "width": 512
       }
+    },
+    "publisher_chat": {
+      "type": "private",
+      "id": 1,
+      "first_name": "John"
     }
   },
   "origin": "transfer",

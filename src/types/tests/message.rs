@@ -508,8 +508,8 @@ fn text() {
 fn unique_gift() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::UniqueGift(UniqueGiftInfo::new(
-        UniqueGift {
-            backdrop: UniqueGiftBackdrop {
+        UniqueGift::new(
+            UniqueGiftBackdrop {
                 colors: UniqueGiftBackdropColors {
                     center_color: 1,
                     edge_color: 2,
@@ -519,20 +519,20 @@ fn unique_gift() {
                 name: String::from("name"),
                 rarity_per_mille: 5,
             },
-            base_name: String::from("base-name"),
-            model: UniqueGiftModel {
+            String::from("base-name"),
+            UniqueGiftModel {
                 name: String::from("name"),
                 rarity_per_mille: 6,
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             },
-            name: String::from("name"),
-            number: 7,
-            symbol: UniqueGiftSymbol {
+            String::from("name"),
+            7,
+            UniqueGiftSymbol {
                 name: String::from("name"),
                 rarity_per_mille: 8,
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             },
-        },
+        ),
         UniqueGiftOrigin::Transfer,
     ));
     insta::assert_json_snapshot!(expected_struct);

@@ -570,23 +570,25 @@ fn chat_member_admin() {
         .with_is_anonymous(false)
         .with_can_be_edited(true)
         .with_can_change_info(false)
-        .with_can_post_messages(true)
-        .with_can_edit_messages(false)
         .with_can_delete_messages(true)
-        .with_can_invite_users(false)
-        .with_can_restrict_members(true)
-        .with_can_pin_messages(false)
-        .with_can_post_stories(true)
+        .with_can_delete_stories(true)
+        .with_can_edit_messages(false)
         .with_can_edit_stories(true)
-        .with_can_promote_members(true)
-        .with_can_manage_video_chats(false)
+        .with_can_invite_users(false)
         .with_can_manage_chat(true)
+        .with_can_manage_direct_messages(false)
         .with_can_manage_topics(true)
-        .with_can_delete_stories(true),
+        .with_can_manage_video_chats(false)
+        .with_can_pin_messages(false)
+        .with_can_post_messages(true)
+        .with_can_post_stories(true)
+        .with_can_promote_members(true)
+        .with_can_restrict_members(true),
     );
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());
     insta::assert_json_snapshot!(expected_struct);
+
     let expected_struct = ChatMember::Administrator(
         ChatMemberAdministrator::new(User::new(1, "John", false))
             .with_can_be_edited(true)

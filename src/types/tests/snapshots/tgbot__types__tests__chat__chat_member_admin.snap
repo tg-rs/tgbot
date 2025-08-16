@@ -20,6 +20,7 @@ expression: expected_struct
   "can_edit_stories": true,
   "can_invite_users": false,
   "can_manage_chat": true,
+  "can_manage_direct_messages": false,
   "can_manage_topics": true,
   "can_manage_video_chats": false,
   "can_pin_messages": false,

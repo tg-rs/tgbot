@@ -12,6 +12,7 @@ pub struct ReplyParameters {
     message_id: Integer,
     allow_sending_without_reply: Option<bool>,
     chat_id: Option<ChatId>,
+    checklist_task_id: Option<Integer>,
     #[serde(flatten)]
     quote: Option<ReplyQuote>,
 }
@@ -28,6 +29,7 @@ impl ReplyParameters {
             message_id,
             allow_sending_without_reply: None,
             chat_id: None,
+            checklist_task_id: None,
             quote: None,
         }
     }
@@ -54,6 +56,16 @@ impl ReplyParameters {
         T: Into<ChatId>,
     {
         self.chat_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new checklist task ID
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Identifier of the specific checklist task to be replied to.
+    pub fn with_checklist_task_id(mut self, value: Integer) -> Self {
+        self.checklist_task_id = Some(value);
         self
     }
 

@@ -68,6 +68,11 @@ expression: expected_struct
       "longitude": 0.0
     }
   },
+  "parent_chat": {
+    "type": "channel",
+    "id": 1,
+    "title": "test"
+  },
   "slow_mode_delay": 10,
   "sticker_set_name": "Sticker Set",
   "unrestrict_boost_count": 1,

@@ -136,6 +136,8 @@ pub struct ChatFullInfo {
     pub join_by_request: Option<bool>,
     /// For supergroups, the location to which the supergroup is connected.
     pub location: Option<ChatLocation>,
+    /// Information about the corresponding channel chat; for direct messages chats only.
+    pub parent_chat: Option<Chat>,
     /// For supergroups, the minimum allowed delay between
     /// consecutive messages sent by each unprivileged user; in seconds.
     pub slow_mode_delay: Option<Integer>,

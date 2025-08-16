@@ -211,6 +211,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         location: None,
         max_reaction_count: 0,
         message_auto_delete_time: None,
+        parent_chat: None,
         permissions: None,
         personal_chat: None,
         photo: None,
@@ -401,6 +402,7 @@ fn supergroup_chat_full_info() {
     expected_struct.join_to_send_messages = Some(true);
     expected_struct.join_by_request = Some(true);
     expected_struct.is_direct_messages = Some(true);
+    expected_struct.parent_chat = Some(ChannelChat::new(1, "test").into());
     expected_struct.is_forum = Some(true);
     expected_struct.active_usernames = Some(vec![String::from("supergroup_chat")]);
     expected_struct.has_hidden_members = Some(true);

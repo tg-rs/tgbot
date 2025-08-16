@@ -37,7 +37,7 @@ mockito = "1"
 regex = "1"
 tempfile = "3"
 tokio = { version = "1", features = ["fs", "io-util", "macros", "rt-multi-thread"] }
-toml = "0.8"
+toml = "0.9"
 
 [[example]]
 name = "webhook"

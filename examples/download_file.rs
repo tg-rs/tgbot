@@ -46,10 +46,10 @@ async fn handle_document(client: &Client, tmpdir: &Path, document: Document) {
 impl UpdateHandler for Handler {
     async fn handle(&self, update: Update) {
         log::info!("Got an update: {update:?}");
-        if let UpdateType::Message(message) = update.update_type {
-            if let MessageData::Document(document) = message.data {
-                handle_document(&self.client, &self.tmpdir, document.data).await;
-            }
+        if let UpdateType::Message(message) = update.update_type
+            && let MessageData::Document(document) = message.data
+        {
+            handle_document(&self.client, &self.tmpdir, document.data).await;
         }
     }
 }

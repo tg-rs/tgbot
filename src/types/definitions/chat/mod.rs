@@ -213,6 +213,8 @@ pub struct SupergroupChat {
     pub id: ChatPeerId,
     /// Title of the supergroup.
     pub title: String,
+    /// Whether the chat is the direct messages chat of a channel.
+    pub is_direct_messages: Option<bool>,
     /// Whether the supergroup has topic enabled.
     pub is_forum: Option<bool>,
     /// Username of the supergroup.
@@ -234,9 +236,20 @@ impl SupergroupChat {
         Self {
             id: id.into(),
             title: title.into(),
+            is_direct_messages: None,
             is_forum: None,
             username: None,
         }
+    }
+
+    /// Sets a new value for the `is_direct_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// `value` - Whether the chat is the direct messages chat of a channel.
+    pub fn with_is_direct_messages(mut self, value: bool) -> Self {
+        self.is_direct_messages = Some(value);
+        self
     }
 
     /// Sets a new value for the `is_forum` flag.

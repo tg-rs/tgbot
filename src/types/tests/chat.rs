@@ -43,6 +43,7 @@ fn private_chat() {
 fn supergroup_chat() {
     let expected_struct = Chat::Supergroup(
         SupergroupChat::new(1, "Supergroup Chat")
+            .with_is_direct_messages(true)
             .with_is_forum(true)
             .with_username("supergroup_chat"),
     );

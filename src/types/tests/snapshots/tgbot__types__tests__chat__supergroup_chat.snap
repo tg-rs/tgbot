@@ -6,6 +6,7 @@ expression: expected_struct
   "type": "supergroup",
   "id": 1,
   "title": "Supergroup Chat",
+  "is_direct_messages": true,
   "is_forum": true,
   "username": "supergroup_chat"
 }

@@ -1,5 +1,58 @@
 # Changelog
 
+## 0.40.0 (16.08.2025)
+
+### Bot API
+
+#### 9.2
+
+- Added types:
+  `ApproveSuggestedPost`, `DeclineSuggestedPost`, `DirectMessagesTopic`, `SuggestedPostApprovalFailed`,
+  `SuggestedPostApproved`, `SuggestedPostDeclined`, `SuggestedPostInfo`, `SuggestedPostPaid`,
+  `SuggestedPostParameters`, `SuggestedPostPrice`, `SuggestedPostRefunded`, `SuggestedPostRefundReason`,
+  `SuggestedPostState`.
+- Added enum variants:
+  - `MessageData`: `SuggestedPostApproved`, `SuggestedPostApprovalFailed`, `SuggestedPostDeclined`,
+    `SuggestedPostPaid`, `SuggestedPostRefunded`.
+- Added fields:
+  - `ChatAdministratorRights`: `can_manage_direct_messages`.
+  - `ChatFullInfo`: `is_direct_messages`, `parent_chat`.
+  - `ChatMemberAdministrator`: `can_manage_direct_messages`.
+  - `Gift`: `publisher_chat`.
+  - `Message`: `direct_messages_topic`, `is_paid_post`, `reply_to_checklist_task_id`, `suggested_post_info`.
+  - `SupergroupChat`: `is_direct_messages`.
+  - `UniqueGift`: `publisher_chat`.
+- Added methods:
+  - `ChatAdministratorRights`: `with_can_manage_direct_messages`.
+  - `ChatMemberAdministrator`: `with_can_manage_direct_messages`.
+  - `CopyMessage`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`.
+  - `CopyMessages`:`with_direct_messages_topic_id`.
+  - `ForwardMessage`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`.
+  - `ForwardMessages`:`with_direct_messages_topic_id`.
+  - `Gift`: `with_publisher_chat`.
+  - `Message`: `with_direct_messages_topic`, `with_is_paid_post`, `with_reply_to_checklist_task_id`,
+    `with_suggested_post_info`.
+  - `PromoteChatMember`: `with_can_manage_direct_messages`.
+  - `ReplyParameters`: `with_checklist_task_id`.
+  - `SendAnimation`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendAudio`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendContact`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendDice`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendDocument`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendInvoice`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendLocation`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendMediaGroup`:`with_direct_messages_topic_id`.
+  - `SendMessage`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendPaidMedia`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendPhoto`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendSticker`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendVenue`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendVideo`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendVideoNote`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SendVoice`: `with_direct_messages_topic_id`, `with_suggested_post_parameters`,
+  - `SupergroupChat`: `with_is_direct_messages`.
+  - `UniqueGift`: `new`, `with_publisher_chat`.
+
 ## 0.39.1 (08.07.2025)
 
 ### Bot API

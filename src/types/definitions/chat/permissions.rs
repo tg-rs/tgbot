@@ -29,6 +29,9 @@ pub struct ChatAdministratorRights {
     ///
     /// Implied by any other administrator privilege.
     pub can_manage_chat: bool,
+    /// Whether the administrator can manage direct messages
+    /// of the channel and decline suggested posts; for channels only.
+    pub can_manage_direct_messages: Option<bool>,
     /// Indicates whether the user is allowed to create, rename,
     /// close, and reopen forum topics; supergroups only.
     pub can_manage_topics: Option<bool>,
@@ -66,6 +69,7 @@ impl ChatAdministratorRights {
             can_edit_stories: Some(true),
             can_invite_users: true,
             can_manage_chat: true,
+            can_manage_direct_messages: Some(true),
             can_manage_topics: Some(true),
             can_manage_video_chats: true,
             can_pin_messages: Some(true),
@@ -157,6 +161,17 @@ impl ChatAdministratorRights {
     ///   see anonymous administrators in supergroups and ignore slow mode.
     pub fn with_can_manage_chat(mut self, value: bool) -> Self {
         self.can_manage_chat = value;
+        self
+    }
+
+    /// Sets a new value for the `can_manage_direct_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the administrator can manage direct messages
+    ///  of the channel and decline suggested posts; for channels only.
+    pub fn with_can_manage_direct_messages(mut self, value: bool) -> Self {
+        self.can_manage_direct_messages = Some(value);
         self
     }
 

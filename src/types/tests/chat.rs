@@ -844,6 +844,7 @@ fn chat_administrator_rights() {
             .with_can_edit_stories(true)
             .with_can_invite_users(false)
             .with_can_manage_chat(true)
+            .with_can_manage_direct_messages(false)
             .with_can_manage_topics(true)
             .with_can_manage_video_chats(false)
             .with_can_pin_messages(true)

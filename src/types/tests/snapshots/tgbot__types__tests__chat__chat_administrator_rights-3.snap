@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/chat.rs
-expression: "ChatAdministratorRights::default().with_can_change_info(true).with_can_delete_messages(false).with_can_delete_stories(false).with_can_edit_messages(false).with_can_edit_stories(true).with_can_invite_users(false).with_can_manage_chat(true).with_can_manage_topics(true).with_can_manage_video_chats(false).with_can_pin_messages(true).with_can_post_messages(true).with_can_post_stories(false).with_can_promote_members(true).with_can_restrict_members(false).with_is_anonymous(true)"
+expression: "ChatAdministratorRights::default().with_can_change_info(true).with_can_delete_messages(false).with_can_delete_stories(false).with_can_edit_messages(false).with_can_edit_stories(true).with_can_invite_users(false).with_can_manage_chat(true).with_can_manage_direct_messages(false).with_can_manage_topics(true).with_can_manage_video_chats(false).with_can_pin_messages(true).with_can_post_messages(true).with_can_post_stories(false).with_can_promote_members(true).with_can_restrict_members(false).with_is_anonymous(true)"
 ---
 {
   "can_change_info": true,
@@ -10,6 +10,7 @@ expression: "ChatAdministratorRights::default().with_can_change_info(true).with_
   "can_edit_stories": true,
   "can_invite_users": false,
   "can_manage_chat": true,
+  "can_manage_direct_messages": false,
   "can_manage_topics": true,
   "can_manage_video_chats": false,
   "can_pin_messages": true,

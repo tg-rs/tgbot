@@ -114,7 +114,7 @@ pub struct SuggestedPostApproved {
     ///
     /// Note that the Message object in this field will not contain the reply_to_message field
     /// even if it itself is a reply.
-    pub suggested_post_message: Option<Message>,
+    pub suggested_post_message: Option<Box<Message>>,
 }
 
 impl SuggestedPostApproved {
@@ -147,7 +147,7 @@ impl SuggestedPostApproved {
     ///
     /// * `value` - Message containing the suggested post.
     pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(value);
+        self.suggested_post_message = Some(Box::new(value));
         self
     }
 }
@@ -164,7 +164,7 @@ pub struct SuggestedPostApprovalFailed {
     ///
     /// Note that the Message object in this field will not contain the reply_to_message field
     /// even if it itself is a reply.
-    pub suggested_post_message: Option<Message>,
+    pub suggested_post_message: Option<Box<Message>>,
 }
 
 impl SuggestedPostApprovalFailed {
@@ -186,7 +186,7 @@ impl SuggestedPostApprovalFailed {
     ///
     /// * `value` - Message containing the suggested post.
     pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(value);
+        self.suggested_post_message = Some(Box::new(value));
         self
     }
 }
@@ -201,7 +201,7 @@ pub struct SuggestedPostDeclined {
     ///
     /// Note that the Message object in this field will not contain the reply_to_message field
     /// even if it itself is a reply.
-    pub suggested_post_message: Option<Message>,
+    pub suggested_post_message: Option<Box<Message>>,
 }
 
 impl SuggestedPostDeclined {
@@ -224,7 +224,7 @@ impl SuggestedPostDeclined {
     ///
     /// * `value` - Message containing the suggested post.
     pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(value);
+        self.suggested_post_message = Some(Box::new(value));
         self
     }
 }
@@ -296,7 +296,7 @@ pub struct SuggestedPostPaid {
     /// Message containing the suggested post.
     ///
     /// Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-    pub suggested_post_message: Option<Message>,
+    pub suggested_post_message: Option<Box<Message>>,
 }
 
 impl SuggestedPostPaid {
@@ -346,7 +346,7 @@ impl SuggestedPostPaid {
     ///
     /// * `value` - Message containing the suggested post.
     pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(value);
+        self.suggested_post_message = Some(Box::new(value));
         self
     }
 }
@@ -433,7 +433,7 @@ pub struct SuggestedPostRefunded {
     ///
     /// Note that the Message object in this field will not contain the reply_to_message field
     /// even if it itself is a reply.
-    pub suggested_post_message: Option<Message>,
+    pub suggested_post_message: Option<Box<Message>>,
 }
 
 impl SuggestedPostRefunded {
@@ -455,7 +455,7 @@ impl SuggestedPostRefunded {
     ///
     /// * `value` - Message containing the suggested post.
     pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(value);
+        self.suggested_post_message = Some(Box::new(value));
         self
     }
 }

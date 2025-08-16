@@ -32,6 +32,11 @@ use crate::types::{
     Sticker,
     Story,
     SuccessfulPayment,
+    SuggestedPostApprovalFailed,
+    SuggestedPostApproved,
+    SuggestedPostDeclined,
+    SuggestedPostPaid,
+    SuggestedPostRefunded,
     Text,
     UniqueGiftInfo,
     User,
@@ -184,6 +189,16 @@ pub enum MessageData {
     Sticker(Sticker),
     /// A forwarded story.
     Story(Story),
+    /// Service message: a suggested post was approved.
+    SuggestedPostApproved(SuggestedPostApproved),
+    /// Service message: approval of a suggested post has failed.
+    SuggestedPostApprovalFailed(SuggestedPostApprovalFailed),
+    /// Service message: a suggested post was declined.
+    SuggestedPostDeclined(SuggestedPostDeclined),
+    /// Service message: payment for a suggested post was received.
+    SuggestedPostPaid(SuggestedPostPaid),
+    /// Service message: payment for a suggested post was refunded.
+    SuggestedPostRefunded(SuggestedPostRefunded),
     /// Information about the successful payment.
     SuccessfulPayment(SuccessfulPayment),
     /// The supergroup has been created.

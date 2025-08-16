@@ -495,6 +495,43 @@ fn story() {
 }
 
 #[test]
+fn suggested_post_approval_failed() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data =
+        MessageData::SuggestedPostApprovalFailed(SuggestedPostApprovalFailed::new(SuggestedPostPrice::new(1, "test")));
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn suggested_post_approved() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::SuggestedPostApproved(SuggestedPostApproved::new(1));
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn suggested_post_declined() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::SuggestedPostDeclined(SuggestedPostDeclined::default());
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn suggested_post_paid() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::SuggestedPostPaid(SuggestedPostPaid::new("test"));
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn suggested_post_refuned() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data =
+        MessageData::SuggestedPostRefunded(SuggestedPostRefunded::new(SuggestedPostRefundReason::PostDeleted));
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn successful_payment() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::SuccessfulPayment(SuccessfulPayment::new(

@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-#[cfg(test)]
-pub(crate) use self::boolean::False;
 pub(crate) use self::boolean::True;
 pub use self::parse_mode::*;
 

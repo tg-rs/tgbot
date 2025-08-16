@@ -45,4 +45,3 @@ macro_rules! impl_bool_type {
 }
 
 impl_bool_type!(True = true);
-impl_bool_type!(False = false);

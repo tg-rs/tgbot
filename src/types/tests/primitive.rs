@@ -3,7 +3,6 @@ use crate::types::*;
 #[test]
 fn ok() {
     insta::assert_json_snapshot!(True);
-    insta::assert_json_snapshot!(False);
 }
 
 #[test]
@@ -12,10 +11,6 @@ fn err() {
         .unwrap_err()
         .to_string();
     assert_eq!(err, "invalid value: boolean `false`, expected true");
-    let err = serde_json::from_value::<False>(serde_json::json!(true))
-        .unwrap_err()
-        .to_string();
-    assert_eq!(err, "invalid value: boolean `true`, expected false");
 }
 
 #[test]

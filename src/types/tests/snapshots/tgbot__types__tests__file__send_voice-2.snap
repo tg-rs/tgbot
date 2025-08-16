@@ -82,6 +82,12 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "suggested_post_parameters",
+        FormValue::Text(
+            "{}",
+        ),
+    ),
+    (
         "voice",
         FormValue::Text(
             "file-id",

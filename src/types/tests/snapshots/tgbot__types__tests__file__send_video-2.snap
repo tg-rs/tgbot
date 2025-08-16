@@ -112,6 +112,12 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "suggested_post_parameters",
+        FormValue::Text(
+            "{}",
+        ),
+    ),
+    (
         "supports_streaming",
         FormValue::Text(
             "true",

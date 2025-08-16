@@ -15,6 +15,8 @@ use crate::{
         ReplyMarkupError,
         ReplyParameters,
         ReplyParametersError,
+        SuggestedPostParameters,
+        SuggestedPostParametersError,
         TextEntities,
         TextEntity,
         TextEntityError,
@@ -393,6 +395,24 @@ impl SendVideo {
     pub fn with_start_timestamp(mut self, value: Integer) -> Self {
         self.form.insert_field("start_timestamp", value);
         self
+    }
+
+    /// Sets a new suggested post parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the suggested post to send.
+    ///
+    /// For direct messages chats only.
+    ///
+    /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
+    pub fn with_suggested_post_parameters(
+        mut self,
+        value: &SuggestedPostParameters,
+    ) -> Result<Self, SuggestedPostParametersError> {
+        let value = serde_json::to_string(value).map_err(SuggestedPostParametersError::Serialize)?;
+        self.form.insert_field("suggested_post_parameters", value);
+        Ok(self)
     }
 
     /// Sets a new value for the `supports_streaming` flag.

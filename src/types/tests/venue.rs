@@ -27,7 +27,8 @@ fn send_venue() {
         .with_message_effect_id("effect-id")
         .with_message_thread_id(1)
         .with_reply_markup(ForceReply::new(true))
-        .with_reply_parameters(ReplyParameters::new(1));
+        .with_reply_parameters(ReplyParameters::new(1))
+        .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST JSON "sendVenue" => method);
     let method = SendVenue::new(1, 2.0, 3.0, "title", "addr");
     assert_payload_eq!(POST JSON "sendVenue" => method);

@@ -10,5 +10,6 @@ expression: actual_data
   "message_id": 3,
   "message_thread_id": 1,
   "protect_content": true,
+  "suggested_post_parameters": {},
   "video_start_timestamp": 200
 }

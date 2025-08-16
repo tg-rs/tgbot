@@ -3,7 +3,7 @@ use serde_json::Error as JsonError;
 
 use crate::{
     api::{Method, Payload},
-    types::{ChatId, InlineKeyboardMarkup, Integer, Message, ReplyParameters},
+    types::{ChatId, InlineKeyboardMarkup, Integer, Message, ReplyParameters, SuggestedPostParameters},
 };
 
 /// Represents an invoice.
@@ -424,6 +424,7 @@ pub struct SendInvoice {
     reply_markup: Option<InlineKeyboardMarkup>,
     reply_parameters: Option<ReplyParameters>,
     start_parameter: Option<String>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
 }
 
 impl SendInvoice {
@@ -466,6 +467,7 @@ impl SendInvoice {
             reply_markup: None,
             reply_parameters: None,
             start_parameter: None,
+            suggested_post_parameters: None,
         }
     }
 
@@ -589,6 +591,20 @@ impl SendInvoice {
         T: Into<String>,
     {
         self.start_parameter = Some(value.into());
+        self
+    }
+
+    /// Sets a new suggested post parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the suggested post to send.
+    ///
+    /// For direct messages chats only.
+    ///
+    /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.suggested_post_parameters = Some(value);
         self
     }
 }

@@ -48,6 +48,7 @@ fn send_dice() {
         .with_message_thread_id(1)
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
-        .with_reply_parameters(ReplyParameters::new(1));
+        .with_reply_parameters(ReplyParameters::new(1))
+        .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST JSON "sendDice" => method);
 }

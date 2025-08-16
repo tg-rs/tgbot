@@ -16,6 +16,7 @@ use crate::{
         ParseMode,
         ReplyMarkup,
         ReplyParameters,
+        SuggestedPostParameters,
         TextEntities,
         TextEntity,
     },
@@ -45,6 +46,7 @@ pub struct CopyMessage {
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
     show_caption_above_media: Option<bool>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
     video_start_timestamp: Option<Integer>,
 }
 
@@ -76,6 +78,7 @@ impl CopyMessage {
             reply_markup: None,
             reply_parameters: None,
             show_caption_above_media: None,
+            suggested_post_parameters: None,
             video_start_timestamp: None,
         }
     }
@@ -210,6 +213,20 @@ impl CopyMessage {
     ///   ignored if a new caption isn't specified.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.show_caption_above_media = Some(value);
+        self
+    }
+
+    /// Sets a new suggested post parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the suggested post to send.
+    ///
+    /// For direct messages chats only.
+    ///
+    /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.suggested_post_parameters = Some(value);
         self
     }
 
@@ -1045,6 +1062,7 @@ pub struct ForwardMessage {
     disable_notification: Option<bool>,
     protect_content: Option<bool>,
     message_thread_id: Option<Integer>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
     video_start_timestamp: Option<Integer>,
 }
 
@@ -1069,6 +1087,7 @@ impl ForwardMessage {
             disable_notification: None,
             protect_content: None,
             message_thread_id: None,
+            suggested_post_parameters: None,
             video_start_timestamp: None,
         }
     }
@@ -1113,6 +1132,20 @@ impl ForwardMessage {
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a new suggested post parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the suggested post to send.
+    ///
+    /// For direct messages chats only.
+    ///
+    /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.suggested_post_parameters = Some(value);
         self
     }
 
@@ -1248,6 +1281,7 @@ pub struct SendMessage {
     protect_content: Option<bool>,
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
 }
 
 impl SendMessage {
@@ -1277,6 +1311,7 @@ impl SendMessage {
             protect_content: None,
             reply_markup: None,
             reply_parameters: None,
+            suggested_post_parameters: None,
         }
     }
 
@@ -1420,6 +1455,20 @@ impl SendMessage {
     /// * `value` - Description of the message to reply to.
     pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
         self.reply_parameters = Some(value);
+        self
+    }
+
+    /// Sets a new suggested post parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the suggested post to send.
+    ///
+    /// For direct messages chats only.
+    ///
+    /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.suggested_post_parameters = Some(value);
         self
     }
 }

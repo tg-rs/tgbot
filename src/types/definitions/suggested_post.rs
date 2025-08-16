@@ -1,3 +1,5 @@
+use std::{error, fmt};
+
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -387,6 +389,29 @@ impl SuggestedPostParameters {
     pub fn with_send_date(mut self, value: Integer) -> Self {
         self.send_date = Some(value);
         self
+    }
+}
+
+/// An error for suggested post parameters.
+#[derive(Debug)]
+pub enum SuggestedPostParametersError {
+    /// Can not serialize the parameters.
+    Serialize(serde_json::Error),
+}
+
+impl fmt::Display for SuggestedPostParametersError {
+    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Serialize(err) => write!(out, "can not serialize parameters: {err}"),
+        }
+    }
+}
+
+impl error::Error for SuggestedPostParametersError {
+    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
+        Some(match self {
+            Self::Serialize(err) => err,
+        })
     }
 }
 

@@ -20,5 +20,6 @@ expression: actual_data
   "reply_parameters": {
     "message_id": 1
   },
+  "suggested_post_parameters": {},
   "vcard": "BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD"
 }

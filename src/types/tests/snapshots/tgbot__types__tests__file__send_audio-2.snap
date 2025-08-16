@@ -94,6 +94,12 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "suggested_post_parameters",
+        FormValue::Text(
+            "{}",
+        ),
+    ),
+    (
         "thumbnail",
         FormValue::Text(
             "https://google.com/favicon.ico",

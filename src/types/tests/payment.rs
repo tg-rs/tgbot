@@ -105,6 +105,7 @@ fn send_invoice() {
         .with_protect_content(true)
         .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
         .with_reply_parameters(ReplyParameters::new(1))
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
         .with_start_parameter("param");
     assert_payload_eq!(POST JSON "sendInvoice" => method);
 }

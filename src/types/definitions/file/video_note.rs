@@ -14,6 +14,8 @@ use crate::{
         ReplyMarkupError,
         ReplyParameters,
         ReplyParametersError,
+        SuggestedPostParameters,
+        SuggestedPostParametersError,
     },
 };
 
@@ -235,6 +237,24 @@ impl SendVideoNote {
     /// * `value` - Description of the message to reply to.
     pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
         self.form.insert_field("reply_parameters", value.serialize()?);
+        Ok(self)
+    }
+
+    /// Sets a new suggested post parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the suggested post to send.
+    ///
+    /// For direct messages chats only.
+    ///
+    /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
+    pub fn with_suggested_post_parameters(
+        mut self,
+        value: &SuggestedPostParameters,
+    ) -> Result<Self, SuggestedPostParametersError> {
+        let value = serde_json::to_string(value).map_err(SuggestedPostParametersError::Serialize)?;
+        self.form.insert_field("suggested_post_parameters", value);
         Ok(self)
     }
 

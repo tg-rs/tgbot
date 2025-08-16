@@ -252,6 +252,8 @@ fn send_sticker() {
         .with_reply_markup(ReplyMarkup::from(ForceReply::new(true)))
         .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
+        .unwrap()
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
         .unwrap();
     assert_payload_eq!(POST FORM "sendSticker" => method);
     let method = SendSticker::new(1, InputFile::file_id("sticker-id"));

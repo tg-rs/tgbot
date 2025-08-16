@@ -75,4 +75,10 @@ expression: actual_form.into_fields()
             "sticker-id",
         ),
     ),
+    (
+        "suggested_post_parameters",
+        FormValue::Text(
+            "{}",
+        ),
+    ),
 ]

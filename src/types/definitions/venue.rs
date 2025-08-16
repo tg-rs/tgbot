@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{ChatId, Float, Integer, Location, Message, ReplyMarkup, ReplyParameters},
+    types::{ChatId, Float, Integer, Location, Message, ReplyMarkup, ReplyParameters, SuggestedPostParameters},
 };
 
 /// Represents a venue.
@@ -134,6 +134,7 @@ pub struct SendVenue {
     protect_content: Option<bool>,
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
 }
 
 impl SendVenue {
@@ -171,6 +172,7 @@ impl SendVenue {
             protect_content: None,
             reply_markup: None,
             reply_parameters: None,
+            suggested_post_parameters: None,
         }
     }
 
@@ -332,6 +334,20 @@ impl SendVenue {
     /// * `value` - Description of the message to reply to.
     pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
         self.reply_parameters = Some(value);
+        self
+    }
+
+    /// Sets a new suggested post parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the suggested post to send.
+    ///
+    /// For direct messages chats only.
+    ///
+    /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.suggested_post_parameters = Some(value);
         self
     }
 }

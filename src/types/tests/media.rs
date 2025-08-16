@@ -122,6 +122,8 @@ fn send_paid_media() {
         .unwrap()
         .with_reply_markup(reply_markup.clone())
         .unwrap()
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
+        .unwrap()
         .with_show_caption_above_media(true);
     assert_payload_eq!(POST FORM "sendPaidMedia" => method);
 }

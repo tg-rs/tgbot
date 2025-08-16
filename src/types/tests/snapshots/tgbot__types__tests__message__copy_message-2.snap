@@ -20,5 +20,6 @@ expression: actual_data
     "message_id": 1
   },
   "show_caption_above_media": true,
+  "suggested_post_parameters": {},
   "video_start_timestamp": 200
 }

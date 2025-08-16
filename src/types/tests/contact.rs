@@ -26,6 +26,7 @@ fn send_contact() {
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
         .with_reply_parameters(ReplyParameters::new(1))
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
         .with_vcard("BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD");
     assert_payload_eq!(POST JSON "sendContact" => method);
 }

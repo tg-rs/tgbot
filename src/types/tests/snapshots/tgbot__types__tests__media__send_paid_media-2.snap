@@ -87,4 +87,10 @@ expression: actual_form.into_fields()
             "100",
         ),
     ),
+    (
+        "suggested_post_parameters",
+        FormValue::Text(
+            "{}",
+        ),
+    ),
 ]

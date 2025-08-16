@@ -49,6 +49,8 @@ fn send_animation() {
         .with_reply_parameters(ReplyParameters::new(1))
         .unwrap()
         .with_show_caption_above_media(true)
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
+        .unwrap()
         .with_thumbnail(InputFile::url("https://google.com/favicon.ico"))
         .unwrap()
         .with_width(200);
@@ -111,6 +113,8 @@ fn send_audio() {
         .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
         .unwrap()
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
+        .unwrap()
         .with_thumbnail(InputFile::url("https://google.com/favicon.ico"))
         .unwrap()
         .with_title("Title");
@@ -170,6 +174,8 @@ fn send_document() {
         .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
         .unwrap()
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
+        .unwrap()
         .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
         .unwrap();
     assert_payload_eq!(POST FORM "sendDocument" => method);
@@ -222,7 +228,9 @@ fn send_photo() {
         .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
         .unwrap()
-        .with_show_caption_above_media(true);
+        .with_show_caption_above_media(true)
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
+        .unwrap();
     assert_payload_eq!(POST FORM "sendPhoto" => method);
 }
 
@@ -278,6 +286,8 @@ fn send_video() {
         .unwrap()
         .with_show_caption_above_media(true)
         .with_start_timestamp(20)
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
+        .unwrap()
         .with_supports_streaming(true)
         .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
         .unwrap()
@@ -335,6 +345,8 @@ fn send_video_note() {
         .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
         .unwrap()
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
+        .unwrap()
         .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
         .unwrap();
     assert_payload_eq!(POST FORM "sendVideoNote" => method);
@@ -376,6 +388,8 @@ fn send_voice() {
         .with_reply_markup(ForceReply::new(true))
         .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
+        .unwrap()
+        .with_suggested_post_parameters(&SuggestedPostParameters::default())
         .unwrap();
     assert_payload_eq!(POST FORM "sendVoice" => method);
 }

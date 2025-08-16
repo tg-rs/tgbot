@@ -715,6 +715,7 @@ fn copy_message() {
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
         .with_reply_parameters(ReplyParameters::new(1))
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
         .with_show_caption_above_media(true)
         .with_video_start_timestamp(200);
     assert_payload_eq!(POST JSON "copyMessage" => method.clone());
@@ -845,6 +846,7 @@ fn forward_message() {
         .with_disable_notification(true)
         .with_message_thread_id(1)
         .with_protect_content(true)
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
         .with_video_start_timestamp(200);
     assert_payload_eq!(POST JSON "forwardMessage" => method);
 }
@@ -877,7 +879,8 @@ fn send_message() {
         .with_entities(vec![TextEntity::bold(0..2)])
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
-        .with_reply_parameters(ReplyParameters::new(1));
+        .with_reply_parameters(ReplyParameters::new(1))
+        .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST JSON "sendMessage" => method);
 }
 

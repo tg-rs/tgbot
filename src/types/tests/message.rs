@@ -517,6 +517,13 @@ fn suggested_post_declined() {
 }
 
 #[test]
+fn suggested_post_info() {
+    let expected_struct =
+        create_message_struct().with_suggested_post_info(SuggestedPostInfo::new(SuggestedPostState::Pending));
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn suggested_post_paid() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::SuggestedPostPaid(SuggestedPostPaid::new("test"));

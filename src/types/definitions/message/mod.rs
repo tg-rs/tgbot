@@ -1,7 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize};
 
 pub use self::{command::*, data::*, methods::*, origin::*, quote::*, reply::*, sender::*};
-use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, Text, User};
+use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, SuggestedPostInfo, Text, User};
 
 mod command;
 mod data;
@@ -139,6 +139,10 @@ pub struct Message {
     pub sender_business_bot: Option<User>,
     /// Whether the caption must be shown above the message media.
     pub show_caption_above_media: Option<bool>,
+    /// Information about suggested post parameters if the message is a suggested post in a channel direct messages chat.
+    ///
+    /// If the message is an approved or declined suggested post, then it can't be edited.
+    pub suggested_post_info: Option<SuggestedPostInfo>,
     /// Bot through which the message was sent.
     pub via_bot: Option<User>,
 
@@ -192,6 +196,7 @@ impl Message {
             sender_boost_count: None,
             sender_business_bot: None,
             show_caption_above_media: None,
+            suggested_post_info: None,
             via_bot: None,
         }
     }
@@ -542,6 +547,16 @@ impl Message {
     /// * `value` - Whether the caption must be shown above the message media.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.show_caption_above_media = Some(value);
+        self
+    }
+
+    /// Sets a new suggested post info.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about suggested post parameters.
+    pub fn with_suggested_post_info(mut self, value: SuggestedPostInfo) -> Self {
+        self.suggested_post_info = Some(value);
         self
     }
 

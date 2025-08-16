@@ -90,6 +90,8 @@ pub struct Message {
     /// If non-empty, the message belongs to a chat of the corresponding business account
     /// that is independent from any potential bot chat which might share the same identifier.
     pub business_connection_id: Option<String>,
+    /// Information about the direct messages chat topic that contains the message.
+    pub direct_messages_topic: Option<DirectMessagesTopic>,
     /// Unique identifier of the message effect added to the message.
     pub effect_id: Option<String>,
     /// Information about the message that is being replied to, which may come from another chat or forum topic.
@@ -167,6 +169,7 @@ impl Message {
             sender: sender.into(),
             author_signature: None,
             business_connection_id: None,
+            direct_messages_topic: None,
             effect_id: None,
             external_reply: None,
             forward_origin: None,
@@ -251,6 +254,16 @@ impl Message {
     /// * `value` - Date; Unix timestamp.
     pub fn with_date(mut self, value: Integer) -> Self {
         self.date = value;
+        self
+    }
+
+    /// Sets a new direct messages topic.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about the direct messages chat topic that contains the message.
+    pub fn with_direct_messages_topic(mut self, value: DirectMessagesTopic) -> Self {
+        self.direct_messages_topic = Some(value);
         self
     }
 
@@ -524,6 +537,37 @@ impl Message {
     /// * `value` - Bot through which the message was sent.
     pub fn with_via_bot(mut self, value: User) -> Self {
         self.via_bot = Some(value);
+        self
+    }
+}
+
+/// Describes a topic of a direct messages chat.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct DirectMessagesTopic {
+    /// Unique identifier of the topic.
+    pub topic_id: Integer,
+    /// Information about the user that created the topic.
+    pub user: Option<User>,
+}
+
+impl DirectMessagesTopic {
+    /// Creates a new `DirectMessagesTopic`.
+    ///
+    /// # Arguments
+    ///
+    /// * `topic_id` - Unique identifier of the topic.
+    pub fn new(topic_id: Integer) -> Self {
+        Self { topic_id, user: None }
+    }
+
+    /// Sets a new user.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information about the user that created the topic.
+    pub fn with_user(mut self, value: User) -> Self {
+        self.user = Some(value);
         self
     }
 }

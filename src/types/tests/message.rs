@@ -188,6 +188,17 @@ fn direct_message_price_changed() {
 }
 
 #[test]
+fn direct_messages_topic() {
+    let topic = DirectMessagesTopic::new(1);
+    let expected_struct = create_message_struct().with_direct_messages_topic(topic.clone());
+    insta::assert_json_snapshot!(expected_struct.clone());
+    let user = User::new(1, "John", false);
+    let topic = topic.with_user(user);
+    let expected_struct = expected_struct.with_direct_messages_topic(topic);
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn document() {
     let mut expected_struct = create_message_struct();
     let document = MessageDataDocument::from(Document::new("file-id", "unique-id"));

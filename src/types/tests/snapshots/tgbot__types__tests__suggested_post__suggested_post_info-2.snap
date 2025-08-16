@@ -1,0 +1,12 @@
+---
+source: src/types/tests/suggested_post.rs
+expression: expected_struct
+---
+{
+  "state": "approved",
+  "price": {
+    "amount": 1,
+    "currency": "test"
+  },
+  "send_date": 1
+}

@@ -31,6 +31,7 @@ pub use self::{
     response::*,
     sticker::*,
     story::*,
+    suggested_post::*,
     text::*,
     update::*,
     user::*,
@@ -70,6 +71,7 @@ mod reply;
 mod response;
 mod sticker;
 mod story;
+mod suggested_post;
 mod text;
 mod update;
 mod user;

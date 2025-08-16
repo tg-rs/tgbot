@@ -1,0 +1,28 @@
+---
+source: src/types/tests/suggested_post.rs
+expression: expected_struct
+---
+{
+  "send_date": 1,
+  "price": {
+    "amount": 1,
+    "currency": "test"
+  },
+  "suggested_post_message": {
+    "chat": {
+      "type": "private",
+      "id": 1,
+      "first_name": "John"
+    },
+    "date": 2,
+    "has_protected_content": false,
+    "message_id": 1,
+    "is_automatic_forward": false,
+    "from": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    },
+    "text": "test"
+  }
+}

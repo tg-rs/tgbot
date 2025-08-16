@@ -57,6 +57,7 @@ expression: expected_struct
   "can_set_sticker_set": true,
   "custom_emoji_sticker_set_name": "test",
   "has_aggressive_anti_spam_enabled": true,
+  "is_direct_messages": true,
   "is_forum": true,
   "join_to_send_messages": true,
   "join_by_request": true,

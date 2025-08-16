@@ -126,6 +126,8 @@ pub struct ChatFullInfo {
     /// Whether aggressive anti-spam checks are enabled in the supergroup.
     /// The field is only available to chat administrators.
     pub has_aggressive_anti_spam_enabled: Option<bool>,
+    /// Whether the chat is the direct messages chat of a channel.
+    pub is_direct_messages: Option<bool>,
     /// Whether the supergroup chat is a forum (has topics enabled).
     pub is_forum: Option<bool>,
     /// Whether users need to join the supergroup before they can send messages.

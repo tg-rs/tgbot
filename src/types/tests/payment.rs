@@ -77,6 +77,7 @@ fn send_invoice() {
     assert_payload_eq!(POST JSON "sendInvoice" => method);
     let method = SendInvoice::new(1, "title", "description", "payload", "RUB", vec![])
         .with_allow_paid_broadcast(true)
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_message_effect_id("effect-id")
         .with_message_thread_id(1)

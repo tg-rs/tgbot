@@ -31,6 +31,7 @@ fn send_location() {
     let method = SendLocation::new(1, 2.0, 3.0)
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_heading(120)
         .with_horizontal_accuracy(1.5)

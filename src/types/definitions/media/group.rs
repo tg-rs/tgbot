@@ -318,6 +318,16 @@ impl SendMediaGroup {
         self
     }
 
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.form.insert_field("direct_messages_topic_id", value);
+        self
+    }
+
     /// Sets a new value for the `disable_notification` flag.
     ///
     /// # Arguments

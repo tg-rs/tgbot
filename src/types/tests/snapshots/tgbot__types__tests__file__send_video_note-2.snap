@@ -22,6 +22,12 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "direct_messages_topic_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
         "disable_notification",
         FormValue::Text(
             "true",

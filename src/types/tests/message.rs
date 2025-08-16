@@ -658,6 +658,7 @@ fn copy_message() {
         .clone()
         .with_allow_paid_broadcast(true)
         .with_caption("caption")
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_message_thread_id(1)
         .with_caption_parse_mode(ParseMode::Markdown)
@@ -677,6 +678,7 @@ fn copy_messages() {
     assert_payload_eq!(POST JSON "copyMessages" => method.clone());
     let method = method
         .clone()
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_message_thread_id(1)
         .with_protect_content(true)
@@ -789,6 +791,7 @@ fn forward_message() {
     let method = ForwardMessage::new(1, 2, 3);
     assert_payload_eq!(POST JSON "forwardMessage" => method);
     let method = ForwardMessage::new(1, 2, 3)
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_message_thread_id(1)
         .with_protect_content(true)
@@ -801,6 +804,7 @@ fn forward_messages() {
     let method = ForwardMessages::new(1, 2, [3]);
     assert_payload_eq!(POST JSON "forwardMessages" => method);
     let method = ForwardMessages::new(1, 2, [3])
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_message_thread_id(1)
         .with_protect_content(true);
@@ -814,6 +818,7 @@ fn send_message() {
     let method = SendMessage::new(1, "text")
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
         .with_message_effect_id("effect-id")

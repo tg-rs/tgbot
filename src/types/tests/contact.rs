@@ -18,6 +18,7 @@ fn send_contact() {
     let method = method
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_last_name("Doe")
         .with_message_effect_id("effect-id")

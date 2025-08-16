@@ -7,6 +7,7 @@ expression: actual_data
   "allow_paid_broadcast": true,
   "business_connection_id": "id",
   "chat_id": 1,
+  "direct_messages_topic_id": 1,
   "disable_notification": true,
   "foursquare_id": "f-id",
   "foursquare_type": "f-type",

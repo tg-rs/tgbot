@@ -243,6 +243,7 @@ fn send_sticker() {
     let method = SendSticker::new(1, InputFile::file_id("sticker-id"))
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
+        .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_emoji("😱")
         .with_message_effect_id("effect-id")

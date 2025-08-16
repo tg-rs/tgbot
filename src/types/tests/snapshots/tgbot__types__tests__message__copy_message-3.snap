@@ -13,6 +13,7 @@ expression: actual_data
     }
   ],
   "chat_id": 1,
+  "direct_messages_topic_id": 1,
   "disable_notification": true,
   "from_chat_id": 2,
   "message_id": 3,

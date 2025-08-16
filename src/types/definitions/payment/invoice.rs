@@ -414,6 +414,7 @@ pub struct SendInvoice {
     prices: Vec<LabeledPrice>,
     title: String,
     allow_paid_broadcast: Option<bool>,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
@@ -456,6 +457,7 @@ impl SendInvoice {
             currency: currency.into(),
             prices: prices.into_iter().collect(),
             allow_paid_broadcast: None,
+            direct_messages_topic_id: None,
             disable_notification: None,
             message_effect_id: None,
             message_thread_id: None,
@@ -476,6 +478,16 @@ impl SendInvoice {
     ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
         self.allow_paid_broadcast = Some(value);
+        self
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
         self
     }
 

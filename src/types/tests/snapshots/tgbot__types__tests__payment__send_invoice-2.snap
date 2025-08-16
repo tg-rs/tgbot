@@ -7,6 +7,7 @@ expression: actual_data
   "chat_id": 1,
   "currency": "RUB",
   "description": "description",
+  "direct_messages_topic_id": 1,
   "disable_notification": true,
   "is_flexible": true,
   "max_tip_amount": 100,

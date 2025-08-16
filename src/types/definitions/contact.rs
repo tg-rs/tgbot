@@ -88,6 +88,7 @@ pub struct SendContact {
     phone_number: String,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     last_name: Option<String>,
     message_effect_id: Option<String>,
@@ -118,6 +119,7 @@ impl SendContact {
             phone_number: phone_number.into(),
             allow_paid_broadcast: None,
             business_connection_id: None,
+            direct_messages_topic_id: None,
             disable_notification: None,
             last_name: None,
             message_effect_id: None,
@@ -151,6 +153,16 @@ impl SendContact {
         T: Into<String>,
     {
         self.business_connection_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
         self
     }
 

@@ -172,6 +172,7 @@ pub struct SendLocation {
     longitude: Float,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     heading: Option<Integer>,
     horizontal_accuracy: Option<Float>,
@@ -202,6 +203,7 @@ impl SendLocation {
             longitude,
             allow_paid_broadcast: None,
             business_connection_id: None,
+            direct_messages_topic_id: None,
             disable_notification: None,
             heading: None,
             horizontal_accuracy: None,
@@ -237,6 +239,16 @@ impl SendLocation {
         T: Into<String>,
     {
         self.business_connection_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
         self
     }
 

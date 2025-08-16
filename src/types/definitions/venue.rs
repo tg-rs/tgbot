@@ -123,6 +123,7 @@ pub struct SendVenue {
     address: String,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     foursquare_id: Option<String>,
     foursquare_type: Option<String>,
@@ -159,6 +160,7 @@ impl SendVenue {
             address: address.into(),
             allow_paid_broadcast: None,
             business_connection_id: None,
+            direct_messages_topic_id: None,
             disable_notification: None,
             foursquare_id: None,
             foursquare_type: None,
@@ -194,6 +196,16 @@ impl SendVenue {
         T: Into<String>,
     {
         self.business_connection_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
         self
     }
 

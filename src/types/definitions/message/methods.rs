@@ -37,6 +37,7 @@ pub struct CopyMessage {
     allow_paid_broadcast: Option<bool>,
     caption: Option<String>,
     caption_entities: Option<TextEntities>,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     message_thread_id: Option<Integer>,
     parse_mode: Option<ParseMode>,
@@ -67,6 +68,7 @@ impl CopyMessage {
             allow_paid_broadcast: None,
             caption: None,
             caption_entities: None,
+            direct_messages_topic_id: None,
             disable_notification: None,
             message_thread_id: None,
             parse_mode: None,
@@ -131,6 +133,16 @@ impl CopyMessage {
     pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
         self.parse_mode = Some(value);
         self.caption_entities = None;
+        self
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
         self
     }
 
@@ -235,6 +247,7 @@ pub struct CopyMessages {
     chat_id: ChatId,
     from_chat_id: ChatId,
     message_ids: Vec<Integer>,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     message_thread_id: Option<Integer>,
     protect_content: Option<bool>,
@@ -260,11 +273,22 @@ impl CopyMessages {
             chat_id: chat_id.into(),
             from_chat_id: from_chat_id.into(),
             message_ids: message_ids.into_iter().collect(),
+            direct_messages_topic_id: None,
             disable_notification: None,
             message_thread_id: None,
             protect_content: None,
             remove_caption: None,
         }
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
+        self
     }
 
     /// Sets a new value for the `disable_notification` flag.
@@ -1017,6 +1041,7 @@ pub struct ForwardMessage {
     chat_id: ChatId,
     from_chat_id: ChatId,
     message_id: Integer,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     protect_content: Option<bool>,
     message_thread_id: Option<Integer>,
@@ -1040,11 +1065,22 @@ impl ForwardMessage {
             chat_id: chat_id.into(),
             from_chat_id: from_chat_id.into(),
             message_id,
+            direct_messages_topic_id: None,
             disable_notification: None,
             protect_content: None,
             message_thread_id: None,
             video_start_timestamp: None,
         }
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
+        self
     }
 
     /// Sets a new value for the `disable_notification` flag.
@@ -1110,6 +1146,7 @@ pub struct ForwardMessages {
     chat_id: ChatId,
     from_chat_id: ChatId,
     message_ids: Vec<Integer>,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     protect_content: Option<bool>,
     message_thread_id: Option<Integer>,
@@ -1134,10 +1171,21 @@ impl ForwardMessages {
             chat_id: chat_id.into(),
             from_chat_id: from_chat_id.into(),
             message_ids: message_ids.into_iter().collect(),
+            direct_messages_topic_id: None,
             disable_notification: None,
             protect_content: None,
             message_thread_id: None,
         }
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
+        self
     }
 
     /// Sets a new value for the `disable_notification` flag.
@@ -1190,6 +1238,7 @@ pub struct SendMessage {
     text: String,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
+    direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     entities: Option<TextEntities>,
     link_preview_options: Option<LinkPreviewOptions>,
@@ -1218,6 +1267,7 @@ impl SendMessage {
             text: text.into(),
             allow_paid_broadcast: None,
             business_connection_id: None,
+            direct_messages_topic_id: None,
             disable_notification: None,
             entities: None,
             link_preview_options: None,
@@ -1252,6 +1302,16 @@ impl SendMessage {
         T: Into<String>,
     {
         self.business_connection_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new direct messages topic ID
+    ///
+    /// * `value` - Identifier of the direct messages topic to which the message will be sent.
+    ///
+    /// Required if the message is sent to a direct messages chat.
+    pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
+        self.direct_messages_topic_id = Some(value);
         self
     }
 

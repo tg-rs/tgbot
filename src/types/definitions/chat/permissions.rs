@@ -169,7 +169,7 @@ impl ChatAdministratorRights {
     /// # Arguments
     ///
     /// * `value` - Whether the administrator can manage direct messages
-    ///  of the channel and decline suggested posts; for channels only.
+    ///   of the channel and decline suggested posts; for channels only.
     pub fn with_can_manage_direct_messages(mut self, value: bool) -> Self {
         self.can_manage_direct_messages = Some(value);
         self

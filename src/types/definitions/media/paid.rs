@@ -154,16 +154,6 @@ enum RawPaidMedia {
     },
 }
 
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-struct RawPaidMediaPhoto {
-    photo: Vec<PhotoSize>,
-}
-
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
-struct RawPaidMediaVideo {
-    video: Video,
-}
-
 impl From<RawPaidMedia> for PaidMedia {
     fn from(value: RawPaidMedia) -> Self {
         match value {

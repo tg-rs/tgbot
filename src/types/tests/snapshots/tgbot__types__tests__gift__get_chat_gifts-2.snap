@@ -1,0 +1,17 @@
+---
+source: src/types/tests/gift.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "exclude_from_blockchain": true,
+  "exclude_limited_non_upgradable": false,
+  "exclude_limited_upgradable": true,
+  "exclude_saved": false,
+  "exclude_unique": true,
+  "exclude_unlimited": false,
+  "exclude_unsaved": true,
+  "limit": 1,
+  "offset": "",
+  "sort_by_price": true
+}

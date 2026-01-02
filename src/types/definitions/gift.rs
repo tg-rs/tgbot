@@ -305,6 +305,299 @@ impl Method for GetAvailableGifts {
     }
 }
 
+/// Returns the gifts owned by a chat.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct GetChatGifts {
+    chat_id: ChatId,
+    exclude_from_blockchain: Option<bool>,
+    exclude_limited_non_upgradable: Option<bool>,
+    exclude_limited_upgradable: Option<bool>,
+    exclude_saved: Option<bool>,
+    exclude_unique: Option<bool>,
+    exclude_unlimited: Option<bool>,
+    exclude_unsaved: Option<bool>,
+    limit: Option<Integer>,
+    offset: Option<String>,
+    sort_by_price: Option<bool>,
+}
+
+impl GetChatGifts {
+    /// Creates a new `GetChatGifts`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier for the target chat or username of the target channel.
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+            exclude_from_blockchain: None,
+            exclude_limited_non_upgradable: None,
+            exclude_limited_upgradable: None,
+            exclude_saved: None,
+            exclude_unique: None,
+            exclude_unlimited: None,
+            exclude_unsaved: None,
+            limit: None,
+            offset: None,
+            sort_by_price: None,
+        }
+    }
+
+    /// Sets a new value for the `exclude_from_blockchain` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that were assigned from the TON blockchain
+    ///   and can't be resold or transferred in Telegram.
+    pub fn with_exclude_from_blockchain(mut self, value: bool) -> Self {
+        self.exclude_from_blockchain = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_limited_non_upgradable` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased
+    ///   a limited number of times and can't be upgraded to unique.
+    pub fn with_exclude_limited_non_upgradable(mut self, value: bool) -> Self {
+        self.exclude_limited_non_upgradable = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_limited_upgradable` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased
+    ///   a limited number of times and can be upgraded to unique.
+    pub fn with_exclude_limited_upgradable(mut self, value: bool) -> Self {
+        self.exclude_limited_upgradable = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_saved` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that are saved to the chat's profile page.
+    ///   Always `false`, unless the bot has the `can_post_messages` administrator right in the channel.
+    pub fn with_exclude_saved(mut self, value: bool) -> Self {
+        self.exclude_saved = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_unique` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude unique gifts.
+    pub fn with_exclude_unique(mut self, value: bool) -> Self {
+        self.exclude_unique = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_unlimited` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased an unlimited number of times.
+    pub fn with_exclude_unlimited(mut self, value: bool) -> Self {
+        self.exclude_unlimited = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_unsaved` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that aren't saved to the chat's profile page.
+    ///   Always `true`, unless the bot has the `can_post_messages` administrator right in the channel.
+    pub fn with_exclude_unsaved(mut self, value: bool) -> Self {
+        self.exclude_unsaved = Some(value);
+        self
+    }
+
+    /// Sets a new limit.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The maximum number of gifts to be returned; 1-100. Defaults to 100.
+    pub fn with_limit(mut self, value: Integer) -> Self {
+        self.limit = Some(value);
+        self
+    }
+
+    /// Sets a new offset.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Offset of the first entry to return as received from the previous request;
+    ///   use an empty string to get the first chunk of results.
+    pub fn with_offset<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.offset = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `sort_by_price` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to sort results by gift price instead of send date.
+    ///   Sorting is applied before pagination.
+    pub fn with_sort_by_price(mut self, value: bool) -> Self {
+        self.sort_by_price = Some(value);
+        self
+    }
+}
+
+impl Method for GetChatGifts {
+    type Response = OwnedGifts;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getChatGifts", self)
+    }
+}
+
+/// Returns the gifts owned and hosted by a user.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct GetUserGifts {
+    user_id: Integer,
+    exclude_from_blockchain: Option<bool>,
+    exclude_limited_non_upgradable: Option<bool>,
+    exclude_limited_upgradable: Option<bool>,
+    exclude_unique: Option<bool>,
+    exclude_unlimited: Option<bool>,
+    limit: Option<Integer>,
+    offset: Option<String>,
+    sort_by_price: Option<bool>,
+}
+
+impl GetUserGifts {
+    /// Creates a new `GetUserGifts`.
+    ///
+    /// # Arguments
+    ///
+    /// * `user_id` - Unique identifier of the user.
+    pub fn new(user_id: Integer) -> Self {
+        Self {
+            user_id,
+            exclude_from_blockchain: None,
+            exclude_limited_non_upgradable: None,
+            exclude_limited_upgradable: None,
+            exclude_unique: None,
+            exclude_unlimited: None,
+            limit: None,
+            offset: None,
+            sort_by_price: None,
+        }
+    }
+
+    /// Sets a new value for the `exclude_from_blockchain` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that were assigned from the TON blockchain
+    ///   and can't be resold or transferred in Telegram.
+    pub fn with_exclude_from_blockchain(mut self, value: bool) -> Self {
+        self.exclude_from_blockchain = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_limited_non_upgradable` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased
+    ///   a limited number of times and can't be upgraded to unique.
+    pub fn with_exclude_limited_non_upgradable(mut self, value: bool) -> Self {
+        self.exclude_limited_non_upgradable = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_limited_upgradable` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased
+    ///   a limited number of times and can be upgraded to unique.
+    pub fn with_exclude_limited_upgradable(mut self, value: bool) -> Self {
+        self.exclude_limited_upgradable = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_unique` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude unique gifts.
+    pub fn with_exclude_unique(mut self, value: bool) -> Self {
+        self.exclude_unique = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_unlimited` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased an unlimited number of times.
+    pub fn with_exclude_unlimited(mut self, value: bool) -> Self {
+        self.exclude_unlimited = Some(value);
+        self
+    }
+
+    /// Sets a new limit.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The maximum number of gifts to be returned; 1-100. Defaults to 100.
+    pub fn with_limit(mut self, value: Integer) -> Self {
+        self.limit = Some(value);
+        self
+    }
+
+    /// Sets a new offset.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Offset of the first entry to return as received from the previous request;
+    ///   use an empty string to get the first chunk of results.
+    pub fn with_offset<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.offset = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `sort_by_price` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to sort results by gift price instead of send date.
+    ///   Sorting is applied before pagination.
+    pub fn with_sort_by_price(mut self, value: bool) -> Self {
+        self.sort_by_price = Some(value);
+        self
+    }
+}
+
+impl Method for GetUserGifts {
+    type Response = OwnedGifts;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getUserGifts", self)
+    }
+}
+
 /// Describes a gift received and owned by a user or a chat.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]

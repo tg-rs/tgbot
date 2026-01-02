@@ -200,6 +200,40 @@ fn get_available_gifts() {
 }
 
 #[test]
+fn get_chat_gifts() {
+    let method = GetChatGifts::new(1);
+    assert_payload_eq!(POST JSON "getChatGifts" => method.clone());
+    let method = method
+        .with_exclude_from_blockchain(true)
+        .with_exclude_limited_non_upgradable(false)
+        .with_exclude_limited_upgradable(true)
+        .with_exclude_saved(false)
+        .with_exclude_unique(true)
+        .with_exclude_unlimited(false)
+        .with_exclude_unsaved(true)
+        .with_limit(1)
+        .with_offset("")
+        .with_sort_by_price(true);
+    assert_payload_eq!(POST JSON "getChatGifts" => method);
+}
+
+#[test]
+fn get_user_gifts() {
+    let method = GetUserGifts::new(1);
+    assert_payload_eq!(POST JSON "getUserGifts" => method.clone());
+    let method = method
+        .with_exclude_from_blockchain(true)
+        .with_exclude_limited_non_upgradable(false)
+        .with_exclude_limited_upgradable(true)
+        .with_exclude_unique(false)
+        .with_exclude_unlimited(true)
+        .with_limit(100)
+        .with_offset("")
+        .with_sort_by_price(true);
+    assert_payload_eq!(POST JSON "getUserGifts" => method);
+}
+
+#[test]
 fn gift_premium_subscription() {
     let method = GiftPremiumSubscription::new(1, 2, 3);
     assert_payload_eq!(POST JSON "giftPremiumSubscription" => method.clone());

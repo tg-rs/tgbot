@@ -1,0 +1,15 @@
+---
+source: src/types/tests/gift.rs
+expression: actual_data
+---
+{
+  "exclude_from_blockchain": true,
+  "exclude_limited_non_upgradable": false,
+  "exclude_limited_upgradable": true,
+  "exclude_unique": false,
+  "exclude_unlimited": true,
+  "limit": 100,
+  "offset": "",
+  "sort_by_price": true,
+  "user_id": 1
+}

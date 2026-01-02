@@ -45,6 +45,7 @@ expression: expected_struct.clone()
       }
     },
     "is_from_blockchain": true,
+    "is_premium": true,
     "publisher_chat": {
       "type": "private",
       "id": 1,

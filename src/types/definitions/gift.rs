@@ -70,6 +70,8 @@ pub struct Gift {
     pub star_count: Integer,
     /// The sticker that represents the gift.
     pub sticker: Sticker,
+    /// Whether the gift can only be purchased by Telegram Premium subscribers.
+    pub is_premium: Option<bool>,
     /// The number of remaining gifts of this type that can be sent by the bot; for limited gifts only.
     pub personal_remaining_count: Option<Integer>,
     /// The total number of gifts of this type that can be sent by the bot; for limited gifts only.
@@ -102,6 +104,7 @@ impl Gift {
             id: id.into(),
             star_count,
             sticker,
+            is_premium: None,
             personal_remaining_count: None,
             personal_total_count: None,
             publisher_chat: None,
@@ -109,6 +112,16 @@ impl Gift {
             total_count: None,
             upgrade_star_count: None,
         }
+    }
+
+    /// Sets a new value for the `is_premium` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the gift can only be purchased by Telegram Premium subscribers.
+    pub fn with_is_premium(mut self, value: bool) -> Self {
+        self.is_premium = Some(value);
+        self
     }
 
     /// Sets a new personal remaining count.
@@ -1151,6 +1164,8 @@ pub struct UniqueGift {
     pub symbol: UniqueGiftSymbol,
     /// Whether the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram.
     pub is_from_blockchain: Option<bool>,
+    /// Whether the original regular gift was exclusively purchaseable by Telegram Premium subscribers.
+    pub is_premium: Option<bool>,
     /// Information about the chat that published the gift.
     pub publisher_chat: Option<Chat>,
 }
@@ -1190,6 +1205,7 @@ impl UniqueGift {
             number,
             symbol,
             is_from_blockchain: None,
+            is_premium: None,
             publisher_chat: None,
         }
     }
@@ -1201,6 +1217,16 @@ impl UniqueGift {
     /// * `value` - Whether the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram.
     pub fn with_is_from_blockchain(mut self, value: bool) -> Self {
         self.is_from_blockchain = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_premium` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the original regular gift was exclusively purchaseable by Telegram Premium subscribers.
+    pub fn with_is_premium(mut self, value: bool) -> Self {
+        self.is_premium = Some(value);
         self
     }
 

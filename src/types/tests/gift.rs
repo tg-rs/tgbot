@@ -22,6 +22,7 @@ fn gift() {
     insta::assert_json_snapshot!(expected_struct.clone());
     insta::assert_json_snapshot!(
         expected_struct
+            .with_is_premium(false)
             .with_personal_remaining_count(1)
             .with_personal_total_count(2)
             .with_publisher_chat(PrivateChat::new(1, "John"))
@@ -186,6 +187,7 @@ fn unique_gift_info() {
             },
         )
         .with_is_from_blockchain(true)
+        .with_is_premium(true)
         .with_publisher_chat(PrivateChat::new(1, "John")),
         UniqueGiftOrigin::Transfer,
     );

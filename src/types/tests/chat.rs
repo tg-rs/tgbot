@@ -211,6 +211,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         location: None,
         max_reaction_count: 0,
         message_auto_delete_time: None,
+        paid_message_star_count: None,
         parent_chat: None,
         permissions: None,
         personal_chat: None,
@@ -266,6 +267,7 @@ fn chat_full_info_channel() {
     expected_struct.linked_chat_id = Some(2);
     expected_struct.emoji_status_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.emoji_status_expiration_date = Some(0);
+    expected_struct.paid_message_star_count = Some(100);
 
     insta::assert_json_snapshot!(expected_struct);
 }

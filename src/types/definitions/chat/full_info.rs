@@ -155,4 +155,6 @@ pub struct ChatFullInfo {
 
     /// Information about types of gifts that are accepted by the chat or by the corresponding user for private chats.
     pub accepted_gift_types: Option<AcceptedGiftTypes>,
+    /// The number of Telegram Stars a general user have to pay to send a message to the chat.
+    pub paid_message_star_count: Option<Integer>,
 }

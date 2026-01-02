@@ -59,5 +59,6 @@ expression: expected_struct
   "can_send_paid_media": true,
   "linked_chat_id": 2,
   "emoji_status_custom_emoji_id": "emoji-id",
-  "emoji_status_expiration_date": 0
+  "emoji_status_expiration_date": 0,
+  "paid_message_star_count": 100
 }

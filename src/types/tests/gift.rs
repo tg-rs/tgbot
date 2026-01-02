@@ -200,6 +200,23 @@ fn get_available_gifts() {
 }
 
 #[test]
+fn get_business_account_gifts() {
+    let method = GetBusinessAccountGifts::new("id");
+    assert_payload_eq!(POST JSON "getBusinessAccountGifts" => method.clone());
+    let method = method
+        .with_exclude_limited_non_upgradable(true)
+        .with_exclude_limited_upgradable(false)
+        .with_exclude_saved(true)
+        .with_exclude_unique(false)
+        .with_exclude_unlimited(true)
+        .with_exclude_unsaved(false)
+        .with_limit(10)
+        .with_offset("test")
+        .with_sort_by_price(true);
+    assert_payload_eq!(POST JSON "getBusinessAccountGifts" => method);
+}
+
+#[test]
 fn get_chat_gifts() {
     let method = GetChatGifts::new(1);
     assert_payload_eq!(POST JSON "getChatGifts" => method.clone());

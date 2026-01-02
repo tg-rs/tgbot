@@ -1110,6 +1110,8 @@ pub struct UniqueGift {
     pub number: Integer,
     /// Symbol of the gift.
     pub symbol: UniqueGiftSymbol,
+    /// Whether the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram.
+    pub is_from_blockchain: Option<bool>,
     /// Information about the chat that published the gift.
     pub publisher_chat: Option<Chat>,
 }
@@ -1148,8 +1150,19 @@ impl UniqueGift {
             name: name.into(),
             number,
             symbol,
+            is_from_blockchain: None,
             publisher_chat: None,
         }
+    }
+
+    /// Sets a new value for the `is_from_blockchain` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram.
+    pub fn with_is_from_blockchain(mut self, value: bool) -> Self {
+        self.is_from_blockchain = Some(value);
+        self
     }
 
     /// Sets a new publisher chat.

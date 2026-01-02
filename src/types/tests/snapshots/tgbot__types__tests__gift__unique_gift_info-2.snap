@@ -44,6 +44,7 @@ expression: "expected_struct.with_next_transfer_date(500).with_owned_gift_id(\"t
         "width": 512
       }
     },
+    "is_from_blockchain": true,
     "publisher_chat": {
       "type": "private",
       "id": 1,

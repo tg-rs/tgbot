@@ -44,6 +44,7 @@ expression: expected_struct.clone()
         "width": 512
       }
     },
+    "is_from_blockchain": true,
     "publisher_chat": {
       "type": "private",
       "id": 1,

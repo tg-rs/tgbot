@@ -183,6 +183,7 @@ fn unique_gift_info() {
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             },
         )
+        .with_is_from_blockchain(true)
         .with_publisher_chat(PrivateChat::new(1, "John")),
         UniqueGiftOrigin::Transfer,
     );

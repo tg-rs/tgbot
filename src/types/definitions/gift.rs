@@ -1210,6 +1210,10 @@ pub struct UniqueGiftSymbol {
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UniqueGiftOrigin {
+    /// For upgrades purchased after the gift was sent.
+    GiftedUpgrade,
+    /// Gifts bought or sold through gift purchase offers.
+    Offer,
     /// Resale for gifts bought from other users.
     Resale,
     /// Transfer for gifts transferred from other users or channels.

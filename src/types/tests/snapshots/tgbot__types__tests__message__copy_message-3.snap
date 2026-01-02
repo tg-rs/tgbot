@@ -16,6 +16,7 @@ expression: actual_data
   "direct_messages_topic_id": 1,
   "disable_notification": true,
   "from_chat_id": 2,
+  "message_effect_id": "test",
   "message_id": 3,
   "message_thread_id": 1,
   "protect_content": true,

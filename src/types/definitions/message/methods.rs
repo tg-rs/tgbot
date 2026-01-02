@@ -40,6 +40,7 @@ pub struct CopyMessage {
     caption_entities: Option<TextEntities>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
+    message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
     parse_mode: Option<ParseMode>,
     protect_content: Option<bool>,
@@ -72,6 +73,7 @@ impl CopyMessage {
             caption_entities: None,
             direct_messages_topic_id: None,
             disable_notification: None,
+            message_effect_id: None,
             message_thread_id: None,
             parse_mode: None,
             protect_content: None,
@@ -157,6 +159,20 @@ impl CopyMessage {
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
+        self
+    }
+
+    /// Sets a new message effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect to be added to the message;
+    ///   only available when forwarding to private chats.
+    pub fn with_message_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.message_effect_id = Some(value.into());
         self
     }
 
@@ -1061,6 +1077,7 @@ pub struct ForwardMessage {
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     protect_content: Option<bool>,
+    message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
     suggested_post_parameters: Option<SuggestedPostParameters>,
     video_start_timestamp: Option<Integer>,
@@ -1086,6 +1103,7 @@ impl ForwardMessage {
             direct_messages_topic_id: None,
             disable_notification: None,
             protect_content: None,
+            message_effect_id: None,
             message_thread_id: None,
             suggested_post_parameters: None,
             video_start_timestamp: None,
@@ -1110,6 +1128,20 @@ impl ForwardMessage {
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
+        self
+    }
+
+    /// Sets a new message effect ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the message effect to be added to the message;
+    ///   only available when forwarding to private chats.
+    pub fn with_message_effect_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.message_effect_id = Some(value.into());
         self
     }
 

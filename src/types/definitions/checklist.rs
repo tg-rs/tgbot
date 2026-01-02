@@ -2,17 +2,19 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{InlineKeyboardMarkup, Integer, Message, ParseMode, ReplyParameters, TextEntities, TextEntity, User},
+    types::{Chat, InlineKeyboardMarkup, Integer, Message, ParseMode, ReplyParameters, TextEntities, TextEntity, User},
 };
 
 /// Describes a task in a checklist.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct ChecklistTask {
     /// Unique identifier of the task.
     pub id: Integer,
     /// Text of the task.
     pub text: String,
+    /// Chat that completed the task; omitted if the task wasn't completed by a chat.
+    pub completed_by_chat: Option<Chat>,
     /// User that completed the task; omitted if the task wasn't completed.
     pub completed_by_user: Option<User>,
     /// Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed.
@@ -35,10 +37,24 @@ impl ChecklistTask {
         Self {
             id,
             text: text.into(),
+            completed_by_chat: None,
             completed_by_user: None,
             completion_date: None,
             text_entities: None,
         }
+    }
+
+    /// Sets a new chat that completed the task.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Chat that completed the task; omitted if the task wasn't completed by a chat.
+    pub fn with_completed_by_chat<T>(mut self, value: T) -> Self
+    where
+        T: Into<Chat>,
+    {
+        self.completed_by_chat = Some(value.into());
+        self
     }
 
     /// Sets a new user that completed the task.
@@ -77,7 +93,7 @@ impl ChecklistTask {
 
 /// Describes a checklist.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct Checklist {
     /// List of tasks in the checklist.
     pub tasks: Vec<ChecklistTask>,

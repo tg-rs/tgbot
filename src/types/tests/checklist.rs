@@ -18,6 +18,7 @@ fn checklist_task() {
     insta::assert_json_snapshot!(expected_struct.clone());
     insta::assert_json_snapshot!(
         expected_struct
+            .with_completed_by_chat(PrivateChat::new(1, "test"))
             .with_completed_by_user(User::new(1, "John", false))
             .with_completion_date(1)
             .with_text_entities([TextEntity::bold(0..2)])

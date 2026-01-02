@@ -1,10 +1,15 @@
 ---
 source: src/types/tests/checklist.rs
-expression: "expected_struct.with_completed_by_user(User::new(1, \"John\",\nfalse)).with_completion_date(1).with_text_entities([TextEntity::bold(0..2)])"
+expression: "expected_struct.with_completed_by_chat(PrivateChat::new(1,\n\"test\")).with_completed_by_user(User::new(1, \"John\",\nfalse)).with_completion_date(1).with_text_entities([TextEntity::bold(0..2)])"
 ---
 {
   "id": 1,
   "text": "test",
+  "completed_by_chat": {
+    "type": "private",
+    "id": 1,
+    "first_name": "test"
+  },
   "completed_by_user": {
     "first_name": "John",
     "id": 1,

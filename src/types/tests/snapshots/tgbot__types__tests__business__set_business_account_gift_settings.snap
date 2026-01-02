@@ -4,6 +4,7 @@ expression: actual_data
 ---
 {
   "accepted_gift_types": {
+    "gifts_from_channels": false,
     "limited_gifts": false,
     "premium_subscription": false,
     "unique_gifts": false,

@@ -5,6 +5,7 @@ fn accepted_gift_types() {
     let expected_struct = AcceptedGiftTypes::default();
     insta::assert_json_snapshot!(expected_struct);
     let expected_struct = expected_struct
+        .with_gifts_from_channels(false)
         .with_limited_gifts(true)
         .with_premium_subscription(true)
         .with_unique_gifts(true)

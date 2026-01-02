@@ -8,6 +8,8 @@ use crate::{
 /// Describes the types of gifts that can be gifted to a user or a chat.
 #[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct AcceptedGiftTypes {
+    /// Whether transfers of unique gifts from channels are accepted.
+    pub gifts_from_channels: bool,
     /// Whether limited regular gifts are accepted.
     pub limited_gifts: bool,
     /// Whether a Telegram Premium subscription is accepted.
@@ -19,6 +21,16 @@ pub struct AcceptedGiftTypes {
 }
 
 impl AcceptedGiftTypes {
+    /// Sets a new value for the `gifts_from_channels` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether transfers of unique gifts from channels are accepted.
+    pub fn with_gifts_from_channels(mut self, value: bool) -> Self {
+        self.gifts_from_channels = value;
+        self
+    }
+
     /// Sets a new value for the `limited_gifts` flag.
     ///
     /// # Arguments

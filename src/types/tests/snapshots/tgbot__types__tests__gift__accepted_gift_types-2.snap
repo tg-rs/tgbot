@@ -3,6 +3,7 @@ source: src/types/tests/gift.rs
 expression: expected_struct
 ---
 {
+  "gifts_from_channels": false,
   "limited_gifts": true,
   "premium_subscription": true,
   "unique_gifts": true,

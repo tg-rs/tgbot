@@ -1,5 +1,0 @@
----
-source: src/types/tests/primitive.rs
-expression: "False"
----
-false

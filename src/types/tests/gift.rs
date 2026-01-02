@@ -207,6 +207,7 @@ fn get_business_account_gifts() {
     let method = GetBusinessAccountGifts::new("id");
     assert_payload_eq!(POST JSON "getBusinessAccountGifts" => method.clone());
     let method = method
+        .with_exclude_from_blockchain(false)
         .with_exclude_limited_non_upgradable(true)
         .with_exclude_limited_upgradable(false)
         .with_exclude_saved(true)

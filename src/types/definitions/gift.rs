@@ -312,6 +312,7 @@ impl Method for GetAvailableGifts {
 #[derive(Clone, Debug, Serialize)]
 pub struct GetBusinessAccountGifts {
     business_connection_id: String,
+    exclude_from_blockchain: Option<bool>,
     exclude_limited_non_upgradable: Option<bool>,
     exclude_limited_upgradable: Option<bool>,
     exclude_saved: Option<bool>,
@@ -335,6 +336,7 @@ impl GetBusinessAccountGifts {
     {
         Self {
             business_connection_id: business_connection_id.into(),
+            exclude_from_blockchain: None,
             exclude_limited_non_upgradable: None,
             exclude_limited_upgradable: None,
             exclude_saved: None,
@@ -345,6 +347,17 @@ impl GetBusinessAccountGifts {
             offset: None,
             sort_by_price: None,
         }
+    }
+
+    /// Sets a new value for the `exclude_from_blockchain` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that were assigned from the TON blockchain
+    ///   and can't be resold or transferred in Telegram.
+    pub fn with_exclude_from_blockchain(mut self, value: bool) -> Self {
+        self.exclude_from_blockchain = Some(value);
+        self
     }
 
     /// Sets a new value for the `exclude_limited_non_upgradable` flag.

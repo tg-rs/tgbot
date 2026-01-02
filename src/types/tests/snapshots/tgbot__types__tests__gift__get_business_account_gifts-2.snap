@@ -4,6 +4,7 @@ expression: actual_data
 ---
 {
   "business_connection_id": "id",
+  "exclude_from_blockchain": false,
   "exclude_limited_non_upgradable": true,
   "exclude_limited_upgradable": false,
   "exclude_saved": true,

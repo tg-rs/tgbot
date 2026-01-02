@@ -191,6 +191,14 @@ fn unique_gift_info() {
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             },
         )
+        .with_colors(UniqueGiftColors {
+            dark_theme_main_color: 1,
+            dark_theme_other_colors: vec![2],
+            light_theme_main_color: 3,
+            light_theme_other_colors: vec![4],
+            model_custom_emoji_id: String::from("test"),
+            symbol_custom_emoji_id: String::from("test"),
+        })
         .with_is_from_blockchain(true)
         .with_is_premium(true)
         .with_publisher_chat(PrivateChat::new(1, "John")),

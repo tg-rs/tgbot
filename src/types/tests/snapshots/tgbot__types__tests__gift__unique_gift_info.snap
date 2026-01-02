@@ -44,6 +44,18 @@ expression: expected_struct.clone()
         "width": 512
       }
     },
+    "colors": {
+      "dark_theme_main_color": 1,
+      "dark_theme_other_colors": [
+        2
+      ],
+      "light_theme_main_color": 3,
+      "light_theme_other_colors": [
+        4
+      ],
+      "model_custom_emoji_id": "test",
+      "symbol_custom_emoji_id": "test"
+    },
     "is_from_blockchain": true,
     "is_premium": true,
     "publisher_chat": {

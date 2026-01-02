@@ -1203,6 +1203,10 @@ pub struct UniqueGift {
     pub number: Integer,
     /// Symbol of the gift.
     pub symbol: UniqueGiftSymbol,
+    /// The color scheme that can be used by the gift's owner for the chat's name,
+    /// replies to messages and link previews;
+    /// for business account gifts and gifts that are currently on sale only.
+    pub colors: Option<UniqueGiftColors>,
     /// Whether the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram.
     pub is_from_blockchain: Option<bool>,
     /// Whether the original regular gift was exclusively purchaseable by Telegram Premium subscribers.
@@ -1245,10 +1249,21 @@ impl UniqueGift {
             name: name.into(),
             number,
             symbol,
+            colors: None,
             is_from_blockchain: None,
             is_premium: None,
             publisher_chat: None,
         }
+    }
+
+    /// Sets new colors.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The color scheme that can be used by the gift's owner.
+    pub fn with_colors(mut self, value: UniqueGiftColors) -> Self {
+        self.colors = Some(value);
+        self
     }
 
     /// Sets a new value for the `is_from_blockchain` flag.

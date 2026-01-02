@@ -203,7 +203,7 @@ impl SendPaidMedia {
     ///
     /// * `chat_id` - Unique identifier for the target chat.
     /// * `media` - An array describing the media to be sent
-    /// * `star_count` - The number of Telegram Stars that must be paid to buy access to the media; 1-10000.
+    /// * `star_count` - The number of Telegram Stars that must be paid to buy access to the media; 1-25000.
     pub fn new<T>(chat_id: T, media: InputPaidMediaGroup, star_count: Integer) -> Self
     where
         T: Into<ChatId>,

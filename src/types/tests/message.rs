@@ -264,6 +264,17 @@ fn gift() {
 }
 
 #[test]
+fn gift_upgrade_sent() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::GiftUpgradeSent(GiftInfo::new(Gift::new(
+        "id",
+        Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+        100,
+    )));
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn general_forum_topic_hidden() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::GeneralForumTopicHidden;

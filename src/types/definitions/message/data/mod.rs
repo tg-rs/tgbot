@@ -122,6 +122,8 @@ pub enum MessageData {
     Game(Game),
     /// A service message about a sent or received regular gift.
     Gift(GiftInfo),
+    /// A service message about upgrade of a gift was purchased after the gift was sent.
+    GiftUpgradeSent(GiftInfo),
     /// The 'General' forum topic hidden.
     #[serde(
         deserialize_with = "RawDataEmpty::deserialize_value",

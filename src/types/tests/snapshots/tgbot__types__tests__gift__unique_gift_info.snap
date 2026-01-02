@@ -15,6 +15,7 @@ expression: expected_struct.clone()
       "rarity_per_mille": 5
     },
     "base_name": "base-name",
+    "gift_id": "gift-id",
     "model": {
       "name": "name",
       "rarity_per_mille": 6,

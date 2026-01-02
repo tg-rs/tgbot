@@ -83,6 +83,7 @@ fn owned_gift() {
                 rarity_per_mille: 5,
             },
             String::from("base-name"),
+            String::from("gift-id"),
             UniqueGiftModel {
                 name: String::from("name"),
                 rarity_per_mille: 6,
@@ -168,6 +169,7 @@ fn unique_gift_info() {
                 rarity_per_mille: 5,
             },
             String::from("base-name"),
+            String::from("gift-id"),
             UniqueGiftModel {
                 name: String::from("name"),
                 rarity_per_mille: 6,

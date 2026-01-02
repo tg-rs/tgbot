@@ -1100,6 +1100,8 @@ pub struct UniqueGift {
     pub backdrop: UniqueGiftBackdrop,
     /// Human-readable name of the regular gift from which this unique gift was upgraded.
     pub base_name: String,
+    /// Identifier of the regular gift from which the gift was upgraded.
+    pub gift_id: String,
     /// Model of the gift.
     pub model: UniqueGiftModel,
     /// Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas.
@@ -1119,25 +1121,29 @@ impl UniqueGift {
     ///
     /// * `backdrop` - Backdrop of the gift.
     /// * `base_name` - Human-readable name of the regular gift from which this unique gift was upgraded.
+    /// * `gift_id` - Identifier of the regular gift from which the gift was upgraded.
     /// * `model` - Model of the gift.
     /// * `name` - Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas.
     /// * `number` - Unique number of the upgraded gift among gifts upgraded from the same regular gift.
     /// * `symbol` - Symbol of the gift.
-    pub fn new<A, B>(
+    pub fn new<A, B, C>(
         backdrop: UniqueGiftBackdrop,
         base_name: A,
+        gift_id: B,
         model: UniqueGiftModel,
-        name: B,
+        name: C,
         number: Integer,
         symbol: UniqueGiftSymbol,
     ) -> Self
     where
         A: Into<String>,
         B: Into<String>,
+        C: Into<String>,
     {
         Self {
             backdrop,
             base_name: base_name.into(),
+            gift_id: gift_id.into(),
             model,
             name: name.into(),
             number,

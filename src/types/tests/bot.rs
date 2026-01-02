@@ -9,7 +9,8 @@ fn bot() {
             .with_can_join_groups(true)
             .with_can_read_all_group_messages(true)
             .with_has_main_web_app(true)
-            .with_supports_inline_queries(false),
+            .with_has_topics_enabled(false)
+            .with_supports_inline_queries(true),
     );
 }
 

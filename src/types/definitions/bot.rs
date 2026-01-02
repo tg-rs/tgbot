@@ -25,6 +25,8 @@ pub struct Bot {
     pub can_read_all_group_messages: bool,
     /// Indicates whether the bot has a main Web App.
     pub has_main_web_app: bool,
+    /// Indicates whether the bot has forum topic mode enabled in private chats.
+    pub has_topics_enabled: bool,
     /// The last name of the bot.
     pub last_name: Option<String>,
     /// Indicates whether the bot supports inline queries.
@@ -52,6 +54,7 @@ impl Bot {
             can_join_groups: false,
             can_read_all_group_messages: false,
             has_main_web_app: false,
+            has_topics_enabled: false,
             last_name: None,
             supports_inline_queries: false,
         }
@@ -94,6 +97,16 @@ impl Bot {
     /// * `value` - Indicates whether the bot has a main Web App.
     pub fn with_has_main_web_app(mut self, value: bool) -> Self {
         self.has_main_web_app = value;
+        self
+    }
+
+    /// Sets a new value for the `has_topics_enabled` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the bot has forum topic mode enabled in private chats.
+    pub fn with_has_topics_enabled(mut self, value: bool) -> Self {
+        self.has_topics_enabled = value;
         self
     }
 

@@ -1481,6 +1481,90 @@ impl Method for SendMessage {
     }
 }
 
+/// Streams a partial message to a user while the message is being generated;
+/// supported only for bots with forum topic mode enabled.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct SendMessageDraft {
+    chat_id: Integer,
+    draft_id: Integer,
+    text: String,
+    entities: Option<TextEntities>,
+    message_thread_id: Option<Integer>,
+    parse_mode: Option<ParseMode>,
+}
+
+impl SendMessageDraft {
+    /// Creates a new `SendMessageDraft`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier for the target private chat.
+    /// * `draft_id` - Unique identifier of the message draft; must be non-zero.
+    ///   Changes of drafts with the same identifier are animated.
+    /// * `text` - Text of the message to be sent, 1-4096 characters after entities parsing.
+    pub fn new<T>(chat_id: Integer, draft_id: Integer, text: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            chat_id,
+            draft_id,
+            text: text.into(),
+            entities: None,
+            message_thread_id: None,
+            parse_mode: None,
+        }
+    }
+
+    /// Sets a new list of entities
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - List of special entities that appear in the text.
+    ///
+    /// Parse mode will be set to [`None`] when this method is called.
+    pub fn with_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.entities = Some(value.into_iter().collect());
+        self.parse_mode = None;
+        self
+    }
+
+    /// Sets a new message thread ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier for the target message thread.
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.message_thread_id = Some(value);
+        self
+    }
+
+    /// Sets a new parse mode.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Parse mode.
+    ///
+    /// Entities will be set to [`None`] when this method is called.
+    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
+        self.entities = None;
+        self.parse_mode = Some(value);
+        self
+    }
+}
+
+impl Method for SendMessageDraft {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("sendMessageDraft", self)
+    }
+}
+
 /// Stops updating a live location message before `live_period` expires.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]

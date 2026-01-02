@@ -885,6 +885,22 @@ fn send_message() {
 }
 
 #[test]
+fn send_message_draft() {
+    let method = SendMessageDraft::new(1, 1, "text");
+    assert_payload_eq!(POST JSON "sendMessageDraft" => method);
+    let method = SendMessageDraft::new(1, 1, "text")
+        .with_entities(vec![TextEntity::bold(0..2)])
+        .with_message_thread_id(1)
+        .with_parse_mode(ParseMode::Markdown);
+    assert_payload_eq!(POST JSON "sendMessageDraft" => method);
+    let method = SendMessageDraft::new(1, 1, "text")
+        .with_message_thread_id(1)
+        .with_parse_mode(ParseMode::Markdown)
+        .with_entities(vec![TextEntity::bold(0..2)]);
+    assert_payload_eq!(POST JSON "sendMessageDraft" => method);
+}
+
+#[test]
 fn stop_message_live_location() {
     let method = StopMessageLiveLocation::for_chat_message(1, 2);
     assert_payload_eq!(POST JSON "stopMessageLiveLocation" => method);

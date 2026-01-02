@@ -1,0 +1,11 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "draft_id": 1,
+  "message_thread_id": 1,
+  "parse_mode": "Markdown",
+  "text": "text"
+}

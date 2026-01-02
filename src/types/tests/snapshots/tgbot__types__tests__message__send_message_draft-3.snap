@@ -1,0 +1,17 @@
+---
+source: src/types/tests/message.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "draft_id": 1,
+  "entities": [
+    {
+      "length": 2,
+      "offset": 0,
+      "type": "bold"
+    }
+  ],
+  "message_thread_id": 1,
+  "text": "text"
+}

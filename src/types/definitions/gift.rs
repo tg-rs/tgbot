@@ -70,6 +70,8 @@ pub struct Gift {
     pub star_count: Integer,
     /// The sticker that represents the gift.
     pub sticker: Sticker,
+    /// Whether the gift can be used (after being upgraded) to customize a user's appearance.
+    pub has_colors: Option<bool>,
     /// Whether the gift can only be purchased by Telegram Premium subscribers.
     pub is_premium: Option<bool>,
     /// The number of remaining gifts of this type that can be sent by the bot; for limited gifts only.
@@ -104,6 +106,7 @@ impl Gift {
             id: id.into(),
             star_count,
             sticker,
+            has_colors: None,
             is_premium: None,
             personal_remaining_count: None,
             personal_total_count: None,
@@ -112,6 +115,16 @@ impl Gift {
             total_count: None,
             upgrade_star_count: None,
         }
+    }
+
+    /// Sets a new value for the `has_colors` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the gift can be used (after being upgraded) to customize a user's appearance.
+    pub fn with_has_colors(mut self, value: bool) -> Self {
+        self.has_colors = Some(value);
+        self
     }
 
     /// Sets a new value for the `is_premium` flag.

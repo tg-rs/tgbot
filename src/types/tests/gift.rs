@@ -22,6 +22,7 @@ fn gift() {
     insta::assert_json_snapshot!(expected_struct.clone());
     insta::assert_json_snapshot!(
         expected_struct
+            .with_has_colors(true)
             .with_is_premium(false)
             .with_personal_remaining_count(1)
             .with_personal_total_count(2)

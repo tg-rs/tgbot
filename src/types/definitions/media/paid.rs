@@ -290,6 +290,17 @@ impl SendPaidMedia {
         self
     }
 
+    /// Sets a new message thread ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the target message thread;
+    ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
+    pub fn with_message_thread_id(mut self, value: Integer) -> Self {
+        self.form.insert_field("message_thread_id", value);
+        self
+    }
+
     /// Sets a new parse mode.
     ///
     /// # Arguments

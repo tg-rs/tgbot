@@ -52,6 +52,12 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "message_thread_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
         "payload",
         FormValue::Text(
             "payload",

@@ -108,7 +108,7 @@ pub struct Message {
     ///
     /// Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited.
     pub is_paid_post: Option<bool>,
-    /// Indicates whether the message is sent to a forum topic.
+    /// Indicates whether the message is sent to a topic in a forum supergroup or a private chat with the bot.
     pub is_topic_message: Option<bool>,
     /// Options used for link preview generation for the message,
     /// if it is a text message and link preview options were changed.
@@ -116,7 +116,7 @@ pub struct Message {
     /// Unique identifier of a media message group this message belongs to.
     pub media_group_id: Option<String>,
     /// Unique identifier of a message thread to which the message belongs;
-    /// for supergroups only.
+    /// for supergroups and private chats only.
     pub message_thread_id: Option<Integer>,
     /// The number of Telegram Stars that were paid by the sender of the message to send it.
     pub paid_star_count: Option<Integer>,
@@ -458,7 +458,7 @@ impl Message {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///   supergroups only.
+    ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self

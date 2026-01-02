@@ -318,7 +318,7 @@ impl SendLocation {
     /// # Arguments
     ///
     /// * `value` - Unique identifier of the target message thread;
-    ///   supergroups only.
+    ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
         self

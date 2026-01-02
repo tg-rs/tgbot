@@ -116,6 +116,7 @@ fn send_paid_media() {
         .unwrap()
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
+        .with_message_thread_id(1)
         .with_payload("payload")
         .with_protect_content(true)
         .with_reply_parameters(reply_parameters.clone())

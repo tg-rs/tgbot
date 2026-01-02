@@ -1296,6 +1296,24 @@ pub struct UniqueGiftBackdropColors {
     pub text_color: Integer,
 }
 
+/// Contains information about the color scheme for a user's name,
+/// message replies and link previews based on a unique gift.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct UniqueGiftColors {
+    /// Main color used in dark themes; RGB format.
+    pub dark_theme_main_color: Integer,
+    /// List of 1-3 additional colors used in dark themes; RGB format.
+    pub dark_theme_other_colors: Vec<Integer>,
+    /// Main color used in light themes; RGB format.
+    pub light_theme_main_color: Integer,
+    /// List of 1-3 additional colors used in light themes; RGB format.
+    pub light_theme_other_colors: Vec<Integer>,
+    /// Custom emoji identifier of the unique gift's model.
+    pub model_custom_emoji_id: String,
+    /// Custom emoji identifier of the unique gift's symbol.
+    pub symbol_custom_emoji_id: String,
+}
+
 /// Describes the model of a unique gift.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct UniqueGiftModel {

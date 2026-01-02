@@ -218,6 +218,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         pinned_message: None,
         profile_accent_color: None,
         profile_background_custom_emoji_id: None,
+        rating: None,
         slow_mode_delay: None,
         sticker_set_name: None,
         title: None,
@@ -351,6 +352,12 @@ fn private_chat_full_info() {
     expected_struct.personal_chat = Some(Chat::from(ChannelChat::new(1, "test")));
     expected_struct.profile_accent_color = Some(ProfileAccentColor::try_from(1).unwrap());
     expected_struct.profile_background_custom_emoji_id = Some(String::from("emoji-id"));
+    expected_struct.rating = Some(UserRating {
+        current_level_rating: 1,
+        level: 2,
+        rating: 3,
+        next_level_rating: Some(4),
+    });
 
     insta::assert_json_snapshot!(expected_struct);
 }

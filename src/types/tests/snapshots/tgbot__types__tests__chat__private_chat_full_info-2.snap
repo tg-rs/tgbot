@@ -71,5 +71,11 @@ expression: expected_struct
     "type": "channel",
     "id": 1,
     "title": "test"
+  },
+  "rating": {
+    "current_level_rating": 1,
+    "level": 2,
+    "rating": 3,
+    "next_level_rating": 4
   }
 }

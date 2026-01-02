@@ -15,6 +15,7 @@ use crate::types::{
     Message,
     ProfileAccentColor,
     ReactionType,
+    UserRating,
 };
 
 /// Type of the chat.
@@ -117,6 +118,8 @@ pub struct ChatFullInfo {
     pub last_name: Option<String>,
     /// For private chats, the personal channel of the user.
     pub personal_chat: Option<Chat>,
+    /// For private chats, the rating of the user if any
+    pub rating: Option<UserRating>,
 
     /// Whether the bot can change the group sticker set.
     pub can_set_sticker_set: Option<bool>,

@@ -353,6 +353,21 @@ impl PartialEq<Integer> for UserPeerId {
     }
 }
 
+/// Describes the rating of a user based on their Telegram Star spendings.
+#[derive(Copy, Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct UserRating {
+    /// The rating value required to get the current level.
+    pub current_level_rating: Integer,
+    /// Current level of the user, indicating their reliability when purchasing digital goods and services.
+    ///
+    /// A higher level suggests a more trustworthy customer; a negative level is likely reason for concern.
+    pub level: Integer,
+    /// Numerical value of the user's rating; the higher the rating, the better.
+    pub rating: Integer,
+    /// The rating value required to get to the next level; omitted if the maximum level was reached.
+    pub next_level_rating: Option<Integer>,
+}
+
 /// Username of a user in the format `@username`.
 #[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(from = "String", into = "String")]

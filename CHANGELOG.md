@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.41.0 (02.01.2025)
+
+### Dependencies
+
+- reqwest 0.13
+
+### Bot API
+
+#### 9.3
+
+- Added types: `GetChatGifts`, `GetUserGifts`, `GiftBackground`, `RepostStory`, `SendMessageDraft`, `UniqueGiftColors`,
+  `UserRating`.
+- Added enum variants:
+  - `MessageData`: `GiftUpgradeSent`.
+  - `UniqueGiftOrigin`: `GiftedUpgrade`, `Offer`.
+- Added fields:
+  - `AcceptedGiftTypes`: `gifts_from_channels`.
+  - `Bot`: `has_topics_enabled`.
+  - `ChatFullInfo`: `paid_message_star_count`, `rating`, `unique_gift_colors`.
+  - `ChecklistTask`: `completed_by_chat`.
+  - `ForumTopic`: `is_name_implicit`.
+  - `Gift`: `background`, `has_colors`, `is_premium`, `personal_remaining_count`, `personal_total_count`,
+    `unique_gift_variant_count`.
+  - `GiftInfo`: `is_upgrade_separate`, `unique_gift_number`.
+  - `MessageDataForumTopicCreated`: `is_name_implicit`.
+  - `OwnedGiftRegular`: `is_upgrade_separate`, `unique_gift_number`.
+  - `UniqueGift`: `colors`, `gift_id`, `is_from_blockchain`, `is_premium`.
+- Added methods:
+  - `AcceptedGiftTypes`: `with_gifts_from_channels`.
+  - `Bot`: `with_has_topics_enabled`.
+  - `ChecklistTask`: `with_completed_by_chat`.
+  - `CopyMessage`: `with_message_effect_id`.
+  - `ForumTopic`: `with_is_name_implicit`.
+  - `ForwardMessage`: `with_message_effect_id`.
+  - `GetBusinessAccountGifts`: `with_exclude_from_blockchain`, `with_exclude_limited_non_upgradable`,
+    `with_exclude_limited_upgradable`.
+  - `Gift`: `with_background`, `with_has_colors`, `with_is_premium`, `with_personal_remaining_count`,
+    `with_personal_total_count`, `with_unique_gift_variant_count`.
+  - `GiftInfo`: `with_is_upgrade_separate`, `with_unique_gift_number`.
+  - `MessageDataForumTopicCreated`: `with_is_name_implicit`.
+  - `OwnedGiftRegular`: `with_is_upgrade_separate`, `with_unique_gift_number`.
+  - `SendPaidMedia`: `with_message_thread_id`.
+  - `UniqueGift`: `with_colors`, `with_is_from_blockchain`, `with_is_premium`.
+- Removed methods:
+  - `GetBusinessAccountGifts`: `with_exclude_limited`.
+
 ## 0.40.0 (16.08.2025)
 
 ### Bot API

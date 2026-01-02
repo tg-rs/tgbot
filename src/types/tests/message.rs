@@ -219,11 +219,15 @@ fn forum_topic_closed() {
 
 #[test]
 fn forum_topic_created() {
+    let color = ForumTopicIconColor::LightGreen;
+    let data = MessageDataForumTopicCreated::new(color, "topic-name");
+
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::ForumTopicCreated(MessageDataForumTopicCreated::new(
-        ForumTopicIconColor::LightGreen,
-        "topic-name",
-    ));
+    expected_struct.data = MessageData::ForumTopicCreated(data.clone());
+    insta::assert_json_snapshot!(expected_struct);
+
+    let data = data.with_icon_custom_emoji_id("test").with_is_name_implicit(true);
+    expected_struct.data = MessageData::ForumTopicCreated(data);
     insta::assert_json_snapshot!(expected_struct);
 }
 

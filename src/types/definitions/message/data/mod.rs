@@ -455,6 +455,9 @@ pub struct MessageDataForumTopicCreated {
     pub name: String,
     /// Unique identifier of the custom emoji shown as the topic icon.
     pub icon_custom_emoji_id: Option<String>,
+    /// Whether the name of the topic wasn't specified explicitly by its creator
+    /// and likely needs to be changed by the bot.
+    pub is_name_implicit: Option<bool>,
 }
 
 impl MessageDataForumTopicCreated {
@@ -473,6 +476,7 @@ impl MessageDataForumTopicCreated {
             icon_color: icon_color.into(),
             name: name.into(),
             icon_custom_emoji_id: None,
+            is_name_implicit: None,
         }
     }
 
@@ -486,6 +490,16 @@ impl MessageDataForumTopicCreated {
         T: Into<String>,
     {
         self.icon_custom_emoji_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `is_name_implicit` flag.
+    ///
+    /// # Arguments
+    ///
+    /// `value` - Whether the name of the topic wasn't specified explicitly by its creator.
+    pub fn with_is_name_implicit(mut self, value: bool) -> Self {
+        self.is_name_implicit = Some(value);
         self
     }
 }

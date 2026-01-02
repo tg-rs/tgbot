@@ -4,7 +4,11 @@ use crate::types::*;
 fn forum_topic() {
     let expected_struct = ForumTopic::new(ForumTopicIconColor::Bittersweet, 1, "topic-name");
     insta::assert_json_snapshot!(expected_struct.clone());
-    insta::assert_json_snapshot!(expected_struct.with_icon_custom_emoji_id("emoji-id"));
+    insta::assert_json_snapshot!(
+        expected_struct
+            .with_icon_custom_emoji_id("emoji-id")
+            .with_is_name_implicit(true)
+    );
 }
 
 #[test]

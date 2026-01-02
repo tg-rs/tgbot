@@ -920,6 +920,10 @@ pub struct OwnedGiftRegular {
     pub sender_user: Option<User>,
     /// Text of the message that was added to the gift.
     pub text: Option<String>,
+    /// Unique number reserved for this gift when upgraded.
+    ///
+    /// See the number field in [`crate::types::UniqueGift`].
+    pub unique_gift_number: Option<Integer>,
     /// Whether the gift was refunded and isn't available anymore.
     pub was_refunded: Option<bool>,
 }
@@ -945,6 +949,7 @@ impl OwnedGiftRegular {
             prepaid_upgrade_star_count: None,
             sender_user: None,
             text: None,
+            unique_gift_number: None,
             was_refunded: None,
         }
     }
@@ -1061,6 +1066,16 @@ impl OwnedGiftRegular {
         T: Into<String>,
     {
         self.text = Some(value.into());
+        self
+    }
+
+    /// Sets a new unique gift number.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique number reserved for this gift when upgraded.
+    pub fn with_unique_gift_number(mut self, value: Integer) -> Self {
+        self.unique_gift_number = Some(value);
         self
     }
 

@@ -83,7 +83,12 @@ fn owned_gift() {
     );
     let expected_struct = OwnedGift::from(regular.clone());
     insta::assert_json_snapshot!(expected_struct);
-    let expected_struct = OwnedGift::from(regular.with_is_upgrade_separate(true).clone());
+    let expected_struct = OwnedGift::from(
+        regular
+            .with_is_upgrade_separate(true)
+            .with_unique_gift_number(10)
+            .clone(),
+    );
     insta::assert_json_snapshot!(expected_struct);
     let unique = OwnedGiftUnique::new(
         UniqueGift::new(

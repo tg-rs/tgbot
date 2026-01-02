@@ -18,5 +18,6 @@ expression: expected_struct
     }
   },
   "send_date": 2,
-  "is_upgrade_separate": true
+  "is_upgrade_separate": true,
+  "unique_gift_number": 10
 }

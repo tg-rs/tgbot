@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/gift.rs
-expression: "OwnedGift::from(unique.clone())"
+expression: "OwnedGift::from(unique.with_transfer_star_count(1).with_can_be_transferred(true).with_is_saved(true).with_next_transfer_date(500).with_owned_gift_id(\"test-id\").with_sender_user(User::new(1,\n\"John\", false)),)"
 ---
 {
   "type": "unique",
@@ -46,5 +46,15 @@ expression: "OwnedGift::from(unique.clone())"
       }
     }
   },
-  "send_date": 9
+  "send_date": 9,
+  "transfer_star_count": 1,
+  "can_be_transferred": true,
+  "is_saved": true,
+  "next_transfer_date": 500,
+  "owned_gift_id": "test-id",
+  "sender_user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false
+  }
 }

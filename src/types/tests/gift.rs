@@ -46,6 +46,7 @@ fn gift_info() {
             .with_convert_star_count(100)
             .with_entities([TextEntity::bold(0..2)])
             .with_is_private(true)
+            .with_is_upgrade_separate(false)
             .with_owned_gift_id("id")
             .with_prepaid_upgrade_star_count(100)
             .with_text("test")
@@ -64,14 +65,17 @@ fn gifts() {
 
 #[test]
 fn owned_gift() {
-    let expected_struct = OwnedGift::from(OwnedGiftRegular::new(
+    let regular = OwnedGiftRegular::new(
         Gift::new(
             "id",
             Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
             100,
         ),
         2,
-    ));
+    );
+    let expected_struct = OwnedGift::from(regular.clone());
+    insta::assert_json_snapshot!(expected_struct);
+    let expected_struct = OwnedGift::from(regular.with_is_upgrade_separate(true).clone());
     insta::assert_json_snapshot!(expected_struct);
     let unique = OwnedGiftUnique::new(
         UniqueGift::new(

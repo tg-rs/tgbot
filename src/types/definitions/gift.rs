@@ -204,6 +204,8 @@ pub struct GiftInfo {
     /// Whether the sender and gift text are shown only to the gift receiver;
     /// otherwise, everyone will be able to see them.
     pub is_private: Option<bool>,
+    /// Whether the gift's upgrade was purchased after the gift was sent.
+    pub is_upgrade_separate: Option<bool>,
     /// Unique identifier of the received gift for the bot;
     /// only present for gifts received on behalf of business accounts.
     pub owned_gift_id: Option<String>,
@@ -226,6 +228,7 @@ impl GiftInfo {
             convert_star_count: None,
             entities: None,
             is_private: None,
+            is_upgrade_separate: None,
             owned_gift_id: None,
             prepaid_upgrade_star_count: None,
             text: None,
@@ -274,6 +277,16 @@ impl GiftInfo {
     ///   otherwise, everyone will be able to see them.
     pub fn with_is_private(mut self, value: bool) -> Self {
         self.is_private = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_upgrade_separate` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the gift's upgrade was purchased after the gift was sent.
+    pub fn with_is_upgrade_separate(mut self, value: bool) -> Self {
+        self.is_upgrade_separate = Some(value);
         self
     }
 
@@ -831,6 +844,9 @@ pub struct OwnedGiftRegular {
     /// Whether the gift is displayed on the account's profile page;
     /// for gifts received on behalf of business accounts only.
     pub is_saved: Option<bool>,
+    /// Whether the gift's upgrade was purchased after the gift was sent;
+    /// for gifts received on behalf of business accounts only.
+    pub is_upgrade_separate: Option<bool>,
     /// Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only.
     pub owned_gift_id: Option<String>,
     /// Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift.
@@ -859,6 +875,7 @@ impl OwnedGiftRegular {
             entities: None,
             is_private: None,
             is_saved: None,
+            is_upgrade_separate: None,
             owned_gift_id: None,
             prepaid_upgrade_star_count: None,
             sender_user: None,
@@ -921,6 +938,17 @@ impl OwnedGiftRegular {
     ///   for gifts received on behalf of business accounts only.
     pub fn with_is_saved(mut self, value: bool) -> Self {
         self.is_saved = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_upgrade_separate` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the gift's upgrade was purchased after the gift was sent;
+    ///   for gifts received on behalf of business accounts only.
+    pub fn with_is_upgrade_separate(mut self, value: bool) -> Self {
+        self.is_upgrade_separate = Some(value);
         self
     }
 

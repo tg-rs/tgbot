@@ -44,3 +44,11 @@ fn story_area_type() {
     let expected_struct = StoryAreaType::from(StoryAreaTypeWeather::new(1, "test", 2.0));
     insta::assert_json_snapshot!(expected_struct);
 }
+
+#[test]
+fn repost_story() {
+    let method = RepostStory::new(1, "test", 2, 3);
+    assert_payload_eq!(POST JSON "repostStory" => method.clone());
+    let method = method.with_post_to_chat_page(true).with_protect_content(true);
+    assert_payload_eq!(POST JSON "repostStory" => method);
+}

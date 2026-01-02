@@ -1,0 +1,12 @@
+---
+source: src/types/tests/story.rs
+expression: actual_data
+---
+{
+  "active_period": 1,
+  "business_connection_id": "test",
+  "from_chat_id": 2,
+  "from_story_id": 3,
+  "post_to_chat_page": null,
+  "protect_content": null
+}

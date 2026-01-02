@@ -15,6 +15,7 @@ use crate::types::{
     Message,
     ProfileAccentColor,
     ReactionType,
+    UniqueGiftColors,
     UserRating,
 };
 
@@ -157,4 +158,8 @@ pub struct ChatFullInfo {
     pub accepted_gift_types: Option<AcceptedGiftTypes>,
     /// The number of Telegram Stars a general user have to pay to send a message to the chat.
     pub paid_message_star_count: Option<Integer>,
+    /// The color scheme based on a unique gift
+    /// that must be used for the chat's name,
+    /// message replies and link previews.
+    pub unique_gift_colors: Option<UniqueGiftColors>,
 }

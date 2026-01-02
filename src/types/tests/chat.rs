@@ -223,6 +223,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         slow_mode_delay: None,
         sticker_set_name: None,
         title: None,
+        unique_gift_colors: None,
         unrestrict_boost_count: None,
         username: None,
     }
@@ -268,6 +269,14 @@ fn chat_full_info_channel() {
     expected_struct.emoji_status_custom_emoji_id = Some(String::from("emoji-id"));
     expected_struct.emoji_status_expiration_date = Some(0);
     expected_struct.paid_message_star_count = Some(100);
+    expected_struct.unique_gift_colors = Some(UniqueGiftColors {
+        dark_theme_main_color: 0,
+        dark_theme_other_colors: vec![1],
+        light_theme_main_color: 2,
+        light_theme_other_colors: vec![3],
+        model_custom_emoji_id: String::from("test"),
+        symbol_custom_emoji_id: String::from("test"),
+    });
 
     insta::assert_json_snapshot!(expected_struct);
 }

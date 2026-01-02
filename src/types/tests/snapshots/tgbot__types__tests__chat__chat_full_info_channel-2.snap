@@ -60,5 +60,17 @@ expression: expected_struct
   "linked_chat_id": 2,
   "emoji_status_custom_emoji_id": "emoji-id",
   "emoji_status_expiration_date": 0,
-  "paid_message_star_count": 100
+  "paid_message_star_count": 100,
+  "unique_gift_colors": {
+    "dark_theme_main_color": 0,
+    "dark_theme_other_colors": [
+      1
+    ],
+    "light_theme_main_color": 2,
+    "light_theme_other_colors": [
+      3
+    ],
+    "model_custom_emoji_id": "test",
+    "symbol_custom_emoji_id": "test"
+  }
 }

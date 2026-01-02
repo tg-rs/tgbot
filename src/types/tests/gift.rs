@@ -34,6 +34,7 @@ fn gift() {
             .with_publisher_chat(PrivateChat::new(1, "John"))
             .with_remaining_count(10)
             .with_total_count(20)
+            .with_unique_gift_variant_count(25)
             .with_upgrade_star_count(30)
     );
 }

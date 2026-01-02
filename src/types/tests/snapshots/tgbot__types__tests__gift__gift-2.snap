@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/gift.rs
-expression: "expected_struct.with_background(GiftBackground\n{\n    center_color: 0, edge_color: 1, text_color: 2\n}).with_has_colors(true).with_is_premium(false).with_personal_remaining_count(1).with_personal_total_count(2).with_publisher_chat(PrivateChat::new(1,\n\"John\")).with_remaining_count(10).with_total_count(20).with_upgrade_star_count(30)"
+expression: "expected_struct.with_background(GiftBackground\n{\n    center_color: 0, edge_color: 1, text_color: 2\n}).with_has_colors(true).with_is_premium(false).with_personal_remaining_count(1).with_personal_total_count(2).with_publisher_chat(PrivateChat::new(1,\n\"John\")).with_remaining_count(10).with_total_count(20).with_unique_gift_variant_count(25).with_upgrade_star_count(30)"
 ---
 {
   "id": "id",
@@ -30,5 +30,6 @@ expression: "expected_struct.with_background(GiftBackground\n{\n    center_color
   },
   "remaining_count": 10,
   "total_count": 20,
+  "unique_gift_variant_count": 25,
   "upgrade_star_count": 30
 }

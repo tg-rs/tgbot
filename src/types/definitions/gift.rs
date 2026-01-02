@@ -88,6 +88,8 @@ pub struct Gift {
     /// The total number of the gifts of this type that can be sent;
     /// for limited gifts only.
     pub total_count: Option<Integer>,
+    /// The total number of different unique gifts that can be obtained by upgrading the gift.
+    pub unique_gift_variant_count: Option<Integer>,
     /// The number of Telegram Stars that must be paid to upgrade the gift to a unique one.
     pub upgrade_star_count: Option<Integer>,
 }
@@ -116,6 +118,7 @@ impl Gift {
             publisher_chat: None,
             remaining_count: None,
             total_count: None,
+            unique_gift_variant_count: None,
             upgrade_star_count: None,
         }
     }
@@ -200,6 +203,16 @@ impl Gift {
     /// * `value` - The total number of the gifts of this type that can be sent.
     pub fn with_total_count(mut self, value: Integer) -> Self {
         self.total_count = Some(value);
+        self
+    }
+
+    /// Sets a new unique gift variant count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The total number of different unique gifts that can be obtained by upgrading the gift.
+    pub fn with_unique_gift_variant_count(mut self, value: Integer) -> Self {
+        self.unique_gift_variant_count = Some(value);
         self
     }
 

@@ -70,6 +70,10 @@ pub struct Gift {
     pub star_count: Integer,
     /// The sticker that represents the gift.
     pub sticker: Sticker,
+    /// The number of remaining gifts of this type that can be sent by the bot; for limited gifts only.
+    pub personal_remaining_count: Option<Integer>,
+    /// The total number of gifts of this type that can be sent by the bot; for limited gifts only.
+    pub personal_total_count: Option<Integer>,
     /// Information about the chat that published the gift.
     pub publisher_chat: Option<Chat>,
     /// The number of remaining gifts of this type that can be sent;
@@ -98,11 +102,33 @@ impl Gift {
             id: id.into(),
             star_count,
             sticker,
+            personal_remaining_count: None,
+            personal_total_count: None,
             publisher_chat: None,
             remaining_count: None,
             total_count: None,
             upgrade_star_count: None,
         }
+    }
+
+    /// Sets a new personal remaining count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of remaining gifts of this type that can be sent by the bot; for limited gifts only.
+    pub fn with_personal_remaining_count(mut self, value: Integer) -> Self {
+        self.personal_remaining_count = Some(value);
+        self
+    }
+
+    /// Sets a new personal total count.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The total number of gifts of this type that can be sent by the bot; for limited gifts only.
+    pub fn with_personal_total_count(mut self, value: Integer) -> Self {
+        self.personal_total_count = Some(value);
+        self
     }
 
     /// Sets a new publisher chat.

@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/gift.rs
-expression: "expected_struct.with_can_be_upgraded(true).with_convert_star_count(100).with_entities([TextEntity::bold(0..2)]).with_is_private(true).with_is_upgrade_separate(false).with_owned_gift_id(\"id\").with_prepaid_upgrade_star_count(100).with_text(\"test\")"
+expression: "expected_struct.with_can_be_upgraded(true).with_convert_star_count(100).with_entities([TextEntity::bold(0..2)]).with_is_private(true).with_is_upgrade_separate(false).with_owned_gift_id(\"id\").with_prepaid_upgrade_star_count(100).with_text(\"test\").with_unique_gift_number(200)"
 ---
 {
   "gift": {
@@ -29,5 +29,6 @@ expression: "expected_struct.with_can_be_upgraded(true).with_convert_star_count(
   "is_upgrade_separate": false,
   "owned_gift_id": "id",
   "prepaid_upgrade_star_count": 100,
-  "text": "test"
+  "text": "test",
+  "unique_gift_number": 200
 }

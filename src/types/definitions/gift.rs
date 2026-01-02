@@ -263,6 +263,10 @@ pub struct GiftInfo {
     pub prepaid_upgrade_star_count: Option<Integer>,
     /// Text of the message that was added to the gift.
     pub text: Option<String>,
+    /// Unique number reserved for this gift when upgraded.
+    ///
+    /// See the number field in [`crate::types::UniqueGift`].
+    pub unique_gift_number: Option<Integer>,
 }
 
 impl GiftInfo {
@@ -282,6 +286,7 @@ impl GiftInfo {
             owned_gift_id: None,
             prepaid_upgrade_star_count: None,
             text: None,
+            unique_gift_number: None,
         }
     }
 
@@ -374,6 +379,16 @@ impl GiftInfo {
         T: Into<String>,
     {
         self.text = Some(value.into());
+        self
+    }
+
+    /// Sets a new unique gift number.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique number reserved for this gift when upgraded.
+    pub fn with_unique_gift_number(mut self, value: Integer) -> Self {
+        self.unique_gift_number = Some(value);
         self
     }
 }

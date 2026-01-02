@@ -57,6 +57,7 @@ fn gift_info() {
             .with_owned_gift_id("id")
             .with_prepaid_upgrade_star_count(100)
             .with_text("test")
+            .with_unique_gift_number(200)
     );
 }
 

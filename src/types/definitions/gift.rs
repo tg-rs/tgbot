@@ -70,6 +70,8 @@ pub struct Gift {
     pub star_count: Integer,
     /// The sticker that represents the gift.
     pub sticker: Sticker,
+    /// Background of the gift.
+    pub background: Option<GiftBackground>,
     /// Whether the gift can be used (after being upgraded) to customize a user's appearance.
     pub has_colors: Option<bool>,
     /// Whether the gift can only be purchased by Telegram Premium subscribers.
@@ -106,6 +108,7 @@ impl Gift {
             id: id.into(),
             star_count,
             sticker,
+            background: None,
             has_colors: None,
             is_premium: None,
             personal_remaining_count: None,
@@ -115,6 +118,16 @@ impl Gift {
             total_count: None,
             upgrade_star_count: None,
         }
+    }
+
+    /// Sets a new background
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Background of the gift.
+    pub fn with_background(mut self, value: GiftBackground) -> Self {
+        self.background = Some(value);
+        self
     }
 
     /// Sets a new value for the `has_colors` flag.
@@ -199,6 +212,17 @@ impl Gift {
         self.upgrade_star_count = Some(value);
         self
     }
+}
+
+/// Describes the background of a gift.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct GiftBackground {
+    /// Center color of the background in RGB format
+    pub center_color: Integer,
+    /// Edge color of the background in RGB format
+    pub edge_color: Integer,
+    /// Text color of the background in RGB format
+    pub text_color: Integer,
 }
 
 /// Describes a service message about a regular gift that was sent or received.

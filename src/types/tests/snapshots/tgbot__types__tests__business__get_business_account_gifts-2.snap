@@ -4,11 +4,12 @@ expression: actual_data
 ---
 {
   "business_connection_id": "id",
-  "exclude_limited": true,
+  "exclude_limited_non_upgradable": true,
+  "exclude_limited_upgradable": false,
   "exclude_saved": true,
-  "exclude_unique": true,
+  "exclude_unique": false,
   "exclude_unlimited": true,
-  "exclude_unsaved": true,
+  "exclude_unsaved": false,
   "limit": 10,
   "offset": "test",
   "sort_by_price": true

@@ -656,7 +656,8 @@ impl Method for EditStory {
 #[derive(Clone, Debug, Serialize)]
 pub struct GetBusinessAccountGifts {
     business_connection_id: String,
-    exclude_limited: Option<bool>,
+    exclude_limited_non_upgradable: Option<bool>,
+    exclude_limited_upgradable: Option<bool>,
     exclude_saved: Option<bool>,
     exclude_unique: Option<bool>,
     exclude_unlimited: Option<bool>,
@@ -678,7 +679,8 @@ impl GetBusinessAccountGifts {
     {
         Self {
             business_connection_id: business_connection_id.into(),
-            exclude_limited: None,
+            exclude_limited_non_upgradable: None,
+            exclude_limited_upgradable: None,
             exclude_saved: None,
             exclude_unique: None,
             exclude_unlimited: None,
@@ -689,13 +691,25 @@ impl GetBusinessAccountGifts {
         }
     }
 
-    /// Sets a new value for the `exclude_limited` flag.
+    /// Sets a new value for the `exclude_limited_non_upgradable` flag.
     ///
     /// # Arguments
     ///
-    /// * `value` - Whether to exclude gifts that can be purchased a limited number of times.
-    pub fn with_exclude_limited(mut self, value: bool) -> Self {
-        self.exclude_limited = Some(value);
+    /// * `value` - Whether to exclude gifts that can be purchased
+    ///   a limited number of times and can't be upgraded to unique.
+    pub fn with_exclude_limited_non_upgradable(mut self, value: bool) -> Self {
+        self.exclude_limited_non_upgradable = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `exclude_limited_upgradable` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to exclude gifts that can be purchased
+    ///   a limited number of times and can be upgraded to unique
+    pub fn with_exclude_limited_upgradable(mut self, value: bool) -> Self {
+        self.exclude_limited_upgradable = Some(value);
         self
     }
 

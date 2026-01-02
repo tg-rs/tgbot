@@ -112,11 +112,12 @@ fn get_business_account_gifts() {
     let method = GetBusinessAccountGifts::new("id");
     assert_payload_eq!(POST JSON "getBusinessAccountGifts" => method.clone());
     let method = method
-        .with_exclude_limited(true)
+        .with_exclude_limited_non_upgradable(true)
+        .with_exclude_limited_upgradable(false)
         .with_exclude_saved(true)
-        .with_exclude_unique(true)
+        .with_exclude_unique(false)
         .with_exclude_unlimited(true)
-        .with_exclude_unsaved(true)
+        .with_exclude_unsaved(false)
         .with_limit(10)
         .with_offset("test")
         .with_sort_by_price(true);

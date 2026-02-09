@@ -5,7 +5,10 @@ use futures_util::{pin_mut, stream::StreamExt};
 use log::error;
 use tokio::{
     spawn,
-    sync::mpsc::{Receiver, Sender, channel},
+    sync::{
+        Semaphore,
+        mpsc::{Receiver, Sender, channel},
+    },
     time::sleep,
 };
 
@@ -77,7 +80,11 @@ where
             poll_timeout,
             error_timeout,
             allowed_updates,
+            concurrency_limit,
         } = self.options;
+
+        let semaphore = Arc::new(Semaphore::new(concurrency_limit.unwrap_or(Semaphore::MAX_PERMITS)));
+
         let client = self.client.clone();
         let mut receiver = self.receiver;
         let s = stream! {
@@ -109,7 +116,11 @@ where
         pin_mut!(s);
         while let Some(update) = s.next().await {
             let handler = self.handler.clone();
-            spawn(async move { handler.handle(update).await });
+            let permit = semaphore.clone().acquire_owned().await.unwrap();
+            spawn(async move {
+                let _guard = permit;
+                handler.handle(update).await;
+            });
         }
     }
 }
@@ -141,6 +152,7 @@ pub struct LongPollOptions {
     poll_timeout: Duration,
     error_timeout: Duration,
     allowed_updates: HashSet<AllowedUpdate>,
+    concurrency_limit: Option<usize>,
 }
 
 impl LongPollOptions {
@@ -151,6 +163,18 @@ impl LongPollOptions {
     /// * `value` - A type of update to be allowed.
     pub fn with_allowed_update(mut self, value: AllowedUpdate) -> Self {
         self.allowed_updates.insert(value);
+        self
+    }
+
+    /// Sets a new limit for concurrent handler tasks.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Maximum number of [`UpdateHandler`] tasks that can run
+    ///   simultaneously. If not set, the number of concurrent tasks is set to
+    ///   [`Semaphore::MAX_PERMITS`].
+    pub fn with_concurrency_limit(mut self, value: usize) -> Self {
+        self.concurrency_limit = Some(value);
         self
     }
 
@@ -197,6 +221,7 @@ impl Default for LongPollOptions {
             poll_timeout: DEFAULT_POLL_TIMEOUT,
             error_timeout: DEFAULT_ERROR_TIMEOUT,
             allowed_updates: HashSet::new(),
+            concurrency_limit: None,
         }
     }
 }

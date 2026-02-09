@@ -1,16 +1,20 @@
 [package]
 name = "tgbot"
-description = "A Telegram Bot library"
 version = "0.41.0"
-authors = ["Ross Nomann <rossnomann@protonmail.com>"]
 edition = "2024"
-readme = "README.md"
-license = "MIT"
+description = "A Telegram Bot library"
 documentation = "https://docs.rs/tgbot"
+readme = "README.md"
 repository = "https://github.com/tg-rs/tgbot"
+license = "MIT"
 
-[features]
-webhook = ["dep:axum"]
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "nightly"]
+
+[[example]]
+name = "webhook"
+required-features = ["webhook"]
 
 [dependencies]
 async-stream = "0.3"
@@ -21,7 +25,13 @@ futures-util = "0.3"
 log = "0.4"
 mime = "0.3"
 mime_guess = "2"
-reqwest = { version = "0.13", default-features = false, features = ["json", "multipart", "socks", "rustls", "stream"] }
+reqwest = { version = "0.13", default-features = false, features = [
+  "json",
+  "multipart",
+  "rustls",
+  "socks",
+  "stream"
+] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_with = { version = "3", default-features = false, features = ["macros"] }
@@ -36,17 +46,17 @@ insta = { version = "1", features = ["json"] }
 mockito = "1"
 regex = "1"
 tempfile = "3"
-tokio = { version = "1", features = ["fs", "io-util", "macros", "rt-multi-thread"] }
+tokio = { version = "1", features = [
+  "fs",
+  "io-util",
+  "macros",
+  "rt-multi-thread"
+] }
 toml = "0.9"
 
-[[example]]
-name = "webhook"
-required-features = ["webhook"]
+[features]
+webhook = ["dep:axum"]
 
 [lints.rust]
 missing_docs = "warn"
-unexpected_cfgs = { level = "allow", check-cfg = ['cfg(nightly)'] }
-
-[package.metadata.docs.rs]
-all-features = true
-rustdoc-args = ["--cfg", "nightly"]
+unexpected_cfgs = { level = "allow", check-cfg = ["cfg(nightly)"] }

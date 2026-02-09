@@ -485,9 +485,65 @@ impl From<UserUsername> for UserId {
     }
 }
 
+/// Returns a list of profile audios for a user.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct GetUserProfileAudios {
+    user_id: Integer,
+    limit: Option<Integer>,
+    offset: Option<Integer>,
+}
+
+impl GetUserProfileAudios {
+    /// Creates a new `GetUserProfileAudios`.
+    ///
+    /// # Arguments
+    ///
+    /// * `user_id` - Unique identifier of the target user.
+    pub fn new(user_id: Integer) -> Self {
+        Self {
+            user_id,
+            limit: None,
+            offset: None,
+        }
+    }
+
+    /// Sets a new limit.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Sequential number of the first audio to be returned.
+    ///
+    /// By default, all audios are returned.
+    pub fn with_limit(mut self, value: Integer) -> Self {
+        self.limit = Some(value);
+        self
+    }
+
+    /// Sets a new offset
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Limits the number of audios to be retrieved.
+    ///
+    /// Values between 1-100 are accepted. Defaults to 100.
+    pub fn with_offset(mut self, value: Integer) -> Self {
+        self.offset = Some(value);
+        self
+    }
+}
+
+impl Method for GetUserProfileAudios {
+    type Response = UserProfileAudios;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getUserProfileAudios", self)
+    }
+}
+
 /// Returns a list of profile pictures for a user.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Serialize)]
 pub struct GetUserProfilePhotos {
     user_id: Integer,
     limit: Option<Integer>,

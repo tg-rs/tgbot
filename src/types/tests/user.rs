@@ -127,9 +127,17 @@ fn user_id() {
 }
 
 #[test]
+fn get_user_profile_audios() {
+    let method = GetUserProfileAudios::new(1);
+    assert_payload_eq!(POST JSON "getUserProfileAudios" => method);
+    let method = method.with_offset(5).with_limit(10);
+    assert_payload_eq!(POST JSON "getUserProfileAudios" => method);
+}
+
+#[test]
 fn get_user_profile_photos() {
     let method = GetUserProfilePhotos::new(1);
-    assert_payload_eq!(POST JSON "getUserProfilePhotos" => method.clone());
+    assert_payload_eq!(POST JSON "getUserProfilePhotos" => method);
     let method = method.with_offset(5).with_limit(10);
     assert_payload_eq!(POST JSON "getUserProfilePhotos" => method);
 }

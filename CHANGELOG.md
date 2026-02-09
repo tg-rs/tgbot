@@ -5,6 +5,7 @@
 ### Handlers
 
 - Added `UpdateHandler` trait implementation for `Arc<T: UpdateHandler>`.
+- Added `LongPollOptions::with_concurrency_limit` to limit the number of spawned tasks.
 
 ### Bot API
 

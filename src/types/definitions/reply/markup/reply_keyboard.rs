@@ -135,6 +135,8 @@ where
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct KeyboardButton {
     text: String,
+    icon_custom_emoji_id: Option<String>,
+    style: Option<KeyboardButtonStyle>,
     #[serde(flatten)]
     button_type: Option<KeyboardButtonType>,
 }
@@ -166,8 +168,42 @@ impl KeyboardButton {
     {
         Self {
             text: text.into(),
+            icon_custom_emoji_id: None,
+            style: None,
             button_type: None,
         }
+    }
+
+    /// Sets a new icon custom emoji ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the custom emoji
+    ///   shown before the text of the button.
+    ///
+    /// Can only be used by bots that purchased
+    /// additional usernames on Fragment
+    /// or in the messages directly sent by the bot to private,
+    /// group and supergroup chats
+    /// if the owner of the bot has a Telegram Premium subscription.
+    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.icon_custom_emoji_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new style.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Style of the button.
+    ///
+    /// If omitted, then an app-specific style is used.
+    pub fn with_style(mut self, value: KeyboardButtonStyle) -> Self {
+        self.style = Some(value);
+        self
     }
 
     /// Changes button type to a chat request.
@@ -255,6 +291,18 @@ impl KeyboardButton {
         self.button_type = Some(KeyboardButtonType::WebApp(web_app_info));
         self
     }
+}
+
+/// Represents a keyboard button style.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum KeyboardButtonStyle {
+    /// Red.
+    Danger,
+    /// Blue.
+    Primary,
+    /// Green.
+    Success,
 }
 
 /// Represents a type of a poll which is allowed to be created

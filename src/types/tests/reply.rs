@@ -76,9 +76,15 @@ fn switch_inline_query_chosen_chat() {
 #[test]
 fn reply_keyboard_markup() {
     let row = vec![
-        KeyboardButton::new("test"),
-        KeyboardButton::new("request contact").with_request_contact(),
-        KeyboardButton::new("request chat 1").with_request_chat(KeyboardButtonRequestChat::new(1, true)),
+        KeyboardButton::new("test")
+            .with_icon_custom_emoji_id("test")
+            .with_style(KeyboardButtonStyle::Danger),
+        KeyboardButton::new("request contact")
+            .with_request_contact()
+            .with_style(KeyboardButtonStyle::Primary),
+        KeyboardButton::new("request chat 1")
+            .with_request_chat(KeyboardButtonRequestChat::new(1, true))
+            .with_style(KeyboardButtonStyle::Success),
         KeyboardButton::new("request chat 2").with_request_chat(
             KeyboardButtonRequestChat::new(1, false)
                 .with_chat_is_forum(true)

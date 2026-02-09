@@ -6,14 +6,18 @@ expression: "ReplyMarkup::from(ReplyKeyboardMarkup::default().add_row(row))"
   "keyboard": [
     [
       {
-        "text": "test"
+        "text": "test",
+        "icon_custom_emoji_id": "test",
+        "style": "danger"
       },
       {
         "text": "request contact",
+        "style": "primary",
         "request_contact": true
       },
       {
         "text": "request chat 1",
+        "style": "success",
         "request_chat": {
           "request_id": 1,
           "chat_is_channel": true

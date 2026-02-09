@@ -1,6 +1,6 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-use crate::types::{Integer, Text, TextEntities, True};
+use crate::types::{Integer, Text, TextEntities, True, User};
 
 #[derive(Deserialize, Serialize)]
 pub(super) struct RawDataBoostAdded {
@@ -55,6 +55,55 @@ impl RawCaption {
             caption_entities: value.entities,
         });
         value.serialize(serializer)
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub(super) struct RawDataChatOwnerChanged {
+    new_owner: User,
+}
+
+impl RawDataChatOwnerChanged {
+    pub(super) fn deserialize_value<'de, D>(deserializer: D) -> Result<User, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        RawDataChatOwnerChanged::deserialize(deserializer).map(|x| x.new_owner)
+    }
+
+    pub(super) fn serialize_value<S>(value: &User, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        RawDataChatOwnerChanged {
+            new_owner: value.clone(),
+        }
+        .serialize(serializer)
+    }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Deserialize, Serialize)]
+pub(super) struct RawDataChatOwnerLeft {
+    new_owner: Option<User>,
+}
+
+impl RawDataChatOwnerLeft {
+    pub(super) fn deserialize_value<'de, D>(deserializer: D) -> Result<Option<User>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        RawDataChatOwnerLeft::deserialize(deserializer).map(|x| x.new_owner)
+    }
+
+    pub(super) fn serialize_value<S>(value: &Option<User>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        RawDataChatOwnerLeft {
+            new_owner: value.clone(),
+        }
+        .serialize(serializer)
     }
 }
 

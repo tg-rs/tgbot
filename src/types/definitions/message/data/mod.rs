@@ -80,6 +80,21 @@ pub enum MessageData {
     ChannelChatCreated,
     /// Chat background set.
     ChatBackgroundSet(ChatBackground),
+    /// Describes a service message about an ownership change in the chat.
+    #[serde(
+        deserialize_with = "RawDataChatOwnerChanged::deserialize_value",
+        serialize_with = "RawDataChatOwnerChanged::serialize_value"
+    )]
+    ChatOwnerChanged(User),
+    /// Describes a service message about the chat owner leaving the chat.
+    ///
+    /// Optional user is the user which will be the new owner of the chat
+    /// if the previous owner does not return to the chat.
+    #[serde(
+        deserialize_with = "RawDataChatOwnerLeft::deserialize_value",
+        serialize_with = "RawDataChatOwnerLeft::serialize_value"
+    )]
+    ChatOwnerLeft(Option<User>),
     /// A chat was shared with the bot.
     ChatShared(MessageDataChatShared),
     /// Message is a checklist.

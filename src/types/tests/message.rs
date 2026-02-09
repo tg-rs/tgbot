@@ -113,6 +113,22 @@ fn chat_background_set() {
 }
 
 #[test]
+fn chat_owner_changed() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::ChatOwnerChanged(User::new(1, "John", false));
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn chat_owner_left() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::ChatOwnerLeft(None);
+    insta::assert_json_snapshot!(&expected_struct);
+    expected_struct.data = MessageData::ChatOwnerLeft(Some(User::new(1, "John", false)));
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn chat_shared() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::ChatShared(MessageDataChatShared::new(1, 1));

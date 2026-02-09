@@ -6,6 +6,7 @@ expression: "Bot::new(1, \"loo_maclin_bot\",\n\"Loo\").with_last_name(\"Maclin\"
   "first_name": "Loo",
   "id": 1,
   "username": "loo_maclin_bot",
+  "allows_users_to_create_topics": false,
   "can_connect_to_business": true,
   "can_join_groups": true,
   "can_read_all_group_messages": true,

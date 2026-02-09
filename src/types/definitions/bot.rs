@@ -17,6 +17,8 @@ pub struct Bot {
     pub id: Integer,
     /// The username of the bot.
     pub username: String,
+    /// Whether the bot allows users to create and delete topics in private chats.
+    pub allows_users_to_create_topics: bool,
     /// Whether the bot can be connected to a Telegram Business account to receive its messages.
     pub can_connect_to_business: bool,
     /// Indicates whether the bot can be invited to groups.
@@ -50,6 +52,7 @@ impl Bot {
             first_name: first_name.into(),
             id,
             username: username.into(),
+            allows_users_to_create_topics: false,
             can_connect_to_business: false,
             can_join_groups: false,
             can_read_all_group_messages: false,
@@ -58,6 +61,16 @@ impl Bot {
             last_name: None,
             supports_inline_queries: false,
         }
+    }
+
+    /// Sets a new value for the `allows_users_to_create_topics` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the bot allows users to create and delete topics in private chats.
+    pub fn with_allows_users_to_create_topics(mut self, value: bool) -> Self {
+        self.allows_users_to_create_topics = value;
+        self
     }
 
     /// Sets a new value for the `can_connect_to_business` flag.

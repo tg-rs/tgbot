@@ -1,26 +1,30 @@
 ---
 source: src/types/tests/reply.rs
-expression: "ReplyMarkup::from(vec![vec![InlineKeyboardButton::for_url(\"url\",\n\"tg://user?id=1\"),\nInlineKeyboardButton::for_web_app(\"web app\",\nWebAppInfo::from(\"https://example.com\")),\nInlineKeyboardButton::for_callback_data(\"cd\", \"cd\"),\nInlineKeyboardButton::for_callback_data_struct(\"cd\", &callback_data).unwrap(),\nInlineKeyboardButton::for_copy_text(\"cp\", \"val\"),\nInlineKeyboardButton::for_switch_inline_query(\"siq\", \"siq\"),\nInlineKeyboardButton::for_switch_inline_query_current_chat(\"siq_cc\",\n\"siq_cc\"),\nInlineKeyboardButton::for_switch_inline_query_chosen_chat(\"siq_chc\",\nSwitchInlineQueryChosenChat::new(\"query\"),),\nInlineKeyboardButton::for_callback_game(\"cg\"),\nInlineKeyboardButton::for_pay(\"pay\"),\nInlineKeyboardButton::for_login_url(\"login url\", \"http://example.com\"),]])"
+expression: "ReplyMarkup::from(vec![vec![InlineKeyboardButton::for_url(\"url\",\n\"tg://user?id=1\").with_icon_custom_emoji_id(\"test\"),\nInlineKeyboardButton::for_web_app(\"web app\",\nWebAppInfo::from(\"https://example.com\")).with_style(InlineKeyboardButtonStyle::Danger),\nInlineKeyboardButton::for_callback_data(\"cd\",\n\"cd\").with_style(InlineKeyboardButtonStyle::Primary),\nInlineKeyboardButton::for_callback_data_struct(\"cd\",\n&callback_data).unwrap().with_style(InlineKeyboardButtonStyle::Success),\nInlineKeyboardButton::for_copy_text(\"cp\", \"val\"),\nInlineKeyboardButton::for_switch_inline_query(\"siq\", \"siq\"),\nInlineKeyboardButton::for_switch_inline_query_current_chat(\"siq_cc\",\n\"siq_cc\"),\nInlineKeyboardButton::for_switch_inline_query_chosen_chat(\"siq_chc\",\nSwitchInlineQueryChosenChat::new(\"query\"),),\nInlineKeyboardButton::for_callback_game(\"cg\"),\nInlineKeyboardButton::for_pay(\"pay\"),\nInlineKeyboardButton::for_login_url(\"login url\", \"http://example.com\"),]])"
 ---
 {
   "inline_keyboard": [
     [
       {
         "text": "url",
+        "icon_custom_emoji_id": "test",
         "url": "tg://user?id=1"
       },
       {
         "text": "web app",
+        "style": "danger",
         "web_app": {
           "url": "https://example.com"
         }
       },
       {
         "text": "cd",
+        "style": "primary",
         "callback_data": "cd"
       },
       {
         "text": "cd",
+        "style": "success",
         "callback_data": "{\"value\":\"cd-struct\"}"
       },
       {

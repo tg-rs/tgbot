@@ -49,9 +49,12 @@ impl From<InlineKeyboardMarkup> for Vec<Vec<InlineKeyboardButton>> {
 }
 
 /// Represents a button of an inline keyboard.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct InlineKeyboardButton {
     text: String,
+    icon_custom_emoji_id: Option<String>,
+    style: Option<InlineKeyboardButtonStyle>,
     #[serde(flatten)]
     button_type: InlineKeyboardButtonType,
 }
@@ -63,6 +66,8 @@ impl InlineKeyboardButton {
     {
         Self {
             text: text.into(),
+            icon_custom_emoji_id: None,
+            style: None,
             button_type,
         }
     }
@@ -277,6 +282,47 @@ impl InlineKeyboardButton {
     pub fn text(&self) -> &str {
         &self.text
     }
+
+    /// Sets a new icon custom emoji ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Unique identifier of the custom emoji shown before the text of the button.
+    ///
+    /// Can only be used by bots that purchased additional usernames on Fragment
+    /// or in the messages directly sent by the bot to private, group and supergroup chats
+    /// if the owner of the bot has a Telegram Premium subscription.
+    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.icon_custom_emoji_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new style.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Style of the button.
+    ///
+    /// If omitted, then an app-specific style is used.
+    pub fn with_style(mut self, value: InlineKeyboardButtonStyle) -> Self {
+        self.style = Some(value);
+        self
+    }
+}
+
+/// Represents a style of an inline keyboard button.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InlineKeyboardButtonStyle {
+    /// Red.
+    Danger,
+    /// Blue.
+    Primary,
+    /// Green.
+    Success,
 }
 
 /// Represents a type of an inline keyboard button.

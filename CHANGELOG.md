@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.42.0 (09.02.2026)
+
+### Handlers
+
+- Added `UpdateHandler` trait implementation for `Arc<T: UpdateHandler>`.
+
+### Bot API
+
+#### 9.4
+
+- Added types: `GetUserProfileAudios`, `InlineKeyboardButtonStyle`, `KeyboardButtonStyle`,
+  `SetBotProfilePhoto`, `RemoveBotProfilePhoto`, `UniqueGiftModelRarity`,
+  `UserProfileAudios`, `VideoQuality`.
+- Added enum variants:
+  - `MessageData`: `ChatOwnerChanged`, `ChatOwnerLeft`.
+- Added fields:
+  - `Bot`: `allows_users_to_create_topics`.
+  - `UniqueGift`: `is_burned`.
+  - `UniqueGiftModel`: `rarity`.
+  - `Video`: `qualities`.
+- Added methods:
+  - `Bot`: `with_allows_users_to_create_topics`.
+  - `KeyboardButton`: `with_icon_custom_emoji_id`, `with_style`.
+  - `InlineKeyboardButton`: `with_icon_custom_emoji_id`, `with_style`.
+  - `UniqueGift`: `with_is_burned`.
+  - `Video`: `with_qualities`.
+
 ## 0.41.0 (02.01.2026)
 
 ### Dependencies

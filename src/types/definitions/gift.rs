@@ -1286,6 +1286,8 @@ pub struct UniqueGift {
     /// replies to messages and link previews;
     /// for business account gifts and gifts that are currently on sale only.
     pub colors: Option<UniqueGiftColors>,
+    /// Whether the gift was used to craft another gift and isn't available anymore.
+    pub is_burned: Option<bool>,
     /// Whether the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram.
     pub is_from_blockchain: Option<bool>,
     /// Whether the original regular gift was exclusively purchaseable by Telegram Premium subscribers.
@@ -1329,6 +1331,7 @@ impl UniqueGift {
             number,
             symbol,
             colors: None,
+            is_burned: None,
             is_from_blockchain: None,
             is_premium: None,
             publisher_chat: None,
@@ -1342,6 +1345,16 @@ impl UniqueGift {
     /// * `value` - The color scheme that can be used by the gift's owner.
     pub fn with_colors(mut self, value: UniqueGiftColors) -> Self {
         self.colors = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `is_burned` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the gift was used to craft another gift.
+    pub fn with_is_burned(mut self, value: bool) -> Self {
+        self.is_burned = Some(value);
         self
     }
 

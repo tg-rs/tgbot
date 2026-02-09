@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/file.rs
-expression: "Video::new(3, \"file-id\", \"file-unique-id\", 2,\n1).with_cover([PhotoSize::new(\"cover-file-id\", \"cover-file-unique-id\", 24,\n24)]).with_thumbnail(PhotoSize::new(\"thumb-file-id\", \"thumb-file-unique-id\",\n24,\n24).with_file_size(1024)).with_file_name(\"File Name\").with_mime_type(\"video/mpeg\").with_file_size(10240).with_start_timestamp(20)"
+expression: "Video::new(3, \"file-id\", \"file-unique-id\", 2,\n1).with_cover([PhotoSize::new(\"cover-file-id\", \"cover-file-unique-id\", 24,\n24)]).with_thumbnail(PhotoSize::new(\"thumb-file-id\", \"thumb-file-unique-id\",\n24,\n24).with_file_size(1024)).with_file_name(\"File Name\").with_mime_type(\"video/mpeg\").with_file_size(10240).with_qualities([VideoQuality\n{\n    file_id: String::from(\"test\"), file_unique_id: String::from(\"test-uniq\"),\n    codec: String::from(\"av\"), height: 200, width: 200, file_size: None,\n}]).with_start_timestamp(20)"
 ---
 {
   "duration": 3,
@@ -19,6 +19,15 @@ expression: "Video::new(3, \"file-id\", \"file-unique-id\", 2,\n1).with_cover([P
   "file_name": "File Name",
   "file_size": 10240,
   "mime_type": "video/mpeg",
+  "qualities": [
+    {
+      "codec": "av",
+      "file_id": "test",
+      "file_unique_id": "test-uniq",
+      "height": 200,
+      "width": 200
+    }
+  ],
   "start_timestamp": 20,
   "thumbnail": {
     "file_id": "thumb-file-id",

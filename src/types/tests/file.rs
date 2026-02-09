@@ -257,6 +257,14 @@ fn video() {
             .with_file_name("File Name")
             .with_mime_type("video/mpeg")
             .with_file_size(10240)
+            .with_qualities([VideoQuality {
+                file_id: String::from("test"),
+                file_unique_id: String::from("test-uniq"),
+                codec: String::from("av"),
+                height: 200,
+                width: 200,
+                file_size: None,
+            }])
             .with_start_timestamp(20),
     );
     insta::assert_json_snapshot!(Video::new(3, "file-id", "file-unique-id", 2, 1));

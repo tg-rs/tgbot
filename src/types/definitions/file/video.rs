@@ -50,6 +50,8 @@ pub struct Video {
     pub file_size: Option<Integer>,
     /// MIME type as defined by sender.
     pub mime_type: Option<String>,
+    /// List of available qualities of the video.
+    pub qualities: Option<Vec<VideoQuality>>,
     /// Timestamp in seconds from which the video will play in the message.
     pub start_timestamp: Option<Integer>,
     /// Thumbnail.
@@ -81,6 +83,7 @@ impl Video {
             file_name: None,
             file_size: None,
             mime_type: None,
+            qualities: None,
             start_timestamp: None,
             thumbnail: None,
         }
@@ -135,6 +138,19 @@ impl Video {
         self
     }
 
+    /// Sets a new list of qualities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - List of available qualities of the video.
+    pub fn with_qualities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = VideoQuality>,
+    {
+        self.qualities = Some(value.into_iter().collect());
+        self
+    }
+
     /// Sets a new start timestamp.
     ///
     /// # Arguments
@@ -154,6 +170,27 @@ impl Video {
         self.thumbnail = Some(value);
         self
     }
+}
+
+/// Represents a video file of a specific quality.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct VideoQuality {
+    /// Codec that was used to encode the video, for example, “h264”, “h265”, or “av01”.
+    pub codec: String,
+    /// Identifier for this file, which can be used to download or reuse the file.
+    pub file_id: String,
+    /// Unique identifier for this file, which is supposed to be the same over time
+    /// and for different bots.
+    ///
+    /// Can't be used to download or reuse the file.
+    pub file_unique_id: String,
+    /// Video height.
+    pub height: Integer,
+    /// Video width.
+    pub width: Integer,
+    /// File size in bytes.
+    pub file_size: Option<Integer>,
 }
 
 /// Sends a video file.

@@ -63,6 +63,17 @@ fn user_get_mention() {
 }
 
 #[test]
+fn user_profile_audios() {
+    insta::assert_json_snapshot!(UserProfileAudios::new(
+        [
+            Audio::new(10, "test", "test-uniq"),
+            Audio::new(20, "test-1", "test-uniq-1")
+        ],
+        2,
+    ))
+}
+
+#[test]
 fn user_profile_photos() {
     insta::assert_json_snapshot!(UserProfilePhotos::new(
         [

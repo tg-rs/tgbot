@@ -1,0 +1,19 @@
+---
+source: src/types/tests/user.rs
+expression: "UserProfileAudios::new([Audio::new(10, \"test\", \"test-uniq\"),\nAudio::new(20, \"test-1\", \"test-uniq-1\")], 2,)"
+---
+{
+  "audios": [
+    {
+      "duration": 10,
+      "file_id": "test",
+      "file_unique_id": "test-uniq"
+    },
+    {
+      "duration": 20,
+      "file_id": "test-1",
+      "file_unique_id": "test-uniq-1"
+    }
+  ],
+  "total_count": 2
+}

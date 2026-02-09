@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Integer, ParseMode, PhotoSize},
+    types::{Audio, Integer, ParseMode, PhotoSize},
 };
 
 /// Represents the date of birth of a user.
@@ -292,6 +292,33 @@ impl fmt::Display for MentionError {
             MentionError::UnsupportedParseMode(parse_mode) => {
                 write!(out, "can not mention with {parse_mode} parse mode")
             }
+        }
+    }
+}
+
+/// Represents the audios displayed on a user's profile.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UserProfileAudios {
+    /// Requested profile audios.
+    pub audios: Vec<Audio>,
+    /// Total number of profile audios for the target user.
+    pub total_count: Integer,
+}
+
+impl UserProfileAudios {
+    /// Creates a new `UserProfileAudios`.
+    ///
+    /// # Arguments
+    ///
+    /// * `audios` - A list of audios.
+    /// * `total_count` - Total number of audios.
+    pub fn new<T>(audios: T, total_count: Integer) -> Self
+    where
+        T: IntoIterator<Item = Audio>,
+    {
+        Self {
+            audios: audios.into_iter().collect(),
+            total_count,
         }
     }
 }

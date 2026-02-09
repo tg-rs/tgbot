@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::types::{
     AccentColor,
     AcceptedGiftTypes,
+    Audio,
     Birthdate,
     BusinessIntro,
     BusinessLocation,
@@ -109,6 +110,8 @@ pub struct ChatFullInfo {
     pub emoji_status_expiration_date: Option<Integer>,
     /// First name of the other party in a private chat.
     pub first_name: Option<String>,
+    /// The first audio added to the profile of the user.
+    pub first_profile_audio: Option<Audio>,
     /// Whether privacy settings of the other party in the private chat
     /// allows to use `tg://user?id=<user_id>` links only in chats with the user.
     pub has_private_forwards: Option<bool>,

@@ -195,6 +195,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         emoji_status_custom_emoji_id: None,
         emoji_status_expiration_date: None,
         first_name: None,
+        first_profile_audio: None,
         has_aggressive_anti_spam_enabled: None,
         has_hidden_members: None,
         has_private_forwards: None,

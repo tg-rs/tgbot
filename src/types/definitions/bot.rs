@@ -3,8 +3,8 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
-    types::{ChatAdministratorRights, ChatId, Integer, StarAmount},
+    api::{Form, Method, Payload},
+    types::{ChatAdministratorRights, ChatId, InputProfilePhoto, InputProfilePhotoError, Integer, StarAmount},
 };
 
 /// Represents information about a bot returned in [`GetBot`].
@@ -854,6 +854,35 @@ impl Method for SetBotName {
 
     fn into_payload(self) -> Payload {
         Payload::json("setMyName", self)
+    }
+}
+
+/// Changes the profile photo of the bot.
+#[derive(Debug)]
+pub struct SetBotProfilePhoto {
+    form: Form,
+}
+
+impl SetBotProfilePhoto {
+    /// Creates a new `SetBotProfilePhoto`.
+    ///
+    /// # Arguments
+    ///
+    /// * `photo` - The new profile photo to set
+    pub fn new<T>(photo: T) -> Result<Self, InputProfilePhotoError>
+    where
+        T: Into<InputProfilePhoto>,
+    {
+        let form = Form::try_from(photo.into())?;
+        Ok(Self { form })
+    }
+}
+
+impl Method for SetBotProfilePhoto {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::form("setMyProfilePhoto", self.form)
     }
 }
 

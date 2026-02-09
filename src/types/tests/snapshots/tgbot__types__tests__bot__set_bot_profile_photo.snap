@@ -1,0 +1,12 @@
+---
+source: src/types/tests/bot.rs
+expression: actual_form.into_fields()
+---
+[
+    (
+        "photo",
+        FormValue::Text(
+            "{\"type\":\"static\",\"photo\":\"https://example.com/photo.png\"}",
+        ),
+    ),
+]

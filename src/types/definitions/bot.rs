@@ -934,3 +934,15 @@ impl Method for SetBotShortDescription {
         Payload::json("setMyShortDescription", self)
     }
 }
+
+/// Removes the profile photo of the bot.
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct RemoveBotProfilePhoto;
+
+impl Method for RemoveBotProfilePhoto {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::empty("removeMyProfilePhoto")
+    }
+}

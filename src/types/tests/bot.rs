@@ -187,3 +187,9 @@ fn set_bot_short_description() {
         .with_language_code("RU");
     assert_payload_eq!(POST JSON "setMyShortDescription" => method);
 }
+
+#[test]
+fn remove_bot_profile_photo() {
+    let method = RemoveBotProfilePhoto;
+    assert_payload_eq!(GET "removeMyProfilePhoto" => method);
+}

@@ -28,7 +28,8 @@ expression: "OwnedGift::from(unique.clone())"
         "is_video": false,
         "type": "regular",
         "width": 512
-      }
+      },
+      "rarity": "rare"
     },
     "name": "name",
     "number": 7,

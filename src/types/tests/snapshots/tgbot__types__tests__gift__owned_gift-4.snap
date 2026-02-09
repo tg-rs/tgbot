@@ -28,7 +28,8 @@ expression: "OwnedGift::from(unique.with_transfer_star_count(1).with_can_be_tran
         "is_video": false,
         "type": "regular",
         "width": 512
-      }
+      },
+      "rarity": "rare"
     },
     "name": "name",
     "number": 7,

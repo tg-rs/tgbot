@@ -1422,6 +1422,7 @@ pub struct UniqueGiftColors {
 }
 
 /// Describes the model of a unique gift.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct UniqueGiftModel {
     /// Name of the model.
@@ -1430,6 +1431,22 @@ pub struct UniqueGiftModel {
     pub rarity_per_mille: Integer,
     /// The sticker that represents the unique gift
     pub sticker: Sticker,
+    /// Rarity of the model if it is a crafted model.
+    pub rarity: Option<UniqueGiftModelRarity>,
+}
+
+/// Rarity of a unique gift model.
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UniqueGiftModelRarity {
+    /// Epic.
+    Epic,
+    /// Legendary.
+    Legendary,
+    /// Rare.
+    Rare,
+    /// Uncommon.
+    Uncommon,
 }
 
 /// Describes the symbol shown on the pattern of a unique gift.

@@ -617,6 +617,7 @@ fn unique_gift() {
                 name: String::from("name"),
                 rarity_per_mille: 6,
                 sticker: Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
+                rarity: None,
             },
             String::from("name"),
             7,

@@ -1,4 +1,4 @@
-use std::future::Future;
+use std::{future::Future, sync::Arc};
 
 pub use self::longpoll::*;
 #[cfg(feature = "webhook")]
@@ -18,4 +18,13 @@ pub trait UpdateHandler {
     ///
     /// * `update` - The received update from the Telegram Bot API.
     fn handle(&self, update: Update) -> impl Future<Output = ()> + Send;
+}
+
+impl<T> UpdateHandler for Arc<T>
+where
+    T: UpdateHandler + Send + Sync,
+{
+    async fn handle(&self, update: Update) {
+        self.as_ref().handle(update).await
+    }
 }

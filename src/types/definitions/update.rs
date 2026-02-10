@@ -66,14 +66,14 @@ impl Update {
 
     /// Returns the chat.
     pub fn get_chat(&self) -> Option<&Chat> {
-        self.get_message().map(|msg| &msg.chat).or(match self.update_type {
-            UpdateType::BotStatus(ref x) | UpdateType::UserStatus(ref x) => Some(&x.chat),
-            UpdateType::DeletedBusinessMessages(ref x) => Some(&x.chat),
-            UpdateType::ChatBoostRemoved(ref x) => Some(&x.chat),
-            UpdateType::ChatBoostUpdated(ref x) => Some(&x.chat),
-            UpdateType::ChatJoinRequest(ref x) => Some(&x.chat),
-            UpdateType::MessageReaction(ref x) => Some(&x.chat),
-            UpdateType::MessageReactionCount(ref x) => Some(&x.chat),
+        self.get_message().map(|msg| &msg.chat).or(match &self.update_type {
+            UpdateType::BotStatus(x) | UpdateType::UserStatus(x) => Some(&x.chat),
+            UpdateType::DeletedBusinessMessages(x) => Some(&x.chat),
+            UpdateType::ChatBoostRemoved(x) => Some(&x.chat),
+            UpdateType::ChatBoostUpdated(x) => Some(&x.chat),
+            UpdateType::ChatJoinRequest(x) => Some(&x.chat),
+            UpdateType::MessageReaction(x) => Some(&x.chat),
+            UpdateType::MessageReactionCount(x) => Some(&x.chat),
             _ => None,
         })
     }
@@ -90,32 +90,32 @@ impl Update {
 
     /// Returns the user.
     pub fn get_user(&self) -> Option<&User> {
-        Some(match self.update_type {
-            UpdateType::BotStatus(ref x) | UpdateType::UserStatus(ref x) => &x.from,
-            UpdateType::BusinessConnection(ref x) => &x.user,
-            UpdateType::CallbackQuery(ref x) => &x.from,
+        Some(match &self.update_type {
+            UpdateType::BotStatus(x) | UpdateType::UserStatus(x) => &x.from,
+            UpdateType::BusinessConnection(x) => &x.user,
+            UpdateType::CallbackQuery(x) => &x.from,
             UpdateType::ChatBoostRemoved(_) => return None,
             UpdateType::ChatBoostUpdated(_) => return None,
-            UpdateType::ChatJoinRequest(ref x) => &x.from,
-            UpdateType::ChosenInlineResult(ref x) => &x.from,
+            UpdateType::ChatJoinRequest(x) => &x.from,
+            UpdateType::ChosenInlineResult(x) => &x.from,
             UpdateType::DeletedBusinessMessages(_) => return None,
-            UpdateType::InlineQuery(ref x) => &x.from,
-            UpdateType::Message(ref x)
-            | UpdateType::BusinessMessage(ref x)
-            | UpdateType::EditedBusinessMessage(ref x)
-            | UpdateType::EditedMessage(ref x)
-            | UpdateType::ChannelPost(ref x)
-            | UpdateType::EditedChannelPost(ref x) => return x.sender.get_user(),
-            UpdateType::MessageReaction(ref x) => return x.user.as_ref(),
+            UpdateType::InlineQuery(x) => &x.from,
+            UpdateType::Message(x)
+            | UpdateType::BusinessMessage(x)
+            | UpdateType::EditedBusinessMessage(x)
+            | UpdateType::EditedMessage(x)
+            | UpdateType::ChannelPost(x)
+            | UpdateType::EditedChannelPost(x) => return x.sender.get_user(),
+            UpdateType::MessageReaction(x) => return x.user.as_ref(),
             UpdateType::MessageReactionCount(_) => return None,
             UpdateType::Poll(_) => return None,
-            UpdateType::PollAnswer(ref x) => match &x.voter {
+            UpdateType::PollAnswer(x) => match &x.voter {
                 PollAnswerVoter::User(x) => x,
                 PollAnswerVoter::Chat(_) => return None,
             },
-            UpdateType::PreCheckoutQuery(ref x) => &x.from,
-            UpdateType::PurchasedPaidMedia(ref x) => &x.from,
-            UpdateType::ShippingQuery(ref x) => &x.from,
+            UpdateType::PreCheckoutQuery(x) => &x.from,
+            UpdateType::PurchasedPaidMedia(x) => &x.from,
+            UpdateType::ShippingQuery(x) => &x.from,
             UpdateType::Unknown(_) => return None,
         })
     }
@@ -132,15 +132,15 @@ impl Update {
 
     /// Returns the message.
     pub fn get_message(&self) -> Option<&Message> {
-        match self.update_type {
-            UpdateType::Message(ref msg)
-            | UpdateType::BusinessMessage(ref msg)
-            | UpdateType::EditedBusinessMessage(ref msg)
-            | UpdateType::EditedMessage(ref msg)
-            | UpdateType::ChannelPost(ref msg)
-            | UpdateType::EditedChannelPost(ref msg) => Some(msg),
-            UpdateType::CallbackQuery(ref query) => match query.message {
-                Some(MaybeInaccessibleMessage::Message(ref msg)) => Some(msg),
+        match &self.update_type {
+            UpdateType::Message(msg)
+            | UpdateType::BusinessMessage(msg)
+            | UpdateType::EditedBusinessMessage(msg)
+            | UpdateType::EditedMessage(msg)
+            | UpdateType::ChannelPost(msg)
+            | UpdateType::EditedChannelPost(msg) => Some(msg),
+            UpdateType::CallbackQuery(query) => match &query.message {
+                Some(MaybeInaccessibleMessage::Message(msg)) => Some(msg),
                 _ => None,
             },
             _ => None,
@@ -150,7 +150,6 @@ impl Update {
 
 /// Represents a type of an update.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[allow(clippy::large_enum_variant)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateType {
     /// The bot chat member status was updated in a chat.
@@ -158,52 +157,52 @@ pub enum UpdateType {
     /// For private chats, this update is received only
     /// when the bot is blocked or unblocked by the user.
     #[serde(rename = "my_chat_member")]
-    BotStatus(ChatMemberUpdated),
+    BotStatus(Box<ChatMemberUpdated>),
     /// The bot was connected to or disconnected from a business account,
     /// or a user edited an existing connection with the bot.
-    BusinessConnection(BusinessConnection),
+    BusinessConnection(Box<BusinessConnection>),
     /// New non-service message from a connected business account.
-    BusinessMessage(Message),
+    BusinessMessage(Box<Message>),
     /// A new incoming callback query.
-    CallbackQuery(CallbackQuery),
+    CallbackQuery(Box<CallbackQuery>),
     /// A new incoming channel post.
-    ChannelPost(Message),
+    ChannelPost(Box<Message>),
     /// A boost was removed from a chat.
     ///
     /// The bot must be an administrator in the chat to receive these updates.
     #[serde(rename = "removed_chat_boost")]
-    ChatBoostRemoved(ChatBoostRemoved),
+    ChatBoostRemoved(Box<ChatBoostRemoved>),
     /// A chat boost was added or changed.
     ///
     /// The bot must be an administrator in the chat to receive these updates.
     #[serde(rename = "chat_boost")]
-    ChatBoostUpdated(ChatBoostUpdated),
+    ChatBoostUpdated(Box<ChatBoostUpdated>),
     /// A request to join the chat has been sent.
     ///
     /// The bot must have the `can_invite_users` administrator right
     /// in the chat to receive these updates.
-    ChatJoinRequest(ChatJoinRequest),
+    ChatJoinRequest(Box<ChatJoinRequest>),
     /// The result of an inline query that was chosen by a user and sent to their chat partner.
     ///
     /// Please see our documentation on the [feedback collecting][1]
     /// for details on how to enable these updates for your bot.
     ///
     /// [1]: https://core.telegram.org/bots/inline#collecting-feedback
-    ChosenInlineResult(ChosenInlineResult),
+    ChosenInlineResult(Box<ChosenInlineResult>),
     /// Messages were deleted from a connected business account.
-    DeletedBusinessMessages(BusinessMessagesDeleted),
+    DeletedBusinessMessages(Box<BusinessMessagesDeleted>),
     /// New version of a message from a connected business account.
-    EditedBusinessMessage(Message),
+    EditedBusinessMessage(Box<Message>),
     /// A new version of a channel post that is known to the bot and was edited.
-    EditedChannelPost(Message),
+    EditedChannelPost(Box<Message>),
     /// A new version of a message that is known to the bot and was edited.
-    EditedMessage(Message),
+    EditedMessage(Box<Message>),
     /// A new incoming [inline][1] query.
     ///
     /// [1]: https://core.telegram.org/bots/api#inline-mode
-    InlineQuery(InlineQuery),
+    InlineQuery(Box<InlineQuery>),
     /// A new incoming message.
-    Message(Message),
+    Message(Box<Message>),
     /// A reaction to a message was changed by a user.
     ///
     /// The bot must be an administrator in the chat
@@ -211,38 +210,38 @@ pub enum UpdateType {
     /// in the list of allowed_updates to receive these updates.
     ///
     /// The update isn't received for reactions set by bots.
-    MessageReaction(MessageReactionUpdated),
+    MessageReaction(Box<MessageReactionUpdated>),
     /// Reactions to a message with anonymous reactions were changed.
     ///
     /// The bot must be an administrator in the chat
     /// and must explicitly specify [`AllowedUpdate::MessageReactionCount`]
     /// in the list of allowed_updates to receive these updates.
-    MessageReactionCount(MessageReactionCountUpdated),
+    MessageReactionCount(Box<MessageReactionCountUpdated>),
     /// A new poll state.
     ///
     /// Bots receive only updates about polls, which are sent or stopped by the bot.
-    Poll(Poll),
+    Poll(Box<Poll>),
     /// A user changed their answer in a non-anonymous poll
     ///
     /// Bots receive new votes only in polls that were sent by the bot itself.
-    PollAnswer(PollAnswer),
+    PollAnswer(Box<PollAnswer>),
     /// A new incoming pre-checkout query.
     ///
     /// Contains full information about checkout
-    PreCheckoutQuery(PreCheckoutQuery),
+    PreCheckoutQuery(Box<PreCheckoutQuery>),
     /// A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat.
-    PurchasedPaidMedia(PaidMediaPurchased),
+    PurchasedPaidMedia(Box<PaidMediaPurchased>),
     /// A new incoming shipping query.
     ///
     /// Only for invoices with flexible price.
-    ShippingQuery(ShippingQuery),
+    ShippingQuery(Box<ShippingQuery>),
     /// A chat member's status was updated in a chat.
     ///
     /// The bot must be an administrator in the chat
     /// and must explicitly specify [`AllowedUpdate::UserStatus`] in the list
     /// of `allowed_updates` to receive these updates.
     #[serde(rename = "chat_member")]
-    UserStatus(ChatMemberUpdated),
+    UserStatus(Box<ChatMemberUpdated>),
     /// Used for unknown update types.
     ///
     /// For example, Telegram introduced a new update type,
@@ -268,7 +267,7 @@ impl TryFrom<Update> for BusinessConnection {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            BusinessConnection(x) => Ok(x),
+            BusinessConnection(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -280,7 +279,7 @@ impl TryFrom<Update> for BusinessMessagesDeleted {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            DeletedBusinessMessages(x) => Ok(x),
+            DeletedBusinessMessages(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -292,7 +291,7 @@ impl TryFrom<Update> for ChatMemberUpdated {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            BotStatus(x) | UserStatus(x) => Ok(x),
+            BotStatus(x) | UserStatus(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -304,7 +303,7 @@ impl TryFrom<Update> for CallbackQuery {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            CallbackQuery(x) => Ok(x),
+            CallbackQuery(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -316,7 +315,7 @@ impl TryFrom<Update> for ChatJoinRequest {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            ChatJoinRequest(x) => Ok(x),
+            ChatJoinRequest(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -328,7 +327,7 @@ impl TryFrom<Update> for ChosenInlineResult {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            ChosenInlineResult(x) => Ok(x),
+            ChosenInlineResult(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -340,7 +339,7 @@ impl TryFrom<Update> for InlineQuery {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            InlineQuery(x) => Ok(x),
+            InlineQuery(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -357,7 +356,7 @@ impl TryFrom<Update> for Message {
             | EditedChannelPost(x)
             | EditedMessage(x)
             | ChannelPost(x)
-            | Message(x) => Ok(x),
+            | Message(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -369,7 +368,7 @@ impl TryFrom<Update> for Poll {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            Poll(x) => Ok(x),
+            Poll(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -381,7 +380,7 @@ impl TryFrom<Update> for PollAnswer {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            PollAnswer(x) => Ok(x),
+            PollAnswer(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -393,7 +392,7 @@ impl TryFrom<Update> for PreCheckoutQuery {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            PreCheckoutQuery(x) => Ok(x),
+            PreCheckoutQuery(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -405,7 +404,7 @@ impl TryFrom<Update> for PaidMediaPurchased {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            PurchasedPaidMedia(x) => Ok(x),
+            PurchasedPaidMedia(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -417,7 +416,7 @@ impl TryFrom<Update> for ShippingQuery {
     fn try_from(value: Update) -> Result<Self, Self::Error> {
         use self::UpdateType::*;
         match value.update_type {
-            ShippingQuery(x) => Ok(x),
+            ShippingQuery(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }

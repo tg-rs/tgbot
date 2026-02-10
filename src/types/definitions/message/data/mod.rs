@@ -202,7 +202,6 @@ pub enum MessageData {
     /// A service message about a refunded payment, information about the payment.
     RefundedPayment(RefundedPayment),
     /// Information about the sticker.
-    
     Sticker(Box<Sticker>),
     /// A forwarded story.
     Story(Story),
@@ -217,7 +216,6 @@ pub enum MessageData {
     /// Service message: payment for a suggested post was refunded.
     SuggestedPostRefunded(SuggestedPostRefunded),
     /// Information about the successful payment.
-    
     SuccessfulPayment(Box<SuccessfulPayment>),
     /// The supergroup has been created.
     ///
@@ -232,7 +230,6 @@ pub enum MessageData {
     )]
     SupergroupChatCreated,
     /// A service message about a sent or received unique gift.
-    
     UniqueGift(Box<UniqueGiftInfo>),
     /// A user was shared with the bot.
     UsersShared(MessageDataUsersShared),

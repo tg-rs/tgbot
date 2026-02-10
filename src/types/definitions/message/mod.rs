@@ -208,28 +208,13 @@ impl Message {
 
     /// Returns a text of the message (includes caption).
     pub fn get_text(&self) -> Option<&Text> {
-        match self.data {
-            MessageData::Text(ref text)
-            | MessageData::Audio(MessageDataAudio {
-                caption: Some(ref text),
-                ..
-            })
-            | MessageData::Document(MessageDataDocument {
-                caption: Some(ref text),
-                ..
-            })
-            | MessageData::Photo(MessageDataPhoto {
-                caption: Some(ref text),
-                ..
-            })
-            | MessageData::Video(MessageDataVideo {
-                caption: Some(ref text),
-                ..
-            })
-            | MessageData::Voice(MessageDataVoice {
-                caption: Some(ref text),
-                ..
-            }) => Some(text),
+        match &self.data {
+            MessageData::Text(text) => Some(text),
+            MessageData::Audio(audio) => audio.caption.as_ref(),
+            MessageData::Document(doc) => doc.caption.as_ref(),
+            MessageData::Photo(photo) => photo.caption.as_ref(),
+            MessageData::Video(video) => video.caption.as_ref(),
+            MessageData::Voice(voice) => voice.caption.as_ref(),
             _ => None,
         }
     }

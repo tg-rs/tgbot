@@ -71,11 +71,11 @@ fn animation() {
 fn audio() {
     let mut expected_struct = create_message_struct();
     let audio = MessageDataAudio::from(Audio::new(243, "file-id", "unique-id"));
-    expected_struct.data = MessageData::Audio(audio.clone());
+    expected_struct.data = MessageData::Audio(Box::new(audio.clone()));
     insta::assert_json_snapshot!(expected_struct.clone());
-    expected_struct.data = MessageData::Audio(audio.with_caption(
+    expected_struct.data = MessageData::Audio(Box::new(audio.with_caption(
         Text::from("test audio caption").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
-    ));
+    )));
     insta::assert_json_snapshot!(expected_struct);
 }
 
@@ -264,29 +264,29 @@ fn forum_topic_reopened() {
 #[test]
 fn game() {
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::Game(Game::new("Description", [], "Game"));
+    expected_struct.data = MessageData::Game(Box::new(Game::new("Description", [], "Game")));
     insta::assert_json_snapshot!(expected_struct);
 }
 
 #[test]
 fn gift() {
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::Gift(GiftInfo::new(Gift::new(
+    expected_struct.data = MessageData::Gift(Box::new(GiftInfo::new(Gift::new(
         "id",
         Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
         100,
-    )));
+    ))));
     insta::assert_json_snapshot!(expected_struct);
 }
 
 #[test]
 fn gift_upgrade_sent() {
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::GiftUpgradeSent(GiftInfo::new(Gift::new(
+    expected_struct.data = MessageData::GiftUpgradeSent(Box::new(GiftInfo::new(Gift::new(
         "id",
         Sticker::new("file-id", "file-unique-id", StickerType::Regular, 512, 512),
         100,
-    )));
+    ))));
     insta::assert_json_snapshot!(expected_struct);
 }
 
@@ -512,9 +512,9 @@ fn refunded_payment() {
 #[test]
 fn sticker() {
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::Sticker(
+    expected_struct.data = MessageData::Sticker(Box::new(
         Sticker::new("sticker-id", "unique-id", StickerType::Regular, 512, 512).with_is_animated(true),
-    );
+    ));
     insta::assert_json_snapshot!(expected_struct);
 }
 
@@ -572,13 +572,13 @@ fn suggested_post_refuned() {
 #[test]
 fn successful_payment() {
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::SuccessfulPayment(SuccessfulPayment::new(
+    expected_struct.data = MessageData::SuccessfulPayment(Box::new(SuccessfulPayment::new(
         "RUB",
         "invoice payload",
         "provider-charge-id",
         "tg-charge-id",
         145,
-    ));
+    )));
     insta::assert_json_snapshot!(expected_struct);
 }
 
@@ -599,7 +599,7 @@ fn text() {
 #[test]
 fn unique_gift() {
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::UniqueGift(UniqueGiftInfo::new(
+    expected_struct.data = MessageData::UniqueGift(Box::new(UniqueGiftInfo::new(
         UniqueGift::new(
             UniqueGiftBackdrop {
                 colors: UniqueGiftBackdropColors {
@@ -628,7 +628,7 @@ fn unique_gift() {
             },
         ),
         UniqueGiftOrigin::Transfer,
-    ));
+    )));
     insta::assert_json_snapshot!(expected_struct);
 }
 
@@ -660,11 +660,11 @@ fn venue() {
 fn video() {
     let mut expected_struct = create_message_struct();
     let video = MessageDataVideo::from(Video::new(3, "video-id", "unique-id", 2, 1));
-    expected_struct.data = MessageData::Video(video.clone());
+    expected_struct.data = MessageData::Video(Box::new(video.clone()));
     insta::assert_json_snapshot!(expected_struct.clone());
-    expected_struct.data = MessageData::Video(video.with_caption(
+    expected_struct.data = MessageData::Video(Box::new(video.with_caption(
         Text::from("test video caption").with_entities(TextEntities::from_iter(vec![TextEntity::bold(0..4)])),
-    ));
+    )));
     insta::assert_json_snapshot!(expected_struct);
 }
 

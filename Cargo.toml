@@ -60,3 +60,7 @@ webhook = ["dep:axum"]
 [lints.rust]
 missing_docs = "warn"
 unexpected_cfgs = { level = "allow", check-cfg = ["cfg(nightly)"] }
+
+[[bin]]
+name = "test_sizes"
+path = "test_sizes.rs"

@@ -2,6 +2,26 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::types::{Integer, Text, TextEntities, True, User};
 
+pub mod serde_box {
+    use super::*;
+
+    pub fn serialize<T, S>(value: &T, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        T: Serialize,
+        S: Serializer,
+    {
+        value.serialize(serializer)
+    }
+
+    pub fn deserialize<'de, T, D>(deserializer: D) -> Result<Box<T>, D::Error>
+    where
+        T: Deserialize<'de>,
+        D: Deserializer<'de>,
+    {
+        T::deserialize(deserializer).map(Box::new)
+    }
+}
+
 #[derive(Deserialize, Serialize)]
 pub(super) struct RawDataBoostAdded {
     boost_count: Integer,

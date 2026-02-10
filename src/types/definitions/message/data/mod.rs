@@ -51,7 +51,6 @@ mod raw;
 
 /// Represents a message data.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[allow(clippy::large_enum_variant)]
 #[serde(rename_all = "snake_case")]
 pub enum MessageData {
     /// Information about the animation.
@@ -134,11 +133,14 @@ pub enum MessageData {
     )]
     ForumTopicReopened,
     /// Information about the game.
-    Game(Game),
+    #[serde(with = "serde_box")]
+    Game(Box<Game>),
     /// A service message about a sent or received regular gift.
-    Gift(GiftInfo),
+    #[serde(with = "serde_box")]
+    Gift(Box<GiftInfo>),
     /// A service message about upgrade of a gift was purchased after the gift was sent.
-    GiftUpgradeSent(GiftInfo),
+    #[serde(with = "serde_box")]
+    GiftUpgradeSent(Box<GiftInfo>),
     /// The 'General' forum topic hidden.
     #[serde(
         deserialize_with = "RawDataEmpty::deserialize_value",
@@ -203,7 +205,8 @@ pub enum MessageData {
     /// A service message about a refunded payment, information about the payment.
     RefundedPayment(RefundedPayment),
     /// Information about the sticker.
-    Sticker(Sticker),
+    #[serde(with = "serde_box")]
+    Sticker(Box<Sticker>),
     /// A forwarded story.
     Story(Story),
     /// Service message: a suggested post was approved.
@@ -217,11 +220,12 @@ pub enum MessageData {
     /// Service message: payment for a suggested post was refunded.
     SuggestedPostRefunded(SuggestedPostRefunded),
     /// Information about the successful payment.
-    SuccessfulPayment(SuccessfulPayment),
+    #[serde(with = "serde_box")]
+    SuccessfulPayment(Box<SuccessfulPayment>),
     /// The supergroup has been created.
     ///
     /// This field can‘t be received in a message coming through updates,
-    /// because bot can’t be a member of a supergroup when it is created
+    /// because bot can't be a member of a supergroup when it is created
     /// It can only be found in the `reply_to` field of the [`crate::types::Message`] struct
     /// if someone replies to a very first message
     /// in a directly created supergroup.
@@ -231,7 +235,8 @@ pub enum MessageData {
     )]
     SupergroupChatCreated,
     /// A service message about a sent or received unique gift.
-    UniqueGift(UniqueGiftInfo),
+    #[serde(with = "serde_box")]
+    UniqueGift(Box<UniqueGiftInfo>),
     /// A user was shared with the bot.
     UsersShared(MessageDataUsersShared),
     /// Information about the venue.
@@ -259,8 +264,8 @@ pub enum MessageData {
     /// sent by the method `requestWriteAccess`.
     WriteAccessAllowed(MessageDataWriteAccess),
     /// Describes the audio.
-    #[serde(untagged)]
-    Audio(MessageDataAudio),
+    #[serde(untagged, with = "serde_box")]
+    Audio(Box<MessageDataAudio>),
     /// Describes the document.
     #[serde(untagged)]
     Document(MessageDataDocument),
@@ -275,8 +280,8 @@ pub enum MessageData {
     )]
     Text(Text),
     /// Describes the video.
-    #[serde(untagged)]
-    Video(MessageDataVideo),
+    #[serde(untagged, with = "serde_box")]
+    Video(Box<MessageDataVideo>),
     /// Describes the voice.
     #[serde(untagged)]
     Voice(MessageDataVoice),

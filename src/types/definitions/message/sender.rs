@@ -4,7 +4,6 @@ use crate::types::{Chat, ChatPeerId, ChatUsername, User, UserPeerId, UserUsernam
 
 /// Represents a sender of a message.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[allow(clippy::large_enum_variant)]
 #[serde(untagged, from = "RawMessageSender", into = "RawMessageSender")]
 pub enum MessageSender {
     /// For messages sent by a chat.

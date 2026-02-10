@@ -34,7 +34,6 @@ mod video;
 mod voice;
 
 /// Represents a result of an inline query.
-#[allow(clippy::large_enum_variant)]
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(try_from = "RawInlineQueryResult", into = "RawInlineQueryResult")]
 pub enum InlineQueryResult {

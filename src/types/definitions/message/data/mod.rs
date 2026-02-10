@@ -51,7 +51,6 @@ mod raw;
 
 /// Represents a message data.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[allow(clippy::large_enum_variant)]
 #[serde(rename_all = "snake_case")]
 pub enum MessageData {
     /// Information about the animation.
@@ -134,11 +133,11 @@ pub enum MessageData {
     )]
     ForumTopicReopened,
     /// Information about the game.
-    Game(Game),
+    Game(Box<Game>),
     /// A service message about a sent or received regular gift.
-    Gift(GiftInfo),
+    Gift(Box<GiftInfo>),
     /// A service message about upgrade of a gift was purchased after the gift was sent.
-    GiftUpgradeSent(GiftInfo),
+    GiftUpgradeSent(Box<GiftInfo>),
     /// The 'General' forum topic hidden.
     #[serde(
         deserialize_with = "RawDataEmpty::deserialize_value",
@@ -203,7 +202,7 @@ pub enum MessageData {
     /// A service message about a refunded payment, information about the payment.
     RefundedPayment(RefundedPayment),
     /// Information about the sticker.
-    Sticker(Sticker),
+    Sticker(Box<Sticker>),
     /// A forwarded story.
     Story(Story),
     /// Service message: a suggested post was approved.
@@ -217,7 +216,7 @@ pub enum MessageData {
     /// Service message: payment for a suggested post was refunded.
     SuggestedPostRefunded(SuggestedPostRefunded),
     /// Information about the successful payment.
-    SuccessfulPayment(SuccessfulPayment),
+    SuccessfulPayment(Box<SuccessfulPayment>),
     /// The supergroup has been created.
     ///
     /// This field can‘t be received in a message coming through updates,
@@ -231,7 +230,7 @@ pub enum MessageData {
     )]
     SupergroupChatCreated,
     /// A service message about a sent or received unique gift.
-    UniqueGift(UniqueGiftInfo),
+    UniqueGift(Box<UniqueGiftInfo>),
     /// A user was shared with the bot.
     UsersShared(MessageDataUsersShared),
     /// Information about the venue.
@@ -260,7 +259,7 @@ pub enum MessageData {
     WriteAccessAllowed(MessageDataWriteAccess),
     /// Describes the audio.
     #[serde(untagged)]
-    Audio(MessageDataAudio),
+    Audio(Box<MessageDataAudio>),
     /// Describes the document.
     #[serde(untagged)]
     Document(MessageDataDocument),
@@ -276,7 +275,7 @@ pub enum MessageData {
     Text(Text),
     /// Describes the video.
     #[serde(untagged)]
-    Video(MessageDataVideo),
+    Video(Box<MessageDataVideo>),
     /// Describes the voice.
     #[serde(untagged)]
     Voice(MessageDataVoice),

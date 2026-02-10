@@ -32,7 +32,7 @@ fn allowed_update() {
 fn bot_status() {
     let expected_struct = Update::new(
         1,
-        UpdateType::BotStatus(ChatMemberUpdated::new(
+        UpdateType::BotStatus(Box::new(ChatMemberUpdated::new(
             Chat::Group(GroupChat::new(1, "Group")),
             0,
             User::new(1, "John", false),
@@ -41,7 +41,7 @@ fn bot_status() {
                 user: User::new(2, "John", true),
                 until_date: None,
             },
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
@@ -57,7 +57,12 @@ fn bot_status() {
 fn business_connection() {
     let expected_struct = Update::new(
         1,
-        UpdateType::BusinessConnection(BusinessConnection::new(0, "id", User::new(1, "John", false), 2)),
+        UpdateType::BusinessConnection(Box::new(BusinessConnection::new(
+            0,
+            "id",
+            User::new(1, "John", false),
+            2,
+        ))),
     );
 
     assert!(expected_struct.get_chat_id().is_none());
@@ -74,13 +79,13 @@ fn business_connection() {
 fn business_message() {
     let expected_struct = Update::new(
         1,
-        UpdateType::BusinessMessage(Message::new(
+        UpdateType::BusinessMessage(Box::new(Message::new(
             1,
             0,
             PrivateChat::new(1, "John"),
             MessageData::Text(Text::from("message-text")),
             User::new(1, "John", false),
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
@@ -97,7 +102,7 @@ fn business_message() {
 fn callback_query() {
     let expected_struct = Update::new(
         1,
-        UpdateType::CallbackQuery(CallbackQuery::new("query-id", User::new(1, "John", false))),
+        UpdateType::CallbackQuery(Box::new(CallbackQuery::new("query-id", User::new(1, "John", false)))),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());
@@ -114,7 +119,7 @@ fn channel_post() {
     let chat = Chat::Channel(ChannelChat::new(1, "Channel").with_username("channel_username"));
     let expected_struct = Update::new(
         1,
-        UpdateType::ChannelPost(
+        UpdateType::ChannelPost(Box::new(
             Message::new(
                 1111,
                 0,
@@ -123,7 +128,7 @@ fn channel_post() {
                 chat,
             )
             .with_author_signature("John D."),
-        ),
+        )),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert_eq!(expected_struct.get_chat_username().unwrap(), "channel_username");
@@ -138,12 +143,12 @@ fn channel_post() {
 fn chat_boost_removed() {
     let expected_struct = Update::new(
         1,
-        UpdateType::ChatBoostRemoved(ChatBoostRemoved::new(
+        UpdateType::ChatBoostRemoved(Box::new(ChatBoostRemoved::new(
             "id",
             ChannelChat::new(1, "test"),
             0,
             ChatBoostSource::GiftCode(User::new(1, "test", false)),
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
@@ -156,10 +161,10 @@ fn chat_boost_removed() {
 fn chat_boost_updated() {
     let expected_struct = Update::new(
         1,
-        UpdateType::ChatBoostUpdated(ChatBoostUpdated::new(
+        UpdateType::ChatBoostUpdated(Box::new(ChatBoostUpdated::new(
             ChatBoost::new(0, "id", 0, ChatBoostSource::GiftCode(User::new(1, "test", false))),
             ChannelChat::new(1, "test"),
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
@@ -172,11 +177,11 @@ fn chat_boost_updated() {
 fn chat_join_request() {
     let expected_struct = Update::new(
         1,
-        UpdateType::ChatJoinRequest(ChatJoinRequest::new(
+        UpdateType::ChatJoinRequest(Box::new(ChatJoinRequest::new(
             Chat::Group(GroupChat::new(1, "Group")),
             0,
             User::new(1, "John", false),
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
@@ -192,11 +197,11 @@ fn chat_join_request() {
 fn chosen_inline_result() {
     let expected_struct = Update::new(
         1,
-        UpdateType::ChosenInlineResult(ChosenInlineResult::new(
+        UpdateType::ChosenInlineResult(Box::new(ChosenInlineResult::new(
             User::new(1, "John", false),
             "q",
             "chosen-inline-result-id",
-        )),
+        ))),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());
@@ -212,11 +217,11 @@ fn chosen_inline_result() {
 fn deleted_business_messages() {
     let expected_struct = Update::new(
         1,
-        UpdateType::DeletedBusinessMessages(BusinessMessagesDeleted::new(
+        UpdateType::DeletedBusinessMessages(Box::new(BusinessMessagesDeleted::new(
             "id",
             PrivateChat::new(1, "John").with_username("john_doe"),
             [2],
-        )),
+        ))),
     );
 
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
@@ -233,7 +238,7 @@ fn deleted_business_messages() {
 fn edited_business_message() {
     let expected_struct = Update::new(
         1,
-        UpdateType::EditedBusinessMessage(
+        UpdateType::EditedBusinessMessage(Box::new(
             Message::new(
                 1365,
                 1441,
@@ -246,7 +251,7 @@ fn edited_business_message() {
                     .with_username("john_doe"),
             )
             .with_edit_date(1441),
-        ),
+        )),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1111);
     assert_eq!(expected_struct.get_chat_username().unwrap(), "john_doe");
@@ -263,7 +268,7 @@ fn edited_channel_post() {
     let chat = Chat::Channel(ChannelChat::new(1, "Channel").with_username("channel_username"));
     let expected_struct = Update::new(
         1,
-        UpdateType::EditedChannelPost(
+        UpdateType::EditedChannelPost(Box::new(
             Message::new(
                 1111,
                 0,
@@ -272,7 +277,7 @@ fn edited_channel_post() {
                 chat,
             )
             .with_author_signature("John D."),
-        ),
+        )),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert_eq!(expected_struct.get_chat_username().unwrap(), "channel_username");
@@ -287,7 +292,7 @@ fn edited_channel_post() {
 fn edited_message() {
     let expected_struct = Update::new(
         1,
-        UpdateType::EditedMessage(
+        UpdateType::EditedMessage(Box::new(
             Message::new(
                 1365,
                 1441,
@@ -300,7 +305,7 @@ fn edited_message() {
                     .with_username("john_doe"),
             )
             .with_edit_date(1441),
-        ),
+        )),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1111);
     assert_eq!(expected_struct.get_chat_username().unwrap(), "john_doe");
@@ -316,12 +321,12 @@ fn edited_message() {
 fn inline_query() {
     let expected_struct = Update::new(
         1,
-        UpdateType::InlineQuery(InlineQuery::new(
+        UpdateType::InlineQuery(Box::new(InlineQuery::new(
             User::new(1, "John", false),
             "query-id",
             "query offset",
             "query query",
-        )),
+        ))),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());
@@ -336,13 +341,13 @@ fn inline_query() {
 fn message() {
     let expected_struct = Update::new(
         1,
-        UpdateType::Message(Message::new(
+        UpdateType::Message(Box::new(Message::new(
             1,
             0,
             PrivateChat::new(1, "John"),
             MessageData::Text(Text::from("message-text")),
             User::new(1, "John", false),
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
@@ -359,13 +364,13 @@ fn message() {
 fn message_reaction() {
     let expected_struct = Update::new(
         1,
-        UpdateType::MessageReaction(MessageReactionUpdated::new(
+        UpdateType::MessageReaction(Box::new(MessageReactionUpdated::new(
             PrivateChat::new(1, "test"),
             0,
             1,
             [ReactionType::emoji("🤡")],
             [ReactionType::emoji("🤮")],
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
@@ -380,12 +385,12 @@ fn message_reaction() {
 fn message_reaction_count() {
     let expected_struct = Update::new(
         1,
-        UpdateType::MessageReactionCount(MessageReactionCountUpdated::new(
+        UpdateType::MessageReactionCount(Box::new(MessageReactionCountUpdated::new(
             PrivateChat::new(1, "test"),
             0,
             1,
             [ReactionCount::new(ReactionType::emoji("🤡"), 1)],
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());
@@ -400,7 +405,7 @@ fn message_reaction_count() {
 fn poll() {
     let expected_struct = Update::new(
         1,
-        UpdateType::Poll(
+        UpdateType::Poll(Box::new(
             RegularPoll::new("poll-id", "Rust?")
                 .with_allows_multiple_answers(false)
                 .with_is_closed(true)
@@ -408,7 +413,7 @@ fn poll() {
                 .with_options([PollOption::new("Yes", 1000), PollOption::new("No", 0)])
                 .with_total_voter_count(1000)
                 .into(),
-        ),
+        )),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());
@@ -423,11 +428,11 @@ fn poll() {
 fn poll_answer() {
     let expected_struct = Update::new(
         1,
-        UpdateType::PollAnswer(PollAnswer {
+        UpdateType::PollAnswer(Box::new(PollAnswer {
             poll_id: String::from("poll-id"),
             voter: PollAnswerVoter::User(User::new(1, "John", false)),
             option_ids: vec![0],
-        }),
+        })),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());
@@ -443,13 +448,13 @@ fn poll_answer() {
 fn pre_checkout_query() {
     let expected_struct = Update::new(
         1,
-        UpdateType::PreCheckoutQuery(PreCheckoutQuery::new(
+        UpdateType::PreCheckoutQuery(Box::new(PreCheckoutQuery::new(
             "GEL",
             User::new(1, "John", false),
             "query-id",
             "invoice payload",
             100,
-        )),
+        ))),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());
@@ -465,7 +470,10 @@ fn pre_checkout_query() {
 fn purchased_paid_media() {
     let expected_struct = Update::new(
         1,
-        UpdateType::PurchasedPaidMedia(PaidMediaPurchased::new(User::new(1, "John", false), "payload")),
+        UpdateType::PurchasedPaidMedia(Box::new(PaidMediaPurchased::new(
+            User::new(1, "John", false),
+            "payload",
+        ))),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());
@@ -481,12 +489,12 @@ fn purchased_paid_media() {
 fn shipping_query() {
     let expected_struct = Update::new(
         1,
-        UpdateType::ShippingQuery(ShippingQuery::new(
+        UpdateType::ShippingQuery(Box::new(ShippingQuery::new(
             "query-id",
             User::new(1, "Ramazan", false),
             "payload",
             ShippingAddress::new("Gudermes", "RU", "366200", "Chechen Republic", "Nuradilov st., 12", ""),
-        )),
+        ))),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());
@@ -513,7 +521,7 @@ fn unknown() {
 fn user_status() {
     let expected_struct = Update::new(
         1,
-        UpdateType::UserStatus(ChatMemberUpdated::new(
+        UpdateType::UserStatus(Box::new(ChatMemberUpdated::new(
             Chat::Group(GroupChat::new(1, "Group")),
             0,
             User::new(1, "John", false),
@@ -522,7 +530,7 @@ fn user_status() {
                 user: User::new(2, "John", false),
                 until_date: None,
             },
-        )),
+        ))),
     );
     assert_eq!(expected_struct.get_chat_id().unwrap(), 1);
     assert!(expected_struct.get_chat_username().is_none());

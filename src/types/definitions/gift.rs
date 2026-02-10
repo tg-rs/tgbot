@@ -891,12 +891,13 @@ impl Method for GetUserGifts {
 /// Describes a gift received and owned by a user or a chat.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-#[allow(clippy::large_enum_variant)]
 pub enum OwnedGift {
     /// A regular gift owned by a user or a chat.
-    Regular(OwnedGiftRegular),
+    #[from(OwnedGiftRegular)]
+    Regular(Box<OwnedGiftRegular>),
     /// A unique gift received and owned by a user or a chat.
-    Unique(OwnedGiftUnique),
+    #[from(OwnedGiftUnique)]
+    Unique(Box<OwnedGiftUnique>),
 }
 
 /// Describes a regular gift owned by a user or a chat.

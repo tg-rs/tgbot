@@ -95,7 +95,7 @@ fn paid_media_preview() {
 
 #[test]
 fn paid_media_video() {
-    insta::assert_json_snapshot!(PaidMedia::Video(Video::new(100, "file-id", "file-unique-id", 200, 300)));
+    insta::assert_json_snapshot!(PaidMedia::Video(Box::new(Video::new(100, "file-id", "file-unique-id", 200, 300))));
 }
 
 #[test]

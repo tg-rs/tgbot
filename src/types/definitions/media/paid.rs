@@ -82,14 +82,14 @@ impl PaidMediaInfo {
 /// Describes paid media.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(from = "RawPaidMedia", into = "RawPaidMedia")]
-#[allow(clippy::large_enum_variant)]
 pub enum PaidMedia {
     /// The paid media is a photo.
     Photo(Vec<PhotoSize>),
     /// The paid media isn't available before the payment.
     Preview(PaidMediaPreview),
     /// The paid media is a video.
-    Video(Video),
+    #[from(Video)]
+    Video(Box<Video>),
 }
 
 /// The paid media isn't available before the payment.
@@ -139,7 +139,6 @@ impl PaidMediaPreview {
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
-#[allow(clippy::large_enum_variant)]
 enum RawPaidMedia {
     Photo {
         photo: Vec<PhotoSize>,
@@ -150,7 +149,7 @@ enum RawPaidMedia {
         width: Option<Integer>,
     },
     Video {
-        video: Video,
+        video: Box<Video>,
     },
 }
 

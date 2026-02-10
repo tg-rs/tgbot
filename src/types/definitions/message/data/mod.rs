@@ -220,7 +220,7 @@ pub enum MessageData {
     /// The supergroup has been created.
     ///
     /// This field can‘t be received in a message coming through updates,
-    /// because bot can't be a member of a supergroup when it is created
+    /// because bot can’t be a member of a supergroup when it is created
     /// It can only be found in the `reply_to` field of the [`crate::types::Message`] struct
     /// if someone replies to a very first message
     /// in a directly created supergroup.

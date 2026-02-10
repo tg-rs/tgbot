@@ -387,7 +387,6 @@ impl TransactionPartnerUserParameters {
 /// Describes the source of a transaction, or its recipient for outgoing transactions.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(from = "RawTransactionPartner", into = "RawTransactionPartner")]
-#[allow(clippy::large_enum_variant)]
 pub enum TransactionPartner {
     /// Describes the affiliate program that issued the affiliate commission received via this transaction.
     AffiliateProgram(TransactionPartnerAffiliateProgramParameters),
@@ -411,7 +410,6 @@ pub enum TransactionPartner {
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-#[allow(clippy::large_enum_variant)]
 enum RawTransactionPartner {
     AffiliateProgram(TransactionPartnerAffiliateProgramParameters),
     Chat(TransactionPartnerChatParameters),

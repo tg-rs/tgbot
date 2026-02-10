@@ -1596,13 +1596,13 @@ fn via_bot() {
 
 #[test]
 fn edit_message_result() {
-    let expected_struct = EditMessageResult::Message(Message::new(
+    let expected_struct = EditMessageResult::Message(Box::new(Message::new(
         1,
         0,
         SupergroupChat::new(1, "test"),
         MessageData::Unknown(serde_json::json!({})),
         User::new(1, "test", false),
-    ));
+    )));
     insta::assert_json_snapshot!(expected_struct);
     let expected_struct = EditMessageResult::Bool(true);
     insta::assert_json_snapshot!(expected_struct);

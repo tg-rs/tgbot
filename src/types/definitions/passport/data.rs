@@ -792,7 +792,6 @@ impl EncryptedPassportElementUtilityBill {
 /// Represents an information about documents
 /// or other Telegram Passport elements shared with a bot by a user.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
-#[allow(clippy::large_enum_variant)]
 #[serde(rename_all = "snake_case")]
 #[serde(tag = "type")]
 pub enum EncryptedPassportElement {

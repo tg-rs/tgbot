@@ -13,11 +13,10 @@ mod sender;
 
 /// Represents a result of `EditMessage*` requests.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[allow(clippy::large_enum_variant)]
 #[serde(untagged)]
 pub enum EditMessageResult {
     /// Returned if edited message is sent by the bot.
-    Message(Message),
+    Message(Box<Message>),
     /// Returned if edited message is NOT sent by the bot.
     Bool(bool),
 }

@@ -133,13 +133,10 @@ pub enum MessageData {
     )]
     ForumTopicReopened,
     /// Information about the game.
-    #[serde(with = "serde_box")]
     Game(Box<Game>),
     /// A service message about a sent or received regular gift.
-    #[serde(with = "serde_box")]
     Gift(Box<GiftInfo>),
     /// A service message about upgrade of a gift was purchased after the gift was sent.
-    #[serde(with = "serde_box")]
     GiftUpgradeSent(Box<GiftInfo>),
     /// The 'General' forum topic hidden.
     #[serde(
@@ -205,7 +202,7 @@ pub enum MessageData {
     /// A service message about a refunded payment, information about the payment.
     RefundedPayment(RefundedPayment),
     /// Information about the sticker.
-    #[serde(with = "serde_box")]
+    
     Sticker(Box<Sticker>),
     /// A forwarded story.
     Story(Story),
@@ -220,7 +217,7 @@ pub enum MessageData {
     /// Service message: payment for a suggested post was refunded.
     SuggestedPostRefunded(SuggestedPostRefunded),
     /// Information about the successful payment.
-    #[serde(with = "serde_box")]
+    
     SuccessfulPayment(Box<SuccessfulPayment>),
     /// The supergroup has been created.
     ///
@@ -235,7 +232,7 @@ pub enum MessageData {
     )]
     SupergroupChatCreated,
     /// A service message about a sent or received unique gift.
-    #[serde(with = "serde_box")]
+    
     UniqueGift(Box<UniqueGiftInfo>),
     /// A user was shared with the bot.
     UsersShared(MessageDataUsersShared),
@@ -264,7 +261,7 @@ pub enum MessageData {
     /// sent by the method `requestWriteAccess`.
     WriteAccessAllowed(MessageDataWriteAccess),
     /// Describes the audio.
-    #[serde(untagged, with = "serde_box")]
+    #[serde(untagged)]
     Audio(Box<MessageDataAudio>),
     /// Describes the document.
     #[serde(untagged)]
@@ -280,7 +277,7 @@ pub enum MessageData {
     )]
     Text(Text),
     /// Describes the video.
-    #[serde(untagged, with = "serde_box")]
+    #[serde(untagged)]
     Video(Box<MessageDataVideo>),
     /// Describes the voice.
     #[serde(untagged)]

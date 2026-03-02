@@ -39,6 +39,7 @@ fn bot_status() {
             ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", true))),
             ChatMember::Member {
                 user: User::new(2, "John", true),
+                tag: None,
                 until_date: None,
             },
         ))),
@@ -528,6 +529,7 @@ fn user_status() {
             ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", false))),
             ChatMember::Member {
                 user: User::new(2, "John", false),
+                tag: None,
                 until_date: None,
             },
         ))),

@@ -664,6 +664,7 @@ fn chat_member_left() {
 fn chat_member() {
     let expected_struct = ChatMember::Member {
         user: User::new(1, "John", false),
+        tag: None,
         until_date: None,
     };
     assert_eq!(expected_struct.get_user().id, 1);
@@ -672,6 +673,7 @@ fn chat_member() {
 
     let expected_struct = ChatMember::Member {
         user: User::new(1, "John", false),
+        tag: Some(String::from("test")),
         until_date: Some(1),
     };
     assert_eq!(expected_struct.get_user().id, 1);
@@ -697,6 +699,7 @@ fn chat_member_restricted() {
             .with_can_add_web_page_previews(false)
             .with_can_manage_topics(false)
             .with_is_member(true)
+            .with_tag("test")
             .with_can_send_voice_notes(false),
     );
     assert_eq!(expected_struct.get_user().id, 1);
@@ -724,6 +727,7 @@ fn chat_member_updated() {
             ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", false))),
             ChatMember::Member {
                 user: User::new(2, "John", false),
+                tag: None,
                 until_date: None,
             },
         )
@@ -741,6 +745,7 @@ fn chat_member_updated() {
         ChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, "John", false))),
         ChatMember::Member {
             user: User::new(2, "John", false),
+            tag: None,
             until_date: None,
         },
     ));

@@ -23,9 +23,11 @@ pub enum ChatMember {
     Left(User),
     /// Represents a regular chat member.
     Member {
-        /// Information about the user
+        /// Information about the user.
         user: User,
-        /// Date when the user's subscription will expire; Unix time
+        /// Tag of the member.
+        tag: Option<String>,
+        /// Date when the user's subscription will expire; unix time.
         until_date: Option<Integer>,
     },
     /// Represents a restricted user.
@@ -467,6 +469,8 @@ pub struct ChatMemberRestricted {
     pub can_send_voice_notes: Option<bool>,
     /// Indicates whether the user is a member of the chat at the moment of the request.
     pub is_member: bool,
+    /// Tag of the member.
+    pub tag: Option<String>,
     /// Date when restrictions will be lifted for this user; unix time.
     pub until_date: Integer,
 }
@@ -496,6 +500,7 @@ impl ChatMemberRestricted {
             can_send_videos: None,
             can_send_voice_notes: None,
             is_member: false,
+            tag: None,
             until_date,
         }
     }
@@ -651,6 +656,19 @@ impl ChatMemberRestricted {
     /// * `value` - Indicates whether the user is a member of the chat at the moment of the request.
     pub fn with_is_member(mut self, value: bool) -> Self {
         self.is_member = value;
+        self
+    }
+
+    /// Sets a new tag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Tag of the member.
+    pub fn with_tag<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.tag = Some(value.into());
         self
     }
 }

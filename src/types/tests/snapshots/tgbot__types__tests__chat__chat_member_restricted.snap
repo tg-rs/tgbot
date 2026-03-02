@@ -24,5 +24,6 @@ expression: expected_struct
   "can_send_videos": false,
   "can_send_voice_notes": false,
   "is_member": true,
+  "tag": "test",
   "until_date": 0
 }

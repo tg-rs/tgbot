@@ -9,5 +9,6 @@ expression: expected_struct
     "id": 1,
     "is_bot": false
   },
+  "tag": "test",
   "until_date": 1
 }

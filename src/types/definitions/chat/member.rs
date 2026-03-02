@@ -111,6 +111,11 @@ pub struct ChatMemberAdministrator {
     /// Whether the administrator can manage direct messages
     /// of the channel and decline suggested posts; for channels only.
     pub can_manage_direct_messages: Option<bool>,
+    /// Whether the administrator can edit tags of regular members;
+    /// for groups and supergroups only.
+    ///
+    /// If omitted defaults to the value of `can_pin_messages`.
+    pub can_manage_tags: Option<bool>,
     /// Indicates whether the administrator is allowed to
     /// create, rename, close, and reopen forum topics; supergroups only.
     pub can_manage_topics: Option<bool>,
@@ -152,6 +157,7 @@ impl ChatMemberAdministrator {
             can_invite_users: false,
             can_manage_chat: false,
             can_manage_direct_messages: None,
+            can_manage_tags: None,
             can_manage_topics: None,
             can_manage_video_chats: false,
             can_pin_messages: None,
@@ -259,6 +265,16 @@ impl ChatMemberAdministrator {
     ///   of the channel and decline suggested posts; for channels only
     pub fn with_can_manage_direct_messages(mut self, value: bool) -> Self {
         self.can_manage_direct_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_manage_tags` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` -> Whether the administrator can manage tags of regular members.
+    pub fn with_can_manage_tags(mut self, value: bool) -> Self {
+        self.can_manage_tags = Some(value);
         self
     }
 

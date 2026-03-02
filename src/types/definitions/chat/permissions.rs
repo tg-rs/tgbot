@@ -282,6 +282,8 @@ pub struct ChatPermissions {
     ///
     /// Ignored in public supergroups.
     pub can_change_info: Option<bool>,
+    /// Indicates whether the user is allowed to edit their own tag.
+    pub can_edit_tag: Option<bool>,
     /// Indicates whether the user is allowed to invite new users to the chat.
     pub can_invite_users: Option<bool>,
     /// Indicates whether the user is allowed to create forum topics.
@@ -319,6 +321,7 @@ impl ChatPermissions {
         Self {
             can_change_info: Some(false),
             can_add_web_page_previews: Some(false),
+            can_edit_tag: Some(false),
             can_invite_users: Some(false),
             can_manage_topics: Some(false),
             can_pin_messages: Some(false),
@@ -339,6 +342,7 @@ impl ChatPermissions {
         Self {
             can_add_web_page_previews: Some(true),
             can_change_info: Some(true),
+            can_edit_tag: Some(true),
             can_invite_users: Some(true),
             can_manage_topics: Some(true),
             can_pin_messages: Some(true),
@@ -359,8 +363,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission add web page previews to messages.
-    pub fn with_can_add_web_page_previews(mut self, flag: bool) -> Self {
-        self.can_add_web_page_previews = Some(flag);
+    pub fn with_can_add_web_page_previews(mut self, value: bool) -> Self {
+        self.can_add_web_page_previews = Some(value);
         self
     }
 
@@ -369,8 +373,18 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to change the chat title, photo and other settings.
-    pub fn with_can_change_info(mut self, flag: bool) -> Self {
-        self.can_change_info = Some(flag);
+    pub fn with_can_change_info(mut self, value: bool) -> Self {
+        self.can_change_info = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_edit_tag` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Permission to change user tag.
+    pub fn with_can_edit_tag(mut self, value: bool) -> Self {
+        self.can_edit_tag = Some(value);
         self
     }
 
@@ -379,8 +393,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to invite new users to the chat.
-    pub fn with_can_invite_users(mut self, flag: bool) -> Self {
-        self.can_invite_users = Some(flag);
+    pub fn with_can_invite_users(mut self, value: bool) -> Self {
+        self.can_invite_users = Some(value);
         self
     }
 
@@ -389,8 +403,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to manage topics.
-    pub fn with_can_manage_topics(mut self, flag: bool) -> Self {
-        self.can_manage_topics = Some(flag);
+    pub fn with_can_manage_topics(mut self, value: bool) -> Self {
+        self.can_manage_topics = Some(value);
         self
     }
 
@@ -399,8 +413,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to pin messages.
-    pub fn with_can_pin_messages(mut self, flag: bool) -> Self {
-        self.can_pin_messages = Some(flag);
+    pub fn with_can_pin_messages(mut self, value: bool) -> Self {
+        self.can_pin_messages = Some(value);
         self
     }
 
@@ -409,8 +423,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send audios.
-    pub fn with_can_send_audios(mut self, flag: bool) -> Self {
-        self.can_send_audios = Some(flag);
+    pub fn with_can_send_audios(mut self, value: bool) -> Self {
+        self.can_send_audios = Some(value);
         self
     }
 
@@ -419,8 +433,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send documents.
-    pub fn with_can_send_documents(mut self, flag: bool) -> Self {
-        self.can_send_documents = Some(flag);
+    pub fn with_can_send_documents(mut self, value: bool) -> Self {
+        self.can_send_documents = Some(value);
         self
     }
 
@@ -429,8 +443,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send text messages, contacts, locations and venues.
-    pub fn with_can_send_messages(mut self, flag: bool) -> Self {
-        self.can_send_messages = Some(flag);
+    pub fn with_can_send_messages(mut self, value: bool) -> Self {
+        self.can_send_messages = Some(value);
         self
     }
 
@@ -439,8 +453,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send animations, games, stickers and use inline bots.
-    pub fn with_can_send_other_messages(mut self, flag: bool) -> Self {
-        self.can_send_other_messages = Some(flag);
+    pub fn with_can_send_other_messages(mut self, value: bool) -> Self {
+        self.can_send_other_messages = Some(value);
         self
     }
 
@@ -449,8 +463,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send photos.
-    pub fn with_can_send_photos(mut self, flag: bool) -> Self {
-        self.can_send_photos = Some(flag);
+    pub fn with_can_send_photos(mut self, value: bool) -> Self {
+        self.can_send_photos = Some(value);
         self
     }
 
@@ -459,8 +473,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send polls.
-    pub fn with_can_send_polls(mut self, flag: bool) -> Self {
-        self.can_send_polls = Some(flag);
+    pub fn with_can_send_polls(mut self, value: bool) -> Self {
+        self.can_send_polls = Some(value);
         self
     }
 
@@ -469,8 +483,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send video notes.
-    pub fn with_can_send_video_notes(mut self, flag: bool) -> Self {
-        self.can_send_video_notes = Some(flag);
+    pub fn with_can_send_video_notes(mut self, value: bool) -> Self {
+        self.can_send_video_notes = Some(value);
         self
     }
 
@@ -479,8 +493,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send videos.
-    pub fn with_can_send_videos(mut self, flag: bool) -> Self {
-        self.can_send_videos = Some(flag);
+    pub fn with_can_send_videos(mut self, value: bool) -> Self {
+        self.can_send_videos = Some(value);
         self
     }
 
@@ -489,8 +503,8 @@ impl ChatPermissions {
     /// # Arguments
     ///
     /// * `value` - Permission to send voice notes.
-    pub fn with_can_send_voice_notes(mut self, flag: bool) -> Self {
-        self.can_send_voice_notes = Some(flag);
+    pub fn with_can_send_voice_notes(mut self, value: bool) -> Self {
+        self.can_send_voice_notes = Some(value);
         self
     }
 }

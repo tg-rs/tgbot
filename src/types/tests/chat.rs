@@ -781,22 +781,23 @@ fn promote_chat_member() {
     assert_payload_eq!(POST JSON "promoteChatMember" => PromoteChatMember::new(1, 2).promote_all());
     assert_payload_eq!(POST JSON "promoteChatMember" => PromoteChatMember::new(1, 2).demote_all());
     let method = PromoteChatMember::new(1, 2)
-        .with_is_anonymous(false)
         .with_can_change_info(true)
-        .with_can_edit_messages(true)
         .with_can_delete_messages(false)
+        .with_can_delete_stories(true)
+        .with_can_edit_messages(true)
+        .with_can_edit_stories(true)
         .with_can_invite_users(true)
         .with_can_manage_chat(false)
         .with_can_manage_direct_messages(false)
+        .with_can_manage_tags(false)
+        .with_can_manage_topics(true)
         .with_can_manage_video_chats(true)
         .with_can_pin_messages(true)
         .with_can_post_messages(false)
+        .with_can_post_stories(true)
         .with_can_promote_members(false)
         .with_can_restrict_members(false)
-        .with_can_manage_topics(true)
-        .with_can_post_stories(true)
-        .with_can_edit_stories(true)
-        .with_can_delete_stories(true);
+        .with_is_anonymous(false);
     assert_payload_eq!(POST JSON "promoteChatMember" => method);
     assert_payload_eq!(POST JSON "promoteChatMember" => PromoteChatMember::new(1, 2));
 }

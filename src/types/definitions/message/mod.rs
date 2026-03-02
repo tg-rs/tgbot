@@ -136,6 +136,8 @@ pub struct Message {
     ///
     /// Available only for outgoing messages sent on behalf of the connected business account.
     pub sender_business_bot: Option<User>,
+    /// Tag or custom title of the sender of the message; for supergroups only.
+    pub sender_tag: Option<String>,
     /// Whether the caption must be shown above the message media.
     pub show_caption_above_media: Option<bool>,
     /// Information about suggested post parameters if the message is a suggested post in a channel direct messages chat.
@@ -194,6 +196,7 @@ impl Message {
             reply_to_checklist_task_id: None,
             sender_boost_count: None,
             sender_business_bot: None,
+            sender_tag: None,
             show_caption_above_media: None,
             suggested_post_info: None,
             via_bot: None,
@@ -521,6 +524,19 @@ impl Message {
     /// * `value` - The bot that actually sent the message on behalf of the business account.
     pub fn with_sender_business_bot(mut self, value: User) -> Self {
         self.sender_business_bot = Some(value);
+        self
+    }
+
+    /// Sets a new sender tag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Tag or custom title of the sender of the message.
+    pub fn with_sender_tag<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.sender_tag = Some(value.into());
         self
     }
 

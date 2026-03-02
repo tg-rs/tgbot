@@ -443,6 +443,8 @@ pub struct ChatMemberRestricted {
     pub can_add_web_page_previews: bool,
     /// Indicates whether the user allowed to change the chat title, photo and other settings.
     pub can_change_info: bool,
+    /// Whether the user is allowed to edit their own tag.
+    pub can_edit_tag: bool,
     /// Indicates whether the user allowed to invite new users to the chat.
     pub can_invite_users: bool,
     /// Indicates whether the user is allowed to create forum topics.
@@ -487,6 +489,7 @@ impl ChatMemberRestricted {
             user,
             can_add_web_page_previews: false,
             can_change_info: false,
+            can_edit_tag: false,
             can_invite_users: false,
             can_manage_topics: false,
             can_pin_messages: None,
@@ -523,6 +526,16 @@ impl ChatMemberRestricted {
     ///   photo and other settings.
     pub fn with_can_change_info(mut self, value: bool) -> Self {
         self.can_change_info = value;
+        self
+    }
+
+    /// Sets a new value for the `can_edit_tag` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the user is allowed to edit their own tag.
+    pub fn with_can_edit_tag(mut self, value: bool) -> Self {
+        self.can_edit_tag = value;
         self
     }
 

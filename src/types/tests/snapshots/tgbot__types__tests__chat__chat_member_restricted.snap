@@ -11,6 +11,7 @@ expression: expected_struct
   },
   "can_add_web_page_previews": false,
   "can_change_info": true,
+  "can_edit_tag": true,
   "can_invite_users": false,
   "can_manage_topics": false,
   "can_pin_messages": false,

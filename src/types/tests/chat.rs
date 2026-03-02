@@ -686,6 +686,7 @@ fn chat_member_restricted() {
     let expected_struct = ChatMember::Restricted(
         ChatMemberRestricted::new(User::new(1, "John", false), 0)
             .with_can_change_info(true)
+            .with_can_edit_tag(true)
             .with_can_invite_users(false)
             .with_can_send_polls(true)
             .with_can_pin_messages(false)

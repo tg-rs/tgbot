@@ -38,7 +38,7 @@ fn deserialize() {
         "message_id": 1, "date": 0,
         "from": {"id": 1, "first_name": "firstname", "is_bot": false},
         "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
-        "text": "b /c $c cd u@h.z #h i @m p pre l tm url u s sx pre 🤡 bq ebq",
+        "text": "b /c $c cd u@h.z #h i @m p pre l tm url u s sx pre 🤡 bq ebq 20:20 0",
         "entities": [
             {"type": "bold", "offset": 0, "length": 1},
             {"type": "bot_command", "offset": 3, "length": 2},
@@ -67,8 +67,10 @@ fn deserialize() {
             {"type": "strikethrough", "offset": 45, "length": 2},
             {"type": "pre", "offset": 48, "length": 3, "language": "rust"},
             {"type": "custom_emoji", "offset": 52, "length": 2, "custom_emoji_id": "emoji-id"},
-            {"type": "blockquote", "offset": 54, "length": 2},
-            {"type": "expandable_blockquote", "offset": 57, "length": 3}
+            {"type": "blockquote", "offset": 55, "length": 2},
+            {"type": "expandable_blockquote", "offset": 58, "length": 3},
+            {"type": "date_time", "offset": 62, "length": 5},
+            {"type": "date_time", "offset": 68, "length": 1, "unix_time": 0, "date_time_format": "r"},
         ]
     });
     let msg: Message = serde_json::from_value(input).unwrap();
@@ -109,8 +111,18 @@ fn deserialize() {
                     custom_emoji_id: String::from("emoji-id"),
                     position: TextEntityPosition { offset: 52, length: 2 },
                 },
-                TextEntity::Blockquote(TextEntityPosition { offset: 54, length: 2 }),
-                TextEntity::ExpandableBlockquote(TextEntityPosition { offset: 57, length: 3 }),
+                TextEntity::Blockquote(TextEntityPosition { offset: 55, length: 2 }),
+                TextEntity::ExpandableBlockquote(TextEntityPosition { offset: 58, length: 3 }),
+                TextEntity::DateTime {
+                    position: TextEntityPosition { offset: 62, length: 5 },
+                    unix_time: None,
+                    format: None
+                },
+                TextEntity::DateTime {
+                    position: TextEntityPosition { offset: 68, length: 1 },
+                    unix_time: Some(0),
+                    format: Some(String::from("r"))
+                },
             ],
             entities
         );
@@ -186,6 +198,24 @@ fn serialize() {
                 "offset": 0,
                 "length": 2,
                 "custom_emoji_id": "emoji-id"
+            }),
+        ),
+        (
+            TextEntity::date_time(0..2, None, None::<String>),
+            serde_json::json!({
+                "type": "date_time",
+                "offset": 0,
+                "length": 2,
+            }),
+        ),
+        (
+            TextEntity::date_time(0..2, Some(0), Some("r")),
+            serde_json::json!({
+                "type": "date_time",
+                "offset": 0,
+                "length": 2,
+                "unix_time": 0,
+                "date_time_format": "r",
             }),
         ),
         (

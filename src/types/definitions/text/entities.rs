@@ -8,7 +8,7 @@ use std::{
 use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
-use crate::types::User;
+use crate::types::{Integer, User};
 
 /// Represents a collection of text entities.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -123,6 +123,19 @@ pub enum TextEntity {
         /// Position of entity in text.
         position: TextEntityPosition,
     },
+    /// Formatted date and time.
+    DateTime {
+        /// Position of entity in text.
+        position: TextEntityPosition,
+        /// Unix time associated with the entity.
+        unix_time: Option<Integer>,
+        /// String that defines the formatting of the date and time.
+        ///
+        /// See (date-time entity formatting)[1] for more details.
+        ///
+        /// [1]: https://core.telegram.org/bots/api#date-time-entity-formatting
+        format: Option<String>,
+    },
     /// An E-Mail.
     Email(TextEntityPosition),
     /// Collapsed-by-default block quotation.
@@ -174,8 +187,8 @@ macro_rules! text_entity_factory {
             /// # Arguments
             ///
             /// * `pos` - Position of TextEntity in UTF-16 code units.
-            pub fn $method_name<T: Into<TextEntityPosition>>(pos: T) -> TextEntity {
-                TextEntity::$enum_variant(pos.into())
+            pub fn $method_name<T: Into<TextEntityPosition>>(pos: T) -> Self {
+                Self::$enum_variant(pos.into())
             }
         )*
     };
@@ -205,8 +218,12 @@ impl TextEntity {
     ///
     /// * `pos` - Position of the entity in UTF-16 code units.
     /// * `custom_emoji_id` - Unique identifier of the custom emoji.
-    pub fn custom_emoji<P: Into<TextEntityPosition>, I: Into<String>>(pos: P, custom_emoji_id: I) -> TextEntity {
-        TextEntity::CustomEmoji {
+    pub fn custom_emoji<A, B>(pos: A, custom_emoji_id: B) -> Self
+    where
+        A: Into<TextEntityPosition>,
+        B: Into<String>,
+    {
+        Self::CustomEmoji {
             position: pos.into(),
             custom_emoji_id: custom_emoji_id.into(),
         }
@@ -217,9 +234,32 @@ impl TextEntity {
     /// # Arguments
     ///
     /// * `pos` - Position of the entity in UTF-16 code units.
+    /// * `unix_time` - Unix time associated with the entity.
+    /// * `format` - String that defines the formatting of the date and time.
+    pub fn date_time<A, B>(pos: A, unix_time: Option<Integer>, format: Option<B>) -> Self
+    where
+        A: Into<TextEntityPosition>,
+        B: Into<String>,
+    {
+        Self::DateTime {
+            position: pos.into(),
+            unix_time,
+            format: format.map(Into::into),
+        }
+    }
+
+    /// Creates a new `TextEntity`.
+    ///
+    /// # Arguments
+    ///
+    /// * `pos` - Position of the entity in UTF-16 code units.
     /// * `language` - The programming language of the entity text.
-    pub fn pre<P: Into<TextEntityPosition>, L: Into<String>>(pos: P, language: Option<L>) -> TextEntity {
-        TextEntity::Pre {
+    pub fn pre<A, B>(pos: A, language: Option<B>) -> Self
+    where
+        A: Into<TextEntityPosition>,
+        B: Into<String>,
+    {
+        Self::Pre {
             position: pos.into(),
             language: language.map(|x| x.into()),
         }
@@ -231,8 +271,12 @@ impl TextEntity {
     ///
     /// * `pos` - The position of the entity in UTF-16 code units.
     /// * `url` - The URL that will be opened after user taps on the text.
-    pub fn text_link<P: Into<TextEntityPosition>, U: Into<String>>(pos: P, url: U) -> TextEntity {
-        TextEntity::TextLink {
+    pub fn text_link<A, B>(pos: A, url: B) -> Self
+    where
+        A: Into<TextEntityPosition>,
+        B: Into<String>,
+    {
+        Self::TextLink {
             position: pos.into(),
             url: url.into(),
         }
@@ -244,8 +288,11 @@ impl TextEntity {
     ///
     /// * `pos` - The position of the entity in UTF-16 code units.
     /// * `user` - The user to be mentioned.
-    pub fn text_mention<P: Into<TextEntityPosition>>(pos: P, user: User) -> TextEntity {
-        TextEntity::TextMention {
+    pub fn text_mention<T>(pos: T, user: User) -> Self
+    where
+        T: Into<TextEntityPosition>,
+    {
+        Self::TextMention {
             position: pos.into(),
             user,
         }
@@ -270,18 +317,30 @@ enum RawTextEntityType {
     BotCommand,
     Cashtag,
     Code,
-    CustomEmoji { custom_emoji_id: Option<String> },
+    CustomEmoji {
+        custom_emoji_id: Option<String>,
+    },
+    DateTime {
+        date_time_format: Option<String>,
+        unix_time: Option<Integer>,
+    },
     Email,
     ExpandableBlockquote,
     Hashtag,
     Italic,
     Mention,
     PhoneNumber,
-    Pre { language: Option<String> },
+    Pre {
+        language: Option<String>,
+    },
     Spoiler,
     Strikethrough,
-    TextLink { url: Option<String> },
-    TextMention { user: Option<User> },
+    TextLink {
+        url: Option<String>,
+    },
+    TextMention {
+        user: Option<User>,
+    },
     Underline,
     Url,
 }
@@ -334,34 +393,42 @@ impl TryFrom<RawTextEntity> for TextEntity {
         };
 
         Ok(match raw.entity_type {
-            RawTextEntityType::Blockquote => TextEntity::Blockquote(position),
-            RawTextEntityType::Bold => TextEntity::Bold(position),
-            RawTextEntityType::BotCommand => TextEntity::BotCommand(position),
-            RawTextEntityType::Cashtag => TextEntity::Cashtag(position),
-            RawTextEntityType::Code => TextEntity::Code(position),
-            RawTextEntityType::CustomEmoji { custom_emoji_id } => TextEntity::CustomEmoji {
+            RawTextEntityType::Blockquote => Self::Blockquote(position),
+            RawTextEntityType::Bold => Self::Bold(position),
+            RawTextEntityType::BotCommand => Self::BotCommand(position),
+            RawTextEntityType::Cashtag => Self::Cashtag(position),
+            RawTextEntityType::Code => Self::Code(position),
+            RawTextEntityType::CustomEmoji { custom_emoji_id } => Self::CustomEmoji {
                 position,
                 custom_emoji_id: custom_emoji_id.ok_or(TextEntityError::NoCustomEmoji)?,
             },
-            RawTextEntityType::Email => TextEntity::Email(position),
-            RawTextEntityType::ExpandableBlockquote => TextEntity::ExpandableBlockquote(position),
-            RawTextEntityType::Hashtag => TextEntity::Hashtag(position),
-            RawTextEntityType::Italic => TextEntity::Italic(position),
-            RawTextEntityType::Mention => TextEntity::Mention(position),
-            RawTextEntityType::PhoneNumber => TextEntity::PhoneNumber(position),
-            RawTextEntityType::Pre { language } => TextEntity::Pre { position, language },
-            RawTextEntityType::Spoiler => TextEntity::Spoiler(position),
-            RawTextEntityType::Strikethrough => TextEntity::Strikethrough(position),
-            RawTextEntityType::TextLink { url } => TextEntity::TextLink {
+            RawTextEntityType::DateTime {
+                unix_time,
+                date_time_format,
+            } => Self::DateTime {
+                position,
+                unix_time,
+                format: date_time_format,
+            },
+            RawTextEntityType::Email => Self::Email(position),
+            RawTextEntityType::ExpandableBlockquote => Self::ExpandableBlockquote(position),
+            RawTextEntityType::Hashtag => Self::Hashtag(position),
+            RawTextEntityType::Italic => Self::Italic(position),
+            RawTextEntityType::Mention => Self::Mention(position),
+            RawTextEntityType::PhoneNumber => Self::PhoneNumber(position),
+            RawTextEntityType::Pre { language } => Self::Pre { position, language },
+            RawTextEntityType::Spoiler => Self::Spoiler(position),
+            RawTextEntityType::Strikethrough => Self::Strikethrough(position),
+            RawTextEntityType::TextLink { url } => Self::TextLink {
                 position,
                 url: url.ok_or(TextEntityError::NoUrl)?,
             },
-            RawTextEntityType::TextMention { user } => TextEntity::TextMention {
+            RawTextEntityType::TextMention { user } => Self::TextMention {
                 position,
                 user: user.ok_or(TextEntityError::NoUser)?,
             },
-            RawTextEntityType::Underline => TextEntity::Underline(position),
-            RawTextEntityType::Url => TextEntity::Url(position),
+            RawTextEntityType::Underline => Self::Underline(position),
+            RawTextEntityType::Url => Self::Url(position),
         })
     }
 }
@@ -369,9 +436,9 @@ impl TryFrom<RawTextEntity> for TextEntity {
 impl From<TextEntity> for RawTextEntity {
     fn from(entity: TextEntity) -> Self {
         macro_rules! raw {
-            ($entity_type:ident($position:ident $( , $item:ident )?)) => {
-                RawTextEntity {
-                    entity_type: RawTextEntityType::$entity_type $( { $item: $item.into() } )?,
+            ($entity_type:ident($position:ident $( $($item:ident)+ )?)) => {
+                Self {
+                    entity_type: RawTextEntityType::$entity_type $( { $($item: $item.into(),)+ } )?,
                     offset: $position.offset as _,
                     length: $position.length as _,
                 }
@@ -386,18 +453,23 @@ impl From<TextEntity> for RawTextEntity {
             TextEntity::CustomEmoji {
                 position: p,
                 custom_emoji_id,
-            } => raw!(CustomEmoji(p, custom_emoji_id)),
+            } => raw!(CustomEmoji(p custom_emoji_id)),
+            TextEntity::DateTime {
+                position: p,
+                unix_time,
+                format: date_time_format,
+            } => raw!(DateTime(p unix_time date_time_format)),
             TextEntity::Email(p) => raw!(Email(p)),
             TextEntity::ExpandableBlockquote(p) => raw!(ExpandableBlockquote(p)),
             TextEntity::Hashtag(p) => raw!(Hashtag(p)),
             TextEntity::Italic(p) => raw!(Italic(p)),
             TextEntity::Mention(p) => raw!(Mention(p)),
             TextEntity::PhoneNumber(p) => raw!(PhoneNumber(p)),
-            TextEntity::Pre { position: p, language } => raw!(Pre(p, language)),
+            TextEntity::Pre { position: p, language } => raw!(Pre(p language)),
             TextEntity::Spoiler(p) => raw!(Spoiler(p)),
             TextEntity::Strikethrough(p) => raw!(Strikethrough(p)),
-            TextEntity::TextLink { position: p, url } => raw!(TextLink(p, url)),
-            TextEntity::TextMention { position: p, user } => raw!(TextMention(p, user)),
+            TextEntity::TextLink { position: p, url } => raw!(TextLink(p url)),
+            TextEntity::TextMention { position: p, user } => raw!(TextMention(p user)),
             TextEntity::Underline(p) => raw!(Underline(p)),
             TextEntity::Url(p) => raw!(Url(p)),
         }

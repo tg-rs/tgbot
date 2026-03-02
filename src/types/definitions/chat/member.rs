@@ -1339,6 +1339,58 @@ impl Method for SetChatAdministratorCustomTitle {
     }
 }
 
+/// Sets a tag for a regular member in a group or a supergroup.
+///
+/// The bot must be an administrator in the chat for this to work
+/// and must have the `can_manage_tags` administrator right.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct SetChatMemberTag {
+    chat_id: ChatId,
+    user_id: Integer,
+    tag: Option<String>,
+}
+
+impl SetChatMemberTag {
+    /// Creates a new `SetChatMemberTag`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `user_id` - Unique identifier of the target user.
+    pub fn new<T>(chat_id: T, user_id: Integer) -> Self
+    where
+        T: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+            user_id,
+            tag: None,
+        }
+    }
+
+    /// Sets a new tag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - New tag for the member; 0-16 characters, emoji are not allowed.
+    pub fn with_tag<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.tag = Some(value.into());
+        self
+    }
+}
+
+impl Method for SetChatMemberTag {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setChatMemberTag", self)
+    }
+}
+
 /// Unbans a previously kicked user in a supergroup or channel.
 ///
 /// The user will not return to the group or channel

@@ -827,6 +827,15 @@ fn set_chat_administrator_custom_title() {
 }
 
 #[test]
+fn set_chat_member_tag() {
+    let method = SetChatMemberTag::new(1, 1);
+    assert_payload_eq!(POST JSON "setChatMemberTag" => method.clone());
+
+    let method = method.with_tag("test");
+    assert_payload_eq!(POST JSON "setChatMemberTag" => method);
+}
+
+#[test]
 fn unban_chat_member() {
     let method = UnbanChatMember::new(1, 2);
     assert_payload_eq!(POST JSON "unbanChatMember" => method.clone());

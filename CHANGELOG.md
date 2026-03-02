@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.43.0 (02.03.2026)
+
+### Types
+
+- Removed `#[allow(clippy::large_enum_variant)]` attributes, large variants are boxed.
+
+### Bot API
+
+#### 9.5
+
+- Added types: `SetChatMemberTag`.
+- Added enum variants:
+  - `TextEntity`: `DateTime`.
+- Added fields:
+  - `ChatAdministratorRights`: `can_manage_tags`.
+  - `ChatMemberAdministrator`: `can_manage_tags`.
+  - `ChatMemberRestricted`: `can_edit_tag`, `tag`.
+  - `ChatPermissions`: `can_edit_tag`.
+  - `Message`: `sender_tag`.
+- Added methods:
+  - `ChatAdministratorRights`: `with_can_manage_tags`.
+  - `ChatMemberAdministrator`: `with_can_manage_tags`.
+  - `ChatMemberRestricted`: `with_can_edit_tag`, `with_tag`.
+  - `ChatPermissions`: `with_can_edit_tag`.
+  - `Message`: `with_sender_tag`.
+  - `PromoteChatMember`: `with_can_manage_tags`.
+- Changed enum variants:
+  - `ChatMember::Member`: added `tag` field.
+- Changed fields:
+  - `ChatMemberRestricted`:
+    - `can_pin_messages`: `Option<bool>` -> `bool`.
+    - `can_send_audios`: `Option<bool>` -> `bool`.
+    - `can_send_documents`: `Option<bool>` -> `bool`.
+    - `can_send_photos`: `Option<bool>` -> `bool`.
+    - `can_send_video_notes`: `Option<bool>` -> `bool`.
+    - `can_send_videos`: `Option<bool>` -> `bool`.
+    - `can_send_voice_notes`: `Option<bool>` -> `bool`.
+
 ## 0.42.0 (09.02.2026)
 
 ### Handlers

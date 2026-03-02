@@ -52,7 +52,7 @@ tokio = { version = "1", features = [
   "macros",
   "rt-multi-thread"
 ] }
-toml = "0.9"
+toml = "1"
 
 [features]
 webhook = ["dep:axum"]

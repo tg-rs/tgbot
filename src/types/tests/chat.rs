@@ -685,23 +685,23 @@ fn chat_member() {
 fn chat_member_restricted() {
     let expected_struct = ChatMember::Restricted(
         ChatMemberRestricted::new(User::new(1, "John", false), 0)
+            .with_can_add_web_page_previews(false)
             .with_can_change_info(true)
             .with_can_edit_tag(true)
             .with_can_invite_users(false)
-            .with_can_send_polls(true)
+            .with_can_manage_topics(false)
             .with_can_pin_messages(false)
-            .with_can_send_messages(true)
             .with_can_send_audios(true)
             .with_can_send_documents(false)
-            .with_can_send_photos(true)
-            .with_can_send_videos(false)
-            .with_can_send_video_notes(true)
+            .with_can_send_messages(true)
             .with_can_send_other_messages(true)
-            .with_can_add_web_page_previews(false)
-            .with_can_manage_topics(false)
+            .with_can_send_photos(true)
+            .with_can_send_polls(true)
+            .with_can_send_video_notes(true)
+            .with_can_send_videos(false)
+            .with_can_send_voice_notes(false)
             .with_is_member(true)
-            .with_tag("test")
-            .with_can_send_voice_notes(false),
+            .with_tag("test"),
     );
     assert_eq!(expected_struct.get_user().id, 1);
     assert!(expected_struct.is_member());

@@ -439,42 +439,42 @@ impl ChatMemberKicked {
 pub struct ChatMemberRestricted {
     /// Information about the user.
     pub user: User,
-    /// Indicates whether the user may add web page previews to his messages.
+    /// Whether the user may add web page previews to his messages.
     pub can_add_web_page_previews: bool,
-    /// Indicates whether the user allowed to change the chat title, photo and other settings.
+    /// Whether the user allowed to change the chat title, photo and other settings.
     pub can_change_info: bool,
     /// Whether the user is allowed to edit their own tag.
     pub can_edit_tag: bool,
-    /// Indicates whether the user allowed to invite new users to the chat.
+    /// Whether the user allowed to invite new users to the chat.
     pub can_invite_users: bool,
-    /// Indicates whether the user is allowed to create forum topics.
+    /// Whether the user is allowed to create forum topics.
     pub can_manage_topics: bool,
-    /// Indicates whether the user allowed to pin messages; groups and supergroups only.
-    pub can_pin_messages: Option<bool>,
-    /// Indicates whether the user is allowed to send audios.
-    pub can_send_audios: Option<bool>,
-    /// Indicates whether the user is allowed to send documents.
-    pub can_send_documents: Option<bool>,
-    /// Indicates whether the user can send text messages, contacts, locations and venues.
+    /// Whether the user allowed to pin messages; groups and supergroups only.
+    pub can_pin_messages: bool,
+    /// Whether the user is allowed to send audios.
+    pub can_send_audios: bool,
+    /// Whether the user is allowed to send documents.
+    pub can_send_documents: bool,
+    /// Whether the user can send text messages, contacts, locations and venues.
     pub can_send_messages: bool,
-    /// Indicates whether the user can send animations, games, stickers and use inline bots.
+    /// Whether the user can send animations, games, stickers and use inline bots.
     pub can_send_other_messages: bool,
-    /// Indicates whether the user is allowed to send photos.
-    pub can_send_photos: Option<bool>,
-    /// Indicates whether the user is allowed to send polls.
+    /// Whether the user is allowed to send photos.
+    pub can_send_photos: bool,
+    /// Whether the user is allowed to send polls.
     pub can_send_polls: bool,
-    /// Indicates whether the user is allowed to send video notes.
-    pub can_send_video_notes: Option<bool>,
-    /// Indicates whether the user is allowed to send videos.
-    pub can_send_videos: Option<bool>,
-    /// Indicates whether the user is allowed to send voice notes.
-    pub can_send_voice_notes: Option<bool>,
-    /// Indicates whether the user is a member of the chat at the moment of the request.
+    /// Whether the user is allowed to send video notes.
+    pub can_send_video_notes: bool,
+    /// Whether the user is allowed to send videos.
+    pub can_send_videos: bool,
+    /// Whether the user is allowed to send voice notes.
+    pub can_send_voice_notes: bool,
+    /// Whether the user is a member of the chat at the moment of the request.
     pub is_member: bool,
-    /// Tag of the member.
-    pub tag: Option<String>,
     /// Date when restrictions will be lifted for this user; unix time.
     pub until_date: Integer,
+    /// Tag of the member.
+    pub tag: Option<String>,
 }
 
 impl ChatMemberRestricted {
@@ -492,16 +492,16 @@ impl ChatMemberRestricted {
             can_edit_tag: false,
             can_invite_users: false,
             can_manage_topics: false,
-            can_pin_messages: None,
-            can_send_audios: None,
-            can_send_documents: None,
+            can_pin_messages: false,
+            can_send_audios: false,
+            can_send_documents: false,
             can_send_messages: false,
             can_send_other_messages: false,
-            can_send_photos: None,
+            can_send_photos: false,
             can_send_polls: false,
-            can_send_video_notes: None,
-            can_send_videos: None,
-            can_send_voice_notes: None,
+            can_send_video_notes: false,
+            can_send_videos: false,
+            can_send_voice_notes: false,
             is_member: false,
             tag: None,
             until_date,
@@ -512,7 +512,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user may add web page previews to his messages.
+    /// * `value` - Whether the user may add web page previews to his messages.
     pub fn with_can_add_web_page_previews(mut self, value: bool) -> Self {
         self.can_add_web_page_previews = value;
         self
@@ -522,7 +522,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user allowed to change the chat title,
+    /// * `value` - Whether the user allowed to change the chat title,
     ///   photo and other settings.
     pub fn with_can_change_info(mut self, value: bool) -> Self {
         self.can_change_info = value;
@@ -543,7 +543,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user allowed to invite new users to the chat.
+    /// * `value` - Whether the user allowed to invite new users to the chat.
     pub fn with_can_invite_users(mut self, value: bool) -> Self {
         self.can_invite_users = value;
         self
@@ -553,7 +553,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is allowed to create forum topics.
+    /// * `value` - Whether the user is allowed to create forum topics.
     pub fn with_can_manage_topics(mut self, value: bool) -> Self {
         self.can_manage_topics = value;
         self
@@ -563,10 +563,10 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user allowed to pin messages;
+    /// * `value` - Whether the user allowed to pin messages;
     ///   groups and supergroups only.
     pub fn with_can_pin_messages(mut self, value: bool) -> Self {
-        self.can_pin_messages = Some(value);
+        self.can_pin_messages = value;
         self
     }
 
@@ -574,9 +574,9 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is allowed to send audios.
+    /// * `value` - Whether the user is allowed to send audios.
     pub fn with_can_send_audios(mut self, value: bool) -> Self {
-        self.can_send_audios = Some(value);
+        self.can_send_audios = value;
         self
     }
 
@@ -584,9 +584,9 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is allowed to send documents.
+    /// * `value` - Whether the user is allowed to send documents.
     pub fn with_can_send_documents(mut self, value: bool) -> Self {
-        self.can_send_documents = Some(value);
+        self.can_send_documents = value;
         self
     }
 
@@ -594,7 +594,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user can send text messages,
+    /// * `value` - Whether the user can send text messages,
     ///   contacts, locations and venues.
     pub fn with_can_send_messages(mut self, value: bool) -> Self {
         self.can_send_messages = value;
@@ -605,7 +605,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user can send animations,
+    /// * `value` - Whether the user can send animations,
     ///   games, stickers and use inline bots.
     pub fn with_can_send_other_messages(mut self, value: bool) -> Self {
         self.can_send_other_messages = value;
@@ -616,9 +616,9 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is allowed to send photos.
+    /// * `value` - Whether the user is allowed to send photos.
     pub fn with_can_send_photos(mut self, value: bool) -> Self {
-        self.can_send_photos = Some(value);
+        self.can_send_photos = value;
         self
     }
 
@@ -626,7 +626,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is allowed to send polls.
+    /// * `value` - Whether the user is allowed to send polls.
     pub fn with_can_send_polls(mut self, value: bool) -> Self {
         self.can_send_polls = value;
         self
@@ -636,9 +636,9 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is allowed to send video notes.
+    /// * `value` - Whether the user is allowed to send video notes.
     pub fn with_can_send_video_notes(mut self, value: bool) -> Self {
-        self.can_send_video_notes = Some(value);
+        self.can_send_video_notes = value;
         self
     }
 
@@ -646,9 +646,9 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is allowed to send videos.
+    /// * `value` - Whether the user is allowed to send videos.
     pub fn with_can_send_videos(mut self, value: bool) -> Self {
-        self.can_send_videos = Some(value);
+        self.can_send_videos = value;
         self
     }
 
@@ -656,9 +656,9 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is allowed to send voice notes.
+    /// * `value` - Whether the user is allowed to send voice notes.
     pub fn with_can_send_voice_notes(mut self, value: bool) -> Self {
-        self.can_send_voice_notes = Some(value);
+        self.can_send_voice_notes = value;
         self
     }
 
@@ -666,7 +666,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Indicates whether the user is a member of the chat at the moment of the request.
+    /// * `value` - Whether the user is a member of the chat at the moment of the request.
     pub fn with_is_member(mut self, value: bool) -> Self {
         self.is_member = value;
         self

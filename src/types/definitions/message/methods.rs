@@ -1513,8 +1513,7 @@ impl Method for SendMessage {
     }
 }
 
-/// Streams a partial message to a user while the message is being generated;
-/// supported only for bots with forum topic mode enabled.
+/// Streams a partial message to a user while the message is being generated.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SendMessageDraft {

@@ -585,6 +585,7 @@ struct PollParameters {
     explanation: Option<String>,
     explanation_entities: Option<TextEntities>,
     explanation_parse_mode: Option<ParseMode>,
+    hide_results_until_closes: Option<bool>,
     is_anonymous: Option<bool>,
     is_closed: Option<bool>,
     message_effect_id: Option<String>,
@@ -621,6 +622,7 @@ impl PollParameters {
             explanation: None,
             explanation_entities: None,
             explanation_parse_mode: None,
+            hide_results_until_closes: None,
             is_anonymous: None,
             is_closed: None,
             message_effect_id: None,
@@ -806,6 +808,16 @@ impl SendQuiz {
     pub fn with_explanation_parse_mode(mut self, value: ParseMode) -> Self {
         self.inner.explanation_parse_mode = Some(value);
         self.inner.explanation_entities = None;
+        self
+    }
+
+    /// Sets a new value for the `hide_results_until_closes` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the poll results must be shown only after the poll closes.
+    pub fn with_hide_results_until_closes(mut self, value: bool) -> Self {
+        self.inner.hide_results_until_closes = Some(value);
         self
     }
 
@@ -1059,6 +1071,16 @@ impl SendPoll {
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.inner.disable_notification = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `hide_results_until_closes` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the poll results must be shown only after the poll closes.
+    pub fn with_hide_results_until_closes(mut self, value: bool) -> Self {
+        self.inner.hide_results_until_closes = Some(value);
         self
     }
 

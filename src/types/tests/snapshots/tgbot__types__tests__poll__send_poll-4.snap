@@ -10,6 +10,7 @@ expression: actual_data
   "business_connection_id": "id",
   "chat_id": 1,
   "disable_notification": true,
+  "hide_results_until_closes": true,
   "is_anonymous": false,
   "is_closed": false,
   "message_effect_id": "effect-id",

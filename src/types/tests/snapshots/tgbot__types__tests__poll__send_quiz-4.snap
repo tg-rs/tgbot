@@ -13,6 +13,7 @@ expression: actual_data
     0
   ],
   "disable_notification": true,
+  "hide_results_until_closes": true,
   "is_anonymous": false,
   "is_closed": false,
   "message_effect_id": "effect-id",

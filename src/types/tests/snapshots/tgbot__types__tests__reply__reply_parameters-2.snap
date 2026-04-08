@@ -1,12 +1,13 @@
 ---
 source: src/types/tests/reply.rs
-expression: "ReplyParameters::new(1).with_allow_sending_without_reply(true).with_chat_id(1).with_checklist_task_id(2).with_quote(quote.clone())"
+expression: "ReplyParameters::new(1).with_allow_sending_without_reply(true).with_chat_id(1).with_checklist_task_id(2).with_quote(quote.clone()).with_poll_option_id(\"test\")"
 ---
 {
   "message_id": 1,
   "allow_sending_without_reply": true,
   "chat_id": 1,
   "checklist_task_id": 2,
+  "poll_option_id": "test",
   "quote_position": 1,
   "quote": "test"
 }

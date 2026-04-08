@@ -164,6 +164,7 @@ fn reply_parameters() {
             .with_chat_id(1)
             .with_checklist_task_id(2)
             .with_quote(quote.clone())
+            .with_poll_option_id("test")
     );
     quote = quote.with_entities([TextEntity::bold(0..2)]);
     insta::assert_json_snapshot!(ReplyParameters::new(1).with_quote(quote.clone()));

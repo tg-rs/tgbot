@@ -13,6 +13,7 @@ pub struct ReplyParameters {
     allow_sending_without_reply: Option<bool>,
     chat_id: Option<ChatId>,
     checklist_task_id: Option<Integer>,
+    poll_option_id: Option<String>,
     #[serde(flatten)]
     quote: Option<ReplyQuote>,
 }
@@ -30,6 +31,7 @@ impl ReplyParameters {
             allow_sending_without_reply: None,
             chat_id: None,
             checklist_task_id: None,
+            poll_option_id: None,
             quote: None,
         }
     }
@@ -59,13 +61,26 @@ impl ReplyParameters {
         self
     }
 
-    /// Sets a new checklist task ID
+    /// Sets a new checklist task ID.
     ///
     /// # Arguments
     ///
     /// * `value` - Identifier of the specific checklist task to be replied to.
     pub fn with_checklist_task_id(mut self, value: Integer) -> Self {
         self.checklist_task_id = Some(value);
+        self
+    }
+
+    /// Sets a new poll option ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Persistent identifier of the specific poll option to be replied to.
+    pub fn with_poll_option_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.poll_option_id = Some(value.into());
         self
     }
 

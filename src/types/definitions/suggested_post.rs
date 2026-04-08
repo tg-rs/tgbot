@@ -106,7 +106,7 @@ impl Method for DeclineSuggestedPost {
 
 /// Describes a service message about the approval of a suggested post.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SuggestedPostApproved {
     /// Date when the post will be published.
     pub send_date: Integer,
@@ -158,7 +158,7 @@ impl SuggestedPostApproved {
 ///
 /// Currently, only caused by insufficient user funds at the time of approval.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SuggestedPostApprovalFailed {
     /// Expected price of the post.
     pub price: SuggestedPostPrice,
@@ -195,7 +195,7 @@ impl SuggestedPostApprovalFailed {
 
 /// Describes a service message about the rejection of a suggested post.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SuggestedPostDeclined {
     /// Comment with which the post was declined.
     pub comment: Option<String>,
@@ -285,7 +285,7 @@ impl SuggestedPostInfo {
 
 /// Describes a service message about a successful payment for a suggested post.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SuggestedPostPaid {
     /// Currency in which the payment was made.
     ///
@@ -450,7 +450,7 @@ impl SuggestedPostPrice {
 
 /// Describes a service message about a payment refund for a suggested post.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SuggestedPostRefunded {
     /// Reason for the refund.
     pub reason: SuggestedPostRefundReason,

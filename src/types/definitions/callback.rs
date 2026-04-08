@@ -18,7 +18,7 @@ use crate::{
 ///
 /// Exactly one of the fields data or `game_short_name` will be present.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CallbackQuery {
     /// Sender of the query.
     pub from: User,

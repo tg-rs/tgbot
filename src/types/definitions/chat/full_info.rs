@@ -36,7 +36,7 @@ pub enum ChatFullInfoType {
 
 /// Contains full information about a chat.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ChatFullInfo {
     /// Unique identifier for this chat.
     pub id: Integer,

@@ -30,7 +30,7 @@ use crate::types::{
 };
 
 /// Contains information about a message or a story that is being replied to.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub enum ReplyTo {
     /// The original message.
     ///
@@ -57,7 +57,7 @@ impl From<Story> for ReplyTo {
 
 /// Contains information about a message that is being replied to, which may come from another chat or forum topic.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ExternalReplyInfo {
     /// Origin of the message replied to by the given message.
     pub origin: MessageOrigin,
@@ -146,7 +146,7 @@ impl ExternalReplyInfo {
 }
 
 /// Contains data of an external reply info.
-#[derive(Clone, Debug, Deserialize, derive_more::From, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, derive_more::From, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ExternalReplyData {
     /// Message is an animation, information about the animation.

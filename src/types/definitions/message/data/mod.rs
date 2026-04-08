@@ -50,7 +50,7 @@ use crate::types::{
 mod raw;
 
 /// Represents a message data.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MessageData {
     /// Information about the animation.

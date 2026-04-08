@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/message.rs
-expression: "ExternalReplyInfo::new(Poll::from(RegularPoll::new(\"poll-id\",\n\"Rust?\").with_is_anonymous(true).with_is_closed(true).with_options([PollOption::new(\"Yes\",\n1000), PollOption::new(\"No\", 0)]).with_total_voter_count(1000),), origin,)"
+expression: "ExternalReplyInfo::new(Poll::from(RegularPoll::new(\"poll-id\",\n\"Rust?\").with_is_anonymous(true).with_is_closed(true).with_options([PollOption::new(\"1\",\n\"Yes\", 1000), PollOption::new(\"2\", \"No\", 0)]).with_total_voter_count(1000),),\norigin,)"
 ---
 {
   "origin": {
@@ -17,10 +17,12 @@ expression: "ExternalReplyInfo::new(Poll::from(RegularPoll::new(\"poll-id\",\n\"
     "is_closed": true,
     "options": [
       {
+        "persistent_id": "1",
         "text": "Yes",
         "voter_count": 1000
       },
       {
+        "persistent_id": "2",
         "text": "No",
         "voter_count": 0
       }

@@ -13,10 +13,12 @@ expression: expected_struct
     "is_closed": true,
     "options": [
       {
+        "persistent_id": "1",
         "text": "Yes",
         "voter_count": 1000
       },
       {
+        "persistent_id": "2",
         "text": "No",
         "voter_count": 0
       }

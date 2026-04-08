@@ -37,7 +37,7 @@ use crate::{
 };
 
 /// Represents an incoming update.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Update {
     /// Unique identifier of the update.
     ///
@@ -151,7 +151,7 @@ impl Update {
 }
 
 /// Represents a type of an update.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateType {
     /// The bot chat member status was updated in a chat.

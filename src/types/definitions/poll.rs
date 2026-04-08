@@ -19,7 +19,7 @@ use crate::{
 };
 
 /// Represents a poll.
-#[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, derive_more::From, Deserialize, Serialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "snake_case")]
 pub enum Poll {
@@ -72,7 +72,7 @@ impl RawQuestion {
 
 /// Represents a regular poll.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RegularPoll {
     /// Indicates whether the poll allows multiple answers.
     pub allows_multiple_answers: bool,
@@ -236,7 +236,7 @@ impl RegularPoll {
 
 /// Represents a quiz.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Quiz {
     /// Whether the poll allows to change the chosen answer options.
     pub allows_revoting: bool,
@@ -524,8 +524,11 @@ impl RawPollOptionText {
 }
 
 /// Represents an answer option in a poll.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct PollOption {
+    /// Unique identifier of the option, persistent on option addition and deletion.
+    pub persistent_id: String,
     /// Option text; 1-100 characters.
     #[serde(
         flatten,
@@ -535,6 +538,18 @@ pub struct PollOption {
     pub text: Text,
     /// Number of users that voted for this option.
     pub voter_count: Integer,
+    /// Chat that added the option.
+    ///
+    /// Omitted if the option wasn't added by a chat after poll creation.
+    pub added_by_chat: Option<Chat>,
+    /// User who added the option.
+    ///
+    /// Omitted if the option wasn't added by a user after poll creation.
+    pub added_by_user: Option<User>,
+    /// Point in time (Unix timestamp) when the option was added.
+    ///
+    /// Omitted if the option existed in the original poll.
+    pub addition_date: Option<Integer>,
 }
 
 impl PollOption {
@@ -542,16 +557,55 @@ impl PollOption {
     ///
     /// # Arguments
     ///
+    /// * `persistent_id` - Unique identifier of the option.
     /// * `text` - Option text; 1-100 characters.
     /// * `voter_count` - Number of users that voted for this option.
-    pub fn new<T>(text: T, voter_count: Integer) -> Self
+    pub fn new<A, B>(persistent_id: A, text: B, voter_count: Integer) -> Self
     where
-        T: Into<Text>,
+        A: Into<String>,
+        B: Into<Text>,
     {
         Self {
+            persistent_id: persistent_id.into(),
             text: text.into(),
             voter_count,
+            added_by_chat: None,
+            added_by_user: None,
+            addition_date: None,
         }
+    }
+
+    /// Sets a new chat.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Chat that added the option.
+    pub fn with_added_by_chat<T>(mut self, value: T) -> Self
+    where
+        T: Into<Chat>,
+    {
+        self.added_by_chat = Some(value.into());
+        self
+    }
+
+    /// Sets a new user.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - User who added the option.
+    pub fn with_added_by_user(mut self, value: User) -> Self {
+        self.added_by_user = Some(value);
+        self
+    }
+
+    /// Sets a new addition date.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Point in time when the option was added.
+    pub fn with_addition_date(mut self, value: Integer) -> Self {
+        self.addition_date = Some(value);
+        self
     }
 }
 

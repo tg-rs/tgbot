@@ -150,7 +150,7 @@ impl GiveawayCreated {
 
 /// Represents a service message about the completion of a giveaway without public winners.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GiveawayCompleted {
     /// Number of winners in the giveaway.
     pub winner_count: Integer,

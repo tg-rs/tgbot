@@ -12,7 +12,7 @@ mod reply;
 mod sender;
 
 /// Represents a result of `EditMessage*` requests.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum EditMessageResult {
     /// Returned if edited message is sent by the bot.
@@ -31,7 +31,7 @@ pub struct InaccessibleMessage {
 }
 
 /// Describes a message that can be inaccessible to the bot.
-#[derive(Clone, Debug, derive_more::From, PartialEq, Serialize)]
+#[derive(Clone, Debug, derive_more::From, Serialize)]
 #[serde(untagged)]
 pub enum MaybeInaccessibleMessage {
     /// Describes a message that was deleted or is otherwise inaccessible to the bot.
@@ -60,7 +60,7 @@ impl<'de> Deserialize<'de> for MaybeInaccessibleMessage {
 
 /// Represents a message.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Message {
     /// Chat the message belongs to.
     pub chat: Chat,

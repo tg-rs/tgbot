@@ -329,7 +329,7 @@ impl InputChecklist {
 
 /// Describes a service message about checklist tasks marked as done or not done.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ChecklistTasksDone {
     /// Message containing the checklist whose tasks were marked as done or not done.
     ///
@@ -382,7 +382,7 @@ impl ChecklistTasksDone {
 
 /// Describes a service message about tasks added to a checklist.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ChecklistTasksAdded {
     /// List of tasks added to the checklist.
     pub tasks: Vec<ChecklistTask>,

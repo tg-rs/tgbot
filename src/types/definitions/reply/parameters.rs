@@ -103,7 +103,8 @@ impl ReplyParameters {
 ///
 /// The text must contain 0-1024 characters after entities parsing.
 /// The quote must be an exact substring of the message to be replied to,
-/// including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities.
+/// including bold, italic, underline, strikethrough, spoiler,
+/// custom_emoji and date_time entities.
 /// The message will fail to send if the quote isn't found in the original message.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]

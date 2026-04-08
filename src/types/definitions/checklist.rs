@@ -179,7 +179,8 @@ pub struct InputChecklistTask {
     /// List of special entities that appear in the text.
     ///
     /// Can be specified instead of `parse_mode`.
-    /// Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
+    /// Currently, only bold, italic, underline, strikethrough, spoiler, custom_emoji,
+    /// and date_time entities are allowed.
     pub text_entities: Option<TextEntities>,
 }
 

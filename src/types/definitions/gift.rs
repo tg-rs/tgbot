@@ -1628,7 +1628,7 @@ impl GiftPremiumSubscription {
     ///
     /// * `value` - A list of special entities that appear in the gift text.
     ///   Entities other than “bold”, “italic”, “underline”,
-    ///   “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    ///   “strikethrough”, “spoiler”, “custom_emoji” and "date_time" are ignored.
     pub fn with_text_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
@@ -1644,7 +1644,7 @@ impl GiftPremiumSubscription {
     ///
     /// * `value` - Mode for parsing entities in the text.
     ///   Entities other than “bold”, “italic”, “underline”,
-    ///   “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    ///   “strikethrough”, “spoiler”, “custom_emoji” and "date_time" are ignored.
     pub fn with_text_parse_mode(mut self, value: ParseMode) -> Self {
         self.text_entities = None;
         self.text_parse_mode = Some(value);
@@ -1749,7 +1749,9 @@ impl SendGift {
     ///
     /// * `value` - Mode for parsing entities in the text.
     ///
-    /// Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    /// Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”,
+    /// “custom_emoji” and "date_time" are ignored.
+    ///
     /// Text entities will be set to [`None`] when this method is called.
     pub fn with_text_parse_mode(mut self, value: ParseMode) -> Self {
         self.text_parse_mode = Some(value);
@@ -1763,7 +1765,9 @@ impl SendGift {
     ///
     /// * `value` - A list of special entities that appear in the gift text.
     ///
-    /// Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
+    /// Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”,
+    /// “custom_emoji” and "date_time" are ignored.
+    ///
     /// Text parse mode will be set to [`None`] when this method is called.
     pub fn with_text_entities<T>(mut self, value: T) -> Self
     where

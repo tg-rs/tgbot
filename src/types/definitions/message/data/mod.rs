@@ -199,6 +199,10 @@ pub enum MessageData {
     PinnedMessage(MaybeInaccessibleMessage),
     /// Information about the native poll.
     Poll(Poll),
+    /// Answer option was added to a poll.
+    PollOptionAdded(MessageDataPollOptionAdded),
+    /// Answer option was deleted from a poll.
+    PollOptionDeleted(MessageDataPollOptionDeleted),
     /// A user in the chat triggered another user's proximity alert while sharing Live Location.
     ProximityAlertTriggered(MessageDataProximityAlert),
     /// A service message about a refunded payment, information about the payment.
@@ -654,6 +658,40 @@ impl MessageDataPhoto {
         self.caption = Some(value.into());
         self
     }
+}
+
+/// Describes a service message about an option added to a poll.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MessageDataPollOptionAdded {
+    /// Unique identifier of the added option.
+    pub option_persistent_id: String,
+    /// Option text.
+    #[serde(
+        flatten,
+        deserialize_with = "RawPollOptionText::deserialize_value",
+        serialize_with = "RawPollOptionText::serialize_value"
+    )]
+    pub option: Text,
+    /// Message containing the poll to which the option was added, if known.
+    pub poll_message: Option<MaybeInaccessibleMessage>,
+}
+
+/// Desribes a service message about an option deleted from a poll.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MessageDataPollOptionDeleted {
+    /// Unique identifier of the deleted option.
+    pub option_persistent_id: String,
+    /// Option text.
+    #[serde(
+        flatten,
+        deserialize_with = "RawPollOptionText::deserialize_value",
+        serialize_with = "RawPollOptionText::serialize_value"
+    )]
+    pub option: Text,
+    /// Message containing the poll from which the option was deleted, if known.
+    pub poll_message: Option<MaybeInaccessibleMessage>,
 }
 
 /// Represents a content of a service message,

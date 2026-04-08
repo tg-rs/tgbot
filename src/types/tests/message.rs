@@ -498,6 +498,28 @@ fn poll() {
 }
 
 #[test]
+fn poll_option_added() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::PollOptionAdded(MessageDataPollOptionAdded {
+        option_persistent_id: String::from("test"),
+        option: Text::from("test"),
+        poll_message: None,
+    });
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn poll_option_deleted() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::PollOptionDeleted(MessageDataPollOptionDeleted {
+        option_persistent_id: String::from("test"),
+        option: Text::from("test"),
+        poll_message: None,
+    });
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn proximity_alert_triggered() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::ProximityAlertTriggered(MessageDataProximityAlert::new(

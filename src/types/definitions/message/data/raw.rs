@@ -174,3 +174,33 @@ impl RawDataText {
         .serialize(serializer)
     }
 }
+
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub(super) struct RawPollOptionText {
+    option_text: String,
+    option_text_entities: Option<TextEntities>,
+}
+
+impl RawPollOptionText {
+    pub(super) fn deserialize_value<'de, D>(deserializer: D) -> Result<Text, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        RawPollOptionText::deserialize(deserializer).map(|x| Text {
+            data: x.option_text,
+            entities: x.option_text_entities,
+        })
+    }
+
+    pub(super) fn serialize_value<S>(value: &Text, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        RawPollOptionText {
+            option_text: value.data.clone(),
+            option_text_entities: value.entities.clone(),
+        }
+        .serialize(serializer)
+    }
+}

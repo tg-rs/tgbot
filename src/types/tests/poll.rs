@@ -57,7 +57,8 @@ fn send_quiz() {
         .with_message_thread_id(1)
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
-        .with_reply_parameters(ReplyParameters::new(1));
+        .with_reply_parameters(ReplyParameters::new(1))
+        .with_shuffle_options(true);
     assert_payload_eq!(POST JSON "sendPoll" => method);
 }
 
@@ -81,7 +82,8 @@ fn send_poll() {
         .with_message_thread_id(1)
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
-        .with_reply_parameters(ReplyParameters::new(1));
+        .with_reply_parameters(ReplyParameters::new(1))
+        .with_shuffle_options(true);
     assert_payload_eq!(POST JSON "sendPoll" => method);
 }
 

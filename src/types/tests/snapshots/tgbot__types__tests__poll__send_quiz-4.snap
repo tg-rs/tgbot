@@ -32,5 +32,6 @@ expression: actual_data
   "reply_parameters": {
     "message_id": 1
   },
+  "shuffle_options": true,
   "type": "quiz"
 }

@@ -596,6 +596,7 @@ struct PollParameters {
     question_parse_mode: Option<ParseMode>,
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
+    shuffle_options: Option<bool>,
 }
 
 impl PollParameters {
@@ -629,6 +630,7 @@ impl PollParameters {
             protect_content: None,
             reply_markup: None,
             reply_parameters: None,
+            shuffle_options: None,
         }
     }
 }
@@ -898,6 +900,16 @@ impl SendQuiz {
         self.inner.reply_parameters = Some(value);
         self
     }
+
+    /// Sets a new value for the `shuffle_options` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the poll options must be shown in random order.
+    pub fn with_shuffle_options(mut self, value: bool) -> Self {
+        self.inner.shuffle_options = Some(value);
+        self
+    }
 }
 
 impl Method for SendQuiz {
@@ -1125,6 +1137,16 @@ impl SendPoll {
     /// * `value` - Description of the message to reply to.
     pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
         self.inner.reply_parameters = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `shuffle_options` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the poll options must be shown in random order.
+    pub fn with_shuffle_options(mut self, value: bool) -> Self {
+        self.inner.shuffle_options = Some(value);
         self
     }
 }

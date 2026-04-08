@@ -12,6 +12,8 @@ expression: actual_data
   "correct_option_ids": [
     0
   ],
+  "description": "test",
+  "description_parse_mode": "MarkdownV2",
   "disable_notification": true,
   "hide_results_until_closes": true,
   "is_anonymous": false,

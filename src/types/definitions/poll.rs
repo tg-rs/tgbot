@@ -581,6 +581,9 @@ struct PollParameters {
     business_connection_id: Option<String>,
     close_date: Option<Integer>,
     correct_option_ids: Option<Vec<Integer>>,
+    description: Option<String>,
+    description_entities: Option<TextEntities>,
+    description_parse_mode: Option<ParseMode>,
     disable_notification: Option<bool>,
     explanation: Option<String>,
     explanation_entities: Option<TextEntities>,
@@ -618,6 +621,9 @@ impl PollParameters {
             business_connection_id: None,
             close_date: None,
             correct_option_ids: None,
+            description: None,
+            description_entities: None,
+            description_parse_mode: None,
             disable_notification: None,
             explanation: None,
             explanation_entities: None,
@@ -643,6 +649,19 @@ impl PollParameters {
         if value && self.is_anonymous.unwrap_or(false) {
             self.is_anonymous = None;
         }
+    }
+
+    fn set_description_entities<T>(&mut self, value: T)
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.description_entities = Some(value.into_iter().collect());
+        self.description_parse_mode = None;
+    }
+
+    fn set_description_parse_mode(&mut self, value: ParseMode) {
+        self.description_parse_mode = Some(value);
+        self.description_entities = None;
     }
 
     fn set_is_anonymous(&mut self, value: bool) {
@@ -753,6 +772,46 @@ impl SendQuiz {
     pub fn with_close_date(mut self, value: Integer) -> Self {
         self.inner.close_date = Some(value);
         self.inner.open_period = None;
+        self
+    }
+
+    /// Sets a new description.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Description; 0-1024 characters after entities parsing.
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.inner.description = Some(value.into());
+        self
+    }
+
+    /// Sets a new list of description entities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of special entities that appear in the description.
+    ///
+    /// Parse mode will be set to [`None`].
+    pub fn with_description_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.inner.set_description_entities(value);
+        self
+    }
+
+    /// Sets a new description parse mode.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Mode for parsing entities in the description.
+    ///
+    /// Entities will be set to [`None`].
+    pub fn with_description_parse_mode(mut self, value: ParseMode) -> Self {
+        self.inner.set_description_parse_mode(value);
         self
     }
 
@@ -1060,6 +1119,46 @@ impl SendPoll {
     pub fn with_close_date(mut self, value: Integer) -> Self {
         self.inner.close_date = Some(value);
         self.inner.open_period = None;
+        self
+    }
+
+    /// Sets a new description.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Description; 0-1024 characters after entities parsing.
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.inner.description = Some(value.into());
+        self
+    }
+
+    /// Sets a new list of description entities.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of special entities that appear in the description.
+    ///
+    /// Parse mode will be set to [`None`].
+    pub fn with_description_entities<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = TextEntity>,
+    {
+        self.inner.set_description_entities(value);
+        self
+    }
+
+    /// Sets a new description parse mode.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Mode for parsing entities in the description.
+    ///
+    /// Entities will be set to [`None`].
+    pub fn with_description_parse_mode(mut self, value: ParseMode) -> Self {
+        self.inner.set_description_parse_mode(value);
         self
     }
 

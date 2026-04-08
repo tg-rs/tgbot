@@ -9,6 +9,14 @@ expression: actual_data
   "allows_revoting": true,
   "business_connection_id": "id",
   "chat_id": 1,
+  "description": "test",
+  "description_entities": [
+    {
+      "length": 2,
+      "offset": 0,
+      "type": "bold"
+    }
+  ],
   "disable_notification": true,
   "hide_results_until_closes": true,
   "is_anonymous": false,

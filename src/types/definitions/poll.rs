@@ -202,12 +202,6 @@ impl RegularPoll {
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Quiz {
-    /// 0-based identifier of the correct answer option.
-    ///
-    /// Available only for a closed quiz,
-    /// or was sent (not forwarded) by the bot or
-    /// to the private chat with the bot.
-    pub correct_option_id: Integer,
     /// Unique identifier of the quiz.
     pub id: String,
     /// Indicates whether the quiz is anonymous.
@@ -227,6 +221,11 @@ pub struct Quiz {
     pub total_voter_count: Integer,
     /// Point in time (Unix timestamp) when the quiz will be automatically closed.
     pub close_date: Option<Integer>,
+    /// Array of 0-based identifiers of the correct answer options.
+    ///
+    /// Available only for polls in quiz mode which are closed
+    /// or were sent (not forwarded) by the bot or to the private chat with the bot.
+    pub correct_option_ids: Option<Vec<Integer>>,
     /// Text that is shown when a user chooses an incorrect answer or
     /// taps on the lamp icon; 0-200 characters.
     #[serde(
@@ -252,7 +251,6 @@ impl Quiz {
         B: Into<Text>,
     {
         Self {
-            correct_option_id: 0,
             id: id.into(),
             is_anonymous: false,
             is_closed: false,
@@ -260,6 +258,7 @@ impl Quiz {
             question: question.into(),
             total_voter_count: 0,
             close_date: None,
+            correct_option_ids: None,
             explanation: None,
             open_period: None,
         }
@@ -275,13 +274,16 @@ impl Quiz {
         self
     }
 
-    /// Sets a new correct option ID.
+    /// Sets a new list of correct option IDs.
     ///
     /// # Arguments
     ///
-    /// * `value` - 0-based identifier of the correct answer option.
-    pub fn with_correct_option_id(mut self, value: Integer) -> Self {
-        self.correct_option_id = value;
+    /// * `value` - 0-based identifiers of the correct answer options.
+    pub fn with_correct_option_ids<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = Integer>,
+    {
+        self.correct_option_ids = Some(value.into_iter().collect());
         self
     }
 

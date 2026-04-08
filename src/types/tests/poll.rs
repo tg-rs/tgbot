@@ -15,7 +15,7 @@ fn poll() {
 fn quiz() {
     insta::assert_json_snapshot!(Poll::from(
         Quiz::new("poll-id", "Rust?")
-            .with_correct_option_id(0)
+            .with_correct_option_ids([0])
             .with_explanation(Text::from("text").with_entities(vec![TextEntity::bold(0..2)].into_iter().collect()))
             .with_is_anonymous(true)
             .with_is_closed(true)

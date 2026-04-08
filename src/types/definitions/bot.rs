@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Form, Method, Payload},
-    types::{ChatAdministratorRights, ChatId, InputProfilePhoto, InputProfilePhotoError, Integer, StarAmount},
+    types::{ChatAdministratorRights, ChatId, InputProfilePhoto, InputProfilePhotoError, Integer, StarAmount, User},
 };
 
 /// Represents information about a bot returned in [`GetBot`].
@@ -411,6 +411,16 @@ impl BotShortDescription {
             short_description: value.into(),
         }
     }
+}
+
+/// Contains information about the creation, token update,
+/// or owner update of a bot that is managed by the current bot.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct ManagedBotUpdated {
+    /// Information about the bot.
+    pub bot: User,
+    /// User that created the bot.
+    pub user: User,
 }
 
 /// Closes a bot instance before moving it from one local server to another.

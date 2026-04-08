@@ -1,0 +1,19 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "managed_bot": {
+    "bot": {
+      "first_name": "test",
+      "id": 1,
+      "is_bot": true
+    },
+    "user": {
+      "first_name": "test",
+      "id": 2,
+      "is_bot": false
+    }
+  }
+}

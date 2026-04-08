@@ -339,6 +339,22 @@ fn inline_query() {
 }
 
 #[test]
+fn managed_bot_updated() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::ManagedBot(ManagedBotUpdated {
+            bot: User::new(1, "test", true),
+            user: User::new(2, "test", false),
+        }),
+    );
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 2);
+
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn message() {
     let expected_struct = Update::new(
         1,

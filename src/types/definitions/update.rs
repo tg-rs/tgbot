@@ -19,6 +19,7 @@ use crate::{
         ChosenInlineResult,
         InlineQuery,
         Integer,
+        ManagedBotUpdated,
         MaybeInaccessibleMessage,
         Message,
         MessageReactionCountUpdated,
@@ -100,6 +101,7 @@ impl Update {
             UpdateType::ChosenInlineResult(x) => &x.from,
             UpdateType::DeletedBusinessMessages(_) => return None,
             UpdateType::InlineQuery(x) => &x.from,
+            UpdateType::ManagedBot(x) => &x.user,
             UpdateType::Message(x)
             | UpdateType::BusinessMessage(x)
             | UpdateType::EditedBusinessMessage(x)
@@ -201,6 +203,8 @@ pub enum UpdateType {
     ///
     /// [1]: https://core.telegram.org/bots/api#inline-mode
     InlineQuery(Box<InlineQuery>),
+    /// A new bot was created to be managed by the bot, or token or owner of a managed bot was changed.
+    ManagedBot(ManagedBotUpdated),
     /// A new incoming message.
     Message(Box<Message>),
     /// A reaction to a message was changed by a user.

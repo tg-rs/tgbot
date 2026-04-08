@@ -47,6 +47,7 @@ fn send_quiz() {
     assert_payload_eq!(POST JSON "sendPoll" => method);
     let method = SendQuiz::new(1, "Q", [0], ["O1", "O2"])
         .with_allow_paid_broadcast(true)
+        .with_allows_multiple_answers(true)
         .with_business_connection_id("id")
         .with_disable_notification(true)
         .with_is_anonymous(false)

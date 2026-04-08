@@ -674,6 +674,16 @@ impl SendQuiz {
         self
     }
 
+    /// Sets a new value for the `allows_multiple_answers` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the poll allows multiple answers; default - `false`.
+    pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
+        self.inner.allows_multiple_answers = Some(value);
+        self
+    }
+
     /// Sets a new business connection ID.
     ///
     /// # Arguments

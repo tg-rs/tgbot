@@ -574,6 +574,7 @@ struct PollParameters {
     chat_id: ChatId,
     options: Vec<InputPollOption>,
     question: String,
+    allow_adding_options: Option<bool>,
     allow_paid_broadcast: Option<bool>,
     allows_multiple_answers: Option<bool>,
     allows_revoting: Option<bool>,
@@ -609,6 +610,7 @@ impl PollParameters {
             chat_id,
             options: options.into_iter().map(Into::into).collect(),
             question,
+            allow_adding_options: None,
             allow_paid_broadcast: None,
             allows_multiple_answers: None,
             allows_revoting: None,
@@ -631,6 +633,20 @@ impl PollParameters {
             reply_markup: None,
             reply_parameters: None,
             shuffle_options: None,
+        }
+    }
+
+    fn set_allow_adding_options(&mut self, value: bool) {
+        self.allow_adding_options = Some(value);
+        if value && self.is_anonymous.unwrap_or(false) {
+            self.is_anonymous = None;
+        }
+    }
+
+    fn set_is_anonymous(&mut self, value: bool) {
+        self.is_anonymous = Some(value);
+        if value && self.allow_adding_options.unwrap_or(false) {
+            self.allow_adding_options = None;
         }
     }
 }
@@ -664,6 +680,18 @@ impl SendQuiz {
         let mut parameters = PollParameters::new(chat_id.into(), question.into(), PollType::Quiz, options);
         parameters.correct_option_ids = Some(correct_option_ids.into_iter().collect());
         Self { inner: parameters }
+    }
+
+    /// Sets a new value for the `allow_adding_options` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether answer options can be added to the poll after creation.
+    ///
+    /// `is_anonymous` will be set to [`None`] when it is set to `true` and the value is `true`.
+    pub fn with_allow_adding_options(mut self, value: bool) -> Self {
+        self.inner.set_allow_adding_options(value);
+        self
     }
 
     /// Sets a new value for the `allow_paid_broadcast` flag.
@@ -786,8 +814,10 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * `value` - Indicates whether the quiz needs to be anonymous; default - `true`.
+    ///
+    /// `allow_adding_options` will be set to [`None`] if the `value` is `true`.
     pub fn with_is_anonymous(mut self, value: bool) -> Self {
-        self.inner.is_anonymous = Some(value);
+        self.inner.set_is_anonymous(value);
         self
     }
 
@@ -949,6 +979,18 @@ impl SendPoll {
         }
     }
 
+    /// Sets a new value for the `allow_adding_options` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether answer options can be added to the poll after creation.
+    ///
+    /// `is_anonymous` will be set to [`None`] when it is set to `true` and the value is `true`.
+    pub fn with_allow_adding_options(mut self, value: bool) -> Self {
+        self.inner.set_allow_adding_options(value);
+        self
+    }
+
     /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments
@@ -1025,8 +1067,10 @@ impl SendPoll {
     /// # Arguments
     ///
     /// * `value` - Indicates whether the poll needs to be anonymous; default - `true`.
+    ///
+    /// `allow_adding_options` will be set to [`None`] if the `value` is `true`.
     pub fn with_is_anonymous(mut self, value: bool) -> Self {
-        self.inner.is_anonymous = Some(value);
+        self.inner.set_is_anonymous(value);
         self
     }
 

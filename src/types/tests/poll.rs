@@ -46,6 +46,7 @@ fn send_quiz() {
     let method = method.with_question_parse_mode(ParseMode::MarkdownV2);
     assert_payload_eq!(POST JSON "sendPoll" => method);
     let method = SendQuiz::new(1, "Q", [0], ["O1", "O2"])
+        .with_allow_adding_options(true)
         .with_allow_paid_broadcast(true)
         .with_allows_multiple_answers(true)
         .with_allows_revoting(false)
@@ -71,6 +72,7 @@ fn send_poll() {
     let method = method.with_question_parse_mode(ParseMode::MarkdownV2);
     assert_payload_eq!(POST JSON "sendPoll" => method);
     let method = SendPoll::new(1, "Q", ["O1", "O2"])
+        .with_allow_adding_options(true)
         .with_allow_paid_broadcast(true)
         .with_allows_multiple_answers(true)
         .with_allows_revoting(true)

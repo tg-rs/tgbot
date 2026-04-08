@@ -1,0 +1,10 @@
+---
+source: src/types/tests/reply.rs
+expression: actual_data
+---
+{
+  "button": {
+    "text": "test"
+  },
+  "user_id": 1
+}

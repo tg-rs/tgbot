@@ -64,6 +64,18 @@ fn login_url() {
 }
 
 #[test]
+fn prepared_keyboard_button() {
+    let expected_struct = PreparedKeyboardButton::from("test");
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn save_prepared_keyboard_button() {
+    let method = SavePreparedKeyboardButton::new(1, KeyboardButton::new("test"));
+    assert_payload_eq!(POST JSON "savePreparedKeyboardButton" => method);
+}
+
+#[test]
 fn switch_inline_query_chosen_chat() {
     let expected_struct = SwitchInlineQueryChosenChat::new("query");
     insta::assert_json_snapshot!(expected_struct.clone());

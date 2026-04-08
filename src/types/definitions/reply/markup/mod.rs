@@ -3,10 +3,11 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
-pub use self::{force_reply::*, inline_keyboard::*, reply_keyboard::*};
+pub use self::{force_reply::*, inline_keyboard::*, prepared::*, reply_keyboard::*};
 
 mod force_reply;
 mod inline_keyboard;
+mod prepared;
 mod reply_keyboard;
 
 /// Represents a reply markup.

@@ -5,6 +5,7 @@ expression: actual_data
 {
   "allow_paid_broadcast": true,
   "allows_multiple_answers": true,
+  "allows_revoting": false,
   "business_connection_id": "id",
   "chat_id": 1,
   "correct_option_ids": [

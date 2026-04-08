@@ -576,6 +576,7 @@ struct PollParameters {
     question: String,
     allow_paid_broadcast: Option<bool>,
     allows_multiple_answers: Option<bool>,
+    allows_revoting: Option<bool>,
     business_connection_id: Option<String>,
     close_date: Option<Integer>,
     correct_option_ids: Option<Vec<Integer>>,
@@ -609,6 +610,7 @@ impl PollParameters {
             question,
             allow_paid_broadcast: None,
             allows_multiple_answers: None,
+            allows_revoting: None,
             business_connection_id: None,
             close_date: None,
             correct_option_ids: None,
@@ -681,6 +683,17 @@ impl SendQuiz {
     /// * `value` - Indicates whether the poll allows multiple answers; default - `false`.
     pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
         self.inner.allows_multiple_answers = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `allows_revoting` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether if the poll allows to change chosen answer options,
+    ///   defaults to false.
+    pub fn with_allows_revoting(mut self, value: bool) -> Self {
+        self.inner.allows_revoting = Some(value);
         self
     }
 
@@ -943,6 +956,17 @@ impl SendPoll {
     /// * `value` - Indicates whether the poll allows multiple answers; default - `false`.
     pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
         self.inner.allows_multiple_answers = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `allows_revoting` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether if the poll allows to change chosen answer options,
+    ///   defaults to True.
+    pub fn with_allows_revoting(mut self, value: bool) -> Self {
+        self.inner.allows_revoting = Some(value);
         self
     }
 

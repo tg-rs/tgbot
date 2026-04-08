@@ -445,11 +445,11 @@ fn poll() {
 fn poll_answer() {
     let expected_struct = Update::new(
         1,
-        UpdateType::PollAnswer(Box::new(PollAnswer {
-            poll_id: String::from("poll-id"),
-            voter: PollAnswerVoter::User(User::new(1, "John", false)),
-            option_ids: vec![0],
-        })),
+        UpdateType::PollAnswer(Box::new(PollAnswer::new(
+            [0],
+            "poll-id",
+            PollAnswerVoter::User(User::new(1, "John", false)),
+        ))),
     );
     assert!(expected_struct.get_chat_id().is_none());
     assert!(expected_struct.get_chat_username().is_none());

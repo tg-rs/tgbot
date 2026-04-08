@@ -6,6 +6,7 @@ expression: "PollAnswer::new([0], \"poll-id\", User::new(1, \"User\", false))"
   "option_ids": [
     0
   ],
+  "option_persistent_ids": [],
   "poll_id": "poll-id",
   "user": {
     "first_name": "User",

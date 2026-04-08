@@ -8,6 +8,7 @@ expression: expected_struct
     "option_ids": [
       0
     ],
+    "option_persistent_ids": [],
     "poll_id": "poll-id",
     "user": {
       "first_name": "John",

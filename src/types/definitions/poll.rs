@@ -562,6 +562,10 @@ pub struct PollAnswer {
     ///
     /// May be empty if the user retracted their vote.
     pub option_ids: Vec<Integer>,
+    /// Persistent identifiers of the chosen answer options.
+    ///
+    /// May be empty if the vote was retracted.
+    pub option_persistent_ids: Vec<String>,
     /// Unique poll identifier.
     pub poll_id: String,
     /// The chat or the user that changed answer to the poll.
@@ -585,6 +589,7 @@ impl PollAnswer {
     {
         Self {
             option_ids: option_ids.into_iter().collect(),
+            option_persistent_ids: vec![],
             poll_id: poll_id.into(),
             voter: voter.into(),
         }

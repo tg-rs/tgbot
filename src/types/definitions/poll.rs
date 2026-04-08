@@ -76,6 +76,8 @@ impl RawQuestion {
 pub struct RegularPoll {
     /// Indicates whether the poll allows multiple answers.
     pub allows_multiple_answers: bool,
+    /// Whether the poll allows to change the chosen answer options.
+    pub allows_revoting: bool,
     /// Unique identifier of the poll.
     pub id: String,
     /// Indicates whether the poll is anonymous.
@@ -113,6 +115,7 @@ impl RegularPoll {
     {
         Self {
             allows_multiple_answers: false,
+            allows_revoting: false,
             id: id.into(),
             is_anonymous: false,
             is_closed: false,
@@ -131,6 +134,16 @@ impl RegularPoll {
     /// * `value` - Indicates whether the poll allows multiple answers.
     pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
         self.allows_multiple_answers = value;
+        self
+    }
+
+    /// Sets a new value for the `allows_revoting` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the poll allows to change the chosen answer options.
+    pub fn with_allows_revoting(mut self, value: bool) -> Self {
+        self.allows_revoting = value;
         self
     }
 
@@ -202,6 +215,8 @@ impl RegularPoll {
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Quiz {
+    /// Whether the poll allows to change the chosen answer options.
+    pub allows_revoting: bool,
     /// Unique identifier of the quiz.
     pub id: String,
     /// Indicates whether the quiz is anonymous.
@@ -251,6 +266,7 @@ impl Quiz {
         B: Into<Text>,
     {
         Self {
+            allows_revoting: false,
             id: id.into(),
             is_anonymous: false,
             is_closed: false,
@@ -262,6 +278,16 @@ impl Quiz {
             explanation: None,
             open_period: None,
         }
+    }
+
+    /// Sets a new value for the `allows_revoting` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the poll allows to change the chosen answer options.
+    pub fn with_allows_revoting(mut self, value: bool) -> Self {
+        self.allows_revoting = value;
+        self
     }
 
     /// Sets a new close date.

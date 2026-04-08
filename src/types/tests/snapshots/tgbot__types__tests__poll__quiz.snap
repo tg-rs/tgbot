@@ -4,6 +4,7 @@ expression: "Poll::from(Quiz::new(\"poll-id\",\n\"Rust?\").with_correct_option_i
 ---
 {
   "type": "quiz",
+  "allows_revoting": false,
   "id": "poll-id",
   "is_anonymous": true,
   "is_closed": true,

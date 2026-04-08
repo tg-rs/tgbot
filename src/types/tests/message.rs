@@ -486,17 +486,14 @@ fn pinned_message() {
 #[test]
 fn poll() {
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::Poll(Poll::Regular(RegularPoll {
-        id: String::from("poll-id"),
-        question: Text::from("Rust?"),
-        options: vec![PollOption::new("Yes", 1000), PollOption::new("No", 0)],
-        total_voter_count: 100,
-        is_closed: true,
-        is_anonymous: true,
-        allows_multiple_answers: false,
-        open_period: None,
-        close_date: None,
-    }));
+    expected_struct.data = MessageData::Poll(Poll::Regular(
+        RegularPoll::new("poll-id", "Rust?")
+            .with_allows_multiple_answers(false)
+            .with_is_anonymous(true)
+            .with_is_closed(true)
+            .with_options([PollOption::new("Yes", 1000), PollOption::new("No", 0)])
+            .with_total_voter_count(100),
+    ));
     insta::assert_json_snapshot!(expected_struct);
 }
 

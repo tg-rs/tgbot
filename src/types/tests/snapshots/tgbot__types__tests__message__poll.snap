@@ -20,6 +20,7 @@ expression: expected_struct
   "poll": {
     "type": "regular",
     "allows_multiple_answers": false,
+    "allows_revoting": false,
     "id": "poll-id",
     "is_anonymous": true,
     "is_closed": true,

@@ -140,6 +140,12 @@ fn log_out() {
 }
 
 #[test]
+fn replace_managed_bot_token() {
+    let method = ReplaceManagedBotToken::from(1);
+    assert_payload_eq!(POST JSON "replaceManagedBotToken" => method);
+}
+
+#[test]
 fn set_bot_commands() {
     let method = SetBotCommands::new(vec![BotCommand::new("name", "description").unwrap()]);
     assert_payload_eq!(POST JSON "setMyCommands" => method.clone());

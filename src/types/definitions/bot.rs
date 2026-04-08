@@ -703,6 +703,26 @@ impl Method for LogOut {
     }
 }
 
+/// Revokes the current token of a managed bot and generates a new one.
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct ReplaceManagedBotToken {
+    user_id: Integer,
+}
+
+impl From<Integer> for ReplaceManagedBotToken {
+    fn from(value: Integer) -> Self {
+        Self { user_id: value }
+    }
+}
+
+impl Method for ReplaceManagedBotToken {
+    type Response = String;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("replaceManagedBotToken", self)
+    }
+}
+
 /// Changes a list of commands of a bot.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]

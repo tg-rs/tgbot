@@ -421,6 +421,15 @@ fn new_chat_title() {
 }
 
 #[test]
+fn managed_bot_created() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::ManagedBotCreated(MessageDataManagedBotCreated {
+        user: User::new(1, "test", true),
+    });
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn paid_media() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::PaidMedia(PaidMediaInfo::new(

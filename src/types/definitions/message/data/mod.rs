@@ -172,6 +172,8 @@ pub enum MessageData {
     LeftChatMember(User),
     /// Information about the shared location.
     Location(Location),
+    /// User created a bot that will be managed by the current bot.
+    ManagedBotCreated(MessageDataManagedBotCreated),
     /// The supergroup has been migrated from a group with the specified identifier.
     MigrateFromChatId(Integer),
     /// The group has been migrated to a supergroup with the specified identifier.
@@ -557,6 +559,13 @@ impl MessageDataForumTopicEdited {
         self.icon_custom_emoji_id = Some(value.into());
         self
     }
+}
+
+/// Contains information about the bot that was created to be managed by the current bot.
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct MessageDataManagedBotCreated {
+    /// Information about the bot.
+    pub user: User,
 }
 
 /// Describes a service message about a change in the price of paid messages within a chat.

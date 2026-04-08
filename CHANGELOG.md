@@ -1,5 +1,48 @@
 # Changelog
 
+
+## 0.44.0 (08.04.2026)
+
+### Bot API
+
+#### 9.6
+
+- Added types: `GetManagedBotToken`, `KeyboardButtonRequestManagedBot`,
+  `ManagedBotUpdated`, `MessageDataManagedBotCreated`, `MessageDataPollOptionAdded`,
+  `MessageDataPollOptionDeleted`, `PreparedKeyboardButton`,
+  `ReplaceManagedBotToken`, `SavePreparedKeyboardButton`.
+- Added enum variants:
+  - `MessageData`: `ManagedBotCreated`, `PollOptionAdded`, `PollOptionDeleted`.
+  - `UpdateType`: `ManagedBot`.
+- Added fields:
+  - `Bot`: `can_manage_bots`.
+  - `Message`: `reply_to_poll_option_id`.
+  - `PollAnswer`: `option_persistent_ids`.
+  - `PollOption`: `added_by_chat`, `added_by_user`, `addition_date`, `persistent_id`.
+  - `RegularPoll`: `allows_revoting`, `description`.
+  - `Quiz`: `allows_revoting`, `correct_option_ids`, `description`.
+- Added methods:
+  - `Bot`: `with_can_manage_bots`.
+  - `KeyboardButton`: `with_request_managed_bot`.
+  - `Message`: `with_reply_to_poll_option_id`.
+  - `PollOption`: `with_added_by_chat`, `with_added_by_user`, `with_addition_date`.
+  - `Quiz`: `with_allows_revoting`, `with_correct_option_ids`, `with_description`.
+  - `RegularPoll`: `with_allows_revoting`, `with_description`.
+  - `ReplyParameters`: `with_poll_option_id`.
+  - `SendPoll`: `with_allow_adding_options`, `with_allows_revoting`,
+    `with_description`, `with_description_entities`, `with_description_parse_mode`,
+    `with_hide_results_until_closes`, `with_shuffle_options`.
+  - `SendQuiz`: `with_allow_adding_options`, `with_allows_multiple_answers`,
+    `with_description`, `with_description_entities`, `with_description_parse_mode`,
+    `with_allows_revoting`, `with_hide_results_until_closes`, `with_shuffle_options`.
+- Changed signature:
+  - `PollOption`: added `persistent_id` argument to the `new` method.
+  - `SendQuiz`: replaced `correct_option_id` by correction_option_ids in the `new` method.
+- Removed fields:
+  - `Quiz`: `correct_option_id`.
+- Removed methods:
+  - `Quiz`: `with_correct_option_id`.
+
 ## 0.43.0 (02.03.2026)
 
 ### Types

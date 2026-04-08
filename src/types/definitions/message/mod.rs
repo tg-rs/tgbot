@@ -128,6 +128,8 @@ pub struct Message {
     pub reply_to: Option<ReplyTo>,
     /// Identifier of the specific checklist task that is being replied to.
     pub reply_to_checklist_task_id: Option<Integer>,
+    /// Persistent identifier of the specific poll option that is being replied to.
+    pub reply_to_poll_option_id: Option<String>,
     /// Number of boosts added by the user.
     ///
     /// Contains a value only if the sender of the message boosted the chat.
@@ -194,6 +196,7 @@ impl Message {
             reply_markup: None,
             reply_to: None,
             reply_to_checklist_task_id: None,
+            reply_to_poll_option_id: None,
             sender_boost_count: None,
             sender_business_bot: None,
             sender_tag: None,
@@ -504,6 +507,19 @@ impl Message {
     /// * `value` - Identifier of the specific checklist task that is being replied to.
     pub fn with_reply_to_checklist_task_id(mut self, value: Integer) -> Self {
         self.reply_to_checklist_task_id = Some(value);
+        self
+    }
+
+    /// Sets a new reply poll option ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Persistent ID of the option
+    pub fn with_reply_to_poll_option_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.reply_to_poll_option_id = Some(value.into());
         self
     }
 

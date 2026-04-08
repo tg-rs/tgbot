@@ -101,6 +101,16 @@ fn reply_keyboard_markup() {
                 .with_bot_is_member(true),
         ),
         KeyboardButton::new("request location").with_request_location(),
+        KeyboardButton::new("request managed bot").with_request_managed_bot(KeyboardButtonRequestManagedBot::new(1)),
+        KeyboardButton::new("request managed bot with name")
+            .with_request_managed_bot(KeyboardButtonRequestManagedBot::new(1).with_suggested_name("test")),
+        KeyboardButton::new("request managed bot with username")
+            .with_request_managed_bot(KeyboardButtonRequestManagedBot::new(1).with_suggested_username("test")),
+        KeyboardButton::new("request managed bot with name and username").with_request_managed_bot(
+            KeyboardButtonRequestManagedBot::new(1)
+                .with_suggested_name("test name")
+                .with_suggested_username("test username"),
+        ),
         KeyboardButton::new("request quiz").with_request_poll(PollType::Quiz),
         KeyboardButton::new("request regular poll").with_request_poll(PollType::Regular),
         KeyboardButton::new("request any poll").with_request_poll(None),

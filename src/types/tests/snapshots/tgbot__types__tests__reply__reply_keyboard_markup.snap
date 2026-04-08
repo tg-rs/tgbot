@@ -80,6 +80,34 @@ expression: "ReplyMarkup::from(ReplyKeyboardMarkup::from(vec![row.clone()]).with
         "request_location": true
       },
       {
+        "text": "request managed bot",
+        "request_managed_bot": {
+          "request_id": 1
+        }
+      },
+      {
+        "text": "request managed bot with name",
+        "request_managed_bot": {
+          "request_id": 1,
+          "suggested_name": "test"
+        }
+      },
+      {
+        "text": "request managed bot with username",
+        "request_managed_bot": {
+          "request_id": 1,
+          "suggested_username": "test"
+        }
+      },
+      {
+        "text": "request managed bot with name and username",
+        "request_managed_bot": {
+          "request_id": 1,
+          "suggested_name": "test name",
+          "suggested_username": "test username"
+        }
+      },
+      {
         "text": "request quiz",
         "request_poll": {
           "type": "quiz"

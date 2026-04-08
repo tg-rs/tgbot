@@ -148,6 +148,7 @@ enum KeyboardButtonType {
     RequestChat(KeyboardButtonRequestChat),
     RequestContact(True),
     RequestLocation(True),
+    RequestManagedBot(KeyboardButtonRequestManagedBot),
     RequestPoll(KeyboardButtonPollType),
     RequestUsers(KeyboardButtonRequestUsers),
     WebApp(WebAppInfo),
@@ -242,6 +243,24 @@ impl KeyboardButton {
         self
     }
 
+    /// Changes button type to a managed bot request.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The managed bot request.
+    ///
+    /// Pressing the button will ask the user to create and share
+    /// a bot that will be managed by the current bot.
+    ///
+    /// Available for bots that enabled management of other bots in the
+    /// @BotFather Mini App.
+    ///
+    /// Available in private chats only.
+    pub fn with_request_managed_bot(mut self, value: KeyboardButtonRequestManagedBot) -> Self {
+        self.button_type = Some(KeyboardButtonType::RequestManagedBot(value));
+        self
+    }
+
     /// Changes button type to a poll request.
     ///
     /// # Arguments
@@ -254,11 +273,11 @@ impl KeyboardButton {
     /// Otherwise, the user will be allowed to create a poll of any type.
     ///
     /// Available in private chats only.
-    pub fn with_request_poll<T>(mut self, button_type: T) -> Self
+    pub fn with_request_poll<T>(mut self, value: T) -> Self
     where
         T: Into<KeyboardButtonPollType>,
     {
-        self.button_type = Some(KeyboardButtonType::RequestPoll(button_type.into()));
+        self.button_type = Some(KeyboardButtonType::RequestPoll(value.into()));
         self
     }
 
@@ -287,8 +306,8 @@ impl KeyboardButton {
     /// The Web App will be able to send a [`crate::types::MessageData::WebAppData`] message.
     ///
     /// Available in private chats only.
-    pub fn with_web_app(mut self, web_app_info: WebAppInfo) -> Self {
-        self.button_type = Some(KeyboardButtonType::WebApp(web_app_info));
+    pub fn with_web_app(mut self, value: WebAppInfo) -> Self {
+        self.button_type = Some(KeyboardButtonType::WebApp(value));
         self
     }
 }
@@ -303,6 +322,57 @@ pub enum KeyboardButtonStyle {
     Primary,
     /// Green.
     Success,
+}
+
+/// Defines the parameters for the creation of a managed bot.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+pub struct KeyboardButtonRequestManagedBot {
+    request_id: Integer,
+    suggested_name: Option<String>,
+    suggested_username: Option<String>,
+}
+
+impl KeyboardButtonRequestManagedBot {
+    /// Creates a new `KeyboardButtonRequestManagedBot`.
+    ///
+    /// # Arguments
+    ///
+    /// * `request_id` - Signed 32-bit identifier of the request;
+    ///   must be unique within the message.
+    pub fn new(request_id: Integer) -> Self {
+        Self {
+            request_id,
+            suggested_name: None,
+            suggested_username: None,
+        }
+    }
+
+    /// Sets a suggested name.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Suggested name for the bot.
+    pub fn with_suggested_name<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.suggested_name = Some(value.into());
+        self
+    }
+
+    /// Sets a suggested username.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Sets a suggested username.
+    pub fn with_suggested_username<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.suggested_username = Some(value.into());
+        self
+    }
 }
 
 /// Represents a type of a poll which is allowed to be created

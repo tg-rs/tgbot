@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/bot.rs
-expression: "Bot::new(1, \"loo_maclin_bot\",\n\"Loo\").with_last_name(\"Maclin\").with_can_connect_to_business(true).with_can_join_groups(true).with_can_read_all_group_messages(true).with_has_main_web_app(true).with_has_topics_enabled(false).with_supports_inline_queries(true)"
+expression: "Bot::new(1, \"loo_maclin_bot\",\n\"Loo\").with_last_name(\"Maclin\").with_can_connect_to_business(true).with_can_join_groups(true).with_can_manage_bots(false).with_can_read_all_group_messages(true).with_has_main_web_app(true).with_has_topics_enabled(false).with_supports_inline_queries(true)"
 ---
 {
   "first_name": "Loo",
@@ -9,6 +9,7 @@ expression: "Bot::new(1, \"loo_maclin_bot\",\n\"Loo\").with_last_name(\"Maclin\"
   "allows_users_to_create_topics": false,
   "can_connect_to_business": true,
   "can_join_groups": true,
+  "can_manage_bots": false,
   "can_read_all_group_messages": true,
   "has_main_web_app": true,
   "has_topics_enabled": false,

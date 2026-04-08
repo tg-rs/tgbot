@@ -7,6 +7,7 @@ fn bot() {
             .with_last_name("Maclin")
             .with_can_connect_to_business(true)
             .with_can_join_groups(true)
+            .with_can_manage_bots(false)
             .with_can_read_all_group_messages(true)
             .with_has_main_web_app(true)
             .with_has_topics_enabled(false)

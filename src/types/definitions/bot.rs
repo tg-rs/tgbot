@@ -23,6 +23,8 @@ pub struct Bot {
     pub can_connect_to_business: bool,
     /// Indicates whether the bot can be invited to groups.
     pub can_join_groups: bool,
+    /// Whether other bots can be created to be controlled by the bot.
+    pub can_manage_bots: bool,
     /// Indicates whether privacy mode is disabled, allowing the bot to read all group messages.
     pub can_read_all_group_messages: bool,
     /// Indicates whether the bot has a main Web App.
@@ -55,6 +57,7 @@ impl Bot {
             allows_users_to_create_topics: false,
             can_connect_to_business: false,
             can_join_groups: false,
+            can_manage_bots: false,
             can_read_all_group_messages: false,
             has_main_web_app: false,
             has_topics_enabled: false,
@@ -90,6 +93,16 @@ impl Bot {
     /// * `value` - Indicates whether the bot can be invited to groups.
     pub fn with_can_join_groups(mut self, value: bool) -> Self {
         self.can_join_groups = value;
+        self
+    }
+
+    /// Sets a new value for the `can_manage_bots` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether other bots can be created to be controlled by the bot.
+    pub fn with_can_manage_bots(mut self, value: bool) -> Self {
+        self.can_manage_bots = value;
         self
     }
 

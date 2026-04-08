@@ -4,7 +4,9 @@ expression: actual_data
 ---
 {
   "chat_id": 1,
-  "correct_option_id": 0,
+  "correct_option_ids": [
+    0
+  ],
   "options": [
     {
       "text": "X"

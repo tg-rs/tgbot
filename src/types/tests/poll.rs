@@ -39,13 +39,13 @@ fn poll_answer_voter() {
 
 #[test]
 fn send_quiz() {
-    let method = SendQuiz::new(1, "Q", 0, ["X"]);
+    let method = SendQuiz::new(1, "Q", [0], ["X"]);
     assert_payload_eq!(POST JSON "sendPoll" => method.clone());
     let method = method.with_question_entities([TextEntity::bold(0..1)]);
     assert_payload_eq!(POST JSON "sendPoll" => method.clone());
     let method = method.with_question_parse_mode(ParseMode::MarkdownV2);
     assert_payload_eq!(POST JSON "sendPoll" => method);
-    let method = SendQuiz::new(1, "Q", 0, ["O1", "O2"])
+    let method = SendQuiz::new(1, "Q", [0], ["O1", "O2"])
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
         .with_disable_notification(true)

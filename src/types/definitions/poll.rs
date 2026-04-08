@@ -578,7 +578,7 @@ struct PollParameters {
     allows_multiple_answers: Option<bool>,
     business_connection_id: Option<String>,
     close_date: Option<Integer>,
-    correct_option_id: Option<Integer>,
+    correct_option_ids: Option<Vec<Integer>>,
     disable_notification: Option<bool>,
     explanation: Option<String>,
     explanation_entities: Option<TextEntities>,
@@ -611,7 +611,7 @@ impl PollParameters {
             allows_multiple_answers: None,
             business_connection_id: None,
             close_date: None,
-            correct_option_id: None,
+            correct_option_ids: None,
             disable_notification: None,
             explanation: None,
             explanation_entities: None,
@@ -647,17 +647,18 @@ impl SendQuiz {
     ///
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `question` - Question; 1-300 characters.
-    /// * `correct_option_id` - 0-based identifier of the correct answer option.
+    /// * `correct_option_ids` - 0-based identifiers of the correct answer options.
     /// * `options` - Answer options; 2-12.
-    pub fn new<A, B, C, D>(chat_id: A, question: B, correct_option_id: Integer, options: C) -> Self
+    pub fn new<A, B, C, D, DI>(chat_id: A, question: B, correct_option_ids: C, options: D) -> Self
     where
         A: Into<ChatId>,
         B: Into<String>,
-        C: IntoIterator<Item = D>,
-        D: Into<InputPollOption>,
+        C: IntoIterator<Item = Integer>,
+        D: IntoIterator<Item = DI>,
+        DI: Into<InputPollOption>,
     {
         let mut parameters = PollParameters::new(chat_id.into(), question.into(), PollType::Quiz, options);
-        parameters.correct_option_id = Some(correct_option_id);
+        parameters.correct_option_ids = Some(correct_option_ids.into_iter().collect());
         Self { inner: parameters }
     }
 

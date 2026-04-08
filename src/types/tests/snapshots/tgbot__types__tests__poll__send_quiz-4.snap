@@ -6,7 +6,9 @@ expression: actual_data
   "allow_paid_broadcast": true,
   "business_connection_id": "id",
   "chat_id": 1,
-  "correct_option_id": 0,
+  "correct_option_ids": [
+    0
+  ],
   "disable_notification": true,
   "is_anonymous": false,
   "is_closed": false,

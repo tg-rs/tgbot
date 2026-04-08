@@ -97,6 +97,15 @@ pub struct RegularPoll {
     pub total_voter_count: Integer,
     /// Point in time (Unix timestamp) when the poll will be automatically closed.
     pub close_date: Option<Integer>,
+    /// Description of the poll.
+    ///
+    /// For a poll inside the message object only.
+    #[serde(
+        flatten,
+        deserialize_with = "PollDescription::deserialize_value",
+        serialize_with = "PollDescription::serialize_value"
+    )]
+    pub description: Option<Text>,
     /// Amount of time in seconds the poll will be active after creation.
     pub open_period: Option<Integer>,
 }
@@ -123,6 +132,7 @@ impl RegularPoll {
             question: question.into(),
             total_voter_count: 0,
             close_date: None,
+            description: None,
             open_period: None,
         }
     }
@@ -154,6 +164,19 @@ impl RegularPoll {
     /// * `value` - Point in time (Unix timestamp) when the poll will be automatically closed.
     pub fn with_close_date(mut self, value: Integer) -> Self {
         self.close_date = Some(value);
+        self
+    }
+
+    /// Sets a new description.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Description of the poll.
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<Text>,
+    {
+        self.description = Some(value.into());
         self
     }
 
@@ -241,6 +264,15 @@ pub struct Quiz {
     /// Available only for polls in quiz mode which are closed
     /// or were sent (not forwarded) by the bot or to the private chat with the bot.
     pub correct_option_ids: Option<Vec<Integer>>,
+    /// Description of the quiz.
+    ///
+    /// For a quiz inside the message object only.
+    #[serde(
+        flatten,
+        deserialize_with = "PollDescription::deserialize_value",
+        serialize_with = "PollDescription::serialize_value"
+    )]
+    pub description: Option<Text>,
     /// Text that is shown when a user chooses an incorrect answer or
     /// taps on the lamp icon; 0-200 characters.
     #[serde(
@@ -275,6 +307,7 @@ impl Quiz {
             total_voter_count: 0,
             close_date: None,
             correct_option_ids: None,
+            description: None,
             explanation: None,
             open_period: None,
         }
@@ -310,6 +343,19 @@ impl Quiz {
         T: IntoIterator<Item = Integer>,
     {
         self.correct_option_ids = Some(value.into_iter().collect());
+        self
+    }
+
+    /// Sets a new description.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Description of the quiz.
+    pub fn with_description<T>(mut self, value: T) -> Self
+    where
+        T: Into<Text>,
+    {
+        self.description = Some(value.into());
         self
     }
 
@@ -379,6 +425,38 @@ impl Quiz {
     pub fn with_total_voter_count(mut self, value: Integer) -> Self {
         self.total_voter_count = value;
         self
+    }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Deserialize, Serialize)]
+struct PollDescription {
+    description: String,
+    description_entities: Option<TextEntities>,
+}
+
+impl PollDescription {
+    fn deserialize_value<'de, D>(deserializer: D) -> Result<Option<Text>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Option::<PollDescription>::deserialize(deserializer).map(|x| {
+            x.map(|value| Text {
+                data: value.description,
+                entities: value.description_entities,
+            })
+        })
+    }
+
+    fn serialize_value<S>(value: &Option<Text>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let value = value.clone().map(|value| PollDescription {
+            description: value.data,
+            description_entities: value.entities,
+        });
+        value.serialize(serializer)
     }
 }
 

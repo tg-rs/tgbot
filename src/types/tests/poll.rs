@@ -6,6 +6,7 @@ fn poll() {
         RegularPoll::new("poll-id", "Rust?")
             .with_is_anonymous(true)
             .with_is_closed(true)
+            .with_description("test")
             .with_options([PollOption::new("Yes", 1000), PollOption::new("No", 0)])
             .with_total_voter_count(1000),
     ));
@@ -19,6 +20,7 @@ fn quiz() {
             .with_explanation(Text::from("text").with_entities(vec![TextEntity::bold(0..2)].into_iter().collect()))
             .with_is_anonymous(true)
             .with_is_closed(true)
+            .with_description(Text::from("test").with_entities(vec![TextEntity::bold(0..2)].into_iter().collect()))
             .with_options([PollOption::new("Yes", 1000), PollOption::new("No", 0)])
             .with_total_voter_count(100),
     ));

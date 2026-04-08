@@ -665,6 +665,26 @@ impl Method for GetBotStarBalance {
     }
 }
 
+/// Returns the token of a managed bot.
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct GetManagedBotToken {
+    user_id: Integer,
+}
+
+impl From<Integer> for GetManagedBotToken {
+    fn from(value: Integer) -> Self {
+        Self { user_id: value }
+    }
+}
+
+impl Method for GetManagedBotToken {
+    type Response = String;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getManagedBotToken", self)
+    }
+}
+
 /// Logs out from the Cloud Bot API.
 ///
 /// You must log out a bot before running it locally,

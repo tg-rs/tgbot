@@ -129,6 +129,12 @@ fn get_bot_star_balance() {
 }
 
 #[test]
+fn get_managed_bot_token() {
+    let method = GetManagedBotToken::from(1);
+    assert_payload_eq!(POST JSON "getManagedBotToken" => method);
+}
+
+#[test]
 fn log_out() {
     assert_payload_eq!(GET "logOut" => LogOut);
 }

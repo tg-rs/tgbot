@@ -40,11 +40,7 @@ impl Client {
         let client = {
             #[cfg(feature = "webpki-roots")]
             {
-                use rustls::RootCertStore;
-
-                let root_cert_store = RootCertStore {
-                    roots: webpki_roots::TLS_SERVER_ROOTS.to_vec(),
-                };
+                let root_cert_store = rustls::RootCertStore::from_iter(webpki_roots::TLS_SERVER_ROOTS.iter().cloned());
 
                 let tls_config = rustls::ClientConfig::builder()
                     .with_root_certificates(root_cert_store)
@@ -59,7 +55,7 @@ impl Client {
             #[cfg(not(feature = "webpki-roots"))]
             {
                 HttpClientBuilder::new()
-                    .use_rustls_tls()
+                    .tls_backend_rustls()
                     .build()
                     .map_err(ClientError::BuildClient)?
             }

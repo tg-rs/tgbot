@@ -37,10 +37,33 @@ impl Client {
     where
         T: Into<String>,
     {
-        let client = HttpClientBuilder::new()
-            .use_rustls_tls()
-            .build()
-            .map_err(ClientError::BuildClient)?;
+        let client = {
+            #[cfg(feature = "webpki-roots")]
+            {
+                use rustls::RootCertStore;
+
+                let root_cert_store = RootCertStore {
+                    roots: webpki_roots::TLS_SERVER_ROOTS.to_vec(),
+                };
+
+                let tls_config = rustls::ClientConfig::builder()
+                    .with_root_certificates(root_cert_store)
+                    .with_no_client_auth();
+
+                HttpClientBuilder::new()
+                    .tls_backend_preconfigured(tls_config)
+                    .build()
+                    .map_err(ClientError::BuildClient)?
+            }
+
+            #[cfg(not(feature = "webpki-roots"))]
+            {
+                HttpClientBuilder::new()
+                    .use_rustls_tls()
+                    .build()
+                    .map_err(ClientError::BuildClient)?
+            }
+        };
         Ok(Self::with_http_client(client, token))
     }
 

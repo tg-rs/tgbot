@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DecodedFragment"],"fn":["decode_whatwg_bytes"],"struct":["PercentDecodedBytesFragments","PercentDecodedWhatwgBytes"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["decode"],"struct":["PercentEncoded"],"type":["PercentEncodedForIri","PercentEncodedForUri"]};

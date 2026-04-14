@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Implement `VisitValueNaive` for the type."><title>impl_template_context_naive in iri_string - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="iri_string" data-themes="" data-resource-suffix="" data-rustdoc-version="1.97.0-nightly (17584a181 2026-04-13)" data-channel="nightly" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../static.files/storage-41dd4d93.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc macro"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">impl_template_context_naive</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../iri_string/index.html">iri_<wbr>string</a><span class="version">0.7.12</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">impl_<wbr>template_<wbr>context_<wbr>naive</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#synopsis" title="Synopsis">Synopsis</a></li><li><a href="#examples" title="Examples">Examples</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate iri_<wbr>string</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">iri_string</a></div><h1>Macro <span class="macro">impl_<wbr>template_<wbr>context_<wbr>naive</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/iri_string/template/context.rs.html#227-266">Source</a> </span></div><pre class="rust item-decl"><code>macro_rules! impl_template_context_naive {
+    ($ty:ty {
+        $(
+            $field:tt
+            $(: $var_name:literal)?
+            $(=&gt; $fn_visit:expr)?
+        ),*
+        $(,)?
+    }) =&gt; { ... };
+    (@ var_name $field:tt,) =&gt; { ... };
+    (@ var_name $field:tt, [ $var_name:literal ]) =&gt; { ... };
+    (@ fn_visit $fn_visit:expr) =&gt; { ... };
+    (@ fn_visit) =&gt; { ... };
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Implement <a href="template/context/trait.VisitValueNaive.html" title="trait iri_string::template::context::VisitValueNaive"><code>VisitValueNaive</code></a> for the type.</p>
+<h2 id="synopsis"><a class="doc-anchor" href="#synopsis">§</a>Synopsis</h2><div class="example-wrap"><pre class="language-text"><code>impl_template_context_naive! {
+    MyContextType {
+        my_field [ : &quot;var_name&quot; ] [ =&gt; fn_visit ]
+    }
+}</code></pre></div>
+<ul>
+<li><code>my_field</code> is the field name of <code>MyContextType</code>.
+<ul>
+<li>If the context type is tuple, use the index like <code>0</code> and <code>1</code>.</li>
+</ul>
+</li>
+<li><code>"var_name"</code> is a <code>&amp;str</code> literal for a variable name.
+<ul>
+<li>If omitted, <code>my_field</code> is used as a variable name.</li>
+</ul>
+</li>
+<li><code>fn_visit</code> is an expression of a visitor function for the field.
+<ul>
+<li>If omitted, <a href="template/context/fn.visit_value_naive.html" title="fn iri_string::template::context::visit_value_naive"><code>template::context::visit_value_naive</code></a>
+function will be used.</li>
+<li>The signature should be <code>fn fn_visit&lt;V: <a href="template/context/trait.Visitor.html" title="trait iri_string::template::context::Visitor">Visitor</a>&gt;(visitor: V,
+my_field_value: &amp;MyFieldType)</code></li>
+<li>Note that this function cannot be a closure, because it should be
+generic over <code>V: Visitor</code> parameter and the current Rust (as of Rust
+1.94) does not allow closures to be generic.</li>
+</ul>
+</li>
+</ul>
+<h2 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>iri_string::impl_template_context_naive;
+<span class="kw">use </span>iri_string::spec::UriSpec;
+<span class="kw">use </span>iri_string::template::UriTemplateStr;
+<span class="kw">use </span>iri_string::template::context::Visitor;
+
+<span class="kw">struct </span>MyContext {
+    id: <span class="prelude-ty">Option</span>&lt;u64&gt;,
+    name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
+    tags: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str],
+    children: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, usize)],
+    ignored: i32,
+}
+
+<span class="macro">impl_template_context_naive!</span> {
+    MyContext {
+        <span class="comment">// custom styling and custom field name.
+        </span>id: <span class="string">"user_id" </span>=&gt; my_visit_user_id,
+        <span class="comment">// custom field name.
+        </span>name: <span class="string">"username"</span>,
+        <span class="comment">// default styling and default field name.
+        </span>tags,
+        <span class="comment">// custom styling.
+        </span>children =&gt; my_visit_slice_assoc,
+    }
+}
+
+<span class="kw">fn </span>my_visit_user_id&lt;V&gt;(visitor: V, id: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;u64&gt;) -&gt; V::Result
+<span class="kw">where
+    </span>V: Visitor,
+{
+    <span class="kw">match </span>id {
+        <span class="prelude-val">Some</span>(v) =&gt; visitor.visit_string(<span class="macro">format_args!</span>(<span class="string">"{v:04}"</span>)),
+        <span class="prelude-val">None </span>=&gt; visitor.visit_undefined(),
+    }
+}
+
+<span class="kw">fn </span>my_visit_slice_assoc&lt;V, K, T&gt;(visitor: V, entries: <span class="kw-2">&amp;</span>[(K, T)]) -&gt; V::Result
+<span class="kw">where
+    </span>V: Visitor,
+    K: core::fmt::Display,
+    T: core::fmt::Display,
+{
+    visitor.visit_assoc_direct(entries.iter().map(|(k, v)| (k, v)))
+}
+
+<span class="kw">let </span>context = MyContext {
+    id: <span class="prelude-val">Some</span>(<span class="number">42</span>),
+    name: <span class="string">"foo"</span>,
+    tags: <span class="kw-2">&amp;</span>[<span class="string">"user"</span>, <span class="string">"admin"</span>],
+    children: <span class="kw-2">&amp;</span>[(<span class="string">"bar"</span>, <span class="number">99</span>), (<span class="string">"baz"</span>, <span class="number">314</span>)],
+    ignored: <span class="number">12345</span>,
+};
+
+<span class="comment">// The examples below requires `alloc` feature
+// to be enabled (for `.to_string()`).
+</span><span class="kw">let </span>id_user_template = UriTemplateStr::new(<span class="string">"{?user_id,username}"</span>).unwrap();
+<span class="macro">assert_eq!</span>(
+    id_user_template.expand::&lt;UriSpec, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;</span>context)<span class="question-mark">?</span>.to_string(),
+    <span class="string">"?user_id=0042&amp;username=foo"</span>,
+    <span class="string">"custom styling and custom field name is used"
+</span>);
+
+<span class="kw">let </span>tags_template = UriTemplateStr::new(<span class="string">"{?tags*}"</span>).unwrap();
+<span class="macro">assert_eq!</span>(
+    tags_template.expand::&lt;UriSpec, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;</span>context)<span class="question-mark">?</span>.to_string(),
+    <span class="string">"?tags=user&amp;tags=admin"
+</span>);
+
+<span class="kw">let </span>children_template = UriTemplateStr::new(<span class="string">"{?children*}"</span>).unwrap();
+<span class="macro">assert_eq!</span>(
+    children_template.expand::&lt;UriSpec, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;</span>context)<span class="question-mark">?</span>.to_string(),
+    <span class="string">"?bar=99&amp;baz=314"
+</span>);
+
+<span class="kw">let </span>ignored_template = UriTemplateStr::new(<span class="string">"{?ignored}"</span>).unwrap();
+<span class="macro">assert_eq!</span>(
+    ignored_template.expand::&lt;UriSpec, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;</span>context)<span class="question-mark">?</span>.to_string(),
+    <span class="string">""</span>,
+    <span class="string">"`ignored` field is not visited so the value is undefined"
+</span>);</code></pre></div>
+<p>For tuple struct:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>iri_string::impl_template_context_naive;
+<span class="kw">use </span>iri_string::spec::UriSpec;
+<span class="kw">use </span>iri_string::template::UriTemplateStr;
+<span class="kw">use </span>iri_string::template::context::Visitor;
+
+<span class="kw">struct </span>Utf8Check(bool);
+
+<span class="macro">impl_template_context_naive!</span> {
+    Utf8Check {
+        <span class="number">0</span>: <span class="string">"utf8" </span>=&gt; my_visit_utf8_bool,
+    }
+}
+
+<span class="kw">fn </span>my_visit_utf8_bool&lt;V&gt;(visitor: V, checked: <span class="kw-2">&amp;</span>bool) -&gt; V::Result
+<span class="kw">where
+    </span>V: Visitor,
+{
+    <span class="kw">if </span><span class="kw-2">*</span>checked {
+        <span class="comment">// U+2713 CHECK MARK
+        </span>visitor.visit_string(<span class="string">"\u{2713}"</span>)
+    } <span class="kw">else </span>{
+        visitor.visit_undefined()
+    }
+}
+
+<span class="kw">let </span>checked_ctx = Utf8Check(<span class="bool-val">true</span>);
+<span class="kw">let </span>unchecked_ctx = Utf8Check(<span class="bool-val">false</span>);
+
+<span class="comment">// The examples below requires `alloc` feature
+// to be enabled (for `.to_string()`).
+</span><span class="kw">let </span>utf8_template = UriTemplateStr::new(<span class="string">"{?utf8}"</span>).unwrap();
+<span class="macro">assert_eq!</span>(
+    utf8_template.expand::&lt;UriSpec, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;</span>checked_ctx)<span class="question-mark">?</span>.to_string(),
+    <span class="string">"?utf8=%E2%9C%93"
+</span>);
+<span class="macro">assert_eq!</span>(
+    utf8_template.expand::&lt;UriSpec, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;</span>unchecked_ctx)<span class="question-mark">?</span>.to_string(),
+    <span class="string">""
+</span>);</code></pre></div></div></details></section></div></main></body></html>

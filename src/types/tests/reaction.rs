@@ -46,6 +46,16 @@ fn delete_all_message_reactions() {
 }
 
 #[test]
+fn delete_message_reaction() {
+    let method = DeleteMessageReaction::new(1, 2);
+
+    assert_payload_eq!(POST JSON "deleteMessageReaction" => method.clone());
+
+    let method = method.with_actor_chat_id(3).with_user_id(4);
+    assert_payload_eq!(POST JSON "deleteMessageReaction" => method);
+}
+
+#[test]
 fn set_message_reaction() {
     let method = SetMessageReaction::new(1, 2);
     assert_payload_eq!(POST JSON "setMessageReaction" => method.clone());

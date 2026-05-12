@@ -1,0 +1,10 @@
+---
+source: src/types/tests/reaction.rs
+expression: actual_data
+---
+{
+  "actor_chat_id": 3,
+  "chat_id": 1,
+  "message_id": 2,
+  "user_id": 4
+}

@@ -407,3 +407,15 @@ fn answer_web_app_query() {
     );
     assert_payload_eq!(POST JSON "answerWebAppQuery" => method);
 }
+
+#[test]
+fn answer_guest_query() {
+    let method = AnswerGuestQuery::new("test", InlineQueryResultLocation::new("test", 2.0, 3.0, "test"));
+    assert_payload_eq!(POST JSON "answerGuestQuery" => method);
+}
+
+#[test]
+fn sent_guest_message() {
+    let expected_struct = SentGuestMessage::from("test");
+    insta::assert_json_snapshot!(expected_struct);
+}

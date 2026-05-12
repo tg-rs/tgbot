@@ -1,0 +1,14 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: actual_data
+---
+{
+  "guest_query_id": "test",
+  "result": {
+    "id": "test",
+    "latitude": 2.0,
+    "longitude": 3.0,
+    "title": "test",
+    "type": "location"
+  }
+}

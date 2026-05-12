@@ -1,0 +1,7 @@
+---
+source: src/types/tests/inline_mode.rs
+expression: expected_struct
+---
+{
+  "inline_message_id": "test"
+}

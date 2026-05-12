@@ -1,5 +1,6 @@
-pub use self::{prepared::*, query::*, result::*, web_app::*};
+pub use self::{guest::*, prepared::*, query::*, result::*, web_app::*};
 
+mod guest;
 mod prepared;
 mod query;
 mod result;

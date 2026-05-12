@@ -101,6 +101,14 @@ pub struct Message {
     /// For a message sent by a guest bot, this is the information about the user and chat.
     #[serde(flatten)]
     pub guest_bot: Option<MessageGuestBot>,
+    /// The unique identifier for the guest query.
+    ///
+    /// Use this identifier with the method [`AnswerGuestQuery`]
+    /// to send a response message.
+    ///
+    /// If non-empty, the message belongs to the chat where the guest bot was summoned,
+    /// which may not coincide with other existing bot chats sharing the same identifier.
+    pub guest_query_id: Option<String>,
     /// Indicates whether the message media is covered by a spoiler animation.
     pub has_media_spoiler: Option<bool>,
     /// Whether the message was sent by an implicit action.
@@ -189,6 +197,7 @@ impl Message {
             external_reply: None,
             forward_origin: None,
             guest_bot: None,
+            guest_query_id: None,
             has_media_spoiler: None,
             is_from_offline: None,
             is_paid_post: None,
@@ -392,6 +401,19 @@ impl Message {
     /// * `value` - Information for a message sent by a guest bot.
     pub fn with_guest_bot(mut self, value: MessageGuestBot) -> Self {
         self.guest_bot = Some(value);
+        self
+    }
+
+    /// Sets a new guest query ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The unique identifier for the guest query.
+    pub fn with_guest_query_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.guest_query_id = Some(value.into());
         self
     }
 

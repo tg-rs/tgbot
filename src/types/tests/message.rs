@@ -1477,6 +1477,14 @@ fn guest_bot() {
 }
 
 #[test]
+fn guest_query_id() {
+    let expected_struct = create_message_struct()
+        .with_data(MessageData::Text("test".into()))
+        .with_guest_query_id("query");
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn is_edited() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,

@@ -14,6 +14,7 @@ fn allowed_update() {
         ChosenInlineResult,
         EditedChannelPost,
         EditedMessage,
+        GuestMessage,
         InlineQuery,
         Message,
         MessageReaction,
@@ -312,6 +313,26 @@ fn edited_message() {
     assert_eq!(expected_struct.get_chat_username().unwrap(), "john_doe");
     assert_eq!(expected_struct.get_user_id().unwrap(), 1111);
     assert_eq!(expected_struct.get_user_username().unwrap(), "john_doe");
+
+    assert!(Message::try_from(expected_struct.clone()).is_ok());
+
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn guest_message() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::GuestMessage(Box::new(Message::new(
+            123,
+            456,
+            SupergroupChat::new(111, "Test"),
+            MessageData::Text(Text::from("test")),
+            User::new(112, "John", false),
+        ))),
+    );
+    assert_eq!(expected_struct.get_chat_id().unwrap(), 111);
+    assert_eq!(expected_struct.get_user_id().unwrap(), 112);
 
     assert!(Message::try_from(expected_struct.clone()).is_ok());
 

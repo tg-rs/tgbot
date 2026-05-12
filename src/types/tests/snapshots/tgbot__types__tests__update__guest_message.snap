@@ -1,0 +1,24 @@
+---
+source: src/types/tests/update.rs
+expression: expected_struct
+---
+{
+  "update_id": 1,
+  "guest_message": {
+    "chat": {
+      "type": "supergroup",
+      "id": 111,
+      "title": "Test"
+    },
+    "date": 456,
+    "has_protected_content": false,
+    "message_id": 123,
+    "is_automatic_forward": false,
+    "from": {
+      "first_name": "John",
+      "id": 112,
+      "is_bot": false
+    },
+    "text": "test"
+  }
+}

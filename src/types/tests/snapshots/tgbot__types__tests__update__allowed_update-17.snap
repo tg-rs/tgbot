@@ -2,4 +2,4 @@
 source: src/types/tests/update.rs
 expression: value
 ---
-"chat_member"
+"shipping_query"

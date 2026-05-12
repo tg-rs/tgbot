@@ -104,10 +104,11 @@ impl Update {
             UpdateType::ManagedBot(x) => &x.user,
             UpdateType::Message(x)
             | UpdateType::BusinessMessage(x)
-            | UpdateType::EditedBusinessMessage(x)
-            | UpdateType::EditedMessage(x)
             | UpdateType::ChannelPost(x)
-            | UpdateType::EditedChannelPost(x) => return x.sender.get_user(),
+            | UpdateType::EditedBusinessMessage(x)
+            | UpdateType::EditedChannelPost(x)
+            | UpdateType::EditedMessage(x)
+            | UpdateType::GuestMessage(x) => return x.sender.get_user(),
             UpdateType::MessageReaction(x) => return x.user.as_ref(),
             UpdateType::MessageReactionCount(_) => return None,
             UpdateType::Poll(_) => return None,
@@ -137,10 +138,11 @@ impl Update {
         match &self.update_type {
             UpdateType::Message(msg)
             | UpdateType::BusinessMessage(msg)
-            | UpdateType::EditedBusinessMessage(msg)
-            | UpdateType::EditedMessage(msg)
             | UpdateType::ChannelPost(msg)
-            | UpdateType::EditedChannelPost(msg) => Some(msg),
+            | UpdateType::EditedBusinessMessage(msg)
+            | UpdateType::EditedChannelPost(msg)
+            | UpdateType::EditedMessage(msg)
+            | UpdateType::GuestMessage(msg) => Some(msg),
             UpdateType::CallbackQuery(query) => match &query.message {
                 Some(MaybeInaccessibleMessage::Message(msg)) => Some(msg),
                 _ => None,
@@ -199,6 +201,8 @@ pub enum UpdateType {
     EditedChannelPost(Box<Message>),
     /// A new version of a message that is known to the bot and was edited.
     EditedMessage(Box<Message>),
+    /// A new guest message.
+    GuestMessage(Box<Message>),
     /// A new incoming [inline][1] query.
     ///
     /// [1]: https://core.telegram.org/bots/api#inline-mode
@@ -359,6 +363,7 @@ impl TryFrom<Update> for Message {
             | EditedBusinessMessage(x)
             | EditedChannelPost(x)
             | EditedMessage(x)
+            | GuestMessage(x)
             | ChannelPost(x)
             | Message(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
@@ -459,6 +464,8 @@ pub enum AllowedUpdate {
     EditedChannelPost,
     /// An edited message.
     EditedMessage,
+    /// A new guest message.
+    GuestMessage,
     /// An inline query.
     InlineQuery,
     /// A message.

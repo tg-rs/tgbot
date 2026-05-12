@@ -2,4 +2,4 @@
 source: src/types/tests/update.rs
 expression: value
 ---
-"shipping_query"
+"purchased_paid_media"

@@ -203,6 +203,66 @@ impl MessageReactionUpdated {
     }
 }
 
+/// Remove up to 10000 recent reactions in a group
+/// or a supergroup chat added by a given user or chat.
+///
+/// The bot must have the 'can_delete_messages' administrator right in the chat.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct DeleteAllMessageReactions {
+    chat_id: ChatId,
+    actor_chat_id: Option<Integer>,
+    user_id: Option<Integer>,
+}
+
+impl DeleteAllMessageReactions {
+    /// Creates a new `DeleteAllMessageReactions`.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier for the target chat.
+    pub fn new<T>(chat_id: T) -> Self
+    where
+        T: Into<ChatId>,
+    {
+        Self {
+            chat_id: chat_id.into(),
+            actor_chat_id: None,
+            user_id: None,
+        }
+    }
+
+    /// Sets a new actor chat ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Identifier of the chat whose reactions will be removed,
+    ///  if the reactions were added by a chat
+    pub fn with_actor_chat_id(mut self, value: Integer) -> Self {
+        self.actor_chat_id = Some(value);
+        self
+    }
+
+    /// Sets a new user ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Identifier of the user whose reactions will be removed,
+    ///   if the reactions were added by a user
+    pub fn with_user_id(mut self, value: Integer) -> Self {
+        self.user_id = Some(value);
+        self
+    }
+}
+
+impl Method for DeleteAllMessageReactions {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("deleteAllMessageReactions", self)
+    }
+}
+
 /// Changes the chosen reactions on a message.
 ///
 /// Service messages of some types can't be reacted to.

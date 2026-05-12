@@ -9,6 +9,7 @@ expression: "ChatPermissions::allowed()"
   "can_invite_users": true,
   "can_manage_topics": true,
   "can_pin_messages": true,
+  "can_react_to_messages": true,
   "can_send_audios": true,
   "can_send_documents": true,
   "can_send_messages": true,

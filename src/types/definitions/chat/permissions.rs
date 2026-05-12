@@ -310,6 +310,10 @@ pub struct ChatPermissions {
     ///
     /// Ignored in public supergroups.
     pub can_pin_messages: Option<bool>,
+    /// Indicates whether the user is allowed to react to messages.
+    ///
+    /// If omitted, defaults to the value of `can_send_messages`.
+    pub can_react_to_messages: Option<bool>,
     /// Indicates whether the user is allowed to send audios.
     pub can_send_audios: Option<bool>,
     /// Indicates whether the user is allowed to send documents.
@@ -341,6 +345,7 @@ impl ChatPermissions {
             can_invite_users: Some(false),
             can_manage_topics: Some(false),
             can_pin_messages: Some(false),
+            can_react_to_messages: Some(false),
             can_send_audios: Some(false),
             can_send_documents: Some(false),
             can_send_messages: Some(false),
@@ -362,6 +367,7 @@ impl ChatPermissions {
             can_invite_users: Some(true),
             can_manage_topics: Some(true),
             can_pin_messages: Some(true),
+            can_react_to_messages: Some(true),
             can_send_audios: Some(true),
             can_send_documents: Some(true),
             can_send_messages: Some(true),
@@ -431,6 +437,16 @@ impl ChatPermissions {
     /// * `value` - Permission to pin messages.
     pub fn with_can_pin_messages(mut self, value: bool) -> Self {
         self.can_pin_messages = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_react_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Permission to react to messages.
+    pub fn with_can_react_to_messages(mut self, value: bool) -> Self {
+        self.can_react_to_messages = Some(value);
         self
     }
 

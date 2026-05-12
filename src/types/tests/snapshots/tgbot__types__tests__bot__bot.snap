@@ -14,5 +14,6 @@ expression: "Bot::new(1, \"loo_maclin_bot\",\n\"Loo\").with_last_name(\"Maclin\"
   "has_main_web_app": true,
   "has_topics_enabled": false,
   "last_name": "Maclin",
+  "supports_guest_queries": false,
   "supports_inline_queries": true
 }

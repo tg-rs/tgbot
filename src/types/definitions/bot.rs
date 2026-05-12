@@ -33,6 +33,8 @@ pub struct Bot {
     pub has_topics_enabled: bool,
     /// The last name of the bot.
     pub last_name: Option<String>,
+    /// Indicates whether the bot supports guest queries from chats it is not a member of.
+    pub supports_guest_queries: bool,
     /// Indicates whether the bot supports inline queries.
     pub supports_inline_queries: bool,
 }
@@ -62,6 +64,7 @@ impl Bot {
             has_main_web_app: false,
             has_topics_enabled: false,
             last_name: None,
+            supports_guest_queries: false,
             supports_inline_queries: false,
         }
     }
@@ -146,6 +149,16 @@ impl Bot {
         T: Into<String>,
     {
         self.last_name = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `supports_guest_queries` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the bot supports guest queries.
+    pub fn with_supports_guest_queries(mut self, value: bool) -> Self {
+        self.supports_guest_queries = value;
         self
     }
 

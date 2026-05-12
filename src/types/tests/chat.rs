@@ -764,6 +764,7 @@ fn ban_chat_member() {
 #[test]
 fn get_chat_administrators() {
     assert_payload_eq!(POST JSON "getChatAdministrators" => GetChatAdministrators::new(1));
+    assert_payload_eq!(POST JSON "getChatAdministrators" => GetChatAdministrators::new(1).with_return_bots(true));
 }
 
 #[test]

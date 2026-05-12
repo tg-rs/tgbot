@@ -878,9 +878,11 @@ impl Method for BanChatMember {
 ///
 /// If the chat is a group or a supergroup and no administrators
 /// were appointed, only the creator will be returned.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct GetChatAdministrators {
     chat_id: ChatId,
+    return_bots: Option<bool>,
 }
 
 impl GetChatAdministrators {
@@ -895,7 +897,19 @@ impl GetChatAdministrators {
     {
         Self {
             chat_id: chat_id.into(),
+            return_bots: None,
         }
+    }
+
+    /// Sets a new value for the `return_bots` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to receive all bots that are administrators of the chat;
+    ///   by default, bots other tthan current bot are omitted.
+    pub fn with_return_bots(mut self, value: bool) -> Self {
+        self.return_bots = Some(value);
+        self
     }
 }
 

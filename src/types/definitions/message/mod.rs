@@ -1,10 +1,11 @@
 use serde::{Deserialize, Deserializer, Serialize};
 
-pub use self::{command::*, data::*, methods::*, origin::*, quote::*, reply::*, sender::*};
+pub use self::{command::*, data::*, guest::*, methods::*, origin::*, quote::*, reply::*, sender::*};
 use crate::types::{Chat, InlineKeyboardMarkup, Integer, LinkPreviewOptions, SuggestedPostInfo, Text, User};
 
 mod command;
 mod data;
+mod guest;
 mod methods;
 mod origin;
 mod quote;
@@ -97,6 +98,9 @@ pub struct Message {
     pub external_reply: Option<ExternalReplyInfo>,
     /// formation about the original message for forwarded messages.
     pub forward_origin: Option<MessageOrigin>,
+    /// For a message sent by a guest bot, this is the information about the user and chat.
+    #[serde(flatten)]
+    pub guest_bot: Option<MessageGuestBot>,
     /// Indicates whether the message media is covered by a spoiler animation.
     pub has_media_spoiler: Option<bool>,
     /// Whether the message was sent by an implicit action.
@@ -184,6 +188,7 @@ impl Message {
             effect_id: None,
             external_reply: None,
             forward_origin: None,
+            guest_bot: None,
             has_media_spoiler: None,
             is_from_offline: None,
             is_paid_post: None,
@@ -377,6 +382,16 @@ impl Message {
     /// * `value` - Information about the message origin.
     pub fn with_forward_origin(mut self, value: MessageOrigin) -> Self {
         self.forward_origin = Some(value);
+        self
+    }
+
+    /// Sets a new guest bot.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Information for a message sent by a guest bot.
+    pub fn with_guest_bot(mut self, value: MessageGuestBot) -> Self {
+        self.guest_bot = Some(value);
         self
     }
 

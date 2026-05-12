@@ -1465,6 +1465,18 @@ fn get_text_returns_none() {
 }
 
 #[test]
+fn guest_bot() {
+    let expected_struct = create_message_struct()
+        .with_data(MessageData::Text("test".into()))
+        .with_guest_bot(
+            MessageGuestBot::default()
+                .with_caller_chat(SupergroupChat::new(10001, "test"))
+                .with_caller_user(User::new(1000, "John", false)),
+        );
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn is_edited() {
     let msg: Message = serde_json::from_value(serde_json::json!({
         "message_id": 2, "date": 1,

@@ -3,13 +3,16 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
-pub use self::{animation::*, audio::*, document::*, photo::*, video::*};
+pub use self::{animation::*, audio::*, document::*, location::*, photo::*, sticker::*, venue::*, video::*};
 use crate::{api::Form, types::InputFile};
 
 mod animation;
 mod audio;
 mod document;
+mod location;
 mod photo;
+mod sticker;
+mod venue;
 mod video;
 
 /// Represents a content of a media message to be sent.
@@ -49,6 +52,8 @@ impl InputMediaType {
     ///
     /// # Arguments
     ///
+    /// * `media` - The media to upload.
+    /// * `info` - Information about the media.
     pub fn for_animation<T>(media: T, info: InputMediaAnimation) -> Self
     where
         T: Into<InputFile>,
@@ -68,6 +73,8 @@ impl InputMediaType {
     ///
     /// # Arguments
     ///
+    /// * `media` - The media to upload.
+    /// * `info` - Information about the media.
     pub fn for_audio<T>(media: T, info: InputMediaAudio) -> Self
     where
         T: Into<InputFile>,
@@ -87,6 +94,8 @@ impl InputMediaType {
     ///
     /// # Arguments
     ///
+    /// * `media` - The media to upload.
+    /// * `info` - Information about the media.
     pub fn for_document<T>(media: T, info: InputMediaDocument) -> Self
     where
         T: Into<InputFile>,
@@ -102,10 +111,24 @@ impl InputMediaType {
         }
     }
 
+    /// Creates a new `InputMediaType` for location.
+    ///
+    /// # Arguments
+    ///
+    /// * `info` - Information about the media.
+    pub fn for_location(info: InputMediaLocation) -> Self {
+        Self {
+            form: Form::default(),
+            data: InputMediaData::Location { info },
+        }
+    }
+
     /// Creates a new `InputMediaType` for photo.
     ///
     /// # Arguments
     ///
+    /// * `media` - The media to upload.
+    /// * `info` - Information about the media.
     pub fn for_photo<T>(media: T, info: InputMediaPhoto) -> Self
     where
         T: Into<InputFile>,
@@ -117,10 +140,42 @@ impl InputMediaType {
         }
     }
 
+    /// Creates a new `InputMediaType` for sticker.
+    ///
+    /// # Arguments
+    ///
+    /// * `media` - The media to upload.
+    /// * `info` - Information about the media.
+    pub fn for_sticker<T>(media: T, info: InputMediaSticker) -> Self
+    where
+        T: Into<InputFile>,
+    {
+        let (media, form) = create_form(media);
+        Self {
+            form,
+            data: InputMediaData::Sticker { media, info },
+        }
+    }
+
+    /// Creates a new `InputMediaType` for venue.
+    ///
+    /// # Arguments
+    ///
+    /// * `media` - The media to upload.
+    /// * `info` - Information about the media.
+    pub fn for_venue(info: InputMediaVenue) -> Self {
+        Self {
+            form: Form::default(),
+            data: InputMediaData::Venue { info },
+        }
+    }
+
     /// Creates a new `InputMediaType` for video.
     ///
     /// # Arguments
     ///
+    /// * `media` - The media to upload.
+    /// * `info` - Information about the media.
     pub fn for_video<T>(media: T, info: InputMediaVideo) -> Self
     where
         T: Into<InputFile>,
@@ -154,7 +209,10 @@ impl InputMediaType {
             InputMediaData::Animation { .. }
             | InputMediaData::Audio { .. }
             | InputMediaData::Document { .. }
-            | InputMediaData::Photo { .. } => return Err(InputMediaError::CoverNotAcceptable),
+            | InputMediaData::Location { .. }
+            | InputMediaData::Photo { .. }
+            | InputMediaData::Sticker { .. }
+            | InputMediaData::Venue { .. } => return Err(InputMediaError::CoverNotAcceptable),
             InputMediaData::Video { cover, .. } => {
                 let new_cover = match value.into() {
                     InputFile::Id(text) | InputFile::Url(text) => text,
@@ -178,7 +236,7 @@ impl InputMediaType {
     ///
     /// # Errors
     ///
-    /// It is considered an error when the media type is a photo.
+    /// It is considered an error when the media type is a location, photo, sticker or venue.
     pub fn with_thumbnail<T>(mut self, value: T) -> Result<Self, InputMediaError>
     where
         T: Into<InputFile>,
@@ -201,7 +259,12 @@ impl InputMediaType {
             InputMediaData::Document { thumbnail, .. } => {
                 *thumbnail = Some(new_thumbnail);
             }
-            InputMediaData::Photo { .. } => return Err(InputMediaError::ThumbnailNotAcceptable),
+            InputMediaData::Location { .. }
+            | InputMediaData::Photo { .. }
+            | InputMediaData::Sticker { .. }
+            | InputMediaData::Venue { .. } => {
+                return Err(InputMediaError::ThumbnailNotAcceptable);
+            }
             InputMediaData::Video { thumbnail, .. } => {
                 *thumbnail = Some(new_thumbnail);
             }
@@ -249,10 +312,23 @@ enum InputMediaData {
         #[serde(flatten)]
         info: InputMediaDocument,
     },
+    Location {
+        #[serde(flatten)]
+        info: InputMediaLocation,
+    },
     Photo {
         media: String,
         #[serde(flatten)]
         info: InputMediaPhoto,
+    },
+    Sticker {
+        media: String,
+        #[serde(flatten)]
+        info: InputMediaSticker,
+    },
+    Venue {
+        #[serde(flatten)]
+        info: InputMediaVenue,
     },
     Video {
         media: String,

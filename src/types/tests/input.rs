@@ -165,6 +165,23 @@ fn create_input_media_document() {
 }
 
 #[test]
+fn create_input_media_location() {
+    let location = InputMediaLocation::new(1.0, 2.0);
+
+    InputMedia::new(InputMediaType::for_location(location.clone())).unwrap();
+
+    let err = InputMediaType::for_location(location.clone())
+        .with_thumbnail(InputFileReader::from(Cursor::new("location-thumb-data")))
+        .unwrap_err();
+    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
+
+    let err = InputMediaType::for_location(location)
+        .with_cover(InputFile::file_id("cover-id"))
+        .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
+}
+
+#[test]
 fn create_input_media_photo() {
     InputMedia::new(InputMediaType::for_photo(
         InputFile::file_id("photo-file-id"),
@@ -185,6 +202,44 @@ fn create_input_media_photo() {
     )
     .with_cover(InputFile::file_id("cover-id"))
     .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
+}
+
+#[test]
+fn create_input_media_sticker() {
+    let sticker = InputMediaSticker::default();
+
+    InputMedia::new(InputMediaType::for_sticker(
+        InputFile::file_id("sticker-file-id"),
+        sticker.clone(),
+    ))
+    .unwrap();
+
+    let err = InputMediaType::for_sticker(InputFile::file_id("sticker-file-id"), sticker.clone())
+        .with_thumbnail(InputFileReader::from(Cursor::new("sticker-thumb-data")))
+        .unwrap_err();
+    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
+
+    let err = InputMediaType::for_sticker(InputFile::file_id("sticker-file-id"), sticker)
+        .with_cover(InputFile::file_id("cover-id"))
+        .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
+}
+
+#[test]
+fn create_input_media_venue() {
+    let venue = InputMediaVenue::new(1.0, 2.0, "test", "addr");
+
+    InputMedia::new(InputMediaType::for_venue(venue.clone())).unwrap();
+
+    let err = InputMediaType::for_venue(venue.clone())
+        .with_thumbnail(InputFileReader::from(Cursor::new("venue-thumb-data")))
+        .unwrap_err();
+    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
+
+    let err = InputMediaType::for_venue(venue)
+        .with_cover(InputFile::file_id("cover-id"))
+        .unwrap_err();
     assert!(matches!(err, InputMediaError::CoverNotAcceptable));
 }
 
@@ -294,6 +349,12 @@ fn input_media_document_entities_vs_parse_mode() {
 }
 
 #[test]
+fn input_media_location() {
+    insta::assert_json_snapshot!(InputMediaLocation::new(1.0, 2.0).with_horizontal_accuracy(3.0));
+    insta::assert_json_snapshot!(InputMediaLocation::new(1.0, 2.0));
+}
+
+#[test]
 fn input_media_photo() {
     insta::assert_json_snapshot!(
         InputMediaPhoto::default()
@@ -321,6 +382,12 @@ fn input_media_photo_entities_vs_parse_mode() {
 }
 
 #[test]
+fn input_media_sticker() {
+    insta::assert_json_snapshot!(InputMediaSticker::default());
+    insta::assert_json_snapshot!(InputMediaSticker::default().with_emoji("🤡"));
+}
+
+#[test]
 fn input_media_video() {
     insta::assert_json_snapshot!(
         InputMediaVideo::default()
@@ -335,6 +402,18 @@ fn input_media_video() {
             .with_width(200)
     );
     insta::assert_json_snapshot!(InputMediaVideo::default());
+}
+
+#[test]
+fn input_media_venue() {
+    let info = InputMediaVenue::new(1.0, 2.0, "test", "addr");
+    insta::assert_json_snapshot!(info.clone());
+    insta::assert_json_snapshot!(
+        info.with_foursquare_id("f-id")
+            .with_foursquare_type("f-type")
+            .with_google_place_id("g-id")
+            .with_google_place_type("g-type")
+    );
 }
 
 #[test]

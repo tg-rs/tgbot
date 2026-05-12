@@ -1,0 +1,9 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMediaLocation::new(1.0, 2.0).with_horizontal_accuracy(3.0)"
+---
+{
+  "latitude": 1.0,
+  "longitude": 2.0,
+  "horizontal_accuracy": 3.0
+}

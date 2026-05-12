@@ -1,0 +1,10 @@
+---
+source: src/types/tests/input.rs
+expression: info.clone()
+---
+{
+  "address": "addr",
+  "latitude": 1.0,
+  "longitude": 2.0,
+  "title": "test"
+}

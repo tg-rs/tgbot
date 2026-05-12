@@ -457,16 +457,18 @@ pub struct ChatMemberRestricted {
     pub user: User,
     /// Whether the user may add web page previews to his messages.
     pub can_add_web_page_previews: bool,
-    /// Whether the user allowed to change the chat title, photo and other settings.
+    /// Whether the user is allowed to change the chat title, photo and other settings.
     pub can_change_info: bool,
     /// Whether the user is allowed to edit their own tag.
     pub can_edit_tag: bool,
-    /// Whether the user allowed to invite new users to the chat.
+    /// Whether the user is allowed to invite new users to the chat.
     pub can_invite_users: bool,
     /// Whether the user is allowed to create forum topics.
     pub can_manage_topics: bool,
-    /// Whether the user allowed to pin messages; groups and supergroups only.
+    /// Whether the user is allowed to pin messages; groups and supergroups only.
     pub can_pin_messages: bool,
+    /// Whether the user is allowed to react to messages.
+    pub can_react_to_messages: bool,
     /// Whether the user is allowed to send audios.
     pub can_send_audios: bool,
     /// Whether the user is allowed to send documents.
@@ -509,6 +511,7 @@ impl ChatMemberRestricted {
             can_invite_users: false,
             can_manage_topics: false,
             can_pin_messages: false,
+            can_react_to_messages: false,
             can_send_audios: false,
             can_send_documents: false,
             can_send_messages: false,
@@ -538,7 +541,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Whether the user allowed to change the chat title,
+    /// * `value` - Whether the user is allowed to change the chat title,
     ///   photo and other settings.
     pub fn with_can_change_info(mut self, value: bool) -> Self {
         self.can_change_info = value;
@@ -559,7 +562,7 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Whether the user allowed to invite new users to the chat.
+    /// * `value` - Whether the user is allowed to invite new users to the chat.
     pub fn with_can_invite_users(mut self, value: bool) -> Self {
         self.can_invite_users = value;
         self
@@ -579,10 +582,20 @@ impl ChatMemberRestricted {
     ///
     /// # Arguments
     ///
-    /// * `value` - Whether the user allowed to pin messages;
+    /// * `value` - Whether the user is allowed to pin messages;
     ///   groups and supergroups only.
     pub fn with_can_pin_messages(mut self, value: bool) -> Self {
         self.can_pin_messages = value;
+        self
+    }
+
+    /// Sets a new value for the `can_react_to_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the user is allowed to react to messages.
+    pub fn with_can_react_to_messages(mut self, value: bool) -> Self {
+        self.can_react_to_messages = value;
         self
     }
 

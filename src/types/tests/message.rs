@@ -365,6 +365,40 @@ fn is_paid_post() {
 }
 
 #[test]
+fn live_photo() {
+    let expected_struct = create_message_struct().with_data(LivePhoto::new(1, "fid", "fuid", 200, 300));
+    insta::assert_json_snapshot!(expected_struct);
+
+    let message: Message = serde_json::from_value(serde_json::json!({
+        "message_id": 1, "date": 1,
+        "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+        "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+        "text": "text",
+        "photo": [
+            {
+                "file_id": "photo-id",
+                "file_unique_id": "unique-id",
+                "height": 300,
+                "width": 200
+            }
+        ],
+        "live_photo": {
+            "duration": 1,
+            "file_id": "fid",
+            "file_unique_id": "fuid",
+            "height": 200,
+            "width": 300
+        }
+    }))
+    .unwrap();
+    assert!(
+        matches!(message.data, MessageData::LivePhoto(..)),
+        "Expects live photo, got: {:?}",
+        message.data
+    );
+}
+
+#[test]
 fn left_chat_member() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::LeftChatMember(User::new(1, "User", false));

@@ -21,6 +21,7 @@ use crate::types::{
     GiveawayWinners,
     Integer,
     Invoice,
+    LivePhoto,
     Location,
     MaybeInaccessibleMessage,
     PaidMediaInfo,
@@ -269,6 +270,9 @@ pub enum MessageData {
     /// Describes the document.
     #[serde(untagged)]
     Document(MessageDataDocument),
+    /// Information about the live photo.
+    #[serde(untagged)]
+    LivePhoto(MessageDataLivePhoto),
     /// Available sizes of the photo.
     #[serde(untagged)]
     Photo(MessageDataPhoto),
@@ -288,6 +292,318 @@ pub enum MessageData {
     /// Contains arbitrary data for future variants.
     #[serde(untagged)]
     Unknown(JsonValue),
+}
+
+impl From<Animation> for MessageData {
+    fn from(value: Animation) -> Self {
+        Self::Animation(value)
+    }
+}
+
+impl From<MessageDataAutoDeleteTimer> for MessageData {
+    fn from(value: MessageDataAutoDeleteTimer) -> Self {
+        Self::AutoDeleteTimerChanged(value)
+    }
+}
+
+impl From<ChatBackground> for MessageData {
+    fn from(value: ChatBackground) -> Self {
+        Self::ChatBackgroundSet(value)
+    }
+}
+
+impl From<MessageDataChatShared> for MessageData {
+    fn from(value: MessageDataChatShared) -> Self {
+        Self::ChatShared(value)
+    }
+}
+
+impl From<Checklist> for MessageData {
+    fn from(value: Checklist) -> Self {
+        Self::Checklist(value)
+    }
+}
+
+impl From<ChecklistTasksAdded> for MessageData {
+    fn from(value: ChecklistTasksAdded) -> Self {
+        Self::ChecklistTasksAdded(value)
+    }
+}
+
+impl From<ChecklistTasksDone> for MessageData {
+    fn from(value: ChecklistTasksDone) -> Self {
+        Self::ChecklistTasksDone(value)
+    }
+}
+
+impl From<Contact> for MessageData {
+    fn from(value: Contact) -> Self {
+        Self::Contact(value)
+    }
+}
+
+impl From<Dice> for MessageData {
+    fn from(value: Dice) -> Self {
+        Self::Dice(value)
+    }
+}
+
+impl From<MessageDataDirectMessagePriceChanged> for MessageData {
+    fn from(value: MessageDataDirectMessagePriceChanged) -> Self {
+        Self::DirectMessagePriceChanged(value)
+    }
+}
+
+impl From<MessageDataForumTopicCreated> for MessageData {
+    fn from(value: MessageDataForumTopicCreated) -> Self {
+        Self::ForumTopicCreated(value)
+    }
+}
+
+impl From<MessageDataForumTopicEdited> for MessageData {
+    fn from(value: MessageDataForumTopicEdited) -> Self {
+        Self::ForumTopicEdited(value)
+    }
+}
+
+impl From<Game> for MessageData {
+    fn from(value: Game) -> Self {
+        Self::Game(Box::new(value))
+    }
+}
+
+impl From<Giveaway> for MessageData {
+    fn from(value: Giveaway) -> Self {
+        Self::Giveaway(value)
+    }
+}
+
+impl From<GiveawayCreated> for MessageData {
+    fn from(value: GiveawayCreated) -> Self {
+        Self::GiveawayCreated(value)
+    }
+}
+
+impl From<GiveawayCompleted> for MessageData {
+    fn from(value: GiveawayCompleted) -> Self {
+        Self::GiveawayCompleted(value)
+    }
+}
+
+impl From<GiveawayWinners> for MessageData {
+    fn from(value: GiveawayWinners) -> Self {
+        Self::GiveawayWinners(value)
+    }
+}
+
+impl From<Invoice> for MessageData {
+    fn from(value: Invoice) -> Self {
+        Self::Invoice(value)
+    }
+}
+
+impl From<LivePhoto> for MessageData {
+    fn from(value: LivePhoto) -> Self {
+        Self::LivePhoto(MessageDataLivePhoto::from(value))
+    }
+}
+
+impl From<Location> for MessageData {
+    fn from(value: Location) -> Self {
+        Self::Location(value)
+    }
+}
+
+impl From<MessageDataManagedBotCreated> for MessageData {
+    fn from(value: MessageDataManagedBotCreated) -> Self {
+        Self::ManagedBotCreated(value)
+    }
+}
+
+impl From<PaidMediaInfo> for MessageData {
+    fn from(value: PaidMediaInfo) -> Self {
+        Self::PaidMedia(value)
+    }
+}
+
+impl From<MessageDataPaidMessagePriceChanged> for MessageData {
+    fn from(value: MessageDataPaidMessagePriceChanged) -> Self {
+        Self::PaidMessagePriceChanged(value)
+    }
+}
+
+impl From<PassportData> for MessageData {
+    fn from(value: PassportData) -> Self {
+        Self::PassportData(value)
+    }
+}
+
+impl From<Poll> for MessageData {
+    fn from(value: Poll) -> Self {
+        Self::Poll(value)
+    }
+}
+
+impl From<MessageDataPollOptionAdded> for MessageData {
+    fn from(value: MessageDataPollOptionAdded) -> Self {
+        Self::PollOptionAdded(value)
+    }
+}
+
+impl From<MessageDataPollOptionDeleted> for MessageData {
+    fn from(value: MessageDataPollOptionDeleted) -> Self {
+        Self::PollOptionDeleted(value)
+    }
+}
+
+impl From<MessageDataProximityAlert> for MessageData {
+    fn from(value: MessageDataProximityAlert) -> Self {
+        Self::ProximityAlertTriggered(value)
+    }
+}
+
+impl From<RefundedPayment> for MessageData {
+    fn from(value: RefundedPayment) -> Self {
+        Self::RefundedPayment(value)
+    }
+}
+
+impl From<Sticker> for MessageData {
+    fn from(value: Sticker) -> Self {
+        Self::Sticker(Box::new(value))
+    }
+}
+
+impl From<Story> for MessageData {
+    fn from(value: Story) -> Self {
+        Self::Story(value)
+    }
+}
+
+impl From<SuggestedPostApproved> for MessageData {
+    fn from(value: SuggestedPostApproved) -> Self {
+        Self::SuggestedPostApproved(value)
+    }
+}
+
+impl From<SuggestedPostApprovalFailed> for MessageData {
+    fn from(value: SuggestedPostApprovalFailed) -> Self {
+        Self::SuggestedPostApprovalFailed(value)
+    }
+}
+
+impl From<SuggestedPostDeclined> for MessageData {
+    fn from(value: SuggestedPostDeclined) -> Self {
+        Self::SuggestedPostDeclined(value)
+    }
+}
+
+impl From<SuggestedPostPaid> for MessageData {
+    fn from(value: SuggestedPostPaid) -> Self {
+        Self::SuggestedPostPaid(value)
+    }
+}
+
+impl From<SuggestedPostRefunded> for MessageData {
+    fn from(value: SuggestedPostRefunded) -> Self {
+        Self::SuggestedPostRefunded(value)
+    }
+}
+
+impl From<SuccessfulPayment> for MessageData {
+    fn from(value: SuccessfulPayment) -> Self {
+        Self::SuccessfulPayment(Box::new(value))
+    }
+}
+
+impl From<UniqueGiftInfo> for MessageData {
+    fn from(value: UniqueGiftInfo) -> Self {
+        Self::UniqueGift(Box::new(value))
+    }
+}
+
+impl From<MessageDataUsersShared> for MessageData {
+    fn from(value: MessageDataUsersShared) -> Self {
+        Self::UsersShared(value)
+    }
+}
+
+impl From<Venue> for MessageData {
+    fn from(value: Venue) -> Self {
+        Self::Venue(value)
+    }
+}
+
+impl From<VideoNote> for MessageData {
+    fn from(value: VideoNote) -> Self {
+        Self::VideoNote(value)
+    }
+}
+
+impl From<MessageDataVideoChatEnded> for MessageData {
+    fn from(value: MessageDataVideoChatEnded) -> Self {
+        Self::VideoChatEnded(value)
+    }
+}
+
+impl From<MessageDataVideoChatParticipantsInvited> for MessageData {
+    fn from(value: MessageDataVideoChatParticipantsInvited) -> Self {
+        Self::VideoChatParticipantsInvited(value)
+    }
+}
+
+impl From<MessageDataVideoChatScheduled> for MessageData {
+    fn from(value: MessageDataVideoChatScheduled) -> Self {
+        Self::VideoChatScheduled(value)
+    }
+}
+
+impl From<WebAppData> for MessageData {
+    fn from(value: WebAppData) -> Self {
+        Self::WebAppData(value)
+    }
+}
+
+impl From<MessageDataWriteAccess> for MessageData {
+    fn from(value: MessageDataWriteAccess) -> Self {
+        Self::WriteAccessAllowed(value)
+    }
+}
+
+impl From<MessageDataAudio> for MessageData {
+    fn from(value: MessageDataAudio) -> Self {
+        Self::Audio(Box::new(value))
+    }
+}
+
+impl From<MessageDataDocument> for MessageData {
+    fn from(value: MessageDataDocument) -> Self {
+        Self::Document(value)
+    }
+}
+
+impl From<MessageDataPhoto> for MessageData {
+    fn from(value: MessageDataPhoto) -> Self {
+        Self::Photo(value)
+    }
+}
+
+impl From<Text> for MessageData {
+    fn from(value: Text) -> Self {
+        Self::Text(value)
+    }
+}
+
+impl From<MessageDataVideo> for MessageData {
+    fn from(value: MessageDataVideo) -> Self {
+        Self::Video(Box::new(value))
+    }
+}
+
+impl From<MessageDataVoice> for MessageData {
+    fn from(value: MessageDataVoice) -> Self {
+        Self::Voice(value)
+    }
 }
 
 /// Represents a service message about a change in auto-delete timer settings.
@@ -614,6 +930,26 @@ impl MessageDataDirectMessagePriceChanged {
     pub fn with_direct_message_star_count(mut self, value: Integer) -> Self {
         self.direct_message_star_count = Some(value);
         self
+    }
+}
+
+/// Represents a live photo.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MessageDataLivePhoto {
+    /// The live photo.
+    #[serde(rename = "live_photo")]
+    pub data: LivePhoto,
+}
+
+impl From<LivePhoto> for MessageDataLivePhoto {
+    fn from(value: LivePhoto) -> Self {
+        Self { data: value }
+    }
+}
+
+impl From<MessageDataLivePhoto> for LivePhoto {
+    fn from(value: MessageDataLivePhoto) -> Self {
+        value.data
     }
 }
 

@@ -256,8 +256,11 @@ impl Message {
     /// # Arguments
     ///
     /// * `value` - Data of the message.
-    pub fn with_data(mut self, value: MessageData) -> Self {
-        self.data = value;
+    pub fn with_data<T>(mut self, value: T) -> Self
+    where
+        T: Into<MessageData>,
+    {
+        self.data = value.into();
         self
     }
 

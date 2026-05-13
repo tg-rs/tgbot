@@ -634,6 +634,7 @@ fn input_paid_media_group_error() {
 #[test]
 fn input_paid_media_group() {
     let group = InputPaidMediaGroup::new(vec![
+        InputPaidMediaGroupItem::for_live_photo(InputFile::file_id("lp-id"), InputFile::file_id("lps-id")),
         InputPaidMediaGroupItem::for_photo(InputFile::file_id("photo-file-id")),
         InputPaidMediaGroupItem::for_video(
             InputFile::url("https://example.com/video-file-1.mp4"),
@@ -654,19 +655,20 @@ fn input_paid_media_group() {
     ])
     .unwrap();
     let actual_form: Form = group.into();
-    let mut media = String::from("[{\"type\":\"photo\",\"media\":\"photo-file-id\"}");
+    let mut media = String::from("[{\"type\":\"live_photo\",\"media\":\"lp-id\",\"photo\":\"lps-id\"}");
+    media += ",{\"type\":\"photo\",\"media\":\"photo-file-id\"}";
     media += ",{\"type\":\"video\",\"media\":\"https://example.com/video-file-1.mp4\",\"thumbnail\":\"video-1-thumbnail-id\"}";
-    media += ",{\"type\":\"video\",\"media\":\"attach://tgbot_ipm_file_2\",\"cover\":\"cover-url\",";
-    media += "\"thumbnail\":\"attach://tgbot_ipm_thumb_2\",\"duration\":1,\"height\":2,";
+    media += ",{\"type\":\"video\",\"media\":\"attach://tgbot_ipm_file_3\",\"cover\":\"cover-url\",";
+    media += "\"thumbnail\":\"attach://tgbot_ipm_thumb_3\",\"duration\":1,\"height\":2,";
     media += "\"start_timestamp\":20,\"supports_streaming\":true,\"width\":3}]";
     let expected_form = Form::from([
         ("media", media.into()),
         (
-            "tgbot_ipm_thumb_2",
+            "tgbot_ipm_thumb_3",
             InputFile::from(Cursor::new("video-2-thumbnail-data")).into(),
         ),
         (
-            "tgbot_ipm_file_2",
+            "tgbot_ipm_file_3",
             InputFile::from(Cursor::new("video-file-2-data")).into(),
         ),
     ]);

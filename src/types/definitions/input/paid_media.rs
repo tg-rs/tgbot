@@ -54,6 +54,10 @@ impl InputPaidMediaGroup {
                 .thumbnail
                 .map(|thumbnail| add_file(format!("tgbot_ipm_thumb_{idx}"), thumbnail));
             let data = match item.item_type {
+                InputPaidMediaGroupItemType::LivePhoto(photo) => {
+                    let photo = add_file(format!("tgbot_ipm_lp_static_{idx}"), photo);
+                    InputPaidMediaGroupItemData::LivePhoto { media, photo }
+                }
                 InputPaidMediaGroupItemType::Photo => InputPaidMediaGroupItemData::Photo { media },
                 InputPaidMediaGroupItemType::Video(info) => InputPaidMediaGroupItemData::Video {
                     media,
@@ -123,6 +127,20 @@ pub struct InputPaidMediaGroupItem {
 }
 
 impl InputPaidMediaGroupItem {
+    /// Creates a new `InputPaidMediaGroupItem` for a live photo.
+    ///
+    /// # Arguments
+    ///
+    /// * `file` - Video of the live photo to send.
+    /// * `photo` - Static photo to send.
+    pub fn for_live_photo<A, B>(file: A, photo: B) -> Self
+    where
+        A: Into<InputFile>,
+        B: Into<InputFile>,
+    {
+        Self::new(file, InputPaidMediaGroupItemType::LivePhoto(photo.into()))
+    }
+
     /// Creates a `InputPaidMediaGroupItem` for a photo.
     ///
     /// # Arguments
@@ -193,6 +211,7 @@ impl InputPaidMediaGroupItem {
 
 #[derive(Debug)]
 enum InputPaidMediaGroupItemType {
+    LivePhoto(InputFile),
     Photo,
     Video(InputPaidMediaVideo),
 }
@@ -201,6 +220,10 @@ enum InputPaidMediaGroupItemType {
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
 enum InputPaidMediaGroupItemData {
+    LivePhoto {
+        media: String,
+        photo: String,
+    },
     Photo {
         media: String,
     },

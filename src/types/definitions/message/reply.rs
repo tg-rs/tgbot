@@ -15,6 +15,7 @@ use crate::types::{
     Integer,
     Invoice,
     LinkPreviewOptions,
+    LivePhoto,
     Location,
     Message,
     MessageOrigin,
@@ -169,6 +170,8 @@ pub enum ExternalReplyData {
     GiveawayWinners(GiveawayWinners),
     /// Message is an invoice for a payment, information about the invoice.
     Invoice(Invoice),
+    /// Message is a live photo, information about live photo.
+    LivePhoto(LivePhoto),
     /// Message is a shared location, information about the location.
     Location(Location),
     /// Message contains paid media, information about the paid media.

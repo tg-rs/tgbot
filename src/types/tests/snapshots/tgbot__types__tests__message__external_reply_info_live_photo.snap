@@ -1,0 +1,18 @@
+---
+source: src/types/tests/message.rs
+expression: "ExternalReplyInfo::new(LivePhoto::new(1, \"fid\", \"fuid\", 200, 300), origin)"
+---
+{
+  "origin": {
+    "type": "hidden_user",
+    "date": 1,
+    "sender_user_name": "test"
+  },
+  "live_photo": {
+    "duration": 1,
+    "file_id": "fid",
+    "file_unique_id": "fuid",
+    "height": 200,
+    "width": 300
+  }
+}

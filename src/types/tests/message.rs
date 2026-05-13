@@ -1144,6 +1144,15 @@ fn external_reply_info_invoice() {
 }
 
 #[test]
+fn external_reply_info_live_photo() {
+    let origin = create_origin();
+    insta::assert_json_snapshot!(ExternalReplyInfo::new(
+        LivePhoto::new(1, "fid", "fuid", 200, 300),
+        origin
+    ));
+}
+
+#[test]
 fn external_reply_info_location() {
     let origin = create_origin();
     insta::assert_json_snapshot!(ExternalReplyInfo::new(Location::new(1.0, 2.0), origin));

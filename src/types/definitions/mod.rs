@@ -18,6 +18,7 @@ pub use self::{
     inline_mode::*,
     input::*,
     link::*,
+    live_photo::*,
     location::*,
     media::*,
     menu::*,
@@ -58,6 +59,7 @@ mod giveaway;
 mod inline_mode;
 mod input;
 mod link;
+mod live_photo;
 mod location;
 mod media;
 mod menu;

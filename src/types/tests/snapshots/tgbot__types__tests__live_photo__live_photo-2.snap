@@ -1,0 +1,21 @@
+---
+source: src/types/tests/live_photo.rs
+expression: expected_struct
+---
+{
+  "duration": 1,
+  "file_id": "file-id",
+  "file_unique_id": "file-unique-id",
+  "height": 200,
+  "width": 300,
+  "file_size": 1000,
+  "mime_type": "video/gif",
+  "photo": [
+    {
+      "file_id": "p-id",
+      "file_unique_id": "p-uid",
+      "height": 200,
+      "width": 300
+    }
+  ]
+}

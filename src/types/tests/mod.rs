@@ -71,6 +71,7 @@ mod giveaway;
 mod inline_mode;
 mod input;
 mod link;
+mod live_photo;
 mod location;
 mod media;
 mod menu;

@@ -10,6 +10,7 @@ use crate::{
         InputFile,
         InputMediaAudio,
         InputMediaDocument,
+        InputMediaLivePhoto,
         InputMediaPhoto,
         InputMediaVideo,
         Integer,
@@ -69,6 +70,10 @@ impl MediaGroup {
             let data = match item.item_type {
                 MediaGroupItemType::Audio(info) => MediaGroupItemData::Audio { media, thumbnail, info },
                 MediaGroupItemType::Document(info) => MediaGroupItemData::Document { media, thumbnail, info },
+                MediaGroupItemType::LivePhoto(photo, info) => {
+                    let photo = add_file(format!("tgbot_im_live_photo_{idx}"), photo);
+                    MediaGroupItemData::LivePhoto { media, photo, info }
+                }
                 MediaGroupItemType::Photo(info) => MediaGroupItemData::Photo { media, info },
                 MediaGroupItemType::Video(info) => MediaGroupItemData::Video {
                     media,
@@ -129,6 +134,20 @@ impl MediaGroupItem {
         T: Into<InputFile>,
     {
         Self::new(file, MediaGroupItemType::Document(metadata))
+    }
+
+    /// Creates a `MediaGroupItem` for a live photo.
+    ///
+    /// # Arguments
+    ///
+    /// * `file` - File to attach.
+    /// * `photo` - Static photo.
+    pub fn for_live_photo<A, B>(file: A, photo: B, metadata: InputMediaLivePhoto) -> Self
+    where
+        A: Into<InputFile>,
+        B: Into<InputFile>,
+    {
+        Self::new(file, MediaGroupItemType::LivePhoto(photo.into(), metadata))
     }
 
     /// Creates a `MediaGroupItem` for a photo.
@@ -204,6 +223,7 @@ impl MediaGroupItem {
 enum MediaGroupItemType {
     Audio(InputMediaAudio),
     Document(InputMediaDocument),
+    LivePhoto(InputFile, InputMediaLivePhoto),
     Photo(InputMediaPhoto),
     Video(InputMediaVideo),
 }
@@ -224,6 +244,12 @@ enum MediaGroupItemData {
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaDocument,
+    },
+    LivePhoto {
+        media: String,
+        photo: String,
+        #[serde(flatten)]
+        info: InputMediaLivePhoto,
     },
     Photo {
         media: String,

@@ -35,6 +35,11 @@ fn media_group_new() {
             InputFileReader::from(Cursor::new("test")),
             InputMediaDocument::default(),
         ),
+        MediaGroupItem::for_live_photo(
+            InputFile::file_id("file-id"),
+            InputFile::file_id("photo-id"),
+            InputMediaLivePhoto::default(),
+        ),
         MediaGroupItem::for_photo(
             InputFileReader::from(Cursor::new("test")),
             InputMediaPhoto::default().with_caption("caption"),

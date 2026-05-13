@@ -1,0 +1,14 @@
+---
+source: src/types/tests/input.rs
+expression: "InputMediaLivePhoto::default().with_caption(\"test\").with_parse_mode(ParseMode::Markdown).with_caption_entities([TextEntity::bold(0..2)])"
+---
+{
+  "caption": "test",
+  "caption_entities": [
+    {
+      "offset": 0,
+      "length": 2,
+      "type": "bold"
+    }
+  ]
+}

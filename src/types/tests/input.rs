@@ -165,6 +165,36 @@ fn create_input_media_document() {
 }
 
 #[test]
+fn create_input_media_live_photo() {
+    let live_photo = InputMediaLivePhoto::default();
+
+    InputMedia::new(InputMediaType::for_live_photo(
+        InputFile::url("https://example.com/video.mp4"),
+        InputFile::url("https://example.com/photo.png"),
+        live_photo.clone(),
+    ))
+    .unwrap();
+
+    let err = InputMediaType::for_live_photo(
+        InputFile::url("https://example.com/video.mp4"),
+        InputFile::url("https://example.com/photo.png"),
+        live_photo.clone(),
+    )
+    .with_thumbnail(InputFileReader::from(Cursor::new("live-photo-thumb-data")))
+    .unwrap_err();
+    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
+
+    let err = InputMediaType::for_live_photo(
+        InputFile::url("https://example.com/video.mp4"),
+        InputFile::url("https://example.com/photo.png"),
+        live_photo,
+    )
+    .with_cover(InputFile::file_id("cover-id"))
+    .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable))
+}
+
+#[test]
 fn create_input_media_location() {
     let location = InputMediaLocation::new(1.0, 2.0);
 
@@ -345,6 +375,24 @@ fn input_media_document_entities_vs_parse_mode() {
     assert_eq!(
         serde_json::to_value(method).unwrap(),
         serde_json::json!({"caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]})
+    );
+}
+
+#[test]
+fn input_media_live_photo() {
+    insta::assert_json_snapshot!(InputMediaLivePhoto::default());
+    insta::assert_json_snapshot!(
+        InputMediaLivePhoto::default()
+            .with_caption("test")
+            .with_parse_mode(ParseMode::Markdown)
+            .with_show_caption_above_media(true)
+            .with_has_spoiler(false)
+    );
+    insta::assert_json_snapshot!(
+        InputMediaLivePhoto::default()
+            .with_caption("test")
+            .with_parse_mode(ParseMode::Markdown)
+            .with_caption_entities([TextEntity::bold(0..2)])
     );
 }
 

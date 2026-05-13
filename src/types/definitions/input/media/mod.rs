@@ -3,12 +3,23 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
-pub use self::{animation::*, audio::*, document::*, location::*, photo::*, sticker::*, venue::*, video::*};
+pub use self::{
+    animation::*,
+    audio::*,
+    document::*,
+    live_photo::*,
+    location::*,
+    photo::*,
+    sticker::*,
+    venue::*,
+    video::*,
+};
 use crate::{api::Form, types::InputFile};
 
 mod animation;
 mod audio;
 mod document;
+mod live_photo;
 mod location;
 mod photo;
 mod sticker;
@@ -111,6 +122,33 @@ impl InputMediaType {
         }
     }
 
+    /// Creates a new `InputMediaType` for live photo.
+    ///
+    /// # Arguments
+    ///
+    /// * `media` - Video of the live photo to be send.
+    /// * `photo` - The static phot to send.
+    /// * `info` - Information about the media.
+    pub fn for_live_photo<A, B>(media: A, photo: B, info: InputMediaLivePhoto) -> Self
+    where
+        A: Into<InputFile>,
+        B: Into<InputFile>,
+    {
+        let (media, mut form) = create_form(media);
+        let photo = match photo.into() {
+            InputFile::Id(text) | InputFile::Url(text) => text,
+            value => {
+                let key = "tgbot_im_photo";
+                form.insert_field(key, value);
+                format!("attach://{key}")
+            }
+        };
+        Self {
+            form,
+            data: InputMediaData::LivePhoto { media, photo, info },
+        }
+    }
+
     /// Creates a new `InputMediaType` for location.
     ///
     /// # Arguments
@@ -209,6 +247,7 @@ impl InputMediaType {
             InputMediaData::Animation { .. }
             | InputMediaData::Audio { .. }
             | InputMediaData::Document { .. }
+            | InputMediaData::LivePhoto { .. }
             | InputMediaData::Location { .. }
             | InputMediaData::Photo { .. }
             | InputMediaData::Sticker { .. }
@@ -236,7 +275,8 @@ impl InputMediaType {
     ///
     /// # Errors
     ///
-    /// It is considered an error when the media type is a location, photo, sticker or venue.
+    /// It is considered an error when the media type is a
+    /// live photo, location, photo, sticker or venue.
     pub fn with_thumbnail<T>(mut self, value: T) -> Result<Self, InputMediaError>
     where
         T: Into<InputFile>,
@@ -259,7 +299,8 @@ impl InputMediaType {
             InputMediaData::Document { thumbnail, .. } => {
                 *thumbnail = Some(new_thumbnail);
             }
-            InputMediaData::Location { .. }
+            InputMediaData::LivePhoto { .. }
+            | InputMediaData::Location { .. }
             | InputMediaData::Photo { .. }
             | InputMediaData::Sticker { .. }
             | InputMediaData::Venue { .. } => {
@@ -311,6 +352,12 @@ enum InputMediaData {
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaDocument,
+    },
+    LivePhoto {
+        media: String,
+        photo: String,
+        #[serde(flatten)]
+        info: InputMediaLivePhoto,
     },
     Location {
         #[serde(flatten)]

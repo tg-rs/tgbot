@@ -303,6 +303,8 @@ pub struct Quiz {
         serialize_with = "QuizExplanation::serialize_value"
     )]
     pub explanation: Option<Text>,
+    /// Media added to the quiz explanation.
+    pub explanation_media: Option<PollMedia>,
     /// Amount of time in seconds the quiz will be active after creation.
     pub open_period: Option<Integer>,
 }
@@ -331,6 +333,7 @@ impl Quiz {
             correct_option_ids: None,
             description: None,
             explanation: None,
+            explanation_media: None,
             open_period: None,
         }
     }
@@ -393,6 +396,16 @@ impl Quiz {
         T: Into<Text>,
     {
         self.explanation = Some(value.into());
+        self
+    }
+
+    /// Sets a new explanation media.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Media added to the quiz explanation.
+    pub fn with_explanation_media(mut self, value: PollMedia) -> Self {
+        self.explanation_media = Some(value);
         self
     }
 

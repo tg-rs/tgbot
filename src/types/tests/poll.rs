@@ -19,6 +19,7 @@ fn quiz() {
         Quiz::new("poll-id", "Rust?")
             .with_correct_option_ids([0])
             .with_explanation(Text::from("text").with_entities(vec![TextEntity::bold(0..2)].into_iter().collect()))
+            .with_explanation_media(PollMedia::Location(Location::new(1.0, 2.0)))
             .with_is_anonymous(true)
             .with_is_closed(true)
             .with_description(Text::from("test").with_entities(vec![TextEntity::bold(0..2)].into_iter().collect()))

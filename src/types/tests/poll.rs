@@ -40,6 +40,22 @@ fn poll_answer_voter() {
 }
 
 #[test]
+fn poll_media() {
+    let data = vec![
+        PollMedia::Animation(Animation::new(1, "id", "uid", 200, 400)),
+        PollMedia::Audio(Audio::new(1, "id", "uid")),
+        PollMedia::Document(Document::new("id", "uid")),
+        PollMedia::LivePhoto(LivePhoto::new(1, "id", "uid", 200, 400)),
+        PollMedia::Location(Location::new(1.0, 2.0)),
+        PollMedia::Photo(vec![PhotoSize::new("id", "uid", 200, 200)]),
+        PollMedia::Sticker(Sticker::new("id", "uid", StickerType::Regular, 512, 512)),
+        PollMedia::Venue(Venue::new("test", "addr", Location::new(1.0, 2.0))),
+        PollMedia::Video(Video::new(1, "id", "uid", 200, 400)),
+    ];
+    insta::assert_json_snapshot!(data);
+}
+
+#[test]
 fn send_quiz() {
     let method = SendQuiz::new(1, "Q", [0], ["X"]);
     assert_payload_eq!(POST JSON "sendPoll" => method.clone());

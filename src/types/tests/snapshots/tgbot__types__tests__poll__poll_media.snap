@@ -1,0 +1,83 @@
+---
+source: src/types/tests/poll.rs
+expression: data
+---
+[
+  {
+    "animation": {
+      "duration": 1,
+      "file_id": "id",
+      "file_unique_id": "uid",
+      "height": 200,
+      "width": 400
+    }
+  },
+  {
+    "audio": {
+      "duration": 1,
+      "file_id": "id",
+      "file_unique_id": "uid"
+    }
+  },
+  {
+    "document": {
+      "file_id": "id",
+      "file_unique_id": "uid"
+    }
+  },
+  {
+    "live_photo": {
+      "duration": 1,
+      "file_id": "id",
+      "file_unique_id": "uid",
+      "height": 200,
+      "width": 400
+    }
+  },
+  {
+    "location": {
+      "latitude": 1.0,
+      "longitude": 2.0
+    }
+  },
+  {
+    "photo": [
+      {
+        "file_id": "id",
+        "file_unique_id": "uid",
+        "height": 200,
+        "width": 200
+      }
+    ]
+  },
+  {
+    "sticker": {
+      "file_id": "id",
+      "file_unique_id": "uid",
+      "height": 512,
+      "is_animated": false,
+      "is_video": false,
+      "type": "regular",
+      "width": 512
+    }
+  },
+  {
+    "venue": {
+      "address": "addr",
+      "location": {
+        "latitude": 1.0,
+        "longitude": 2.0
+      },
+      "title": "test"
+    }
+  },
+  {
+    "video": {
+      "duration": 1,
+      "file_id": "id",
+      "file_unique_id": "uid",
+      "height": 200,
+      "width": 400
+    }
+  }
+]

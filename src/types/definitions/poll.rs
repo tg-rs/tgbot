@@ -3,18 +3,27 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use crate::{
     api::{Method, Payload},
     types::{
+        Animation,
+        Audio,
         Chat,
         ChatId,
+        Document,
         InlineKeyboardMarkup,
         Integer,
+        LivePhoto,
+        Location,
         Message,
         ParseMode,
+        PhotoSize,
         ReplyMarkup,
         ReplyParameters,
+        Sticker,
         Text,
         TextEntities,
         TextEntity,
         User,
+        Venue,
+        Video,
     },
 };
 
@@ -490,6 +499,30 @@ impl QuizExplanation {
         });
         value.serialize(serializer)
     }
+}
+
+/// Represents the content of a poll description or a quiz explanation.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PollMedia {
+    /// Media is an animation.
+    Animation(Animation),
+    /// Media is an audio file.
+    Audio(Audio),
+    /// Media is a general file.
+    Document(Document),
+    /// Media is a live photo.
+    LivePhoto(LivePhoto),
+    /// Media is a shared location.
+    Location(Location),
+    /// Media is a photo.
+    Photo(Vec<PhotoSize>),
+    /// Media is a sticker.
+    Sticker(Sticker),
+    /// Media is a venue.
+    Venue(Venue),
+    /// Media is a video.
+    Video(Video),
 }
 
 #[serde_with::skip_serializing_none]

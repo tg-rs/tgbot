@@ -1,24 +1,42 @@
 ---
 source: src/types/tests/poll.rs
-expression: actual_data
+expression: actual_form.into_fields()
 ---
-{
-  "chat_id": 1,
-  "correct_option_ids": [
-    0
-  ],
-  "options": [
-    {
-      "text": "X"
-    }
-  ],
-  "question": "Q",
-  "question_entities": [
-    {
-      "length": 1,
-      "offset": 0,
-      "type": "bold"
-    }
-  ],
-  "type": "quiz"
-}
+[
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "correct_option_ids",
+        FormValue::Text(
+            "[0]",
+        ),
+    ),
+    (
+        "options",
+        FormValue::Text(
+            "[{\"text\":\"X\"}]",
+        ),
+    ),
+    (
+        "question",
+        FormValue::Text(
+            "Q",
+        ),
+    ),
+    (
+        "question_entities",
+        FormValue::Text(
+            "[{\"offset\":0,\"length\":1,\"type\":\"bold\"}]",
+        ),
+    ),
+    (
+        "type",
+        FormValue::Text(
+            "quiz",
+        ),
+    ),
+]

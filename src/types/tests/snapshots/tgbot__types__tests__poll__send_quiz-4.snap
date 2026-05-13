@@ -1,41 +1,150 @@
 ---
 source: src/types/tests/poll.rs
-expression: actual_data
+expression: actual_form.into_fields()
 ---
-{
-  "allow_adding_options": true,
-  "allow_paid_broadcast": true,
-  "allows_multiple_answers": true,
-  "allows_revoting": false,
-  "business_connection_id": "id",
-  "chat_id": 1,
-  "correct_option_ids": [
-    0
-  ],
-  "description": "test",
-  "description_parse_mode": "MarkdownV2",
-  "disable_notification": true,
-  "hide_results_until_closes": true,
-  "is_anonymous": false,
-  "is_closed": false,
-  "message_effect_id": "effect-id",
-  "message_thread_id": 1,
-  "options": [
-    {
-      "text": "O1"
-    },
-    {
-      "text": "O2"
-    }
-  ],
-  "protect_content": true,
-  "question": "Q",
-  "reply_markup": {
-    "force_reply": true
-  },
-  "reply_parameters": {
-    "message_id": 1
-  },
-  "shuffle_options": true,
-  "type": "quiz"
-}
+[
+    (
+        "allow_adding_options",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "allow_paid_broadcast",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "allows_multiple_answers",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "allows_revoting",
+        FormValue::Text(
+            "false",
+        ),
+    ),
+    (
+        "business_connection_id",
+        FormValue::Text(
+            "id",
+        ),
+    ),
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "correct_option_ids",
+        FormValue::Text(
+            "[0]",
+        ),
+    ),
+    (
+        "description",
+        FormValue::Text(
+            "test",
+        ),
+    ),
+    (
+        "description_parse_mode",
+        FormValue::Text(
+            "MarkdownV2",
+        ),
+    ),
+    (
+        "disable_notification",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "explanation",
+        FormValue::Text(
+            "test",
+        ),
+    ),
+    (
+        "explanation_media",
+        FormValue::Text(
+            "{\"type\":\"location\",\"latitude\":1.0,\"longitude\":2.0}",
+        ),
+    ),
+    (
+        "hide_results_until_closes",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "is_anonymous",
+        FormValue::Text(
+            "false",
+        ),
+    ),
+    (
+        "is_closed",
+        FormValue::Text(
+            "false",
+        ),
+    ),
+    (
+        "message_effect_id",
+        FormValue::Text(
+            "effect-id",
+        ),
+    ),
+    (
+        "message_thread_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "options",
+        FormValue::Text(
+            "[{\"text\":\"O1\"},{\"text\":\"O2\"}]",
+        ),
+    ),
+    (
+        "protect_content",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "question",
+        FormValue::Text(
+            "Q",
+        ),
+    ),
+    (
+        "reply_markup",
+        FormValue::Text(
+            "{\"force_reply\":true}",
+        ),
+    ),
+    (
+        "reply_parameters",
+        FormValue::Text(
+            "{\"message_id\":1}",
+        ),
+    ),
+    (
+        "shuffle_options",
+        FormValue::Text(
+            "true",
+        ),
+    ),
+    (
+        "type",
+        FormValue::Text(
+            "quiz",
+        ),
+    ),
+]

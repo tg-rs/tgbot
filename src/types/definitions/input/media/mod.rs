@@ -312,6 +312,12 @@ impl InputMediaType {
         };
         Ok(self)
     }
+
+    pub(crate) fn try_into_form(mut self, field_name: &'static str) -> Result<Form, InputMediaError> {
+        let info = serde_json::to_string(&self.data).map_err(InputMediaError::SerializeInfo)?;
+        self.form.insert_field(field_name, info);
+        Ok(self.form)
+    }
 }
 
 fn create_form<T>(media: T) -> (String, Form)

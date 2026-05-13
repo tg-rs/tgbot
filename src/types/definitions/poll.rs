@@ -528,7 +528,7 @@ impl QuizExplanation {
 }
 
 /// Represents the content of a poll description or a quiz explanation.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PollMedia {
     /// Media is an animation.
@@ -609,6 +609,8 @@ pub struct PollOption {
     ///
     /// Omitted if the option existed in the original poll.
     pub addition_date: Option<Integer>,
+    /// Media added to the poll option.
+    pub media: Option<PollMedia>,
 }
 
 impl PollOption {
@@ -631,6 +633,7 @@ impl PollOption {
             added_by_chat: None,
             added_by_user: None,
             addition_date: None,
+            media: None,
         }
     }
 
@@ -664,6 +667,16 @@ impl PollOption {
     /// * `value` - Point in time when the option was added.
     pub fn with_addition_date(mut self, value: Integer) -> Self {
         self.addition_date = Some(value);
+        self
+    }
+
+    /// Sets a new media.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Media added to the option.
+    pub fn with_media(mut self, value: PollMedia) -> Self {
+        self.media = Some(value);
         self
     }
 }

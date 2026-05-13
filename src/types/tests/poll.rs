@@ -7,6 +7,7 @@ fn poll() {
             .with_is_anonymous(true)
             .with_is_closed(true)
             .with_description("test")
+            .with_media(PollMedia::Location(Location::new(1.0, 2.0)))
             .with_options([PollOption::new("1", "Yes", 1000), PollOption::new("2", "No", 0)])
             .with_total_voter_count(1000),
     ));

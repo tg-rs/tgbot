@@ -115,6 +115,8 @@ pub struct RegularPoll {
         serialize_with = "PollDescription::serialize_value"
     )]
     pub description: Option<Text>,
+    /// Media added to the poll description; for polls inside the Message object only.
+    pub media: Option<PollMedia>,
     /// Amount of time in seconds the poll will be active after creation.
     pub open_period: Option<Integer>,
 }
@@ -142,6 +144,7 @@ impl RegularPoll {
             total_voter_count: 0,
             close_date: None,
             description: None,
+            media: None,
             open_period: None,
         }
     }
@@ -206,6 +209,16 @@ impl RegularPoll {
     /// * `value` - Indicates whether the quiz is closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
         self.is_closed = value;
+        self
+    }
+
+    /// Sets a new media.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Media added to the poll description.
+    pub fn with_media(mut self, value: PollMedia) -> Self {
+        self.media = Some(value);
         self
     }
 

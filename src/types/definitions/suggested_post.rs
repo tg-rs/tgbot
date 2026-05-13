@@ -390,6 +390,10 @@ impl SuggestedPostParameters {
         self.send_date = Some(value);
         self
     }
+
+    pub(crate) fn serialize(&self) -> Result<String, SuggestedPostParametersError> {
+        serde_json::to_string(self).map_err(SuggestedPostParametersError::Serialize)
+    }
 }
 
 /// An error for suggested post parameters.

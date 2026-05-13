@@ -359,8 +359,7 @@ impl SendAnimation {
         mut self,
         value: &SuggestedPostParameters,
     ) -> Result<Self, SuggestedPostParametersError> {
-        let value = serde_json::to_string(value).map_err(SuggestedPostParametersError::Serialize)?;
-        self.form.insert_field("suggested_post_parameters", value);
+        self.form.insert_field("suggested_post_parameters", value.serialize()?);
         Ok(self)
     }
 

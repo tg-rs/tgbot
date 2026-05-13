@@ -1,0 +1,14 @@
+---
+source: src/types/tests/media.rs
+expression: "PaidMedia::LivePhoto(LivePhoto::new(1, \"fid\", \"fuid\", 200, 300))"
+---
+{
+  "type": "live_photo",
+  "live_photo": {
+    "duration": 1,
+    "file_id": "fid",
+    "file_unique_id": "fuid",
+    "height": 200,
+    "width": 300
+  }
+}

@@ -6,6 +6,7 @@ use crate::{
         ChatId,
         InputPaidMediaGroup,
         Integer,
+        LivePhoto,
         Message,
         ParseMode,
         PhotoSize,
@@ -83,6 +84,8 @@ impl PaidMediaInfo {
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(from = "RawPaidMedia", into = "RawPaidMedia")]
 pub enum PaidMedia {
+    /// The paid media is a live photo.
+    LivePhoto(LivePhoto),
     /// The paid media is a photo.
     Photo(Vec<PhotoSize>),
     /// The paid media isn't available before the payment.
@@ -140,6 +143,9 @@ impl PaidMediaPreview {
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
 enum RawPaidMedia {
+    LivePhoto {
+        live_photo: LivePhoto,
+    },
     Photo {
         photo: Vec<PhotoSize>,
     },
@@ -156,6 +162,7 @@ enum RawPaidMedia {
 impl From<RawPaidMedia> for PaidMedia {
     fn from(value: RawPaidMedia) -> Self {
         match value {
+            RawPaidMedia::LivePhoto { live_photo } => Self::LivePhoto(live_photo),
             RawPaidMedia::Photo { photo } => Self::Photo(photo),
             RawPaidMedia::Preview {
                 duration,
@@ -174,6 +181,7 @@ impl From<RawPaidMedia> for PaidMedia {
 impl From<PaidMedia> for RawPaidMedia {
     fn from(value: PaidMedia) -> Self {
         match value {
+            PaidMedia::LivePhoto(live_photo) => Self::LivePhoto { live_photo },
             PaidMedia::Photo(photo) => Self::Photo { photo },
             PaidMedia::Preview(PaidMediaPreview {
                 duration,

@@ -73,6 +73,11 @@ fn paid_media_info() {
 }
 
 #[test]
+fn paid_media_live_photo() {
+    insta::assert_json_snapshot!(PaidMedia::LivePhoto(LivePhoto::new(1, "fid", "fuid", 200, 300)));
+}
+
+#[test]
 fn paid_media_photo() {
     insta::assert_json_snapshot!(PaidMedia::Photo(vec![PhotoSize::new(
         "file-id",

@@ -520,14 +520,14 @@ fn pinned_message() {
 #[test]
 fn poll() {
     let mut expected_struct = create_message_struct();
-    expected_struct.data = MessageData::Poll(Poll::Regular(
+    expected_struct.data = MessageData::Poll(Box::new(Poll::Regular(
         RegularPoll::new("poll-id", "Rust?")
             .with_allows_multiple_answers(false)
             .with_is_anonymous(true)
             .with_is_closed(true)
             .with_options([PollOption::new("1", "Yes", 1000), PollOption::new("2", "No", 0)])
             .with_total_voter_count(100),
-    ));
+    )));
     insta::assert_json_snapshot!(expected_struct);
 }
 

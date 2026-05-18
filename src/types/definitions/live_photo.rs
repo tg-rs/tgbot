@@ -171,7 +171,7 @@ impl SendLivePhoto {
     /// # Arguments
     ///
     /// * `value` - Video caption (may also be used when resending videos by file_id);
-    ///    0-1024 characters after entities parsing.
+    ///   0-1024 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

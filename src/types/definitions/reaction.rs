@@ -237,7 +237,7 @@ impl DeleteAllMessageReactions {
     /// # Arguments
     ///
     /// * `value` - Identifier of the chat whose reactions will be removed,
-    ///  if the reactions were added by a chat
+    ///   if the reactions were added by a chat
     pub fn with_actor_chat_id(mut self, value: Integer) -> Self {
         self.actor_chat_id = Some(value);
         self

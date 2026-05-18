@@ -96,7 +96,7 @@ pub(crate) struct Form {
 
 impl Form {
     pub(crate) fn extend(&mut self, value: Form) {
-        self.fields.extend(value.fields.into_iter());
+        self.fields.extend(value.fields);
     }
 
     pub(crate) fn insert_field<N, V>(&mut self, name: N, value: V)

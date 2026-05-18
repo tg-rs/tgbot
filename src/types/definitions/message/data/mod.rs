@@ -199,7 +199,7 @@ pub enum MessageData {
     /// further `reply_to` field even if it is itself a reply.
     PinnedMessage(MaybeInaccessibleMessage),
     /// Information about the native poll.
-    Poll(Poll),
+    Poll(Box<Poll>),
     /// Answer option was added to a poll.
     PollOptionAdded(MessageDataPollOptionAdded),
     /// Answer option was deleted from a poll.
@@ -440,7 +440,7 @@ impl From<PassportData> for MessageData {
 
 impl From<Poll> for MessageData {
     fn from(value: Poll) -> Self {
-        Self::Poll(value)
+        Self::Poll(Box::new(value))
     }
 }
 

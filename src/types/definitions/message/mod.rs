@@ -103,7 +103,7 @@ pub struct Message {
     pub guest_bot: Option<MessageGuestBot>,
     /// The unique identifier for the guest query.
     ///
-    /// Use this identifier with the method [`AnswerGuestQuery`]
+    /// Use this identifier with the method [`crate::types::AnswerGuestQuery`]
     /// to send a response message.
     ///
     /// If non-empty, the message belongs to the chat where the guest bot was summoned,

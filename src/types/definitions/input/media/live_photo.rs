@@ -19,7 +19,7 @@ impl InputMediaLivePhoto {
     /// # Arguments
     ///
     /// * `value` - Caption of the live photo to be sent;
-    ///  0-1024 characters after entities parsing.
+    ///   0-1024 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -45,7 +45,7 @@ impl InputMediaLivePhoto {
     /// # Arguments
     ///
     /// * `value` - List of special entities that appear in the caption;
-    ///  Parse mode will be set to [`None`] when this method is called.
+    ///   Parse mode will be set to [`None`] when this method is called.
     pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,

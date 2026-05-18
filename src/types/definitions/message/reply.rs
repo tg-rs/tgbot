@@ -179,7 +179,7 @@ pub enum ExternalReplyData {
     /// Message is a photo, available sizes of the photo.
     Photo(Vec<PhotoSize>),
     /// Message is a native poll, information about the poll.
-    Poll(Poll),
+    Poll(Box<Poll>),
     /// Message is a sticker, information about the sticker.
     Sticker(Sticker),
     /// Message is a forwarded story.
@@ -195,4 +195,10 @@ pub enum ExternalReplyData {
     /// Contains arbitrary data for future variants.
     #[serde(untagged)]
     Unknown(Value),
+}
+
+impl From<Poll> for ExternalReplyData {
+    fn from(value: Poll) -> Self {
+        Self::Poll(Box::new(value))
+    }
 }

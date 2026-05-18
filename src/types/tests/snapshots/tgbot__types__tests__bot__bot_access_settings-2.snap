@@ -1,0 +1,14 @@
+---
+source: src/types/tests/bot.rs
+expression: "BotAccessSettings::default().with_added_users([User::new(1, \"John\",\nfalse)]).with_is_access_restricted(true)"
+---
+{
+  "is_access_restricted": true,
+  "added_users": [
+    {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    }
+  ]
+}

@@ -173,6 +173,43 @@ impl Bot {
     }
 }
 
+/// Represents the access settings of a bot.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct BotAccessSettings {
+    /// Whether only selected users can access the bot.
+    ///
+    /// The bot's owner can always access it.
+    pub is_access_restricted: bool,
+    /// The list of other users who have access to the bot if the access is restricted.
+    pub added_users: Option<Vec<User>>,
+}
+
+impl BotAccessSettings {
+    /// Sets a new list of added users
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The list of other users who have access to the bot.
+    pub fn with_added_users<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = User>,
+    {
+        self.added_users = Some(value.into_iter().collect());
+        self
+    }
+
+    /// Sets a new value for the `is_access_restricted_flag`.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the only selected users can access the bot.
+    pub fn with_is_access_restricted(mut self, value: bool) -> Self {
+        self.is_access_restricted = value;
+        self
+    }
+}
+
 /// Represents a command of a bot.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BotCommand {

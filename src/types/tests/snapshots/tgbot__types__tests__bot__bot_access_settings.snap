@@ -1,0 +1,7 @@
+---
+source: src/types/tests/bot.rs
+expression: "BotAccessSettings::default()"
+---
+{
+  "is_access_restricted": false
+}

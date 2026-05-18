@@ -16,6 +16,16 @@ fn bot() {
 }
 
 #[test]
+fn bot_access_settings() {
+    insta::assert_json_snapshot!(BotAccessSettings::default());
+    insta::assert_json_snapshot!(
+        BotAccessSettings::default()
+            .with_added_users([User::new(1, "John", false)])
+            .with_is_access_restricted(true)
+    );
+}
+
+#[test]
 fn bot_command() {
     let err = BotCommand::new("", "description").unwrap_err().to_string();
     assert_eq!(err, "command name can have a length of 1 up to 32 characters, got 0");

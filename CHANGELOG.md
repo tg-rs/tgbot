@@ -1,5 +1,54 @@
 # Changelog
 
+## 0.45.0 (12.05.2026)
+
+### Bot API
+
+#### 10.0
+
+- Added types: `AnswerGuestQuery`, `BotAccessSettings`, `DeleteAllMessageReactions`,
+  `DeleteMessageReaction`, `GetManagedBotAccessSettings`, `GetUserPersonalChatMessages`,
+  `InputMediaLivePhoto`, `InputMediaLocation`, `InputMediaSticker`, `InputMediaVenue`,
+  `LivePhoto`, `MessageDataLivePhoto`, `MessageGuestBot`, `PollError`, `PollMedia`,
+  `SentGuestMessage`, `SendLivePhoto`, `SetManagedBotAccessSettings`.
+- Added enum variants:
+  - `AllowedUpdate`: `GuestMessage`.
+  - `ExternalReplyInfo`: `LivePhoto`.
+  - `MessageData`: `LivePhoto`.
+  - `PaidMedia`: `LivePhoto`.
+  - `UpdateType`: `GuestMessage`.
+- Added fields:
+  - `Bot`: `supports_guest_queries`
+  - `ChatMemberRestricted`: `can_react_to_messages`.
+  - `ChatPermissions`: `can_react_to_messages`.
+  - `Message`: `guest_bot`, `guest_query_id`.
+  - `PollOption`: `media`.
+  - `Quiz`: `country_codes`, `explanation_media`, `members_only`.
+  - `RegularPoll`: `country_codes`, `media`, `members_only`.
+- Added methods:
+  - `Bot`: `with_supports_guest_queries`.
+  - `ChatMemberRestricted`: `with_can_react_to_messages`.
+  - `ChatPermissions`: `with_can_react_to_messages`.
+  - `GetChatAdministrators`: `with_return_bots`.
+  - `InputPaidMediaGroupItem`: `for_live_photo`.
+  - `InputPollOption`: `with_media`.
+  - `InputMedia`: `for_live_photo`, `for_location`, `for_sticker`, `for_venue`.
+  - `MediaGroupItem`: `for_live_photo`.
+  - `Message`: `with_guest_bot`, `with_guest_query_id`.
+  - `PollOption`: `with_media`.
+  - `Quiz`: `with_country_codes`, `with_explanation_media`, `with_members_only`.
+  - `RegularPoll`: `with_country_codes`, `with_media`, `with_members_only`.
+  - `SendPoll`: `with_country_codes`, `with_media`, `with_members_only`.
+  - `SendQuiz`: `with_country_codes`, `with_explanation_media`, `with_members_only`.
+- Changed types:
+  - `InputMedia`: Removed the old `InputMedia` struct,
+    renamed `InputMediaType` to `InputMedia`.
+- Changed signature:
+  - `SendPoll`: this method now uses multipart/form-data,
+    so some setters now may return an error when serializing objects to JSON.
+  - `SendQuiz`: this method now uses multipart/form-data,
+    so some setters now may return an error when serializing objects to JSON.
+
 
 ## 0.44.0 (08.04.2026)
 

@@ -127,6 +127,12 @@ fn user_id() {
 }
 
 #[test]
+fn get_user_personal_chat_messages() {
+    let method = GetUserPersonalChatMessages::new(1, 2);
+    assert_payload_eq!(POST JSON "getUserPersonalChatMessages" => method);
+}
+
+#[test]
 fn get_user_profile_audios() {
     let method = GetUserProfileAudios::new(1);
     assert_payload_eq!(POST JSON "getUserProfileAudios" => method);

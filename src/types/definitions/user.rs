@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload},
-    types::{Audio, Integer, ParseMode, PhotoSize},
+    types::{Audio, Integer, Message, ParseMode, PhotoSize},
 };
 
 /// Represents the date of birth of a user.
@@ -482,6 +482,33 @@ impl From<UserPeerId> for UserId {
 impl From<UserUsername> for UserId {
     fn from(value: UserUsername) -> Self {
         UserId::Username(value)
+    }
+}
+
+/// Returns the last messages from the personal chat of a given user.
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct GetUserPersonalChatMessages {
+    user_id: Integer,
+    limit: Integer,
+}
+
+impl GetUserPersonalChatMessages {
+    /// Creates a new `GetUserPersonalChatMessages`.
+    ///
+    /// # Arguments
+    ///
+    /// * `user_id` - Unique identifier of the target user.
+    /// * `limit` - The maximum number of messages to return; 1-20
+    pub fn new(user_id: Integer, limit: Integer) -> Self {
+        Self { user_id, limit }
+    }
+}
+
+impl Method for GetUserPersonalChatMessages {
+    type Response = Vec<Message>;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getUserPersonalChatMessages", self)
     }
 }
 

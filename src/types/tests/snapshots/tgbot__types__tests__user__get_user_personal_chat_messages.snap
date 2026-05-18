@@ -1,0 +1,8 @@
+---
+source: src/types/tests/user.rs
+expression: actual_data
+---
+{
+  "limit": 2,
+  "user_id": 1
+}

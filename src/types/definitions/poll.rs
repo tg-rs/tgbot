@@ -127,6 +127,12 @@ pub struct RegularPoll {
     pub total_voter_count: Integer,
     /// Point in time (Unix timestamp) when the poll will be automatically closed.
     pub close_date: Option<Integer>,
+    /// A list of two-letter ISO 3166-1 alpha-2 country codes
+    /// indicating the countries from which users can vote in the poll.
+    ///
+    /// The country code “FT” is used for users with anonymous numbers.
+    /// If omitted, then users from any country can participate in the poll.
+    pub country_codes: Option<Vec<String>>,
     /// Description of the poll.
     ///
     /// For a poll inside the message object only.
@@ -165,6 +171,7 @@ impl RegularPoll {
             question: question.into(),
             total_voter_count: 0,
             close_date: None,
+            country_codes: None,
             description: None,
             media: None,
             open_period: None,
@@ -198,6 +205,20 @@ impl RegularPoll {
     /// * `value` - Point in time (Unix timestamp) when the poll will be automatically closed.
     pub fn with_close_date(mut self, value: Integer) -> Self {
         self.close_date = Some(value);
+        self
+    }
+
+    /// Sets a new list of country codes.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - ISO-3166-1 alpha-2 country codes.
+    pub fn with_country_codes<A, B>(mut self, value: A) -> Self
+    where
+        A: IntoIterator<Item = B>,
+        B: Into<String>,
+    {
+        self.country_codes = Some(value.into_iter().map(Into::into).collect());
         self
     }
 
@@ -322,6 +343,12 @@ pub struct Quiz {
     /// Available only for polls in quiz mode which are closed
     /// or were sent (not forwarded) by the bot or to the private chat with the bot.
     pub correct_option_ids: Option<Vec<Integer>>,
+    /// A list of two-letter ISO 3166-1 alpha-2 country codes
+    /// indicating the countries from which users can vote in the poll.
+    ///
+    /// The country code “FT” is used for users with anonymous numbers.
+    /// If omitted, then users from any country can participate in the poll.
+    pub country_codes: Option<Vec<String>>,
     /// Description of the quiz.
     ///
     /// For a quiz inside the message object only.
@@ -368,6 +395,7 @@ impl Quiz {
             total_voter_count: 0,
             close_date: None,
             correct_option_ids: None,
+            country_codes: None,
             description: None,
             explanation: None,
             explanation_media: None,
@@ -405,6 +433,20 @@ impl Quiz {
         T: IntoIterator<Item = Integer>,
     {
         self.correct_option_ids = Some(value.into_iter().collect());
+        self
+    }
+
+    /// Sets a new list of country codes.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - ISO-3166-1 alpha-2 country codes.
+    pub fn with_country_codes<A, B>(mut self, value: A) -> Self
+    where
+        A: IntoIterator<Item = B>,
+        B: Into<String>,
+    {
+        self.country_codes = Some(value.into_iter().map(Into::into).collect());
         self
     }
 

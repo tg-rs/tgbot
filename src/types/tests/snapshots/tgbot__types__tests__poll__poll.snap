@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/poll.rs
-expression: "Poll::from(RegularPoll::new(\"poll-id\",\n\"Rust?\").with_is_anonymous(true).with_is_closed(true).with_description(\"test\").with_media(PollMedia::Location(Location::new(1.0,\n2.0))).with_members_only(true).with_options([PollOption::new(\"1\", \"Yes\",\n1000), PollOption::new(\"2\", \"No\", 0)]).with_total_voter_count(1000),)"
+expression: "Poll::from(RegularPoll::new(\"poll-id\",\n\"Rust?\").with_is_anonymous(true).with_is_closed(true).with_country_codes([\"RU\",\n\"GE\"]).with_description(\"test\").with_media(PollMedia::Location(Location::new(1.0,\n2.0))).with_members_only(true).with_options([PollOption::new(\"1\", \"Yes\",\n1000), PollOption::new(\"2\", \"No\", 0)]).with_total_voter_count(1000),)"
 ---
 {
   "type": "regular",
@@ -24,6 +24,10 @@ expression: "Poll::from(RegularPoll::new(\"poll-id\",\n\"Rust?\").with_is_anonym
   ],
   "question": "Rust?",
   "total_voter_count": 1000,
+  "country_codes": [
+    "RU",
+    "GE"
+  ],
   "description": "test",
   "media": {
     "location": {

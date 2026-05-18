@@ -8,6 +8,7 @@ fn poll() {
         RegularPoll::new("poll-id", "Rust?")
             .with_is_anonymous(true)
             .with_is_closed(true)
+            .with_country_codes(["RU", "GE"])
             .with_description("test")
             .with_media(PollMedia::Location(Location::new(1.0, 2.0)))
             .with_members_only(true)
@@ -21,6 +22,7 @@ fn quiz() {
     insta::assert_json_snapshot!(Poll::from(
         Quiz::new("poll-id", "Rust?")
             .with_correct_option_ids([0])
+            .with_country_codes(["CZ", "SK"])
             .with_explanation(Text::from("text").with_entities(vec![TextEntity::bold(0..2)].into_iter().collect()))
             .with_explanation_media(PollMedia::Location(Location::new(1.0, 2.0)))
             .with_is_anonymous(true)

@@ -11,8 +11,8 @@ use crate::{
         ChatId,
         Document,
         InlineKeyboardMarkup,
+        InputMedia,
         InputMediaError,
-        InputMediaType,
         Integer,
         LivePhoto,
         Location,
@@ -1058,7 +1058,7 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * `value` - Media added to the quiz explanation.
-    pub fn with_explanation_media(mut self, value: InputMediaType) -> Result<Self, InputMediaError> {
+    pub fn with_explanation_media(mut self, value: InputMedia) -> Result<Self, InputMediaError> {
         self.inner.form.extend(value.try_into_form("explanation_media")?);
         Ok(self)
     }
@@ -1433,7 +1433,7 @@ impl SendPoll {
     /// # Arguments
     ///
     /// * `value` - Media added to the poll description.
-    pub fn with_media(mut self, value: InputMediaType) -> Result<Self, InputMediaError> {
+    pub fn with_media(mut self, value: InputMedia) -> Result<Self, InputMediaError> {
         self.inner.form.extend(value.try_into_form("media")?);
         Ok(self)
     }

@@ -9,6 +9,7 @@ use crate::{
         InlineKeyboardError,
         InlineKeyboardMarkup,
         InputMedia,
+        InputMediaError,
         Integer,
         LinkPreviewOptions,
         Message,
@@ -783,14 +784,14 @@ impl EditMessageMedia {
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `message_id` - Identifier of the sent message.
     /// * `media` - New media content of the message.
-    pub fn for_chat_message<T>(chat_id: T, message_id: Integer, media: InputMedia) -> Self
+    pub fn for_chat_message<T>(chat_id: T, message_id: Integer, media: InputMedia) -> Result<Self, InputMediaError>
     where
         T: Into<ChatId>,
     {
-        let mut form: Form = media.into();
+        let mut form: Form = media.try_into_form("media")?;
         form.insert_field("chat_id", chat_id.into());
         form.insert_field("message_id", message_id);
-        Self { form }
+        Ok(Self { form })
     }
 
     /// Creates a new `EditMessageMedia` for an inline message.
@@ -799,13 +800,13 @@ impl EditMessageMedia {
     ///
     /// * `inline_message_id` - Identifier of the inline message.
     /// * `media` - New media content of the message.
-    pub fn for_inline_message<T>(inline_message_id: T, media: InputMedia) -> Self
+    pub fn for_inline_message<T>(inline_message_id: T, media: InputMedia) -> Result<Self, InputMediaError>
     where
         T: Into<String>,
     {
-        let mut form: Form = media.into();
+        let mut form: Form = media.try_into_form("media")?;
         form.insert_field("inline_message_id", inline_message_id.into());
-        EditMessageMedia { form }
+        Ok(EditMessageMedia { form })
     }
 
     /// Sets a new business connection ID.

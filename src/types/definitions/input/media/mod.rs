@@ -26,40 +26,15 @@ mod sticker;
 mod venue;
 mod video;
 
-/// Represents a content of a media message to be sent.
-#[derive(Debug)]
-pub struct InputMedia {
-    form: Form,
-}
-
-impl InputMedia {
-    /// Creates a new `InputMedia`.
-    ///
-    /// # Arguments
-    ///
-    /// * `media_type` - The type of the media.
-    pub fn new(mut media_type: InputMediaType) -> Result<Self, InputMediaError> {
-        let info = serde_json::to_string(&media_type.data).map_err(InputMediaError::SerializeInfo)?;
-        media_type.form.insert_field("media", info);
-        Ok(Self { form: media_type.form })
-    }
-}
-
-impl From<InputMedia> for Form {
-    fn from(value: InputMedia) -> Self {
-        value.form
-    }
-}
-
 /// Represents a metadata of the input media.
 #[derive(Debug)]
-pub struct InputMediaType {
+pub struct InputMedia {
     form: Form,
     data: InputMediaData,
 }
 
-impl InputMediaType {
-    /// Creates a new `InputMediaType` for animation.
+impl InputMedia {
+    /// Creates a new `InputMedia` for animation.
     ///
     /// # Arguments
     ///
@@ -80,7 +55,7 @@ impl InputMediaType {
         }
     }
 
-    /// Creates a new `InputMediaType` for audio.
+    /// Creates a new `InputMedia` for audio.
     ///
     /// # Arguments
     ///
@@ -101,7 +76,7 @@ impl InputMediaType {
         }
     }
 
-    /// Creates a new `InputMediaType` for document.
+    /// Creates a new `InputMedia` for document.
     ///
     /// # Arguments
     ///
@@ -122,7 +97,7 @@ impl InputMediaType {
         }
     }
 
-    /// Creates a new `InputMediaType` for live photo.
+    /// Creates a new `InputMedia` for live photo.
     ///
     /// # Arguments
     ///
@@ -149,7 +124,7 @@ impl InputMediaType {
         }
     }
 
-    /// Creates a new `InputMediaType` for location.
+    /// Creates a new `InputMedia` for location.
     ///
     /// # Arguments
     ///
@@ -161,7 +136,7 @@ impl InputMediaType {
         }
     }
 
-    /// Creates a new `InputMediaType` for photo.
+    /// Creates a new `InputMedia` for photo.
     ///
     /// # Arguments
     ///
@@ -178,7 +153,7 @@ impl InputMediaType {
         }
     }
 
-    /// Creates a new `InputMediaType` for sticker.
+    /// Creates a new `InputMedia` for sticker.
     ///
     /// # Arguments
     ///
@@ -195,7 +170,7 @@ impl InputMediaType {
         }
     }
 
-    /// Creates a new `InputMediaType` for venue.
+    /// Creates a new `InputMedia` for venue.
     ///
     /// # Arguments
     ///
@@ -208,7 +183,7 @@ impl InputMediaType {
         }
     }
 
-    /// Creates a new `InputMediaType` for video.
+    /// Creates a new `InputMedia` for video.
     ///
     /// # Arguments
     ///
@@ -230,7 +205,7 @@ impl InputMediaType {
         }
     }
 
-    /// Sets a new cover for the media type.
+    /// Sets a new cover for the media.
     ///
     /// # Arguments
     ///
@@ -238,7 +213,7 @@ impl InputMediaType {
     ///
     /// # Errors
     ///
-    /// It is considered an error when the media type is not a video.
+    /// It is considered an error when the media is not a video.
     pub fn with_cover<T>(mut self, value: T) -> Result<Self, InputMediaError>
     where
         T: Into<InputFile>,
@@ -267,7 +242,7 @@ impl InputMediaType {
         Ok(self)
     }
 
-    /// Sets a new thumbnail for the media type.
+    /// Sets a new thumbnail for the media.
     ///
     /// # Arguments
     ///
@@ -275,7 +250,7 @@ impl InputMediaType {
     ///
     /// # Errors
     ///
-    /// It is considered an error when the media type is a
+    /// It is considered an error when the media is a
     /// live photo, location, photo, sticker or venue.
     pub fn with_thumbnail<T>(mut self, value: T) -> Result<Self, InputMediaError>
     where
@@ -395,11 +370,11 @@ enum InputMediaData {
 /// An error occurred with [`InputMedia`].
 #[derive(Debug)]
 pub enum InputMediaError {
-    /// Can not set a cover for the media type.
+    /// Can not set a cover for the input media.
     CoverNotAcceptable,
     /// Can not serialize media info.
     SerializeInfo(JsonError),
-    /// Can not set a thumbnail for the media type.
+    /// Can not set a thumbnail for the input media.
     ThumbnailNotAcceptable,
 }
 

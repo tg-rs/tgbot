@@ -881,24 +881,18 @@ fn edit_message_media() {
     let method = EditMessageMedia::for_chat_message(
         1,
         2,
-        InputMedia::new(InputMediaType::for_photo(
-            InputFile::file_id("file-id"),
-            InputMediaPhoto::default(),
-        ))
-        .unwrap(),
+        InputMedia::for_photo(InputFile::file_id("file-id"), InputMediaPhoto::default()),
     )
+    .unwrap()
     .with_business_connection_id("c-id")
     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
     .unwrap();
     assert_payload_eq!(POST FORM "editMessageMedia" => method);
     let method = EditMessageMedia::for_inline_message(
         "msg-id",
-        InputMedia::new(InputMediaType::for_photo(
-            InputFile::file_id("file-id"),
-            InputMediaPhoto::default(),
-        ))
-        .unwrap(),
-    );
+        InputMedia::for_photo(InputFile::file_id("file-id"), InputMediaPhoto::default()),
+    )
+    .unwrap();
     assert_payload_eq!(POST FORM "editMessageMedia" => method);
 }
 

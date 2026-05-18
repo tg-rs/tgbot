@@ -40,12 +40,12 @@ async fn input_file() {
 
 #[test]
 fn input_media_form() {
-    let data: Form = InputMedia::new(InputMediaType::for_animation(
+    let data: Form = InputMedia::for_animation(
         InputFile::file_id("animation-file-id"),
         InputMediaAnimation::default().with_caption("test"),
-    ))
-    .unwrap()
-    .into();
+    )
+    .try_into_form("media")
+    .unwrap();
     assert_eq!(
         Form::from([(
             "media",
@@ -54,16 +54,14 @@ fn input_media_form() {
         data
     );
 
-    let data: Form = InputMedia::new(
-        InputMediaType::for_animation(
-            InputFileReader::from(Cursor::new("animation-file-data")),
-            InputMediaAnimation::default(),
-        )
-        .with_thumbnail(InputFileReader::from(Cursor::new("animation-thumb-data")))
-        .unwrap(),
+    let data: Form = InputMedia::for_animation(
+        InputFileReader::from(Cursor::new("animation-file-data")),
+        InputMediaAnimation::default(),
     )
+    .with_thumbnail(InputFileReader::from(Cursor::new("animation-thumb-data")))
     .unwrap()
-    .into();
+    .try_into_form("media")
+    .unwrap();
     assert_eq!(
         Form::from([
             (
@@ -85,23 +83,19 @@ fn input_media_form() {
 
 #[test]
 fn create_input_media_animation() {
-    InputMedia::new(InputMediaType::for_animation(
+    InputMedia::for_animation(
         InputFile::file_id("animation-file-id"),
         InputMediaAnimation::default().with_caption("test"),
-    ))
-    .unwrap();
+    );
 
-    InputMedia::new(
-        InputMediaType::for_animation(
-            InputFileReader::from(Cursor::new("animation-file-data")),
-            InputMediaAnimation::default(),
-        )
-        .with_thumbnail(InputFileReader::from(Cursor::new("animation-thumb-data")))
-        .unwrap(),
+    InputMedia::for_animation(
+        InputFileReader::from(Cursor::new("animation-file-data")),
+        InputMediaAnimation::default(),
     )
+    .with_thumbnail(InputFileReader::from(Cursor::new("animation-thumb-data")))
     .unwrap();
 
-    let err = InputMediaType::for_animation(
+    let err = InputMedia::for_animation(
         InputFileReader::from(Cursor::new("animation-file-data")),
         InputMediaAnimation::default(),
     )
@@ -112,23 +106,19 @@ fn create_input_media_animation() {
 
 #[test]
 fn create_input_media_audio() {
-    InputMedia::new(InputMediaType::for_audio(
+    InputMedia::for_audio(
         InputFile::file_id("audio-file-id"),
         InputMediaAudio::default().with_caption("test"),
-    ))
-    .unwrap();
+    );
 
-    InputMedia::new(
-        InputMediaType::for_audio(
-            InputFileReader::from(Cursor::new("audio-file-data")),
-            InputMediaAudio::default(),
-        )
-        .with_thumbnail(InputFileReader::from(Cursor::new("audio-thumb-data")))
-        .unwrap(),
+    InputMedia::for_audio(
+        InputFileReader::from(Cursor::new("audio-file-data")),
+        InputMediaAudio::default(),
     )
+    .with_thumbnail(InputFileReader::from(Cursor::new("audio-thumb-data")))
     .unwrap();
 
-    let err = InputMediaType::for_audio(
+    let err = InputMedia::for_audio(
         InputFile::file_id("audio-file-id"),
         InputMediaAudio::default().with_caption("test"),
     )
@@ -139,23 +129,19 @@ fn create_input_media_audio() {
 
 #[test]
 fn create_input_media_document() {
-    InputMedia::new(InputMediaType::for_document(
+    InputMedia::for_document(
         InputFile::file_id("audio-file-id"),
         InputMediaDocument::default().with_caption("test"),
-    ))
-    .unwrap();
+    );
 
-    InputMedia::new(
-        InputMediaType::for_document(
-            InputFileReader::from(Cursor::new("document-file-data")),
-            InputMediaDocument::default(),
-        )
-        .with_thumbnail(InputFileReader::from(Cursor::new("document-thumb-data")))
-        .unwrap(),
+    InputMedia::for_document(
+        InputFileReader::from(Cursor::new("document-file-data")),
+        InputMediaDocument::default(),
     )
+    .with_thumbnail(InputFileReader::from(Cursor::new("document-thumb-data")))
     .unwrap();
 
-    let err = InputMediaType::for_document(
+    let err = InputMedia::for_document(
         InputFile::file_id("audio-file-id"),
         InputMediaDocument::default().with_caption("test"),
     )
@@ -168,14 +154,13 @@ fn create_input_media_document() {
 fn create_input_media_live_photo() {
     let live_photo = InputMediaLivePhoto::default();
 
-    InputMedia::new(InputMediaType::for_live_photo(
+    InputMedia::for_live_photo(
         InputFile::url("https://example.com/video.mp4"),
         InputFile::url("https://example.com/photo.png"),
         live_photo.clone(),
-    ))
-    .unwrap();
+    );
 
-    let err = InputMediaType::for_live_photo(
+    let err = InputMedia::for_live_photo(
         InputFile::url("https://example.com/video.mp4"),
         InputFile::url("https://example.com/photo.png"),
         live_photo.clone(),
@@ -184,7 +169,7 @@ fn create_input_media_live_photo() {
     .unwrap_err();
     assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
 
-    let err = InputMediaType::for_live_photo(
+    let err = InputMedia::for_live_photo(
         InputFile::url("https://example.com/video.mp4"),
         InputFile::url("https://example.com/photo.png"),
         live_photo,
@@ -198,14 +183,14 @@ fn create_input_media_live_photo() {
 fn create_input_media_location() {
     let location = InputMediaLocation::new(1.0, 2.0);
 
-    InputMedia::new(InputMediaType::for_location(location.clone())).unwrap();
+    InputMedia::for_location(location.clone());
 
-    let err = InputMediaType::for_location(location.clone())
+    let err = InputMedia::for_location(location.clone())
         .with_thumbnail(InputFileReader::from(Cursor::new("location-thumb-data")))
         .unwrap_err();
     assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
 
-    let err = InputMediaType::for_location(location)
+    let err = InputMedia::for_location(location)
         .with_cover(InputFile::file_id("cover-id"))
         .unwrap_err();
     assert!(matches!(err, InputMediaError::CoverNotAcceptable));
@@ -213,12 +198,11 @@ fn create_input_media_location() {
 
 #[test]
 fn create_input_media_photo() {
-    InputMedia::new(InputMediaType::for_photo(
+    InputMedia::for_photo(
         InputFile::file_id("photo-file-id"),
         InputMediaPhoto::default().with_caption("test"),
-    ))
-    .unwrap();
-    let err = InputMediaType::for_photo(
+    );
+    let err = InputMedia::for_photo(
         InputFile::file_id("photo-file-id"),
         InputMediaPhoto::default().with_caption("test"),
     )
@@ -226,7 +210,7 @@ fn create_input_media_photo() {
     .unwrap_err();
     assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
 
-    let err = InputMediaType::for_photo(
+    let err = InputMedia::for_photo(
         InputFile::file_id("photo-file-id"),
         InputMediaPhoto::default().with_caption("test"),
     )
@@ -239,18 +223,14 @@ fn create_input_media_photo() {
 fn create_input_media_sticker() {
     let sticker = InputMediaSticker::default();
 
-    InputMedia::new(InputMediaType::for_sticker(
-        InputFile::file_id("sticker-file-id"),
-        sticker.clone(),
-    ))
-    .unwrap();
+    InputMedia::for_sticker(InputFile::file_id("sticker-file-id"), sticker.clone());
 
-    let err = InputMediaType::for_sticker(InputFile::file_id("sticker-file-id"), sticker.clone())
+    let err = InputMedia::for_sticker(InputFile::file_id("sticker-file-id"), sticker.clone())
         .with_thumbnail(InputFileReader::from(Cursor::new("sticker-thumb-data")))
         .unwrap_err();
     assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
 
-    let err = InputMediaType::for_sticker(InputFile::file_id("sticker-file-id"), sticker)
+    let err = InputMedia::for_sticker(InputFile::file_id("sticker-file-id"), sticker)
         .with_cover(InputFile::file_id("cover-id"))
         .unwrap_err();
     assert!(matches!(err, InputMediaError::CoverNotAcceptable));
@@ -260,14 +240,14 @@ fn create_input_media_sticker() {
 fn create_input_media_venue() {
     let venue = InputMediaVenue::new(1.0, 2.0, "test", "addr");
 
-    InputMedia::new(InputMediaType::for_venue(venue.clone())).unwrap();
+    InputMedia::for_venue(venue.clone());
 
-    let err = InputMediaType::for_venue(venue.clone())
+    let err = InputMedia::for_venue(venue.clone())
         .with_thumbnail(InputFileReader::from(Cursor::new("venue-thumb-data")))
         .unwrap_err();
     assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
 
-    let err = InputMediaType::for_venue(venue)
+    let err = InputMedia::for_venue(venue)
         .with_cover(InputFile::file_id("cover-id"))
         .unwrap_err();
     assert!(matches!(err, InputMediaError::CoverNotAcceptable));
@@ -275,22 +255,18 @@ fn create_input_media_venue() {
 
 #[test]
 fn create_input_media_video() {
-    InputMedia::new(InputMediaType::for_video(
+    InputMedia::for_video(
         InputFile::file_id("video-file-id"),
         InputMediaVideo::default().with_caption("test"),
-    ))
-    .unwrap();
+    );
 
-    InputMedia::new(
-        InputMediaType::for_video(
-            InputFileReader::from(Cursor::new("video-file-data")),
-            InputMediaVideo::default(),
-        )
-        .with_thumbnail(InputFileReader::from(Cursor::new("video-thumb-data")))
-        .unwrap()
-        .with_cover(InputFile::file_id("cover-id"))
-        .unwrap(),
+    InputMedia::for_video(
+        InputFileReader::from(Cursor::new("video-file-data")),
+        InputMediaVideo::default(),
     )
+    .with_thumbnail(InputFileReader::from(Cursor::new("video-thumb-data")))
+    .unwrap()
+    .with_cover(InputFile::file_id("cover-id"))
     .unwrap();
 }
 

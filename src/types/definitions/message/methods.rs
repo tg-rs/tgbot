@@ -1534,7 +1534,7 @@ impl SendMessageDraft {
     /// * `chat_id` - Unique identifier for the target private chat.
     /// * `draft_id` - Unique identifier of the message draft; must be non-zero.
     ///   Changes of drafts with the same identifier are animated.
-    /// * `text` - Text of the message to be sent, 1-4096 characters after entities parsing.
+    /// * `text` - Text of the message to be sent, 0-4096 characters after entities parsing.
     pub fn new<T>(chat_id: Integer, draft_id: Integer, text: T) -> Self
     where
         T: Into<String>,

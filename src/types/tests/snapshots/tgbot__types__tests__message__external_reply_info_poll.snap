@@ -15,6 +15,7 @@ expression: "ExternalReplyInfo::new(Poll::from(RegularPoll::new(\"poll-id\",\n\"
     "id": "poll-id",
     "is_anonymous": true,
     "is_closed": true,
+    "members_only": false,
     "options": [
       {
         "persistent_id": "1",

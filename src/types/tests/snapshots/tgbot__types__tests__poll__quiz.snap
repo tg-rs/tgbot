@@ -8,6 +8,7 @@ expression: "Poll::from(Quiz::new(\"poll-id\",\n\"Rust?\").with_correct_option_i
   "id": "poll-id",
   "is_anonymous": true,
   "is_closed": true,
+  "members_only": true,
   "options": [
     {
       "persistent_id": "1",

@@ -110,6 +110,10 @@ pub struct RegularPoll {
     pub is_anonymous: bool,
     /// Indicates whether the poll is closed.
     pub is_closed: bool,
+    /// Indicates whether voting is limited to users
+    /// who have been members of the chat where
+    /// the poll was originally sent for more than 24 hours.
+    pub members_only: bool,
     /// List of options.
     pub options: Vec<PollOption>,
     /// Question; 1-255 characters.
@@ -156,6 +160,7 @@ impl RegularPoll {
             id: id.into(),
             is_anonymous: false,
             is_closed: false,
+            members_only: false,
             options: vec![],
             question: question.into(),
             total_voter_count: 0,
@@ -239,6 +244,16 @@ impl RegularPoll {
         self
     }
 
+    /// Sets a new value for the `members_only` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether voting is limited to the chat members.
+    pub fn with_members_only(mut self, value: bool) -> Self {
+        self.members_only = value;
+        self
+    }
+
     /// Sets a new open period.
     ///
     /// # Arguments
@@ -285,6 +300,10 @@ pub struct Quiz {
     pub is_anonymous: bool,
     /// Indicates whether the quiz is closed.
     pub is_closed: bool,
+    /// Indicates whether voting is limited to users
+    /// who have been members of the chat where
+    /// the poll was originally sent for more than 24 hours.
+    pub members_only: bool,
     /// List of options.
     pub options: Vec<PollOption>,
     /// Question; 1-255 characters.
@@ -343,6 +362,7 @@ impl Quiz {
             id: id.into(),
             is_anonymous: false,
             is_closed: false,
+            members_only: true,
             options: vec![],
             question: question.into(),
             total_voter_count: 0,
@@ -443,6 +463,16 @@ impl Quiz {
     /// * `value` - Indicates whether the quiz is closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
         self.is_closed = value;
+        self
+    }
+
+    /// Sets a new value for the `members_only` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether voting is limited to the chat members.
+    pub fn with_members_only(mut self, value: bool) -> Self {
+        self.members_only = value;
         self
     }
 

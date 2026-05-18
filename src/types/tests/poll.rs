@@ -10,6 +10,7 @@ fn poll() {
             .with_is_closed(true)
             .with_description("test")
             .with_media(PollMedia::Location(Location::new(1.0, 2.0)))
+            .with_members_only(true)
             .with_options([PollOption::new("1", "Yes", 1000), PollOption::new("2", "No", 0)])
             .with_total_voter_count(1000),
     ));
@@ -25,6 +26,7 @@ fn quiz() {
             .with_is_anonymous(true)
             .with_is_closed(true)
             .with_description(Text::from("test").with_entities(vec![TextEntity::bold(0..2)].into_iter().collect()))
+            .with_members_only(true)
             .with_options([PollOption::new("1", "Yes", 1000), PollOption::new("2", "No", 0)])
             .with_total_voter_count(100),
     ));

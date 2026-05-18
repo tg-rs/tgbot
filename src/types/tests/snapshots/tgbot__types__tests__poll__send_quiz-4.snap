@@ -46,6 +46,12 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "country_codes",
+        FormValue::Text(
+            "[\"NL\"]",
+        ),
+    ),
+    (
         "description",
         FormValue::Text(
             "test",

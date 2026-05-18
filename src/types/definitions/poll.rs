@@ -1096,6 +1096,30 @@ impl SendQuiz {
         self
     }
 
+    /// Sets a new list of country codes.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The list of 0-12 two-letter ISO 3166-1 alpha-2 country codes
+    ///   indicating the countries from which users can vote in the poll;
+    ///   for channel chats only.
+    ///
+    /// Use “FT” as a country code to allow users with anonymous numbers to vote.
+    ///
+    /// If omitted or empty, then users from any country can participate in the poll.
+    pub fn with_country_codes<A, B>(mut self, value: A) -> Result<Self, PollError>
+    where
+        A: IntoIterator<Item = B>,
+        B: Into<String>,
+    {
+        let value: Vec<String> = value.into_iter().map(Into::into).collect();
+        self.inner.form.insert_field(
+            "country_codes",
+            serde_json::to_string(&value).map_err(PollError::SerializeCountryCodes)?,
+        );
+        Ok(self)
+    }
+
     /// Sets a new description.
     ///
     /// # Arguments
@@ -1466,6 +1490,30 @@ impl SendPoll {
         self
     }
 
+    /// Sets a new list of country codes.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The list of 0-12 two-letter ISO 3166-1 alpha-2 country codes
+    ///   indicating the countries from which users can vote in the poll;
+    ///   for channel chats only.
+    ///
+    /// Use “FT” as a country code to allow users with anonymous numbers to vote.
+    ///
+    /// If omitted or empty, then users from any country can participate in the poll.
+    pub fn with_country_codes<A, B>(mut self, value: A) -> Result<Self, PollError>
+    where
+        A: IntoIterator<Item = B>,
+        B: Into<String>,
+    {
+        let value: Vec<String> = value.into_iter().map(Into::into).collect();
+        self.inner.form.insert_field(
+            "country_codes",
+            serde_json::to_string(&value).map_err(PollError::SerializeCountryCodes)?,
+        );
+        Ok(self)
+    }
+
     /// Sets a new description.
     ///
     /// # Arguments
@@ -1767,6 +1815,8 @@ impl Method for StopPoll {
 pub enum PollError {
     /// Failed to serialize correct option IDs.
     SerializeCorrectOptionIds(serde_json::Error),
+    /// Failed to serialize country codes.
+    SerializeCountryCodes(serde_json::Error),
     /// Failed to serialize options.
     SerializeOptions(serde_json::Error),
 }
@@ -1775,6 +1825,7 @@ impl Error for PollError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         Some(match self {
             Self::SerializeCorrectOptionIds(err) => err,
+            Self::SerializeCountryCodes(err) => err,
             Self::SerializeOptions(err) => err,
         })
     }
@@ -1784,6 +1835,7 @@ impl fmt::Display for PollError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::SerializeCorrectOptionIds(err) => write!(out, "can not serialize correct option ids: {}", err),
+            Self::SerializeCountryCodes(err) => write!(out, "can not serialize country codes: {}", err),
             Self::SerializeOptions(err) => write!(out, "can not serialize options: {}", err),
         }
     }

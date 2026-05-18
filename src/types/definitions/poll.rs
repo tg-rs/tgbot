@@ -1192,6 +1192,18 @@ impl SendQuiz {
         self
     }
 
+    /// Sets a new value for the `members_only` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` -  Whether voting is limited to users
+    ///   who have been members of the chat where the poll
+    ///   is being sent for more than 24 hours; for channel chats only
+    pub fn with_members_only(mut self, value: bool) -> Self {
+        self.inner.form.insert_field("members_only", value);
+        self
+    }
+
     /// Sets a new message effect ID.
     ///
     /// # Arguments
@@ -1503,6 +1515,18 @@ impl SendPoll {
     pub fn with_media(mut self, value: InputMedia) -> Result<Self, InputMediaError> {
         self.inner.form.extend(value.try_into_form("media")?);
         Ok(self)
+    }
+
+    /// Sets a new value for the `members_only` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` -  Whether voting is limited to users
+    ///   who have been members of the chat where the poll
+    ///   is being sent for more than 24 hours; for channel chats only
+    pub fn with_members_only(mut self, value: bool) -> Self {
+        self.inner.form.insert_field("members_only", value);
+        self
     }
 
     /// Sets a new message effect ID.

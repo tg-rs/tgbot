@@ -1068,6 +1068,55 @@ impl Method for SetBotShortDescription {
     }
 }
 
+/// Changes the access settings of a managed bot.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+pub struct SetManagedBotAccessSettings {
+    user_id: Integer,
+    is_access_restricted: bool,
+    added_user_ids: Option<Vec<Integer>>,
+}
+
+impl SetManagedBotAccessSettings {
+    /// Creates a new `SetManagedBotAccessSettings`.
+    ///
+    /// # Arguments
+    ///
+    /// * `user_id` - User identifier of the managed bot whose access settings will ne changed.
+    /// * `is_access_restricted` - Whether only selected users can access the bot;
+    ///   the bot's owner can always access it.
+    pub fn new(user_id: Integer, is_access_restricted: bool) -> Self {
+        Self {
+            user_id,
+            is_access_restricted,
+            added_user_ids: None,
+        }
+    }
+
+    /// Sets a new list of added user IDs.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A list of up to 10 identifiers of users who will have access to the bot in addition to its owner.
+    ///
+    /// Ignored if `is_access_restricted` is false.
+    pub fn with_added_user_ids<T>(mut self, value: T) -> Self
+    where
+        T: IntoIterator<Item = Integer>,
+    {
+        self.added_user_ids = Some(value.into_iter().collect());
+        self
+    }
+}
+
+impl Method for SetManagedBotAccessSettings {
+    type Response = bool;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("setManagedBotAccessSettings", self)
+    }
+}
+
 /// Removes the profile photo of the bot.
 #[derive(Clone, Copy, Debug, Serialize)]
 pub struct RemoveBotProfilePhoto;

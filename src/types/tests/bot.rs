@@ -218,6 +218,14 @@ fn set_bot_short_description() {
 }
 
 #[test]
+fn set_managed_bot_access_settings() {
+    let method = SetManagedBotAccessSettings::new(1, false);
+    assert_payload_eq!(POST JSON "setManagedBotAccessSettings" => method.clone());
+    let method = method.with_added_user_ids([2, 3, 4]);
+    assert_payload_eq!(POST JSON "setManagedBotAccessSettings" => method);
+}
+
+#[test]
 fn remove_bot_profile_photo() {
     let method = RemoveBotProfilePhoto;
     assert_payload_eq!(GET "removeMyProfilePhoto" => method);

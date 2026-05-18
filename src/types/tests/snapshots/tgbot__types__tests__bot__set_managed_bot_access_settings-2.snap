@@ -1,0 +1,13 @@
+---
+source: src/types/tests/bot.rs
+expression: actual_data
+---
+{
+  "added_user_ids": [
+    2,
+    3,
+    4
+  ],
+  "is_access_restricted": false,
+  "user_id": 1
+}

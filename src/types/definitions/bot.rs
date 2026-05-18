@@ -715,6 +715,26 @@ impl Method for GetBotStarBalance {
     }
 }
 
+/// Returns access settings of a managed bot.
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct GetManagedBotAccessSettings {
+    user_id: Integer,
+}
+
+impl From<Integer> for GetManagedBotAccessSettings {
+    fn from(value: Integer) -> Self {
+        Self { user_id: value }
+    }
+}
+
+impl Method for GetManagedBotAccessSettings {
+    type Response = BotAccessSettings;
+
+    fn into_payload(self) -> Payload {
+        Payload::json("getManagedBotAccessSettings", self)
+    }
+}
+
 /// Returns the token of a managed bot.
 #[derive(Clone, Copy, Debug, Serialize)]
 pub struct GetManagedBotToken {

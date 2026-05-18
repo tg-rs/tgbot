@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use crate::types::*;
 
 #[test]
@@ -138,6 +140,19 @@ fn send_poll() {
         .with_reply_parameters(ReplyParameters::new(1))
         .unwrap()
         .with_shuffle_options(true);
+    assert_payload_eq!(POST FORM "sendPoll" => method);
+    let method = SendPoll::new(
+        1,
+        "Q",
+        [
+            InputPollOption::new("X1").with_media(InputMedia::for_audio(
+                Cursor::new("audio-data"),
+                InputMediaAudio::default().with_caption("Audio"),
+            )),
+            InputPollOption::new("X2").with_media(InputMedia::for_location(InputMediaLocation::new(1.0, 2.0))),
+        ],
+    )
+    .unwrap();
     assert_payload_eq!(POST FORM "sendPoll" => method);
 }
 

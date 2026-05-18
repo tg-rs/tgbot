@@ -114,6 +114,16 @@ impl Form {
         self.fields.remove(&name.into());
     }
 
+    pub(crate) fn with_suffix(self, suffix: impl fmt::Display) -> Self {
+        Self {
+            fields: self
+                .fields
+                .into_iter()
+                .map(|(k, v)| (format!("{k}_{suffix}"), v))
+                .collect(),
+        }
+    }
+
     #[cfg(test)]
     pub(crate) fn into_fields(self) -> Vec<(String, FormValue)> {
         let mut result: Vec<(String, FormValue)> = self.fields.into_iter().collect();

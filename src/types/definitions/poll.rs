@@ -12,6 +12,7 @@ use crate::{
         Document,
         InlineKeyboardMarkup,
         InputMedia,
+        InputMediaData,
         InputMediaError,
         Integer,
         LivePhoto,
@@ -749,12 +750,10 @@ pub enum PollAnswerVoter {
 }
 
 /// Contains information about one answer option in a poll to send.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Debug)]
 pub struct InputPollOption {
-    text: String,
-    text_parse_mode: Option<ParseMode>,
-    text_entities: Option<TextEntities>,
+    data: InputPollOptionData,
+    media_form: Option<Form>,
 }
 
 impl InputPollOption {
@@ -768,9 +767,13 @@ impl InputPollOption {
         T: Into<String>,
     {
         Self {
-            text: text.into(),
-            text_parse_mode: None,
-            text_entities: None,
+            data: InputPollOptionData {
+                text: text.into(),
+                text_parse_mode: None,
+                text_entities: None,
+                media: None,
+            },
+            media_form: None,
         }
     }
 
@@ -785,8 +788,20 @@ impl InputPollOption {
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.text_entities = Some(value.into_iter().collect());
-        self.text_parse_mode = None;
+        self.data.text_entities = Some(value.into_iter().collect());
+        self.data.text_parse_mode = None;
+        self
+    }
+
+    /// Sets a new media.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Media added to the poll option.
+    pub fn with_media(mut self, value: InputMedia) -> Self {
+        let (form, data) = value.into_parts();
+        self.data.media = Some(data);
+        self.media_form = Some(form);
         self
     }
 
@@ -799,8 +814,8 @@ impl InputPollOption {
     /// Currently, only custom emoji entities are allowed.
     /// Text entities will be set to [`None`] when this method is called.
     pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.text_parse_mode = Some(value);
-        self.text_entities = None;
+        self.data.text_parse_mode = Some(value);
+        self.data.text_entities = None;
         self
     }
 }
@@ -812,11 +827,24 @@ where
     fn from(value: T) -> Self {
         let value = value.into();
         Self {
-            text: value.data,
-            text_entities: value.entities,
-            text_parse_mode: None,
+            data: InputPollOptionData {
+                text: value.data,
+                text_entities: value.entities,
+                text_parse_mode: None,
+                media: None,
+            },
+            media_form: None,
         }
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Serialize)]
+struct InputPollOptionData {
+    text: String,
+    text_parse_mode: Option<ParseMode>,
+    text_entities: Option<TextEntities>,
+    media: Option<InputMediaData>,
 }
 
 #[derive(Debug)]
@@ -832,15 +860,24 @@ impl PollParameters {
         A: IntoIterator<Item = B>,
         B: Into<InputPollOption>,
     {
-        let options: Vec<InputPollOption> = options.into_iter().map(Into::into).collect();
-        let options_data = serde_json::to_string(&options).map_err(PollError::SerializeOptions)?;
+        let mut form = Form::from([
+            ("chat_id", chat_id.into()),
+            ("question", question.into()),
+            ("type", poll_type.into()),
+        ]);
+        let mut options_data = Vec::with_capacity(20);
+        for (idx, option) in options.into_iter().map(Into::into).enumerate() {
+            if let Some(option_form) = option.media_form {
+                form.extend(option_form.with_suffix(format!("{idx}")))
+            }
+            options_data.push(option.data);
+        }
+        form.insert_field(
+            "options",
+            serde_json::to_string(&options_data).map_err(PollError::SerializeOptions)?,
+        );
         Ok(Self {
-            form: Form::from([
-                ("chat_id", chat_id.into()),
-                ("options", options_data.into()),
-                ("question", question.into()),
-                ("type", poll_type.into()),
-            ]),
+            form,
             allow_adding_options: false,
             is_anonymous: false,
         })

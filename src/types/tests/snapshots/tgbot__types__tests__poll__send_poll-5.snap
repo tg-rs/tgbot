@@ -1,0 +1,37 @@
+---
+source: src/types/tests/poll.rs
+expression: actual_form.into_fields()
+---
+[
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "options",
+        FormValue::Text(
+            "[{\"text\":\"X1\",\"media\":{\"type\":\"audio\",\"media\":\"attach://tgbot_im_file\",\"caption\":\"Audio\"}},{\"text\":\"X2\",\"media\":{\"type\":\"location\",\"latitude\":1.0,\"longitude\":2.0}}]",
+        ),
+    ),
+    (
+        "question",
+        FormValue::Text(
+            "Q",
+        ),
+    ),
+    (
+        "tgbot_im_file_0",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "type",
+        FormValue::Text(
+            "regular",
+        ),
+    ),
+]

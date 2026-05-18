@@ -1005,7 +1005,7 @@ impl SendQuiz {
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `question` - Question; 1-300 characters.
     /// * `correct_option_ids` - 0-based identifiers of the correct answer options.
-    /// * `options` - Answer options; 2-12.
+    /// * `options` - Answer options; 1-12.
     pub fn new<A, B, C, D, DI>(chat_id: A, question: B, correct_option_ids: C, options: D) -> Result<Self, PollError>
     where
         A: Into<ChatId>,
@@ -1405,7 +1405,7 @@ impl SendPoll {
     ///
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `question` - Question; 1-300 characters.
-    /// * `options` - Answer options; 2-12.
+    /// * `options` - Answer options; 1-12.
     pub fn new<A, B, C, D>(chat_id: A, question: B, options: C) -> Result<Self, PollError>
     where
         A: Into<ChatId>,

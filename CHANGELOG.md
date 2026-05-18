@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.45.0 (12.05.2026)
+## 0.45.0 (18.05.2026)
 
 ### Bot API
 
 #### 10.0
 
+- Added features: `webpki-roots` [#30](https://github.com/tg-rs/tgbot/pull/30).
 - Added types: `AnswerGuestQuery`, `BotAccessSettings`, `DeleteAllMessageReactions`,
   `DeleteMessageReaction`, `GetManagedBotAccessSettings`, `GetUserPersonalChatMessages`,
   `InputMediaLivePhoto`, `InputMediaLocation`, `InputMediaSticker`, `InputMediaVenue`,

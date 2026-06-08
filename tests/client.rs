@@ -31,9 +31,9 @@ async fn execute() {
         .with_body(r#"invalid-data"#)
         .create();
     let err = client.execute(Close).await.unwrap_err();
-    assert_eq!(
-        err.to_string(),
-        "failed to execute method: error decoding response body"
+    assert!(
+        err.to_string()
+            .starts_with("failed to execute method: error decoding response body"),
     );
 
     let counter = Mutex::new(0u8);

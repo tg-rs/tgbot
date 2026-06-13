@@ -151,6 +151,21 @@ fn create_input_media_document() {
 }
 
 #[test]
+fn create_input_media_link() {
+    InputMedia::for_link("https://example.com");
+
+    let err = InputMedia::for_link("https://example.com")
+        .with_thumbnail(InputFile::file_id("thumbnail-id"))
+        .unwrap_err();
+    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
+
+    let err = InputMedia::for_link("https://example.com")
+        .with_cover(InputFile::file_id("cover-id"))
+        .unwrap_err();
+    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
+}
+
+#[test]
 fn create_input_media_live_photo() {
     let live_photo = InputMediaLivePhoto::default();
 

@@ -97,6 +97,21 @@ impl InputMedia {
         }
     }
 
+    /// Creates a new `InputMedia` for an HTTP link.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - HTTP URL of the link
+    pub fn for_link<T>(value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            form: Form::default(),
+            data: InputMediaData::Link { url: value.into() },
+        }
+    }
+
     /// Creates a new `InputMedia` for live photo.
     ///
     /// # Arguments
@@ -222,6 +237,7 @@ impl InputMedia {
             InputMediaData::Animation { .. }
             | InputMediaData::Audio { .. }
             | InputMediaData::Document { .. }
+            | InputMediaData::Link { .. }
             | InputMediaData::LivePhoto { .. }
             | InputMediaData::Location { .. }
             | InputMediaData::Photo { .. }
@@ -251,7 +267,7 @@ impl InputMedia {
     /// # Errors
     ///
     /// It is considered an error when the media is a
-    /// live photo, location, photo, sticker or venue.
+    /// link, live photo, location, photo, sticker or venue.
     pub fn with_thumbnail<T>(mut self, value: T) -> Result<Self, InputMediaError>
     where
         T: Into<InputFile>,
@@ -274,7 +290,8 @@ impl InputMedia {
             InputMediaData::Document { thumbnail, .. } => {
                 *thumbnail = Some(new_thumbnail);
             }
-            InputMediaData::LivePhoto { .. }
+            InputMediaData::Link { .. }
+            | InputMediaData::LivePhoto { .. }
             | InputMediaData::Location { .. }
             | InputMediaData::Photo { .. }
             | InputMediaData::Sticker { .. }
@@ -337,6 +354,9 @@ pub(crate) enum InputMediaData {
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaDocument,
+    },
+    Link {
+        url: String,
     },
     LivePhoto {
         media: String,

@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.46.0 (13.06.2026)
+
+### Bot API
+
+#### 10.1
+
+- Added types:
+  `AnswerChatJoinRequestQuery`, `InputMessageContentRich`, `InputRichMessage`, `Link`,
+  `RichBlock`, `RichBlockAnimation`, `RichBlockAudio`, `RichBlockBlockQuotation`,
+  `RichBlockCaption`, `RichBlockCollage`, `RichBlockDetails`, `RichBlockListItem`,
+  `RichBlockListItemType`, `RichBlockMap`, `RichBlockPhoto`, `RichBlockPreformatted`,
+  `RichBlockPullQuotation`, `RichBlockSlideshow`, `RichBlockTable`, `RichBlockTableCell`,
+  `RichBlockTableCellAlign`, `RichBlockTableCellValign`, `RichBlockVideo`,
+  `RichBlockVoiceNote`, `RichMessage`, `RichText`, `RichTextCustomEmoji`,
+  `RichTextDateTime`, `RichTextTextMention`, `RichTextValue`, `SendChatJoinRequestWebApp`,
+  `SendRichMessage`, `SendRichMessageDraft`.
+- Added enum variants:
+  - `InputMessageContent`: `RichMessage`.
+  - `MessageData`: `RichMessage`.
+  - `PollMedia`: `Link`.
+- Added fields:
+  - `Bot`: `supports_join_request_queries`.
+  - `ChatFullInfo`: `guard_bot`.
+  - `ChatJoinRequest`: `query_id`.
+- Added methods:
+  - `Bot`: `with_supports_join_request_queries`.
+  - `ChatJoinRequest`: `with_query_id`.
+  - `EditMessageText`: `for_chat_message_rich`, `for_inline_message_rich`.
+  - `InputMedia`: `for_link`.
+
+### Message data changes
+
+- `Game(Box<Game>)` -> `Game(Game)`.
+- `GiftInfo(Box<GiftInfo>)` -> `GiftInfo(GiftInfo)`.
+- `GiftUpgradeSent(Box<GiftInfo>)` -> `GiftInfo(GiftInfo)`.
+- `Poll(Box<Poll>)` -> `Poll(Poll)`.
+- `Sticker(Box<Sticker>)` -> `Sticker(Sticker)`.
+- `SuccessfulPayment(Box<SuccessfulPayment>)` -> `SuccessfulPayment(SuccessfulPayment)`.
+- `Audio(Box<MessageDataAudio>)` -> `Audio(MessageDataAudio)`.
+- `LivePhoto(MessageDataLivePhoto)` -> `LivePhoto(LivePhoto)`.
+- `Video(Box<MessageDataVideo>)` -> `Video(MessageDataVideo)`.
+- Removed `serde::{Serialize, Deserialize}` from `MessageDataAudio`, `MessageDataDocument`,
+  `MessageDataPhoto`, `MessageDataPollOptionAdded`, `MessageDataPollOptionDeleted`,
+  `MessageDataVideo`, `MessageDataVoice`.
+- Removed `MessageDataLivePhoto`.
+
 ## 0.45.0 (18.05.2026)
 
 ### Bot API

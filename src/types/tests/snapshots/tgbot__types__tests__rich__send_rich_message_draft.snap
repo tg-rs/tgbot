@@ -1,11 +1,11 @@
 ---
-source: src/types/tests/message.rs
+source: src/types/tests/rich.rs
 expression: actual_data
 ---
 {
   "chat_id": 1,
-  "message_id": 2,
+  "draft_id": 2,
   "rich_message": {
-    "html": "text"
+    "markdown": "test"
   }
 }

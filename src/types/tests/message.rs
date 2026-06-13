@@ -572,6 +572,13 @@ fn refunded_payment() {
 }
 
 #[test]
+fn rich_message() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::RichMessage([RichBlock::from("test")].into_iter().collect());
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn sticker() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::Sticker(Box::new(
@@ -915,14 +922,23 @@ fn edit_message_reply_markup() {
 fn edit_message_text() {
     let method = EditMessageText::for_chat_message(1, 2, "text");
     assert_payload_eq!(POST JSON "editMessageText" => method);
+
+    let method = EditMessageText::for_chat_message_rich(1, 2, InputRichMessage::html("text"));
+    assert_payload_eq!(POST JSON "editMessageText" => method);
+
     let method = EditMessageText::for_chat_message(1, 2, "text")
         .with_business_connection_id("c-id")
         .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
         .with_parse_mode(ParseMode::Markdown)
         .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]);
     assert_payload_eq!(POST JSON "editMessageText" => method);
+
     let method = EditMessageText::for_inline_message("msg-id", "text");
     assert_payload_eq!(POST JSON "editMessageText" => method);
+
+    let method = EditMessageText::for_inline_message_rich("msg-id", InputRichMessage::markdown("text"));
+    assert_payload_eq!(POST JSON "editMessageText" => method);
+
     let method = EditMessageText::for_inline_message("msg-id", "text").with_entities([TextEntity::bold(0..4)]);
     assert_payload_eq!(POST JSON "editMessageText" => method);
 }

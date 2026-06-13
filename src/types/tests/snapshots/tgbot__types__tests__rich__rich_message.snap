@@ -1,0 +1,12 @@
+---
+source: src/types/tests/rich.rs
+expression: "RichMessage::from([\"test\"])"
+---
+{
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "test"
+    }
+  ]
+}

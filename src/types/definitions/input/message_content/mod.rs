@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-pub use self::{contact::*, invoice::*, location::*, text::*, venue::*};
-use crate::types::{Contact, Location, Text, Venue};
+pub use self::{contact::*, invoice::*, location::*, rich::*, text::*, venue::*};
+use crate::types::{Contact, InputRichMessage, Location, Text, Venue};
 
 mod contact;
 mod invoice;
 mod location;
+mod rich;
 mod text;
 mod venue;
 
@@ -21,6 +22,8 @@ pub enum InputMessageContent {
     Venue(InputMessageContentVenue),
     /// Represents a location.
     Location(InputMessageContentLocation),
+    /// Represents the content of a rich message.
+    RichMessage(InputMessageContentRich),
     /// Represents a text.
     Text(InputMessageContentText),
 }
@@ -49,6 +52,12 @@ where
 impl From<Text> for InputMessageContent {
     fn from(value: Text) -> Self {
         Self::Text(value.into())
+    }
+}
+
+impl From<InputRichMessage> for InputMessageContent {
+    fn from(value: InputRichMessage) -> Self {
+        Self::RichMessage(value.into())
     }
 }
 

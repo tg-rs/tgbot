@@ -30,6 +30,7 @@ pub use self::{
     reaction::*,
     reply::*,
     response::*,
+    rich::*,
     sticker::*,
     story::*,
     suggested_post::*,
@@ -71,6 +72,7 @@ mod primitive;
 mod reaction;
 mod reply;
 mod response;
+mod rich;
 mod sticker;
 mod story;
 mod suggested_post;

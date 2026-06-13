@@ -1,0 +1,12 @@
+---
+source: src/types/tests/rich.rs
+expression: actual_data
+---
+{
+  "chat_id": 1,
+  "draft_id": 2,
+  "message_thread_id": 1,
+  "rich_message": {
+    "markdown": "test"
+  }
+}

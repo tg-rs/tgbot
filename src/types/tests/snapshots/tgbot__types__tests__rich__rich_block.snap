@@ -1,0 +1,412 @@
+---
+source: src/types/tests/rich.rs
+expression: "vec![RichBlock::anchor(\"test-anchor\"),\nRichBlock::animation(Animation::new(10, \"file-id\", \"file-unique-id\", 200,\n200)),\nRichBlock::animation((Animation::new(10, \"file-id\", \"file-unique-id\", 200,\n200), \"caption\",)),\nRichBlock::animation((Animation::new(10, \"file-id\", \"file-unique-id\", 200,\n200), \"caption\", true)),\nRichBlock::audio(Audio::new(10, \"file-id\", \"file-unique-id\")),\nRichBlock::audio((Audio::new(10, \"file-id\", \"file-unique-id\"),\n(\"test-caption\", \"test-caption-credit\"))),\nRichBlock::block_quotation([\"bq1\",\n\"bq2\"].into_iter().collect::<RichBlockBlockQuotation>().with_credit(\"test\")),\nRichBlock::block_quotation(RichBlock::paragraph(\"test-block-quotation-1\")),\nRichBlock::block_quotation((RichBlock::paragraph(\"test-block-quotation-2\"),\n\"credits\")), RichBlock::collage([\"test-collage-1\", \"test-collage-2\"]),\nRichBlock::collage([\"test-collage-1\",\n\"test-collage-2\"].into_iter().collect::<RichBlockCollage>().with_caption(\"test\")),\nRichBlock::details(([\"test-details\"], \"summary\")),\nRichBlock::details(([\"test-details\"], \"summary\", true)),\nRichBlock::footer(\"test-footer\"),\nRichBlock::list([(\"test-1\", [\"test-1\"]), (\"test-2\", [\"test-2\"])]),\nRichBlock::list([RichBlockListItem::new(\"test\", [\"test-item\"]),\nRichBlockListItem::new(\"test\",\n[\"test-item\"]).with_has_checkbox(true).with_is_checked(true).with_item_type(RichBlockListItemType::Decimal).with_value(1)]),\nRichBlock::map(Location::new(1.0, 2.0)),\nRichBlock::map(RichBlockMap::from(Location::new(1.0,\n2.0)).with_caption(\"test\").with_height(300).with_width(300).with_zoom(20)),\nRichBlock::mathematical_expression(\"test-mathematical-expression\"),\nRichBlock::paragraph(\"test-paragraph\"),\nRichBlock::photo([PhotoSize::new(\"file-id\", \"file-unique-id\", 200, 200)]),\nRichBlock::photo(RichBlockPhoto::from([PhotoSize::new(\"file-id\",\n\"file-unique-id\", 200, 200)]).with_caption(\"test\").with_has_spoiler(true)),\nRichBlock::preformatted(\"test-preformatted-1\"),\nRichBlock::preformatted((\"lang\", \"test-preformatted-2\")),\nRichBlock::pull_quotation(\"test-pull-quotation-1\"),\nRichBlock::pull_quotation((\"test-pull-quotation-2\", \"credits\")),\nRichBlock::section_heading(\"heading\", 1),\nRichBlock::slideshow([\"test-slideshow-1\", \"test-slideshow-2\"]),\nRichBlock::slideshow(RichBlockSlideshow::from([\"test-slideshow-1\",\n\"test-slideshow-2\"]).with_caption(\"test\")),\nRichBlock::table([[\"test-cell-1\", \"test-cell-2\"]]),\nRichBlock::table(RichBlockTable::from([[RichBlockTableCell::default().with_align(RichBlockTableCellAlign::Left).with_colspan(2).with_is_header(true).with_rowspan(3).with_text(\"test\").with_valign(RichBlockTableCellValign::Top),\nRichBlockTableCell::default()]]).with_caption(\"test\").with_is_bordered(true).with_is_striped(true)),\nRichBlock::thinking(\"test-thinking\"),\nRichBlock::video(Video::new(10, \"file-id\", \"file-unique-id\", 200, 200)),\nRichBlock::video((Video::new(10, \"file-id\", \"file-unique-id\", 200, 200),\n\"caption\")),\nRichBlock::video((Video::new(10, \"file-id\", \"file-unique-id\", 200, 200),\n\"caption\", true)),\nRichBlock::voice_note(Voice::new(20, \"file-id\", \"file-unique-id\")),\nRichBlock::voice_note((Voice::new(20, \"file-id\", \"file-unique-id\"),\n\"caption\"))]"
+---
+[
+  {
+    "type": "anchor",
+    "name": "test-anchor"
+  },
+  {
+    "type": "animation",
+    "animation": {
+      "duration": 10,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id",
+      "height": 200,
+      "width": 200
+    }
+  },
+  {
+    "type": "animation",
+    "animation": {
+      "duration": 10,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id",
+      "height": 200,
+      "width": 200
+    },
+    "caption": {
+      "text": "caption"
+    }
+  },
+  {
+    "type": "animation",
+    "animation": {
+      "duration": 10,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id",
+      "height": 200,
+      "width": 200
+    },
+    "caption": {
+      "text": "caption"
+    },
+    "has_spoiler": true
+  },
+  {
+    "type": "audio",
+    "audio": {
+      "duration": 10,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id"
+    }
+  },
+  {
+    "type": "audio",
+    "audio": {
+      "duration": 10,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id"
+    },
+    "caption": {
+      "text": "test-caption",
+      "credit": "test-caption-credit"
+    }
+  },
+  {
+    "type": "block_quotation",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "bq1"
+      },
+      {
+        "type": "paragraph",
+        "text": "bq2"
+      }
+    ],
+    "credit": "test"
+  },
+  {
+    "type": "block_quotation",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "test-block-quotation-1"
+      }
+    ]
+  },
+  {
+    "type": "block_quotation",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "test-block-quotation-2"
+      }
+    ],
+    "credit": "credits"
+  },
+  {
+    "type": "collage",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "test-collage-1"
+      },
+      {
+        "type": "paragraph",
+        "text": "test-collage-2"
+      }
+    ]
+  },
+  {
+    "type": "collage",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "test-collage-1"
+      },
+      {
+        "type": "paragraph",
+        "text": "test-collage-2"
+      }
+    ],
+    "caption": {
+      "text": "test"
+    }
+  },
+  {
+    "type": "details",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "test-details"
+      }
+    ],
+    "summary": "summary"
+  },
+  {
+    "type": "details",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "test-details"
+      }
+    ],
+    "summary": "summary",
+    "is_open": true
+  },
+  {
+    "type": "footer",
+    "text": "test-footer"
+  },
+  {
+    "type": "list",
+    "items": [
+      {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "test-1"
+          }
+        ],
+        "label": "test-1"
+      },
+      {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "test-2"
+          }
+        ],
+        "label": "test-2"
+      }
+    ]
+  },
+  {
+    "type": "list",
+    "items": [
+      {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "test-item"
+          }
+        ],
+        "label": "test"
+      },
+      {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "test-item"
+          }
+        ],
+        "label": "test",
+        "has_checkbox": true,
+        "is_checked": true,
+        "type": "1",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "type": "map",
+    "location": {
+      "latitude": 1.0,
+      "longitude": 2.0
+    },
+    "height": 200,
+    "width": 200,
+    "zoom": 13
+  },
+  {
+    "type": "map",
+    "location": {
+      "latitude": 1.0,
+      "longitude": 2.0
+    },
+    "height": 300,
+    "width": 300,
+    "zoom": 20,
+    "caption": {
+      "text": "test"
+    }
+  },
+  {
+    "type": "mathematical_expression",
+    "expression": "test-mathematical-expression"
+  },
+  {
+    "type": "paragraph",
+    "text": "test-paragraph"
+  },
+  {
+    "type": "photo",
+    "photo": [
+      {
+        "file_id": "file-id",
+        "file_unique_id": "file-unique-id",
+        "height": 200,
+        "width": 200
+      }
+    ]
+  },
+  {
+    "type": "photo",
+    "photo": [
+      {
+        "file_id": "file-id",
+        "file_unique_id": "file-unique-id",
+        "height": 200,
+        "width": 200
+      }
+    ],
+    "caption": {
+      "text": "test"
+    },
+    "has_spoiler": true
+  },
+  {
+    "type": "preformatted",
+    "text": "test-preformatted-1"
+  },
+  {
+    "type": "preformatted",
+    "text": "test-preformatted-2",
+    "language": "lang"
+  },
+  {
+    "type": "pull_quotation",
+    "text": "test-pull-quotation-1"
+  },
+  {
+    "type": "pull_quotation",
+    "text": "test-pull-quotation-2",
+    "credit": "credits"
+  },
+  {
+    "type": "section_heading",
+    "text": "heading",
+    "size": 1
+  },
+  {
+    "type": "slideshow",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "test-slideshow-1"
+      },
+      {
+        "type": "paragraph",
+        "text": "test-slideshow-2"
+      }
+    ]
+  },
+  {
+    "type": "slideshow",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "test-slideshow-1"
+      },
+      {
+        "type": "paragraph",
+        "text": "test-slideshow-2"
+      }
+    ],
+    "caption": {
+      "text": "test"
+    }
+  },
+  {
+    "type": "table",
+    "cells": [
+      [
+        {
+          "align": "left",
+          "valign": "middle",
+          "text": "test-cell-1"
+        },
+        {
+          "align": "left",
+          "valign": "middle",
+          "text": "test-cell-2"
+        }
+      ]
+    ]
+  },
+  {
+    "type": "table",
+    "cells": [
+      [
+        {
+          "align": "left",
+          "valign": "top",
+          "colspan": 2,
+          "is_header": true,
+          "rowspan": 3,
+          "text": "test"
+        },
+        {
+          "align": "left",
+          "valign": "middle"
+        }
+      ]
+    ],
+    "caption": "test",
+    "is_bordered": true,
+    "is_striped": true
+  },
+  {
+    "type": "thinking",
+    "text": "test-thinking"
+  },
+  {
+    "type": "video",
+    "video": {
+      "duration": 10,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id",
+      "height": 200,
+      "width": 200
+    }
+  },
+  {
+    "type": "video",
+    "video": {
+      "duration": 10,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id",
+      "height": 200,
+      "width": 200
+    },
+    "caption": {
+      "text": "caption"
+    }
+  },
+  {
+    "type": "video",
+    "video": {
+      "duration": 10,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id",
+      "height": 200,
+      "width": 200
+    },
+    "caption": {
+      "text": "caption"
+    },
+    "has_spoiler": true
+  },
+  {
+    "type": "voice_note",
+    "voice_note": {
+      "duration": 20,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id"
+    }
+  },
+  {
+    "type": "voice_note",
+    "voice_note": {
+      "duration": 20,
+      "file_id": "file-id",
+      "file_unique_id": "file-unique-id"
+    },
+    "caption": {
+      "text": "caption"
+    }
+  }
+]

@@ -1,0 +1,7 @@
+---
+source: src/types/tests/rich.rs
+expression: "InputRichMessage::html(\"test\")"
+---
+{
+  "html": "test"
+}

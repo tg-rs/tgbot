@@ -83,6 +83,7 @@ mod primitive;
 mod reaction;
 mod reply;
 mod response;
+mod rich;
 mod sticker;
 mod story;
 mod suggested_post;

@@ -10,6 +10,7 @@ use crate::{
         InlineKeyboardMarkup,
         InputMedia,
         InputMediaError,
+        InputRichMessage,
         Integer,
         LinkPreviewOptions,
         Message,
@@ -933,7 +934,6 @@ impl Method for EditMessageReplyMarkup {
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageText {
-    text: String,
     business_connection_id: Option<String>,
     chat_id: Option<ChatId>,
     entities: Option<TextEntities>,
@@ -942,9 +942,32 @@ pub struct EditMessageText {
     message_id: Option<Integer>,
     parse_mode: Option<ParseMode>,
     reply_markup: Option<InlineKeyboardMarkup>,
+    rich_message: Option<InputRichMessage>,
+    text: Option<String>,
 }
 
 impl EditMessageText {
+    fn new(
+        chat_id: Option<ChatId>,
+        inline_message_id: Option<String>,
+        message_id: Option<Integer>,
+        rich_message: Option<InputRichMessage>,
+        text: Option<String>,
+    ) -> Self {
+        Self {
+            business_connection_id: None,
+            chat_id,
+            link_preview_options: None,
+            entities: None,
+            inline_message_id,
+            message_id,
+            parse_mode: None,
+            reply_markup: None,
+            rich_message,
+            text,
+        }
+    }
+
     /// Creates a new `EditMessageText` for a chat message.
     ///
     /// # Arguments
@@ -957,17 +980,21 @@ impl EditMessageText {
         A: Into<ChatId>,
         B: Into<String>,
     {
-        Self {
-            text: text.into(),
-            business_connection_id: None,
-            chat_id: Some(chat_id.into()),
-            link_preview_options: None,
-            entities: None,
-            inline_message_id: None,
-            message_id: Some(message_id),
-            parse_mode: None,
-            reply_markup: None,
-        }
+        Self::new(Some(chat_id.into()), None, Some(message_id), None, Some(text.into()))
+    }
+
+    /// Creates a new `EditMessageText` for a chat message.
+    ///
+    /// # Arguments
+    ///
+    /// * `chat_id` - Unique identifier of the target chat.
+    /// * `message_id` - Identifier of the sent message.
+    /// * `rich_message` - New rich content of the message.
+    pub fn for_chat_message_rich<T>(chat_id: T, message_id: Integer, rich_message: InputRichMessage) -> Self
+    where
+        T: Into<ChatId>,
+    {
+        Self::new(Some(chat_id.into()), None, Some(message_id), Some(rich_message), None)
     }
 
     /// Creates a new `EditMessageText` for an inline message.
@@ -981,17 +1008,20 @@ impl EditMessageText {
         A: Into<String>,
         B: Into<String>,
     {
-        Self {
-            text: text.into(),
-            business_connection_id: None,
-            chat_id: None,
-            link_preview_options: None,
-            entities: None,
-            inline_message_id: Some(inline_message_id.into()),
-            message_id: None,
-            parse_mode: None,
-            reply_markup: None,
-        }
+        Self::new(None, Some(inline_message_id.into()), None, None, Some(text.into()))
+    }
+
+    /// Creates a new `EditMessageText` for an inline message.
+    ///
+    /// # Arguments
+    ///
+    /// * `inline_message_id` - Identifier of the inline message.
+    /// * `rich_message` - New rich content of the message.
+    pub fn for_inline_message_rich<T>(inline_message_id: T, rich_message: InputRichMessage) -> Self
+    where
+        T: Into<String>,
+    {
+        Self::new(None, Some(inline_message_id.into()), None, Some(rich_message), None)
     }
 
     /// Sets a new business connection ID.

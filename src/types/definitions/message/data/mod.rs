@@ -29,6 +29,7 @@ use crate::types::{
     PhotoSize,
     Poll,
     RefundedPayment,
+    RichMessage,
     SharedUser,
     Sticker,
     Story,
@@ -208,6 +209,8 @@ pub enum MessageData {
     ProximityAlertTriggered(MessageDataProximityAlert),
     /// A service message about a refunded payment, information about the payment.
     RefundedPayment(RefundedPayment),
+    /// Message is a rich formatted message.
+    RichMessage(RichMessage),
     /// Information about the sticker.
     Sticker(Box<Sticker>),
     /// A forwarded story.

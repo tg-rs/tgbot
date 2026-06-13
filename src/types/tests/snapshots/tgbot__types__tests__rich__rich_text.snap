@@ -1,0 +1,132 @@
+---
+source: src/types/tests/rich.rs
+expression: "RichText::array([RichText::anchor(\"test-anchor\"),\nRichText::anchor_link(\"test-anchor-link\", \"anchor\"),\nRichText::bank_card_number(\"test-bank-card-number\", \"0000\"),\nRichText::bold(\"test-bold\"),\nRichText::bot_command(\"test-bot-command\", \"command\"),\nRichText::cashtag(\"test-cashtag\", \"cashtag\"), RichText::code(\"test-code\"),\nRichText::custom_emoji(\"id\", \"alt\"),\nRichText::date_time(\"test-datetime\", 0, \"YYYY\"),\nRichText::email_address(\"test-email\", \"u@h\"),\nRichText::hashtag(RichText::url(\"test\", \"https://example.com\"), \"example\"),\nRichText::italic(\"test-italic\"),\nRichText::marked(RichText::italic(\"test-marked-italic\")),\nRichText::mathematical_expression(\"test-mathematical-expression\"),\nRichText::mention(\"test-mention\", \"username\"),\nRichText::phone_number(\"test-phone-number\", \"1234\"),\nRichText::plain_text(\"test-plain-text\"),\nRichText::reference(\"test-reference\"),\nRichText::reference_link(\"test-reference-link\", \"test-reference\"),\nRichText::spoiler(\"test-spoiler\"),\nRichText::strikethrough(\"test-strikethrough\"),\nRichText::subscript(\"test-subscript\"),\nRichText::superscript(\"test-superscript\"),\nRichText::text_mention(\"test-text-mention\", User::new(1, \"John\", false)),\nRichText::underline(\"test-underline\"),\nRichText::url(\"test-url\", \"https://example.com\"),])"
+---
+[
+  {
+    "type": "anchor",
+    "name": "test-anchor"
+  },
+  {
+    "type": "anchor_link",
+    "text": "test-anchor-link",
+    "anchor_name": "anchor"
+  },
+  {
+    "type": "bank_card_number",
+    "text": "test-bank-card-number",
+    "bank_card_number": "0000"
+  },
+  {
+    "type": "bold",
+    "text": "test-bold"
+  },
+  {
+    "type": "bot_command",
+    "text": "test-bot-command",
+    "bot_command": "command"
+  },
+  {
+    "type": "cashtag",
+    "text": "test-cashtag",
+    "cashtag": "cashtag"
+  },
+  {
+    "type": "code",
+    "text": "test-code"
+  },
+  {
+    "type": "custom_emoji",
+    "custom_emoji_id": "id",
+    "alternative_text": "alt"
+  },
+  {
+    "type": "date_time",
+    "text": "test-datetime",
+    "unix_time": 0,
+    "date_time_format": "YYYY"
+  },
+  {
+    "type": "email_address",
+    "text": "test-email",
+    "email_address": "u@h"
+  },
+  {
+    "type": "hashtag",
+    "text": {
+      "type": "url",
+      "text": "test",
+      "url": "https://example.com"
+    },
+    "hashtag": "example"
+  },
+  {
+    "type": "italic",
+    "text": "test-italic"
+  },
+  {
+    "type": "marked",
+    "text": {
+      "type": "italic",
+      "text": "test-marked-italic"
+    }
+  },
+  {
+    "type": "mathematical_expression",
+    "expression": "test-mathematical-expression"
+  },
+  {
+    "type": "mention",
+    "text": "test-mention",
+    "username": "username"
+  },
+  {
+    "type": "phone_number",
+    "text": "test-phone-number",
+    "phone_number": "1234"
+  },
+  "test-plain-text",
+  {
+    "type": "reference",
+    "name": "test-reference"
+  },
+  {
+    "type": "reference_link",
+    "text": "test-reference-link",
+    "reference_name": "test-reference"
+  },
+  {
+    "type": "spoiler",
+    "text": "test-spoiler"
+  },
+  {
+    "type": "strikethrough",
+    "text": "test-strikethrough"
+  },
+  {
+    "type": "subscript",
+    "text": "test-subscript"
+  },
+  {
+    "type": "superscript",
+    "text": "test-superscript"
+  },
+  {
+    "type": "text_mention",
+    "text": "test-text-mention",
+    "user": {
+      "first_name": "John",
+      "id": 1,
+      "is_bot": false
+    }
+  },
+  {
+    "type": "underline",
+    "text": "test-underline"
+  },
+  {
+    "type": "url",
+    "text": "test-url",
+    "url": "https://example.com"
+  }
+]

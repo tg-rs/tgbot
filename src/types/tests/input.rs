@@ -535,6 +535,11 @@ fn input_message_content_text() {
 }
 
 #[test]
+fn input_message_content_rich() {
+    insta::assert_json_snapshot!(InputMessageContent::from(InputRichMessage::html("test")));
+}
+
+#[test]
 fn input_message_content_venue() {
     let content = InputMessageContentVenue::new("addr", 1.0, 2.0, "title");
     insta::assert_json_snapshot!(InputMessageContent::from(

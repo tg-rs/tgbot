@@ -1,0 +1,13 @@
+---
+source: src/types/tests/rich.rs
+expression: "RichMessage::from([\"test\"]).with_is_rtl(true)"
+---
+{
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "test"
+    }
+  ],
+  "is_rtl": true
+}

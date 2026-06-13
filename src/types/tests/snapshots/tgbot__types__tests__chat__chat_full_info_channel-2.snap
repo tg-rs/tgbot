@@ -72,5 +72,10 @@ expression: expected_struct
     ],
     "model_custom_emoji_id": "test",
     "symbol_custom_emoji_id": "test"
+  },
+  "guard_bot": {
+    "first_name": "Guard",
+    "id": 1,
+    "is_bot": true
   }
 }

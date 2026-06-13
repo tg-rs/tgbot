@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/chat.rs
-expression: "ChatJoinRequest::new(Chat::Channel(ChannelChat::new(1, \"Channel\")), 0,\nUser::new(1, \"User\",\nfalse),).with_bio(\"Bio\").with_invite_link(ChatInviteLink::new(\"example.com/join/channel\",\nUser::new(2, \"User\", false)).with_is_primary(true),).with_user_chat_id(1)"
+expression: "ChatJoinRequest::new(Chat::Channel(ChannelChat::new(1, \"Channel\")), 0,\nUser::new(1, \"User\",\nfalse),).with_bio(\"Bio\").with_invite_link(ChatInviteLink::new(\"example.com/join/channel\",\nUser::new(2, \"User\",\nfalse)).with_is_primary(true),).with_query_id(\"test\").with_user_chat_id(1)"
 ---
 {
   "chat": {
@@ -26,5 +26,6 @@ expression: "ChatJoinRequest::new(Chat::Channel(ChannelChat::new(1, \"Channel\")
     "is_primary": true,
     "is_revoked": false
   },
+  "query_id": "test",
   "user_chat_id": 1
 }

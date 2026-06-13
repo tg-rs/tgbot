@@ -196,6 +196,7 @@ fn create_chat_full_info(chat_type: ChatFullInfoType) -> ChatFullInfo {
         emoji_status_expiration_date: None,
         first_name: None,
         first_profile_audio: None,
+        guard_bot: None,
         has_aggressive_anti_spam_enabled: None,
         has_hidden_members: None,
         has_private_forwards: None,
@@ -278,6 +279,7 @@ fn chat_full_info_channel() {
         model_custom_emoji_id: String::from("test"),
         symbol_custom_emoji_id: String::from("test"),
     });
+    expected_struct.guard_bot = Some(User::new(1, "Guard", true));
 
     insta::assert_json_snapshot!(expected_struct);
 }
@@ -552,6 +554,7 @@ fn chat_join_request() {
         .with_invite_link(
             ChatInviteLink::new("example.com/join/channel", User::new(2, "User", false)).with_is_primary(true),
         )
+        .with_query_id("test")
         .with_user_chat_id(1)
     );
     insta::assert_json_snapshot!(ChatJoinRequest::new(
@@ -562,6 +565,13 @@ fn chat_join_request() {
 }
 
 #[test]
+fn answer_chat_join_request_query() {
+    assert_payload_eq!(POST JSON "answerChatJoinRequestQuery" => AnswerChatJoinRequestQuery::approve("id"));
+    assert_payload_eq!(POST JSON "answerChatJoinRequestQuery" => AnswerChatJoinRequestQuery::decline("id"));
+    assert_payload_eq!(POST JSON "answerChatJoinRequestQuery" => AnswerChatJoinRequestQuery::queue("id"));
+}
+
+#[test]
 fn approve_chat_join_request() {
     assert_payload_eq!(POST JSON "approveChatJoinRequest" => ApproveChatJoinRequest::new(1, 1));
 }
@@ -569,6 +579,11 @@ fn approve_chat_join_request() {
 #[test]
 fn decline_chat_join_request() {
     assert_payload_eq!(POST JSON "declineChatJoinRequest" => DeclineChatJoinRequest::new(1, 1));
+}
+
+#[test]
+fn send_chat_join_request_web_app() {
+    assert_payload_eq!(POST JSON "sendChatJoinRequestWebApp" => SendChatJoinRequestWebApp::new("query-id", "https://example.com/"));
 }
 
 #[test]

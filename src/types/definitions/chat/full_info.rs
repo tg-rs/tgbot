@@ -17,6 +17,7 @@ use crate::types::{
     ProfileAccentColor,
     ReactionType,
     UniqueGiftColors,
+    User,
     UserRating,
 };
 
@@ -165,4 +166,9 @@ pub struct ChatFullInfo {
     /// that must be used for the chat's name,
     /// message replies and link previews.
     pub unique_gift_colors: Option<UniqueGiftColors>,
+
+    /// The bot that processes join request queries in the chat.
+    ///
+    /// The field is only available to chat administrators.
+    pub guard_bot: Option<User>,
 }

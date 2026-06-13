@@ -37,6 +37,8 @@ pub struct Bot {
     pub supports_guest_queries: bool,
     /// Indicates whether the bot supports inline queries.
     pub supports_inline_queries: bool,
+    /// Indicates whether the bot supports join request queries and can be assigned to process them.
+    pub supports_join_request_queries: bool,
 }
 
 impl Bot {
@@ -66,6 +68,7 @@ impl Bot {
             last_name: None,
             supports_guest_queries: false,
             supports_inline_queries: false,
+            supports_join_request_queries: false,
         }
     }
 
@@ -169,6 +172,16 @@ impl Bot {
     /// * `value` - Indicates whether the bot supports inline queries.
     pub fn with_supports_inline_queries(mut self, value: bool) -> Self {
         self.supports_inline_queries = value;
+        self
+    }
+
+    /// Sets a new value for the `supports_join_request_queries` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the bot supports join request queries.
+    pub fn with_supports_join_request_queries(mut self, value: bool) -> Self {
+        self.supports_join_request_queries = value;
         self
     }
 }

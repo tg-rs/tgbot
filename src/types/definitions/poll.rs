@@ -15,6 +15,7 @@ use crate::{
         InputMediaData,
         InputMediaError,
         Integer,
+        Link,
         LivePhoto,
         Location,
         Message,
@@ -626,6 +627,8 @@ pub enum PollMedia {
     Audio(Audio),
     /// Media is a general file.
     Document(Document),
+    /// The HTTP link.
+    Link(Link),
     /// Media is a live photo.
     LivePhoto(LivePhoto),
     /// Media is a shared location.

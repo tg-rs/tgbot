@@ -53,6 +53,7 @@ fn poll_media() {
         PollMedia::Animation(Animation::new(1, "id", "uid", 200, 400)),
         PollMedia::Audio(Audio::new(1, "id", "uid")),
         PollMedia::Document(Document::new("id", "uid")),
+        PollMedia::Link(Link::from("https://example.com")),
         PollMedia::LivePhoto(LivePhoto::new(1, "id", "uid", 200, 400)),
         PollMedia::Location(Location::new(1.0, 2.0)),
         PollMedia::Photo(vec![PhotoSize::new("id", "uid", 200, 200)]),

@@ -26,6 +26,11 @@ expression: data
     }
   },
   {
+    "link": {
+      "url": "https://example.com"
+    }
+  },
+  {
     "live_photo": {
       "duration": 1,
       "file_id": "id",

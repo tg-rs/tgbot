@@ -1,6 +1,11 @@
 use crate::types::*;
 
 #[test]
+fn link() {
+    insta::assert_json_snapshot!(Link::from("https://example.com"));
+}
+
+#[test]
 fn link_preview_options() {
     insta::assert_json_snapshot!(LinkPreviewOptions::default());
     insta::assert_json_snapshot!(

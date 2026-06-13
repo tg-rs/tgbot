@@ -1,0 +1,7 @@
+---
+source: src/types/tests/link.rs
+expression: "Link::from(\"https://example.com\")"
+---
+{
+  "url": "https://example.com"
+}

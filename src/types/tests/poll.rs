@@ -161,6 +161,7 @@ fn send_poll() {
                 InputMediaAudio::default().with_caption("Audio"),
             )),
             InputPollOption::new("X2").with_media(InputMedia::for_location(InputMediaLocation::new(1.0, 2.0))),
+            InputPollOption::new("X3").with_media(InputMedia::for_link("https://example.com")),
         ],
     )
     .unwrap();

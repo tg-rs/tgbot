@@ -12,7 +12,7 @@ expression: actual_form.into_fields()
     (
         "options",
         FormValue::Text(
-            "[{\"text\":\"X1\",\"media\":{\"type\":\"audio\",\"media\":\"attach://tgbot_im_file\",\"caption\":\"Audio\"}},{\"text\":\"X2\",\"media\":{\"type\":\"location\",\"latitude\":1.0,\"longitude\":2.0}}]",
+            "[{\"text\":\"X1\",\"media\":{\"type\":\"audio\",\"media\":\"attach://tgbot_im_file\",\"caption\":\"Audio\"}},{\"text\":\"X2\",\"media\":{\"type\":\"location\",\"latitude\":1.0,\"longitude\":2.0}},{\"text\":\"X3\",\"media\":{\"type\":\"link\",\"url\":\"https://example.com\"}}]",
         ),
     ),
     (

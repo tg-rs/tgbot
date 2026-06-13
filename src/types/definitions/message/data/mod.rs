@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
 
-use self::raw::*;
 use crate::types::{
     Animation,
     Audio,
@@ -40,6 +39,8 @@ use crate::types::{
     SuggestedPostPaid,
     SuggestedPostRefunded,
     Text,
+    TextEntities,
+    True,
     UniqueGiftInfo,
     User,
     Venue,
@@ -49,24 +50,17 @@ use crate::types::{
     WebAppData,
 };
 
-mod raw;
-
 /// Represents a message data.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(from = "RawMessageData", into = "RawMessageData")]
 pub enum MessageData {
     /// Information about the animation.
     Animation(Animation),
     /// Auto-delete timer settings changed.
-    #[serde(rename = "message_auto_delete_timer_changed")]
     AutoDeleteTimerChanged(MessageDataAutoDeleteTimer),
     /// Service message: user boosted the chat.
     ///
     /// Contains a number of boosts added by the user.
-    #[serde(
-        deserialize_with = "RawDataBoostAdded::deserialize_value",
-        serialize_with = "RawDataBoostAdded::serialize_value"
-    )]
     BoostAdded(Integer),
     /// The channel has been created.
     ///
@@ -74,27 +68,15 @@ pub enum MessageData {
     /// because bot can’t be a member of a channel when it is created.
     /// It can only be found in the `reply_to` field of the [`crate::types::Message`] struct
     /// if someone replies to a very first message in a channel.
-    #[serde(
-        deserialize_with = "RawDataFlag::deserialize_value",
-        serialize_with = "RawDataFlag::serialize_value"
-    )]
     ChannelChatCreated,
     /// Chat background set.
     ChatBackgroundSet(ChatBackground),
     /// Describes a service message about an ownership change in the chat.
-    #[serde(
-        deserialize_with = "RawDataChatOwnerChanged::deserialize_value",
-        serialize_with = "RawDataChatOwnerChanged::serialize_value"
-    )]
     ChatOwnerChanged(User),
     /// Describes a service message about the chat owner leaving the chat.
     ///
     /// Optional user is the user which will be the new owner of the chat
     /// if the previous owner does not return to the chat.
-    #[serde(
-        deserialize_with = "RawDataChatOwnerLeft::deserialize_value",
-        serialize_with = "RawDataChatOwnerLeft::serialize_value"
-    )]
     ChatOwnerLeft(Option<User>),
     /// A chat was shared with the bot.
     ChatShared(MessageDataChatShared),
@@ -109,48 +91,28 @@ pub enum MessageData {
     /// Information about the shared contact.
     Contact(Contact),
     /// The chat photo was deleted.
-    #[serde(
-        deserialize_with = "RawDataFlag::deserialize_value",
-        serialize_with = "RawDataFlag::serialize_value"
-    )]
     DeleteChatPhoto,
     /// A dice with a random value.
     Dice(Dice),
     /// The price for paid messages in the corresponding direct messages chat of a channel has changed.
     DirectMessagePriceChanged(MessageDataDirectMessagePriceChanged),
     /// Forum topic closed.
-    #[serde(
-        deserialize_with = "RawDataEmpty::deserialize_value",
-        serialize_with = "RawDataEmpty::serialize_value"
-    )]
     ForumTopicClosed,
     /// Forum topic created.
     ForumTopicCreated(MessageDataForumTopicCreated),
     /// Forum topic edited.
     ForumTopicEdited(MessageDataForumTopicEdited),
     /// Forum topic reopened.
-    #[serde(
-        deserialize_with = "RawDataEmpty::deserialize_value",
-        serialize_with = "RawDataEmpty::serialize_value"
-    )]
     ForumTopicReopened,
     /// Information about the game.
-    Game(Box<Game>),
+    Game(Game),
     /// A service message about a sent or received regular gift.
-    Gift(Box<GiftInfo>),
+    Gift(GiftInfo),
     /// A service message about upgrade of a gift was purchased after the gift was sent.
-    GiftUpgradeSent(Box<GiftInfo>),
+    GiftUpgradeSent(GiftInfo),
     /// The 'General' forum topic hidden.
-    #[serde(
-        deserialize_with = "RawDataEmpty::deserialize_value",
-        serialize_with = "RawDataEmpty::serialize_value"
-    )]
     GeneralForumTopicHidden,
     /// The 'General' forum topic unhidden.
-    #[serde(
-        deserialize_with = "RawDataEmpty::deserialize_value",
-        serialize_with = "RawDataEmpty::serialize_value"
-    )]
     GeneralForumTopicUnhidden,
     /// A scheduled giveaway.
     Giveaway(Giveaway),
@@ -161,13 +123,11 @@ pub enum MessageData {
     /// A giveaway with public winners was completed.
     GiveawayWinners(GiveawayWinners),
     /// The group has been created.
-    #[serde(
-        deserialize_with = "RawDataFlag::deserialize_value",
-        serialize_with = "RawDataFlag::serialize_value"
-    )]
     GroupChatCreated,
     /// Information about the invoice for a payment.
     Invoice(Invoice),
+    /// Information about the live photo.
+    LivePhoto(LivePhoto),
     /// A member was removed from the group.
     ///
     /// This member may be the bot itself.
@@ -200,7 +160,7 @@ pub enum MessageData {
     /// further `reply_to` field even if it is itself a reply.
     PinnedMessage(MaybeInaccessibleMessage),
     /// Information about the native poll.
-    Poll(Box<Poll>),
+    Poll(Poll),
     /// Answer option was added to a poll.
     PollOptionAdded(MessageDataPollOptionAdded),
     /// Answer option was deleted from a poll.
@@ -212,7 +172,7 @@ pub enum MessageData {
     /// Message is a rich formatted message.
     RichMessage(RichMessage),
     /// Information about the sticker.
-    Sticker(Box<Sticker>),
+    Sticker(Sticker),
     /// A forwarded story.
     Story(Story),
     /// Service message: a suggested post was approved.
@@ -226,7 +186,7 @@ pub enum MessageData {
     /// Service message: payment for a suggested post was refunded.
     SuggestedPostRefunded(SuggestedPostRefunded),
     /// Information about the successful payment.
-    SuccessfulPayment(Box<SuccessfulPayment>),
+    SuccessfulPayment(SuccessfulPayment),
     /// The supergroup has been created.
     ///
     /// This field can‘t be received in a message coming through updates,
@@ -234,10 +194,6 @@ pub enum MessageData {
     /// It can only be found in the `reply_to` field of the [`crate::types::Message`] struct
     /// if someone replies to a very first message
     /// in a directly created supergroup.
-    #[serde(
-        deserialize_with = "RawDataFlag::deserialize_value",
-        serialize_with = "RawDataFlag::serialize_value"
-    )]
     SupergroupChatCreated,
     /// A service message about a sent or received unique gift.
     UniqueGift(Box<UniqueGiftInfo>),
@@ -254,10 +210,6 @@ pub enum MessageData {
     /// A video chat scheduled in the chat.
     VideoChatScheduled(MessageDataVideoChatScheduled),
     /// A video chat started in the chat.
-    #[serde(
-        deserialize_with = "RawDataEmpty::deserialize_value",
-        serialize_with = "RawDataEmpty::serialize_value"
-    )]
     VideoChatStarted,
     /// Data sent by a Web App.
     WebAppData(WebAppData),
@@ -268,32 +220,18 @@ pub enum MessageData {
     /// sent by the method `requestWriteAccess`.
     WriteAccessAllowed(MessageDataWriteAccess),
     /// Describes the audio.
-    #[serde(untagged)]
-    Audio(Box<MessageDataAudio>),
+    Audio(MessageDataAudio),
     /// Describes the document.
-    #[serde(untagged)]
     Document(MessageDataDocument),
-    /// Information about the live photo.
-    #[serde(untagged)]
-    LivePhoto(MessageDataLivePhoto),
     /// Available sizes of the photo.
-    #[serde(untagged)]
     Photo(MessageDataPhoto),
     /// The actual UTF-8 text of the message; 0-4096 characters.
-    #[serde(
-        deserialize_with = "RawDataText::deserialize_value",
-        serialize_with = "RawDataText::serialize_value",
-        untagged
-    )]
     Text(Text),
     /// Describes the video.
-    #[serde(untagged)]
-    Video(Box<MessageDataVideo>),
+    Video(MessageDataVideo),
     /// Describes the voice.
-    #[serde(untagged)]
     Voice(MessageDataVoice),
     /// Contains arbitrary data for future variants.
-    #[serde(untagged)]
     Unknown(JsonValue),
 }
 
@@ -371,7 +309,7 @@ impl From<MessageDataForumTopicEdited> for MessageData {
 
 impl From<Game> for MessageData {
     fn from(value: Game) -> Self {
-        Self::Game(Box::new(value))
+        Self::Game(value)
     }
 }
 
@@ -407,7 +345,7 @@ impl From<Invoice> for MessageData {
 
 impl From<LivePhoto> for MessageData {
     fn from(value: LivePhoto) -> Self {
-        Self::LivePhoto(MessageDataLivePhoto::from(value))
+        Self::LivePhoto(value)
     }
 }
 
@@ -443,7 +381,7 @@ impl From<PassportData> for MessageData {
 
 impl From<Poll> for MessageData {
     fn from(value: Poll) -> Self {
-        Self::Poll(Box::new(value))
+        Self::Poll(value)
     }
 }
 
@@ -473,7 +411,7 @@ impl From<RefundedPayment> for MessageData {
 
 impl From<Sticker> for MessageData {
     fn from(value: Sticker) -> Self {
-        Self::Sticker(Box::new(value))
+        Self::Sticker(value)
     }
 }
 
@@ -515,7 +453,7 @@ impl From<SuggestedPostRefunded> for MessageData {
 
 impl From<SuccessfulPayment> for MessageData {
     fn from(value: SuccessfulPayment) -> Self {
-        Self::SuccessfulPayment(Box::new(value))
+        Self::SuccessfulPayment(value)
     }
 }
 
@@ -575,7 +513,7 @@ impl From<MessageDataWriteAccess> for MessageData {
 
 impl From<MessageDataAudio> for MessageData {
     fn from(value: MessageDataAudio) -> Self {
-        Self::Audio(Box::new(value))
+        Self::Audio(value)
     }
 }
 
@@ -599,7 +537,7 @@ impl From<Text> for MessageData {
 
 impl From<MessageDataVideo> for MessageData {
     fn from(value: MessageDataVideo) -> Self {
-        Self::Video(Box::new(value))
+        Self::Video(value)
     }
 }
 
@@ -629,18 +567,11 @@ impl MessageDataAutoDeleteTimer {
 }
 
 /// Represents an audio message data.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, PartialEq)]
 pub struct MessageDataAudio {
     /// Audio data.
-    #[serde(rename = "audio")]
     pub data: Audio,
     /// Audio caption.
-    #[serde(
-        flatten,
-        deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value"
-    )]
     pub caption: Option<Text>,
 }
 
@@ -747,18 +678,11 @@ impl MessageDataChatShared {
 }
 
 /// Represents an document message data.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct MessageDataDocument {
     /// Document data.
-    #[serde(rename = "document")]
     pub data: Document,
     /// Document caption.
-    #[serde(
-        flatten,
-        deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value"
-    )]
     pub caption: Option<Text>,
 }
 
@@ -936,39 +860,12 @@ impl MessageDataDirectMessagePriceChanged {
     }
 }
 
-/// Represents a live photo.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct MessageDataLivePhoto {
-    /// The live photo.
-    #[serde(rename = "live_photo")]
-    pub data: LivePhoto,
-}
-
-impl From<LivePhoto> for MessageDataLivePhoto {
-    fn from(value: LivePhoto) -> Self {
-        Self { data: value }
-    }
-}
-
-impl From<MessageDataLivePhoto> for LivePhoto {
-    fn from(value: MessageDataLivePhoto) -> Self {
-        value.data
-    }
-}
-
 /// Represents a list of available sizes of the photo.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct MessageDataPhoto {
     /// Photo sizes.
-    #[serde(rename = "photo")]
     pub data: Vec<PhotoSize>,
     /// Photo caption.
-    #[serde(
-        flatten,
-        deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value"
-    )]
     pub caption: Option<Text>,
 }
 
@@ -1000,34 +897,22 @@ impl MessageDataPhoto {
 }
 
 /// Describes a service message about an option added to a poll.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug)]
 pub struct MessageDataPollOptionAdded {
     /// Unique identifier of the added option.
     pub option_persistent_id: String,
     /// Option text.
-    #[serde(
-        flatten,
-        deserialize_with = "RawPollOptionText::deserialize_value",
-        serialize_with = "RawPollOptionText::serialize_value"
-    )]
     pub option: Text,
     /// Message containing the poll to which the option was added, if known.
     pub poll_message: Option<MaybeInaccessibleMessage>,
 }
 
 /// Desribes a service message about an option deleted from a poll.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug)]
 pub struct MessageDataPollOptionDeleted {
     /// Unique identifier of the deleted option.
     pub option_persistent_id: String,
     /// Option text.
-    #[serde(
-        flatten,
-        deserialize_with = "RawPollOptionText::deserialize_value",
-        serialize_with = "RawPollOptionText::serialize_value"
-    )]
     pub option: Text,
     /// Message containing the poll from which the option was deleted, if known.
     pub poll_message: Option<MaybeInaccessibleMessage>,
@@ -1093,18 +978,11 @@ impl MessageDataUsersShared {
 }
 
 /// Represents a video message data.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct MessageDataVideo {
     /// Video data.
-    #[serde(rename = "video")]
     pub data: Video,
     /// Video caption.
-    #[serde(
-        flatten,
-        deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value"
-    )]
     pub caption: Option<Text>,
 }
 
@@ -1202,18 +1080,11 @@ impl MessageDataVideoChatScheduled {
 }
 
 /// Message is a voice message, information about the file.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct MessageDataVoice {
     /// Voice data.
-    #[serde(rename = "voice")]
     pub data: Voice,
     /// Voice caption.
-    #[serde(
-        flatten,
-        deserialize_with = "RawCaption::deserialize_value",
-        serialize_with = "RawCaption::serialize_value"
-    )]
     pub caption: Option<Text>,
 }
 
@@ -1290,5 +1161,456 @@ impl MessageDataWriteAccess {
     {
         self.web_app_name = Some(value.into());
         self
+    }
+}
+
+/// Represents a message data.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum RawMessageData {
+    Animation(Animation),
+    #[serde(rename = "message_auto_delete_timer_changed")]
+    AutoDeleteTimerChanged(MessageDataAutoDeleteTimer),
+    BoostAdded {
+        boost_count: Integer,
+    },
+    ChannelChatCreated(True),
+    ChatBackgroundSet(ChatBackground),
+    ChatOwnerChanged {
+        new_owner: User,
+    },
+    ChatOwnerLeft {
+        new_owner: Option<User>,
+    },
+    ChatShared(MessageDataChatShared),
+    Checklist(Checklist),
+    ChecklistTasksAdded(ChecklistTasksAdded),
+    ChecklistTasksDone(ChecklistTasksDone),
+    ConnectedWebsite(String),
+    Contact(Contact),
+    DeleteChatPhoto(True),
+    Dice(Dice),
+    DirectMessagePriceChanged(MessageDataDirectMessagePriceChanged),
+    ForumTopicClosed {},
+    ForumTopicCreated(MessageDataForumTopicCreated),
+    ForumTopicEdited(MessageDataForumTopicEdited),
+    ForumTopicReopened {},
+    Game(Game),
+    Gift(GiftInfo),
+    GiftUpgradeSent(GiftInfo),
+    GeneralForumTopicHidden {},
+    GeneralForumTopicUnhidden {},
+    Giveaway(Giveaway),
+    GiveawayCreated(GiveawayCreated),
+    GiveawayCompleted(GiveawayCompleted),
+    GiveawayWinners(GiveawayWinners),
+    GroupChatCreated(True),
+    Invoice(Invoice),
+    LeftChatMember(User),
+    Location(Location),
+    ManagedBotCreated(MessageDataManagedBotCreated),
+    MigrateFromChatId(Integer),
+    MigrateToChatId(Integer),
+    NewChatMembers(Vec<User>),
+    NewChatPhoto(Vec<PhotoSize>),
+    NewChatTitle(String),
+    PaidMedia(PaidMediaInfo),
+    PaidMessagePriceChanged(MessageDataPaidMessagePriceChanged),
+    PassportData(PassportData),
+    PinnedMessage(MaybeInaccessibleMessage),
+    Poll(Poll),
+    PollOptionAdded {
+        option_persistent_id: String,
+        option_text: String,
+        option_text_entities: Option<TextEntities>,
+        poll_message: Option<MaybeInaccessibleMessage>,
+    },
+    PollOptionDeleted {
+        option_persistent_id: String,
+        option_text: String,
+        option_text_entities: Option<TextEntities>,
+        poll_message: Option<MaybeInaccessibleMessage>,
+    },
+    ProximityAlertTriggered(MessageDataProximityAlert),
+    RefundedPayment(RefundedPayment),
+    RichMessage(RichMessage),
+    Sticker(Sticker),
+    Story(Story),
+    SuggestedPostApproved(SuggestedPostApproved),
+    SuggestedPostApprovalFailed(SuggestedPostApprovalFailed),
+    SuggestedPostDeclined(SuggestedPostDeclined),
+    SuggestedPostPaid(SuggestedPostPaid),
+    SuggestedPostRefunded(SuggestedPostRefunded),
+    SuccessfulPayment(SuccessfulPayment),
+    SupergroupChatCreated(True),
+    UniqueGift(Box<UniqueGiftInfo>),
+    UsersShared(MessageDataUsersShared),
+    Venue(Venue),
+    VideoNote(VideoNote),
+    VideoChatEnded(MessageDataVideoChatEnded),
+    VideoChatParticipantsInvited(MessageDataVideoChatParticipantsInvited),
+    VideoChatScheduled(MessageDataVideoChatScheduled),
+    VideoChatStarted {},
+    WebAppData(WebAppData),
+    WriteAccessAllowed(MessageDataWriteAccess),
+    #[serde(untagged)]
+    Audio {
+        audio: Audio,
+        caption: Option<String>,
+        caption_entities: Option<TextEntities>,
+    },
+    #[serde(untagged)]
+    Document {
+        document: Document,
+        caption: Option<String>,
+        caption_entities: Option<TextEntities>,
+    },
+    /// When both photo and a live_photo are provided, the live_photo is ignored.
+    /// Using untagged to parse the live_photo first
+    #[serde(untagged)]
+    LivePhoto {
+        live_photo: LivePhoto,
+    },
+    #[serde(untagged)]
+    Photo {
+        photo: Vec<PhotoSize>,
+        caption: Option<String>,
+        caption_entities: Option<TextEntities>,
+    },
+    #[serde(untagged)]
+    Text {
+        text: String,
+        entities: Option<TextEntities>,
+    },
+    #[serde(untagged)]
+    Video {
+        video: Video,
+        caption: Option<String>,
+        caption_entities: Option<TextEntities>,
+    },
+    #[serde(untagged)]
+    Voice {
+        voice: Voice,
+        caption: Option<String>,
+        caption_entities: Option<TextEntities>,
+    },
+    #[serde(untagged)]
+    Unknown(JsonValue),
+}
+
+impl From<RawMessageData> for MessageData {
+    fn from(value: RawMessageData) -> Self {
+        match value {
+            RawMessageData::Animation(value) => Self::Animation(value),
+            RawMessageData::AutoDeleteTimerChanged(value) => Self::AutoDeleteTimerChanged(value),
+            RawMessageData::BoostAdded { boost_count } => Self::BoostAdded(boost_count),
+            RawMessageData::ChannelChatCreated(True) => Self::ChannelChatCreated,
+            RawMessageData::ChatBackgroundSet(value) => Self::ChatBackgroundSet(value),
+            RawMessageData::ChatOwnerChanged { new_owner } => Self::ChatOwnerChanged(new_owner),
+            RawMessageData::ChatOwnerLeft { new_owner } => Self::ChatOwnerLeft(new_owner),
+            RawMessageData::ChatShared(value) => Self::ChatShared(value),
+            RawMessageData::Checklist(value) => Self::Checklist(value),
+            RawMessageData::ChecklistTasksAdded(value) => Self::ChecklistTasksAdded(value),
+            RawMessageData::ChecklistTasksDone(value) => Self::ChecklistTasksDone(value),
+            RawMessageData::ConnectedWebsite(value) => Self::ConnectedWebsite(value),
+            RawMessageData::Contact(value) => Self::Contact(value),
+            RawMessageData::DeleteChatPhoto(True) => Self::DeleteChatPhoto,
+            RawMessageData::Dice(value) => Self::Dice(value),
+            RawMessageData::DirectMessagePriceChanged(value) => Self::DirectMessagePriceChanged(value),
+            RawMessageData::ForumTopicClosed {} => Self::ForumTopicClosed,
+            RawMessageData::ForumTopicCreated(value) => Self::ForumTopicCreated(value),
+            RawMessageData::ForumTopicEdited(value) => Self::ForumTopicEdited(value),
+            RawMessageData::ForumTopicReopened {} => Self::ForumTopicReopened,
+            RawMessageData::Game(value) => Self::Game(value),
+            RawMessageData::Gift(value) => Self::Gift(value),
+            RawMessageData::GiftUpgradeSent(value) => Self::GiftUpgradeSent(value),
+            RawMessageData::GeneralForumTopicHidden {} => Self::GeneralForumTopicHidden,
+            RawMessageData::GeneralForumTopicUnhidden {} => Self::GeneralForumTopicUnhidden,
+            RawMessageData::Giveaway(value) => Self::Giveaway(value),
+            RawMessageData::GiveawayCreated(value) => Self::GiveawayCreated(value),
+            RawMessageData::GiveawayCompleted(value) => Self::GiveawayCompleted(value),
+            RawMessageData::GiveawayWinners(value) => Self::GiveawayWinners(value),
+            RawMessageData::GroupChatCreated(True) => Self::GroupChatCreated,
+            RawMessageData::Invoice(value) => Self::Invoice(value),
+            RawMessageData::LeftChatMember(value) => Self::LeftChatMember(value),
+            RawMessageData::Location(value) => Self::Location(value),
+            RawMessageData::ManagedBotCreated(value) => Self::ManagedBotCreated(value),
+            RawMessageData::MigrateFromChatId(value) => Self::MigrateFromChatId(value),
+            RawMessageData::MigrateToChatId(value) => Self::MigrateToChatId(value),
+            RawMessageData::NewChatMembers(value) => Self::NewChatMembers(value),
+            RawMessageData::NewChatPhoto(value) => Self::NewChatPhoto(value),
+            RawMessageData::NewChatTitle(value) => Self::NewChatTitle(value),
+            RawMessageData::PaidMedia(value) => Self::PaidMedia(value),
+            RawMessageData::PaidMessagePriceChanged(value) => Self::PaidMessagePriceChanged(value),
+            RawMessageData::PassportData(value) => Self::PassportData(value),
+            RawMessageData::PinnedMessage(value) => Self::PinnedMessage(value),
+            RawMessageData::Poll(value) => Self::Poll(value),
+            RawMessageData::PollOptionAdded {
+                option_persistent_id,
+                option_text,
+                option_text_entities,
+                poll_message,
+            } => Self::PollOptionAdded(MessageDataPollOptionAdded {
+                option_persistent_id,
+                option: Text {
+                    data: option_text,
+                    entities: option_text_entities,
+                },
+                poll_message,
+            }),
+            RawMessageData::PollOptionDeleted {
+                option_persistent_id,
+                option_text,
+                option_text_entities,
+                poll_message,
+            } => Self::PollOptionDeleted(MessageDataPollOptionDeleted {
+                option_persistent_id,
+                option: Text {
+                    data: option_text,
+                    entities: option_text_entities,
+                },
+                poll_message,
+            }),
+            RawMessageData::ProximityAlertTriggered(value) => Self::ProximityAlertTriggered(value),
+            RawMessageData::RefundedPayment(value) => Self::RefundedPayment(value),
+            RawMessageData::RichMessage(value) => Self::RichMessage(value),
+            RawMessageData::Sticker(value) => Self::Sticker(value),
+            RawMessageData::Story(value) => Self::Story(value),
+            RawMessageData::SuggestedPostApproved(value) => Self::SuggestedPostApproved(value),
+            RawMessageData::SuggestedPostApprovalFailed(value) => Self::SuggestedPostApprovalFailed(value),
+            RawMessageData::SuggestedPostDeclined(value) => Self::SuggestedPostDeclined(value),
+            RawMessageData::SuggestedPostPaid(value) => Self::SuggestedPostPaid(value),
+            RawMessageData::SuggestedPostRefunded(value) => Self::SuggestedPostRefunded(value),
+            RawMessageData::SuccessfulPayment(value) => Self::SuccessfulPayment(value),
+            RawMessageData::SupergroupChatCreated(True) => Self::SupergroupChatCreated,
+            RawMessageData::UniqueGift(value) => Self::UniqueGift(value),
+            RawMessageData::UsersShared(value) => Self::UsersShared(value),
+            RawMessageData::Venue(value) => Self::Venue(value),
+            RawMessageData::VideoNote(value) => Self::VideoNote(value),
+            RawMessageData::VideoChatEnded(value) => Self::VideoChatEnded(value),
+            RawMessageData::VideoChatParticipantsInvited(value) => Self::VideoChatParticipantsInvited(value),
+            RawMessageData::VideoChatScheduled(value) => Self::VideoChatScheduled(value),
+            RawMessageData::VideoChatStarted {} => Self::VideoChatStarted,
+            RawMessageData::WebAppData(value) => Self::WebAppData(value),
+            RawMessageData::WriteAccessAllowed(value) => Self::WriteAccessAllowed(value),
+            RawMessageData::Audio {
+                audio,
+                caption,
+                caption_entities,
+            } => Self::Audio(MessageDataAudio {
+                data: audio,
+                caption: caption.map(|data| Text {
+                    data,
+                    entities: caption_entities,
+                }),
+            }),
+            RawMessageData::Document {
+                document,
+                caption,
+                caption_entities,
+            } => Self::Document(MessageDataDocument {
+                data: document,
+                caption: caption.map(|data| Text {
+                    data,
+                    entities: caption_entities,
+                }),
+            }),
+            RawMessageData::LivePhoto { live_photo } => Self::LivePhoto(live_photo),
+            RawMessageData::Photo {
+                photo,
+                caption,
+                caption_entities,
+            } => Self::Photo(MessageDataPhoto {
+                data: photo,
+
+                caption: caption.map(|data| Text {
+                    data,
+                    entities: caption_entities,
+                }),
+            }),
+            RawMessageData::Text { text: data, entities } => Self::Text(Text { data, entities }),
+            RawMessageData::Video {
+                video,
+                caption,
+                caption_entities,
+            } => Self::Video(MessageDataVideo {
+                data: video,
+
+                caption: caption.map(|data| Text {
+                    data,
+                    entities: caption_entities,
+                }),
+            }),
+            RawMessageData::Voice {
+                voice,
+                caption,
+                caption_entities,
+            } => Self::Voice(MessageDataVoice {
+                data: voice,
+
+                caption: caption.map(|data| Text {
+                    data,
+                    entities: caption_entities,
+                }),
+            }),
+            RawMessageData::Unknown(value) => Self::Unknown(value),
+        }
+    }
+}
+
+impl From<MessageData> for RawMessageData {
+    fn from(value: MessageData) -> Self {
+        match value {
+            MessageData::Animation(value) => Self::Animation(value),
+            MessageData::AutoDeleteTimerChanged(value) => Self::AutoDeleteTimerChanged(value),
+            MessageData::BoostAdded(boost_count) => Self::BoostAdded { boost_count },
+            MessageData::ChannelChatCreated => Self::ChannelChatCreated(True),
+            MessageData::ChatBackgroundSet(value) => Self::ChatBackgroundSet(value),
+            MessageData::ChatOwnerChanged(new_owner) => Self::ChatOwnerChanged { new_owner },
+            MessageData::ChatOwnerLeft(new_owner) => Self::ChatOwnerLeft { new_owner },
+            MessageData::ChatShared(value) => Self::ChatShared(value),
+            MessageData::Checklist(value) => Self::Checklist(value),
+            MessageData::ChecklistTasksAdded(value) => Self::ChecklistTasksAdded(value),
+            MessageData::ChecklistTasksDone(value) => Self::ChecklistTasksDone(value),
+            MessageData::ConnectedWebsite(value) => Self::ConnectedWebsite(value),
+            MessageData::Contact(value) => Self::Contact(value),
+            MessageData::DeleteChatPhoto => Self::DeleteChatPhoto(True),
+            MessageData::Dice(value) => Self::Dice(value),
+            MessageData::DirectMessagePriceChanged(value) => Self::DirectMessagePriceChanged(value),
+            MessageData::ForumTopicClosed => Self::ForumTopicClosed {},
+            MessageData::ForumTopicCreated(value) => Self::ForumTopicCreated(value),
+            MessageData::ForumTopicEdited(value) => Self::ForumTopicEdited(value),
+            MessageData::ForumTopicReopened => Self::ForumTopicReopened {},
+            MessageData::Game(value) => Self::Game(value),
+            MessageData::Gift(value) => Self::Gift(value),
+            MessageData::GiftUpgradeSent(value) => Self::GiftUpgradeSent(value),
+            MessageData::GeneralForumTopicHidden => Self::GeneralForumTopicHidden {},
+            MessageData::GeneralForumTopicUnhidden => Self::GeneralForumTopicUnhidden {},
+            MessageData::Giveaway(value) => Self::Giveaway(value),
+            MessageData::GiveawayCreated(value) => Self::GiveawayCreated(value),
+            MessageData::GiveawayCompleted(value) => Self::GiveawayCompleted(value),
+            MessageData::GiveawayWinners(value) => Self::GiveawayWinners(value),
+            MessageData::GroupChatCreated => Self::GroupChatCreated(True),
+            MessageData::Invoice(value) => Self::Invoice(value),
+            MessageData::LeftChatMember(value) => Self::LeftChatMember(value),
+            MessageData::Location(value) => Self::Location(value),
+            MessageData::ManagedBotCreated(value) => Self::ManagedBotCreated(value),
+            MessageData::MigrateFromChatId(value) => Self::MigrateFromChatId(value),
+            MessageData::MigrateToChatId(value) => Self::MigrateToChatId(value),
+            MessageData::NewChatMembers(value) => Self::NewChatMembers(value),
+            MessageData::NewChatPhoto(value) => Self::NewChatPhoto(value),
+            MessageData::NewChatTitle(value) => Self::NewChatTitle(value),
+            MessageData::PaidMedia(value) => Self::PaidMedia(value),
+            MessageData::PaidMessagePriceChanged(value) => Self::PaidMessagePriceChanged(value),
+            MessageData::PassportData(value) => Self::PassportData(value),
+            MessageData::PinnedMessage(value) => Self::PinnedMessage(value),
+            MessageData::Poll(value) => Self::Poll(value),
+            MessageData::PollOptionAdded(MessageDataPollOptionAdded {
+                option_persistent_id,
+                option,
+                poll_message,
+            }) => Self::PollOptionAdded {
+                option_persistent_id,
+                option_text: option.data,
+                option_text_entities: option.entities,
+                poll_message,
+            },
+            MessageData::PollOptionDeleted(MessageDataPollOptionDeleted {
+                option_persistent_id,
+                option,
+                poll_message,
+            }) => Self::PollOptionDeleted {
+                option_persistent_id,
+                option_text: option.data,
+                option_text_entities: option.entities,
+                poll_message,
+            },
+            MessageData::ProximityAlertTriggered(value) => Self::ProximityAlertTriggered(value),
+            MessageData::RefundedPayment(value) => Self::RefundedPayment(value),
+            MessageData::RichMessage(value) => Self::RichMessage(value),
+            MessageData::Sticker(value) => Self::Sticker(value),
+            MessageData::Story(value) => Self::Story(value),
+            MessageData::SuggestedPostApproved(value) => Self::SuggestedPostApproved(value),
+            MessageData::SuggestedPostApprovalFailed(value) => Self::SuggestedPostApprovalFailed(value),
+            MessageData::SuggestedPostDeclined(value) => Self::SuggestedPostDeclined(value),
+            MessageData::SuggestedPostPaid(value) => Self::SuggestedPostPaid(value),
+            MessageData::SuggestedPostRefunded(value) => Self::SuggestedPostRefunded(value),
+            MessageData::SuccessfulPayment(value) => Self::SuccessfulPayment(value),
+            MessageData::SupergroupChatCreated => Self::SupergroupChatCreated(True),
+            MessageData::UniqueGift(value) => Self::UniqueGift(value),
+            MessageData::UsersShared(value) => Self::UsersShared(value),
+            MessageData::Venue(value) => Self::Venue(value),
+            MessageData::VideoNote(value) => Self::VideoNote(value),
+            MessageData::VideoChatEnded(value) => Self::VideoChatEnded(value),
+            MessageData::VideoChatParticipantsInvited(value) => Self::VideoChatParticipantsInvited(value),
+            MessageData::VideoChatScheduled(value) => Self::VideoChatScheduled(value),
+            MessageData::VideoChatStarted => Self::VideoChatStarted {},
+            MessageData::WebAppData(value) => Self::WebAppData(value),
+            MessageData::WriteAccessAllowed(value) => Self::WriteAccessAllowed(value),
+            MessageData::Audio(value) => {
+                let audio = value.data;
+                let (caption, caption_entities) = value
+                    .caption
+                    .map(|x| (Some(x.data), x.entities))
+                    .unwrap_or((None, None));
+                Self::Audio {
+                    audio,
+                    caption,
+                    caption_entities,
+                }
+            }
+            MessageData::Document(value) => {
+                let document = value.data;
+                let (caption, caption_entities) = value
+                    .caption
+                    .map(|x| (Some(x.data), x.entities))
+                    .unwrap_or((None, None));
+                Self::Document {
+                    document,
+                    caption,
+                    caption_entities,
+                }
+            }
+            MessageData::LivePhoto(live_photo) => Self::LivePhoto { live_photo },
+            MessageData::Photo(value) => {
+                let photo = value.data;
+                let (caption, caption_entities) = value
+                    .caption
+                    .map(|x| (Some(x.data), x.entities))
+                    .unwrap_or((None, None));
+                Self::Photo {
+                    photo,
+                    caption,
+                    caption_entities,
+                }
+            }
+            MessageData::Text(Text { data: text, entities }) => Self::Text { text, entities },
+            MessageData::Video(value) => {
+                let video = value.data;
+                let (caption, caption_entities) = value
+                    .caption
+                    .map(|x| (Some(x.data), x.entities))
+                    .unwrap_or((None, None));
+                Self::Video {
+                    video,
+                    caption,
+                    caption_entities,
+                }
+            }
+            MessageData::Voice(value) => {
+                let voice = value.data;
+                let (caption, caption_entities) = value
+                    .caption
+                    .map(|x| (Some(x.data), x.entities))
+                    .unwrap_or((None, None));
+                Self::Voice {
+                    voice,
+                    caption,
+                    caption_entities,
+                }
+            }
+            MessageData::Unknown(value) => Self::Unknown(value),
+        }
     }
 }

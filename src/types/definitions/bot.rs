@@ -546,7 +546,7 @@ impl Method for DeleteBotCommands {
     }
 }
 
-/// Returns a basic information about a bot.
+/// Returns basic information about a bot.
 #[derive(Clone, Copy, Debug)]
 pub struct GetBot;
 

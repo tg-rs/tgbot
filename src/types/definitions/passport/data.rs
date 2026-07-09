@@ -97,7 +97,7 @@ pub struct EncryptedPassportElementAddress {
     /// the accompanying [`EncryptedCredentials`].
     pub data: String,
     /// A base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
 }
 
@@ -131,7 +131,7 @@ pub struct EncryptedPassportElementBankStatement {
     /// using the accompanying [`EncryptedCredentials`].
     pub files: Vec<PassportFile>,
     /// A base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// An array of encrypted files with translated
     /// versions of documents provided by a user.
@@ -191,7 +191,7 @@ pub struct EncryptedPassportElementDriverLicense {
     /// using the accompanying [`EncryptedCredentials`].
     pub front_side: PassportFile,
     /// A base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// An encrypted file with a selfie of a user
     /// holding a document, provided by a user.
@@ -264,7 +264,7 @@ pub struct EncryptedPassportElementEmail {
     /// A user's verified email address.
     pub email: String,
     /// A base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
 }
 
@@ -304,7 +304,7 @@ pub struct EncryptedPassportElementIdentityCard {
     /// using the accompanying [`EncryptedCredentials`].
     pub front_side: PassportFile,
     /// A base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// An encrypted file with a reverse side of a document,
     /// provided by a user.
@@ -388,7 +388,7 @@ pub struct EncryptedPassportElementInternalPassport {
     /// using the accompanying [`EncryptedCredentials`].
     pub front_side: PassportFile,
     /// A base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// An encrypted file with a selfie of a user
     /// holding a document, provided by a user.
@@ -458,7 +458,7 @@ pub struct EncryptedPassportElementPassport {
     /// using the accompanying [`EncryptedCredentials`].
     pub front_side: PassportFile,
     /// Base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// An encrypted file with a selfie of a user
     /// holding a document, provided by a user.
@@ -522,7 +522,7 @@ pub struct EncryptedPassportElementPassportRegistration {
     /// using the accompanying [`EncryptedCredentials`].
     pub files: Vec<PassportFile>,
     /// Base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// Array of encrypted files with translated
     /// versions of documents provided by a user.
@@ -575,7 +575,7 @@ pub struct EncryptedPassportElementPersonalDetails {
     /// the accompanying [`EncryptedCredentials`].
     pub data: String,
     /// A base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
 }
 
@@ -601,8 +601,8 @@ impl EncryptedPassportElementPersonalDetails {
 /// Represents a phone number.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct EncryptedPassportElementPhoneNumber {
-    /// A base64-encoded element hash for.
-    /// using in [`crate::types::PassportElementError::unspecified`]
+    /// A base64-encoded element hash for
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// A user's verified phone number.
     pub phone_number: String,
@@ -638,7 +638,7 @@ pub struct EncryptedPassportElementRentalAgreement {
     /// using the accompanying [`EncryptedCredentials`].
     pub files: Vec<PassportFile>,
     /// A base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// An array of encrypted files with translated
     /// versions of documents provided by a user.
@@ -692,7 +692,7 @@ pub struct EncryptedPassportElementTemporaryRegistration {
     /// using the accompanying [`EncryptedCredentials`].
     pub files: Vec<PassportFile>,
     /// Base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// Array of encrypted files with translated
     /// versions of documents provided by a user.
@@ -746,7 +746,7 @@ pub struct EncryptedPassportElementUtilityBill {
     /// using the accompanying [`EncryptedCredentials`].
     pub files: Vec<PassportFile>,
     /// Base64-encoded element hash for
-    /// using in [`crate::types::PassportElementError::unspecified`].
+    /// use in [`crate::types::PassportElementError::unspecified`].
     pub hash: String,
     /// Array of encrypted files with translated
     /// versions of documents provided by a user.
@@ -789,7 +789,7 @@ impl EncryptedPassportElementUtilityBill {
     }
 }
 
-/// Represents an information about documents
+/// Represents information about documents
 /// or other Telegram Passport elements shared with a bot by a user.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]

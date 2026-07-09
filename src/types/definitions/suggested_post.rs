@@ -439,7 +439,7 @@ impl SuggestedPostPrice {
     ///
     /// # Arguments
     ///
-    /// * `amount` -  The amount of the currency that will be paid for the post in the smallest units of the currency.
+    /// * `amount` - The amount of the currency that will be paid for the post in the smallest units of the currency.
     /// * `currency` - Currency in which the post will be paid.
     pub fn new<T>(amount: Integer, currency: T) -> Self
     where

@@ -54,7 +54,7 @@ impl From<Vec<Vec<KeyboardButton>>> for ReplyMarkup {
     }
 }
 
-/// Represents an error occurred with reply markup.
+/// Represents an error that occurred with reply markup.
 #[derive(Debug)]
 pub enum ReplyMarkupError {
     /// Can not serialize markup

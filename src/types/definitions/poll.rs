@@ -884,7 +884,7 @@ impl InputPollOption {
     ///
     /// # Arguments
     ///
-    /// * `value` -  Mode for parsing entities in the text.
+    /// * `value` - Mode for parsing entities in the text.
     ///
     /// Currently, only custom emoji entities are allowed.
     /// Text entities will be set to [`None`] when this method is called.
@@ -1265,7 +1265,7 @@ impl SendQuiz {
     ///
     /// # Arguments
     ///
-    /// * `value` -  Whether voting is limited to users
+    /// * `value` - Whether voting is limited to users
     ///   who have been members of the chat where the poll
     ///   is being sent for more than 24 hours; for channel chats only
     pub fn with_members_only(mut self, value: bool) -> Self {
@@ -1614,7 +1614,7 @@ impl SendPoll {
     ///
     /// # Arguments
     ///
-    /// * `value` -  Whether voting is limited to users
+    /// * `value` - Whether voting is limited to users
     ///   who have been members of the chat where the poll
     ///   is being sent for more than 24 hours; for channel chats only
     pub fn with_members_only(mut self, value: bool) -> Self {

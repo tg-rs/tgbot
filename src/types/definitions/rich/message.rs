@@ -12,7 +12,7 @@ use crate::{
 pub struct RichMessage {
     /// Content of the message.
     pub blocks: Vec<RichBlock>,
-    /// Whether the message must be show right-to-left.
+    /// Whether the message must be shown right-to-left.
     pub is_rtl: Option<bool>,
 }
 

@@ -49,7 +49,7 @@ impl<H> LongPoll<H> {
         }
     }
 
-    /// Sets a new polling options
+    /// Sets new polling options.
     ///
     /// # Arguments
     ///

@@ -125,7 +125,7 @@ impl ReplyQuote {
     /// # Arguments
     ///
     /// * `position` - Position of the quote in the original message in UTF-16 code units.
-    /// * `text` -  Quoted part of the message to be replied to.
+    /// * `text` - Quoted part of the message to be replied to.
     pub fn new<T>(position: Integer, text: T) -> Self
     where
         T: Into<String>,
@@ -168,7 +168,7 @@ impl ReplyQuote {
     }
 }
 
-/// Represents an error occurred with reply markup.
+/// Represents an error that occurred with reply markup.
 #[derive(Debug)]
 pub enum ReplyParametersError {
     /// Can not serialize markup

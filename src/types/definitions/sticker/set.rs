@@ -275,7 +275,7 @@ impl ReplaceStickerInSet {
     ///
     /// * `name` - Sticker set name.
     /// * `old_sticker` - File identifier of the replaced sticker.
-    /// * `sticker` -  Information about the added sticker;
+    /// * `sticker` - Information about the added sticker;
     ///   if exactly the same sticker had already been added to the set, then the set remains unchanged.
     /// * `user_id` - User identifier of the sticker set owner.
     pub fn new<A, B>(

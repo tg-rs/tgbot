@@ -185,7 +185,7 @@ impl InlineKeyboardButton {
     /// * `data` - Text of an inline query.
     ///
     /// Pressing the button will prompt the user to select one of their chats,
-    /// open that chat and insert the bot‘s username and
+    /// open that chat and insert the bot's username and
     /// the specified inline query in the input field.
     ///
     /// Can be empty, in which case just the bot’s username will be inserted.
@@ -229,7 +229,7 @@ impl InlineKeyboardButton {
     /// * `text` - Text of the button.
     /// * `data` - Text of an inline query.
     ///
-    /// Pressing the button will insert the bot‘s username and
+    /// Pressing the button will insert the bot's username and
     /// the specified inline query in the current chat's input field.
     ///
     /// Can be empty, in which case only the bot’s username will be inserted
@@ -364,7 +364,7 @@ pub enum InlineKeyboardButtonType {
     )]
     Pay,
     /// Pressing the button will prompt the user to select one of their chats,
-    /// open that chat and insert the bot‘s username and
+    /// open that chat and insert the bot's username and
     /// the specified inline query in the input field.
     ///
     /// Can be empty, in which case just the bot’s username will be inserted.
@@ -381,7 +381,7 @@ pub enum InlineKeyboardButtonType {
     /// Pressing the button will prompt the user to select one of their chats of the specified type,
     /// open that chat and insert the bot username and the specified inline query in the input field.
     SwitchInlineQueryChosenChat(SwitchInlineQueryChosenChat),
-    /// Pressing the button will insert the bot‘s username and
+    /// Pressing the button will insert the bot's username and
     /// the specified inline query in the current chat's input field.
     ///
     /// Can be empty, in which case only the bot’s username will be inserted.
@@ -460,7 +460,7 @@ impl RawButtonText {
     }
 }
 
-/// Represents an error occurred with an inline keyboard.
+/// Represents an error that occurred with an inline keyboard.
 #[derive(Debug)]
 pub enum InlineKeyboardError {
     /// Can not serialize callback data.

@@ -227,7 +227,7 @@ impl CopyMessage {
     ///
     /// # Arguments
     ///
-    /// `value` - Whether the caption must be shown above the message media;
+    /// * `value` - Whether the caption must be shown above the message media;
     ///   ignored if a new caption isn't specified.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.show_caption_above_media = Some(value);
@@ -594,7 +594,7 @@ impl EditMessageCaption {
     ///
     /// # Arguments
     ///
-    /// `value` - Whether the caption must be shown above the message media;
+    /// * `value` - Whether the caption must be shown above the message media;
     ///   supported only for animation, photo and video messages.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.show_caption_above_media = Some(value);

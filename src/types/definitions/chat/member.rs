@@ -282,7 +282,7 @@ impl ChatMemberAdministrator {
     ///
     /// # Arguments
     ///
-    /// * `value` -  Indicates whether the administrator is allowed to
+    /// * `value` - Indicates whether the administrator is allowed to
     ///   create, rename, close, and reopen forum topics; supergroups only.
     pub fn with_can_manage_topics(mut self, value: bool) -> Self {
         self.can_manage_topics = Some(value);

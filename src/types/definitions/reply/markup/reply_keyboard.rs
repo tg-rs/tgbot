@@ -104,7 +104,7 @@ impl ReplyKeyboardMarkup {
     /// 1. users that are @mentioned in the text of the [`crate::types::Message`] object.
     /// 2. if the bot message is a reply (has `reply_to_message_id`), sender of the original message.
     ///
-    /// Example: A user requests to change the bot‘s language,
+    /// Example: A user requests to change the bot's language,
     /// bot replies to the request with a keyboard to select the new language.
     /// Other users in the group don’t see the keyboard.
     pub fn with_selective(mut self, value: bool) -> Self {

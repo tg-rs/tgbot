@@ -96,7 +96,7 @@ pub struct Message {
     pub effect_id: Option<String>,
     /// Information about the message that is being replied to, which may come from another chat or forum topic.
     pub external_reply: Option<ExternalReplyInfo>,
-    /// formation about the original message for forwarded messages.
+    /// Information about the original message for forwarded messages.
     pub forward_origin: Option<MessageOrigin>,
     /// For a message sent by a guest bot, this is the information about the user and chat.
     #[serde(flatten)]

@@ -84,7 +84,7 @@ impl File {
     }
 }
 
-/// Returns a basic information about a file and prepares it for downloading.
+/// Returns basic information about a file and prepares it for downloading.
 ///
 /// For the moment, bots can download files of up to 20MB in size.
 ///

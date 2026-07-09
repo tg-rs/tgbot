@@ -42,7 +42,7 @@ impl StarTransaction {
     ///
     /// * `amount` - Number of Telegram Stars transferred by the transaction.
     /// * `date` - Date the transaction was created in Unix time.
-    /// * `id` -  Unique identifier of the transaction;
+    /// * `id` - Unique identifier of the transaction;
     ///   coincides with the identifer of the original transaction for refund transactions;
     ///   coincides with `telegram_payment_charge_id` of [`crate::types::SuccessfulPayment`]
     ///   for successful incoming payments from users.

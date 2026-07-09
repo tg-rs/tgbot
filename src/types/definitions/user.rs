@@ -277,7 +277,7 @@ impl User {
     }
 }
 
-/// Represents an error occurred when getting user mention.
+/// Represents an error that occurred when getting a user mention.
 #[derive(Debug)]
 pub enum MentionError {
     /// Parse mode is not supported
@@ -539,21 +539,21 @@ impl GetUserProfileAudios {
     ///
     /// # Arguments
     ///
-    /// * `value` - Sequential number of the first audio to be returned.
+    /// * `value` - Limits the number of audios to be retrieved.
     ///
-    /// By default, all audios are returned.
+    /// Values between 1-100 are accepted. Defaults to 100.
     pub fn with_limit(mut self, value: Integer) -> Self {
         self.limit = Some(value);
         self
     }
 
-    /// Sets a new offset
+    /// Sets a new offset.
     ///
     /// # Arguments
     ///
-    /// * `value` - Limits the number of audios to be retrieved.
+    /// * `value` - Sequential number of the first audio to be returned.
     ///
-    /// Values between 1-100 are accepted. Defaults to 100.
+    /// By default, all audios are returned.
     pub fn with_offset(mut self, value: Integer) -> Self {
         self.offset = Some(value);
         self

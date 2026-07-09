@@ -182,7 +182,7 @@ impl Method for GetWebhookInfo {
 ///
 /// If you'd like to make sure that the Webhook request comes from Telegram,
 /// we recommend using a secret path in the URL, e.g. `https://www.example.com/<token>`
-/// Since nobody else knows your bot‘s token, you can be pretty sure it’s us.
+/// Since nobody else knows your bot's token, you can be pretty sure it's us.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct SetWebhook {
@@ -298,7 +298,7 @@ impl SetWebhook {
     /// * `value` - Maximum allowed number of simultaneous HTTPS connections
     ///   to the webhook for update delivery; 1-100; default - 40.
     ///
-    /// Use lower values to limit the load on your bot‘s server,
+    /// Use lower values to limit the load on your bot's server,
     /// and higher values to increase your bot’s throughput.
     pub fn with_max_connections(mut self, value: Integer) -> Self {
         self.max_connections = Some(value);

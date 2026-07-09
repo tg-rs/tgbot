@@ -603,7 +603,7 @@ impl EditStory {
     ///
     /// # Arguments
     ///
-    /// * `value` -  Caption of the story, 0-2048 characters after entities parsing.
+    /// * `value` - Caption of the story, 0-2048 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,
@@ -759,7 +759,7 @@ impl PostStory {
     ///
     /// # Arguments
     ///
-    /// * `value` -  Caption of the story, 0-2048 characters after entities parsing.
+    /// * `value` - Caption of the story, 0-2048 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
         T: Into<String>,

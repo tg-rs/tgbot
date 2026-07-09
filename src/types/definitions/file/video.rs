@@ -418,7 +418,7 @@ impl SendVideo {
     ///
     /// # Arguments
     ///
-    /// `value` - Whether the caption must be shown above the message media.
+    /// * `value` - Whether the caption must be shown above the message media.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
         self.form.insert_field("show_caption_above_media", value);
         self

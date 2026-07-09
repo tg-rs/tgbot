@@ -197,7 +197,7 @@ impl MediaGroupItem {
     ///
     /// * `value` - Thumbnail.
     ///
-    /// Note that photo can not have thumbnail and it will be ignored.
+    /// Note that a photo can not have a thumbnail and it will be ignored.
     pub fn with_thumbnail<T>(mut self, value: T) -> Self
     where
         T: Into<InputFile>,

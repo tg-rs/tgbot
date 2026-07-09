@@ -64,7 +64,7 @@ pub enum MessageData {
     BoostAdded(Integer),
     /// The channel has been created.
     ///
-    /// This field can‘t be received in a message coming through updates,
+    /// This field can't be received in a message coming through updates,
     /// because bot can’t be a member of a channel when it is created.
     /// It can only be found in the `reply_to` field of the [`crate::types::Message`] struct
     /// if someone replies to a very first message in a channel.
@@ -144,7 +144,7 @@ pub enum MessageData {
     ///
     /// The bot itself may be one of these members.
     NewChatMembers(Vec<User>),
-    /// A chat photo was change to this value.
+    /// A chat photo was changed to this value.
     NewChatPhoto(Vec<PhotoSize>),
     /// A chat title was changed to this value.
     NewChatTitle(String),
@@ -189,7 +189,7 @@ pub enum MessageData {
     SuccessfulPayment(SuccessfulPayment),
     /// The supergroup has been created.
     ///
-    /// This field can‘t be received in a message coming through updates,
+    /// This field can't be received in a message coming through updates,
     /// because bot can’t be a member of a supergroup when it is created
     /// It can only be found in the `reply_to` field of the [`crate::types::Message`] struct
     /// if someone replies to a very first message
@@ -599,7 +599,7 @@ impl MessageDataAudio {
     }
 }
 
-/// Represents an information about the chat
+/// Represents information about the chat
 /// whose identifier was shared with the bot
 /// using a [`crate::types::KeyboardButtonRequestChat`] button.
 #[serde_with::skip_serializing_none]

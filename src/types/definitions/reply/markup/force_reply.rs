@@ -22,7 +22,7 @@ impl ForceReply {
     /// # Arguments
     ///
     /// * `force_reply` - Indicates whether to show reply interface to the user,
-    ///   as if they manually selected the bot‘s message and tapped ’Reply'.
+    ///   as if they manually selected the bot's message and tapped 'Reply'.
     pub fn new(force_reply: bool) -> Self {
         ForceReply {
             force_reply,

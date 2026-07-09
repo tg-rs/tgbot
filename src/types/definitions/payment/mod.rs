@@ -127,7 +127,7 @@ impl SuccessfulPayment {
     ///
     /// # Arguments
     ///
-    /// * `value` -  Expiration date of the subscription, in Unix time; for recurring payments only.
+    /// * `value` - Expiration date of the subscription, in Unix time; for recurring payments only.
     pub fn with_subscription_expiration_date(mut self, value: Integer) -> Self {
         self.subscription_expiration_date = Some(value);
         self

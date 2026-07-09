@@ -151,7 +151,7 @@ impl Client {
         let file_path = file_path.as_ref();
         debug!("Downloading file from {file_path}");
         let payload = Payload::empty(file_path);
-        let url = payload.build_url(&format!("{}/file", &self.host), &self.token);
+        let url = payload.build_url(&format!("{}/file", self.host), &self.token);
         let rep = self.http_client.get(&url).send().await?;
         let status = rep.status();
         if !status.is_success() {

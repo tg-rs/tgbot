@@ -25,6 +25,7 @@ pub struct Client {
     http_client: HttpClient,
     token: String,
     max_retries: u8,
+    max_retry_after: Option<u64>,
 }
 
 impl Client {
@@ -79,6 +80,7 @@ impl Client {
             host: String::from(DEFAULT_HOST),
             token: token.into(),
             max_retries: DEFAULT_MAX_RETRIES,
+            max_retry_after: None,
         }
     }
 
@@ -102,6 +104,18 @@ impl Client {
     /// * `value` - The new number of max retries
     pub fn with_max_retries(mut self, value: u8) -> Self {
         self.max_retries = value;
+        self
+    }
+
+    /// Sets the maximum possible value for the retry after duration.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Duration in seconds.
+    ///
+    /// `None` by default.
+    pub fn with_max_retry_after(mut self, value: u64) -> Self {
+        self.max_retry_after = Some(value);
         self
     }
 
@@ -176,6 +190,9 @@ impl Client {
                 mut retry_after,
             } => {
                 for i in 0..self.max_retries {
+                    if let Some(max_retry_after) = self.max_retry_after {
+                        retry_after = retry_after.min(max_retry_after);
+                    }
                     debug!("Retry attempt {i}, sleeping for {retry_after} second(s)");
                     sleep(Duration::from_secs(retry_after)).await;
                     match send_request_retry(request).await? {

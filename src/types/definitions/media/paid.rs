@@ -14,11 +14,11 @@ use crate::{
         ReplyMarkupError,
         ReplyParameters,
         ReplyParametersError,
+        SerializeError,
         SuggestedPostParameters,
         SuggestedPostParametersError,
         TextEntities,
         TextEntity,
-        TextEntityError,
         User,
         Video,
     },
@@ -265,7 +265,7 @@ impl SendPaidMedia {
     /// # Arguments
     ///
     /// `value` - A list of special entities that appear in the caption, which can be specified instead of parse_mode.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {

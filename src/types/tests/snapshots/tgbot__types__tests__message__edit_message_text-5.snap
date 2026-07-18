@@ -1,10 +1,18 @@
 ---
 source: src/types/tests/message.rs
-expression: actual_data
+expression: actual_form.into_fields()
 ---
-{
-  "inline_message_id": "msg-id",
-  "rich_message": {
-    "markdown": "text"
-  }
-}
+[
+    (
+        "inline_message_id",
+        FormValue::Text(
+            "msg-id",
+        ),
+    ),
+    (
+        "rich_message",
+        FormValue::Text(
+            "{\"markdown\":\"text\"}",
+        ),
+    ),
+]

@@ -1,14 +1,18 @@
 ---
 source: src/types/tests/inline_mode.rs
-expression: actual_data
+expression: actual_form.into_fields()
 ---
-{
-  "guest_query_id": "test",
-  "result": {
-    "id": "test",
-    "latitude": 2.0,
-    "longitude": 3.0,
-    "title": "test",
-    "type": "location"
-  }
-}
+[
+    (
+        "guest_query_id",
+        FormValue::Text(
+            "test",
+        ),
+    ),
+    (
+        "result",
+        FormValue::Text(
+            "{\"id\":\"id\",\"type\":\"photo\",\"caption\":\"caption\",\"description\":\"desc\",\"input_message_content\":{\"message_text\":\"text\"},\"parse_mode\":\"Markdown\",\"photo_file_id\":\"file-id\",\"reply_markup\":{\"inline_keyboard\":[[{\"text\":\"text\",\"url\":\"url\"}]]},\"show_caption_above_media\":true,\"title\":\"title\"}",
+        ),
+    ),
+]

@@ -12,6 +12,7 @@ use crate::{
         Integer,
         Location,
         ParseMode,
+        SerializeError,
         StarAmount,
         Sticker,
         Story,
@@ -19,7 +20,6 @@ use crate::{
         StoryAreasError,
         TextEntities,
         TextEntity,
-        TextEntityError,
         User,
     },
 };
@@ -617,7 +617,7 @@ impl EditStory {
     /// # Arguments
     ///
     /// * `value` - A list of special entities that appear in the caption.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {
@@ -773,7 +773,7 @@ impl PostStory {
     /// # Arguments
     ///
     /// * `value` - A list of special entities that appear in the caption.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {

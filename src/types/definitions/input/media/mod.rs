@@ -13,6 +13,7 @@ pub use self::{
     sticker::*,
     venue::*,
     video::*,
+    voice_note::*,
 };
 use crate::{api::Form, types::InputFile};
 
@@ -25,6 +26,7 @@ mod photo;
 mod sticker;
 mod venue;
 mod video;
+mod voice_note;
 
 /// Represents a metadata of the input media.
 #[derive(Debug)]
@@ -220,6 +222,23 @@ impl InputMedia {
         }
     }
 
+    /// Creates a new `InputMedia` for voice note.
+    ///
+    /// # Arguments
+    ///
+    /// * `media` - The media to upload.
+    /// * `info` - Information about the media.
+    pub fn for_voice_note<T>(media: T, info: InputMediaVoiceNote) -> Self
+    where
+        T: Into<InputFile>,
+    {
+        let (media, form) = create_form(media);
+        Self {
+            form,
+            data: InputMediaData::VoiceNote { media, info },
+        }
+    }
+
     /// Sets a new cover for the media.
     ///
     /// # Arguments
@@ -242,7 +261,8 @@ impl InputMedia {
             | InputMediaData::Location { .. }
             | InputMediaData::Photo { .. }
             | InputMediaData::Sticker { .. }
-            | InputMediaData::Venue { .. } => return Err(InputMediaError::CoverNotAcceptable),
+            | InputMediaData::Venue { .. }
+            | InputMediaData::VoiceNote { .. } => return Err(InputMediaError::CoverNotAcceptable),
             InputMediaData::Video { cover, .. } => {
                 let new_cover = match value.into() {
                     InputFile::Id(text) | InputFile::Url(text) => text,
@@ -295,7 +315,8 @@ impl InputMedia {
             | InputMediaData::Location { .. }
             | InputMediaData::Photo { .. }
             | InputMediaData::Sticker { .. }
-            | InputMediaData::Venue { .. } => {
+            | InputMediaData::Venue { .. }
+            | InputMediaData::VoiceNote { .. } => {
                 return Err(InputMediaError::ThumbnailNotAcceptable);
             }
             InputMediaData::Video { thumbnail, .. } => {
@@ -388,6 +409,11 @@ pub(crate) enum InputMediaData {
         thumbnail: Option<String>,
         #[serde(flatten)]
         info: InputMediaVideo,
+    },
+    VoiceNote {
+        media: String,
+        #[serde(flatten)]
+        info: InputMediaVoiceNote,
     },
 }
 

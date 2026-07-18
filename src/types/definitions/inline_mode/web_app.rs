@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
-    types::InlineQueryResult,
+    api::{Form, Method, Payload},
+    types::{InlineQueryResult, SerializeError},
 };
 
 /// Represents an inline message sent by a Web App on behalf of a user
@@ -33,10 +33,9 @@ impl SentWebAppMessage {
 /// Sets a result of an interaction with a Web App and
 /// send a corresponding message on behalf of the user
 /// to the chat from which the query originated
-#[derive(Clone, Debug, Serialize)]
+#[derive(Debug)]
 pub struct AnswerWebAppQuery {
-    web_app_query_id: String,
-    result: InlineQueryResult,
+    form: Form,
 }
 
 impl AnswerWebAppQuery {
@@ -46,15 +45,16 @@ impl AnswerWebAppQuery {
     ///
     /// * `web_app_query_id` - Unique identifier of the query to be answered
     /// * `result` - An object describing the message to be sent
-    pub fn new<A, B>(result: A, web_app_query_id: B) -> Self
+    pub fn new<A, B>(result: A, web_app_query_id: B) -> Result<Self, SerializeError>
     where
         A: Into<InlineQueryResult>,
         B: Into<String>,
     {
-        Self {
-            result: result.into(),
-            web_app_query_id: web_app_query_id.into(),
-        }
+        let (form, data) = result.into().into_parts();
+        let mut form = form.unwrap_or_default();
+        form.insert_field("web_app_query_id", web_app_query_id.into());
+        form.insert_field("result", data.serialize()?);
+        Ok(Self { form })
     }
 }
 
@@ -62,6 +62,6 @@ impl Method for AnswerWebAppQuery {
     type Response = SentWebAppMessage;
 
     fn into_payload(self) -> Payload {
-        Payload::json("answerWebAppQuery", self)
+        Payload::form("answerWebAppQuery", self.form)
     }
 }

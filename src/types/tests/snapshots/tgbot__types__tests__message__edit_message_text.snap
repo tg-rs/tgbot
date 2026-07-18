@@ -1,9 +1,24 @@
 ---
 source: src/types/tests/message.rs
-expression: actual_data
+expression: actual_form.into_fields()
 ---
-{
-  "chat_id": 1,
-  "message_id": 2,
-  "text": "text"
-}
+[
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "message_id",
+        FormValue::Text(
+            "2",
+        ),
+    ),
+    (
+        "text",
+        FormValue::Text(
+            "text",
+        ),
+    ),
+]

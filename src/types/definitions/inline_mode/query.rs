@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
-    types::{InlineQueryResult, InlineQueryResultsButton, Integer, Location, User},
+    api::{Form, Method, Payload},
+    types::{InlineQueryResult, InlineQueryResultsButton, Integer, Location, SerializeError, User},
 };
 
 /// Represents an incoming inline query.
@@ -96,15 +96,9 @@ pub enum InlineQueryChatType {
 /// Sends an answer to an inline query.
 ///
 /// No more than 50 results per query are allowed.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Debug)]
 pub struct AnswerInlineQuery {
-    inline_query_id: String,
-    results: Vec<InlineQueryResult>,
-    button: Option<InlineQueryResultsButton>,
-    cache_time: Option<Integer>,
-    is_personal: Option<bool>,
-    next_offset: Option<String>,
+    form: Form,
 }
 
 impl AnswerInlineQuery {
@@ -114,19 +108,26 @@ impl AnswerInlineQuery {
     ///
     /// * `inline_query_id` - Unique identifier of the answered query.
     /// * `results` - An array of results.
-    pub fn new<A, B>(inline_query_id: A, results: B) -> Self
+    pub fn new<A, B>(inline_query_id: A, results: B) -> Result<Self, SerializeError>
     where
         A: Into<String>,
         B: IntoIterator<Item = InlineQueryResult>,
     {
-        Self {
-            inline_query_id: inline_query_id.into(),
-            results: results.into_iter().collect(),
-            button: None,
-            cache_time: None,
-            is_personal: None,
-            next_offset: None,
+        let mut form = Form::default();
+        let mut items = Vec::new();
+        for item in results {
+            let (item_form, item_data) = item.into_parts();
+            if let Some(item_form) = item_form {
+                form.extend(item_form);
+            }
+            items.push(item_data);
         }
+        form.insert_field("inline_query_id", inline_query_id.into());
+        form.insert_field(
+            "results",
+            serde_json::to_string(&items).map_err(SerializeError::inline_query_result_data)?,
+        );
+        Ok(Self { form })
     }
 
     /// Sets a new button.
@@ -134,9 +135,9 @@ impl AnswerInlineQuery {
     /// # Arguments
     ///
     /// * `value` - An object describing a button to be shown above inline query results.
-    pub fn with_button(mut self, value: InlineQueryResultsButton) -> Self {
-        self.button = Some(value);
-        self
+    pub fn with_button(mut self, value: InlineQueryResultsButton) -> Result<Self, SerializeError> {
+        self.form.insert_field("button", value.serialize()?);
+        Ok(self)
     }
 
     /// Sets a new cache time.
@@ -147,7 +148,7 @@ impl AnswerInlineQuery {
     ///   of the inline query may be cached on the server;
     ///   default - 300.
     pub fn with_cache_time(mut self, value: Integer) -> Self {
-        self.cache_time = Some(value);
+        self.form.insert_field("cache_time", value);
         self
     }
 
@@ -159,7 +160,7 @@ impl AnswerInlineQuery {
     ///   are only for the user that sent the query;
     ///   by default, results may be returned to any user who sends the same query.
     pub fn with_is_personal(mut self, value: bool) -> Self {
-        self.is_personal = Some(value);
+        self.form.insert_field("is_personal", value);
         self
     }
 
@@ -177,7 +178,7 @@ impl AnswerInlineQuery {
     where
         T: Into<String>,
     {
-        self.next_offset = Some(value.into());
+        self.form.insert_field("next_offset", value.into());
         self
     }
 }
@@ -186,6 +187,6 @@ impl Method for AnswerInlineQuery {
     type Response = bool;
 
     fn into_payload(self) -> Payload {
-        Payload::json("answerInlineQuery", self)
+        Payload::form("answerInlineQuery", self.form)
     }
 }

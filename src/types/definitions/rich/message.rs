@@ -2,8 +2,21 @@ use serde::{Deserialize, Serialize};
 
 use super::block::RichBlock;
 use crate::{
-    api::{Method, Payload},
-    types::{ChatId, Integer, Message, ReplyMarkup, ReplyParameters, SuggestedPostParameters},
+    api::{Form, Method, Payload},
+    types::{
+        ChatId,
+        InputMedia,
+        InputMediaData,
+        Integer,
+        Message,
+        ReplyMarkup,
+        ReplyMarkupError,
+        ReplyParameters,
+        ReplyParametersError,
+        SerializeError,
+        SuggestedPostParameters,
+        SuggestedPostParametersError,
+    },
 };
 
 /// Rich formatted message.
@@ -54,13 +67,10 @@ impl RichMessage {
 }
 
 /// Describes a rich message to be sent.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Debug)]
 pub struct InputRichMessage {
-    html: Option<String>,
-    markdown: Option<String>,
-    is_rtl: Option<bool>,
-    skip_entity_detection: Option<bool>,
+    data: InputRichMessageData,
+    form: Option<Form>,
 }
 
 impl InputRichMessage {
@@ -74,10 +84,8 @@ impl InputRichMessage {
         T: Into<String>,
     {
         Self {
-            html: None,
-            markdown: Some(value.into()),
-            is_rtl: None,
-            skip_entity_detection: None,
+            data: InputRichMessageData::markdown(value),
+            form: None,
         }
     }
 
@@ -91,10 +99,8 @@ impl InputRichMessage {
         T: Into<String>,
     {
         Self {
-            html: Some(value.into()),
-            markdown: None,
-            is_rtl: None,
-            skip_entity_detection: None,
+            data: InputRichMessageData::html(value),
+            form: None,
         }
     }
 
@@ -104,7 +110,33 @@ impl InputRichMessage {
     ///
     /// * `value` - Whether the rich message must be shown right-to-left.
     pub fn with_is_rtl(mut self, value: bool) -> Self {
-        self.is_rtl = Some(value);
+        self.data.is_rtl = Some(value);
+        self
+    }
+
+    /// Sets a new list of media.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - A sequence of `(id, media)` pairs.
+    ///
+    /// Media specified in the markdown or html fields using
+    /// `tg://(audio|photo|video)?id=` links.
+    pub fn with_media<A, B>(mut self, value: A) -> Self
+    where
+        A: IntoIterator<Item = (B, InputMedia)>,
+        B: Into<String>,
+    {
+        let mut form = Form::default();
+        let mut media_data = Vec::new();
+        for (id, input_media) in value {
+            let id = id.into();
+            let (media_form, media) = input_media.into_parts();
+            form.extend(media_form.with_suffix(&id));
+            media_data.push(InputRichMessageMedia { id, media });
+        }
+        self.form = Some(form);
+        self.data.media = Some(media_data);
         self
     }
 
@@ -114,30 +146,70 @@ impl InputRichMessage {
     ///
     /// * `value` - Whethert to skip automatic detection of entities in the text.
     pub fn with_skip_entity_detection(mut self, value: bool) -> Self {
-        self.skip_entity_detection = Some(value);
+        self.data.skip_entity_detection = Some(value);
         self
     }
+
+    pub(crate) fn into_parts(self) -> (Option<Form>, InputRichMessageData) {
+        (self.form, self.data)
+    }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Serialize)]
+pub(crate) struct InputRichMessageData {
+    html: Option<String>,
+    markdown: Option<String>,
+    media: Option<Vec<InputRichMessageMedia>>,
+    is_rtl: Option<bool>,
+    skip_entity_detection: Option<bool>,
+}
+
+impl InputRichMessageData {
+    fn html<T>(value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            html: Some(value.into()),
+            markdown: None,
+            media: None,
+            is_rtl: None,
+            skip_entity_detection: None,
+        }
+    }
+
+    fn markdown<T>(value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            html: None,
+            markdown: Some(value.into()),
+            media: None,
+            is_rtl: None,
+            skip_entity_detection: None,
+        }
+    }
+
+    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
+        serde_json::to_string(&self).map_err(SerializeError::input_rich_message_data)
+    }
+}
+
+#[derive(Debug, Serialize)]
+struct InputRichMessageMedia {
+    id: String,
+    media: InputMediaData,
 }
 
 /// Sends rich messages.
 ///
 /// If the message contains a block with a media element,
 /// then the bot must have the right to send the media to the chat.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Debug)]
 pub struct SendRichMessage {
-    chat_id: ChatId,
-    rich_message: InputRichMessage,
-    allow_paid_broadcast: Option<bool>,
-    business_connection_id: Option<String>,
-    direct_messages_topic_id: Option<Integer>,
-    disable_notification: Option<bool>,
-    message_effect_id: Option<String>,
-    message_thread_id: Option<Integer>,
-    protect_content: Option<bool>,
-    reply_markup: Option<ReplyMarkup>,
-    reply_parameters: Option<ReplyParameters>,
-    suggested_post_parameters: Option<SuggestedPostParameters>,
+    form: Form,
 }
 
 impl SendRichMessage {
@@ -147,24 +219,14 @@ impl SendRichMessage {
     ///
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `rich_message` - The message to be sent.
-    pub fn new<T>(chat_id: T, rich_message: InputRichMessage) -> Self
+    pub fn new<T>(chat_id: T, rich_message: InputRichMessage) -> Result<Self, SerializeError>
     where
         T: Into<ChatId>,
     {
-        Self {
-            chat_id: chat_id.into(),
-            rich_message,
-            allow_paid_broadcast: None,
-            business_connection_id: None,
-            direct_messages_topic_id: None,
-            disable_notification: None,
-            message_effect_id: None,
-            message_thread_id: None,
-            protect_content: None,
-            reply_markup: None,
-            reply_parameters: None,
-            suggested_post_parameters: None,
-        }
+        let mut form = rich_message.form.unwrap_or_default();
+        form.insert_field("chat_id", chat_id.into());
+        form.insert_field("rich_message", rich_message.data.serialize()?);
+        Ok(Self { form })
     }
 
     /// Sets a new value for the `allow_paid_broadcast` flag.
@@ -176,7 +238,7 @@ impl SendRichMessage {
     ///
     /// The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
-        self.allow_paid_broadcast = Some(value);
+        self.form.insert_field("allow_paid_broadcast", value);
         self
     }
 
@@ -189,7 +251,7 @@ impl SendRichMessage {
     where
         T: Into<String>,
     {
-        self.business_connection_id = Some(value.into());
+        self.form.insert_field("business_connection_id", value.into());
         self
     }
 
@@ -199,7 +261,7 @@ impl SendRichMessage {
     ///
     /// Required if the message is sent to a direct messages chat.
     pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
-        self.direct_messages_topic_id = Some(value);
+        self.form.insert_field("direct_messages_topic_id", value);
         self
     }
 
@@ -210,7 +272,7 @@ impl SendRichMessage {
     /// * `value` - Indicates whether to send the message silently or not;
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
-        self.disable_notification = Some(value);
+        self.form.insert_field("disable_notification", value);
         self
     }
 
@@ -223,7 +285,7 @@ impl SendRichMessage {
     where
         T: Into<String>,
     {
-        self.message_effect_id = Some(value.into());
+        self.form.insert_field("message_effect_id", value.into());
         self
     }
 
@@ -234,7 +296,7 @@ impl SendRichMessage {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.message_thread_id = Some(value);
+        self.form.insert_field("message_thread_id", value);
         self
     }
 
@@ -245,7 +307,7 @@ impl SendRichMessage {
     /// * `value` - Indicates whether to protect the contents
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.protect_content = Some(value);
+        self.form.insert_field("protect_content", value);
         self
     }
 
@@ -254,12 +316,12 @@ impl SendRichMessage {
     /// # Arguments
     ///
     /// * `value` - Reply markup.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Self
+    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
     where
         T: Into<ReplyMarkup>,
     {
-        self.reply_markup = Some(value.into());
-        self
+        self.form.insert_field("reply_markup", value.into().serialize()?);
+        Ok(self)
     }
 
     /// Sets new reply parameters.
@@ -267,9 +329,9 @@ impl SendRichMessage {
     /// # Arguments
     ///
     /// * `value` - Description of the message to reply to.
-    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
-        self.reply_parameters = Some(value);
-        self
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
+        self.form.insert_field("reply_parameters", value.serialize()?);
+        Ok(self)
     }
 
     /// Sets a new suggested post parameters.
@@ -281,9 +343,12 @@ impl SendRichMessage {
     /// For direct messages chats only.
     ///
     /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
-    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
-        self.suggested_post_parameters = Some(value);
-        self
+    pub fn with_suggested_post_parameters(
+        mut self,
+        value: SuggestedPostParameters,
+    ) -> Result<Self, SuggestedPostParametersError> {
+        self.form.insert_field("suggested_post_parameters", value.serialize()?);
+        Ok(self)
     }
 }
 
@@ -291,7 +356,7 @@ impl Method for SendRichMessage {
     type Response = Message;
 
     fn into_payload(self) -> Payload {
-        Payload::json("sendRichMessage", self)
+        Payload::form("sendRichMessage", self.form)
     }
 }
 
@@ -302,13 +367,9 @@ impl Method for SendRichMessage {
 ///
 /// You must call [`crate::types::SendRichMessage`] with the complete message
 /// to persist it in the user's chat.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Debug)]
 pub struct SendRichMessageDraft {
-    chat_id: Integer,
-    draft_id: Integer,
-    rich_message: InputRichMessage,
-    message_thread_id: Option<Integer>,
+    form: Form,
 }
 
 impl SendRichMessageDraft {
@@ -320,13 +381,12 @@ impl SendRichMessageDraft {
     /// * `draft_id` - Unique identifier of the message draft; must be non-zero;
     ///   changes to drafts with the same identifier are animated.
     /// * `rich_message` - The partial message to be streamed.
-    pub fn new(chat_id: Integer, draft_id: Integer, rich_message: InputRichMessage) -> Self {
-        Self {
-            chat_id,
-            draft_id,
-            rich_message,
-            message_thread_id: None,
-        }
+    pub fn new(chat_id: Integer, draft_id: Integer, rich_message: InputRichMessage) -> Result<Self, SerializeError> {
+        let mut form = rich_message.form.unwrap_or_default();
+        form.insert_field("chat_id", chat_id);
+        form.insert_field("draft_id", draft_id);
+        form.insert_field("rich_message", rich_message.data.serialize()?);
+        Ok(Self { form })
     }
 
     /// Sets a new message thread ID.
@@ -336,7 +396,7 @@ impl SendRichMessageDraft {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.message_thread_id = Some(value);
+        self.form.insert_field("message_thread_id", value);
         self
     }
 }
@@ -345,6 +405,6 @@ impl Method for SendRichMessageDraft {
     type Response = bool;
 
     fn into_payload(self) -> Payload {
-        Payload::json("sendRichMessageDraft", self)
+        Payload::form("sendRichMessageDraft", self.form)
     }
 }

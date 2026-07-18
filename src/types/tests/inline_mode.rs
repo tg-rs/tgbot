@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 use crate::types::*;
 
 #[test]
@@ -7,14 +9,16 @@ fn prepared_inline_message() {
 
 #[test]
 fn save_prepared_inline_message() {
-    let method = SavePreparedInlineMessage::new(1, InlineQueryResultContact::new("test", "result-id", "+1000"));
-    assert_payload_eq!(POST JSON "savePreparedInlineMessage" => method.clone());
-    let method = method
+    let method =
+        SavePreparedInlineMessage::new(1, InlineQueryResultContact::new("test", "result-id", "+1000")).unwrap();
+    assert_payload_eq!(POST FORM "savePreparedInlineMessage" => method);
+    let method = SavePreparedInlineMessage::new(1, InlineQueryResultContact::new("test", "result-id", "+1000"))
+        .unwrap()
         .with_allow_bot_chats(true)
         .with_allow_channel_chats(true)
         .with_allow_group_chats(true)
         .with_allow_user_chats(true);
-    assert_payload_eq!(POST JSON "savePreparedInlineMessage" => method);
+    assert_payload_eq!(POST FORM "savePreparedInlineMessage" => method);
 }
 
 #[test]
@@ -37,341 +41,261 @@ fn inline_query_chat_type() {
     }
 }
 
+#[derive(Serialize)]
+struct InvoiceProviderData {
+    key: String,
+}
+
 #[test]
 fn answer_inline_query() {
-    let text = InputMessageContent::Text(InputMessageContentText::new("text"));
-    let article = InlineQueryResult::Article(InlineQueryResultArticle::new("id", text, "title"));
-    let method = AnswerInlineQuery::new("id", [article]);
-    assert_payload_eq!(POST JSON "answerInlineQuery" => method.clone());
-    let method = method
-        .with_button(InlineQueryResultsButton::for_start_parameter("text", "param"))
-        .with_cache_time(300)
-        .with_is_personal(true)
-        .with_next_offset("offset");
-    assert_payload_eq!(POST JSON "answerInlineQuery" => method);
-}
-
-#[test]
-fn inline_query_result_article() {
-    let result = InlineQueryResultArticle::new("id", InputMessageContentText::new("text"), "title");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_description("desc")
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_thumbnail_url("thumb-url")
-            .with_thumbnail_width(200)
-            .with_thumbnail_height(200)
-            .with_url("URL"),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_audio() {
-    let result = InlineQueryResultAudio::new("url", "id", "title");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_audio_duration(100)
-            .with_caption("caption")
-            .with_caption_parse_mode(ParseMode::Html)
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_performer("performer")
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_cached_audio() {
-    let result = InlineQueryResultCachedAudio::new("file-id", "id");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("test")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_contact() {
-    let result = InlineQueryResultContact::new("name", "id", "phone");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_last_name("last name")
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_thumbnail_url("url")
-            .with_thumbnail_width(200)
-            .with_thumbnail_height(200)
-            .with_vcard("vcard"),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_document() {
-    let result = InlineQueryResultDocument::new("url", "id", "mime", "title");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_description("desc")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_thumbnail_height(200)
-            .with_thumbnail_url("thumb-url")
-            .with_thumbnail_width(200),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_cached_document() {
-    let result = InlineQueryResultCachedDocument::new("file-id", "id", "title");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_description("desc")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_game() {
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        InlineQueryResultGame::new("name", "id").with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(InlineQueryResultGame::new("name", "id")));
-}
-
-#[test]
-fn inline_query_result_gif() {
-    let result = InlineQueryResultGif::new("url", "id", "thumb-url");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_gif_width(200)
-            .with_gif_height(300)
-            .with_gif_duration(400)
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_show_caption_above_media(true)
-            .with_thumbnail_mime_type("video/mp4")
-            .with_title("title"),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_cached_gif() {
-    let result = InlineQueryResultCachedGif::new("file-id", "id");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_title("title")
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_show_caption_above_media(true),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_location() {
-    let result = InlineQueryResultLocation::new("id", 1.0, 2.0, "title");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_live_period(100)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_thumbnail_url("thumb-url")
-            .with_thumbnail_width(200)
-            .with_thumbnail_height(300),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_mpeg4_gif() {
-    let result = InlineQueryResultMpeg4Gif::new("id", "url", "thumb-url");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_mpeg4_width(200)
-            .with_mpeg4_height(300)
-            .with_mpeg4_duration(400)
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_thumbnail_mime_type("video/mp4")
-            .with_title("title")
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_show_caption_above_media(true),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_cached_mpeg4_gif() {
-    let result = InlineQueryResultCachedMpeg4Gif::new("id", "file-id");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_show_caption_above_media(true)
-            .with_title("title"),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_photo() {
-    let result = InlineQueryResultPhoto::new("id", "url", "thumb-url");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_description("desc")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_photo_height(300)
-            .with_photo_width(200)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_show_caption_above_media(true)
-            .with_title("title"),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_cached_photo() {
-    let result = InlineQueryResultCachedPhoto::new("id", "file-id");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_description("desc")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_show_caption_above_media(true)
-            .with_title("title"),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_cached_sticker() {
-    let result = InlineQueryResultCachedSticker::new("id", "file-id");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_venue() {
-    let result = InlineQueryResultVenue::new("addr", "id", 1.0, 2.0, "title");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_foursquare_id("f-id")
-            .with_foursquare_type("f-type")
-            .with_google_place_id("g-id")
-            .with_google_place_type("g-type")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_thumbnail_height(300)
-            .with_thumbnail_url("thumb-url")
-            .with_thumbnail_width(200),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_video() {
-    let result = InlineQueryResultVideo::new("id", "mime", "thumb-url", "title", "url");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_description("desc")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_show_caption_above_media(true)
-            .with_video_duration(400)
-            .with_video_width(200)
-            .with_video_height(300),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_cached_video() {
-    let result = InlineQueryResultCachedVideo::new("id", "title", "file-id");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_description("desc")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-            .with_show_caption_above_media(true),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_voice() {
-    let result = InlineQueryResultVoice::new("voice-id", "voice-title", "voice-url");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("voice-caption")
-            .with_input_message_content(InputMessageContentText::new("voice-content-text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("voice-kb-text", "voice-kb-url")]])
-            .with_voice_duration(100),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
-}
-
-#[test]
-fn inline_query_result_cached_voice() {
-    let result = InlineQueryResultCachedVoice::new("id", "title", "file-id");
-    insta::assert_json_snapshot!(InlineQueryResult::from(
-        result
-            .clone()
-            .with_caption("caption")
-            .with_input_message_content(InputMessageContentText::new("text"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
-    ));
-    insta::assert_json_snapshot!(InlineQueryResult::from(result));
+    let method = AnswerInlineQuery::new(
+        "id",
+        [InlineQueryResult::Article(InlineQueryResultArticle::new(
+            "id", "text", "title",
+        ))],
+    )
+    .unwrap();
+    assert_payload_eq!(POST FORM "answerInlineQuery" => method);
+    let method = AnswerInlineQuery::new(
+        "id",
+        [
+            InlineQueryResult::Article(
+                InlineQueryResultArticle::new("id", "text", "title")
+                    .with_description("desc")
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_thumbnail_url("thumb-url")
+                    .with_thumbnail_width(200)
+                    .with_thumbnail_height(200)
+                    .with_url("URL"),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultAudio::new("url", "id", "title")
+                    .with_audio_duration(100)
+                    .with_caption("caption")
+                    .with_caption_parse_mode(ParseMode::Html)
+                    .with_input_message_content(InputMessageContent::from(
+                        InputMessageContentContact::new("V", "+79001231212")
+                            .with_last_name("P")
+                            .with_vcard("vcard"),
+                    ))
+                    .with_performer("performer")
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultCachedAudio::new("file-id", "id")
+                    .with_caption("test")
+                    .with_input_message_content(InputMessageContent::from(
+                        InputMessageContentInvoice::new(
+                            "RUB",
+                            "description",
+                            "payload",
+                            [LabeledPrice::new(100, "item")],
+                            "title",
+                        )
+                        .with_is_flexible(true)
+                        .with_need_email(false)
+                        .with_need_name(true)
+                        .with_need_phone_number(true)
+                        .with_need_shipping_address(false)
+                        .with_provider_data(&InvoiceProviderData {
+                            key: String::from("value"),
+                        })
+                        .unwrap()
+                        .with_provider_token("provider-token")
+                        .with_photo_height(24)
+                        .with_photo_size(100)
+                        .with_photo_width(24)
+                        .with_photo_url("https://google.com/favicon.ico")
+                        .with_max_tip_amount(1)
+                        .with_send_email_to_provider(false)
+                        .with_send_phone_number_to_provider(true)
+                        .with_suggested_tip_amounts([2]),
+                    ))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultContact::new("name", "id", "phone")
+                    .with_input_message_content(InputMessageContent::from(
+                        Location::new(1.0, 2.0)
+                            .with_heading(90)
+                            .with_horizontal_accuracy(1.5)
+                            .with_live_period(100)
+                            .with_proximity_alert_radius(100),
+                    ))
+                    .with_last_name("last name")
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_thumbnail_url("url")
+                    .with_thumbnail_width(200)
+                    .with_thumbnail_height(200)
+                    .with_vcard("vcard"),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultDocument::new("url", "id", "mime", "title")
+                    .with_caption("caption")
+                    .with_description("desc")
+                    .with_input_message_content(InputMessageContent::from(InputRichMessage::html("test")))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_thumbnail_height(200)
+                    .with_thumbnail_url("thumb-url")
+                    .with_thumbnail_width(200),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultCachedDocument::new("file-id", "id", "title")
+                    .with_caption("caption")
+                    .with_description("desc")
+                    .with_input_message_content(
+                        InputMessageContentText::new("text")
+                            .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
+                            .with_entities(vec![TextEntity::bold(0..10)])
+                            .with_parse_mode(ParseMode::Html),
+                    )
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultGame::new("name", "id")
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+            ),
+            InlineQueryResult::from(InlineQueryResultGame::new("name", "id")),
+            InlineQueryResult::from(
+                InlineQueryResultGif::new("url", "id", "thumb-url")
+                    .with_caption("caption")
+                    .with_gif_width(200)
+                    .with_gif_height(300)
+                    .with_gif_duration(400)
+                    .with_input_message_content(
+                        InputMessageContentText::new("text")
+                            .with_parse_mode(ParseMode::Markdown)
+                            .with_entities(vec![TextEntity::bold(0..10)]),
+                    )
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_show_caption_above_media(true)
+                    .with_thumbnail_mime_type("video/mp4")
+                    .with_title("title"),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultCachedGif::new("file-id", "id")
+                    .with_caption("caption")
+                    .with_input_message_content(InputMessageContent::from(
+                        InputMessageContentVenue::new("addr", 1.0, 2.0, "title")
+                            .with_foursquare_id("f-id")
+                            .with_foursquare_type("f-type")
+                            .with_google_place_id("g-id")
+                            .with_google_place_type("g-type"),
+                    ))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_title("title")
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_show_caption_above_media(true),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultLocation::new("id", 1.0, 2.0, "title")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_live_period(100)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_thumbnail_url("thumb-url")
+                    .with_thumbnail_width(200)
+                    .with_thumbnail_height(300),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultMpeg4Gif::new("id", "url", "thumb-url")
+                    .with_caption("caption")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_mpeg4_width(200)
+                    .with_mpeg4_height(300)
+                    .with_mpeg4_duration(400)
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_thumbnail_mime_type("video/mp4")
+                    .with_title("title")
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_show_caption_above_media(true),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultCachedMpeg4Gif::new("id", "file-id")
+                    .with_caption("caption")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_show_caption_above_media(true)
+                    .with_title("title"),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultPhoto::new("id", "url", "thumb-url")
+                    .with_caption("caption")
+                    .with_description("desc")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_photo_height(300)
+                    .with_photo_width(200)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_show_caption_above_media(true)
+                    .with_title("title"),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultCachedSticker::new("id", "file-id")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultVenue::new("addr", "id", 1.0, 2.0, "title")
+                    .with_foursquare_id("f-id")
+                    .with_foursquare_type("f-type")
+                    .with_google_place_id("g-id")
+                    .with_google_place_type("g-type")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_thumbnail_height(300)
+                    .with_thumbnail_url("thumb-url")
+                    .with_thumbnail_width(200),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultVideo::new("id", "mime", "thumb-url", "title", "url")
+                    .with_caption("caption")
+                    .with_description("desc")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_show_caption_above_media(true)
+                    .with_video_duration(400)
+                    .with_video_width(200)
+                    .with_video_height(300),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultCachedVideo::new("id", "title", "file-id")
+                    .with_caption("caption")
+                    .with_description("desc")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                    .with_show_caption_above_media(true),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultVoice::new("voice-id", "voice-title", "voice-url")
+                    .with_caption("voice-caption")
+                    .with_input_message_content(InputMessageContentText::new("voice-content-text"))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("voice-kb-text", "voice-kb-url")]])
+                    .with_voice_duration(100),
+            ),
+            InlineQueryResult::from(
+                InlineQueryResultCachedVoice::new("id", "title", "file-id")
+                    .with_caption("caption")
+                    .with_input_message_content(InputMessageContentText::new("text"))
+                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
+            ),
+        ],
+    )
+    .unwrap()
+    .with_button(InlineQueryResultsButton::for_start_parameter("text", "param"))
+    .unwrap()
+    .with_cache_time(300)
+    .with_is_personal(true)
+    .with_next_offset("offset");
+    assert_payload_eq!(POST FORM "answerInlineQuery" => method);
 }
 
 #[test]
@@ -404,14 +328,28 @@ fn answer_web_app_query() {
     let method = AnswerWebAppQuery::new(
         InlineQueryResultArticle::new("article-id", "article-text", "article-title"),
         "query-id",
-    );
-    assert_payload_eq!(POST JSON "answerWebAppQuery" => method);
+    )
+    .unwrap();
+    assert_payload_eq!(POST FORM "answerWebAppQuery" => method);
 }
 
 #[test]
 fn answer_guest_query() {
-    let method = AnswerGuestQuery::new("test", InlineQueryResultLocation::new("test", 2.0, 3.0, "test"));
-    assert_payload_eq!(POST JSON "answerGuestQuery" => method);
+    let method = AnswerGuestQuery::new(
+        "test",
+        InlineQueryResult::from(
+            InlineQueryResultCachedPhoto::new("id", "file-id")
+                .with_caption("caption")
+                .with_description("desc")
+                .with_input_message_content(InputMessageContentText::new("text"))
+                .with_caption_parse_mode(ParseMode::Markdown)
+                .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+                .with_show_caption_above_media(true)
+                .with_title("title"),
+        ),
+    )
+    .unwrap();
+    assert_payload_eq!(POST FORM "answerGuestQuery" => method);
 }
 
 #[test]

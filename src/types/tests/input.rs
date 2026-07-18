@@ -1,7 +1,5 @@
 use std::io::Cursor;
 
-use serde::Serialize;
-
 use crate::{api::Form, types::*};
 
 #[tokio::test]
@@ -471,139 +469,18 @@ fn input_media_video_entities_vs_parse_mode() {
 }
 
 #[test]
-fn input_message_content_contact() {
-    let content = InputMessageContentContact::new("V", "+79001231212");
-    insta::assert_json_snapshot!(InputMessageContent::from(
-        content.clone().with_last_name("P").with_vcard("vcard")
-    ));
-    insta::assert_json_snapshot!(content);
-}
-
-#[derive(Serialize)]
-struct InvoiceProviderData {
-    key: String,
-}
-
-#[test]
-fn input_message_content_invoice() {
-    insta::assert_json_snapshot!(InputMessageContent::from(
-        InputMessageContentInvoice::new(
-            "RUB",
-            "description",
-            "payload",
-            [LabeledPrice::new(100, "item")],
-            "title",
-        )
-        .with_is_flexible(true)
-        .with_need_email(false)
-        .with_need_name(true)
-        .with_need_phone_number(true)
-        .with_need_shipping_address(false)
-        .with_provider_data(&InvoiceProviderData {
-            key: String::from("value"),
-        })
-        .unwrap()
-        .with_provider_token("provider-token")
-        .with_photo_height(24)
-        .with_photo_size(100)
-        .with_photo_width(24)
-        .with_photo_url("https://google.com/favicon.ico")
-        .with_max_tip_amount(1)
-        .with_send_email_to_provider(false)
-        .with_send_phone_number_to_provider(true)
-        .with_suggested_tip_amounts([2]),
-    ));
-    insta::assert_json_snapshot!(InputMessageContent::from(InputMessageContentInvoice::new(
-        "RUB",
-        "description",
-        "payload",
-        [LabeledPrice::new(100, "item")],
-        "title",
-    )));
-}
-
-#[test]
-fn input_message_content_location() {
-    insta::assert_json_snapshot!(InputMessageContent::from(
-        InputMessageContentLocation::new(1.0, 2.0)
-            .with_heading(90)
-            .with_horizontal_accuracy(1.5)
-            .with_live_period(100)
-            .with_proximity_alert_radius(100),
-    ));
-    insta::assert_json_snapshot!(InputMessageContent::from(InputMessageContentLocation::new(1.0, 2.0)));
-}
-
-#[test]
-fn input_message_content_text() {
-    insta::assert_json_snapshot!(InputMessageContent::from(
-        InputMessageContentText::new("text")
-            .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
-            .with_entities(vec![TextEntity::bold(0..10)])
-            .with_parse_mode(ParseMode::Html),
-    ));
-    insta::assert_json_snapshot!(InputMessageContent::from(
-        InputMessageContentText::new("text")
-            .with_parse_mode(ParseMode::Markdown)
-            .with_entities(vec![TextEntity::bold(0..10)]),
-    ));
-}
-
-#[test]
-fn input_message_content_rich() {
-    insta::assert_json_snapshot!(InputMessageContent::from(InputRichMessage::html("test")));
-}
-
-#[test]
-fn input_message_content_venue() {
-    let content = InputMessageContentVenue::new("addr", 1.0, 2.0, "title");
-    insta::assert_json_snapshot!(InputMessageContent::from(
-        content
-            .clone()
-            .with_foursquare_id("f-id")
-            .with_foursquare_type("f-type")
-            .with_google_place_id("g-id")
-            .with_google_place_type("g-type"),
-    ));
-    insta::assert_json_snapshot!(InputMessageContent::from(content));
-}
-
-#[test]
-fn convert_message_content() {
-    let contact = Contact::new("User", "+79001234567");
-    let content = InputMessageContent::from(contact.clone());
-    assert_eq!(
-        content,
-        InputMessageContent::Contact(InputMessageContentContact::new(
-            contact.first_name,
-            contact.phone_number,
-        ))
-    );
-
-    let location = Location::new(0.0, 0.0);
-    let content = InputMessageContent::from(location);
-    assert_eq!(
-        content,
-        InputMessageContent::Location(InputMessageContentLocation::new(location.latitude, location.longitude))
-    );
-
-    let content = InputMessageContent::from("text");
-    assert_eq!(content, InputMessageContent::Text(InputMessageContentText::new("text")));
-
-    let content = InputMessageContent::from(Text::from("text"));
-    assert_eq!(content, InputMessageContent::Text(InputMessageContentText::new("text")));
-
-    let venue = Venue::new("Venue", "Address", location);
-    let content = InputMessageContent::from(venue.clone());
-    assert_eq!(
-        content,
-        InputMessageContent::Venue(InputMessageContentVenue::new(
-            venue.address,
-            venue.location.latitude,
-            venue.location.longitude,
-            venue.title,
-        ))
-    );
+fn input_media_voice_note() {
+    let info = InputMediaVoiceNote::default();
+    insta::assert_json_snapshot!(info.clone());
+    let info = info
+        .with_caption("test")
+        .with_caption_entities([TextEntity::bold(0..2)])
+        .with_duration(1);
+    insta::assert_json_snapshot!(info.clone());
+    let info = info.with_caption_parse_mode(ParseMode::MarkdownV2);
+    insta::assert_json_snapshot!(info.clone());
+    let info = info.with_caption_entities([TextEntity::bold(0..1)]);
+    insta::assert_json_snapshot!(info);
 }
 
 #[test]

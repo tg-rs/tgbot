@@ -1,13 +1,18 @@
 ---
 source: src/types/tests/inline_mode.rs
-expression: actual_data
+expression: actual_form.into_fields()
 ---
-{
-  "result": {
-    "first_name": "test",
-    "id": "result-id",
-    "phone_number": "+1000",
-    "type": "contact"
-  },
-  "user_id": 1
-}
+[
+    (
+        "result",
+        FormValue::Text(
+            "{\"id\":\"result-id\",\"type\":\"contact\",\"first_name\":\"test\",\"phone_number\":\"+1000\"}",
+        ),
+    ),
+    (
+        "user_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+]

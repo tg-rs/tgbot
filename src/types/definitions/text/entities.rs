@@ -6,9 +6,8 @@ use std::{
 };
 
 use serde::{Deserialize, Serialize};
-use serde_json::Error as JsonError;
 
-use crate::types::{Integer, User};
+use crate::types::{Integer, SerializeError, User};
 
 /// Represents a collection of text entities.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -27,9 +26,8 @@ impl TextEntities {
         self.items.push(value);
     }
 
-    /// Serializes text entities into a JSON string.
-    pub fn serialize(&self) -> Result<String, TextEntityError> {
-        serde_json::to_string(self).map_err(TextEntityError::Serialize)
+    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
+        serde_json::to_string(self).map_err(SerializeError::text_entities)
     }
 }
 
@@ -354,30 +352,25 @@ pub enum TextEntityError {
     NoUrl,
     /// User is required for `text_mention` entity.
     NoUser,
-    /// Failed to serialize entities.
-    Serialize(JsonError),
 }
 
 impl Error for TextEntityError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
-            Self::Serialize(err) => Some(err),
-            _ => None,
+            Self::NoCustomEmoji | Self::NoUrl | Self::NoUser => None,
         }
     }
 }
 
 impl fmt::Display for TextEntityError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        use self::TextEntityError::*;
         write!(
             out,
             "{}",
             match self {
-                NoCustomEmoji => String::from("Custom emoji is required for custom_emoji entity"),
-                NoUrl => String::from("URL is required for text_link entity"),
-                NoUser => String::from("user is required for text_mention entity"),
-                Serialize(err) => format!("failed to serialize text entities: {err}"),
+                Self::NoCustomEmoji => "Custom emoji is required for custom_emoji entity",
+                Self::NoUrl => "URL is required for text_link entity",
+                Self::NoUser => "user is required for text_mention entity",
             }
         )
     }

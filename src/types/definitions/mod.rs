@@ -10,6 +10,7 @@ pub use self::{
     color::*,
     contact::*,
     dice::*,
+    errors::*,
     file::*,
     forum::*,
     game::*,
@@ -52,6 +53,7 @@ mod checklist;
 mod color;
 mod contact;
 mod dice;
+mod errors;
 mod file;
 mod forum;
 mod game;

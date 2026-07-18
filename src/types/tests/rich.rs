@@ -1,17 +1,6 @@
 use crate::types::*;
 
 #[test]
-fn input_rich_message() {
-    insta::assert_json_snapshot!(InputRichMessage::markdown("test"));
-    insta::assert_json_snapshot!(InputRichMessage::html("test"));
-    insta::assert_json_snapshot!(
-        InputRichMessage::html("test")
-            .with_is_rtl(true)
-            .with_skip_entity_detection(true)
-    );
-}
-
-#[test]
 fn rich_block() {
     insta::assert_json_snapshot!(vec![
         RichBlock::anchor("test-anchor"),
@@ -274,26 +263,38 @@ fn rich_text() {
 
 #[test]
 fn send_rich_message() {
-    let method = SendRichMessage::new(1, InputRichMessage::markdown("test"));
-    assert_payload_eq!(POST JSON "sendRichMessage" => method.clone());
-    let method = method
-        .with_allow_paid_broadcast(true)
-        .with_business_connection_id("test")
-        .with_direct_messages_topic_id(1)
-        .with_disable_notification(true)
-        .with_message_effect_id("test")
-        .with_message_thread_id(1)
-        .with_protect_content(true)
-        .with_reply_markup(ForceReply::new(true))
-        .with_reply_parameters(ReplyParameters::new(1))
-        .with_suggested_post_parameters(SuggestedPostParameters::default());
-    assert_payload_eq!(POST JSON "sendRichMessage" => method.clone());
+    let method = SendRichMessage::new(1, InputRichMessage::markdown("test").with_skip_entity_detection(true)).unwrap();
+    assert_payload_eq!(POST FORM "sendRichMessage" => method);
+    let method = SendRichMessage::new(
+        1,
+        InputRichMessage::html("test").with_is_rtl(true).with_media([(
+            "id",
+            InputMedia::for_animation(InputFile::file_id("test"), InputMediaAnimation::default()),
+        )]),
+    )
+    .unwrap()
+    .with_allow_paid_broadcast(true)
+    .with_business_connection_id("test")
+    .with_direct_messages_topic_id(1)
+    .with_disable_notification(true)
+    .with_message_effect_id("test")
+    .with_message_thread_id(1)
+    .with_protect_content(true)
+    .with_reply_markup(ForceReply::new(true))
+    .unwrap()
+    .with_reply_parameters(ReplyParameters::new(1))
+    .unwrap()
+    .with_suggested_post_parameters(SuggestedPostParameters::default())
+    .unwrap();
+    assert_payload_eq!(POST FORM "sendRichMessage" => method);
 }
 
 #[test]
 fn send_rich_message_draft() {
-    let method = SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test"));
-    assert_payload_eq!(POST JSON "sendRichMessageDraft" => method.clone());
-    let method = method.with_message_thread_id(1);
-    assert_payload_eq!(POST JSON "sendRichMessageDraft" => method.clone());
+    let method = SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test")).unwrap();
+    assert_payload_eq!(POST FORM "sendRichMessageDraft" => method);
+    let method = SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test"))
+        .unwrap()
+        .with_message_thread_id(1);
+    assert_payload_eq!(POST FORM "sendRichMessageDraft" => method);
 }

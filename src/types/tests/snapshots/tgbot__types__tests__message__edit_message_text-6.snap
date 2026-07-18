@@ -1,15 +1,24 @@
 ---
 source: src/types/tests/message.rs
-expression: actual_data
+expression: actual_form.into_fields()
 ---
-{
-  "entities": [
-    {
-      "length": 4,
-      "offset": 0,
-      "type": "bold"
-    }
-  ],
-  "inline_message_id": "msg-id",
-  "text": "text"
-}
+[
+    (
+        "entities",
+        FormValue::Text(
+            "[{\"offset\":0,\"length\":4,\"type\":\"bold\"}]",
+        ),
+    ),
+    (
+        "inline_message_id",
+        FormValue::Text(
+            "msg-id",
+        ),
+    ),
+    (
+        "text",
+        FormValue::Text(
+            "text",
+        ),
+    ),
+]

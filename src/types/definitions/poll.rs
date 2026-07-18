@@ -25,11 +25,11 @@ use crate::{
         ReplyMarkupError,
         ReplyParameters,
         ReplyParametersError,
+        SerializeError,
         Sticker,
         Text,
         TextEntities,
         TextEntity,
-        TextEntityError,
         User,
         Venue,
         Video,
@@ -967,7 +967,7 @@ impl PollParameters {
         }
     }
 
-    fn set_description_entities<T>(&mut self, value: T) -> Result<(), TextEntityError>
+    fn set_description_entities<T>(&mut self, value: T) -> Result<(), SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {
@@ -1143,7 +1143,7 @@ impl SendQuiz {
     /// * `value` - A list of special entities that appear in the description.
     ///
     /// Parse mode will be set to [`None`].
-    pub fn with_description_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    pub fn with_description_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {
@@ -1206,7 +1206,7 @@ impl SendQuiz {
     /// * `value` - List of special entities that appear in the quiz explanation.
     ///
     /// Explanation parse mode will be removed when this method is called.
-    pub fn with_explanation_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    pub fn with_explanation_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {
@@ -1328,7 +1328,7 @@ impl SendQuiz {
     /// * `value` - A list of special entities that appear in the poll question.
     ///
     /// Question parse mode will be removed when this method is called.
-    pub fn with_question_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    pub fn with_question_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {
@@ -1537,7 +1537,7 @@ impl SendPoll {
     /// * `value` - A list of special entities that appear in the description.
     ///
     /// Parse mode will be set to [`None`].
-    pub fn with_description_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    pub fn with_description_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {
@@ -1677,7 +1677,7 @@ impl SendPoll {
     /// * `value` - A list of special entities that appear in the poll question.
     ///
     /// Question parse mode will be set to [`None`] when this method is called.
-    pub fn with_question_entities<T>(mut self, value: T) -> Result<Self, TextEntityError>
+    pub fn with_question_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
     where
         T: IntoIterator<Item = TextEntity>,
     {

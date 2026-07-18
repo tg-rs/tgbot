@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
-    types::InlineQueryResult,
+    api::{Form, Method, Payload},
+    types::{InlineQueryResult, SerializeError},
 };
 
 /// An inline message sent by a guest bot.
@@ -35,10 +35,9 @@ impl From<SentGuestMessage> for String {
 }
 
 /// Reply to a received guest message.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Debug)]
 pub struct AnswerGuestQuery {
-    guest_query_id: String,
-    result: InlineQueryResult,
+    form: Form,
 }
 
 impl AnswerGuestQuery {
@@ -48,15 +47,16 @@ impl AnswerGuestQuery {
     ///
     /// * `guest_query_id` - Unique identifier for the query to be answered.
     /// * `result` - The message to be sent.
-    pub fn new<A, B>(guest_query_id: A, result: B) -> Self
+    pub fn new<A, B>(guest_query_id: A, result: B) -> Result<Self, SerializeError>
     where
         A: Into<String>,
         B: Into<InlineQueryResult>,
     {
-        Self {
-            guest_query_id: guest_query_id.into(),
-            result: result.into(),
-        }
+        let (form, data) = result.into().into_parts();
+        let mut form = form.unwrap_or_default();
+        form.insert_field("guest_query_id", guest_query_id.into());
+        form.insert_field("result", data.serialize()?);
+        Ok(Self { form })
     }
 }
 
@@ -64,6 +64,6 @@ impl Method for AnswerGuestQuery {
     type Response = SentGuestMessage;
 
     fn into_payload(self) -> Payload {
-        Payload::json("answerGuestQuery", self)
+        Payload::form("answerGuestQuery", self.form)
     }
 }

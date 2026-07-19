@@ -16,6 +16,12 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "callback_query_id",
+        FormValue::Text(
+            "cqid",
+        ),
+    ),
+    (
         "chat_id",
         FormValue::Text(
             "1",
@@ -61,6 +67,12 @@ expression: actual_form.into_fields()
         "protect_content",
         FormValue::Text(
             "true",
+        ),
+    ),
+    (
+        "receiver_user_id",
+        FormValue::Text(
+            "999",
         ),
     ),
     (

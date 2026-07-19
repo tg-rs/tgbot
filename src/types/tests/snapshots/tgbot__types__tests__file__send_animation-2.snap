@@ -22,6 +22,12 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "callback_query_id",
+        FormValue::Text(
+            "cqid",
+        ),
+    ),
+    (
         "caption",
         FormValue::Text(
             "Caption",
@@ -85,6 +91,12 @@ expression: actual_form.into_fields()
         "protect_content",
         FormValue::Text(
             "true",
+        ),
+    ),
+    (
+        "receiver_user_id",
+        FormValue::Text(
+            "999",
         ),
     ),
     (

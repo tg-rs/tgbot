@@ -974,6 +974,7 @@ fn send_message() {
     let method = SendMessage::new(1, "text")
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
+        .with_callback_query_id("cqid")
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
@@ -982,6 +983,7 @@ fn send_message() {
         .with_parse_mode(ParseMode::Markdown)
         .with_entities(vec![TextEntity::bold(0..2)])
         .with_protect_content(true)
+        .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
         .with_reply_parameters(ReplyParameters::new(1))
         .with_suggested_post_parameters(SuggestedPostParameters::default());

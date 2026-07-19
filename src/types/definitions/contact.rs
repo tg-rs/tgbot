@@ -88,12 +88,14 @@ pub struct SendContact {
     phone_number: String,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
+    callback_query_id: Option<String>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     last_name: Option<String>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
     protect_content: Option<bool>,
+    receiver_user_id: Option<Integer>,
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
     suggested_post_parameters: Option<SuggestedPostParameters>,
@@ -120,12 +122,14 @@ impl SendContact {
             phone_number: phone_number.into(),
             allow_paid_broadcast: None,
             business_connection_id: None,
+            callback_query_id: None,
             direct_messages_topic_id: None,
             disable_notification: None,
             last_name: None,
             message_effect_id: None,
             message_thread_id: None,
             protect_content: None,
+            receiver_user_id: None,
             reply_markup: None,
             reply_parameters: None,
             suggested_post_parameters: None,
@@ -155,6 +159,21 @@ impl SendContact {
         T: Into<String>,
     {
         self.business_connection_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new callback query ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - For outgoing ephemeral messages,
+    ///   identifier of the callback query
+    ///   which triggered the message if any.
+    pub fn with_callback_query_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.callback_query_id = Some(value.into());
         self
     }
 
@@ -237,6 +256,21 @@ impl SendContact {
         T: Into<ReplyMarkup>,
     {
         self.reply_markup = Some(value.into());
+        self
+    }
+
+    /// Sets a new receiver user ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - For outgoing ephemeral messages,
+    ///   unique identifier of the user who will receive the message;
+    ///   for group and supergroup chats only.
+    ///
+    /// It is not guaranteed that the user will receive the message,
+    /// especially if they are offline.
+    pub fn with_receiver_user_id(mut self, value: Integer) -> Self {
+        self.receiver_user_id = Some(value);
         self
     }
 

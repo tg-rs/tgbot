@@ -226,6 +226,21 @@ impl SendAnimation {
         self
     }
 
+    /// Sets a new callback query ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - For outgoing ephemeral messages,
+    ///   identifier of the callback query
+    ///   which triggered the message if any.
+    pub fn with_callback_query_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.form.insert_field("callback_query_id", value.into());
+        self
+    }
+
     /// Sets a new direct messages topic ID
     ///
     /// * `value` - Identifier of the direct messages topic to which the message will be sent.
@@ -309,6 +324,21 @@ impl SendAnimation {
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.form.insert_field("protect_content", value);
+        self
+    }
+
+    /// Sets a new receiver user ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - For outgoing ephemeral messages,
+    ///   unique identifier of the user who will receive the message;
+    ///   for group and supergroup chats only.
+    ///
+    /// It is not guaranteed that the user will receive the message,
+    /// especially if they are offline.
+    pub fn with_receiver_user_id(mut self, value: Integer) -> Self {
+        self.form.insert_field("receiver_user_id", value);
         self
     }
 

@@ -172,6 +172,7 @@ pub struct SendLocation {
     longitude: Float,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
+    callback_query_id: Option<String>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     heading: Option<Integer>,
@@ -181,6 +182,7 @@ pub struct SendLocation {
     message_thread_id: Option<Integer>,
     protect_content: Option<bool>,
     proximity_alert_radius: Option<Integer>,
+    receiver_user_id: Option<Integer>,
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
     suggested_post_parameters: Option<SuggestedPostParameters>,
@@ -204,6 +206,7 @@ impl SendLocation {
             longitude,
             allow_paid_broadcast: None,
             business_connection_id: None,
+            callback_query_id: None,
             direct_messages_topic_id: None,
             disable_notification: None,
             heading: None,
@@ -213,6 +216,7 @@ impl SendLocation {
             message_thread_id: None,
             protect_content: None,
             proximity_alert_radius: None,
+            receiver_user_id: None,
             reply_markup: None,
             reply_parameters: None,
             suggested_post_parameters: None,
@@ -241,6 +245,21 @@ impl SendLocation {
         T: Into<String>,
     {
         self.business_connection_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new callback query ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - For outgoing ephemeral messages,
+    ///   identifier of the callback query
+    ///   which triggered the message if any.
+    pub fn with_callback_query_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.callback_query_id = Some(value.into());
         self
     }
 
@@ -343,6 +362,21 @@ impl SendLocation {
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
+        self
+    }
+
+    /// Sets a new receiver user ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - For outgoing ephemeral messages,
+    ///   unique identifier of the user who will receive the message;
+    ///   for group and supergroup chats only.
+    ///
+    /// It is not guaranteed that the user will receive the message,
+    /// especially if they are offline.
+    pub fn with_receiver_user_id(mut self, value: Integer) -> Self {
+        self.receiver_user_id = Some(value);
         self
     }
 

@@ -31,6 +31,7 @@ fn send_location() {
     let method = SendLocation::new(1, 2.0, 3.0)
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
+        .with_callback_query_id("cqid")
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_heading(120)
@@ -40,6 +41,7 @@ fn send_location() {
         .with_message_thread_id(1)
         .with_protect_content(true)
         .with_proximity_alert_radius(100)
+        .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
         .with_reply_parameters(ReplyParameters::new(1))
         .with_suggested_post_parameters(SuggestedPostParameters::default());

@@ -94,6 +94,11 @@ pub struct Message {
     pub direct_messages_topic: Option<DirectMessagesTopic>,
     /// Unique identifier of the message effect added to the message.
     pub effect_id: Option<String>,
+    // For ephemeral messages, identifier of the ephemeral message inside this chat.
+    ///
+    /// The identifier may be reused for another ephemeral message
+    /// after the message is deleted or expires.
+    pub ephemeral_message_id: Option<Integer>,
     /// Information about the message that is being replied to, which may come from another chat or forum topic.
     pub external_reply: Option<ExternalReplyInfo>,
     /// Information about the original message for forwarded messages.
@@ -196,6 +201,7 @@ impl Message {
             business_connection_id: None,
             direct_messages_topic: None,
             effect_id: None,
+            ephemeral_message_id: None,
             external_reply: None,
             forward_origin: None,
             guest_bot: None,
@@ -307,6 +313,16 @@ impl Message {
         T: Into<String>,
     {
         self.effect_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new ephemeral message ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Identifier of the ephemeral message inside this chat.
+    pub fn with_ephemeral_message_id(mut self, value: Integer) -> Self {
+        self.ephemeral_message_id = Some(value);
         self
     }
 

@@ -224,11 +224,13 @@ impl BotAccessSettings {
 }
 
 /// Represents a command of a bot.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BotCommand {
     #[serde(rename = "command")]
     name: String,
     description: String,
+    is_ephemeral: Option<bool>,
 }
 
 impl BotCommand {
@@ -258,7 +260,11 @@ impl BotCommand {
         } else if !(Self::MIN_DESCRIPTION_LEN..=Self::MAX_DESCRIPTION_LEN).contains(&description_len) {
             Err(BotCommandError::BadDescriptionLen(description_len))
         } else {
-            Ok(Self { name, description })
+            Ok(Self {
+                name,
+                description,
+                is_ephemeral: None,
+            })
         }
     }
 
@@ -295,6 +301,17 @@ impl BotCommand {
         T: Into<String>,
     {
         self.description = value.into();
+        self
+    }
+
+    /// Sets a new value for the `is_ephemeral` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the command sends an ephemeral message,
+    ///   which can be seen only by the sender of the message and the bot.
+    pub fn with_is_ephemeral(mut self, value: bool) -> Self {
+        self.is_ephemeral = Some(value);
         self
     }
 }

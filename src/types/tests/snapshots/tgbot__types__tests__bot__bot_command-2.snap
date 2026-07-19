@@ -1,0 +1,9 @@
+---
+source: src/types/tests/bot.rs
+expression: bot_command
+---
+{
+  "command": "test",
+  "description": "test",
+  "is_ephemeral": true
+}

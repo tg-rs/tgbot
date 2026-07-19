@@ -46,6 +46,13 @@ fn bot_command() {
     let bot_command = BotCommand::new("name", "description").unwrap();
     assert_eq!(bot_command.name(), "name");
     assert_eq!(bot_command.description(), "description");
+    insta::assert_json_snapshot!(bot_command);
+
+    let bot_command = bot_command
+        .with_name("test")
+        .with_description("test")
+        .with_is_ephemeral(true);
+    insta::assert_json_snapshot!(bot_command);
 }
 
 #[test]

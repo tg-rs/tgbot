@@ -13,7 +13,6 @@ use crate::{
         InlineKeyboardMarkup,
         InputMedia,
         InputMediaData,
-        InputMediaError,
         Integer,
         Link,
         LivePhoto,
@@ -828,7 +827,7 @@ pub enum PollAnswerVoter {
 #[derive(Debug)]
 pub struct InputPollOption {
     data: InputPollOptionData,
-    media_form: Option<Form>,
+    input_media: Option<InputMedia>,
 }
 
 impl InputPollOption {
@@ -848,7 +847,7 @@ impl InputPollOption {
                 text_entities: None,
                 media: None,
             },
-            media_form: None,
+            input_media: None,
         }
     }
 
@@ -873,10 +872,11 @@ impl InputPollOption {
     /// # Arguments
     ///
     /// * `value` - Media added to the poll option.
-    pub fn with_media(mut self, value: InputMedia) -> Self {
-        let (form, data) = value.into_parts();
-        self.data.media = Some(data);
-        self.media_form = Some(form);
+    pub fn with_media<T>(mut self, value: T) -> Self
+    where
+        T: Into<InputMedia>,
+    {
+        self.input_media = Some(value.into());
         self
     }
 
@@ -893,6 +893,18 @@ impl InputPollOption {
         self.data.text_entities = None;
         self
     }
+
+    fn into_parts(mut self, suffix: &[usize]) -> (Form, InputPollOptionData) {
+        let form = self
+            .input_media
+            .map(|x| {
+                let (form, data) = x.into_parts(suffix);
+                self.data.media = Some(data);
+                form
+            })
+            .unwrap_or_default();
+        (form, self.data)
+    }
 }
 
 impl<T> From<T> for InputPollOption
@@ -908,7 +920,7 @@ where
                 text_parse_mode: None,
                 media: None,
             },
-            media_form: None,
+            input_media: None,
         }
     }
 }
@@ -942,10 +954,9 @@ impl PollParameters {
         ]);
         let mut options_data = Vec::with_capacity(20);
         for (idx, option) in options.into_iter().map(Into::into).enumerate() {
-            if let Some(option_form) = option.media_form {
-                form.extend(option_form.with_suffix(format!("{idx}")))
-            }
-            options_data.push(option.data);
+            let (option_form, option_data) = option.into_parts(&[idx]);
+            form.extend(option_form);
+            options_data.push(option_data);
         }
         form.insert_field(
             "options",
@@ -1194,8 +1205,14 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * `value` - Media added to the quiz explanation.
-    pub fn with_explanation_media(mut self, value: InputMedia) -> Result<Self, InputMediaError> {
-        self.inner.form.extend(value.try_into_form("explanation_media")?);
+    pub fn with_explanation_media<T>(mut self, value: T) -> Result<Self, SerializeError>
+    where
+        T: Into<InputMedia>,
+    {
+        let (form, data) = value.into().into_parts(&[0]);
+
+        self.inner.form.extend(form);
+        self.inner.form.insert_field("explanation_media", data.serialize()?);
         Ok(self)
     }
 
@@ -1605,8 +1622,13 @@ impl SendPoll {
     /// # Arguments
     ///
     /// * `value` - Media added to the poll description.
-    pub fn with_media(mut self, value: InputMedia) -> Result<Self, InputMediaError> {
-        self.inner.form.extend(value.try_into_form("media")?);
+    pub fn with_media<T>(mut self, value: T) -> Result<Self, SerializeError>
+    where
+        T: Into<InputMedia>,
+    {
+        let (form, data) = value.into().into_parts(&[0]);
+        self.inner.form.extend(form);
+        self.inner.form.insert_field("media", data.serialize()?);
         Ok(self)
     }
 

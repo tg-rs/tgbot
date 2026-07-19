@@ -1,5 +1,14 @@
 ---
 source: src/types/tests/input.rs
-expression: "InputMediaAudio::default()"
+expression: data
 ---
-{}
+{
+  "type": "audio",
+  "caption": "caption",
+  "duration": 10,
+  "media": "attach://im_media",
+  "parse_mode": "Markdown",
+  "performer": "test performer",
+  "thumbnail": "attach://im_tmb",
+  "title": "test title"
+}

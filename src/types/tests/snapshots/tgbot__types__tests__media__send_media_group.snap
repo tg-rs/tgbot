@@ -34,9 +34,44 @@ expression: actual_form.into_fields()
         ),
     ),
     (
+        "im_media",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_1",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_3",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_4",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_5",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
         "media",
         FormValue::Text(
-            "[{\"type\":\"photo\",\"media\":\"attach://tgbot_im_file_0\"},{\"type\":\"video\",\"media\":\"attach://tgbot_im_file_1\"},{\"type\":\"video\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"}]",
+            "[{\"type\":\"audio\",\"media\":\"attach://im_media\"},{\"type\":\"document\",\"media\":\"attach://im_media_1\"},{\"type\":\"live_photo\",\"media\":\"file-id\",\"photo\":\"photo-id\"},{\"type\":\"photo\",\"media\":\"attach://im_media_3\"},{\"type\":\"photo\",\"caption\":\"caption\",\"media\":\"attach://im_media_4\"},{\"type\":\"video\",\"cover\":\"cover-url\",\"media\":\"attach://im_media_5\"},{\"type\":\"audio\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"},{\"type\":\"document\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"},{\"type\":\"video\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"}]",
         ),
     ),
     (
@@ -62,19 +97,5 @@ expression: actual_form.into_fields()
         FormValue::Text(
             "{\"message_id\":1}",
         ),
-    ),
-    (
-        "tgbot_im_file_0",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "tgbot_im_file_1",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
     ),
 ]

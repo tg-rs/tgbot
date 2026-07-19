@@ -50,7 +50,7 @@ struct InvoiceProviderData {
 fn answer_inline_query() {
     let method = AnswerInlineQuery::new(
         "id",
-        [InlineQueryResult::Article(InlineQueryResultArticle::new(
+        [InlineQueryResult::from(InlineQueryResultArticle::new(
             "id", "text", "title",
         ))],
     )
@@ -59,7 +59,7 @@ fn answer_inline_query() {
     let method = AnswerInlineQuery::new(
         "id",
         [
-            InlineQueryResult::Article(
+            InlineQueryResult::from(
                 InlineQueryResultArticle::new("id", "text", "title")
                     .with_description("desc")
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])

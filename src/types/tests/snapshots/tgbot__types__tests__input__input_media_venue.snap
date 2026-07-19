@@ -1,8 +1,9 @@
 ---
 source: src/types/tests/input.rs
-expression: info.clone()
+expression: data
 ---
 {
+  "type": "venue",
   "address": "addr",
   "latitude": 1.0,
   "longitude": 2.0,

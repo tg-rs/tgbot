@@ -36,398 +36,234 @@ async fn input_file() {
     );
 }
 
-#[test]
-fn input_media_form() {
-    let data: Form = InputMedia::for_animation(
-        InputFile::file_id("animation-file-id"),
-        InputMediaAnimation::default().with_caption("test"),
-    )
-    .try_into_form("media")
-    .unwrap();
+macro_rules! assert_input_media_eq {
+    ($media:expr, $expected_form:expr) => {{
+        let (form, data) = $media.into_parts(&[0]);
+        insta::assert_json_snapshot!(data);
+        assert_eq!(form, $expected_form);
+    }};
+}
+
+fn assert_input_media_parse_mode(media: InputMedia) {
+    let (form, data) = media.into_parts(&[0]);
+    let actual = serde_json::to_value(&data).unwrap();
+    assert_eq!(actual["parse_mode"], serde_json::json!("Markdown"));
+    assert!(actual.get("caption_entities").is_none());
+    assert_eq!(Form::default(), form);
+}
+
+fn assert_input_media_caption_entities(media: InputMedia) {
+    let (form, data) = media.into_parts(&[0]);
+    let actual = serde_json::to_value(data).unwrap();
     assert_eq!(
-        Form::from([(
-            "media",
-            r#"{"type":"animation","media":"animation-file-id","caption":"test"}"#.into()
-        )]),
-        data
+        actual["caption_entities"],
+        serde_json::json!([{"offset": 0, "length": 10, "type": "bold"}])
     );
-
-    let data: Form = InputMedia::for_animation(
-        InputFileReader::from(Cursor::new("animation-file-data")),
-        InputMediaAnimation::default(),
-    )
-    .with_thumbnail(InputFileReader::from(Cursor::new("animation-thumb-data")))
-    .unwrap()
-    .try_into_form("media")
-    .unwrap();
-    assert_eq!(
-        Form::from([
-            (
-                "tgbot_im_thumb",
-                InputFile::from(Cursor::new("animation-thumb-data")).into()
-            ),
-            (
-                "tgbot_im_file",
-                InputFile::from(Cursor::new("animation-file-data")).into()
-            ),
-            (
-                "media",
-                r#"{"type":"animation","media":"attach://tgbot_im_file","thumbnail":"attach://tgbot_im_thumb"}"#.into()
-            )
-        ]),
-        data
-    );
-}
-
-#[test]
-fn create_input_media_animation() {
-    InputMedia::for_animation(
-        InputFile::file_id("animation-file-id"),
-        InputMediaAnimation::default().with_caption("test"),
-    );
-
-    InputMedia::for_animation(
-        InputFileReader::from(Cursor::new("animation-file-data")),
-        InputMediaAnimation::default(),
-    )
-    .with_thumbnail(InputFileReader::from(Cursor::new("animation-thumb-data")))
-    .unwrap();
-
-    let err = InputMedia::for_animation(
-        InputFileReader::from(Cursor::new("animation-file-data")),
-        InputMediaAnimation::default(),
-    )
-    .with_cover(InputFile::file_id("cover-id"))
-    .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
-}
-
-#[test]
-fn create_input_media_audio() {
-    InputMedia::for_audio(
-        InputFile::file_id("audio-file-id"),
-        InputMediaAudio::default().with_caption("test"),
-    );
-
-    InputMedia::for_audio(
-        InputFileReader::from(Cursor::new("audio-file-data")),
-        InputMediaAudio::default(),
-    )
-    .with_thumbnail(InputFileReader::from(Cursor::new("audio-thumb-data")))
-    .unwrap();
-
-    let err = InputMedia::for_audio(
-        InputFile::file_id("audio-file-id"),
-        InputMediaAudio::default().with_caption("test"),
-    )
-    .with_cover(InputFile::file_id("cover-id"))
-    .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
-}
-
-#[test]
-fn create_input_media_document() {
-    InputMedia::for_document(
-        InputFile::file_id("audio-file-id"),
-        InputMediaDocument::default().with_caption("test"),
-    );
-
-    InputMedia::for_document(
-        InputFileReader::from(Cursor::new("document-file-data")),
-        InputMediaDocument::default(),
-    )
-    .with_thumbnail(InputFileReader::from(Cursor::new("document-thumb-data")))
-    .unwrap();
-
-    let err = InputMedia::for_document(
-        InputFile::file_id("audio-file-id"),
-        InputMediaDocument::default().with_caption("test"),
-    )
-    .with_cover(InputFile::file_id("cover-id"))
-    .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
-}
-
-#[test]
-fn create_input_media_link() {
-    InputMedia::for_link("https://example.com");
-
-    let err = InputMedia::for_link("https://example.com")
-        .with_thumbnail(InputFile::file_id("thumbnail-id"))
-        .unwrap_err();
-    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
-
-    let err = InputMedia::for_link("https://example.com")
-        .with_cover(InputFile::file_id("cover-id"))
-        .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
-}
-
-#[test]
-fn create_input_media_live_photo() {
-    let live_photo = InputMediaLivePhoto::default();
-
-    InputMedia::for_live_photo(
-        InputFile::url("https://example.com/video.mp4"),
-        InputFile::url("https://example.com/photo.png"),
-        live_photo.clone(),
-    );
-
-    let err = InputMedia::for_live_photo(
-        InputFile::url("https://example.com/video.mp4"),
-        InputFile::url("https://example.com/photo.png"),
-        live_photo.clone(),
-    )
-    .with_thumbnail(InputFileReader::from(Cursor::new("live-photo-thumb-data")))
-    .unwrap_err();
-    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
-
-    let err = InputMedia::for_live_photo(
-        InputFile::url("https://example.com/video.mp4"),
-        InputFile::url("https://example.com/photo.png"),
-        live_photo,
-    )
-    .with_cover(InputFile::file_id("cover-id"))
-    .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable))
-}
-
-#[test]
-fn create_input_media_location() {
-    let location = InputMediaLocation::new(1.0, 2.0);
-
-    InputMedia::for_location(location.clone());
-
-    let err = InputMedia::for_location(location.clone())
-        .with_thumbnail(InputFileReader::from(Cursor::new("location-thumb-data")))
-        .unwrap_err();
-    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
-
-    let err = InputMedia::for_location(location)
-        .with_cover(InputFile::file_id("cover-id"))
-        .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
-}
-
-#[test]
-fn create_input_media_photo() {
-    InputMedia::for_photo(
-        InputFile::file_id("photo-file-id"),
-        InputMediaPhoto::default().with_caption("test"),
-    );
-    let err = InputMedia::for_photo(
-        InputFile::file_id("photo-file-id"),
-        InputMediaPhoto::default().with_caption("test"),
-    )
-    .with_thumbnail(InputFileReader::from(Cursor::new("photo-thumb-data")))
-    .unwrap_err();
-    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
-
-    let err = InputMedia::for_photo(
-        InputFile::file_id("photo-file-id"),
-        InputMediaPhoto::default().with_caption("test"),
-    )
-    .with_cover(InputFile::file_id("cover-id"))
-    .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
-}
-
-#[test]
-fn create_input_media_sticker() {
-    let sticker = InputMediaSticker::default();
-
-    InputMedia::for_sticker(InputFile::file_id("sticker-file-id"), sticker.clone());
-
-    let err = InputMedia::for_sticker(InputFile::file_id("sticker-file-id"), sticker.clone())
-        .with_thumbnail(InputFileReader::from(Cursor::new("sticker-thumb-data")))
-        .unwrap_err();
-    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
-
-    let err = InputMedia::for_sticker(InputFile::file_id("sticker-file-id"), sticker)
-        .with_cover(InputFile::file_id("cover-id"))
-        .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
-}
-
-#[test]
-fn create_input_media_venue() {
-    let venue = InputMediaVenue::new(1.0, 2.0, "test", "addr");
-
-    InputMedia::for_venue(venue.clone());
-
-    let err = InputMedia::for_venue(venue.clone())
-        .with_thumbnail(InputFileReader::from(Cursor::new("venue-thumb-data")))
-        .unwrap_err();
-    assert!(matches!(err, InputMediaError::ThumbnailNotAcceptable));
-
-    let err = InputMedia::for_venue(venue)
-        .with_cover(InputFile::file_id("cover-id"))
-        .unwrap_err();
-    assert!(matches!(err, InputMediaError::CoverNotAcceptable));
-}
-
-#[test]
-fn create_input_media_video() {
-    InputMedia::for_video(
-        InputFile::file_id("video-file-id"),
-        InputMediaVideo::default().with_caption("test"),
-    );
-
-    InputMedia::for_video(
-        InputFileReader::from(Cursor::new("video-file-data")),
-        InputMediaVideo::default(),
-    )
-    .with_thumbnail(InputFileReader::from(Cursor::new("video-thumb-data")))
-    .unwrap()
-    .with_cover(InputFile::file_id("cover-id"))
-    .unwrap();
+    assert!(actual.get("parse_mode").is_none());
+    assert_eq!(Form::default(), form);
 }
 
 #[test]
 fn input_media_animation() {
-    insta::assert_json_snapshot!(
-        InputMediaAnimation::default()
+    let media =
+        InputMedia::from(InputMediaAnimation::from(InputFile::file_id("animation-file-id")).with_caption("test"));
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(
+        InputMediaAnimation::from(InputFileReader::from(Cursor::new("animation-file-data")))
+            .with_thumbnail(InputFileReader::from(Cursor::new("animation-thumb-data")))
             .with_caption("caption")
             .with_duration(10)
             .with_has_spoiler(true)
             .with_height(200)
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_show_caption_above_media(true)
-            .with_width(200)
+            .with_width(200),
     );
-    insta::assert_json_snapshot!(InputMediaAnimation::default());
-}
+    assert_input_media_eq!(
+        media,
+        Form::from([
+            ("im_tmb", InputFile::from(Cursor::new("animation-thumb-data")).into()),
+            ("im_media", InputFile::from(Cursor::new("animation-file-data")).into()),
+        ])
+    );
 
-#[test]
-fn input_media_animation_entities_vs_parse_mode() {
-    let mut data = InputMediaAnimation::default();
-    data = data.with_caption_parse_mode(ParseMode::Markdown);
-    assert_eq!(
-        serde_json::to_value(&data).unwrap(),
-        serde_json::json!({"parse_mode": "Markdown"})
+    let media = InputMedia::from(
+        InputMediaAnimation::from(InputFile::url("test"))
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
-    data = data.with_caption_entities(vec![TextEntity::bold(0..10)]);
-    assert_eq!(
-        serde_json::to_value(data).unwrap(),
-        serde_json::json!({"caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]})
+    assert_input_media_parse_mode(media);
+
+    let media = InputMedia::from(
+        InputMediaAnimation::from(InputFile::url("test"))
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)]),
     );
+    assert_input_media_caption_entities(media);
 }
 
 #[test]
 fn input_media_audio() {
-    insta::assert_json_snapshot!(
-        InputMediaAudio::default()
+    let media = InputMedia::from(InputMediaAudio::from(InputFile::file_id("audio-file-id")).with_caption("test"));
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(
+        InputMediaAudio::from(InputFileReader::from(Cursor::new("audio-file-data")))
+            .with_thumbnail(InputFileReader::from(Cursor::new("audio-thumb-data")))
             .with_caption("caption")
             .with_duration(10)
             .with_caption_parse_mode(ParseMode::Markdown)
             .with_performer("test performer")
-            .with_title("test title")
+            .with_title("test title"),
     );
-    insta::assert_json_snapshot!(InputMediaAudio::default());
-}
+    assert_input_media_eq!(
+        media,
+        Form::from([
+            ("im_media", InputFile::from(Cursor::new("audio-file-data")).into()),
+            ("im_tmb", InputFile::from(Cursor::new("audio-thumb-data")).into()),
+        ])
+    );
 
-#[test]
-fn input_media_audio_entities_vs_parse_mode() {
-    let mut data = InputMediaAudio::default();
-    data = data.with_caption_parse_mode(ParseMode::Markdown);
-    assert_eq!(
-        serde_json::to_value(&data).unwrap(),
-        serde_json::json!({"parse_mode": "Markdown"})
+    let media = InputMedia::from(
+        InputMediaAudio::from(InputFile::file_id("parse-mode"))
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
-    data = data.with_caption_entities(vec![TextEntity::bold(0..10)]);
-    assert_eq!(
-        serde_json::to_value(data).unwrap(),
-        serde_json::json!({"caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]})
+    assert_input_media_parse_mode(media);
+
+    let media = InputMedia::from(
+        InputMediaAudio::from(InputFile::file_id("parse-mode"))
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)]),
     );
+    assert_input_media_caption_entities(media);
 }
 
 #[test]
 fn input_media_document() {
-    insta::assert_json_snapshot!(
-        InputMediaDocument::default()
+    let media = InputMedia::from(InputMediaDocument::from(InputFile::file_id("audio-file-id")).with_caption("test"));
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(
+        InputMediaDocument::from(InputFileReader::from(Cursor::new("document-file-data")))
+            .with_thumbnail(InputFileReader::from(Cursor::new("document-thumb-data")))
             .with_caption("caption")
             .with_caption_parse_mode(ParseMode::Markdown)
-            .with_disable_content_type_detection(true)
+            .with_disable_content_type_detection(true),
     );
-    insta::assert_json_snapshot!(InputMediaDocument::default());
+    assert_input_media_eq!(
+        media,
+        Form::from([
+            ("im_media", InputFile::from(Cursor::new("document-file-data")).into()),
+            ("im_tmb", InputFile::from(Cursor::new("document-thumb-data")).into()),
+        ])
+    );
+
+    let media = InputMedia::from(
+        InputMediaDocument::from(InputFile::file_id("file-id"))
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown),
+    );
+    assert_input_media_parse_mode(media);
+
+    let media = InputMedia::from(
+        InputMediaDocument::from(InputFile::file_id("file-id"))
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)]),
+    );
+    assert_input_media_caption_entities(media);
 }
 
 #[test]
-fn input_media_document_entities_vs_parse_mode() {
-    let mut method = InputMediaDocument::default();
-    method = method.with_caption_parse_mode(ParseMode::Markdown);
-    assert_eq!(
-        serde_json::to_value(&method).unwrap(),
-        serde_json::json!({"parse_mode": "Markdown"})
-    );
-    method = method.with_caption_entities(vec![TextEntity::bold(0..10)]);
-    assert_eq!(
-        serde_json::to_value(method).unwrap(),
-        serde_json::json!({"caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]})
-    );
+fn input_media_link() {
+    let media = InputMedia::link("https://example.com");
+    assert_input_media_eq!(media, Form::default());
 }
 
 #[test]
 fn input_media_live_photo() {
-    insta::assert_json_snapshot!(InputMediaLivePhoto::default());
-    insta::assert_json_snapshot!(
-        InputMediaLivePhoto::default()
-            .with_caption("test")
-            .with_parse_mode(ParseMode::Markdown)
-            .with_show_caption_above_media(true)
-            .with_has_spoiler(false)
+    let media = InputMedia::from(
+        InputMediaLivePhoto::from((
+            InputFile::url("https://example.com/video.mp4"),
+            InputFile::url("https://example.com/photo.png"),
+        ))
+        .with_caption("test")
+        .with_parse_mode(ParseMode::Markdown)
+        .with_show_caption_above_media(true)
+        .with_has_spoiler(false),
     );
-    insta::assert_json_snapshot!(
-        InputMediaLivePhoto::default()
-            .with_caption("test")
-            .with_parse_mode(ParseMode::Markdown)
-            .with_caption_entities([TextEntity::bold(0..2)])
-    );
+    assert_input_media_eq!(media, Form::default());
 }
 
 #[test]
 fn input_media_location() {
-    insta::assert_json_snapshot!(InputMediaLocation::new(1.0, 2.0).with_horizontal_accuracy(3.0));
-    insta::assert_json_snapshot!(InputMediaLocation::new(1.0, 2.0));
+    let media = InputMedia::from(InputMediaLocation::new(1.0, 2.0));
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(InputMediaLocation::new(1.0, 2.0).with_horizontal_accuracy(3.0));
+    assert_input_media_eq!(media, Form::default());
 }
 
 #[test]
 fn input_media_photo() {
-    insta::assert_json_snapshot!(
-        InputMediaPhoto::default()
-            .with_caption("caption")
+    let media = InputMedia::from(
+        InputMediaPhoto::from(InputFile::file_id("photo-file-id"))
+            .with_caption("test")
             .with_has_spoiler(true)
             .with_caption_parse_mode(ParseMode::Markdown)
-            .with_show_caption_above_media(true)
+            .with_show_caption_above_media(true),
     );
-    insta::assert_json_snapshot!(InputMediaPhoto::default());
-}
+    assert_input_media_eq!(media, Form::default());
 
-#[test]
-fn input_media_photo_entities_vs_parse_mode() {
-    let mut method = InputMediaPhoto::default();
-    method = method.with_caption_parse_mode(ParseMode::Markdown);
-    assert_eq!(
-        serde_json::to_value(&method).unwrap(),
-        serde_json::json!({"parse_mode": "Markdown"})
+    let media = InputMedia::from(
+        InputMediaPhoto::from(InputFile::file_id("photo-file-id"))
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
-    method = method.with_caption_entities(vec![TextEntity::bold(0..10)]);
-    assert_eq!(
-        serde_json::to_value(method).unwrap(),
-        serde_json::json!({"caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]})
+    assert_input_media_parse_mode(media);
+
+    let media = InputMedia::from(
+        InputMediaPhoto::from(InputFile::file_id("photo-file-id"))
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)]),
     );
+    assert_input_media_caption_entities(media);
 }
 
 #[test]
 fn input_media_sticker() {
-    insta::assert_json_snapshot!(InputMediaSticker::default());
-    insta::assert_json_snapshot!(InputMediaSticker::default().with_emoji("🤡"));
+    let media = InputMedia::from(InputMediaSticker::from(InputFile::file_id("sticker-file-id")));
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(InputMediaSticker::from(InputFile::file_id("sticker-file-id")).with_emoji("🤡"));
+    assert_input_media_eq!(media, Form::default());
+}
+
+#[test]
+fn input_media_venue() {
+    let media = InputMedia::from(InputMediaVenue::new(1.0, 2.0, "test", "addr"));
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(
+        InputMediaVenue::new(1.0, 2.0, "test", "addr")
+            .with_foursquare_id("f-id")
+            .with_foursquare_type("f-type")
+            .with_google_place_id("g-id")
+            .with_google_place_type("g-type"),
+    );
+    assert_input_media_eq!(media, Form::default());
 }
 
 #[test]
 fn input_media_video() {
-    insta::assert_json_snapshot!(
-        InputMediaVideo::default()
+    let media = InputMedia::from(InputMediaVideo::from(InputFile::file_id("video-file-id")).with_caption("test"));
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(
+        InputMediaVideo::from(InputFileReader::from(Cursor::new("video-file-data")))
+            .with_thumbnail(InputFileReader::from(Cursor::new("video-thumb-data")))
+            .with_cover(InputFile::file_id("cover-id"))
             .with_caption("caption")
             .with_duration(100)
             .with_caption_parse_mode(ParseMode::Markdown)
@@ -436,51 +272,57 @@ fn input_media_video() {
             .with_show_caption_above_media(true)
             .with_start_timestamp(450)
             .with_supports_streaming(true)
-            .with_width(200)
+            .with_width(200),
     );
-    insta::assert_json_snapshot!(InputMediaVideo::default());
-}
+    assert_input_media_eq!(
+        media,
+        Form::from([
+            ("im_media", InputFile::from(Cursor::new("video-file-data")).into()),
+            ("im_tmb", InputFile::from(Cursor::new("video-thumb-data")).into()),
+        ])
+    );
 
-#[test]
-fn input_media_venue() {
-    let info = InputMediaVenue::new(1.0, 2.0, "test", "addr");
-    insta::assert_json_snapshot!(info.clone());
-    insta::assert_json_snapshot!(
-        info.with_foursquare_id("f-id")
-            .with_foursquare_type("f-type")
-            .with_google_place_id("g-id")
-            .with_google_place_type("g-type")
+    let media = InputMedia::from(
+        InputMediaVideo::from(InputFile::file_id("video-file-id"))
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown),
     );
-}
+    assert_input_media_parse_mode(media);
 
-#[test]
-fn input_media_video_entities_vs_parse_mode() {
-    let mut method = InputMediaVideo::default();
-    method = method.with_caption_parse_mode(ParseMode::Markdown);
-    assert_eq!(
-        serde_json::to_value(&method).unwrap(),
-        serde_json::json!({"parse_mode": "Markdown"})
+    let media = InputMedia::from(
+        InputMediaVideo::from(InputFile::file_id("video-file-id"))
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)]),
     );
-    method = method.with_caption_entities(vec![TextEntity::bold(0..10)]);
-    assert_eq!(
-        serde_json::to_value(method).unwrap(),
-        serde_json::json!({"caption_entities": [{"offset": 0, "length": 10, "type": "bold"}]})
-    );
+    assert_input_media_caption_entities(media);
 }
 
 #[test]
 fn input_media_voice_note() {
-    let info = InputMediaVoiceNote::default();
-    insta::assert_json_snapshot!(info.clone());
-    let info = info
-        .with_caption("test")
-        .with_caption_entities([TextEntity::bold(0..2)])
-        .with_duration(1);
-    insta::assert_json_snapshot!(info.clone());
-    let info = info.with_caption_parse_mode(ParseMode::MarkdownV2);
-    insta::assert_json_snapshot!(info.clone());
-    let info = info.with_caption_entities([TextEntity::bold(0..1)]);
-    insta::assert_json_snapshot!(info);
+    let media = InputMedia::from(InputMediaVoiceNote::from(InputFile::url("test")));
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(
+        InputMediaVoiceNote::from(InputFile::url("test"))
+            .with_caption("test")
+            .with_caption_entities([TextEntity::bold(0..2)])
+            .with_duration(1),
+    );
+    assert_input_media_eq!(media, Form::default());
+
+    let media = InputMedia::from(
+        InputMediaVoiceNote::from(InputFile::file_id("voice-note-file-id"))
+            .with_caption_entities(vec![TextEntity::bold(0..10)])
+            .with_caption_parse_mode(ParseMode::Markdown),
+    );
+    assert_input_media_parse_mode(media);
+
+    let media = InputMedia::from(
+        InputMediaVoiceNote::from(InputFile::file_id("voice-note-file-id"))
+            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption_entities(vec![TextEntity::bold(0..10)]),
+    );
+    assert_input_media_caption_entities(media);
 }
 
 #[test]

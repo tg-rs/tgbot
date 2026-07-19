@@ -92,7 +92,7 @@ fn send_quiz() {
         .with_description_parse_mode(ParseMode::MarkdownV2)
         .with_disable_notification(true)
         .with_explanation("test")
-        .with_explanation_media(InputMedia::for_location(InputMediaLocation::new(1.0, 2.0)))
+        .with_explanation_media(InputMediaLocation::new(1.0, 2.0))
         .unwrap()
         .with_hide_results_until_closes(true)
         .with_is_anonymous(false)
@@ -140,7 +140,7 @@ fn send_poll() {
         .with_hide_results_until_closes(true)
         .with_is_anonymous(false)
         .with_is_closed(false)
-        .with_media(InputMedia::for_location(InputMediaLocation::new(1.0, 2.0)))
+        .with_media(InputMediaLocation::new(1.0, 2.0))
         .unwrap()
         .with_members_only(true)
         .with_message_effect_id("effect-id")
@@ -156,12 +156,10 @@ fn send_poll() {
         1,
         "Q",
         [
-            InputPollOption::new("X1").with_media(InputMedia::for_audio(
-                Cursor::new("audio-data"),
-                InputMediaAudio::default().with_caption("Audio"),
-            )),
-            InputPollOption::new("X2").with_media(InputMedia::for_location(InputMediaLocation::new(1.0, 2.0))),
-            InputPollOption::new("X3").with_media(InputMedia::for_link("https://example.com")),
+            InputPollOption::new("X1")
+                .with_media(InputMediaAudio::from(Cursor::new("audio-data")).with_caption("Audio")),
+            InputPollOption::new("X2").with_media(InputMediaLocation::new(1.0, 2.0)),
+            InputPollOption::new("X3").with_media(InputMedia::link("https://example.com")),
         ],
     )
     .unwrap();

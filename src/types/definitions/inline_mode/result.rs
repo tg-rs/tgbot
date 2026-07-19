@@ -19,74 +19,180 @@ use crate::{
 };
 
 /// Represents a result of an inline query.
-#[derive(Debug, derive_more::From)]
-pub enum InlineQueryResult {
-    /// Link to an article or web page.
-    Article(InlineQueryResultArticle),
-    /// Link to an MP3 audio file.
-    Audio(InlineQueryResultAudio),
-    /// Link to an MP3 audio file stored on the Telegram servers.
-    CachedAudio(InlineQueryResultCachedAudio),
-    /// Link to a file stored on the Telegram servers.
-    CachedDocument(InlineQueryResultCachedDocument),
-    /// Link to an animated GIF file stored on the Telegram servers.
-    CachedGif(InlineQueryResultCachedGif),
-    /// Link to a video animation
-    /// (H.264/MPEG-4 AVC video without sound) stored on the Telegram servers.
-    CachedMpeg4Gif(InlineQueryResultCachedMpeg4Gif),
-    /// Link to a photo stored on the Telegram servers.
-    CachedPhoto(InlineQueryResultCachedPhoto),
-    /// Link to a sticker stored on the Telegram servers.
-    CachedSticker(InlineQueryResultCachedSticker),
-    /// Link to a video file stored on the Telegram servers.
-    CachedVideo(InlineQueryResultCachedVideo),
-    /// Link to a voice message stored on the Telegram servers.
-    CachedVoice(InlineQueryResultCachedVoice),
-    /// Contact with a phone number.
-    Contact(InlineQueryResultContact),
-    /// Link to a file.
-    Document(InlineQueryResultDocument),
-    /// Game.
-    Game(InlineQueryResultGame),
-    /// Link to an animated GIF file.
-    Gif(InlineQueryResultGif),
-    /// Location on a map.
-    Location(InlineQueryResultLocation),
-    /// Link to a video animation (H.264/MPEG-4 AVC video without sound).
-    Mpeg4Gif(InlineQueryResultMpeg4Gif),
-    /// Link to a photo.
-    Photo(InlineQueryResultPhoto),
-    /// Venue.
-    Venue(InlineQueryResultVenue),
-    /// Link to a page containing an embedded video player or a video file.
-    Video(InlineQueryResultVideo),
-    /// Link to a voice recording in an OGG container encoded with OPUS.
-    Voice(InlineQueryResultVoice),
+#[derive(Debug)]
+pub struct InlineQueryResult {
+    data: InlineQueryResultData,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResult {
-    pub(crate) fn into_parts(self) -> (Option<Form>, InlineQueryResultData) {
-        match self {
-            InlineQueryResult::Article(value) => (value.form, value.data),
-            InlineQueryResult::Audio(value) => (value.form, value.data),
-            InlineQueryResult::CachedAudio(value) => (value.form, value.data),
-            InlineQueryResult::CachedDocument(value) => (value.form, value.data),
-            InlineQueryResult::CachedGif(value) => (value.form, value.data),
-            InlineQueryResult::CachedMpeg4Gif(value) => (value.form, value.data),
-            InlineQueryResult::CachedPhoto(value) => (value.form, value.data),
-            InlineQueryResult::CachedSticker(value) => (value.form, value.data),
-            InlineQueryResult::CachedVideo(value) => (value.form, value.data),
-            InlineQueryResult::CachedVoice(value) => (value.form, value.data),
-            InlineQueryResult::Contact(value) => (value.form, value.data),
-            InlineQueryResult::Document(value) => (value.form, value.data),
-            InlineQueryResult::Game(value) => (value.form, value.data),
-            InlineQueryResult::Gif(value) => (value.form, value.data),
-            InlineQueryResult::Location(value) => (value.form, value.data),
-            InlineQueryResult::Mpeg4Gif(value) => (value.form, value.data),
-            InlineQueryResult::Photo(value) => (value.form, value.data),
-            InlineQueryResult::Venue(value) => (value.form, value.data),
-            InlineQueryResult::Video(value) => (value.form, value.data),
-            InlineQueryResult::Voice(value) => (value.form, value.data),
+    pub(crate) fn into_parts(mut self, suffix: &[usize]) -> (Option<Form>, InlineQueryResultData) {
+        let form = self.input_message_content.and_then(|x| {
+            let (form, content_data) = x.into_parts(suffix);
+            self.data.properties.input_message_content = Some(content_data);
+            form
+        });
+        (form, self.data)
+    }
+}
+
+impl From<InlineQueryResultArticle> for InlineQueryResult {
+    fn from(value: InlineQueryResultArticle) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: Some(value.input_message_content),
+        }
+    }
+}
+impl From<InlineQueryResultAudio> for InlineQueryResult {
+    fn from(value: InlineQueryResultAudio) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultCachedAudio> for InlineQueryResult {
+    fn from(value: InlineQueryResultCachedAudio) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultCachedDocument> for InlineQueryResult {
+    fn from(value: InlineQueryResultCachedDocument) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultCachedGif> for InlineQueryResult {
+    fn from(value: InlineQueryResultCachedGif) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultCachedMpeg4Gif> for InlineQueryResult {
+    fn from(value: InlineQueryResultCachedMpeg4Gif) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultCachedPhoto> for InlineQueryResult {
+    fn from(value: InlineQueryResultCachedPhoto) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultCachedSticker> for InlineQueryResult {
+    fn from(value: InlineQueryResultCachedSticker) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultCachedVideo> for InlineQueryResult {
+    fn from(value: InlineQueryResultCachedVideo) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultCachedVoice> for InlineQueryResult {
+    fn from(value: InlineQueryResultCachedVoice) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultContact> for InlineQueryResult {
+    fn from(value: InlineQueryResultContact) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultDocument> for InlineQueryResult {
+    fn from(value: InlineQueryResultDocument) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultGame> for InlineQueryResult {
+    fn from(value: InlineQueryResultGame) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: None,
+        }
+    }
+}
+impl From<InlineQueryResultGif> for InlineQueryResult {
+    fn from(value: InlineQueryResultGif) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultLocation> for InlineQueryResult {
+    fn from(value: InlineQueryResultLocation) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultMpeg4Gif> for InlineQueryResult {
+    fn from(value: InlineQueryResultMpeg4Gif) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultPhoto> for InlineQueryResult {
+    fn from(value: InlineQueryResultPhoto) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultVenue> for InlineQueryResult {
+    fn from(value: InlineQueryResultVenue) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultVideo> for InlineQueryResult {
+    fn from(value: InlineQueryResultVideo) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
+        }
+    }
+}
+impl From<InlineQueryResultVoice> for InlineQueryResult {
+    fn from(value: InlineQueryResultVoice) -> Self {
+        Self {
+            data: value.data,
+            input_message_content: value.input_message_content,
         }
     }
 }
@@ -95,7 +201,7 @@ impl InlineQueryResult {
 #[derive(Debug)]
 pub struct InlineQueryResultArticle {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: InputMessageContent,
 }
 
 impl InlineQueryResultArticle {
@@ -112,18 +218,16 @@ impl InlineQueryResultArticle {
         B: Into<InputMessageContent>,
         C: Into<String>,
     {
-        let (form, content) = input_message_content.into().into_parts();
         Self {
             data: InlineQueryResultData {
                 id: id.into(),
                 result_type: InlineQueryResultType::Article,
                 properties: InlineQueryResultProperties {
-                    input_message_content: Some(content),
                     title: Some(title.into()),
                     ..Default::default()
                 },
             },
-            form,
+            input_message_content: input_message_content.into(),
         }
     }
 
@@ -207,7 +311,7 @@ impl InlineQueryResultArticle {
 #[derive(Debug)]
 pub struct InlineQueryResultAudio {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultAudio {
@@ -234,7 +338,7 @@ impl InlineQueryResultAudio {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -299,9 +403,7 @@ impl InlineQueryResultAudio {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -340,7 +442,7 @@ impl InlineQueryResultAudio {
 #[derive(Debug)]
 pub struct InlineQueryResultCachedAudio {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultCachedAudio {
@@ -364,7 +466,7 @@ impl InlineQueryResultCachedAudio {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -419,9 +521,7 @@ impl InlineQueryResultCachedAudio {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -447,7 +547,7 @@ impl InlineQueryResultCachedAudio {
 #[derive(Debug)]
 pub struct InlineQueryResultCachedDocument {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultCachedDocument {
@@ -474,7 +574,7 @@ impl InlineQueryResultCachedDocument {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -542,9 +642,7 @@ impl InlineQueryResultCachedDocument {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -570,7 +668,7 @@ impl InlineQueryResultCachedDocument {
 #[derive(Debug)]
 pub struct InlineQueryResultCachedGif {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultCachedGif {
@@ -594,7 +692,7 @@ impl InlineQueryResultCachedGif {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -649,9 +747,7 @@ impl InlineQueryResultCachedGif {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -702,7 +798,7 @@ impl InlineQueryResultCachedGif {
 #[derive(Debug)]
 pub struct InlineQueryResultCachedMpeg4Gif {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultCachedMpeg4Gif {
@@ -726,7 +822,7 @@ impl InlineQueryResultCachedMpeg4Gif {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -781,9 +877,7 @@ impl InlineQueryResultCachedMpeg4Gif {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -832,7 +926,7 @@ impl InlineQueryResultCachedMpeg4Gif {
 #[derive(Debug)]
 pub struct InlineQueryResultCachedPhoto {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultCachedPhoto {
@@ -856,7 +950,7 @@ impl InlineQueryResultCachedPhoto {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -924,9 +1018,7 @@ impl InlineQueryResultCachedPhoto {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -975,7 +1067,7 @@ impl InlineQueryResultCachedPhoto {
 #[derive(Debug)]
 pub struct InlineQueryResultCachedSticker {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultCachedSticker {
@@ -999,7 +1091,7 @@ impl InlineQueryResultCachedSticker {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -1012,9 +1104,7 @@ impl InlineQueryResultCachedSticker {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -1040,7 +1130,7 @@ impl InlineQueryResultCachedSticker {
 #[derive(Debug)]
 pub struct InlineQueryResultCachedVideo {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultCachedVideo {
@@ -1067,7 +1157,7 @@ impl InlineQueryResultCachedVideo {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -1135,9 +1225,7 @@ impl InlineQueryResultCachedVideo {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -1173,7 +1261,7 @@ impl InlineQueryResultCachedVideo {
 #[derive(Debug)]
 pub struct InlineQueryResultCachedVoice {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultCachedVoice {
@@ -1200,7 +1288,7 @@ impl InlineQueryResultCachedVoice {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -1268,9 +1356,7 @@ impl InlineQueryResultCachedVoice {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 }
@@ -1283,7 +1369,7 @@ impl InlineQueryResultCachedVoice {
 #[derive(Debug)]
 pub struct InlineQueryResultContact {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultContact {
@@ -1310,7 +1396,7 @@ impl InlineQueryResultContact {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -1323,9 +1409,7 @@ impl InlineQueryResultContact {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -1411,7 +1495,7 @@ impl InlineQueryResultContact {
 #[derive(Debug)]
 pub struct InlineQueryResultDocument {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultDocument {
@@ -1441,7 +1525,7 @@ impl InlineQueryResultDocument {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -1509,9 +1593,7 @@ impl InlineQueryResultDocument {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -1566,7 +1648,6 @@ impl InlineQueryResultDocument {
 #[derive(Debug)]
 pub struct InlineQueryResultGame {
     data: InlineQueryResultData,
-    form: Option<Form>,
 }
 
 impl InlineQueryResultGame {
@@ -1590,7 +1671,6 @@ impl InlineQueryResultGame {
                     ..Default::default()
                 },
             },
-            form: None,
         }
     }
 
@@ -1617,7 +1697,7 @@ impl InlineQueryResultGame {
 #[derive(Debug)]
 pub struct InlineQueryResultGif {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultGif {
@@ -1644,7 +1724,7 @@ impl InlineQueryResultGif {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -1729,9 +1809,7 @@ impl InlineQueryResultGif {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -1795,7 +1873,7 @@ impl InlineQueryResultGif {
 #[derive(Debug)]
 pub struct InlineQueryResultLocation {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultLocation {
@@ -1823,7 +1901,7 @@ impl InlineQueryResultLocation {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -1856,9 +1934,7 @@ impl InlineQueryResultLocation {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -1940,7 +2016,7 @@ impl InlineQueryResultLocation {
 #[derive(Debug)]
 pub struct InlineQueryResultMpeg4Gif {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultMpeg4Gif {
@@ -1967,7 +2043,7 @@ impl InlineQueryResultMpeg4Gif {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -2022,9 +2098,7 @@ impl InlineQueryResultMpeg4Gif {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -2118,7 +2192,7 @@ impl InlineQueryResultMpeg4Gif {
 #[derive(Debug)]
 pub struct InlineQueryResultPhoto {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultPhoto {
@@ -2145,7 +2219,7 @@ impl InlineQueryResultPhoto {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -2213,9 +2287,7 @@ impl InlineQueryResultPhoto {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -2284,7 +2356,7 @@ impl InlineQueryResultPhoto {
 #[derive(Debug)]
 pub struct InlineQueryResultVenue {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultVenue {
@@ -2315,7 +2387,7 @@ impl InlineQueryResultVenue {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -2385,9 +2457,7 @@ impl InlineQueryResultVenue {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -2448,7 +2518,7 @@ impl InlineQueryResultVenue {
 #[derive(Debug)]
 pub struct InlineQueryResultVideo {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultVideo {
@@ -2481,7 +2551,7 @@ impl InlineQueryResultVideo {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -2552,9 +2622,7 @@ impl InlineQueryResultVideo {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 
@@ -2620,7 +2688,7 @@ impl InlineQueryResultVideo {
 #[derive(Debug)]
 pub struct InlineQueryResultVoice {
     data: InlineQueryResultData,
-    form: Option<Form>,
+    input_message_content: Option<InputMessageContent>,
 }
 
 impl InlineQueryResultVoice {
@@ -2647,7 +2715,7 @@ impl InlineQueryResultVoice {
                     ..Default::default()
                 },
             },
-            form: None,
+            input_message_content: None,
         }
     }
 
@@ -2702,9 +2770,7 @@ impl InlineQueryResultVoice {
     where
         T: Into<InputMessageContent>,
     {
-        let (form, data) = value.into().into_parts();
-        self.form = form;
-        self.data.properties.input_message_content = Some(data);
+        self.input_message_content = Some(value.into());
         self
     }
 

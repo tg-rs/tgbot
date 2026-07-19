@@ -3,6 +3,6 @@ source: src/types/tests/input.rs
 expression: data
 ---
 {
-  "type": "sticker",
-  "media": "sticker-file-id"
+  "type": "link",
+  "url": "https://example.com"
 }

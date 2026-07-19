@@ -50,7 +50,7 @@ impl AnswerWebAppQuery {
         A: Into<InlineQueryResult>,
         B: Into<String>,
     {
-        let (form, data) = result.into().into_parts();
+        let (form, data) = result.into().into_parts(&[0]);
         let mut form = form.unwrap_or_default();
         form.insert_field("web_app_query_id", web_app_query_id.into());
         form.insert_field("result", data.serialize()?);

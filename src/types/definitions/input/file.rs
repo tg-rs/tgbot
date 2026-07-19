@@ -1,4 +1,4 @@
-use std::{fmt, path::Path};
+use std::{borrow::Cow, fmt, path::Path};
 
 use mime::{APPLICATION_OCTET_STREAM, Mime};
 use tokio::{
@@ -7,7 +7,7 @@ use tokio::{
 };
 use tokio_util::codec::{BytesCodec, FramedRead};
 
-use crate::api::FormValue;
+use crate::api::{Form, FormValue};
 
 /// Represents a file reader for uploading files.
 pub struct InputFileReader {
@@ -145,6 +145,24 @@ impl InputFile {
             reader = reader.with_file_name(file_name).with_mime_type(mime_type);
         }
         Ok(reader.into())
+    }
+
+    pub(crate) fn attach(self, form: &mut Form, key: &str, suffix: &[usize]) -> String {
+        match self {
+            InputFile::Id(text) | InputFile::Url(text) => text,
+            file => {
+                let key = if suffix == [0] {
+                    Cow::Borrowed(key)
+                } else {
+                    let mut key = String::from(key);
+                    key.extend(suffix.iter().map(|x| format!("_{x}")));
+                    Cow::Owned(key)
+                };
+                let result = format!("attach://{key}");
+                form.insert_field(key, file);
+                result
+            }
+        }
     }
 }
 

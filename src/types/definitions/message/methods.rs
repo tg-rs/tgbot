@@ -8,7 +8,6 @@ use crate::{
         Float,
         InlineKeyboardMarkup,
         InputMedia,
-        InputMediaError,
         InputRichMessage,
         Integer,
         LinkPreviewOptions,
@@ -785,11 +784,13 @@ impl EditMessageMedia {
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `message_id` - Identifier of the sent message.
     /// * `media` - New media content of the message.
-    pub fn for_chat_message<T>(chat_id: T, message_id: Integer, media: InputMedia) -> Result<Self, InputMediaError>
+    pub fn for_chat_message<A, B>(chat_id: A, message_id: Integer, media: B) -> Result<Self, SerializeError>
     where
-        T: Into<ChatId>,
+        A: Into<ChatId>,
+        B: Into<InputMedia>,
     {
-        let mut form: Form = media.try_into_form("media")?;
+        let (mut form, data) = media.into().into_parts(&[0]);
+        form.insert_field("media", data.serialize()?);
         form.insert_field("chat_id", chat_id.into());
         form.insert_field("message_id", message_id);
         Ok(Self { form })
@@ -801,11 +802,13 @@ impl EditMessageMedia {
     ///
     /// * `inline_message_id` - Identifier of the inline message.
     /// * `media` - New media content of the message.
-    pub fn for_inline_message<T>(inline_message_id: T, media: InputMedia) -> Result<Self, InputMediaError>
+    pub fn for_inline_message<A, B>(inline_message_id: A, media: B) -> Result<Self, SerializeError>
     where
-        T: Into<String>,
+        A: Into<String>,
+        B: Into<InputMedia>,
     {
-        let mut form: Form = media.try_into_form("media")?;
+        let (mut form, data) = media.into().into_parts(&[0]);
+        form.insert_field("media", data.serialize()?);
         form.insert_field("inline_message_id", inline_message_id.into());
         Ok(EditMessageMedia { form })
     }
@@ -973,8 +976,7 @@ impl EditMessageText {
     where
         T: Into<ChatId>,
     {
-        let (form, data) = rich_message.into_parts();
-        let mut form = form.unwrap_or_default();
+        let (mut form, data) = rich_message.into_parts(&[0]);
         form.insert_field("chat_id", chat_id.into());
         form.insert_field("message_id", message_id);
         form.insert_field("rich_message", data.serialize()?);
@@ -1013,8 +1015,7 @@ impl EditMessageText {
     where
         T: Into<String>,
     {
-        let (form, data) = rich_message.into_parts();
-        let mut form = form.unwrap_or_default();
+        let (mut form, data) = rich_message.into_parts(&[0]);
         form.insert_field("inline_message_id", inline_message_id.into());
         form.insert_field("rich_message", data.serialize()?);
         Ok(Self { form })

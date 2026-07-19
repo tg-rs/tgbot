@@ -24,80 +24,79 @@ use crate::{
 #[derive(Debug)]
 pub struct InputMessageContent {
     data: InputMessageContentData,
-    form: Option<Form>,
+    input_rich_message: Option<InputRichMessage>,
 }
 
 impl InputMessageContent {
-    pub(crate) fn into_parts(self) -> (Option<Form>, InputMessageContentData) {
-        (self.form, self.data)
+    fn new(data: InputMessageContentData) -> Self {
+        Self {
+            data,
+            input_rich_message: None,
+        }
+    }
+
+    fn with_input_rich_message(mut self, value: InputRichMessage) -> Self {
+        self.input_rich_message = Some(value);
+        self
+    }
+
+    pub(crate) fn into_parts(mut self, suffix: &[usize]) -> (Option<Form>, InputMessageContentData) {
+        let form = self.input_rich_message.map(|x| {
+            let (form, rich_message) = x.into_parts(suffix);
+            self.data.rich_message = Some(rich_message);
+            form
+        });
+        (form, self.data)
     }
 }
 
 impl From<Contact> for InputMessageContent {
     fn from(value: Contact) -> Self {
-        Self {
-            data: InputMessageContentData {
-                first_name: Some(value.first_name),
-                phone_number: Some(value.phone_number),
-                last_name: value.last_name,
-                vcard: value.vcard,
-                ..Default::default()
-            },
-            form: None,
-        }
+        Self::new(InputMessageContentData {
+            first_name: Some(value.first_name),
+            phone_number: Some(value.phone_number),
+            last_name: value.last_name,
+            vcard: value.vcard,
+            ..Default::default()
+        })
     }
 }
 
 impl From<InputMessageContentContact> for InputMessageContent {
     fn from(value: InputMessageContentContact) -> Self {
-        Self {
-            data: value.data,
-            form: None,
-        }
+        Self::new(value.data)
     }
 }
 
 impl From<InputMessageContentInvoice> for InputMessageContent {
     fn from(value: InputMessageContentInvoice) -> Self {
-        Self {
-            data: value.data,
-            form: None,
-        }
+        Self::new(value.data)
     }
 }
 
 impl From<InputMessageContentText> for InputMessageContent {
     fn from(value: InputMessageContentText) -> Self {
-        Self {
-            data: value.data,
-            form: None,
-        }
+        Self::new(value.data)
     }
 }
 
 impl From<InputMessageContentVenue> for InputMessageContent {
     fn from(value: InputMessageContentVenue) -> Self {
-        Self {
-            data: value.data,
-            form: None,
-        }
+        Self::new(value.data)
     }
 }
 
 impl From<Location> for InputMessageContent {
     fn from(value: Location) -> Self {
-        Self {
-            data: InputMessageContentData {
-                latitude: Some(value.latitude),
-                longitude: Some(value.longitude),
-                heading: value.heading,
-                horizontal_accuracy: value.horizontal_accuracy,
-                live_period: value.live_period,
-                proximity_alert_radius: value.proximity_alert_radius,
-                ..Default::default()
-            },
-            form: None,
-        }
+        Self::new(InputMessageContentData {
+            latitude: Some(value.latitude),
+            longitude: Some(value.longitude),
+            heading: value.heading,
+            horizontal_accuracy: value.horizontal_accuracy,
+            live_period: value.live_period,
+            proximity_alert_radius: value.proximity_alert_radius,
+            ..Default::default()
+        })
     }
 }
 
@@ -106,51 +105,35 @@ where
     T: Into<String>,
 {
     fn from(value: T) -> Self {
-        Self {
-            data: InputMessageContentText::from(value).data,
-            form: None,
-        }
+        Self::new(InputMessageContentText::from(value).data)
     }
 }
 
 impl From<Text> for InputMessageContent {
     fn from(value: Text) -> Self {
-        Self {
-            data: InputMessageContentText::from(value).data,
-            form: None,
-        }
+        Self::new(InputMessageContentText::from(value).data)
     }
 }
 
 impl From<InputRichMessage> for InputMessageContent {
     fn from(value: InputRichMessage) -> Self {
-        let (form, rich_message) = value.into_parts();
-        Self {
-            data: InputMessageContentData {
-                rich_message: Some(rich_message),
-                ..Default::default()
-            },
-            form,
-        }
+        Self::new(Default::default()).with_input_rich_message(value)
     }
 }
 
 impl From<Venue> for InputMessageContent {
     fn from(value: Venue) -> Self {
-        Self {
-            data: InputMessageContentData {
-                address: Some(value.address),
-                latitude: Some(value.location.latitude),
-                longitude: Some(value.location.longitude),
-                title: Some(value.title),
-                foursquare_id: value.foursquare_id,
-                foursquare_type: value.foursquare_type,
-                google_place_id: value.google_place_id,
-                google_place_type: value.google_place_type,
-                ..Default::default()
-            },
-            form: None,
-        }
+        Self::new(InputMessageContentData {
+            address: Some(value.address),
+            latitude: Some(value.location.latitude),
+            longitude: Some(value.location.longitude),
+            title: Some(value.title),
+            foursquare_id: value.foursquare_id,
+            foursquare_type: value.foursquare_type,
+            google_place_id: value.google_place_id,
+            google_place_type: value.google_place_type,
+            ..Default::default()
+        })
     }
 }
 

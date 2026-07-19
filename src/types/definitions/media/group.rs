@@ -1,13 +1,12 @@
 use std::{error::Error, fmt};
 
-use serde::Serialize;
 use serde_json::Error as JsonError;
 
 use crate::{
     api::{Form, Method, Payload},
     types::{
         ChatId,
-        InputFile,
+        InputMedia,
         InputMediaAudio,
         InputMediaDocument,
         InputMediaLivePhoto,
@@ -35,11 +34,12 @@ impl MediaGroup {
     /// # Arguments
     ///
     /// * `items` - Items of the group.
-    pub fn new<T>(items: T) -> Result<Self, MediaGroupError>
+    pub fn new<A, B>(items: A) -> Result<Self, MediaGroupError>
     where
-        T: IntoIterator<Item = MediaGroupItem>,
+        A: IntoIterator<Item = B>,
+        B: Into<MediaGroupItem>,
     {
-        let items: Vec<(usize, MediaGroupItem)> = items.into_iter().enumerate().collect();
+        let items: Vec<(usize, MediaGroupItem)> = items.into_iter().map(Into::into).enumerate().collect();
 
         let total_items = items.len();
         if total_items < MIN_GROUP_ATTACHMENTS {
@@ -50,39 +50,11 @@ impl MediaGroup {
         }
 
         let mut form = Form::default();
-
-        let mut add_file = |key: String, file: InputFile| -> String {
-            match &file {
-                InputFile::Id(text) | InputFile::Url(text) => text.clone(),
-                _ => {
-                    form.insert_field(&key, file);
-                    format!("attach://{key}")
-                }
-            }
-        };
-
         let mut info = Vec::new();
         for (idx, item) in items {
-            let media = add_file(format!("tgbot_im_file_{idx}"), item.file);
-            let thumbnail = item
-                .thumbnail
-                .map(|thumbnail| add_file(format!("tgbot_im_thumb_{idx}"), thumbnail));
-            let data = match item.item_type {
-                MediaGroupItemType::Audio(info) => MediaGroupItemData::Audio { media, thumbnail, info },
-                MediaGroupItemType::Document(info) => MediaGroupItemData::Document { media, thumbnail, info },
-                MediaGroupItemType::LivePhoto(photo, info) => {
-                    let photo = add_file(format!("tgbot_im_live_photo_{idx}"), photo);
-                    MediaGroupItemData::LivePhoto { media, photo, info }
-                }
-                MediaGroupItemType::Photo(info) => MediaGroupItemData::Photo { media, info },
-                MediaGroupItemType::Video(info) => MediaGroupItemData::Video {
-                    media,
-                    cover: item.cover.map(|cover| add_file(format!("tgbot_im_cover_{idx}"), cover)),
-                    thumbnail,
-                    info,
-                },
-            };
-            info.push(data);
+            let (item_form, item_info) = item.data.into_parts(&[idx]);
+            form.extend(item_form);
+            info.push(item_info);
         }
 
         form.insert_field(
@@ -103,166 +75,37 @@ impl From<MediaGroup> for Form {
 /// Represents a media group item.
 #[derive(Debug)]
 pub struct MediaGroupItem {
-    file: InputFile,
-    item_type: MediaGroupItemType,
-    cover: Option<InputFile>,
-    thumbnail: Option<InputFile>,
+    data: InputMedia,
 }
 
-impl MediaGroupItem {
-    /// Creates a `MediaGroupItem` for an audio.
-    ///
-    /// # Arguments
-    ///
-    /// * `file` - File to attach.
-    /// * `metadata` - Metadata.
-    pub fn for_audio<T>(file: T, metadata: InputMediaAudio) -> Self
-    where
-        T: Into<InputFile>,
-    {
-        Self::new(file, MediaGroupItemType::Audio(metadata))
-    }
-
-    /// Creates a `MediaGroupItem` for a document.
-    ///
-    /// # Arguments
-    ///
-    /// * `file` - File to attach.
-    /// * `metadata` - Metadata.
-    pub fn for_document<T>(file: T, metadata: InputMediaDocument) -> Self
-    where
-        T: Into<InputFile>,
-    {
-        Self::new(file, MediaGroupItemType::Document(metadata))
-    }
-
-    /// Creates a `MediaGroupItem` for a live photo.
-    ///
-    /// # Arguments
-    ///
-    /// * `file` - File to attach.
-    /// * `photo` - Static photo.
-    pub fn for_live_photo<A, B>(file: A, photo: B, metadata: InputMediaLivePhoto) -> Self
-    where
-        A: Into<InputFile>,
-        B: Into<InputFile>,
-    {
-        Self::new(file, MediaGroupItemType::LivePhoto(photo.into(), metadata))
-    }
-
-    /// Creates a `MediaGroupItem` for a photo.
-    ///
-    /// # Arguments
-    ///
-    /// * `file` - File to attach.
-    /// * `metadata` - Metadata.
-    pub fn for_photo<T>(file: T, metadata: InputMediaPhoto) -> Self
-    where
-        T: Into<InputFile>,
-    {
-        Self::new(file, MediaGroupItemType::Photo(metadata))
-    }
-
-    /// Creates a `MediaGroupItem` for a video.
-    ///
-    /// # Arguments
-    ///
-    /// * `file` - File to attach.
-    /// * `metadata` - Metadata.
-    pub fn for_video<T>(file: T, metadata: InputMediaVideo) -> Self
-    where
-        T: Into<InputFile>,
-    {
-        Self::new(file, MediaGroupItemType::Video(metadata))
-    }
-
-    /// Sets a new cover.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Cover.
-    ///
-    /// Note that the cover is ignored when the media type is not a video.
-    pub fn with_cover<T>(mut self, value: T) -> Self
-    where
-        T: Into<InputFile>,
-    {
-        self.cover = Some(value.into());
-        self
-    }
-
-    /// Sets a new thumbnail.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Thumbnail.
-    ///
-    /// Note that a photo can not have a thumbnail and it will be ignored.
-    pub fn with_thumbnail<T>(mut self, value: T) -> Self
-    where
-        T: Into<InputFile>,
-    {
-        self.thumbnail = Some(value.into());
-        self
-    }
-
-    fn new<T>(file: T, item_type: MediaGroupItemType) -> Self
-    where
-        T: Into<InputFile>,
-    {
-        Self {
-            item_type,
-            file: file.into(),
-            cover: None,
-            thumbnail: None,
-        }
+impl From<InputMediaAudio> for MediaGroupItem {
+    fn from(value: InputMediaAudio) -> Self {
+        Self { data: value.into() }
     }
 }
 
-#[derive(Debug)]
-enum MediaGroupItemType {
-    Audio(InputMediaAudio),
-    Document(InputMediaDocument),
-    LivePhoto(InputFile, InputMediaLivePhoto),
-    Photo(InputMediaPhoto),
-    Video(InputMediaVideo),
+impl From<InputMediaDocument> for MediaGroupItem {
+    fn from(value: InputMediaDocument) -> Self {
+        Self { data: value.into() }
+    }
 }
 
-#[serde_with::skip_serializing_none]
-#[derive(Debug, Serialize)]
-#[serde(tag = "type")]
-#[serde(rename_all = "lowercase")]
-enum MediaGroupItemData {
-    Audio {
-        media: String,
-        thumbnail: Option<String>,
-        #[serde(flatten)]
-        info: InputMediaAudio,
-    },
-    Document {
-        media: String,
-        thumbnail: Option<String>,
-        #[serde(flatten)]
-        info: InputMediaDocument,
-    },
-    LivePhoto {
-        media: String,
-        photo: String,
-        #[serde(flatten)]
-        info: InputMediaLivePhoto,
-    },
-    Photo {
-        media: String,
-        #[serde(flatten)]
-        info: InputMediaPhoto,
-    },
-    Video {
-        media: String,
-        cover: Option<String>,
-        thumbnail: Option<String>,
-        #[serde(flatten)]
-        info: InputMediaVideo,
-    },
+impl From<InputMediaLivePhoto> for MediaGroupItem {
+    fn from(value: InputMediaLivePhoto) -> Self {
+        Self { data: value.into() }
+    }
+}
+
+impl From<InputMediaPhoto> for MediaGroupItem {
+    fn from(value: InputMediaPhoto) -> Self {
+        Self { data: value.into() }
+    }
+}
+
+impl From<InputMediaVideo> for MediaGroupItem {
+    fn from(value: InputMediaVideo) -> Self {
+        Self { data: value.into() }
+    }
 }
 
 /// Represents a media group error.

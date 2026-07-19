@@ -50,7 +50,7 @@ impl SavePreparedInlineMessage {
     where
         T: Into<InlineQueryResult>,
     {
-        let (form, data) = result.into().into_parts();
+        let (form, data) = result.into().into_parts(&[0]);
         let mut form = form.unwrap_or_default();
         form.insert_field("user_id", user_id);
         form.insert_field("result", data.serialize()?);

@@ -1,7 +1,9 @@
 ---
 source: src/types/tests/input.rs
-expression: "InputMediaSticker::default().with_emoji(\"🤡\")"
+expression: data
 ---
 {
-  "emoji": "🤡"
+  "type": "sticker",
+  "emoji": "🤡",
+  "media": "sticker-file-id"
 }

@@ -115,8 +115,8 @@ impl AnswerInlineQuery {
     {
         let mut form = Form::default();
         let mut items = Vec::new();
-        for item in results {
-            let (item_form, item_data) = item.into_parts();
+        for (idx, item) in results.into_iter().enumerate() {
+            let (item_form, item_data) = item.into_parts(&[idx]);
             if let Some(item_form) = item_form {
                 form.extend(item_form);
             }

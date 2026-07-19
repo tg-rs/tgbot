@@ -70,10 +70,17 @@ impl RichMessage {
 #[derive(Debug)]
 pub struct InputRichMessage {
     data: InputRichMessageData,
-    form: Option<Form>,
+    media: Option<Vec<(String, InputMedia)>>,
 }
 
 impl InputRichMessage {
+    fn new(data: InputRichMessageData) -> Self {
+        Self {
+            data,
+            media: None,
+        }
+    }
+
     /// Creates a new `InputRichMessage`.
     ///
     /// # Arguments
@@ -83,10 +90,7 @@ impl InputRichMessage {
     where
         T: Into<String>,
     {
-        Self {
-            data: InputRichMessageData::markdown(value),
-            form: None,
-        }
+        Self::new(InputRichMessageData::markdown(value))
     }
 
     /// Creates a new `InputRichMessage`.
@@ -98,10 +102,7 @@ impl InputRichMessage {
     where
         T: Into<String>,
     {
-        Self {
-            data: InputRichMessageData::html(value),
-            form: None,
-        }
+        Self::new(InputRichMessageData::html(value))
     }
 
     /// Sets a new value for the `is_rtl` flag.
@@ -122,21 +123,13 @@ impl InputRichMessage {
     ///
     /// Media specified in the markdown or html fields using
     /// `tg://(audio|photo|video)?id=` links.
-    pub fn with_media<A, B>(mut self, value: A) -> Self
+    pub fn with_media<A, B, C>(mut self, value: A) -> Self
     where
-        A: IntoIterator<Item = (B, InputMedia)>,
+        A: IntoIterator<Item = (B, C)>,
         B: Into<String>,
+        C: Into<InputMedia>,
     {
-        let mut form = Form::default();
-        let mut media_data = Vec::new();
-        for (id, input_media) in value {
-            let id = id.into();
-            let (media_form, media) = input_media.into_parts();
-            form.extend(media_form.with_suffix(&id));
-            media_data.push(InputRichMessageMedia { id, media });
-        }
-        self.form = Some(form);
-        self.data.media = Some(media_data);
+        self.media = Some(value.into_iter().map(|(id, media)| (id.into(), media.into())).collect());
         self
     }
 
@@ -150,8 +143,14 @@ impl InputRichMessage {
         self
     }
 
-    pub(crate) fn into_parts(self) -> (Option<Form>, InputRichMessageData) {
-        (self.form, self.data)
+    pub(crate) fn into_parts(mut self, suffix: &[usize]) -> (Form, InputRichMessageData) {
+        let suffix = suffix.to_vec();
+        let mut form = Form::default();
+        if let Some(media) = self.media {
+            form.extend(self.data.attach_media(media, suffix));
+        }
+
+        (form, self.data)
     }
 }
 
@@ -192,6 +191,20 @@ impl InputRichMessageData {
         }
     }
 
+    fn attach_media(&mut self, value: Vec<(String, InputMedia)>, suffix: Vec<usize>) -> Form {
+        let mut form = Form::default();
+        let mut items = Vec::new();
+        for (idx, (id, input_media)) in value.into_iter().enumerate() {
+            let mut item_suffix = suffix.clone();
+            item_suffix.push(idx);
+            let (media_form, media) = input_media.into_parts(&item_suffix);
+            form.extend(media_form);
+            items.push(InputRichMessageMedia { id, media });
+        }
+        self.media = Some(items);
+        form
+    }
+
     pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
         serde_json::to_string(&self).map_err(SerializeError::input_rich_message_data)
     }
@@ -223,9 +236,9 @@ impl SendRichMessage {
     where
         T: Into<ChatId>,
     {
-        let mut form = rich_message.form.unwrap_or_default();
+        let (mut form, data) = rich_message.into_parts(&[0]);
         form.insert_field("chat_id", chat_id.into());
-        form.insert_field("rich_message", rich_message.data.serialize()?);
+        form.insert_field("rich_message", data.serialize()?);
         Ok(Self { form })
     }
 
@@ -382,10 +395,10 @@ impl SendRichMessageDraft {
     ///   changes to drafts with the same identifier are animated.
     /// * `rich_message` - The partial message to be streamed.
     pub fn new(chat_id: Integer, draft_id: Integer, rich_message: InputRichMessage) -> Result<Self, SerializeError> {
-        let mut form = rich_message.form.unwrap_or_default();
+        let (mut form, data) = rich_message.into_parts(&[0]);
         form.insert_field("chat_id", chat_id);
         form.insert_field("draft_id", draft_id);
-        form.insert_field("rich_message", rich_message.data.serialize()?);
+        form.insert_field("rich_message", data.serialize()?);
         Ok(Self { form })
     }
 

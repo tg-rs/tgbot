@@ -2,19 +2,32 @@ use std::io::Cursor;
 
 use crate::types::*;
 
-fn create_media_group() -> MediaGroup {
-    MediaGroup::new(vec![
-        MediaGroupItem::for_photo(InputFileReader::from(Cursor::new("test")), InputMediaPhoto::default()),
-        MediaGroupItem::for_video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default()),
-        MediaGroupItem::for_video(InputFile::file_id("file-id"), InputMediaVideo::default())
-            .with_thumbnail(InputFile::url("thumb-url")),
-    ])
-    .unwrap()
-}
-
 #[test]
 fn send_media_group() {
-    let method = SendMediaGroup::new(1, create_media_group())
+    let media_group = MediaGroup::new(vec![
+        MediaGroupItem::from(InputMediaAudio::from(InputFileReader::from(Cursor::new("test")))),
+        MediaGroupItem::from(InputMediaDocument::from(InputFileReader::from(Cursor::new("test")))),
+        MediaGroupItem::from(InputMediaLivePhoto::from((
+            InputFile::file_id("file-id"),
+            InputFile::file_id("photo-id"),
+        ))),
+        MediaGroupItem::from(InputMediaPhoto::from(InputFileReader::from(Cursor::new("test")))),
+        MediaGroupItem::from(InputMediaPhoto::from(Cursor::new("test")).with_caption("caption")),
+        MediaGroupItem::from(
+            InputMediaVideo::from(InputFileReader::from(Cursor::new("test"))).with_cover(InputFile::url("cover-url")),
+        ),
+        MediaGroupItem::from(
+            InputMediaAudio::from(InputFile::file_id("file-id")).with_thumbnail(InputFile::url("thumb-url")),
+        ),
+        MediaGroupItem::from(
+            InputMediaDocument::from(InputFile::file_id("file-id")).with_thumbnail(InputFile::url("thumb-url")),
+        ),
+        MediaGroupItem::from(
+            InputMediaVideo::from(InputFile::file_id("file-id")).with_thumbnail(InputFile::url("thumb-url")),
+        ),
+    ])
+    .unwrap();
+    let method = SendMediaGroup::new(1, media_group)
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
         .with_direct_messages_topic_id(1)
@@ -25,35 +38,6 @@ fn send_media_group() {
         .with_reply_parameters(ReplyParameters::new(1))
         .unwrap();
     assert_payload_eq!(POST FORM "sendMediaGroup" => method);
-}
-
-#[test]
-fn media_group_new() {
-    MediaGroup::new(vec![
-        MediaGroupItem::for_audio(InputFileReader::from(Cursor::new("test")), InputMediaAudio::default()),
-        MediaGroupItem::for_document(
-            InputFileReader::from(Cursor::new("test")),
-            InputMediaDocument::default(),
-        ),
-        MediaGroupItem::for_live_photo(
-            InputFile::file_id("file-id"),
-            InputFile::file_id("photo-id"),
-            InputMediaLivePhoto::default(),
-        ),
-        MediaGroupItem::for_photo(
-            InputFileReader::from(Cursor::new("test")),
-            InputMediaPhoto::default().with_caption("caption"),
-        ),
-        MediaGroupItem::for_video(InputFileReader::from(Cursor::new("test")), InputMediaVideo::default())
-            .with_cover(InputFile::url("cover-url")),
-        MediaGroupItem::for_audio(InputFile::file_id("file-id"), InputMediaAudio::default())
-            .with_thumbnail(InputFile::url("thumb-url")),
-        MediaGroupItem::for_document(InputFile::file_id("file-id"), InputMediaDocument::default())
-            .with_thumbnail(InputFile::url("thumb-url")),
-        MediaGroupItem::for_video(InputFile::file_id("file-id"), InputMediaVideo::default())
-            .with_thumbnail(InputFile::url("thumb-url")),
-    ])
-    .unwrap();
 }
 
 #[test]

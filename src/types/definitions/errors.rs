@@ -11,6 +11,8 @@ pub enum SerializeErrorKind {
     InlineQueryResultData,
     /// Can not serialize inline query results button.
     InlineQueryResultsButton,
+    /// Can not serialize input media data.
+    InputMediaData,
     /// Can not serialize input rich message data.
     InputRichMessageData,
     /// Can not serialize link preview options.
@@ -29,6 +31,7 @@ impl fmt::Display for SerializeErrorKind {
                 Self::InlineKeyboardMarkup => "inline keyboard markup",
                 Self::InlineQueryResultData => "inline query result data",
                 Self::InlineQueryResultsButton => "inline query results button",
+                Self::InputMediaData => "input media data",
                 Self::InputRichMessageData => "input rich message data",
                 Self::LinkPreviewOptions => "link preview options",
                 Self::TextEntities => "text entities",
@@ -71,6 +74,13 @@ impl SerializeError {
     pub(crate) fn inline_query_results_button(inner: serde_json::Error) -> Self {
         Self {
             kind: SerializeErrorKind::InlineQueryResultsButton,
+            inner,
+        }
+    }
+
+    pub(crate) fn input_media_data(inner: serde_json::Error) -> Self {
+        Self {
+            kind: SerializeErrorKind::InputMediaData,
             inner,
         }
     }

@@ -885,21 +885,14 @@ fn edit_message_live_location() {
 
 #[test]
 fn edit_message_media() {
-    let method = EditMessageMedia::for_chat_message(
-        1,
-        2,
-        InputMedia::for_photo(InputFile::file_id("file-id"), InputMediaPhoto::default()),
-    )
-    .unwrap()
-    .with_business_connection_id("c-id")
-    .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
-    .unwrap();
+    let method = EditMessageMedia::for_chat_message(1, 2, InputMediaPhoto::from(InputFile::file_id("file-id")))
+        .unwrap()
+        .with_business_connection_id("c-id")
+        .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
+        .unwrap();
     assert_payload_eq!(POST FORM "editMessageMedia" => method);
-    let method = EditMessageMedia::for_inline_message(
-        "msg-id",
-        InputMedia::for_photo(InputFile::file_id("file-id"), InputMediaPhoto::default()),
-    )
-    .unwrap();
+    let method =
+        EditMessageMedia::for_inline_message("msg-id", InputMediaPhoto::from(InputFile::file_id("file-id"))).unwrap();
     assert_payload_eq!(POST FORM "editMessageMedia" => method);
 }
 

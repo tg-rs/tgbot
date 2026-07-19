@@ -133,6 +133,8 @@ pub struct Message {
     pub paid_star_count: Option<Integer>,
     /// For replies that quote part of the original message, the quoted part of the message.
     pub quote: Option<TextQuote>,
+    /// For ephemeral messages, the use who received the message.
+    pub receiver_user: Option<User>,
     /// Inline keyboard attached to the message.
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// For replies, the original message or story.
@@ -207,6 +209,7 @@ impl Message {
             message_thread_id: None,
             paid_star_count: None,
             quote: None,
+            receiver_user: None,
             reply_markup: None,
             reply_to: None,
             reply_to_checklist_task_id: None,
@@ -511,6 +514,14 @@ impl Message {
     /// * `value` - The quoted part of the original message.
     pub fn with_quote(mut self, value: TextQuote) -> Self {
         self.quote = Some(value);
+        self
+    }
+
+    /// Sets a new reciver user.
+    ///
+    /// * `value` - The use who received the message.
+    pub fn with_receiver_user(mut self, value: User) -> Self {
+        self.receiver_user = Some(value);
         self
     }
 

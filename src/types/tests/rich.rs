@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use crate::types::*;
 
 #[test]
@@ -267,10 +269,9 @@ fn send_rich_message() {
     assert_payload_eq!(POST FORM "sendRichMessage" => method);
     let method = SendRichMessage::new(
         1,
-        InputRichMessage::html("test").with_is_rtl(true).with_media([(
-            "id",
-            InputMedia::for_animation(InputFile::file_id("test"), InputMediaAnimation::default()),
-        )]),
+        InputRichMessage::html("test")
+            .with_is_rtl(true)
+            .with_media([("id", InputMediaAnimation::from(InputFile::file_id("test")))]),
     )
     .unwrap()
     .with_allow_paid_broadcast(true)
@@ -286,6 +287,56 @@ fn send_rich_message() {
     .unwrap()
     .with_suggested_post_parameters(SuggestedPostParameters::default())
     .unwrap();
+    assert_payload_eq!(POST FORM "sendRichMessage" => method);
+}
+
+#[test]
+fn send_rich_message_blocks() {
+    let message = InputRichMessage::blocks([
+        InputRichBlock::anchor("anchor"),
+        InputRichBlock::animation(Cursor::new(b"test")),
+        InputRichBlock::audio(Cursor::new(b"test")),
+        InputRichBlock::blockquote([InputRichBlock::paragraph("bq")], None::<RichText>),
+        InputRichBlock::blockquote([InputRichBlock::paragraph("bqwc")], Some("bqc")),
+        InputRichBlock::collage([], None::<RichText>),
+        InputRichBlock::collage(
+            [InputRichBlock::animation(Cursor::new("collage-animation-file"))],
+            Some("test"),
+        ),
+        InputRichBlock::details("details-1", [], false),
+        InputRichBlock::details(
+            "details-2",
+            [InputRichBlock::audio(Cursor::new("details-audio-file"))],
+            true,
+        ),
+        InputRichBlock::divider(),
+        InputRichBlock::footer("footer"),
+        InputRichBlock::heading("heading", 1),
+        InputRichBlock::list([
+            InputRichBlockListItem::from_iter([InputRichBlock::paragraph("list-item-1")]).with_has_checkbox(true),
+            InputRichBlockListItem::from_iter([InputRichBlock::audio(Cursor::new("list-item-audio-file"))])
+                .with_is_checked(true)
+                .with_type(RichBlockListItemType::UppercaseRoman),
+            InputRichBlockListItem::from_iter([InputRichBlock::blockquote(
+                [InputRichBlock::audio(Cursor::new("list-item-audio-file"))],
+                None::<RichText>,
+            )])
+            .with_is_checked(true)
+            .with_type(RichBlockListItemType::UppercaseRoman),
+        ]),
+        InputRichBlock::map(Location::new(0.0, 1.0), 0, 1, 2, None::<RichBlockCaption>),
+        InputRichBlock::mathematical_expression("math-expr"),
+        InputRichBlock::paragraph(RichText::italic("paragraph")),
+        InputRichBlock::photo(InputMediaPhoto::from(Cursor::new("photo-file")).with_show_caption_above_media(true)),
+        InputRichBlock::pre("print()", Some("python")),
+        InputRichBlock::pullquote("pullquote", None::<RichText>),
+        InputRichBlock::slideshow([InputRichBlock::paragraph("slideshow")], Some("test")),
+        InputRichBlock::table(InputRichBlockTable::from_iter([[RichBlockTableCell::from("test")]])),
+        InputRichBlock::thinking("thinking"),
+        InputRichBlock::video(Cursor::new("video-file")),
+        InputRichBlock::voice_note(Cursor::new("voice-note-file")),
+    ]);
+    let method = SendRichMessage::new(1, message).unwrap();
     assert_payload_eq!(POST FORM "sendRichMessage" => method);
 }
 

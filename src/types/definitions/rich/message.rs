@@ -7,6 +7,8 @@ use crate::{
         ChatId,
         InputMedia,
         InputMediaData,
+        InputRichBlock,
+        InputRichBlockData,
         Integer,
         Message,
         ReplyMarkup,
@@ -70,6 +72,7 @@ impl RichMessage {
 #[derive(Debug)]
 pub struct InputRichMessage {
     data: InputRichMessageData,
+    blocks: Option<Vec<InputRichBlock>>,
     media: Option<Vec<(String, InputMedia)>>,
 }
 
@@ -77,6 +80,7 @@ impl InputRichMessage {
     fn new(data: InputRichMessageData) -> Self {
         Self {
             data,
+            blocks: None,
             media: None,
         }
     }
@@ -103,6 +107,20 @@ impl InputRichMessage {
         T: Into<String>,
     {
         Self::new(InputRichMessageData::html(value))
+    }
+
+    /// Creates a new `InputRichMessage`.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Content of the rich message to send described as a list of blocks.
+    pub fn blocks<T>(value: T) -> Self
+    where
+        T: IntoIterator<Item = InputRichBlock>,
+    {
+        let mut result = Self::new(InputRichMessageData::default());
+        result.blocks = Some(value.into_iter().collect());
+        result
     }
 
     /// Sets a new value for the `is_rtl` flag.
@@ -145,7 +163,10 @@ impl InputRichMessage {
 
     pub(crate) fn into_parts(mut self, suffix: &[usize]) -> (Form, InputRichMessageData) {
         let suffix = suffix.to_vec();
-        let mut form = Form::default();
+        let mut form = self
+            .blocks
+            .map(|x| self.data.attach_blocks(x, suffix.clone()))
+            .unwrap_or_default();
         if let Some(media) = self.media {
             form.extend(self.data.attach_media(media, suffix));
         }
@@ -155,8 +176,9 @@ impl InputRichMessage {
 }
 
 #[serde_with::skip_serializing_none]
-#[derive(Debug, Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub(crate) struct InputRichMessageData {
+    blocks: Option<Vec<InputRichBlockData>>,
     html: Option<String>,
     markdown: Option<String>,
     media: Option<Vec<InputRichMessageMedia>>,
@@ -170,6 +192,7 @@ impl InputRichMessageData {
         T: Into<String>,
     {
         Self {
+            blocks: None,
             html: Some(value.into()),
             markdown: None,
             media: None,
@@ -183,12 +206,27 @@ impl InputRichMessageData {
         T: Into<String>,
     {
         Self {
+            blocks: None,
             html: None,
             markdown: Some(value.into()),
             media: None,
             is_rtl: None,
             skip_entity_detection: None,
         }
+    }
+
+    fn attach_blocks(&mut self, value: Vec<InputRichBlock>, suffix: Vec<usize>) -> Form {
+        let mut form = Form::default();
+        let mut items = Vec::new();
+        for (idx, i) in value.into_iter().enumerate() {
+            let mut item_suffix = suffix.clone();
+            item_suffix.push(idx);
+            let (item_form, data) = i.into_parts(&item_suffix);
+            form.extend(item_form);
+            items.push(data);
+        }
+        self.blocks = Some(items);
+        form
     }
 
     fn attach_media(&mut self, value: Vec<(String, InputMedia)>, suffix: Vec<usize>) -> Form {

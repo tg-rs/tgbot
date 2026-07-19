@@ -1,0 +1,81 @@
+---
+source: src/types/tests/rich.rs
+expression: actual_form.into_fields()
+---
+[
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "im_media_0_1",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_0_12_1_0",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_0_12_2_0_0",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_0_16",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_0_2",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_0_22",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_0_23",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_0_6_0",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "im_media_0_8_0",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "rich_message",
+        FormValue::Text(
+            "{\"blocks\":[{\"type\":\"anchor\",\"parameters\":{\"name\":\"anchor\"}},{\"type\":\"animation\",\"parameters\":{\"animation\":{\"type\":\"animation\",\"media\":\"attach://im_media_0_1\"}}},{\"type\":\"audio\",\"parameters\":{\"audio\":{\"type\":\"audio\",\"media\":\"attach://im_media_0_2\"}}},{\"type\":\"blockquote\",\"parameters\":{\"blocks\":[{\"type\":\"paragraph\",\"parameters\":{\"text\":\"bq\"}}]}},{\"type\":\"blockquote\",\"parameters\":{\"blocks\":[{\"type\":\"paragraph\",\"parameters\":{\"text\":\"bqwc\"}}],\"credit\":\"bqc\"}},{\"type\":\"collage\",\"parameters\":{\"blocks\":[]}},{\"type\":\"collage\",\"parameters\":{\"blocks\":[{\"type\":\"animation\",\"parameters\":{\"animation\":{\"type\":\"animation\",\"media\":\"attach://im_media_0_6_0\"}}}],\"caption\":{\"text\":\"test\"}}},{\"type\":\"details\",\"parameters\":{\"blocks\":[],\"summary\":\"details-1\"}},{\"type\":\"details\",\"parameters\":{\"blocks\":[{\"type\":\"audio\",\"parameters\":{\"audio\":{\"type\":\"audio\",\"media\":\"attach://im_media_0_8_0\"}}}],\"is_open\":true,\"summary\":\"details-2\"}},{\"type\":\"divider\",\"parameters\":{}},{\"type\":\"footer\",\"parameters\":{\"text\":\"footer\"}},{\"type\":\"heading\",\"parameters\":{\"size\":1,\"text\":\"heading\"}},{\"type\":\"list\",\"parameters\":{\"items\":[{\"blocks\":[{\"type\":\"paragraph\",\"parameters\":{\"text\":\"list-item-1\"}}],\"has_checkbox\":true,\"is_checked\":null,\"type\":null,\"value\":null},{\"blocks\":[{\"type\":\"audio\",\"parameters\":{\"audio\":{\"type\":\"audio\",\"media\":\"attach://im_media_0_12_1_0\"}}}],\"has_checkbox\":null,\"is_checked\":true,\"type\":\"I\",\"value\":null},{\"blocks\":[{\"type\":\"blockquote\",\"parameters\":{\"blocks\":[{\"type\":\"audio\",\"parameters\":{\"audio\":{\"type\":\"audio\",\"media\":\"attach://im_media_0_12_2_0_0\"}}}]}}],\"has_checkbox\":null,\"is_checked\":true,\"type\":\"I\",\"value\":null}]}},{\"type\":\"map\",\"parameters\":{\"height\":2,\"location\":{\"latitude\":0.0,\"longitude\":1.0},\"width\":1,\"zoom\":0}},{\"type\":\"mathematical_expression\",\"parameters\":{\"expression\":\"math-expr\"}},{\"type\":\"paragraph\",\"parameters\":{\"text\":{\"type\":\"italic\",\"text\":\"paragraph\"}}},{\"type\":\"photo\",\"parameters\":{\"photo\":{\"type\":\"photo\",\"media\":\"attach://im_media_0_16\",\"show_caption_above_media\":true}}},{\"type\":\"pre\",\"parameters\":{\"language\":\"python\",\"text\":\"print()\"}},{\"type\":\"pullquote\",\"parameters\":{\"text\":\"pullquote\"}},{\"type\":\"slideshow\",\"parameters\":{\"blocks\":[{\"type\":\"paragraph\",\"parameters\":{\"text\":\"slideshow\"}}],\"caption\":{\"text\":\"test\"}}},{\"type\":\"table\",\"parameters\":{\"cells\":[[{\"align\":\"left\",\"valign\":\"middle\",\"text\":\"test\"}]]}},{\"type\":\"thinking\",\"parameters\":{\"text\":\"thinking\"}},{\"type\":\"video\",\"parameters\":{\"video\":{\"type\":\"video\",\"media\":\"attach://im_media_0_22\"}}},{\"type\":\"voice_note\",\"parameters\":{\"voice_note\":{\"type\":\"voice_note\",\"media\":\"attach://im_media_0_23\"}}}]}",
+        ),
+    ),
+]

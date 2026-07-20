@@ -31,19 +31,16 @@ impl WebhookServer {
 
     /// Runs the server
     ///
-    /// Returns the local address that the server is bound to.
-    ///
     /// # Arguments
     ///
     /// * `address` - The address to bind the server to.
-    pub async fn run<T>(self, address: T) -> Result<SocketAddr, IoError>
+    pub async fn run<T>(self, address: T) -> Result<(), IoError>
     where
         T: Into<SocketAddr>,
     {
         let listener = TcpListener::bind(address.into()).await?;
-        let result = listener.local_addr();
         axum::serve(listener, self.router).await?;
-        result
+        Ok(())
     }
 }
 

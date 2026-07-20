@@ -1,0 +1,8 @@
+---
+source: src/types/tests/community.rs
+expression: data
+---
+{
+  "id": 1,
+  "name": "test"
+}

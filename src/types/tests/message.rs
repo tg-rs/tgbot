@@ -171,6 +171,25 @@ fn connected_website() {
 }
 
 #[test]
+fn community_chat_added() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::from(CommunityChatAdded {
+        community: Community {
+            id: 1,
+            name: String::from("test"),
+        },
+    });
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
+fn community_chat_removed() {
+    let mut expected_struct = create_message_struct();
+    expected_struct.data = MessageData::from(CommunityChatRemoved {});
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn contact() {
     let mut expected_struct = create_message_struct();
     expected_struct.data = MessageData::Contact(Contact::new("User", "+79001231212"));

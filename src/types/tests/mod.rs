@@ -61,6 +61,7 @@ mod callback;
 mod chat;
 mod checklist;
 mod color;
+mod community;
 mod contact;
 mod dice;
 mod ephemeral;

@@ -8,6 +8,8 @@ use crate::types::{
     Checklist,
     ChecklistTasksAdded,
     ChecklistTasksDone,
+    CommunityChatAdded,
+    CommunityChatRemoved,
     Contact,
     Dice,
     Document,
@@ -86,6 +88,10 @@ pub enum MessageData {
     ChecklistTasksAdded(ChecklistTasksAdded),
     /// Some tasks in a checklist were marked as done or not done.
     ChecklistTasksDone(ChecklistTasksDone),
+    /// Service message: chat added to a Community.
+    CommunityChatAdded(CommunityChatAdded),
+    /// Service message: chat removed from a Community
+    CommunityChatRemoved(CommunityChatRemoved),
     /// The domain name of the website on which the user has logged in.
     ConnectedWebsite(String),
     /// Information about the shared contact.
@@ -280,6 +286,18 @@ impl From<ChecklistTasksDone> for MessageData {
 impl From<Contact> for MessageData {
     fn from(value: Contact) -> Self {
         Self::Contact(value)
+    }
+}
+
+impl From<CommunityChatAdded> for MessageData {
+    fn from(value: CommunityChatAdded) -> Self {
+        Self::CommunityChatAdded(value)
+    }
+}
+
+impl From<CommunityChatRemoved> for MessageData {
+    fn from(value: CommunityChatRemoved) -> Self {
+        Self::CommunityChatRemoved(value)
     }
 }
 
@@ -1187,6 +1205,8 @@ enum RawMessageData {
     Checklist(Checklist),
     ChecklistTasksAdded(ChecklistTasksAdded),
     ChecklistTasksDone(ChecklistTasksDone),
+    CommunityChatAdded(CommunityChatAdded),
+    CommunityChatRemoved(CommunityChatRemoved),
     ConnectedWebsite(String),
     Contact(Contact),
     DeleteChatPhoto(True),
@@ -1313,6 +1333,8 @@ impl From<RawMessageData> for MessageData {
             RawMessageData::Checklist(value) => Self::Checklist(value),
             RawMessageData::ChecklistTasksAdded(value) => Self::ChecklistTasksAdded(value),
             RawMessageData::ChecklistTasksDone(value) => Self::ChecklistTasksDone(value),
+            RawMessageData::CommunityChatAdded(value) => Self::CommunityChatAdded(value),
+            RawMessageData::CommunityChatRemoved(value) => Self::CommunityChatRemoved(value),
             RawMessageData::ConnectedWebsite(value) => Self::ConnectedWebsite(value),
             RawMessageData::Contact(value) => Self::Contact(value),
             RawMessageData::DeleteChatPhoto(True) => Self::DeleteChatPhoto,
@@ -1473,6 +1495,8 @@ impl From<MessageData> for RawMessageData {
             MessageData::Checklist(value) => Self::Checklist(value),
             MessageData::ChecklistTasksAdded(value) => Self::ChecklistTasksAdded(value),
             MessageData::ChecklistTasksDone(value) => Self::ChecklistTasksDone(value),
+            MessageData::CommunityChatAdded(value) => Self::CommunityChatAdded(value),
+            MessageData::CommunityChatRemoved(value) => Self::CommunityChatRemoved(value),
             MessageData::ConnectedWebsite(value) => Self::ConnectedWebsite(value),
             MessageData::Contact(value) => Self::Contact(value),
             MessageData::DeleteChatPhoto => Self::DeleteChatPhoto(True),

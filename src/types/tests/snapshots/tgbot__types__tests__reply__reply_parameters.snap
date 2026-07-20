@@ -1,7 +1,5 @@
 ---
 source: src/types/tests/reply.rs
-expression: "ReplyParameters::new(1)"
+expression: "ReplyParameters::default()"
 ---
-{
-  "message_id": 1
-}
+{}

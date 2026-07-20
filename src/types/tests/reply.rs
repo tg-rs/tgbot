@@ -156,11 +156,13 @@ fn reply_keyboard_remove() {
 
 #[test]
 fn reply_parameters() {
+    insta::assert_json_snapshot!(ReplyParameters::default());
     insta::assert_json_snapshot!(ReplyParameters::new(1));
     let mut quote = ReplyQuote::new(1, "test");
     insta::assert_json_snapshot!(
         ReplyParameters::new(1)
             .with_allow_sending_without_reply(true)
+            .with_ephemeral_message_id(999)
             .with_chat_id(1)
             .with_checklist_task_id(2)
             .with_quote(quote.clone())

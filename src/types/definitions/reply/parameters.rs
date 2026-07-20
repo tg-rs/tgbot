@@ -7,12 +7,13 @@ use crate::types::{ChatId, Integer, ParseMode, TextEntities, TextEntity};
 
 /// Describes reply parameters for the message that is being sent.
 #[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ReplyParameters {
-    message_id: Integer,
+    message_id: Option<Integer>,
     allow_sending_without_reply: Option<bool>,
     chat_id: Option<ChatId>,
     checklist_task_id: Option<Integer>,
+    ephemeral_message_id: Option<Integer>,
     poll_option_id: Option<String>,
     #[serde(flatten)]
     quote: Option<ReplyQuote>,
@@ -27,10 +28,11 @@ impl ReplyParameters {
     ///   or in the chat chat_id if it is specified.
     pub fn new(message_id: Integer) -> Self {
         Self {
-            message_id,
+            message_id: Some(message_id),
             allow_sending_without_reply: None,
             chat_id: None,
             checklist_task_id: None,
+            ephemeral_message_id: None,
             poll_option_id: None,
             quote: None,
         }
@@ -68,6 +70,20 @@ impl ReplyParameters {
     /// * `value` - Identifier of the specific checklist task to be replied to.
     pub fn with_checklist_task_id(mut self, value: Integer) -> Self {
         self.checklist_task_id = Some(value);
+        self
+    }
+
+    /// Sets a new ephemeral message ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` -  Identifier of the incoming ephemeral message that will be replied to in the current chat.
+    ///
+    /// A reply to an ephemeral message must itself be an ephemeral message.
+    /// An ephemeral message may only be replied to within 15 seconds of being sent.
+    /// Required if message ID isn't specified.
+    pub fn with_ephemeral_message_id(mut self, value: Integer) -> Self {
+        self.ephemeral_message_id = Some(value);
         self
     }
 

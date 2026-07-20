@@ -545,6 +545,26 @@ fn shipping_query() {
 }
 
 #[test]
+fn subscription() {
+    let expected_struct = Update::new(
+        1,
+        UpdateType::Subscription(BotSubscriptionUpdated {
+            invoice_payload: String::from("test"),
+            state: BotSubscriptionState::Active,
+            user: User::new(1, "John", false),
+        }),
+    );
+    assert!(expected_struct.get_chat_id().is_none());
+    assert!(expected_struct.get_chat_username().is_none());
+    assert_eq!(expected_struct.get_user_id().unwrap(), 1);
+    assert!(expected_struct.get_user_username().is_none());
+
+    assert!(BotSubscriptionUpdated::try_from(expected_struct.clone()).is_ok());
+
+    insta::assert_json_snapshot!(expected_struct);
+}
+
+#[test]
 fn unknown() {
     let expected_struct = Update::new(1, UpdateType::Unknown(serde_json::json!({"key": "value"})));
     assert!(expected_struct.get_chat_id().is_none());

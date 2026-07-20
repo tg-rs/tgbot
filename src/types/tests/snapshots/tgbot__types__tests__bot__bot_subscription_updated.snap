@@ -1,0 +1,13 @@
+---
+source: src/types/tests/bot.rs
+expression: data
+---
+{
+  "invoice_payload": "payload",
+  "state": "active",
+  "user": {
+    "first_name": "John",
+    "id": 1,
+    "is_bot": false
+  }
+}

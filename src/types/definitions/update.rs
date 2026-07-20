@@ -6,6 +6,7 @@ use serde_json::Value as JsonValue;
 use crate::{
     api::{Method, Payload},
     types::{
+        BotSubscriptionUpdated,
         BusinessConnection,
         BusinessMessagesDeleted,
         CallbackQuery,
@@ -118,6 +119,7 @@ impl Update {
             },
             UpdateType::PreCheckoutQuery(x) => &x.from,
             UpdateType::PurchasedPaidMedia(x) => &x.from,
+            UpdateType::Subscription(x) => &x.user,
             UpdateType::ShippingQuery(x) => &x.from,
             UpdateType::Unknown(_) => return None,
         })
@@ -243,6 +245,8 @@ pub enum UpdateType {
     ///
     /// Only for invoices with flexible price.
     ShippingQuery(Box<ShippingQuery>),
+    /// User payment subscription has changed.
+    Subscription(BotSubscriptionUpdated),
     /// A chat member's status was updated in a chat.
     ///
     /// The bot must be an administrator in the chat
@@ -431,6 +435,18 @@ impl TryFrom<Update> for ShippingQuery {
     }
 }
 
+impl TryFrom<Update> for BotSubscriptionUpdated {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        use self::UpdateType::*;
+        match value.update_type {
+            Subscription(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
 /// Represents a type of update to receive.
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -484,6 +500,8 @@ pub enum AllowedUpdate {
     PurchasedPaidMedia,
     /// A shipping query.
     ShippingQuery,
+    /// User payment subscription change.
+    Subscription,
     /// A chat member status.
     #[serde(rename = "chat_member")]
     UserStatus,

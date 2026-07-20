@@ -86,6 +86,16 @@ fn bot_short_description() {
 }
 
 #[test]
+fn bot_subscription_updated() {
+    let data = BotSubscriptionUpdated {
+        invoice_payload: String::from("payload"),
+        state: BotSubscriptionState::Active,
+        user: User::new(1, "John", false),
+    };
+    insta::assert_json_snapshot!(data);
+}
+
+#[test]
 fn close() {
     assert_payload_eq!(GET "close" => Close);
 }

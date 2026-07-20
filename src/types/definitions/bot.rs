@@ -493,6 +493,29 @@ impl BotShortDescription {
     }
 }
 
+/// Represents a state of a user payment subscription toward the current bot.
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum BotSubscriptionState {
+    /// The user re-enabled a previously canceled subscription.
+    Active,
+    /// The user canceled the subscription.
+    Canceled,
+    /// Payment for the subscription failed.
+    Failed,
+}
+
+/// Contains information about changes to a user payment subscription toward the current bot.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct BotSubscriptionUpdated {
+    /// Bot-specified invoice payload.
+    pub invoice_payload: String,
+    /// The new state of the subscription.
+    pub state: BotSubscriptionState,
+    /// User who subscribed for payments toward the bot.
+    pub user: User,
+}
+
 /// Contains information about the creation, token update,
 /// or owner update of a bot that is managed by the current bot.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]

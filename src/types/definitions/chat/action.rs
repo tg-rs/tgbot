@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{ChatId, Integer},
 };
 
@@ -101,7 +101,7 @@ impl SendChatAction {
 impl Method for SendChatAction {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("sendChatAction", self)
     }
 }

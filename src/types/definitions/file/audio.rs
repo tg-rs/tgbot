@@ -3,7 +3,7 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         ChatId,
         InputFile,
@@ -434,7 +434,7 @@ impl SendAudio {
 impl Method for SendAudio {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("sendAudio", self.form)
     }
 }

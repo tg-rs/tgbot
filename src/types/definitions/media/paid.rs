@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         ChatId,
         InputPaidMediaGroup,
@@ -400,7 +400,7 @@ impl SendPaidMedia {
 impl Method for SendPaidMedia {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("sendPaidMedia", self.form)
     }
 }

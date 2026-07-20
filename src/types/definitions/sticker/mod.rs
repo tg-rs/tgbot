@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 pub use self::{input::*, mask::*, set::*};
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         ChatId,
         File,
@@ -283,7 +283,7 @@ impl GetCustomEmojiStickers {
 impl Method for GetCustomEmojiStickers {
     type Response = Vec<Sticker>;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getCustomEmojiStickers", self)
     }
 }
@@ -480,7 +480,7 @@ impl SendSticker {
 impl Method for SendSticker {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("sendSticker", self.form)
     }
 }
@@ -515,7 +515,7 @@ impl SetStickerEmojiList {
 impl Method for SetStickerEmojiList {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setStickerEmojiList", self)
     }
 }
@@ -551,7 +551,7 @@ impl SetStickerKeywords {
 impl Method for SetStickerKeywords {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setStickerKeywords", self)
     }
 }
@@ -596,7 +596,7 @@ impl SetStickerMaskPosition {
 impl Method for SetStickerMaskPosition {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setStickerMaskPosition", self)
     }
 }
@@ -635,7 +635,7 @@ impl UploadStickerFile {
 impl Method for UploadStickerFile {
     type Response = File;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("uploadStickerFile", self.form)
     }
 }

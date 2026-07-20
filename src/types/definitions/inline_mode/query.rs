@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{InlineQueryResult, InlineQueryResultsButton, Integer, Location, SerializeError, User},
 };
 
@@ -186,7 +186,7 @@ impl AnswerInlineQuery {
 impl Method for AnswerInlineQuery {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("answerInlineQuery", self.form)
     }
 }

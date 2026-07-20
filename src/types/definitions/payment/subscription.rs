@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::Integer,
 };
 
@@ -38,7 +38,7 @@ impl EditUserStarSubscription {
 impl Method for EditUserStarSubscription {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editUserStarSubscription", self)
     }
 }

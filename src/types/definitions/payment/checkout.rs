@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Integer, OrderInfo, User},
 };
 
@@ -138,7 +138,7 @@ impl AnswerPreCheckoutQuery {
 impl Method for AnswerPreCheckoutQuery {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("answerPreCheckoutQuery", self)
     }
 }

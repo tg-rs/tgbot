@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Integer, WebAppInfo},
 };
 
@@ -105,7 +105,7 @@ impl GetChatMenuButton {
 impl Method for GetChatMenuButton {
     type Response = MenuButton;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getChatMenuButton", self)
     }
 }
@@ -145,7 +145,7 @@ impl SetChatMenuButton {
 impl Method for SetChatMenuButton {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setChatMenuButton", self)
     }
 }

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         AcceptedGiftTypes,
         Chat,
@@ -479,7 +479,7 @@ impl ConvertGiftToStars {
 impl Method for ConvertGiftToStars {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("convertGiftToStars", self)
     }
 }
@@ -519,7 +519,7 @@ impl DeleteBusinessMessages {
 impl Method for DeleteBusinessMessages {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteBusinessMessages", self)
     }
 }
@@ -554,7 +554,7 @@ impl DeleteStory {
 impl Method for DeleteStory {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteStory", self)
     }
 }
@@ -643,7 +643,7 @@ impl EditStory {
 impl Method for EditStory {
     type Response = Story;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("editStory", self.form)
     }
 }
@@ -675,7 +675,7 @@ impl GetBusinessAccountStarBalance {
 impl Method for GetBusinessAccountStarBalance {
     type Response = StarAmount;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getBusinessAccountStarBalance", self)
     }
 }
@@ -705,7 +705,7 @@ impl GetBusinessConnection {
 impl Method for GetBusinessConnection {
     type Response = BusinessConnection;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getBusinessConnection", self)
     }
 }
@@ -819,7 +819,7 @@ impl PostStory {
 impl Method for PostStory {
     type Response = Story;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("postStory", self.form)
     }
 }
@@ -859,7 +859,7 @@ impl ReadBusinessMessage {
 impl Method for ReadBusinessMessage {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("readBusinessMessage", self)
     }
 }
@@ -906,7 +906,7 @@ impl RemoveBusinessAccountProfilePhoto {
 impl Method for RemoveBusinessAccountProfilePhoto {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("removeBusinessAccountProfilePhoto", self)
     }
 }
@@ -954,7 +954,7 @@ impl SetBusinessAccountBio {
 impl Method for SetBusinessAccountBio {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setBusinessAccountBio", self)
     }
 }
@@ -993,7 +993,7 @@ impl SetBusinessAccountGiftSettings {
 impl Method for SetBusinessAccountGiftSettings {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setBusinessAccountGiftSettings", self)
     }
 }
@@ -1045,7 +1045,7 @@ impl SetBusinessAccountName {
 impl Method for SetBusinessAccountName {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setBusinessAccountName", self)
     }
 }
@@ -1091,7 +1091,7 @@ impl SetBusinessAccountProfilePhoto {
 impl Method for SetBusinessAccountProfilePhoto {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("setBusinessAccountProfilePhoto", self.form)
     }
 }
@@ -1139,7 +1139,7 @@ impl SetBusinessAccountUsername {
 impl Method for SetBusinessAccountUsername {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setBusinessAccountUsername", self)
     }
 }
@@ -1174,7 +1174,7 @@ impl TransferBusinessAccountStars {
 impl Method for TransferBusinessAccountStars {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("transferBusinessAccountStars", self)
     }
 }
@@ -1229,7 +1229,7 @@ impl TransferGift {
 impl Method for TransferGift {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("transferGift", self)
     }
 }
@@ -1292,7 +1292,7 @@ impl UpgradeGift {
 impl Method for UpgradeGift {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("upgradeGift", self)
     }
 }

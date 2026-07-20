@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::Integer,
 };
 
@@ -93,7 +93,7 @@ impl RefundStarPayment {
 impl Method for RefundStarPayment {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("refundStarPayment", self)
     }
 }

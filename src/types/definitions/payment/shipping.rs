@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{LabeledPrice, User},
 };
 
@@ -198,7 +198,7 @@ impl AnswerShippingQuery {
 impl Method for AnswerShippingQuery {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("answerShippingQuery", self)
     }
 }

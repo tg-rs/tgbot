@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         ChatId,
         EditMessageResult,
@@ -261,7 +261,7 @@ impl CopyMessage {
 impl Method for CopyMessage {
     type Response = MessageId;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("copyMessage", self)
     }
 }
@@ -372,7 +372,7 @@ impl CopyMessages {
 impl Method for CopyMessages {
     type Response = Vec<MessageId>;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("copyMessages", self)
     }
 }
@@ -417,7 +417,7 @@ impl DeleteMessage {
 impl Method for DeleteMessage {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteMessage", self)
     }
 }
@@ -455,7 +455,7 @@ impl DeleteMessages {
 impl Method for DeleteMessages {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteMessages", self)
     }
 }
@@ -604,7 +604,7 @@ impl EditMessageCaption {
 impl Method for EditMessageCaption {
     type Response = EditMessageResult;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editMessageCaption", self)
     }
 }
@@ -759,7 +759,7 @@ impl EditMessageLiveLocation {
 impl Method for EditMessageLiveLocation {
     type Response = EditMessageResult;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editMessageLiveLocation", self)
     }
 }
@@ -844,7 +844,7 @@ impl EditMessageMedia {
 impl Method for EditMessageMedia {
     type Response = EditMessageResult;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("editMessageMedia", self.form)
     }
 }
@@ -928,7 +928,7 @@ impl EditMessageReplyMarkup {
 impl Method for EditMessageReplyMarkup {
     type Response = EditMessageResult;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editMessageReplyMarkup", self)
     }
 }
@@ -1091,7 +1091,7 @@ impl EditMessageText {
 impl Method for EditMessageText {
     type Response = EditMessageResult;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("editMessageText", self.form)
     }
 }
@@ -1224,7 +1224,7 @@ impl ForwardMessage {
 impl Method for ForwardMessage {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("forwardMessage", self)
     }
 }
@@ -1319,7 +1319,7 @@ impl ForwardMessages {
 impl Method for ForwardMessages {
     type Response = Vec<MessageId>;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("forwardMessages", self)
     }
 }
@@ -1571,7 +1571,7 @@ impl SendMessage {
 impl Method for SendMessage {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("sendMessage", self)
     }
 }
@@ -1654,7 +1654,7 @@ impl SendMessageDraft {
 impl Method for SendMessageDraft {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("sendMessageDraft", self)
     }
 }
@@ -1738,7 +1738,7 @@ impl StopMessageLiveLocation {
 impl Method for StopMessageLiveLocation {
     type Response = EditMessageResult;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("stopMessageLiveLocation", self)
     }
 }

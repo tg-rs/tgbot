@@ -3,7 +3,7 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         Animation,
         Audio,
@@ -1405,7 +1405,7 @@ impl SendQuiz {
 impl Method for SendQuiz {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("sendPoll", self.inner.form)
     }
 }
@@ -1759,7 +1759,7 @@ impl SendPoll {
 impl Method for SendPoll {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("sendPoll", self.inner.form)
     }
 }
@@ -1830,7 +1830,7 @@ impl StopPoll {
 impl Method for StopPoll {
     type Response = Poll;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("stopPoll", self)
     }
 }

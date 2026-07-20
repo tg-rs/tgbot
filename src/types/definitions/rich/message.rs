@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::block::RichBlock;
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         ChatId,
         InputMedia,
@@ -406,7 +406,7 @@ impl SendRichMessage {
 impl Method for SendRichMessage {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("sendRichMessage", self.form)
     }
 }
@@ -455,7 +455,7 @@ impl SendRichMessageDraft {
 impl Method for SendRichMessageDraft {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("sendRichMessageDraft", self.form)
     }
 }

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Chat, ChatId, Integer, User},
 };
 
@@ -258,7 +258,7 @@ impl DeleteAllMessageReactions {
 impl Method for DeleteAllMessageReactions {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteAllMessageReactions", self)
     }
 }
@@ -320,7 +320,7 @@ impl DeleteMessageReaction {
 impl Method for DeleteMessageReaction {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteMessageReaction", self)
     }
 }
@@ -390,7 +390,7 @@ impl SetMessageReaction {
 impl Method for SetMessageReaction {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setMessageReaction", self)
     }
 }

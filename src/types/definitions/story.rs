@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Chat, Float, Integer, LocationAddress, ReactionType},
 };
 
@@ -395,7 +395,7 @@ impl RepostStory {
 impl Method for RepostStory {
     type Response = Story;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("repostStory", self)
     }
 }

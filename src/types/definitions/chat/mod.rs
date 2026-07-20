@@ -16,7 +16,7 @@ pub use self::{
     sticker_set::*,
 };
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::BackgroundType,
 };
 
@@ -315,7 +315,7 @@ impl GetChat {
 impl Method for GetChat {
     type Response = ChatFullInfo;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getChat", self)
     }
 }
@@ -345,7 +345,7 @@ impl LeaveChat {
 impl Method for LeaveChat {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("leaveChat", self)
     }
 }
@@ -394,7 +394,7 @@ impl SetChatDescription {
 impl Method for SetChatDescription {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setChatDescription", self)
     }
 }
@@ -437,7 +437,7 @@ impl SetChatTitle {
 impl Method for SetChatTitle {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setChatTitle", self)
     }
 }

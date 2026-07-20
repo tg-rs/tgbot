@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{ChatId, Integer, User},
 };
 
@@ -219,7 +219,7 @@ impl CreateChatInviteLink {
 impl Method for CreateChatInviteLink {
     type Response = ChatInviteLink;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("createChatInviteLink", self)
     }
 }
@@ -277,7 +277,7 @@ impl CreateChatSubscriptionInviteLink {
 impl Method for CreateChatSubscriptionInviteLink {
     type Response = ChatInviteLink;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("createChatSubscriptionInviteLink", self)
     }
 }
@@ -370,7 +370,7 @@ impl EditChatInviteLink {
 impl Method for EditChatInviteLink {
     type Response = ChatInviteLink;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editChatInviteLink", self)
     }
 }
@@ -422,7 +422,7 @@ impl EditChatSubscriptionInviteLink {
 impl Method for EditChatSubscriptionInviteLink {
     type Response = ChatInviteLink;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editChatSubscriptionInviteLink", self)
     }
 }
@@ -466,7 +466,7 @@ impl ExportChatInviteLink {
 impl Method for ExportChatInviteLink {
     type Response = String;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("exportChatInviteLink", self)
     }
 }
@@ -505,7 +505,7 @@ impl RevokeChatInviteLink {
 impl Method for RevokeChatInviteLink {
     type Response = ChatInviteLink;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("revokeChatInviteLink", self)
     }
 }

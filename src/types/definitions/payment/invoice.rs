@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{ChatId, InlineKeyboardMarkup, Integer, Message, ReplyParameters, SuggestedPostParameters},
 };
 
@@ -398,7 +398,7 @@ impl CreateInvoiceLink {
 impl Method for CreateInvoiceLink {
     type Response = String;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("createInvoiceLink", self)
     }
 }
@@ -612,7 +612,7 @@ impl SendInvoice {
 impl Method for SendInvoice {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("sendInvoice", self)
     }
 }

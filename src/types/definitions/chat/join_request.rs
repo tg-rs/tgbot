@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Chat, ChatId, ChatInviteLink, Integer, User},
 };
 
@@ -171,7 +171,7 @@ impl AnswerChatJoinRequestQuery {
 impl Method for AnswerChatJoinRequestQuery {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("answerChatJoinRequestQuery", self)
     }
 }
@@ -207,7 +207,7 @@ impl ApproveChatJoinRequest {
 impl Method for ApproveChatJoinRequest {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("approveChatJoinRequest", self)
     }
 }
@@ -243,7 +243,7 @@ impl DeclineChatJoinRequest {
 impl Method for DeclineChatJoinRequest {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("declineChatJoinRequest", self)
     }
 }
@@ -278,7 +278,7 @@ impl SendChatJoinRequestWebApp {
 impl Method for SendChatJoinRequestWebApp {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("sendChatJoinRequestWebApp", self)
     }
 }

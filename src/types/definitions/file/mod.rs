@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 pub use self::{animation::*, audio::*, document::*, photo::*, video::*, video_note::*, voice::*};
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::Integer,
 };
 
@@ -124,7 +124,7 @@ impl GetFile {
 impl Method for GetFile {
     type Response = File;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getFile", self)
     }
 }

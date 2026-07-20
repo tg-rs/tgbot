@@ -3,7 +3,7 @@ use std::{error::Error, fmt};
 use serde_json::Error as JsonError;
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         ChatId,
         InputMedia,
@@ -257,7 +257,7 @@ impl SendMediaGroup {
 impl Method for SendMediaGroup {
     type Response = Vec<Message>;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("sendMediaGroup", self.form)
     }
 }

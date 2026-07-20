@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         ChatId,
         InlineKeyboardMarkup,
@@ -58,7 +58,7 @@ where
 impl Method for DeleteEphemeralMessage {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteEphemeralMessage", self.identity)
     }
 }
@@ -154,7 +154,7 @@ impl EditEphemeralMessageCaption {
 impl Method for EditEphemeralMessageCaption {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editEphemeralMessageCaption", self)
     }
 }
@@ -207,7 +207,7 @@ impl EditEphemeralMessageMedia {
 impl Method for EditEphemeralMessageMedia {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("editEphemeralMessageMedia", self.form)
     }
 }
@@ -255,7 +255,7 @@ impl EditEphemeralMessageReplyMarkup {
 impl Method for EditEphemeralMessageReplyMarkup {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editEphemeralMessageReplyMarkup", self)
     }
 }
@@ -354,7 +354,7 @@ impl EditEphemeralMessageText {
 impl Method for EditEphemeralMessageText {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editEphemeralMessageText", self)
     }
 }

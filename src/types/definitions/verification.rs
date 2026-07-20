@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{ChatId, Integer},
 };
 
@@ -31,7 +31,7 @@ impl RemoveChatVerification {
 impl Method for RemoveChatVerification {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("removeChatVerification", self)
     }
 }
@@ -56,7 +56,7 @@ impl RemoveUserVerification {
 impl Method for RemoveUserVerification {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("removeUserVerification", self)
     }
 }
@@ -104,7 +104,7 @@ impl VerifyChat {
 impl Method for VerifyChat {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("verifyChat", self)
     }
 }
@@ -148,7 +148,7 @@ impl VerifyUser {
 impl Method for VerifyUser {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("verifyUser", self)
     }
 }

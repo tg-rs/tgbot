@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Chat, ChatId, Integer, ParseMode, Sticker, TextEntities, TextEntity, User},
 };
 
@@ -429,7 +429,7 @@ pub struct GetAvailableGifts;
 impl Method for GetAvailableGifts {
     type Response = Gifts;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::empty("getAvailableGifts")
     }
 }
@@ -590,7 +590,7 @@ impl GetBusinessAccountGifts {
 impl Method for GetBusinessAccountGifts {
     type Response = OwnedGifts;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getBusinessAccountGifts", self)
     }
 }
@@ -751,7 +751,7 @@ impl GetChatGifts {
 impl Method for GetChatGifts {
     type Response = OwnedGifts;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getChatGifts", self)
     }
 }
@@ -883,7 +883,7 @@ impl GetUserGifts {
 impl Method for GetUserGifts {
     type Response = OwnedGifts;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getUserGifts", self)
     }
 }
@@ -1655,7 +1655,7 @@ impl GiftPremiumSubscription {
 impl Method for GiftPremiumSubscription {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("giftPremiumSubscription", self)
     }
 }
@@ -1782,7 +1782,7 @@ impl SendGift {
 impl Method for SendGift {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("sendGift", self)
     }
 }

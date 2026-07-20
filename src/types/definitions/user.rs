@@ -3,7 +3,7 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Audio, Integer, Message, ParseMode, PhotoSize},
 };
 
@@ -507,7 +507,7 @@ impl GetUserPersonalChatMessages {
 impl Method for GetUserPersonalChatMessages {
     type Response = Vec<Message>;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getUserPersonalChatMessages", self)
     }
 }
@@ -563,7 +563,7 @@ impl GetUserProfileAudios {
 impl Method for GetUserProfileAudios {
     type Response = UserProfileAudios;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getUserProfileAudios", self)
     }
 }
@@ -617,7 +617,7 @@ impl GetUserProfilePhotos {
 impl Method for GetUserProfilePhotos {
     type Response = UserProfilePhotos;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getUserProfilePhotos", self)
     }
 }
@@ -675,7 +675,7 @@ impl SetUserEmojiStatus {
 impl Method for SetUserEmojiStatus {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setUserEmojiStatus", self)
     }
 }

@@ -3,7 +3,7 @@ use std::{error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Integer, Message, StarAmount},
 };
 
@@ -51,7 +51,7 @@ impl ApproveSuggestedPost {
 impl Method for ApproveSuggestedPost {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("approveSuggestedPost", self)
     }
 }
@@ -99,7 +99,7 @@ impl DeclineSuggestedPost {
 impl Method for DeclineSuggestedPost {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("declineSuggestedPost", self)
     }
 }

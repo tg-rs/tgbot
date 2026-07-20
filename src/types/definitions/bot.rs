@@ -3,7 +3,7 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{ChatAdministratorRights, ChatId, InputProfilePhoto, InputProfilePhotoError, Integer, StarAmount, User},
 };
 
@@ -538,7 +538,7 @@ pub struct Close;
 impl Method for Close {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::empty("close")
     }
 }
@@ -581,7 +581,7 @@ impl DeleteBotCommands {
 impl Method for DeleteBotCommands {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteMyCommands", self)
     }
 }
@@ -593,7 +593,7 @@ pub struct GetBot;
 impl Method for GetBot {
     type Response = Bot;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::empty("getMe")
     }
 }
@@ -634,7 +634,7 @@ impl GetBotCommands {
 impl Method for GetBotCommands {
     type Response = Vec<BotCommand>;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getMyCommands", self)
     }
 }
@@ -661,7 +661,7 @@ impl GetBotDefaultAdministratorRights {
 impl Method for GetBotDefaultAdministratorRights {
     type Response = ChatAdministratorRights;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getMyDefaultAdministratorRights", self)
     }
 }
@@ -691,7 +691,7 @@ impl GetBotDescription {
 impl Method for GetBotDescription {
     type Response = BotDescription;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getMyDescription", self)
     }
 }
@@ -721,7 +721,7 @@ impl GetBotName {
 impl Method for GetBotName {
     type Response = BotName;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getMyName", self)
     }
 }
@@ -751,7 +751,7 @@ impl GetBotShortDescription {
 impl Method for GetBotShortDescription {
     type Response = BotShortDescription;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getMyShortDescription", self)
     }
 }
@@ -763,7 +763,7 @@ pub struct GetBotStarBalance;
 impl Method for GetBotStarBalance {
     type Response = StarAmount;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::empty("getMyStarBalance")
     }
 }
@@ -783,7 +783,7 @@ impl From<Integer> for GetManagedBotAccessSettings {
 impl Method for GetManagedBotAccessSettings {
     type Response = BotAccessSettings;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getManagedBotAccessSettings", self)
     }
 }
@@ -803,7 +803,7 @@ impl From<Integer> for GetManagedBotToken {
 impl Method for GetManagedBotToken {
     type Response = String;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getManagedBotToken", self)
     }
 }
@@ -821,7 +821,7 @@ pub struct LogOut;
 impl Method for LogOut {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::empty("logOut")
     }
 }
@@ -841,7 +841,7 @@ impl From<Integer> for ReplaceManagedBotToken {
 impl Method for ReplaceManagedBotToken {
     type Response = String;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("replaceManagedBotToken", self)
     }
 }
@@ -899,7 +899,7 @@ impl SetBotCommands {
 impl Method for SetBotCommands {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setMyCommands", self)
     }
 }
@@ -942,7 +942,7 @@ impl SetBotDefaultAdministratorRights {
 impl Method for SetBotDefaultAdministratorRights {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setMyDefaultAdministratorRights", self)
     }
 }
@@ -990,7 +990,7 @@ impl SetBotDescription {
 impl Method for SetBotDescription {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setMyDescription", self)
     }
 }
@@ -1038,7 +1038,7 @@ impl SetBotName {
 impl Method for SetBotName {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setMyName", self)
     }
 }
@@ -1067,7 +1067,7 @@ impl SetBotProfilePhoto {
 impl Method for SetBotProfilePhoto {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("setMyProfilePhoto", self.form)
     }
 }
@@ -1116,7 +1116,7 @@ impl SetBotShortDescription {
 impl Method for SetBotShortDescription {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setMyShortDescription", self)
     }
 }
@@ -1165,7 +1165,7 @@ impl SetManagedBotAccessSettings {
 impl Method for SetManagedBotAccessSettings {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setManagedBotAccessSettings", self)
     }
 }
@@ -1177,7 +1177,7 @@ pub struct RemoveBotProfilePhoto;
 impl Method for RemoveBotProfilePhoto {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::empty("removeMyProfilePhoto")
     }
 }

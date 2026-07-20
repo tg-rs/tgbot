@@ -10,7 +10,7 @@ use super::form::{Form, FormError};
 #[derive(Debug)]
 pub(crate) enum PayloadData {
     Form(Form),
-    Json(Result<String, JsonError>),
+    Json(Vec<u8>),
     Empty,
 }
 
@@ -23,28 +23,29 @@ pub struct Payload {
 }
 
 impl Payload {
-    pub(crate) fn form<P: Into<String>>(path: P, form: Form) -> Self {
-        Self {
+    pub(crate) fn form<P: Into<String>>(path: P, form: Form) -> Result<Self, PayloadError> {
+        Ok(Self {
             http_method: HttpMethod::POST,
             payload_data: PayloadData::Form(form),
             url_path: path.into(),
-        }
+        })
     }
 
-    pub(crate) fn json<P: Into<String>>(path: P, data: impl Serialize) -> Self {
-        Self {
+    pub(crate) fn json<P: Into<String>>(path: P, data: impl Serialize) -> Result<Self, PayloadError> {
+        let body = serde_json::to_vec(&data).map_err(PayloadError::Json)?;
+        Ok(Self {
             http_method: HttpMethod::POST,
-            payload_data: PayloadData::Json(serde_json::to_string(&data)),
+            payload_data: PayloadData::Json(body),
             url_path: path.into(),
-        }
+        })
     }
 
-    pub(crate) fn empty<P: Into<String>>(path: P) -> Self {
-        Self {
+    pub(crate) fn empty<P: Into<String>>(path: P) -> Result<Self, PayloadError> {
+        Ok(Self {
             http_method: HttpMethod::GET,
             payload_data: PayloadData::Empty,
             url_path: path.into(),
-        }
+        })
     }
 
     pub(crate) fn build_url(&self, base_url: &str, token: &str) -> String {
@@ -66,7 +67,6 @@ impl Payload {
                 builder.multipart(form)
             }
             PayloadData::Json(data) => {
-                let data = data?;
                 debug!("Sending JSON body: {data:?}");
                 builder.header("Content-Type", "application/json").body(data)
             }

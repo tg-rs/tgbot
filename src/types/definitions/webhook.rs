@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{AllowedUpdate, Integer},
 };
 
@@ -153,7 +153,7 @@ impl DeleteWebhook {
 impl Method for DeleteWebhook {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         if self.drop_pending_updates.is_some() {
             Payload::json("deleteWebhook", self)
         } else {
@@ -169,7 +169,7 @@ pub struct GetWebhookInfo;
 impl Method for GetWebhookInfo {
     type Response = WebhookInfo;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::empty("getWebhookInfo")
     }
 }
@@ -327,7 +327,7 @@ impl SetWebhook {
 impl Method for SetWebhook {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setWebhook", self)
     }
 }

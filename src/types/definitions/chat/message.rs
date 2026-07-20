@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{ChatId, Integer},
 };
 
@@ -67,7 +67,7 @@ impl PinChatMessage {
 impl Method for PinChatMessage {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("pinChatMessage", self)
     }
 }
@@ -132,7 +132,7 @@ impl UnpinChatMessage {
 impl Method for UnpinChatMessage {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("unpinChatMessage", self)
     }
 }
@@ -166,7 +166,7 @@ impl UnpinAllChatMessages {
 impl Method for UnpinAllChatMessages {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("unpinAllChatMessages", self)
     }
 }

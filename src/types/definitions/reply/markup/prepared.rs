@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Integer, KeyboardButton},
 };
 
@@ -43,7 +43,7 @@ impl SavePreparedKeyboardButton {
 impl Method for SavePreparedKeyboardButton {
     type Response = PreparedKeyboardButton;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("savePreparedKeyboardButton", self)
     }
 }

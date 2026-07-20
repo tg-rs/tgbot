@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{
         InputFile,
         InputSticker,
@@ -99,7 +99,7 @@ impl AddStickerToSet {
 impl Method for AddStickerToSet {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("addStickerToSet", self.form)
     }
 }
@@ -167,7 +167,7 @@ impl CreateNewStickerSet {
 impl Method for CreateNewStickerSet {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("createNewStickerSet", self.form)
     }
 }
@@ -197,7 +197,7 @@ impl DeleteStickerFromSet {
 impl Method for DeleteStickerFromSet {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteStickerFromSet", self)
     }
 }
@@ -225,7 +225,7 @@ impl DeleteStickerSet {
 impl Method for DeleteStickerSet {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteStickerSet", self)
     }
 }
@@ -253,7 +253,7 @@ impl GetStickerSet {
 impl Method for GetStickerSet {
     type Response = StickerSet;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getStickerSet", self)
     }
 }
@@ -299,7 +299,7 @@ impl ReplaceStickerInSet {
 impl Method for ReplaceStickerInSet {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("replaceStickerInSet", self.form)
     }
 }
@@ -347,7 +347,7 @@ impl SetCustomEmojiStickerSetThumbnail {
 impl Method for SetCustomEmojiStickerSetThumbnail {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setCustomEmojiStickerSetThumbnail", self)
     }
 }
@@ -380,7 +380,7 @@ impl SetStickerPositionInSet {
 impl Method for SetStickerPositionInSet {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setStickerPositionInSet", self)
     }
 }
@@ -414,7 +414,7 @@ impl SetStickerSetTitle {
 impl Method for SetStickerSetTitle {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setStickerSetTitle", self)
     }
 }
@@ -473,7 +473,7 @@ impl SetStickerSetThumbnail {
 impl Method for SetStickerSetThumbnail {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("setStickerSetThumbnail", self.form)
     }
 }

@@ -150,7 +150,7 @@ impl Client {
     {
         let file_path = file_path.as_ref();
         debug!("Downloading file from {file_path}");
-        let payload = Payload::empty(file_path);
+        let payload = Payload::empty(file_path)?;
         let url = payload.build_url(&format!("{}/file", self.host), &self.token);
         let rep = self.http_client.get(&url).send().await?;
         let status = rep.status();
@@ -180,7 +180,7 @@ impl Client {
         M::Response: DeserializeOwned + Send + 'static,
     {
         let request = method
-            .into_payload()
+            .into_payload()?
             .into_http_request_builder(&self.http_client, &self.host, &self.token)?;
         let response = match send_request_retry(Box::new(request)).await? {
             RetryResponse::Ok(response) => response,
@@ -274,7 +274,7 @@ pub trait Method {
     type Response;
 
     /// Converts the method into a payload for an HTTP request.
-    fn into_payload(self) -> Payload;
+    fn into_payload(self) -> Result<Payload, PayloadError>;
 }
 
 /// Represents general errors that can occur while working with the Telegram Bot API client.
@@ -306,6 +306,8 @@ impl fmt::Display for ClientError {
 pub enum DownloadFileError {
     /// An error indicating a failure to send an HTTP request.
     Http(HttpError),
+    /// An error indicating a failure to build an HTTP request payload.
+    Payload(PayloadError),
     /// An error received from the server in response to the download request.
     Response {
         /// The HTTP status code received in the response.
@@ -321,6 +323,12 @@ impl From<HttpError> for DownloadFileError {
     }
 }
 
+impl From<PayloadError> for DownloadFileError {
+    fn from(err: PayloadError) -> Self {
+        Self::Payload(err)
+    }
+}
+
 impl Error for DownloadFileError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
@@ -333,8 +341,9 @@ impl Error for DownloadFileError {
 impl fmt::Display for DownloadFileError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            DownloadFileError::Http(err) => write!(out, "failed to download file: {err}"),
-            DownloadFileError::Response { status, text } => {
+            Self::Http(err) => write!(out, "failed to download file: {err}"),
+            Self::Payload(err) => write!(out, "failed to download file: {err}"),
+            Self::Response { status, text } => {
                 write!(out, "failed to download file: status={status} text={text}")
             }
         }

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{InlineQueryResult, SerializeError},
 };
 
@@ -61,7 +61,7 @@ impl AnswerWebAppQuery {
 impl Method for AnswerWebAppQuery {
     type Response = SentWebAppMessage;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("answerWebAppQuery", self.form)
     }
 }

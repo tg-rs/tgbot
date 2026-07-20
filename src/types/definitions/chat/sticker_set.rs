@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::ChatId,
 };
 
@@ -36,7 +36,7 @@ impl DeleteChatStickerSet {
 impl Method for DeleteChatStickerSet {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteChatStickerSet", self)
     }
 }
@@ -76,7 +76,7 @@ impl SetChatStickerSet {
 impl Method for SetChatStickerSet {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("setChatStickerSet", self)
     }
 }

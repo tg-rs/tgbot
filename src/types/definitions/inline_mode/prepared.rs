@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload},
+    api::{Form, Method, Payload, PayloadError},
     types::{InlineQueryResult, Integer, SerializeError},
 };
 
@@ -101,7 +101,7 @@ impl SavePreparedInlineMessage {
 impl Method for SavePreparedInlineMessage {
     type Response = PreparedInlineMessage;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::form("savePreparedInlineMessage", self.form)
     }
 }

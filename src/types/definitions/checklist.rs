@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Chat, InlineKeyboardMarkup, Integer, Message, ParseMode, ReplyParameters, TextEntities, TextEntity, User},
 };
 
@@ -521,7 +521,7 @@ impl SendChecklist {
 impl Method for SendChecklist {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("sendChecklist", self)
     }
 }
@@ -574,7 +574,7 @@ impl EditMessageChecklist {
 impl Method for EditMessageChecklist {
     type Response = Message;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editMessageChecklist", self)
     }
 }

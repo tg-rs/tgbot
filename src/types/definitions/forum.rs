@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{ChatId, ForumTopicIconColor, Integer, Sticker},
 };
 
@@ -100,7 +100,7 @@ impl CloseForumTopic {
 impl Method for CloseForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("closeForumTopic", self)
     }
 }
@@ -167,7 +167,7 @@ impl CreateForumTopic {
 impl Method for CreateForumTopic {
     type Response = ForumTopic;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("createForumTopic", self)
     }
 }
@@ -200,7 +200,7 @@ impl CloseGeneralForumTopic {
 impl Method for CloseGeneralForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("closeGeneralForumTopic", self)
     }
 }
@@ -236,7 +236,7 @@ impl DeleteForumTopic {
 impl Method for DeleteForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("deleteForumTopic", self)
     }
 }
@@ -310,7 +310,7 @@ impl EditForumTopic {
 impl Method for EditForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editForumTopic", self)
     }
 }
@@ -347,7 +347,7 @@ impl EditGeneralForumTopic {
 impl Method for EditGeneralForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("editGeneralForumTopic", self)
     }
 }
@@ -359,7 +359,7 @@ pub struct GetForumTopicIconStickers;
 impl Method for GetForumTopicIconStickers {
     type Response = Vec<Sticker>;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::empty("getForumTopicIconStickers")
     }
 }
@@ -393,7 +393,7 @@ impl HideGeneralForumTopic {
 impl Method for HideGeneralForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("hideGeneralForumTopic", self)
     }
 }
@@ -430,7 +430,7 @@ impl ReopenForumTopic {
 impl Method for ReopenForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("reopenForumTopic", self)
     }
 }
@@ -464,7 +464,7 @@ impl ReopenGeneralForumTopic {
 impl Method for ReopenGeneralForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("reopenGeneralForumTopic", self)
     }
 }
@@ -497,7 +497,7 @@ impl UnhideGeneralForumTopic {
 impl Method for UnhideGeneralForumTopic {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("unhideGeneralForumTopic", self)
     }
 }
@@ -533,7 +533,7 @@ impl UnpinAllForumTopicMessages {
 impl Method for UnpinAllForumTopicMessages {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("unpinAllForumTopicMessages", self)
     }
 }
@@ -566,7 +566,7 @@ impl UnpinAllGeneralForumTopicMessages {
 impl Method for UnpinAllGeneralForumTopicMessages {
     type Response = bool;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("unpinAllGeneralForumTopicMessages", self)
     }
 }

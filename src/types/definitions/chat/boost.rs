@@ -1,7 +1,7 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Chat, ChatId, Integer, User},
 };
 
@@ -266,7 +266,7 @@ impl GetUserChatBoosts {
 impl Method for GetUserChatBoosts {
     type Response = UserChatBoosts;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getUserChatBoosts", self)
     }
 }

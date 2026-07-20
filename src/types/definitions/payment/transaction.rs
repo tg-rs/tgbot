@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Method, Payload},
+    api::{Method, Payload, PayloadError},
     types::{Chat, Gift, Integer, PaidMedia, User},
 };
 
@@ -535,7 +535,7 @@ impl GetStarTransactions {
 impl Method for GetStarTransactions {
     type Response = StarTransactions;
 
-    fn into_payload(self) -> Payload {
+    fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("getStarTransactions", self)
     }
 }

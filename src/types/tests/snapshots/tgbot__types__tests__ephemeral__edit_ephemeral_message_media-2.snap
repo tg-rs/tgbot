@@ -1,0 +1,43 @@
+---
+source: src/types/tests/ephemeral.rs
+expression: actual_form.into_fields()
+---
+[
+    (
+        "chat_id",
+        FormValue::Text(
+            "1",
+        ),
+    ),
+    (
+        "ephemeral_message_id",
+        FormValue::Text(
+            "3",
+        ),
+    ),
+    (
+        "im_media",
+        FormValue::File {
+            name: None,
+            mime_type: None,
+        },
+    ),
+    (
+        "media",
+        FormValue::Text(
+            "{\"type\":\"animation\",\"media\":\"attach://im_media\"}",
+        ),
+    ),
+    (
+        "receiver_user_id",
+        FormValue::Text(
+            "2",
+        ),
+    ),
+    (
+        "reply_markup",
+        FormValue::Text(
+            "{\"inline_keyboard\":[[{\"text\":\"test\",\"url\":\"example.com\"}]]}",
+        ),
+    ),
+]

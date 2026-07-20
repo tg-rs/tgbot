@@ -10,6 +10,7 @@ pub use self::{
     color::*,
     contact::*,
     dice::*,
+    ephemeral::*,
     errors::*,
     file::*,
     forum::*,
@@ -53,6 +54,7 @@ mod checklist;
 mod color;
 mod contact;
 mod dice;
+mod ephemeral;
 mod errors;
 mod file;
 mod forum;

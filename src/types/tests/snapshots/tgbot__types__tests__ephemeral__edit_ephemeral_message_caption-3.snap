@@ -1,0 +1,27 @@
+---
+source: src/types/tests/ephemeral.rs
+expression: actual_data
+---
+{
+  "caption": "test",
+  "caption_entities": [
+    {
+      "length": 2,
+      "offset": 0,
+      "type": "bold"
+    }
+  ],
+  "chat_id": 1,
+  "ephemeral_message_id": 3,
+  "receiver_user_id": 2,
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "test",
+          "url": "example.com"
+        }
+      ]
+    ]
+  }
+}

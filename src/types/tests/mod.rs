@@ -63,6 +63,7 @@ mod checklist;
 mod color;
 mod contact;
 mod dice;
+mod ephemeral;
 mod file;
 mod forum;
 mod game;

@@ -265,7 +265,7 @@ fn rich_text() {
 
 #[test]
 fn send_rich_message() {
-    let method = SendRichMessage::new(1, InputRichMessage::markdown("test").with_skip_entity_detection(true)).unwrap();
+    let method = SendRichMessage::new(1, InputRichMessage::markdown("test").with_skip_entity_detection(true));
     assert_payload_eq!(POST FORM "sendRichMessage" => method);
     let method = SendRichMessage::new(
         1,
@@ -273,7 +273,6 @@ fn send_rich_message() {
             .with_is_rtl(true)
             .with_media([("id", InputMediaAnimation::from(InputFile::file_id("test")))]),
     )
-    .unwrap()
     .with_allow_paid_broadcast(true)
     .with_business_connection_id("test")
     .with_direct_messages_topic_id(1)
@@ -282,11 +281,8 @@ fn send_rich_message() {
     .with_message_thread_id(1)
     .with_protect_content(true)
     .with_reply_markup(ForceReply::new(true))
-    .unwrap()
     .with_reply_parameters(ReplyParameters::new(1))
-    .unwrap()
-    .with_suggested_post_parameters(SuggestedPostParameters::default())
-    .unwrap();
+    .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST FORM "sendRichMessage" => method);
 }
 
@@ -336,16 +332,14 @@ fn send_rich_message_blocks() {
         InputRichBlock::video(Cursor::new("video-file")),
         InputRichBlock::voice_note(Cursor::new("voice-note-file")),
     ]);
-    let method = SendRichMessage::new(1, message).unwrap();
+    let method = SendRichMessage::new(1, message);
     assert_payload_eq!(POST FORM "sendRichMessage" => method);
 }
 
 #[test]
 fn send_rich_message_draft() {
-    let method = SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test")).unwrap();
+    let method = SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test"));
     assert_payload_eq!(POST FORM "sendRichMessageDraft" => method);
-    let method = SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test"))
-        .unwrap()
-        .with_message_thread_id(1);
+    let method = SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test")).with_message_thread_id(1);
     assert_payload_eq!(POST FORM "sendRichMessageDraft" => method);
 }

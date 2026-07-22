@@ -84,10 +84,9 @@ fn delete_story() {
 
 #[test]
 fn edit_story() {
-    let method = EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1).unwrap();
+    let method = EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1);
     assert_payload_eq!(POST FORM "editStory" => method);
     let method = EditStory::new("id", InputStoryContentPhoto::new(InputFile::url("url")), 1)
-        .unwrap()
         .with_areas([StoryArea::new(
             StoryAreaTypeLink::new("url"),
             StoryAreaPosition {
@@ -99,11 +98,9 @@ fn edit_story() {
                 y_percentage: 6.0,
             },
         )])
-        .unwrap()
         .with_caption("test")
         .with_parse_mode(ParseMode::Markdown)
-        .with_caption_entities([TextEntity::bold(0..2)])
-        .unwrap();
+        .with_caption_entities([TextEntity::bold(0..2)]);
     assert_payload_eq!(POST FORM "editStory" => method);
 }
 
@@ -119,10 +116,9 @@ fn get_business_connection() {
 
 #[test]
 fn post_story() {
-    let method = PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url"))).unwrap();
+    let method = PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url")));
     assert_payload_eq!(POST FORM "postStory" => method);
     let method = PostStory::new(60, "id", InputStoryContentPhoto::new(InputFile::url("url")))
-        .unwrap()
         .with_areas([StoryArea::new(
             StoryAreaTypeLink::new("url"),
             StoryAreaPosition {
@@ -134,11 +130,9 @@ fn post_story() {
                 y_percentage: 6.0,
             },
         )])
-        .unwrap()
         .with_caption("test")
         .with_parse_mode(ParseMode::Markdown)
         .with_caption_entities([TextEntity::bold(0..2)])
-        .unwrap()
         .with_post_to_chat_page(true)
         .with_protect_content(true);
     assert_payload_eq!(POST FORM "postStory" => method);
@@ -178,12 +172,10 @@ fn set_business_account_name() {
 
 #[test]
 fn set_business_account_profile_photo() {
-    let method =
-        SetBusinessAccountProfilePhoto::new("id", InputProfilePhotoStatic::new(InputFile::url("test"))).unwrap();
+    let method = SetBusinessAccountProfilePhoto::new("id", InputProfilePhotoStatic::new(InputFile::url("test")));
     assert_payload_eq!(POST FORM "setBusinessAccountProfilePhoto" => method);
 
     let method = SetBusinessAccountProfilePhoto::new("id", InputProfilePhotoStatic::new(InputFile::url("test")))
-        .unwrap()
         .with_is_public(true);
     assert_payload_eq!(POST FORM "setBusinessAccountProfilePhoto" => method);
 }

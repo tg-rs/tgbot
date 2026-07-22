@@ -35,8 +35,7 @@ fn send_media_group() {
         .with_message_effect_id("effect-id")
         .with_message_thread_id(1)
         .with_protect_content(true)
-        .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap();
+        .with_reply_parameters(ReplyParameters::new(1));
     assert_payload_eq!(POST FORM "sendMediaGroup" => method);
 }
 
@@ -100,11 +99,11 @@ fn paid_media_video() {
 
 #[test]
 fn send_paid_media() {
-    let media = InputPaidMediaGroup::new([InputPaidMediaGroupItem::for_photo(InputFile::file_id("file-id"))]).unwrap();
+    let media = InputPaidMediaGroup::new([InputPaidMediaPhoto::from(InputFile::file_id("file-id"))]).unwrap();
     let method = SendPaidMedia::new(1, media, 100);
     assert_payload_eq!(POST FORM "sendPaidMedia" => method);
 
-    let media = InputPaidMediaGroup::new([InputPaidMediaGroupItem::for_photo(InputFile::file_id("file-id"))]).unwrap();
+    let media = InputPaidMediaGroup::new([InputPaidMediaPhoto::from(InputFile::file_id("file-id"))]).unwrap();
     let caption_entities = vec![TextEntity::bold(0..1)];
     let reply_parameters = ReplyParameters::new(1);
     let reply_markup = ForceReply::new(true);
@@ -113,18 +112,14 @@ fn send_paid_media() {
         .with_business_connection_id("c-id")
         .with_caption("caption")
         .with_caption_entities(caption_entities.clone())
-        .unwrap()
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_message_thread_id(1)
         .with_payload("payload")
         .with_protect_content(true)
         .with_reply_parameters(reply_parameters.clone())
-        .unwrap()
         .with_reply_markup(reply_markup.clone())
-        .unwrap()
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap()
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
         .with_show_caption_above_media(true);
     assert_payload_eq!(POST FORM "sendPaidMedia" => method);
 }

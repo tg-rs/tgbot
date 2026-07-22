@@ -1,8 +1,69 @@
+use crate::api::{Form, FormValue};
+
 #[derive(Clone, Copy, Debug)]
 enum ExpectedData {
     Json,
     Form,
     Empty,
+}
+
+fn convert_form_into_json(form: Form) -> serde_json::Value {
+    let mut result = serde_json::json!({});
+    let mut attachments = Vec::new();
+    for (name, value) in form.into_fields() {
+        match value {
+            FormValue::Bytes(data) => {
+                result[name] = serde_json::Value::String(format!("!!binary ({})", data.len()));
+            }
+            FormValue::Json(data) => {
+                result[name] = serde_json::from_slice(&data)
+                    .unwrap_or_else(|_| panic!("Failed to parse JSON from a form value: {name}"));
+            }
+            FormValue::Text(data) => {
+                result[name] = serde_json::Value::String(data);
+            }
+            FormValue::File {
+                name: file_name,
+                mime_type,
+                reader: _reader,
+            } => {
+                let mime_type = mime_type.map(|x| x.to_string());
+                attachments.push(serde_json::json!({
+                        "id": name,
+                        "name": file_name,
+                        "mime_type": mime_type,
+                }));
+            }
+        }
+    }
+    if !attachments.is_empty() {
+        result["__attachments__"] = serde_json::json!(attachments);
+    }
+    result
+}
+
+macro_rules! assert_form_eq {
+    ($actual_form:expr) => {{
+        let actual_data = crate::types::tests::convert_form_into_json($actual_form);
+        insta::assert_json_snapshot!(actual_data);
+    }};
+}
+
+macro_rules! assert_write_form_eq {
+    ($obj:expr, $serialize:expr) => {{
+        let mut form = crate::api::Form::default();
+        let data = crate::api::WriteForm::write($obj, &mut form);
+        if $serialize {
+            serde::Serialize::serialize(&data, &mut form).unwrap();
+        }
+        assert_form_eq!(form);
+    }};
+    ($obj:expr) => {{
+        assert_write_form_eq!($obj, false);
+    }};
+    ($obj:expr; serialize) => {{
+        assert_write_form_eq!($obj, true);
+    }};
 }
 
 macro_rules! assert_payload_eq {
@@ -43,7 +104,7 @@ macro_rules! assert_payload_eq {
                 insta::assert_json_snapshot!(actual_data);
             }
             (crate::types::tests::ExpectedData::Form, crate::api::PayloadData::Form(actual_form)) => {
-                insta::assert_debug_snapshot!(actual_form.into_fields());
+                assert_form_eq!(actual_form);
             }
             (expected_data, actual_body) => {
                 assert!(matches!(expected_data, crate::types::tests::ExpectedData::Empty));

@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use crate::types::*;
 
 #[test]
@@ -31,6 +33,7 @@ fn animation() {
 fn send_animation() {
     let method = SendAnimation::new(InputFile::file_id("file-id"), 1);
     assert_payload_eq!(POST FORM "sendAnimation" => method);
+
     let method = SendAnimation::new(InputFile::file_id("file-id"), 1)
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
@@ -47,36 +50,26 @@ fn send_animation() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
         .with_show_caption_above_media(true)
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap()
-        .with_thumbnail(InputFile::url("https://google.com/favicon.ico"))
-        .unwrap()
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
+        .with_thumbnail_file(Cursor::new(b"file-data"))
+        .with_thumbnail_url("https://google.com/favicon.ico")
         .with_width(200);
     assert_payload_eq!(POST FORM "sendAnimation" => method);
-}
 
-#[test]
-fn send_animation_with_thumbnail() {
-    let err = SendAnimation::new(InputFile::file_id("file-id"), 1)
-        .with_thumbnail(InputFile::file_id("file-id"))
-        .unwrap_err();
-    assert!(matches!(err, SendAnimationError::InvalidThumbnail));
-}
+    let method = SendAnimation::new(InputFile::file_id("file-id"), 1)
+        .with_thumbnail_url("https://google.com/favicon.ico")
+        .with_thumbnail_file(Cursor::new(b"file-data"));
+    assert_payload_eq!(POST FORM "sendAnimation" => method);
 
-#[test]
-fn send_animation_entities_vs_parse_mode() {
     let method = SendAnimation::new(InputFile::file_id("file-id"), 1)
         .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap();
+        .with_caption_entities(vec![TextEntity::bold(0..10)]);
     assert_payload_eq!(POST FORM "sendAnimation" => method);
+
     let method = SendAnimation::new(InputFile::file_id("file-id"), 1)
         .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap()
         .with_caption_parse_mode(ParseMode::Markdown);
     assert_payload_eq!(POST FORM "sendAnimation" => method);
 }
@@ -99,6 +92,7 @@ fn audio() {
 fn send_audio() {
     let method = SendAudio::new(1, InputFile::file_id("file-id"));
     assert_payload_eq!(POST FORM "sendAudio" => method);
+
     let method = SendAudio::new(1, InputFile::file_id("file-id"))
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
@@ -114,36 +108,26 @@ fn send_audio() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap()
-        .with_thumbnail(InputFile::url("https://google.com/favicon.ico"))
-        .unwrap()
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
+        .with_thumbnail_url("https://google.com/favicon.ico")
+        .with_thumbnail_file(Cursor::new(b"thumbnail-file-data"))
         .with_title("Title");
     assert_payload_eq!(POST FORM "sendAudio" => method);
-}
 
-#[test]
-fn send_audio_with_thumbnail() {
-    let err = SendAudio::new(1, InputFile::file_id("file-id"))
-        .with_thumbnail(InputFile::file_id("thumb-id"))
-        .unwrap_err();
-    assert!(matches!(err, SendAudioError::InvalidThumbnail));
-}
+    let method = SendAudio::new(1, InputFile::file_id("file-id"))
+        .with_thumbnail_file(Cursor::new(b"thumbnail-file-data"))
+        .with_thumbnail_url("https://google.com/favicon.ico");
+    assert_payload_eq!(POST FORM "sendAudio" => method);
 
-#[test]
-fn send_audio_entities_vs_parse_mode() {
     let method = SendAudio::new(1, InputFile::file_id("file-id"))
         .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap()
         .with_caption_parse_mode(ParseMode::Markdown);
     assert_payload_eq!(POST FORM "sendAudio" => method);
+
     let method = SendAudio::new(1, InputFile::file_id("file-id"))
         .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap();
+        .with_caption_entities(vec![TextEntity::bold(0..10)]);
     assert_payload_eq!(POST FORM "sendAudio" => method);
 }
 
@@ -163,6 +147,7 @@ fn document() {
 fn send_document() {
     let method = SendDocument::new(1, InputFile::file_id("file-id"));
     assert_payload_eq!(POST FORM "sendDocument" => method);
+
     let method = SendDocument::new(1, InputFile::file_id("file-id"))
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
@@ -177,35 +162,25 @@ fn send_document() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap()
-        .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
-        .unwrap();
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
+        .with_thumbnail_file(Cursor::new(b"file-data"))
+        .with_thumbnail_url("https://example.com/image.jpg");
     assert_payload_eq!(POST FORM "sendDocument" => method);
-}
 
-#[test]
-fn send_document_with_thumbnail() {
-    let err = SendDocument::new(1, InputFile::file_id("file-id"))
-        .with_thumbnail(InputFile::file_id("file-id"))
-        .unwrap_err();
-    assert!(matches!(err, SendDocumentError::InvalidThumbnail));
-}
+    let method = SendDocument::new(1, InputFile::file_id("file-id"))
+        .with_thumbnail_url("https://example.com/image.jpg")
+        .with_thumbnail_file(Cursor::new(b"file-data"));
+    assert_payload_eq!(POST FORM "sendDocument" => method);
 
-#[test]
-fn send_document_entities_vs_parse_mode() {
     let method = SendDocument::new(1, InputFile::file_id("file-id"))
         .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap()
         .with_caption_parse_mode(ParseMode::Markdown);
     assert_payload_eq!(POST FORM "sendDocument" => method);
+
     let method = SendDocument::new(1, InputFile::file_id("file-id"))
         .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap();
+        .with_caption_entities(vec![TextEntity::bold(0..10)]);
     assert_payload_eq!(POST FORM "sendDocument" => method);
 }
 
@@ -219,6 +194,7 @@ fn photo_size() {
 fn send_photo() {
     let method = SendPhoto::new(1, InputFile::file_id("file-id"));
     assert_payload_eq!(POST FORM "sendPhoto" => method);
+
     let method = SendPhoto::new(1, InputFile::file_id("file-id"))
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
@@ -233,26 +209,19 @@ fn send_photo() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
         .with_show_caption_above_media(true)
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap();
+        .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST FORM "sendPhoto" => method);
-}
 
-#[test]
-fn send_photo_entities_vs_parse_mode() {
     let method = SendPhoto::new(1, InputFile::file_id("file-id"))
         .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap()
         .with_caption_parse_mode(ParseMode::Markdown);
     assert_payload_eq!(POST FORM "sendPhoto" => method);
+
     let method = SendPhoto::new(1, InputFile::file_id("file-id"))
         .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap();
+        .with_caption_entities(vec![TextEntity::bold(0..10)]);
     assert_payload_eq!(POST FORM "sendPhoto" => method);
 }
 
@@ -282,6 +251,7 @@ fn video() {
 fn send_video() {
     let method = SendVideo::new(1, InputFile::file_id("file-id"));
     assert_payload_eq!(POST FORM "sendVideo" => method);
+
     let method = SendVideo::new(1, InputFile::file_id("file-id"))
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
@@ -299,39 +269,29 @@ fn send_video() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
         .with_show_caption_above_media(true)
         .with_start_timestamp(20)
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap()
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
         .with_supports_streaming(true)
-        .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
-        .unwrap()
+        .with_thumbnail_file(Cursor::new(b"file-data"))
+        .with_thumbnail_url("https://example.com/image.jpg")
         .with_width(200);
     assert_payload_eq!(POST FORM "sendVideo" => method);
-}
 
-#[test]
-fn send_video_with_thumbnail() {
-    let err = SendVideo::new(1, InputFile::file_id("file-id"))
-        .with_thumbnail(InputFile::file_id("file-id"))
-        .unwrap_err();
-    assert!(matches!(err, SendVideoError::InvalidThumbnail));
-}
+    let method = SendVideo::new(1, InputFile::file_id("file-id"))
+        .with_thumbnail_url("https://example.com/image.jpg")
+        .with_thumbnail_file(Cursor::new(b"file-data"));
+    assert_payload_eq!(POST FORM "sendVideo" => method);
 
-#[test]
-fn send_video_entities_vs_parse_mode() {
     let method = SendVideo::new(1, InputFile::file_id("file-id"))
         .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap()
         .with_caption_parse_mode(ParseMode::Markdown);
     assert_payload_eq!(POST FORM "sendVideo" => method);
+
     let method = SendVideo::new(1, InputFile::file_id("file-id"))
         .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap();
+        .with_caption_entities(vec![TextEntity::bold(0..10)]);
     assert_payload_eq!(POST FORM "sendVideo" => method);
 }
 
@@ -349,6 +309,7 @@ fn video_note() {
 fn send_video_note() {
     let method = SendVideoNote::new(1, InputFile::file_id("file-id"));
     assert_payload_eq!(POST FORM "sendVideoNote" => method);
+
     let method = SendVideoNote::new(1, InputFile::file_id("file-id"))
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
@@ -362,22 +323,16 @@ fn send_video_note() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap()
-        .with_thumbnail(InputFile::url("https://example.com/image.jpg"))
-        .unwrap();
+        .with_suggested_post_parameters(SuggestedPostParameters::default())
+        .with_thumbnail_file(Cursor::new(b"file-data"))
+        .with_thumbnail_url("https://example.com/image.jpg");
     assert_payload_eq!(POST FORM "sendVideoNote" => method);
-}
 
-#[test]
-fn send_video_note_with_thumbnail() {
-    let err = SendVideoNote::new(1, InputFile::file_id("file-id"))
-        .with_thumbnail(InputFile::file_id("thumb-file-id"))
-        .unwrap_err();
-    assert!(matches!(err, SendVideoNoteError::InvalidThumbnail));
+    let method = SendVideoNote::new(1, InputFile::file_id("file-id"))
+        .with_thumbnail_url("https://example.com/image.jpg")
+        .with_thumbnail_file(Cursor::new(b"file-data"));
+    assert_payload_eq!(POST FORM "sendVideoNote" => method);
 }
 
 #[test]
@@ -408,24 +363,17 @@ fn send_voice() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap();
+        .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST FORM "sendVoice" => method);
-}
 
-#[test]
-fn send_voice_entities_vs_parse_mode() {
     let method = SendVoice::new(1, InputFile::file_id("file-id"))
         .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap()
         .with_caption_parse_mode(ParseMode::Markdown);
     assert_payload_eq!(POST FORM "sendVoice" => method);
+
     let method = SendVoice::new(1, InputFile::file_id("file-id"))
         .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .unwrap();
+        .with_caption_entities(vec![TextEntity::bold(0..10)]);
     assert_payload_eq!(POST FORM "sendVoice" => method);
 }

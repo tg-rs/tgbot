@@ -30,14 +30,11 @@ fn edit_ephemeral_message_caption() {
 
 #[test]
 fn edit_ephemeral_message_media() {
-    let method =
-        EditEphemeralMessageMedia::new((1, 2, 3), InputMediaAnimation::from(Cursor::new("animation-file"))).unwrap();
+    let method = EditEphemeralMessageMedia::new((1, 2, 3), InputMediaAnimation::from(Cursor::new("animation-file")));
     assert_payload_eq!(POST FORM "editEphemeralMessageMedia" => method);
 
     let method = EditEphemeralMessageMedia::new((1, 2, 3), InputMediaAnimation::from(Cursor::new("animation-file")))
-        .unwrap()
-        .with_reply_markup([[InlineKeyboardButton::for_url("test", "example.com")]])
-        .unwrap();
+        .with_reply_markup([[InlineKeyboardButton::for_url("test", "example.com")]]);
     assert_payload_eq!(POST FORM "editEphemeralMessageMedia" => method);
 }
 

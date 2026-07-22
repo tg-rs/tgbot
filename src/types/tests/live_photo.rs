@@ -22,7 +22,6 @@ fn send_live_photo() {
         .with_callback_query_id("cqid")
         .with_caption("test")
         .with_caption_entities([TextEntity::bold(0..2)])
-        .unwrap()
         .with_direct_messages_topic_id(1)
         .with_disable_notification(false)
         .with_has_spoiler(false)
@@ -32,11 +31,8 @@ fn send_live_photo() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ReplyKeyboardRemove::default())
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
         .with_show_caption_above_media(true)
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap();
+        .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST FORM "sendLivePhoto" => method);
 }

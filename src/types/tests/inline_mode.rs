@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use serde::Serialize;
 
 use crate::types::*;
@@ -9,11 +11,9 @@ fn prepared_inline_message() {
 
 #[test]
 fn save_prepared_inline_message() {
-    let method =
-        SavePreparedInlineMessage::new(1, InlineQueryResultContact::new("test", "result-id", "+1000")).unwrap();
+    let method = SavePreparedInlineMessage::new(1, InlineQueryResultContact::new("test", "result-id", "+1000"));
     assert_payload_eq!(POST FORM "savePreparedInlineMessage" => method);
     let method = SavePreparedInlineMessage::new(1, InlineQueryResultContact::new("test", "result-id", "+1000"))
-        .unwrap()
         .with_allow_bot_chats(true)
         .with_allow_channel_chats(true)
         .with_allow_group_chats(true)
@@ -53,8 +53,7 @@ fn answer_inline_query() {
         [InlineQueryResult::from(InlineQueryResultArticle::new(
             "id", "text", "title",
         ))],
-    )
-    .unwrap();
+    );
     assert_payload_eq!(POST FORM "answerInlineQuery" => method);
     let method = AnswerInlineQuery::new(
         "id",
@@ -289,9 +288,7 @@ fn answer_inline_query() {
             ),
         ],
     )
-    .unwrap()
     .with_button(InlineQueryResultsButton::for_start_parameter("text", "param"))
-    .unwrap()
     .with_cache_time(300)
     .with_is_personal(true)
     .with_next_offset("offset");
@@ -325,11 +322,11 @@ fn sent_web_app_message() {
 
 #[test]
 fn answer_web_app_query() {
+    let content = InputRichMessage::blocks([InputRichBlock::animation(Cursor::new(b"animation-file-data"))]);
     let method = AnswerWebAppQuery::new(
-        InlineQueryResultArticle::new("article-id", "article-text", "article-title"),
+        InlineQueryResultArticle::new("article-id", content, "article-title"),
         "query-id",
-    )
-    .unwrap();
+    );
     assert_payload_eq!(POST FORM "answerWebAppQuery" => method);
 }
 
@@ -347,8 +344,7 @@ fn answer_guest_query() {
                 .with_show_caption_above_media(true)
                 .with_title("title"),
         ),
-    )
-    .unwrap();
+    );
     assert_payload_eq!(POST FORM "answerGuestQuery" => method);
 }
 

@@ -221,7 +221,7 @@ fn set_bot_name() {
 #[test]
 fn set_bot_profile_photo() {
     let photo = InputProfilePhotoStatic::new(InputFile::url("https://example.com/photo.png"));
-    let method = SetBotProfilePhoto::new(photo).unwrap();
+    let method = SetBotProfilePhoto::new(photo);
     assert_payload_eq!(POST FORM "setMyProfilePhoto" => method);
 }
 

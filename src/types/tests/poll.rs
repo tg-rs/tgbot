@@ -66,34 +66,26 @@ fn poll_media() {
 
 #[test]
 fn send_quiz() {
-    let method = SendQuiz::new(1, "Q", [0], ["X"]).unwrap();
+    let method = SendQuiz::new(1, "Q", [0], ["X"]);
+    assert_payload_eq!(POST FORM "sendPoll" => method);
+    let method = SendQuiz::new(1, "Q", [0], ["X"]).with_question_entities([TextEntity::bold(0..1)]);
     assert_payload_eq!(POST FORM "sendPoll" => method);
     let method = SendQuiz::new(1, "Q", [0], ["X"])
-        .unwrap()
         .with_question_entities([TextEntity::bold(0..1)])
-        .unwrap();
-    assert_payload_eq!(POST FORM "sendPoll" => method);
-    let method = SendQuiz::new(1, "Q", [0], ["X"])
-        .unwrap()
-        .with_question_entities([TextEntity::bold(0..1)])
-        .unwrap()
         .with_question_parse_mode(ParseMode::MarkdownV2);
     assert_payload_eq!(POST FORM "sendPoll" => method);
     let method = SendQuiz::new(1, "Q", [0], ["O1", "O2"])
-        .unwrap()
         .with_allow_adding_options(true)
         .with_allow_paid_broadcast(true)
         .with_allows_multiple_answers(true)
         .with_allows_revoting(false)
         .with_business_connection_id("id")
         .with_country_codes(["NL"])
-        .unwrap()
         .with_description("test")
         .with_description_parse_mode(ParseMode::MarkdownV2)
         .with_disable_notification(true)
         .with_explanation("test")
         .with_explanation_media(InputMediaLocation::new(1.0, 2.0))
-        .unwrap()
         .with_hide_results_until_closes(true)
         .with_is_anonymous(false)
         .with_is_closed(false)
@@ -102,54 +94,41 @@ fn send_quiz() {
         .with_message_thread_id(1)
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
         .with_shuffle_options(true);
     assert_payload_eq!(POST FORM "sendPoll" => method);
 }
 
 #[test]
 fn send_poll() {
-    let method = SendPoll::new(1, "Q", ["X"]).unwrap();
+    let method = SendPoll::new(1, "Q", ["X"]);
+    assert_payload_eq!(POST FORM "sendPoll" => method);
+    let method = SendPoll::new(1, "Q", ["X"]).with_question_entities([TextEntity::bold(0..1)]);
     assert_payload_eq!(POST FORM "sendPoll" => method);
     let method = SendPoll::new(1, "Q", ["X"])
-        .unwrap()
         .with_question_entities([TextEntity::bold(0..1)])
-        .unwrap();
-    assert_payload_eq!(POST FORM "sendPoll" => method);
-    let method = SendPoll::new(1, "Q", ["X"])
-        .unwrap()
-        .with_question_entities([TextEntity::bold(0..1)])
-        .unwrap()
         .with_question_parse_mode(ParseMode::MarkdownV2);
     assert_payload_eq!(POST FORM "sendPoll" => method);
     let method = SendPoll::new(1, "Q", ["X"])
-        .unwrap()
         .with_allow_adding_options(true)
         .with_allow_paid_broadcast(true)
         .with_allows_multiple_answers(true)
         .with_allows_revoting(true)
         .with_business_connection_id("id")
         .with_country_codes(["US"])
-        .unwrap()
         .with_description("test")
         .with_description_entities([TextEntity::bold(0..2)])
-        .unwrap()
         .with_disable_notification(true)
         .with_hide_results_until_closes(true)
         .with_is_anonymous(false)
         .with_is_closed(false)
         .with_media(InputMediaLocation::new(1.0, 2.0))
-        .unwrap()
         .with_members_only(true)
         .with_message_effect_id("effect-id")
         .with_message_thread_id(1)
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
         .with_shuffle_options(true);
     assert_payload_eq!(POST FORM "sendPoll" => method);
     let method = SendPoll::new(
@@ -161,8 +140,7 @@ fn send_poll() {
             InputPollOption::new("X2").with_media(InputMediaLocation::new(1.0, 2.0)),
             InputPollOption::new("X3").with_media(InputMedia::link("https://example.com")),
         ],
-    )
-    .unwrap();
+    );
     assert_payload_eq!(POST FORM "sendPoll" => method);
 }
 

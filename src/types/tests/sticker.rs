@@ -1,18 +1,11 @@
 use std::io::Cursor;
 
-use crate::{api::Form, types::*};
+use crate::types::*;
 
 #[test]
 fn input_sticker() {
     let value = InputSticker::new(InputFile::file_id("file-id"), ["😻"], StickerFormat::Static);
-    let form: Form = value.try_into().unwrap();
-    assert_eq!(
-        Form::from([(
-            "sticker",
-            r#"{"sticker":"file-id","emoji_list":["😻"],"format":"static"}"#.into()
-        )]),
-        form
-    );
+    assert_write_form_eq!(value; serialize);
 
     let value = InputSticker::new(
         InputFile::url("https://google.com/favicon.ico"),
@@ -21,59 +14,10 @@ fn input_sticker() {
     )
     .with_keywords(["kw"])
     .with_mask_position(MaskPosition::new(MaskPositionPoint::Forehead, 3.0, 1.0, 2.0));
-    let form: Form = value.try_into().unwrap();
-    assert_eq!(
-        Form::from([(
-            "sticker",
-            concat!(
-                r#"{"sticker":"https://google.com/favicon.ico","emoji_list":["😻"],"format":"static","#,
-                r#""mask_position":{"point":"forehead","scale":3.0,"x_shift":1.0,"y_shift":2.0},"#,
-                r#""keywords":["kw"]}"#
-            )
-            .into()
-        )]),
-        form
-    );
+    assert_write_form_eq!(value; serialize);
 
     let value = InputSticker::new(Cursor::new("test"), ["😻"], StickerFormat::Static);
-    let form: Form = value.try_into().unwrap();
-    assert_eq!(
-        Form::from([
-            ("tgbot_input_sticker", InputFile::from(Cursor::new("test")).into()),
-            (
-                "sticker",
-                r#"{"sticker":"attach://tgbot_input_sticker","emoji_list":["😻"],"format":"static"}"#.into()
-            )
-        ]),
-        form
-    );
-}
-
-#[test]
-fn input_stickers() {
-    let value = InputStickers::default()
-        .add_sticker(InputSticker::new(
-            InputFile::file_id("file-id"),
-            ["😻"],
-            StickerFormat::Static,
-        ))
-        .add_sticker(InputSticker::new(
-            InputFile::url("https://google.com/favicon.ico"),
-            ["😻"],
-            StickerFormat::Static,
-        ));
-    let form: Form = value.try_into().unwrap();
-    assert_eq!(
-        Form::from([(
-            "stickers",
-            concat!(
-                r#"[{"sticker":"file-id","emoji_list":["😻"],"format":"static"},"#,
-                r#"{"sticker":"https://google.com/favicon.ico","emoji_list":["😻"],"format":"static"}]"#
-            )
-            .into()
-        )]),
-        form
-    );
+    assert_write_form_eq!(value; serialize);
 }
 
 #[test]
@@ -103,27 +47,25 @@ fn add_sticker_to_set() {
         1,
         "name",
         InputSticker::new(InputFile::file_id("sticker-id"), ["😻"], StickerFormat::Static),
-    )
-    .unwrap();
+    );
     assert_payload_eq!(POST FORM "addStickerToSet" => method);
 }
 
-fn create_input_stickers() -> InputStickers {
-    InputStickers::default().add_sticker(InputSticker::new(
+fn create_input_stickers() -> Vec<InputSticker> {
+    vec![InputSticker::new(
         InputFile::file_id("sticker-file-id"),
         ["😻"],
         StickerFormat::Static,
-    ))
+    )]
 }
 
 #[test]
 fn create_new_sticker_set() {
     let method = CreateNewStickerSet::new(1, "name", "title", create_input_stickers())
-        .unwrap()
         .with_needs_repainting(true)
         .with_sticker_type(StickerType::Regular);
     assert_payload_eq!(POST FORM "createNewStickerSet" => method);
-    let method = CreateNewStickerSet::new(1, "name", "title", create_input_stickers()).unwrap();
+    let method = CreateNewStickerSet::new(1, "name", "title", create_input_stickers());
     assert_payload_eq!(POST FORM "createNewStickerSet" => method);
 }
 
@@ -152,8 +94,7 @@ fn replace_sticker_in_set() {
         "old-sticker",
         InputSticker::new(InputFile::file_id("test"), ["😻"], StickerFormat::Static),
         1,
-    )
-    .unwrap();
+    );
     assert_payload_eq!(POST FORM "replaceStickerInSet" => method);
 }
 
@@ -252,11 +193,8 @@ fn send_sticker() {
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ReplyMarkup::from(ForceReply::new(true)))
-        .unwrap()
         .with_reply_parameters(ReplyParameters::new(1))
-        .unwrap()
-        .with_suggested_post_parameters(&SuggestedPostParameters::default())
-        .unwrap();
+        .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST FORM "sendSticker" => method);
     let method = SendSticker::new(1, InputFile::file_id("sticker-id"));
     assert_payload_eq!(POST FORM "sendSticker" => method);

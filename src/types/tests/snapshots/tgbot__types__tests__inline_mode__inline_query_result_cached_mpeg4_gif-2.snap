@@ -1,9 +1,0 @@
----
-source: src/types/tests/inline_mode.rs
-expression: "InlineQueryResult::from(result)"
----
-{
-  "mpeg4_file_id": "file-id",
-  "id": "id",
-  "type": "mpeg4_gif"
-}

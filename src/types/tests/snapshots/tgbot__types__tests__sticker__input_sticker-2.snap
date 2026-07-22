@@ -1,0 +1,20 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_data
+---
+{
+  "emoji_list": [
+    "😻"
+  ],
+  "format": "static",
+  "keywords": [
+    "kw"
+  ],
+  "mask_position": {
+    "point": "forehead",
+    "scale": 3.0,
+    "x_shift": 1.0,
+    "y_shift": 2.0
+  },
+  "sticker": "https://google.com/favicon.ico"
+}

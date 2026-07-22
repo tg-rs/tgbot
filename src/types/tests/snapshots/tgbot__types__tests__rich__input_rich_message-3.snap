@@ -1,9 +1,0 @@
----
-source: src/types/tests/rich.rs
-expression: "InputRichMessage::html(\"test\").with_is_rtl(true).with_skip_entity_detection(true)"
----
-{
-  "html": "test",
-  "is_rtl": true,
-  "skip_entity_detection": true
-}

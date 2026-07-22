@@ -1,9 +1,9 @@
 ---
 source: src/types/tests/input.rs
-expression: data
+expression: actual_data
 ---
 {
-  "type": "video",
   "caption": "test",
-  "media": "video-file-id"
+  "media": "video-file-id",
+  "type": "video"
 }

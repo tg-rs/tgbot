@@ -1,9 +1,0 @@
----
-source: src/types/tests/input.rs
-expression: info.clone()
----
-{
-  "caption": "test",
-  "parse_mode": "MarkdownV2",
-  "duration": 1
-}

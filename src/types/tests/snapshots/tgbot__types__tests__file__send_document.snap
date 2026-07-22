@@ -1,18 +1,8 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "document",
-        FormValue::Text(
-            "file-id",
-        ),
-    ),
-]
+{
+  "chat_id": "1",
+  "document": "file-id"
+}

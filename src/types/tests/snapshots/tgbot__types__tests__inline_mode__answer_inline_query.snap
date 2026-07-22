@@ -1,18 +1,17 @@
 ---
 source: src/types/tests/inline_mode.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "inline_query_id",
-        FormValue::Text(
-            "id",
-        ),
-    ),
-    (
-        "results",
-        FormValue::Text(
-            "[{\"id\":\"id\",\"type\":\"article\",\"input_message_content\":{\"message_text\":\"text\"},\"title\":\"title\"}]",
-        ),
-    ),
-]
+{
+  "inline_query_id": "id",
+  "results": [
+    {
+      "id": "id",
+      "input_message_content": {
+        "message_text": "text"
+      },
+      "title": "title",
+      "type": "article"
+    }
+  ]
+}

@@ -1,48 +1,24 @@
 ---
 source: src/types/tests/message.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "business_connection_id",
-        FormValue::Text(
-            "c-id",
-        ),
-    ),
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "link_preview_options",
-        FormValue::Text(
-            "{\"is_disabled\":true}",
-        ),
-    ),
-    (
-        "message_id",
-        FormValue::Text(
-            "2",
-        ),
-    ),
-    (
-        "parse_mode",
-        FormValue::Text(
-            "Markdown",
-        ),
-    ),
-    (
-        "reply_markup",
-        FormValue::Text(
-            "{\"inline_keyboard\":[[{\"text\":\"text\",\"url\":\"url\"}]]}",
-        ),
-    ),
-    (
-        "text",
-        FormValue::Text(
-            "text",
-        ),
-    ),
-]
+{
+  "business_connection_id": "c-id",
+  "chat_id": 1,
+  "link_preview_options": {
+    "is_disabled": true
+  },
+  "message_id": 2,
+  "parse_mode": "Markdown",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  },
+  "text": "text"
+}

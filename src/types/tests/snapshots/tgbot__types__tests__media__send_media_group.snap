@@ -1,101 +1,88 @@
 ---
 source: src/types/tests/media.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "allow_paid_broadcast",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "business_connection_id",
-        FormValue::Text(
-            "id",
-        ),
-    ),
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "direct_messages_topic_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "disable_notification",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "im_media",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "im_media_1",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "im_media_3",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "im_media_4",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "im_media_5",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "media",
-        FormValue::Text(
-            "[{\"type\":\"audio\",\"media\":\"attach://im_media\"},{\"type\":\"document\",\"media\":\"attach://im_media_1\"},{\"type\":\"live_photo\",\"media\":\"file-id\",\"photo\":\"photo-id\"},{\"type\":\"photo\",\"media\":\"attach://im_media_3\"},{\"type\":\"photo\",\"caption\":\"caption\",\"media\":\"attach://im_media_4\"},{\"type\":\"video\",\"cover\":\"cover-url\",\"media\":\"attach://im_media_5\"},{\"type\":\"audio\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"},{\"type\":\"document\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"},{\"type\":\"video\",\"media\":\"file-id\",\"thumbnail\":\"thumb-url\"}]",
-        ),
-    ),
-    (
-        "message_effect_id",
-        FormValue::Text(
-            "effect-id",
-        ),
-    ),
-    (
-        "message_thread_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "protect_content",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "reply_parameters",
-        FormValue::Text(
-            "{\"message_id\":1}",
-        ),
-    ),
-]
+{
+  "__attachments__": [
+    {
+      "id": "tgbot_file_1",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_2",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_3",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_4",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_5",
+      "mime_type": null,
+      "name": null
+    }
+  ],
+  "allow_paid_broadcast": "true",
+  "business_connection_id": "id",
+  "chat_id": "1",
+  "direct_messages_topic_id": "1",
+  "disable_notification": "true",
+  "media": [
+    {
+      "media": "attach://tgbot_file_1",
+      "type": "audio"
+    },
+    {
+      "media": "attach://tgbot_file_2",
+      "type": "document"
+    },
+    {
+      "media": "file-id",
+      "photo": "photo-id",
+      "type": "live_photo"
+    },
+    {
+      "media": "attach://tgbot_file_3",
+      "type": "photo"
+    },
+    {
+      "caption": "caption",
+      "media": "attach://tgbot_file_4",
+      "type": "photo"
+    },
+    {
+      "cover": "cover-url",
+      "media": "attach://tgbot_file_5",
+      "type": "video"
+    },
+    {
+      "media": "file-id",
+      "thumbnail": "thumb-url",
+      "type": "audio"
+    },
+    {
+      "media": "file-id",
+      "thumbnail": "thumb-url",
+      "type": "document"
+    },
+    {
+      "media": "file-id",
+      "thumbnail": "thumb-url",
+      "type": "video"
+    }
+  ],
+  "message_effect_id": "effect-id",
+  "message_thread_id": "1",
+  "protect_content": "true",
+  "reply_parameters": {
+    "message_id": 1
+  }
+}

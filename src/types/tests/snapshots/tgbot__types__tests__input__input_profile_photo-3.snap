@@ -1,0 +1,9 @@
+---
+source: src/types/tests/input.rs
+expression: actual_data
+---
+{
+  "animation": "url",
+  "main_frame_timestamp": "1",
+  "type": "animated"
+}

@@ -1,37 +1,21 @@
 ---
 source: src/types/tests/ephemeral.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "ephemeral_message_id",
-        FormValue::Text(
-            "3",
-        ),
-    ),
-    (
-        "im_media",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "media",
-        FormValue::Text(
-            "{\"type\":\"animation\",\"media\":\"attach://im_media\"}",
-        ),
-    ),
-    (
-        "receiver_user_id",
-        FormValue::Text(
-            "2",
-        ),
-    ),
-]
+{
+  "__attachments__": [
+    {
+      "id": "tgbot_file_1",
+      "mime_type": null,
+      "name": null
+    }
+  ],
+  "chat_id": 1,
+  "ephemeral_message_id": 3,
+  "media": {
+    "media": "attach://tgbot_file_1",
+    "type": "animation"
+  },
+  "receiver_user_id": 2,
+  "reply_markup": null
+}

@@ -1,156 +1,35 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "allow_paid_broadcast",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "business_connection_id",
-        FormValue::Text(
-            "id",
-        ),
-    ),
-    (
-        "callback_query_id",
-        FormValue::Text(
-            "cqid",
-        ),
-    ),
-    (
-        "caption",
-        FormValue::Text(
-            "Caption",
-        ),
-    ),
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "cover",
-        FormValue::Text(
-            "cover-id",
-        ),
-    ),
-    (
-        "direct_messages_topic_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "disable_notification",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "duration",
-        FormValue::Text(
-            "100",
-        ),
-    ),
-    (
-        "has_spoiler",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "height",
-        FormValue::Text(
-            "300",
-        ),
-    ),
-    (
-        "message_effect_id",
-        FormValue::Text(
-            "effect-id",
-        ),
-    ),
-    (
-        "message_thread_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "parse_mode",
-        FormValue::Text(
-            "Markdown",
-        ),
-    ),
-    (
-        "protect_content",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "receiver_user_id",
-        FormValue::Text(
-            "999",
-        ),
-    ),
-    (
-        "reply_markup",
-        FormValue::Text(
-            "{\"force_reply\":true}",
-        ),
-    ),
-    (
-        "reply_parameters",
-        FormValue::Text(
-            "{\"message_id\":1}",
-        ),
-    ),
-    (
-        "show_caption_above_media",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "start_timestamp",
-        FormValue::Text(
-            "20",
-        ),
-    ),
-    (
-        "suggested_post_parameters",
-        FormValue::Text(
-            "{}",
-        ),
-    ),
-    (
-        "supports_streaming",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "thumbnail",
-        FormValue::Text(
-            "https://example.com/image.jpg",
-        ),
-    ),
-    (
-        "video",
-        FormValue::Text(
-            "file-id",
-        ),
-    ),
-    (
-        "width",
-        FormValue::Text(
-            "200",
-        ),
-    ),
-]
+{
+  "allow_paid_broadcast": "true",
+  "business_connection_id": "id",
+  "callback_query_id": "cqid",
+  "caption": "Caption",
+  "chat_id": "1",
+  "cover": "cover-id",
+  "direct_messages_topic_id": "1",
+  "disable_notification": "true",
+  "duration": "100",
+  "has_spoiler": "true",
+  "height": "300",
+  "message_effect_id": "effect-id",
+  "message_thread_id": "1",
+  "parse_mode": "Markdown",
+  "protect_content": "true",
+  "receiver_user_id": "999",
+  "reply_markup": {
+    "force_reply": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  },
+  "show_caption_above_media": "true",
+  "start_timestamp": "20",
+  "suggested_post_parameters": {},
+  "supports_streaming": "true",
+  "thumbnail": "https://example.com/image.jpg",
+  "video": "file-id",
+  "width": "200"
+}

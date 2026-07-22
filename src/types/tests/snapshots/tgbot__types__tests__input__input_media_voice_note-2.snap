@@ -1,17 +1,17 @@
 ---
 source: src/types/tests/input.rs
-expression: data
+expression: actual_data
 ---
 {
-  "type": "voice_note",
   "caption": "test",
   "caption_entities": [
     {
-      "offset": 0,
       "length": 2,
+      "offset": 0,
       "type": "bold"
     }
   ],
   "duration": 1,
-  "media": "test"
+  "media": "test",
+  "type": "voice_note"
 }

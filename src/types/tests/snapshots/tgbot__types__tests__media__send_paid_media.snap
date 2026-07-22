@@ -1,24 +1,14 @@
 ---
 source: src/types/tests/media.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "media",
-        FormValue::Text(
-            "[{\"type\":\"photo\",\"media\":\"file-id\"}]",
-        ),
-    ),
-    (
-        "star_count",
-        FormValue::Text(
-            "100",
-        ),
-    ),
-]
+{
+  "chat_id": "1",
+  "media": [
+    {
+      "media": "file-id",
+      "type": "photo"
+    }
+  ],
+  "star_count": "100"
+}

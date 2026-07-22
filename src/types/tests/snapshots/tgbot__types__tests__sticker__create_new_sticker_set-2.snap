@@ -1,30 +1,18 @@
 ---
 source: src/types/tests/sticker.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "name",
-        FormValue::Text(
-            "name",
-        ),
-    ),
-    (
-        "stickers",
-        FormValue::Text(
-            "[{\"sticker\":\"sticker-file-id\",\"emoji_list\":[\"😻\"],\"format\":\"static\"}]",
-        ),
-    ),
-    (
-        "title",
-        FormValue::Text(
-            "title",
-        ),
-    ),
-    (
-        "user_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-]
+{
+  "name": "name",
+  "stickers": [
+    {
+      "emoji_list": [
+        "😻"
+      ],
+      "format": "static",
+      "sticker": "sticker-file-id"
+    }
+  ],
+  "title": "title",
+  "user_id": "1"
+}

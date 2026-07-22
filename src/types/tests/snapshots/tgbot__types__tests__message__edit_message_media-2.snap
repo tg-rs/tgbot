@@ -1,18 +1,18 @@
 ---
 source: src/types/tests/message.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "inline_message_id",
-        FormValue::Text(
-            "msg-id",
-        ),
-    ),
-    (
-        "media",
-        FormValue::Text(
-            "{\"type\":\"photo\",\"media\":\"file-id\"}",
-        ),
-    ),
-]
+{
+  "__attachments__": [
+    {
+      "id": "tgbot_file_1",
+      "mime_type": null,
+      "name": null
+    }
+  ],
+  "inline_message_id": "msg-id",
+  "media": {
+    "media": "attach://tgbot_file_1",
+    "type": "photo"
+  }
+}

@@ -1,108 +1,27 @@
 ---
 source: src/types/tests/file.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "allow_paid_broadcast",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "business_connection_id",
-        FormValue::Text(
-            "id",
-        ),
-    ),
-    (
-        "callback_query_id",
-        FormValue::Text(
-            "cqid",
-        ),
-    ),
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "direct_messages_topic_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "disable_notification",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "duration",
-        FormValue::Text(
-            "50",
-        ),
-    ),
-    (
-        "length",
-        FormValue::Text(
-            "100",
-        ),
-    ),
-    (
-        "message_effect_id",
-        FormValue::Text(
-            "effect-id",
-        ),
-    ),
-    (
-        "message_thread_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "protect_content",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "receiver_user_id",
-        FormValue::Text(
-            "999",
-        ),
-    ),
-    (
-        "reply_markup",
-        FormValue::Text(
-            "{\"force_reply\":true}",
-        ),
-    ),
-    (
-        "reply_parameters",
-        FormValue::Text(
-            "{\"message_id\":1}",
-        ),
-    ),
-    (
-        "suggested_post_parameters",
-        FormValue::Text(
-            "{}",
-        ),
-    ),
-    (
-        "thumbnail",
-        FormValue::Text(
-            "https://example.com/image.jpg",
-        ),
-    ),
-    (
-        "video_note",
-        FormValue::Text(
-            "file-id",
-        ),
-    ),
-]
+{
+  "allow_paid_broadcast": "true",
+  "business_connection_id": "id",
+  "callback_query_id": "cqid",
+  "chat_id": "1",
+  "direct_messages_topic_id": "1",
+  "disable_notification": "true",
+  "duration": "50",
+  "length": "100",
+  "message_effect_id": "effect-id",
+  "message_thread_id": "1",
+  "protect_content": "true",
+  "receiver_user_id": "999",
+  "reply_markup": {
+    "force_reply": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  },
+  "suggested_post_parameters": {},
+  "thumbnail": "https://example.com/image.jpg",
+  "video_note": "file-id"
+}

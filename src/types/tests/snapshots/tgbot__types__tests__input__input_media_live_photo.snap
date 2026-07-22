@@ -1,13 +1,13 @@
 ---
 source: src/types/tests/input.rs
-expression: data
+expression: actual_data
 ---
 {
-  "type": "live_photo",
   "caption": "test",
   "has_spoiler": false,
   "media": "https://example.com/video.mp4",
   "parse_mode": "Markdown",
   "photo": "https://example.com/photo.png",
-  "show_caption_above_media": true
+  "show_caption_above_media": true,
+  "type": "live_photo"
 }

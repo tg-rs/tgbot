@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/chat.rs
-expression: "ChatMemberUpdated::new(Chat::Group(GroupChat::new(1, \"group-title\")), 0,\nUser::new(1, \"John\", true),\nChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, \"John\", false))),\nChatMember::Member\n{\n    user: User::new(2, \"John\", false), until_date: None,\n},).with_invite_link(ChatInviteLink::new(\"https://t.me/joinchat/o8oIBrbCI3U2OGJi\",\nUser::new(1, \"John\",\nfalse)).with_is_primary(true),).with_via_chat_folder_invite_link(true).with_via_join_request(true)"
+expression: "ChatMemberUpdated::new(Chat::Group(GroupChat::new(1, \"group-title\")), 0,\nUser::new(1, \"John\", true),\nChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, \"John\", false))),\nChatMember::Member\n{\n    user: User::new(2, \"John\", false), tag: None, until_date: None,\n},).with_invite_link(ChatInviteLink::new(\"https://t.me/joinchat/o8oIBrbCI3U2OGJi\",\nUser::new(1, \"John\",\nfalse)).with_is_primary(true),).with_via_chat_folder_invite_link(true).with_via_join_request(true)"
 ---
 {
   "chat": {

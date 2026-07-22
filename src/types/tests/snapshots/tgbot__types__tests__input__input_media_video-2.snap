@@ -1,19 +1,31 @@
 ---
 source: src/types/tests/input.rs
-expression: data
+expression: actual_data
 ---
 {
-  "type": "video",
+  "__attachments__": [
+    {
+      "id": "tgbot_file_1",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_2",
+      "mime_type": null,
+      "name": null
+    }
+  ],
   "caption": "caption",
   "cover": "cover-id",
   "duration": 100,
   "has_spoiler": true,
   "height": 200,
-  "media": "attach://im_media",
+  "media": "attach://tgbot_file_1",
   "parse_mode": "Markdown",
   "show_caption_above_media": true,
   "start_timestamp": 450,
   "supports_streaming": true,
-  "thumbnail": "attach://im_tmb",
+  "thumbnail": "attach://tgbot_file_2",
+  "type": "video",
   "width": 200
 }

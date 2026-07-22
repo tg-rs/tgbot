@@ -1,0 +1,11 @@
+---
+source: src/types/tests/input.rs
+expression: actual_data
+---
+{
+  "cover_frame_timestamp": "1",
+  "duration": "1",
+  "is_animation": "true",
+  "type": "video",
+  "video": "url"
+}

@@ -1,14 +1,26 @@
 ---
 source: src/types/tests/input.rs
-expression: data
+expression: actual_data
 ---
 {
-  "type": "audio",
+  "__attachments__": [
+    {
+      "id": "tgbot_file_1",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_2",
+      "mime_type": null,
+      "name": null
+    }
+  ],
   "caption": "caption",
   "duration": 10,
-  "media": "attach://im_media",
+  "media": "attach://tgbot_file_1",
   "parse_mode": "Markdown",
   "performer": "test performer",
-  "thumbnail": "attach://im_tmb",
-  "title": "test title"
+  "thumbnail": "attach://tgbot_file_2",
+  "title": "test title",
+  "type": "audio"
 }

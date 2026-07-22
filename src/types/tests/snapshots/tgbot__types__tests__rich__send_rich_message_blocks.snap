@@ -1,81 +1,277 @@
 ---
 source: src/types/tests/rich.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "im_media_0_1",
-        FormValue::File {
-            name: None,
-            mime_type: None,
+{
+  "__attachments__": [
+    {
+      "id": "tgbot_file_1",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_2",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_3",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_4",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_5",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_6",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_7",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_8",
+      "mime_type": null,
+      "name": null
+    },
+    {
+      "id": "tgbot_file_9",
+      "mime_type": null,
+      "name": null
+    }
+  ],
+  "chat_id": "1",
+  "rich_message": {
+    "blocks": [
+      {
+        "name": "anchor",
+        "type": "anchor"
+      },
+      {
+        "animation": {
+          "media": "attach://tgbot_file_1",
+          "type": "animation"
         },
-    ),
-    (
-        "im_media_0_12_1_0",
-        FormValue::File {
-            name: None,
-            mime_type: None,
+        "type": "animation"
+      },
+      {
+        "audio": {
+          "media": "attach://tgbot_file_2",
+          "type": "audio"
         },
-    ),
-    (
-        "im_media_0_12_2_0_0",
-        FormValue::File {
-            name: None,
-            mime_type: None,
+        "type": "audio"
+      },
+      {
+        "blocks": [
+          {
+            "text": "bq",
+            "type": "paragraph"
+          }
+        ],
+        "type": "blockquote"
+      },
+      {
+        "blocks": [
+          {
+            "text": "bqwc",
+            "type": "paragraph"
+          }
+        ],
+        "credit": "bqc",
+        "type": "blockquote"
+      },
+      {
+        "blocks": [],
+        "type": "collage"
+      },
+      {
+        "blocks": [
+          {
+            "animation": {
+              "media": "attach://tgbot_file_3",
+              "type": "animation"
+            },
+            "type": "animation"
+          }
+        ],
+        "caption": {
+          "text": "test"
         },
-    ),
-    (
-        "im_media_0_16",
-        FormValue::File {
-            name: None,
-            mime_type: None,
+        "type": "collage"
+      },
+      {
+        "blocks": [],
+        "summary": "details-1",
+        "type": "details"
+      },
+      {
+        "blocks": [
+          {
+            "audio": {
+              "media": "attach://tgbot_file_4",
+              "type": "audio"
+            },
+            "type": "audio"
+          }
+        ],
+        "is_open": true,
+        "summary": "details-2",
+        "type": "details"
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "text": "footer",
+        "type": "footer"
+      },
+      {
+        "size": 1,
+        "text": "heading",
+        "type": "heading"
+      },
+      {
+        "items": [
+          {
+            "blocks": [
+              {
+                "text": "list-item-1",
+                "type": "paragraph"
+              }
+            ],
+            "has_checkbox": true,
+            "is_checked": null,
+            "type": null,
+            "value": null
+          },
+          {
+            "blocks": [
+              {
+                "audio": {
+                  "media": "attach://tgbot_file_5",
+                  "type": "audio"
+                },
+                "type": "audio"
+              }
+            ],
+            "has_checkbox": null,
+            "is_checked": true,
+            "type": "I",
+            "value": null
+          },
+          {
+            "blocks": [
+              {
+                "blocks": [
+                  {
+                    "audio": {
+                      "media": "attach://tgbot_file_6",
+                      "type": "audio"
+                    },
+                    "type": "audio"
+                  }
+                ],
+                "type": "blockquote"
+              }
+            ],
+            "has_checkbox": null,
+            "is_checked": true,
+            "type": "I",
+            "value": null
+          }
+        ],
+        "type": "list"
+      },
+      {
+        "height": 2,
+        "location": {
+          "latitude": 0.0,
+          "longitude": 1.0
         },
-    ),
-    (
-        "im_media_0_2",
-        FormValue::File {
-            name: None,
-            mime_type: None,
+        "type": "map",
+        "width": 1,
+        "zoom": 0
+      },
+      {
+        "expression": "math-expr",
+        "type": "mathematical_expression"
+      },
+      {
+        "text": {
+          "text": "paragraph",
+          "type": "italic"
         },
-    ),
-    (
-        "im_media_0_22",
-        FormValue::File {
-            name: None,
-            mime_type: None,
+        "type": "paragraph"
+      },
+      {
+        "photo": {
+          "media": "attach://tgbot_file_7",
+          "show_caption_above_media": true,
+          "type": "photo"
         },
-    ),
-    (
-        "im_media_0_23",
-        FormValue::File {
-            name: None,
-            mime_type: None,
+        "type": "photo"
+      },
+      {
+        "language": "python",
+        "text": "print()",
+        "type": "pre"
+      },
+      {
+        "text": "pullquote",
+        "type": "pullquote"
+      },
+      {
+        "blocks": [
+          {
+            "text": "slideshow",
+            "type": "paragraph"
+          }
+        ],
+        "caption": {
+          "text": "test"
         },
-    ),
-    (
-        "im_media_0_6_0",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "im_media_0_8_0",
-        FormValue::File {
-            name: None,
-            mime_type: None,
-        },
-    ),
-    (
-        "rich_message",
-        FormValue::Text(
-            "{\"blocks\":[{\"type\":\"anchor\",\"parameters\":{\"name\":\"anchor\"}},{\"type\":\"animation\",\"parameters\":{\"animation\":{\"type\":\"animation\",\"media\":\"attach://im_media_0_1\"}}},{\"type\":\"audio\",\"parameters\":{\"audio\":{\"type\":\"audio\",\"media\":\"attach://im_media_0_2\"}}},{\"type\":\"blockquote\",\"parameters\":{\"blocks\":[{\"type\":\"paragraph\",\"parameters\":{\"text\":\"bq\"}}]}},{\"type\":\"blockquote\",\"parameters\":{\"blocks\":[{\"type\":\"paragraph\",\"parameters\":{\"text\":\"bqwc\"}}],\"credit\":\"bqc\"}},{\"type\":\"collage\",\"parameters\":{\"blocks\":[]}},{\"type\":\"collage\",\"parameters\":{\"blocks\":[{\"type\":\"animation\",\"parameters\":{\"animation\":{\"type\":\"animation\",\"media\":\"attach://im_media_0_6_0\"}}}],\"caption\":{\"text\":\"test\"}}},{\"type\":\"details\",\"parameters\":{\"blocks\":[],\"summary\":\"details-1\"}},{\"type\":\"details\",\"parameters\":{\"blocks\":[{\"type\":\"audio\",\"parameters\":{\"audio\":{\"type\":\"audio\",\"media\":\"attach://im_media_0_8_0\"}}}],\"is_open\":true,\"summary\":\"details-2\"}},{\"type\":\"divider\",\"parameters\":{}},{\"type\":\"footer\",\"parameters\":{\"text\":\"footer\"}},{\"type\":\"heading\",\"parameters\":{\"size\":1,\"text\":\"heading\"}},{\"type\":\"list\",\"parameters\":{\"items\":[{\"blocks\":[{\"type\":\"paragraph\",\"parameters\":{\"text\":\"list-item-1\"}}],\"has_checkbox\":true,\"is_checked\":null,\"type\":null,\"value\":null},{\"blocks\":[{\"type\":\"audio\",\"parameters\":{\"audio\":{\"type\":\"audio\",\"media\":\"attach://im_media_0_12_1_0\"}}}],\"has_checkbox\":null,\"is_checked\":true,\"type\":\"I\",\"value\":null},{\"blocks\":[{\"type\":\"blockquote\",\"parameters\":{\"blocks\":[{\"type\":\"audio\",\"parameters\":{\"audio\":{\"type\":\"audio\",\"media\":\"attach://im_media_0_12_2_0_0\"}}}]}}],\"has_checkbox\":null,\"is_checked\":true,\"type\":\"I\",\"value\":null}]}},{\"type\":\"map\",\"parameters\":{\"height\":2,\"location\":{\"latitude\":0.0,\"longitude\":1.0},\"width\":1,\"zoom\":0}},{\"type\":\"mathematical_expression\",\"parameters\":{\"expression\":\"math-expr\"}},{\"type\":\"paragraph\",\"parameters\":{\"text\":{\"type\":\"italic\",\"text\":\"paragraph\"}}},{\"type\":\"photo\",\"parameters\":{\"photo\":{\"type\":\"photo\",\"media\":\"attach://im_media_0_16\",\"show_caption_above_media\":true}}},{\"type\":\"pre\",\"parameters\":{\"language\":\"python\",\"text\":\"print()\"}},{\"type\":\"pullquote\",\"parameters\":{\"text\":\"pullquote\"}},{\"type\":\"slideshow\",\"parameters\":{\"blocks\":[{\"type\":\"paragraph\",\"parameters\":{\"text\":\"slideshow\"}}],\"caption\":{\"text\":\"test\"}}},{\"type\":\"table\",\"parameters\":{\"cells\":[[{\"align\":\"left\",\"valign\":\"middle\",\"text\":\"test\"}]]}},{\"type\":\"thinking\",\"parameters\":{\"text\":\"thinking\"}},{\"type\":\"video\",\"parameters\":{\"video\":{\"type\":\"video\",\"media\":\"attach://im_media_0_22\"}}},{\"type\":\"voice_note\",\"parameters\":{\"voice_note\":{\"type\":\"voice_note\",\"media\":\"attach://im_media_0_23\"}}}]}",
-        ),
-    ),
-]
+        "type": "slideshow"
+      },
+      {
+        "cells": [
+          [
+            {
+              "align": "left",
+              "text": "test",
+              "valign": "middle"
+            }
+          ]
+        ],
+        "type": "table"
+      },
+      {
+        "text": "thinking",
+        "type": "thinking"
+      },
+      {
+        "type": "video",
+        "video": {
+          "media": "attach://tgbot_file_8",
+          "type": "video"
+        }
+      },
+      {
+        "type": "voice_note",
+        "voice_note": {
+          "media": "attach://tgbot_file_9",
+          "type": "voice_note"
+        }
+      }
+    ]
+  }
+}

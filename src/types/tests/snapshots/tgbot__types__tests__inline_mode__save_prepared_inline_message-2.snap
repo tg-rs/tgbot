@@ -1,42 +1,17 @@
 ---
 source: src/types/tests/inline_mode.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "allow_bot_chats",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "allow_channel_chats",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "allow_group_chats",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "allow_user_chats",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "result",
-        FormValue::Text(
-            "{\"id\":\"result-id\",\"type\":\"contact\",\"first_name\":\"test\",\"phone_number\":\"+1000\"}",
-        ),
-    ),
-    (
-        "user_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-]
+{
+  "allow_bot_chats": "true",
+  "allow_channel_chats": "true",
+  "allow_group_chats": "true",
+  "allow_user_chats": "true",
+  "result": {
+    "first_name": "test",
+    "id": "result-id",
+    "phone_number": "+1000",
+    "type": "contact"
+  },
+  "user_id": "1"
+}

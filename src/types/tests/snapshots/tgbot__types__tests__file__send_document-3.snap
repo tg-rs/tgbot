@@ -1,0 +1,16 @@
+---
+source: src/types/tests/file.rs
+expression: actual_data
+---
+{
+  "__attachments__": [
+    {
+      "id": "tgbot_file_1",
+      "mime_type": null,
+      "name": null
+    }
+  ],
+  "chat_id": "1",
+  "document": "file-id",
+  "thumbnail": "attach://tgbot_file_1"
+}

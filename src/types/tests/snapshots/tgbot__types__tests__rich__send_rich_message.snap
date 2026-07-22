@@ -1,18 +1,11 @@
 ---
 source: src/types/tests/rich.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "rich_message",
-        FormValue::Text(
-            "{\"markdown\":\"test\",\"skip_entity_detection\":true}",
-        ),
-    ),
-]
+{
+  "chat_id": "1",
+  "rich_message": {
+    "markdown": "test",
+    "skip_entity_detection": true
+  }
+}

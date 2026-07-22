@@ -1,7 +1,0 @@
----
-source: src/types/tests/rich.rs
-expression: "InputRichMessage::markdown(\"test\")"
----
-{
-  "markdown": "test"
-}

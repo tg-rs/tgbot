@@ -1,24 +1,9 @@
 ---
 source: src/types/tests/live_photo.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "live_photo",
-        FormValue::Text(
-            "file-id",
-        ),
-    ),
-    (
-        "photo",
-        FormValue::Text(
-            "photo-id",
-        ),
-    ),
-]
+{
+  "chat_id": "1",
+  "live_photo": "file-id",
+  "photo": "photo-id"
+}

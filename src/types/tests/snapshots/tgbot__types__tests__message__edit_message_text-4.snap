@@ -1,18 +1,8 @@
 ---
 source: src/types/tests/message.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "inline_message_id",
-        FormValue::Text(
-            "msg-id",
-        ),
-    ),
-    (
-        "text",
-        FormValue::Text(
-            "text",
-        ),
-    ),
-]
+{
+  "inline_message_id": "msg-id",
+  "text": "text"
+}

@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/media.rs
-expression: "PaidMedia::Video(Video::new(100, \"file-id\", \"file-unique-id\", 200, 300))"
+expression: "PaidMedia::Video(Box::new(Video::new(100, \"file-id\", \"file-unique-id\", 200,\n300)))"
 ---
 {
   "type": "video",

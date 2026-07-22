@@ -1,36 +1,23 @@
 ---
 source: src/types/tests/message.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "business_connection_id",
-        FormValue::Text(
-            "c-id",
-        ),
-    ),
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "media",
-        FormValue::Text(
-            "{\"type\":\"photo\",\"media\":\"file-id\"}",
-        ),
-    ),
-    (
-        "message_id",
-        FormValue::Text(
-            "2",
-        ),
-    ),
-    (
-        "reply_markup",
-        FormValue::Text(
-            "{\"inline_keyboard\":[[{\"text\":\"text\",\"url\":\"url\"}]]}",
-        ),
-    ),
-]
+{
+  "business_connection_id": "c-id",
+  "chat_id": "1",
+  "media": {
+    "media": "file-id",
+    "type": "photo"
+  },
+  "message_id": "2",
+  "reply_markup": {
+    "inline_keyboard": [
+      [
+        {
+          "text": "text",
+          "url": "url"
+        }
+      ]
+    ]
+  }
+}

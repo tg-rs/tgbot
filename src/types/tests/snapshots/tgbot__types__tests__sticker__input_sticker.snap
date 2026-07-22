@@ -1,0 +1,11 @@
+---
+source: src/types/tests/sticker.rs
+expression: actual_data
+---
+{
+  "emoji_list": [
+    "😻"
+  ],
+  "format": "static",
+  "sticker": "file-id"
+}

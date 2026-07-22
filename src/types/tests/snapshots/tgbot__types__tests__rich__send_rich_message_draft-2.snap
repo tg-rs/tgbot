@@ -1,30 +1,12 @@
 ---
 source: src/types/tests/rich.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "draft_id",
-        FormValue::Text(
-            "2",
-        ),
-    ),
-    (
-        "message_thread_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "rich_message",
-        FormValue::Text(
-            "{\"markdown\":\"test\"}",
-        ),
-    ),
-]
+{
+  "chat_id": "1",
+  "draft_id": "2",
+  "message_thread_id": "1",
+  "rich_message": {
+    "markdown": "test"
+  }
+}

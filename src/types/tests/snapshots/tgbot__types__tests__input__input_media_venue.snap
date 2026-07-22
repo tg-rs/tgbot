@@ -1,11 +1,11 @@
 ---
 source: src/types/tests/input.rs
-expression: data
+expression: actual_data
 ---
 {
-  "type": "venue",
   "address": "addr",
   "latitude": 1.0,
   "longitude": 2.0,
-  "title": "test"
+  "title": "test",
+  "type": "venue"
 }

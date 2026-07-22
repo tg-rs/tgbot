@@ -1,6 +1,6 @@
 ---
 source: src/types/tests/chat.rs
-expression: "ChatMemberUpdated::new(Chat::Group(GroupChat::new(1, \"group-title\")), 0,\nUser::new(1, \"John\", true),\nChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, \"John\", false))),\nChatMember::Member { user: User::new(2, \"John\", false), until_date: None, },)"
+expression: "ChatMemberUpdated::new(Chat::Group(GroupChat::new(1, \"group-title\")), 0,\nUser::new(1, \"John\", true),\nChatMember::Kicked(ChatMemberKicked::new(0, User::new(2, \"John\", false))),\nChatMember::Member\n{ user: User::new(2, \"John\", false), tag: None, until_date: None, },)"
 ---
 {
   "chat": {

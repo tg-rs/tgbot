@@ -1,0 +1,15 @@
+---
+source: src/types/tests/input.rs
+expression: actual_data
+---
+{
+  "__attachments__": [
+    {
+      "id": "tgbot_file_1",
+      "mime_type": null,
+      "name": null
+    }
+  ],
+  "photo": "attach://tgbot_file_1",
+  "type": "photo"
+}

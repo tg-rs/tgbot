@@ -1,120 +1,29 @@
 ---
 source: src/types/tests/live_photo.rs
-expression: actual_form.into_fields()
+expression: actual_data
 ---
-[
-    (
-        "allow_paid_broadcast",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "business_connection_id",
-        FormValue::Text(
-            "bc-id",
-        ),
-    ),
-    (
-        "callback_query_id",
-        FormValue::Text(
-            "cqid",
-        ),
-    ),
-    (
-        "caption",
-        FormValue::Text(
-            "test",
-        ),
-    ),
-    (
-        "chat_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "direct_messages_topic_id",
-        FormValue::Text(
-            "1",
-        ),
-    ),
-    (
-        "disable_notification",
-        FormValue::Text(
-            "false",
-        ),
-    ),
-    (
-        "has_spoiler",
-        FormValue::Text(
-            "false",
-        ),
-    ),
-    (
-        "live_photo",
-        FormValue::Text(
-            "file-id",
-        ),
-    ),
-    (
-        "message_effect_id",
-        FormValue::Text(
-            "eid",
-        ),
-    ),
-    (
-        "message_thread_id",
-        FormValue::Text(
-            "10",
-        ),
-    ),
-    (
-        "parse_mode",
-        FormValue::Text(
-            "MarkdownV2",
-        ),
-    ),
-    (
-        "photo",
-        FormValue::Text(
-            "photo-id",
-        ),
-    ),
-    (
-        "protect_content",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "receiver_user_id",
-        FormValue::Text(
-            "999",
-        ),
-    ),
-    (
-        "reply_markup",
-        FormValue::Text(
-            "{\"remove_keyboard\":true}",
-        ),
-    ),
-    (
-        "reply_parameters",
-        FormValue::Text(
-            "{\"message_id\":1}",
-        ),
-    ),
-    (
-        "show_caption_above_media",
-        FormValue::Text(
-            "true",
-        ),
-    ),
-    (
-        "suggested_post_parameters",
-        FormValue::Text(
-            "{}",
-        ),
-    ),
-]
+{
+  "allow_paid_broadcast": "true",
+  "business_connection_id": "bc-id",
+  "callback_query_id": "cqid",
+  "caption": "test",
+  "chat_id": "1",
+  "direct_messages_topic_id": "1",
+  "disable_notification": "false",
+  "has_spoiler": "false",
+  "live_photo": "file-id",
+  "message_effect_id": "eid",
+  "message_thread_id": "10",
+  "parse_mode": "MarkdownV2",
+  "photo": "photo-id",
+  "protect_content": "true",
+  "receiver_user_id": "999",
+  "reply_markup": {
+    "remove_keyboard": true
+  },
+  "reply_parameters": {
+    "message_id": 1
+  },
+  "show_caption_above_media": "true",
+  "suggested_post_parameters": {}
+}

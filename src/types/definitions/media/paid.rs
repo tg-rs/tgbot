@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
+        InputPaidMediaData,
         InputPaidMediaGroup,
         Integer,
         LivePhoto,
@@ -11,12 +12,8 @@ use crate::{
         ParseMode,
         PhotoSize,
         ReplyMarkup,
-        ReplyMarkupError,
         ReplyParameters,
-        ReplyParametersError,
-        SerializeError,
         SuggestedPostParameters,
-        SuggestedPostParametersError,
         TextEntities,
         TextEntity,
         User,
@@ -200,7 +197,8 @@ impl From<PaidMedia> for RawPaidMedia {
 /// Send paid media to channel chats.
 #[derive(Debug)]
 pub struct SendPaidMedia {
-    form: Form,
+    media: InputPaidMediaGroup,
+    parameters: SendPaidMediaParameters,
 }
 
 impl SendPaidMedia {
@@ -215,10 +213,14 @@ impl SendPaidMedia {
     where
         T: Into<ChatId>,
     {
-        let mut form: Form = media.into();
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("star_count", star_count);
-        Self { form }
+        Self {
+            media,
+            parameters: SendPaidMediaParameters {
+                chat_id: Some(chat_id.into()),
+                star_count: Some(star_count),
+                ..Default::default()
+            },
+        }
     }
 
     /// Sets a new value for the `allow_paid_broadcast` flag.
@@ -229,7 +231,7 @@ impl SendPaidMedia {
     ///   for a fee of 0.1 Telegram Stars per message.
     ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_paid_broadcast", value);
+        self.parameters.allow_paid_broadcast = Some(value);
         self
     }
 
@@ -243,7 +245,7 @@ impl SendPaidMedia {
     where
         T: Into<String>,
     {
-        self.form.insert_field("business_connection_id", value.into());
+        self.parameters.business_connection_id = Some(value.into());
         self
     }
 
@@ -256,7 +258,7 @@ impl SendPaidMedia {
     where
         T: Into<String>,
     {
-        self.form.insert_field("caption", value.into());
+        self.parameters.caption = Some(value.into());
         self
     }
 
@@ -265,14 +267,13 @@ impl SendPaidMedia {
     /// # Arguments
     ///
     /// `value` - A list of special entities that appear in the caption, which can be specified instead of parse_mode.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        let value = value.into_iter().collect::<TextEntities>().serialize()?;
-        self.form.insert_field("caption_entities", value);
-        self.form.remove_field("parse_mode");
-        Ok(self)
+        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
+        self.parameters.parse_mode = None;
+        self
     }
 
     /// Sets a new direct messages topic ID
@@ -281,7 +282,7 @@ impl SendPaidMedia {
     ///
     /// Required if the message is sent to a direct messages chat.
     pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("direct_messages_topic_id", value);
+        self.parameters.direct_messages_topic_id = Some(value);
         self
     }
 
@@ -293,7 +294,7 @@ impl SendPaidMedia {
     ///
     /// Users will receive a notification with no sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
-        self.form.insert_field("disable_notification", value);
+        self.parameters.disable_notification = Some(value);
         self
     }
 
@@ -304,7 +305,7 @@ impl SendPaidMedia {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("message_thread_id", value);
+        self.parameters.message_thread_id = Some(value);
         self
     }
 
@@ -314,8 +315,8 @@ impl SendPaidMedia {
     ///
     /// `value` - Mode for parsing entities in the media caption.
     pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.form.insert_field("parse_mode", value);
-        self.form.remove_field("caption_entities");
+        self.parameters.parse_mode = Some(value);
+        self.parameters.caption_entities = None;
         self
     }
 
@@ -330,7 +331,7 @@ impl SendPaidMedia {
     where
         T: Into<String>,
     {
-        self.form.insert_field("payload", value.into());
+        self.parameters.payload = Some(value.into());
         self
     }
 
@@ -340,7 +341,7 @@ impl SendPaidMedia {
     ///
     /// `value` - Whether to protect the contents of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.form.insert_field("protect_content", value);
+        self.parameters.protect_content = Some(value);
         self
     }
 
@@ -349,10 +350,9 @@ impl SendPaidMedia {
     /// # Arguments
     ///
     /// `value` - Description of the message to reply to.
-    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
-        let value = value.serialize()?;
-        self.form.insert_field("reply_parameters", value);
-        Ok(self)
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.parameters.reply_parameters = Some(value);
+        self
     }
 
     /// Sets a new reply markup.
@@ -360,13 +360,12 @@ impl SendPaidMedia {
     /// # Arguments
     ///
     /// `value` - Additional interface options.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
     {
-        let value = value.into().serialize()?;
-        self.form.insert_field("reply_markup", value);
-        Ok(self)
+        self.parameters.reply_markup = Some(value.into());
+        self
     }
 
     /// Sets a new value for the `show_caption_above_media` flag.
@@ -375,7 +374,7 @@ impl SendPaidMedia {
     ///
     /// * `value` - Whether the caption must be shown above the message media.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
-        self.form.insert_field("show_caption_above_media", value);
+        self.parameters.show_caption_above_media = Some(value);
         self
     }
 
@@ -388,19 +387,42 @@ impl SendPaidMedia {
     /// For direct messages chats only.
     ///
     /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
-    pub fn with_suggested_post_parameters(
-        mut self,
-        value: &SuggestedPostParameters,
-    ) -> Result<Self, SuggestedPostParametersError> {
-        self.form.insert_field("suggested_post_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.parameters.suggested_post_parameters = Some(value);
+        self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SendPaidMediaParameters {
+    chat_id: Option<ChatId>,
+    star_count: Option<Integer>,
+    allow_paid_broadcast: Option<bool>,
+    business_connection_id: Option<String>,
+    caption: Option<String>,
+    caption_entities: Option<TextEntities>,
+    direct_messages_topic_id: Option<Integer>,
+    disable_notification: Option<bool>,
+    media: Vec<InputPaidMediaData>,
+    message_thread_id: Option<Integer>,
+    parse_mode: Option<ParseMode>,
+    payload: Option<String>,
+    protect_content: Option<bool>,
+    reply_parameters: Option<ReplyParameters>,
+    reply_markup: Option<ReplyMarkup>,
+    show_caption_above_media: Option<bool>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
 }
 
 impl Method for SendPaidMedia {
     type Response = Message;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("sendPaidMedia", self.form)
+        let Self { media, mut parameters } = self;
+        let mut form = Form::default();
+        parameters.media = media.write(&mut form);
+        parameters.serialize(&mut form)?;
+        Payload::form("sendPaidMedia", form)
     }
 }

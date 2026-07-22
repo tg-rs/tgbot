@@ -1,18 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
-    types::{
-        InputFile,
-        InputSticker,
-        InputStickerError,
-        InputStickers,
-        Integer,
-        PhotoSize,
-        Sticker,
-        StickerFormat,
-        StickerType,
-    },
+    api::{Form, Method, Payload, PayloadError, WriteForm},
+    types::{InputFile, InputSticker, InputStickerData, Integer, PhotoSize, Sticker, StickerFormat, StickerType},
 };
 
 /// Represents a sticker set.
@@ -74,7 +64,8 @@ impl StickerSet {
 /// Static sticker sets can have up to 120 stickers.
 #[derive(Debug)]
 pub struct AddStickerToSet {
-    form: Form,
+    sticker: InputSticker,
+    parameters: AddStickerToSetParameters,
 }
 
 impl AddStickerToSet {
@@ -85,22 +76,41 @@ impl AddStickerToSet {
     /// * `user_id` - User identifier of sticker set owner.
     /// * `name` - Sticker set name.
     /// * `sticker` - Sticker file.
-    pub fn new<T>(user_id: Integer, name: T, sticker: InputSticker) -> Result<Self, InputStickerError>
+    pub fn new<T>(user_id: Integer, name: T, sticker: InputSticker) -> Self
     where
         T: Into<String>,
     {
-        let mut form: Form = sticker.try_into()?;
-        form.insert_field("user_id", user_id);
-        form.insert_field("name", name.into());
-        Ok(Self { form })
+        Self {
+            sticker,
+            parameters: AddStickerToSetParameters {
+                user_id: Some(user_id),
+                name: Some(name.into()),
+                ..Default::default()
+            },
+        }
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct AddStickerToSetParameters {
+    name: Option<String>,
+    sticker: Option<InputStickerData>,
+    user_id: Option<Integer>,
 }
 
 impl Method for AddStickerToSet {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("addStickerToSet", self.form)
+        let Self {
+            sticker,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.sticker = Some(sticker.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("addStickerToSet", form)
     }
 }
 
@@ -109,7 +119,8 @@ impl Method for AddStickerToSet {
 /// The bot will be able to edit the created sticker set.
 #[derive(Debug)]
 pub struct CreateNewStickerSet {
-    form: Form,
+    stickers: Vec<InputSticker>,
+    parameters: CreateNewStickerSetParameters,
 }
 
 impl CreateNewStickerSet {
@@ -126,16 +137,21 @@ impl CreateNewStickerSet {
     ///   1-64 characters.
     /// * `title` - Sticker set title; 1-64 characters.
     /// * `stickers` - A list of 1-50 initial stickers to be added to the sticker set.
-    pub fn new<A, B>(user_id: Integer, name: A, title: B, stickers: InputStickers) -> Result<Self, InputStickerError>
+    pub fn new<A, B, C>(user_id: Integer, name: A, title: B, stickers: C) -> Self
     where
         A: Into<String>,
         B: Into<String>,
+        C: IntoIterator<Item = InputSticker>,
     {
-        let mut form: Form = stickers.try_into()?;
-        form.insert_field("user_id", user_id);
-        form.insert_field("name", name.into());
-        form.insert_field("title", title.into());
-        Ok(Self { form })
+        Self {
+            stickers: Vec::from_iter(stickers),
+            parameters: CreateNewStickerSetParameters {
+                user_id: Some(user_id),
+                name: Some(name.into()),
+                title: Some(title.into()),
+                ..Default::default()
+            },
+        }
     }
 
     /// Sets a new value for the `needs_repainting` flag.
@@ -147,7 +163,7 @@ impl CreateNewStickerSet {
     ///   white on chat photos, or another appropriate color based on context;
     ///   for custom emoji sticker sets only.
     pub fn with_needs_repainting(mut self, value: bool) -> Self {
-        self.form.insert_field("needs_repainting", value);
+        self.parameters.needs_repainting = Some(value);
         self
     }
 
@@ -159,16 +175,34 @@ impl CreateNewStickerSet {
     ///
     /// By default, a regular sticker set is created.
     pub fn with_sticker_type(mut self, value: StickerType) -> Self {
-        self.form.insert_field("sticker_type", value.as_ref());
+        self.parameters.sticker_type = Some(value);
         self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct CreateNewStickerSetParameters {
+    name: Option<String>,
+    needs_repainting: Option<bool>,
+    sticker_type: Option<StickerType>,
+    stickers: Option<Vec<InputStickerData>>,
+    title: Option<String>,
+    user_id: Option<Integer>,
 }
 
 impl Method for CreateNewStickerSet {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("createNewStickerSet", self.form)
+        let Self {
+            stickers,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.stickers = Some(stickers.into_iter().map(|x| x.write(&mut form)).collect());
+        parameters.serialize(&mut form)?;
+        Payload::form("createNewStickerSet", form)
     }
 }
 
@@ -265,7 +299,8 @@ impl Method for GetStickerSet {
 /// then [`crate::types::SetStickerPositionInSet`].
 #[derive(Debug)]
 pub struct ReplaceStickerInSet {
-    form: Form,
+    sticker: InputSticker,
+    parameters: ReplaceStickerInSetParameters,
 }
 
 impl ReplaceStickerInSet {
@@ -278,29 +313,43 @@ impl ReplaceStickerInSet {
     /// * `sticker` - Information about the added sticker;
     ///   if exactly the same sticker had already been added to the set, then the set remains unchanged.
     /// * `user_id` - User identifier of the sticker set owner.
-    pub fn new<A, B>(
-        name: A,
-        old_sticker: B,
-        sticker: InputSticker,
-        user_id: Integer,
-    ) -> Result<Self, InputStickerError>
+    pub fn new<A, B>(name: A, old_sticker: B, sticker: InputSticker, user_id: Integer) -> Self
     where
         A: Into<String>,
         B: Into<String>,
     {
-        let mut form: Form = sticker.try_into()?;
-        form.insert_field("name", name.into());
-        form.insert_field("old_sticker", old_sticker.into());
-        form.insert_field("user_id", user_id);
-        Ok(Self { form })
+        Self {
+            sticker,
+            parameters: ReplaceStickerInSetParameters {
+                name: Some(name.into()),
+                old_sticker: Some(old_sticker.into()),
+                user_id: Some(user_id),
+                ..Default::default()
+            },
+        }
     }
+}
+
+#[derive(Debug, Default, Serialize)]
+struct ReplaceStickerInSetParameters {
+    name: Option<String>,
+    old_sticker: Option<String>,
+    sticker: Option<InputStickerData>,
+    user_id: Option<Integer>,
 }
 
 impl Method for ReplaceStickerInSet {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("replaceStickerInSet", self.form)
+        let Self {
+            sticker,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.sticker = Some(sticker.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("replaceStickerInSet", form)
     }
 }
 
@@ -422,7 +471,8 @@ impl Method for SetStickerSetTitle {
 /// Sets a thumbnail of a sticker set.
 #[derive(Debug)]
 pub struct SetStickerSetThumbnail {
-    form: Form,
+    parameters: SetStickerSetThumbnailParameters,
+    thumbnail: Option<InputFile>,
 }
 
 impl SetStickerSetThumbnail {
@@ -438,11 +488,13 @@ impl SetStickerSetThumbnail {
         N: Into<String>,
     {
         Self {
-            form: Form::from([
-                ("name", name.into().into()),
-                ("user_id", user_id.into()),
-                ("format", format.as_ref().into()),
-            ]),
+            parameters: SetStickerSetThumbnailParameters {
+                name: Some(name.into()),
+                user_id: Some(user_id),
+                format: Some(format),
+                ..Default::default()
+            },
+            thumbnail: None,
         }
     }
 
@@ -465,15 +517,30 @@ impl SetStickerSetThumbnail {
     where
         T: Into<InputFile>,
     {
-        self.form.insert_field("thumbnail", value.into());
+        self.thumbnail = Some(value.into());
         self
     }
+}
+
+#[derive(Debug, Default, Serialize)]
+struct SetStickerSetThumbnailParameters {
+    format: Option<StickerFormat>,
+    name: Option<String>,
+    thumbnail: Option<String>,
+    user_id: Option<Integer>,
 }
 
 impl Method for SetStickerSetThumbnail {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("setStickerSetThumbnail", self.form)
+        let Self {
+            thumbnail,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.thumbnail = thumbnail.map(|x| x.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("setStickerSetThumbnail", form)
     }
 }

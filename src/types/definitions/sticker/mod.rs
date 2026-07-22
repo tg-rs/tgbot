@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 pub use self::{input::*, mask::*, set::*};
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
         File,
@@ -11,11 +11,8 @@ use crate::{
         Message,
         PhotoSize,
         ReplyMarkup,
-        ReplyMarkupError,
         ReplyParameters,
-        ReplyParametersError,
         SuggestedPostParameters,
-        SuggestedPostParametersError,
     },
 };
 
@@ -291,7 +288,8 @@ impl Method for GetCustomEmojiStickers {
 /// Sends a static WEBP, animated TGS, or video WEBM sticker.
 #[derive(Debug)]
 pub struct SendSticker {
-    form: Form,
+    sticker: InputFile,
+    parameters: SendStickerParameters,
 }
 
 impl SendSticker {
@@ -307,7 +305,11 @@ impl SendSticker {
         B: Into<InputFile>,
     {
         Self {
-            form: Form::from([("chat_id", chat_id.into().into()), ("sticker", sticker.into().into())]),
+            sticker: sticker.into(),
+            parameters: SendStickerParameters {
+                chat_id: Some(chat_id.into()),
+                ..Default::default()
+            },
         }
     }
 
@@ -319,7 +321,7 @@ impl SendSticker {
     ///   for a fee of 0.1 Telegram Stars per message.
     ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_paid_broadcast", value);
+        self.parameters.allow_paid_broadcast = Some(value);
         self
     }
 
@@ -332,7 +334,7 @@ impl SendSticker {
     where
         T: Into<String>,
     {
-        self.form.insert_field("business_connection_id", value.into());
+        self.parameters.business_connection_id = Some(value.into());
         self
     }
 
@@ -347,7 +349,7 @@ impl SendSticker {
     where
         T: Into<String>,
     {
-        self.form.insert_field("callback_query_id", value.into());
+        self.parameters.callback_query_id = Some(value.into());
         self
     }
 
@@ -357,7 +359,7 @@ impl SendSticker {
     ///
     /// Required if the message is sent to a direct messages chat.
     pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("direct_messages_topic_id", value);
+        self.parameters.direct_messages_topic_id = Some(value);
         self
     }
 
@@ -368,7 +370,7 @@ impl SendSticker {
     /// * `value` - Indicates whether to send the message silently or not;
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
-        self.form.insert_field("disable_notification", value);
+        self.parameters.disable_notification = Some(value);
         self
     }
 
@@ -381,7 +383,7 @@ impl SendSticker {
     where
         T: Into<String>,
     {
-        self.form.insert_field("emoji", value.into());
+        self.parameters.emoji = Some(value.into());
         self
     }
 
@@ -394,7 +396,7 @@ impl SendSticker {
     where
         T: Into<String>,
     {
-        self.form.insert_field("message_effect_id", value.into());
+        self.parameters.message_effect_id = Some(value.into());
         self
     }
 
@@ -405,7 +407,7 @@ impl SendSticker {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("message_thread_id", value);
+        self.parameters.message_thread_id = Some(value);
         self
     }
 
@@ -416,7 +418,7 @@ impl SendSticker {
     /// * `value` - Indicates whether to protect the contents
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.form.insert_field("protect_content", value.to_string());
+        self.parameters.protect_content = Some(value);
         self
     }
 
@@ -431,7 +433,7 @@ impl SendSticker {
     /// It is not guaranteed that the user will receive the message,
     /// especially if they are offline.
     pub fn with_receiver_user_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("receiver_user_id", value);
+        self.parameters.receiver_user_id = Some(value);
         self
     }
 
@@ -440,13 +442,12 @@ impl SendSticker {
     /// # Arguments
     ///
     /// * `value` - Reply markup.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
     {
-        let value = value.into();
-        self.form.insert_field("reply_markup", value.serialize()?);
-        Ok(self)
+        self.parameters.reply_markup = Some(value.into());
+        self
     }
 
     /// Sets new reply parameters.
@@ -454,9 +455,9 @@ impl SendSticker {
     /// # Arguments
     ///
     /// * `value` - Description of the message to reply to.
-    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
-        self.form.insert_field("reply_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.parameters.reply_parameters = Some(value);
+        self
     }
 
     /// Sets a new suggested post parameters.
@@ -468,20 +469,44 @@ impl SendSticker {
     /// For direct messages chats only.
     ///
     /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
-    pub fn with_suggested_post_parameters(
-        mut self,
-        value: &SuggestedPostParameters,
-    ) -> Result<Self, SuggestedPostParametersError> {
-        self.form.insert_field("suggested_post_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.parameters.suggested_post_parameters = Some(value);
+        self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SendStickerParameters {
+    allow_paid_broadcast: Option<bool>,
+    business_connection_id: Option<String>,
+    callback_query_id: Option<String>,
+    chat_id: Option<ChatId>,
+    direct_messages_topic_id: Option<Integer>,
+    disable_notification: Option<bool>,
+    emoji: Option<String>,
+    message_effect_id: Option<String>,
+    message_thread_id: Option<Integer>,
+    protect_content: Option<bool>,
+    receiver_user_id: Option<Integer>,
+    reply_markup: Option<ReplyMarkup>,
+    reply_parameters: Option<ReplyParameters>,
+    sticker: Option<String>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
 }
 
 impl Method for SendSticker {
     type Response = Message;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("sendSticker", self.form)
+        let Self {
+            sticker,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.sticker = Some(sticker.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("sendSticker", form)
     }
 }
 
@@ -607,7 +632,8 @@ impl Method for SetStickerMaskPosition {
 /// The file can be used multiple times.
 #[derive(Debug)]
 pub struct UploadStickerFile {
-    form: Form,
+    parameters: UploadStickerFileParameters,
+    sticker: InputFile,
 }
 
 impl UploadStickerFile {
@@ -623,19 +649,35 @@ impl UploadStickerFile {
         T: Into<InputFile>,
     {
         Self {
-            form: Form::from([
-                ("user_id", user_id.into()),
-                ("sticker", sticker.into().into()),
-                ("sticker_format", sticker_format.as_ref().into()),
-            ]),
+            sticker: sticker.into(),
+            parameters: UploadStickerFileParameters {
+                user_id: Some(user_id),
+                sticker_format: Some(sticker_format),
+                ..Default::default()
+            },
         }
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct UploadStickerFileParameters {
+    sticker: Option<String>,
+    sticker_format: Option<StickerFormat>,
+    user_id: Option<Integer>,
 }
 
 impl Method for UploadStickerFile {
     type Response = File;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("uploadStickerFile", self.form)
+        let Self {
+            sticker,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.sticker = Some(sticker.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("uploadStickerFile", form)
     }
 }

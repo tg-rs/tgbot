@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::Form,
+    api::{Form, WriteForm},
     types::{
         InputMedia,
         InputMediaAnimation,
@@ -488,25 +488,42 @@ impl InputRichBlock {
         })
         .with_input_media(value.into())
     }
+}
 
-    pub(crate) fn into_parts(self, suffix: &[usize]) -> (Form, InputRichBlockData) {
+impl WriteForm for InputRichBlock {
+    type Output = InputRichBlockData;
+
+    fn write(self, form: &mut Form) -> Self::Output {
         let Self {
             blocks,
             block_list_items,
             mut data,
             input_media,
         } = self;
-        let suffix = suffix.to_vec();
-        let mut form = input_media
-            .map(|x| data.attach_input_media(x, suffix.clone()))
-            .unwrap_or_default();
-        if let Some(blocks) = blocks {
-            form.extend(data.attach_blocks(blocks, suffix.clone()));
+        if let Some(input_media) = input_media {
+            let media_data = input_media.write(form);
+            match data.data_type {
+                InputRichBlockDataType::Animation => {
+                    data.parameters.animation = Some(media_data);
+                }
+                InputRichBlockDataType::Audio => {
+                    data.parameters.audio = Some(media_data);
+                }
+                InputRichBlockDataType::Photo => {
+                    data.parameters.photo = Some(media_data);
+                }
+                InputRichBlockDataType::Video => {
+                    data.parameters.video = Some(media_data);
+                }
+                InputRichBlockDataType::VoiceNote => {
+                    data.parameters.voice_note = Some(media_data);
+                }
+                _ => { /* noop */ }
+            };
         }
-        if let Some(block_list_items) = block_list_items {
-            form.extend(data.attach_block_list_items(block_list_items, suffix.clone()));
-        }
-        (form, data)
+        data.parameters.blocks = blocks.map(|items| items.into_iter().map(|x| x.write(form)).collect());
+        data.parameters.items = block_list_items.map(|items| items.into_iter().map(|x| x.write(form)).collect());
+        data
     }
 }
 
@@ -566,20 +583,15 @@ impl InputRichBlockListItem {
         self.data.value = Some(value);
         self
     }
+}
 
-    fn into_parts(mut self, suffix: &[usize]) -> (Form, InputRichBlockListItemData) {
-        let suffix = suffix.to_vec();
-        let mut form = Form::default();
-        let mut blocks = Vec::new();
-        for (idx, block) in self.blocks.into_iter().enumerate() {
-            let mut item_suffix = suffix.clone();
-            item_suffix.push(idx);
-            let (block_form, block_data) = block.into_parts(&item_suffix);
-            form.extend(block_form);
-            blocks.push(block_data);
-        }
-        self.data.blocks = blocks;
-        (form, self.data)
+impl WriteForm for InputRichBlockListItem {
+    type Output = InputRichBlockListItemData;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self { blocks, mut data } = self;
+        data.blocks = blocks.into_iter().map(|x| x.write(form)).collect();
+        data
     }
 }
 
@@ -640,7 +652,7 @@ impl InputRichBlockTable {
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]
-struct InputRichBlockListItemData {
+pub(crate) struct InputRichBlockListItemData {
     blocks: Vec<InputRichBlockData>,
     has_checkbox: Option<bool>,
     is_checked: Option<bool>,
@@ -653,63 +665,8 @@ struct InputRichBlockListItemData {
 pub(crate) struct InputRichBlockData {
     #[serde(rename = "type")]
     data_type: InputRichBlockDataType,
+    #[serde(flatten)]
     parameters: InputRichBlockParameters,
-}
-
-impl InputRichBlockData {
-    fn attach_blocks(&mut self, value: Vec<InputRichBlock>, suffix: Vec<usize>) -> Form {
-        let mut form = Form::default();
-        let mut items = Vec::new();
-        for (idx, block) in value.into_iter().enumerate() {
-            let mut item_suffix = suffix.clone();
-            item_suffix.push(idx);
-            let (block_form, block_data) = block.into_parts(&item_suffix);
-            form.extend(block_form);
-            items.push(block_data);
-        }
-        self.parameters.blocks = Some(items);
-        form
-    }
-
-    fn attach_block_list_items(&mut self, value: Vec<InputRichBlockListItem>, suffix: Vec<usize>) -> Form {
-        let suffix = suffix.to_vec();
-        let mut form = Form::default();
-        let mut items = Vec::with_capacity(value.len());
-        for (idx, item) in value.into_iter().enumerate() {
-            let mut item_suffix = suffix.clone();
-            item_suffix.push(idx);
-            let (item_form, item_data) = item.into_parts(&item_suffix);
-            form.extend(item_form);
-            items.push(item_data);
-        }
-        self.parameters.items = Some(items);
-        form
-    }
-
-    fn attach_input_media(&mut self, value: InputMedia, suffix: Vec<usize>) -> Form {
-        let (form, media_data) = value.into_parts(&suffix);
-        match self.data_type {
-            InputRichBlockDataType::Animation => {
-                self.parameters.animation = Some(media_data);
-            }
-            InputRichBlockDataType::Audio => {
-                self.parameters.audio = Some(media_data);
-            }
-            InputRichBlockDataType::Photo => {
-                self.parameters.photo = Some(media_data);
-            }
-            InputRichBlockDataType::Video => {
-                self.parameters.video = Some(media_data);
-            }
-            InputRichBlockDataType::VoiceNote => {
-                self.parameters.voice_note = Some(media_data);
-            }
-            _ => {
-                unreachable!()
-            }
-        };
-        form
-    }
 }
 
 #[serde_with::skip_serializing_none]

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{ChatId, InputFile},
 };
 
@@ -105,7 +105,8 @@ impl Method for DeleteChatPhoto {
 /// if the ‘All Members Are Admins’ setting is off in the target group.
 #[derive(Debug)]
 pub struct SetChatPhoto {
-    form: Form,
+    photo: InputFile,
+    parameters: SetChatPhotoParameters,
 }
 
 impl SetChatPhoto {
@@ -122,15 +123,30 @@ impl SetChatPhoto {
         B: Into<InputFile>,
     {
         Self {
-            form: Form::from([("chat_id", chat_id.into().into()), ("photo", photo.into().into())]),
+            photo: photo.into(),
+            parameters: SetChatPhotoParameters {
+                chat_id: Some(chat_id.into()),
+                ..Default::default()
+            },
         }
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SetChatPhotoParameters {
+    chat_id: Option<ChatId>,
+    photo: Option<String>,
 }
 
 impl Method for SetChatPhoto {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("setChatPhoto", self.form)
+        let Self { photo, mut parameters } = self;
+        let mut form = Form::default();
+        parameters.photo = Some(photo.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("setChatPhoto", form)
     }
 }

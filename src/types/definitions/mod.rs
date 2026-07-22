@@ -12,7 +12,6 @@ pub use self::{
     contact::*,
     dice::*,
     ephemeral::*,
-    errors::*,
     file::*,
     forum::*,
     game::*,
@@ -57,7 +56,6 @@ mod community;
 mod contact;
 mod dice;
 mod ephemeral;
-mod errors;
 mod file;
 mod forum;
 mod game;

@@ -1,6 +1,6 @@
 use std::{error::Error, fmt};
 
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use serde::{Deserialize, Serialize};
 use serde_json::Error as JsonError;
 
 use crate::{
@@ -66,17 +66,6 @@ impl CallbackQuery {
             game_short_name: None,
             inline_message_id: None,
             message: None,
-        }
-    }
-
-    /// Parses callback data using [`serde_json`].
-    pub fn parse_data<T: DeserializeOwned>(&self) -> Result<Option<T>, CallbackQueryError> {
-        if let Some(ref data) = self.data {
-            serde_json::from_str(data)
-                .map(Some)
-                .map_err(CallbackQueryError::ParseJsonData)
-        } else {
-            Ok(None)
         }
     }
 

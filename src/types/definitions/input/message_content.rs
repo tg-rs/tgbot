@@ -2,7 +2,7 @@ use serde::Serialize;
 use serde_json::Error as JsonError;
 
 use crate::{
-    api::Form,
+    api::{Form, WriteForm},
     types::{
         Contact,
         Float,
@@ -39,14 +39,18 @@ impl InputMessageContent {
         self.input_rich_message = Some(value);
         self
     }
+}
 
-    pub(crate) fn into_parts(mut self, suffix: &[usize]) -> (Option<Form>, InputMessageContentData) {
-        let form = self.input_rich_message.map(|x| {
-            let (form, rich_message) = x.into_parts(suffix);
-            self.data.rich_message = Some(rich_message);
-            form
-        });
-        (form, self.data)
+impl WriteForm for InputMessageContent {
+    type Output = InputMessageContentData;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self {
+            mut data,
+            input_rich_message,
+        } = self;
+        data.rich_message = input_rich_message.map(|x| x.write(form));
+        data
     }
 }
 

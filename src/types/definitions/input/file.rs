@@ -1,4 +1,4 @@
-use std::{borrow::Cow, fmt, path::Path};
+use std::{fmt, path::Path};
 
 use mime::{APPLICATION_OCTET_STREAM, Mime};
 use tokio::{
@@ -7,7 +7,7 @@ use tokio::{
 };
 use tokio_util::codec::{BytesCodec, FramedRead};
 
-use crate::api::{Form, FormValue};
+use crate::api::{Form, FormValue, WriteForm};
 
 /// Represents a file reader for uploading files.
 pub struct InputFileReader {
@@ -91,6 +91,30 @@ impl fmt::Debug for InputFileReader {
     }
 }
 
+impl WriteForm for InputFileReader {
+    type Output = String;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self {
+            file_name,
+            mime_type,
+            reader,
+        } = self;
+
+        let idx = form.len() + 1;
+        let id = format!("tgbot_file_{idx}");
+        form.insert_field(
+            &id,
+            FormValue::File {
+                name: file_name,
+                mime_type,
+                reader,
+            },
+        );
+        format!("attach://{id}")
+    }
+}
+
 /// Represents a file to upload.
 #[derive(Debug, PartialEq)]
 pub enum InputFile {
@@ -146,24 +170,6 @@ impl InputFile {
         }
         Ok(reader.into())
     }
-
-    pub(crate) fn attach(self, form: &mut Form, key: &str, suffix: &[usize]) -> String {
-        match self {
-            InputFile::Id(text) | InputFile::Url(text) => text,
-            file => {
-                let key = if suffix == [0] {
-                    Cow::Borrowed(key)
-                } else {
-                    let mut key = String::from(key);
-                    key.extend(suffix.iter().map(|x| format!("_{x}")));
-                    Cow::Owned(key)
-                };
-                let result = format!("attach://{key}");
-                form.insert_field(key, file);
-                result
-            }
-        }
-    }
 }
 
 impl<T> From<T> for InputFile
@@ -175,19 +181,13 @@ where
     }
 }
 
-impl From<InputFile> for FormValue {
-    fn from(value: InputFile) -> Self {
-        match value {
-            InputFile::Id(value) | InputFile::Url(value) => FormValue::Text(value),
-            InputFile::Reader(InputFileReader {
-                file_name: name,
-                mime_type,
-                reader,
-            }) => FormValue::File {
-                name,
-                mime_type,
-                reader,
-            },
+impl WriteForm for InputFile {
+    type Output = String;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        match self {
+            Self::Id(text) | Self::Url(text) => text,
+            Self::Reader(reader) => reader.write(form),
         }
     }
 }

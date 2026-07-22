@@ -1,10 +1,7 @@
-use std::{error::Error, fmt};
-
 use serde::Serialize;
-use serde_json::Error as JsonError;
 
 use crate::{
-    api::Form,
+    api::{Form, WriteForm},
     types::{Float, InputFile},
 };
 
@@ -17,13 +14,13 @@ pub enum InputStoryContent {
     Video(InputStoryContentVideo),
 }
 
-impl TryFrom<InputStoryContent> for Form {
-    type Error = InputStoryContentError;
+impl WriteForm for InputStoryContent {
+    type Output = InputStoryContentData;
 
-    fn try_from(value: InputStoryContent) -> Result<Self, Self::Error> {
-        match value {
-            InputStoryContent::Photo(value) => value.try_into(),
-            InputStoryContent::Video(value) => value.try_into(),
+    fn write(self, form: &mut Form) -> Self::Output {
+        match self {
+            Self::Photo(value) => value.write(form),
+            Self::Video(value) => value.write(form),
         }
     }
 }
@@ -49,24 +46,13 @@ impl InputStoryContentPhoto {
     }
 }
 
-impl TryFrom<InputStoryContentPhoto> for Form {
-    type Error = InputStoryContentError;
+impl WriteForm for InputStoryContentPhoto {
+    type Output = InputStoryContentData;
 
-    fn try_from(value: InputStoryContentPhoto) -> Result<Self, Self::Error> {
-        let mut result = Form::default();
-        let photo = match value.photo {
-            InputFile::Id(value) | InputFile::Url(value) => value,
-            input_file => {
-                result.insert_field("tgbot_isc_file", input_file);
-                String::from("attach://tgbot_isc_file")
-            }
-        };
-        let info = RawInputStoryContent::Photo { photo };
-        result.insert_field(
-            "content",
-            serde_json::to_string(&info).map_err(InputStoryContentError::Serialize)?,
-        );
-        Ok(result)
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self { photo } = self;
+        let id = photo.write(form);
+        InputStoryContentData::Photo { photo: id }
     }
 }
 
@@ -132,59 +118,30 @@ impl InputStoryContentVideo {
     }
 }
 
-impl TryFrom<InputStoryContentVideo> for Form {
-    type Error = InputStoryContentError;
+impl WriteForm for InputStoryContentVideo {
+    type Output = InputStoryContentData;
 
-    fn try_from(value: InputStoryContentVideo) -> Result<Self, Self::Error> {
-        let mut result = Form::default();
-        let video = match value.video {
-            InputFile::Id(value) | InputFile::Url(value) => value,
-            input_file => {
-                result.insert_field("tgbot_isc_file", input_file);
-                String::from("attach://tgbot_isc_file")
-            }
-        };
-        let info = RawInputStoryContent::Video {
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self {
             video,
-            cover_frame_timestamp: value.cover_frame_timestamp,
-            duration: value.duration,
-            is_animation: value.is_animation,
-        };
-        result.insert_field(
-            "content",
-            serde_json::to_string(&info).map_err(InputStoryContentError::Serialize)?,
-        );
-        Ok(result)
-    }
-}
-
-/// Represents an input story content error.
-#[derive(Debug)]
-pub enum InputStoryContentError {
-    /// Can not serialize the content to JSON.
-    Serialize(JsonError),
-}
-
-impl fmt::Display for InputStoryContentError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Self::Serialize(err) => write!(out, "can not serialize: {err}"),
+            cover_frame_timestamp,
+            duration,
+            is_animation,
+        } = self;
+        let id = video.write(form);
+        InputStoryContentData::Video {
+            video: id,
+            cover_frame_timestamp,
+            duration,
+            is_animation,
         }
     }
 }
 
-impl Error for InputStoryContentError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        Some(match self {
-            Self::Serialize(err) => err,
-        })
-    }
-}
-
 #[serde_with::skip_serializing_none]
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-enum RawInputStoryContent {
+pub(crate) enum InputStoryContentData {
     Photo {
         photo: String,
     },

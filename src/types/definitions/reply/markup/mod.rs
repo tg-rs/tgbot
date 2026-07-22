@@ -1,7 +1,4 @@
-use std::{error::Error, fmt};
-
 use serde::{Deserialize, Serialize};
-use serde_json::Error as JsonError;
 
 pub use self::{force_reply::*, inline_keyboard::*, prepared::*, reply_keyboard::*};
 
@@ -22,12 +19,6 @@ pub enum ReplyMarkup {
     ReplyKeyboardMarkup(ReplyKeyboardMarkup),
     /// A remove keyboard
     ReplyKeyboardRemove(ReplyKeyboardRemove),
-}
-
-impl ReplyMarkup {
-    pub(crate) fn serialize(&self) -> Result<String, ReplyMarkupError> {
-        serde_json::to_string(self).map_err(ReplyMarkupError::Serialize)
-    }
 }
 
 impl<const A: usize, const B: usize> From<[[InlineKeyboardButton; B]; A]> for ReplyMarkup {
@@ -51,28 +42,5 @@ impl<const A: usize, const B: usize> From<[[KeyboardButton; B]; A]> for ReplyMar
 impl From<Vec<Vec<KeyboardButton>>> for ReplyMarkup {
     fn from(markup: Vec<Vec<KeyboardButton>>) -> ReplyMarkup {
         ReplyMarkup::ReplyKeyboardMarkup(markup.into())
-    }
-}
-
-/// Represents an error that occurred with reply markup.
-#[derive(Debug)]
-pub enum ReplyMarkupError {
-    /// Can not serialize markup
-    Serialize(JsonError),
-}
-
-impl Error for ReplyMarkupError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        match self {
-            ReplyMarkupError::Serialize(err) => Some(err),
-        }
-    }
-}
-
-impl fmt::Display for ReplyMarkupError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            ReplyMarkupError::Serialize(err) => write!(out, "can not serialize reply markup: {err}"),
-        }
     }
 }

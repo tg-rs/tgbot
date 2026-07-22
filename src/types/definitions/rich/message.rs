@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::block::RichBlock;
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
         InputMedia,
@@ -12,12 +12,8 @@ use crate::{
         Integer,
         Message,
         ReplyMarkup,
-        ReplyMarkupError,
         ReplyParameters,
-        ReplyParametersError,
-        SerializeError,
         SuggestedPostParameters,
-        SuggestedPostParametersError,
     },
 };
 
@@ -160,18 +156,28 @@ impl InputRichMessage {
         self.data.skip_entity_detection = Some(value);
         self
     }
+}
 
-    pub(crate) fn into_parts(mut self, suffix: &[usize]) -> (Form, InputRichMessageData) {
-        let suffix = suffix.to_vec();
-        let mut form = self
-            .blocks
-            .map(|x| self.data.attach_blocks(x, suffix.clone()))
-            .unwrap_or_default();
-        if let Some(media) = self.media {
-            form.extend(self.data.attach_media(media, suffix));
-        }
+impl WriteForm for InputRichMessage {
+    type Output = InputRichMessageData;
 
-        (form, self.data)
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self {
+            mut data,
+            blocks,
+            media,
+        } = self;
+        data.blocks = blocks.map(|items| items.into_iter().map(|x| x.write(form)).collect());
+        data.media = media.map(|items| {
+            items
+                .into_iter()
+                .map(|(id, media)| InputRichMessageMedia {
+                    id,
+                    media: media.write(form),
+                })
+                .collect()
+        });
+        data
     }
 }
 
@@ -214,38 +220,6 @@ impl InputRichMessageData {
             skip_entity_detection: None,
         }
     }
-
-    fn attach_blocks(&mut self, value: Vec<InputRichBlock>, suffix: Vec<usize>) -> Form {
-        let mut form = Form::default();
-        let mut items = Vec::new();
-        for (idx, i) in value.into_iter().enumerate() {
-            let mut item_suffix = suffix.clone();
-            item_suffix.push(idx);
-            let (item_form, data) = i.into_parts(&item_suffix);
-            form.extend(item_form);
-            items.push(data);
-        }
-        self.blocks = Some(items);
-        form
-    }
-
-    fn attach_media(&mut self, value: Vec<(String, InputMedia)>, suffix: Vec<usize>) -> Form {
-        let mut form = Form::default();
-        let mut items = Vec::new();
-        for (idx, (id, input_media)) in value.into_iter().enumerate() {
-            let mut item_suffix = suffix.clone();
-            item_suffix.push(idx);
-            let (media_form, media) = input_media.into_parts(&item_suffix);
-            form.extend(media_form);
-            items.push(InputRichMessageMedia { id, media });
-        }
-        self.media = Some(items);
-        form
-    }
-
-    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
-        serde_json::to_string(&self).map_err(SerializeError::input_rich_message_data)
-    }
 }
 
 #[derive(Debug, Serialize)]
@@ -260,7 +234,9 @@ struct InputRichMessageMedia {
 /// then the bot must have the right to send the media to the chat.
 #[derive(Debug)]
 pub struct SendRichMessage {
-    form: Form,
+    chat_id: ChatId,
+    rich_message: InputRichMessage,
+    parameters: SendRichMessageParameters,
 }
 
 impl SendRichMessage {
@@ -270,14 +246,15 @@ impl SendRichMessage {
     ///
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `rich_message` - The message to be sent.
-    pub fn new<T>(chat_id: T, rich_message: InputRichMessage) -> Result<Self, SerializeError>
+    pub fn new<T>(chat_id: T, rich_message: InputRichMessage) -> Self
     where
         T: Into<ChatId>,
     {
-        let (mut form, data) = rich_message.into_parts(&[0]);
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("rich_message", data.serialize()?);
-        Ok(Self { form })
+        Self {
+            chat_id: chat_id.into(),
+            rich_message,
+            parameters: SendRichMessageParameters::default(),
+        }
     }
 
     /// Sets a new value for the `allow_paid_broadcast` flag.
@@ -289,7 +266,7 @@ impl SendRichMessage {
     ///
     /// The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_paid_broadcast", value);
+        self.parameters.allow_paid_broadcast = Some(value);
         self
     }
 
@@ -302,7 +279,7 @@ impl SendRichMessage {
     where
         T: Into<String>,
     {
-        self.form.insert_field("business_connection_id", value.into());
+        self.parameters.business_connection_id = Some(value.into());
         self
     }
 
@@ -312,7 +289,7 @@ impl SendRichMessage {
     ///
     /// Required if the message is sent to a direct messages chat.
     pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("direct_messages_topic_id", value);
+        self.parameters.direct_messages_topic_id = Some(value);
         self
     }
 
@@ -323,7 +300,7 @@ impl SendRichMessage {
     /// * `value` - Indicates whether to send the message silently or not;
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
-        self.form.insert_field("disable_notification", value);
+        self.parameters.disable_notification = Some(value);
         self
     }
 
@@ -336,7 +313,7 @@ impl SendRichMessage {
     where
         T: Into<String>,
     {
-        self.form.insert_field("message_effect_id", value.into());
+        self.parameters.message_effect_id = Some(value.into());
         self
     }
 
@@ -347,7 +324,7 @@ impl SendRichMessage {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("message_thread_id", value);
+        self.parameters.message_thread_id = Some(value);
         self
     }
 
@@ -358,7 +335,7 @@ impl SendRichMessage {
     /// * `value` - Indicates whether to protect the contents
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.form.insert_field("protect_content", value);
+        self.parameters.protect_content = Some(value);
         self
     }
 
@@ -367,12 +344,12 @@ impl SendRichMessage {
     /// # Arguments
     ///
     /// * `value` - Reply markup.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
     {
-        self.form.insert_field("reply_markup", value.into().serialize()?);
-        Ok(self)
+        self.parameters.reply_markup = Some(value.into());
+        self
     }
 
     /// Sets new reply parameters.
@@ -380,9 +357,9 @@ impl SendRichMessage {
     /// # Arguments
     ///
     /// * `value` - Description of the message to reply to.
-    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
-        self.form.insert_field("reply_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.parameters.reply_parameters = Some(value);
+        self
     }
 
     /// Sets a new suggested post parameters.
@@ -394,20 +371,43 @@ impl SendRichMessage {
     /// For direct messages chats only.
     ///
     /// If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
-    pub fn with_suggested_post_parameters(
-        mut self,
-        value: SuggestedPostParameters,
-    ) -> Result<Self, SuggestedPostParametersError> {
-        self.form.insert_field("suggested_post_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.parameters.suggested_post_parameters = Some(value);
+        self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SendRichMessageParameters {
+    chat_id: Option<ChatId>,
+    rich_message: Option<InputRichMessageData>,
+    allow_paid_broadcast: Option<bool>,
+    business_connection_id: Option<String>,
+    direct_messages_topic_id: Option<Integer>,
+    disable_notification: Option<bool>,
+    message_effect_id: Option<String>,
+    message_thread_id: Option<Integer>,
+    protect_content: Option<bool>,
+    reply_markup: Option<ReplyMarkup>,
+    reply_parameters: Option<ReplyParameters>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
 }
 
 impl Method for SendRichMessage {
     type Response = Message;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("sendRichMessage", self.form)
+        let Self {
+            chat_id,
+            rich_message,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.chat_id = Some(chat_id);
+        parameters.rich_message = Some(rich_message.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("sendRichMessage", form)
     }
 }
 
@@ -420,7 +420,10 @@ impl Method for SendRichMessage {
 /// to persist it in the user's chat.
 #[derive(Debug)]
 pub struct SendRichMessageDraft {
-    form: Form,
+    chat_id: Integer,
+    draft_id: Integer,
+    rich_message: InputRichMessage,
+    message_thread_id: Option<Integer>,
 }
 
 impl SendRichMessageDraft {
@@ -432,12 +435,13 @@ impl SendRichMessageDraft {
     /// * `draft_id` - Unique identifier of the message draft; must be non-zero;
     ///   changes to drafts with the same identifier are animated.
     /// * `rich_message` - The partial message to be streamed.
-    pub fn new(chat_id: Integer, draft_id: Integer, rich_message: InputRichMessage) -> Result<Self, SerializeError> {
-        let (mut form, data) = rich_message.into_parts(&[0]);
-        form.insert_field("chat_id", chat_id);
-        form.insert_field("draft_id", draft_id);
-        form.insert_field("rich_message", data.serialize()?);
-        Ok(Self { form })
+    pub fn new(chat_id: Integer, draft_id: Integer, rich_message: InputRichMessage) -> Self {
+        Self {
+            chat_id,
+            draft_id,
+            rich_message,
+            message_thread_id: None,
+        }
     }
 
     /// Sets a new message thread ID.
@@ -447,15 +451,38 @@ impl SendRichMessageDraft {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("message_thread_id", value);
+        self.message_thread_id = Some(value);
         self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Serialize)]
+struct SendRichMessageDraftParameters {
+    chat_id: Integer,
+    draft_id: Integer,
+    rich_message: InputRichMessageData,
+    message_thread_id: Option<Integer>,
 }
 
 impl Method for SendRichMessageDraft {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("sendRichMessageDraft", self.form)
+        let Self {
+            chat_id,
+            draft_id,
+            rich_message,
+            message_thread_id,
+        } = self;
+        let mut form = Form::default();
+        let parameters = SendRichMessageDraftParameters {
+            chat_id,
+            draft_id,
+            rich_message: rich_message.write(&mut form),
+            message_thread_id,
+        };
+        parameters.serialize(&mut form)?;
+        Payload::form("sendRichMessageDraft", form)
     }
 }

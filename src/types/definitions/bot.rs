@@ -3,8 +3,8 @@ use std::{error::Error, fmt};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
-    types::{ChatAdministratorRights, ChatId, InputProfilePhoto, InputProfilePhotoError, Integer, StarAmount, User},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
+    types::{ChatAdministratorRights, ChatId, InputProfilePhoto, InputProfilePhotoData, Integer, StarAmount, User},
 };
 
 /// Represents information about a bot returned in [`GetBot`].
@@ -1046,7 +1046,8 @@ impl Method for SetBotName {
 /// Changes the profile photo of the bot.
 #[derive(Debug)]
 pub struct SetBotProfilePhoto {
-    form: Form,
+    photo: InputProfilePhoto,
+    parameters: SetBotProfilePhotoParameters,
 }
 
 impl SetBotProfilePhoto {
@@ -1055,12 +1056,14 @@ impl SetBotProfilePhoto {
     /// # Arguments
     ///
     /// * `photo` - The new profile photo to set
-    pub fn new<T>(photo: T) -> Result<Self, InputProfilePhotoError>
+    pub fn new<T>(photo: T) -> Self
     where
         T: Into<InputProfilePhoto>,
     {
-        let form = Form::try_from(photo.into())?;
-        Ok(Self { form })
+        Self {
+            photo: photo.into(),
+            parameters: Default::default(),
+        }
     }
 }
 
@@ -1068,8 +1071,18 @@ impl Method for SetBotProfilePhoto {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("setMyProfilePhoto", self.form)
+        let Self { photo, mut parameters } = self;
+        let mut form = Form::default();
+        parameters.photo = Some(photo.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("setMyProfilePhoto", form)
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SetBotProfilePhotoParameters {
+    photo: Option<InputProfilePhotoData>,
 }
 
 /// Changes the short description of a bot, which is shown on the bot profile page

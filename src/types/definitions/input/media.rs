@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::Form,
-    types::{Float, InputFile, Integer, ParseMode, SerializeError, TextEntities, TextEntity},
+    api::{Form, WriteForm},
+    types::{Float, InputFile, Integer, ParseMode, TextEntities, TextEntity},
 };
 
 /// Represents a metadata of the input media.
@@ -136,18 +136,25 @@ impl InputMedia {
         self.thumbnail = value;
         self
     }
+}
 
-    pub(crate) fn into_parts(mut self, suffix: &[usize]) -> (Form, InputMediaData) {
-        let mut form = Form::default();
-        self.parameters.cover = self.cover.map(|x| x.attach(&mut form, "im_cover", suffix));
-        self.parameters.media = self.media.map(|x| x.attach(&mut form, "im_media", suffix));
-        self.parameters.photo = self.photo.map(|x| x.attach(&mut form, "im_photo", suffix));
-        self.parameters.thumbnail = self.thumbnail.map(|x| x.attach(&mut form, "im_tmb", suffix));
-        let data = InputMediaData {
-            media_type: self.media_type,
-            parameters: self.parameters,
-        };
-        (form, data)
+impl WriteForm for InputMedia {
+    type Output = InputMediaData;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self {
+            cover,
+            media,
+            media_type,
+            mut parameters,
+            photo,
+            thumbnail,
+        } = self;
+        parameters.cover = cover.map(|x| x.write(form));
+        parameters.media = media.map(|x| x.write(form));
+        parameters.photo = photo.map(|x| x.write(form));
+        parameters.thumbnail = thumbnail.map(|x| x.write(form));
+        InputMediaData { media_type, parameters }
     }
 }
 
@@ -1066,12 +1073,6 @@ pub(crate) struct InputMediaData {
     media_type: InputMediaType,
     #[serde(flatten)]
     parameters: InputMediaParameters,
-}
-
-impl InputMediaData {
-    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
-        serde_json::to_string(&self).map_err(SerializeError::input_media_data)
-    }
 }
 
 #[serde_with::skip_serializing_none]

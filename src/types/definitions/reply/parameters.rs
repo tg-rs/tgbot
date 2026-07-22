@@ -1,7 +1,4 @@
-use std::{error::Error, fmt};
-
 use serde::{Deserialize, Serialize};
-use serde_json::Error as JsonError;
 
 use crate::types::{ChatId, Integer, ParseMode, TextEntities, TextEntity};
 
@@ -109,10 +106,6 @@ impl ReplyParameters {
         self.quote = Some(value);
         self
     }
-
-    pub(crate) fn serialize(&self) -> Result<String, ReplyParametersError> {
-        serde_json::to_string(self).map_err(ReplyParametersError::Serialize)
-    }
 }
 
 /// Quoted part of the message to be replied to.
@@ -181,28 +174,5 @@ impl ReplyQuote {
         self.parse_mode = Some(value);
         self.entities = None;
         self
-    }
-}
-
-/// Represents an error that occurred with reply markup.
-#[derive(Debug)]
-pub enum ReplyParametersError {
-    /// Can not serialize markup
-    Serialize(JsonError),
-}
-
-impl Error for ReplyParametersError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        match self {
-            ReplyParametersError::Serialize(err) => Some(err),
-        }
-    }
-}
-
-impl fmt::Display for ReplyParametersError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            ReplyParametersError::Serialize(err) => write!(out, "can not serialize reply parameters: {err}"),
-        }
     }
 }

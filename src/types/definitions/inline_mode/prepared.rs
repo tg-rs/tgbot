@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
-    types::{InlineQueryResult, Integer, SerializeError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
+    types::{InlineQueryResult, InlineQueryResultData, Integer},
 };
 
 /// Describes an inline message to be sent by a user of a Mini App.
@@ -36,7 +36,9 @@ impl PreparedInlineMessage {
 /// Stores a message that can be sent by a user of a Mini App.
 #[derive(Debug)]
 pub struct SavePreparedInlineMessage {
-    form: Form,
+    user_id: Integer,
+    result: InlineQueryResult,
+    parameters: SavePreparedInlineMessageParameters,
 }
 
 impl SavePreparedInlineMessage {
@@ -46,15 +48,15 @@ impl SavePreparedInlineMessage {
     ///
     /// * `user_id` - Unique identifier of the target user that can use the prepared message.
     /// * `result` - An object describing the message to be sent
-    pub fn new<T>(user_id: Integer, result: T) -> Result<Self, SerializeError>
+    pub fn new<T>(user_id: Integer, result: T) -> Self
     where
         T: Into<InlineQueryResult>,
     {
-        let (form, data) = result.into().into_parts(&[0]);
-        let mut form = form.unwrap_or_default();
-        form.insert_field("user_id", user_id);
-        form.insert_field("result", data.serialize()?);
-        Ok(Self { form })
+        Self {
+            user_id,
+            result: result.into(),
+            parameters: Default::default(),
+        }
     }
 
     /// Sets a new value for the `allow_bot_chats` flag.
@@ -63,7 +65,7 @@ impl SavePreparedInlineMessage {
     ///
     /// * `value` - Whether the message can be sent to private chats with bots.
     pub fn with_allow_bot_chats(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_bot_chats", value);
+        self.parameters.allow_bot_chats = Some(value);
         self
     }
 
@@ -73,7 +75,7 @@ impl SavePreparedInlineMessage {
     ///
     /// * `value` - Whether the message can be sent to channel chats.
     pub fn with_allow_channel_chats(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_channel_chats", value);
+        self.parameters.allow_channel_chats = Some(value);
         self
     }
 
@@ -83,7 +85,7 @@ impl SavePreparedInlineMessage {
     ///
     /// * `value` - Whether the message can be sent to group and supergroup chats.
     pub fn with_allow_group_chats(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_group_chats", value);
+        self.parameters.allow_group_chats = Some(value);
         self
     }
 
@@ -93,15 +95,35 @@ impl SavePreparedInlineMessage {
     ///
     /// * `value` - Whether the message can be sent to private chats with users.
     pub fn with_allow_user_chats(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_user_chats", value);
+        self.parameters.allow_user_chats = Some(value);
         self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SavePreparedInlineMessageParameters {
+    allow_bot_chats: Option<bool>,
+    allow_channel_chats: Option<bool>,
+    allow_group_chats: Option<bool>,
+    allow_user_chats: Option<bool>,
+    result: Option<InlineQueryResultData>,
+    user_id: Option<Integer>,
 }
 
 impl Method for SavePreparedInlineMessage {
     type Response = PreparedInlineMessage;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("savePreparedInlineMessage", self.form)
+        let Self {
+            user_id,
+            result,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.user_id = Some(user_id);
+        parameters.result = Some(result.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("savePreparedInlineMessage", form)
     }
 }

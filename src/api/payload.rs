@@ -5,7 +5,7 @@ use reqwest::{Client as HttpClient, Method as HttpMethod, RequestBuilder as Http
 use serde::ser::Serialize;
 use serde_json::Error as JsonError;
 
-use super::form::{Form, FormError};
+use super::form::{Form, FormError, FormSerializeError};
 
 #[derive(Debug)]
 pub(crate) enum PayloadData {
@@ -85,6 +85,12 @@ pub enum PayloadError {
     Form(FormError),
     /// Failed to build a JSON body
     Json(JsonError),
+}
+
+impl From<FormSerializeError> for PayloadError {
+    fn from(err: FormSerializeError) -> Self {
+        Self::Form(err.into())
+    }
 }
 
 impl Error for PayloadError {

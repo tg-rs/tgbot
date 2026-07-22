@@ -1,13 +1,14 @@
 use std::{error::Error, fmt};
 
-use serde_json::Error as JsonError;
+use serde::Serialize;
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
         InputMedia,
         InputMediaAudio,
+        InputMediaData,
         InputMediaDocument,
         InputMediaLivePhoto,
         InputMediaPhoto,
@@ -15,7 +16,6 @@ use crate::{
         Integer,
         Message,
         ReplyParameters,
-        ReplyParametersError,
     },
 };
 
@@ -25,7 +25,7 @@ const MAX_GROUP_ATTACHMENTS: usize = 10;
 /// Represents a group of input media to be sent.
 #[derive(Debug)]
 pub struct MediaGroup {
-    form: Form,
+    items: Vec<MediaGroupItem>,
 }
 
 impl MediaGroup {
@@ -39,7 +39,7 @@ impl MediaGroup {
         A: IntoIterator<Item = B>,
         B: Into<MediaGroupItem>,
     {
-        let items: Vec<(usize, MediaGroupItem)> = items.into_iter().map(Into::into).enumerate().collect();
+        let items: Vec<MediaGroupItem> = items.into_iter().map(Into::into).collect();
 
         let total_items = items.len();
         if total_items < MIN_GROUP_ATTACHMENTS {
@@ -49,26 +49,19 @@ impl MediaGroup {
             return Err(MediaGroupError::TooManyAttachments(MAX_GROUP_ATTACHMENTS));
         }
 
-        let mut form = Form::default();
-        let mut info = Vec::new();
-        for (idx, item) in items {
-            let (item_form, item_info) = item.data.into_parts(&[idx]);
-            form.extend(item_form);
-            info.push(item_info);
-        }
-
-        form.insert_field(
-            "media",
-            serde_json::to_string(&info).map_err(MediaGroupError::Serialize)?,
-        );
-
-        Ok(Self { form })
+        Ok(Self { items })
     }
 }
 
-impl From<MediaGroup> for Form {
-    fn from(group: MediaGroup) -> Self {
-        group.form
+impl WriteForm for MediaGroup {
+    type Output = Vec<InputMediaData>;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self { items } = self;
+        items
+            .into_iter()
+            .map(|MediaGroupItem { data }| data.write(form))
+            .collect()
     }
 }
 
@@ -115,15 +108,13 @@ pub enum MediaGroupError {
     NotEnoughAttachments(usize),
     /// Media group contains too many files.
     TooManyAttachments(usize),
-    /// Can not serialize items.
-    Serialize(JsonError),
 }
 
 impl Error for MediaGroupError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
-            MediaGroupError::Serialize(err) => Some(err),
-            _ => None,
+            Self::NotEnoughAttachments(_) => None,
+            Self::TooManyAttachments(_) => None,
         }
     }
 }
@@ -131,13 +122,12 @@ impl Error for MediaGroupError {
 impl fmt::Display for MediaGroupError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            MediaGroupError::NotEnoughAttachments(number) => {
+            Self::NotEnoughAttachments(number) => {
                 write!(out, "media group must contain at least {number} attachments")
             }
-            MediaGroupError::TooManyAttachments(number) => {
+            Self::TooManyAttachments(number) => {
                 write!(out, "media group must contain no more than {number} attachments")
             }
-            MediaGroupError::Serialize(err) => write!(out, "can not serialize media group items: {err}"),
         }
     }
 }
@@ -145,7 +135,8 @@ impl fmt::Display for MediaGroupError {
 /// Sends a group of photos or videos as an album.
 #[derive(Debug)]
 pub struct SendMediaGroup {
-    form: Form,
+    media: MediaGroup,
+    parameters: SendMediaGroupParameters,
 }
 
 impl SendMediaGroup {
@@ -157,9 +148,13 @@ impl SendMediaGroup {
     where
         T: Into<ChatId>,
     {
-        let mut form: Form = media.into();
-        form.insert_field("chat_id", chat_id.into());
-        Self { form }
+        Self {
+            media,
+            parameters: SendMediaGroupParameters {
+                chat_id: Some(chat_id.into()),
+                ..Default::default()
+            },
+        }
     }
 
     /// Sets a new value for the `allow_paid_broadcast` flag.
@@ -170,7 +165,7 @@ impl SendMediaGroup {
     ///   for a fee of 0.1 Telegram Stars per message.
     ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_paid_broadcast", value);
+        self.parameters.allow_paid_broadcast = Some(value);
         self
     }
 
@@ -183,7 +178,7 @@ impl SendMediaGroup {
     where
         T: Into<String>,
     {
-        self.form.insert_field("business_connection_id", value.into());
+        self.parameters.business_connection_id = Some(value.into());
         self
     }
 
@@ -193,7 +188,7 @@ impl SendMediaGroup {
     ///
     /// Required if the message is sent to a direct messages chat.
     pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("direct_messages_topic_id", value);
+        self.parameters.direct_messages_topic_id = Some(value);
         self
     }
 
@@ -204,7 +199,7 @@ impl SendMediaGroup {
     /// * `value` - Indicates whether to send the message silently or not;
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
-        self.form.insert_field("disable_notification", value);
+        self.parameters.disable_notification = Some(value);
         self
     }
 
@@ -217,7 +212,7 @@ impl SendMediaGroup {
     where
         T: Into<String>,
     {
-        self.form.insert_field("message_effect_id", value.into());
+        self.parameters.message_effect_id = Some(value.into());
         self
     }
 
@@ -228,7 +223,7 @@ impl SendMediaGroup {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("message_thread_id", value);
+        self.parameters.message_thread_id = Some(value);
         self
     }
 
@@ -239,7 +234,7 @@ impl SendMediaGroup {
     /// * `value` - Indicates whether to protect the contents
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.form.insert_field("protect_content", value);
+        self.parameters.protect_content = Some(value);
         self
     }
 
@@ -248,16 +243,35 @@ impl SendMediaGroup {
     /// # Arguments
     ///
     /// * `value` - Description of the message to reply to.
-    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
-        self.form.insert_field("reply_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.parameters.reply_parameters = Some(value);
+        self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SendMediaGroupParameters {
+    chat_id: Option<ChatId>,
+    media: Option<Vec<InputMediaData>>,
+    allow_paid_broadcast: Option<bool>,
+    business_connection_id: Option<String>,
+    direct_messages_topic_id: Option<Integer>,
+    disable_notification: Option<bool>,
+    message_effect_id: Option<String>,
+    message_thread_id: Option<Integer>,
+    protect_content: Option<bool>,
+    reply_parameters: Option<ReplyParameters>,
 }
 
 impl Method for SendMediaGroup {
     type Response = Vec<Message>;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("sendMediaGroup", self.form)
+        let Self { media, mut parameters } = self;
+        let mut form = Form::default();
+        parameters.media = Some(media.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("sendMediaGroup", form)
     }
 }

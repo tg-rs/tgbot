@@ -1,15 +1,15 @@
 use serde::Serialize;
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
         InlineKeyboardMarkup,
         InputMedia,
+        InputMediaData,
         Integer,
         LinkPreviewOptions,
         ParseMode,
-        SerializeError,
         TextEntities,
         TextEntity,
     },
@@ -166,7 +166,9 @@ impl Method for EditEphemeralMessageCaption {
 /// especially if they are offline.
 #[derive(Debug)]
 pub struct EditEphemeralMessageMedia {
-    form: Form,
+    identity: EphemeralMessageIdentity,
+    media: InputMedia,
+    reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl EditEphemeralMessageMedia {
@@ -176,18 +178,16 @@ impl EditEphemeralMessageMedia {
     ///
     /// * `identity` - Identity of the ephemeral message.
     /// * `media` - The new media content of the message.
-    pub fn new<A, B>(identity: A, media: B) -> Result<Self, SerializeError>
+    pub fn new<A, B>(identity: A, media: B) -> Self
     where
         A: Into<EphemeralMessageIdentity>,
         B: Into<InputMedia>,
     {
-        let identity = identity.into();
-        let (mut form, media_data) = media.into().into_parts(&[0]);
-        form.insert_field("media", media_data.serialize()?);
-        form.insert_field("chat_id", identity.chat_id);
-        form.insert_field("receiver_user_id", identity.receiver_user_id);
-        form.insert_field("ephemeral_message_id", identity.ephemeral_message_id);
-        Ok(Self { form })
+        Self {
+            identity: identity.into(),
+            media: media.into(),
+            reply_markup: None,
+        }
     }
 
     /// Sets a new reply markup.
@@ -195,20 +195,40 @@ impl EditEphemeralMessageMedia {
     /// # Arguments
     ///
     /// * `value` - An object for an inline keyboard
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
     {
-        self.form.insert_field("reply_markup", value.into().serialize()?);
-        Ok(self)
+        self.reply_markup = Some(value.into());
+        self
     }
+}
+
+#[derive(Debug, Serialize)]
+struct EditEphemeralMessageMediaParameters {
+    #[serde(flatten)]
+    identity: EphemeralMessageIdentity,
+    media: InputMediaData,
+    reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl Method for EditEphemeralMessageMedia {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("editEphemeralMessageMedia", self.form)
+        let Self {
+            identity,
+            media,
+            reply_markup,
+        } = self;
+        let mut form = Form::default();
+        let parameters = EditEphemeralMessageMediaParameters {
+            identity,
+            media: media.write(&mut form),
+            reply_markup,
+        };
+        parameters.serialize(&mut form)?;
+        Payload::form("editEphemeralMessageMedia", form)
     }
 }
 

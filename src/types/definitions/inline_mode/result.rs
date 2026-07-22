@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::Form,
+    api::{Form, WriteForm},
     types::{
         Float,
         InlineKeyboardMarkup,
@@ -10,7 +10,6 @@ use crate::{
         Integer,
         Location,
         ParseMode,
-        SerializeError,
         TextEntities,
         TextEntity,
         User,
@@ -25,14 +24,16 @@ pub struct InlineQueryResult {
     input_message_content: Option<InputMessageContent>,
 }
 
-impl InlineQueryResult {
-    pub(crate) fn into_parts(mut self, suffix: &[usize]) -> (Option<Form>, InlineQueryResultData) {
-        let form = self.input_message_content.and_then(|x| {
-            let (form, content_data) = x.into_parts(suffix);
-            self.data.properties.input_message_content = Some(content_data);
-            form
-        });
-        (form, self.data)
+impl WriteForm for InlineQueryResult {
+    type Output = InlineQueryResultData;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self {
+            mut data,
+            input_message_content,
+        } = self;
+        data.properties.input_message_content = input_message_content.map(|x| x.write(form));
+        data
     }
 }
 
@@ -2825,12 +2826,6 @@ pub(crate) struct InlineQueryResultData {
     properties: InlineQueryResultProperties,
 }
 
-impl InlineQueryResultData {
-    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
-        serde_json::to_string(&self).map_err(SerializeError::inline_query_result_data)
-    }
-}
-
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Default, Serialize)]
 struct InlineQueryResultProperties {
@@ -2940,10 +2935,6 @@ impl InlineQueryResultsButton {
             text: text.into(),
             button_type: InlineQueryResultsButtonType::StartParameter(start_parameter.into()),
         }
-    }
-
-    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
-        serde_json::to_string(&self).map_err(SerializeError::inline_query_results_button)
     }
 }
 

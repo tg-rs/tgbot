@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::SerializeError;
-
 /// Represents an HTTP link.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct Link {
@@ -91,9 +89,5 @@ impl LinkPreviewOptions {
     {
         self.url = Some(value.into());
         self
-    }
-
-    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
-        serde_json::to_string(&self).map_err(SerializeError::link_preview_options)
     }
 }

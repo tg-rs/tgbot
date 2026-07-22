@@ -1,9 +1,9 @@
-use std::{error::Error, fmt};
+use std::fmt;
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         Animation,
         Audio,
@@ -21,10 +21,7 @@ use crate::{
         ParseMode,
         PhotoSize,
         ReplyMarkup,
-        ReplyMarkupError,
         ReplyParameters,
-        ReplyParametersError,
-        SerializeError,
         Sticker,
         Text,
         TextEntities,
@@ -893,17 +890,15 @@ impl InputPollOption {
         self.data.text_entities = None;
         self
     }
+}
 
-    fn into_parts(mut self, suffix: &[usize]) -> (Form, InputPollOptionData) {
-        let form = self
-            .input_media
-            .map(|x| {
-                let (form, data) = x.into_parts(suffix);
-                self.data.media = Some(data);
-                form
-            })
-            .unwrap_or_default();
-        (form, self.data)
+impl WriteForm for InputPollOption {
+    type Output = InputPollOptionData;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self { mut data, input_media } = self;
+        data.media = input_media.map(|x| x.write(form));
+        data
     }
 }
 
@@ -927,7 +922,7 @@ where
 
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Serialize)]
-struct InputPollOptionData {
+pub(crate) struct InputPollOptionData {
     text: String,
     text_parse_mode: Option<ParseMode>,
     text_entities: Option<TextEntities>,
@@ -935,70 +930,106 @@ struct InputPollOptionData {
 }
 
 #[derive(Debug)]
+struct PollInputs {
+    chat_id: ChatId,
+    question: String,
+    options: Vec<InputPollOption>,
+    media: Option<InputMedia>,
+    poll_type: PollType,
+}
+
+impl PollInputs {
+    fn try_into_form(self, mut parameters: PollParameters) -> Result<Form, PayloadError> {
+        let Self {
+            chat_id,
+            question,
+            options,
+            media,
+            poll_type,
+        } = self;
+        let mut form = Form::default();
+        parameters.chat_id = Some(chat_id);
+        parameters.question = Some(question);
+        parameters.options = Some(options.into_iter().map(|x| x.write(&mut form)).collect());
+        if let Some(media) = media {
+            let media_data = media.write(&mut form);
+            match poll_type {
+                PollType::Quiz => {
+                    parameters.explanation_media = Some(media_data);
+                }
+                PollType::Regular => {
+                    parameters.media = Some(media_data);
+                }
+            };
+        }
+        parameters.serialize(&mut form)?;
+        Ok(form)
+    }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
 struct PollParameters {
-    form: Form,
-    allow_adding_options: bool,
-    is_anonymous: bool,
+    allow_adding_options: Option<bool>,
+    allow_paid_broadcast: Option<bool>,
+    allows_multiple_answers: Option<bool>,
+    allows_revoting: Option<bool>,
+    business_connection_id: Option<String>,
+    chat_id: Option<ChatId>,
+    close_date: Option<Integer>,
+    correct_option_ids: Option<Vec<Integer>>,
+    country_codes: Option<Vec<String>>,
+    description: Option<String>,
+    description_entities: Option<TextEntities>,
+    description_parse_mode: Option<ParseMode>,
+    disable_notification: Option<bool>,
+    explanation: Option<String>,
+    explanation_entities: Option<TextEntities>,
+    explanation_media: Option<InputMediaData>,
+    explanation_parse_mode: Option<ParseMode>,
+    hide_results_until_closes: Option<bool>,
+    is_anonymous: Option<bool>,
+    is_closed: Option<bool>,
+    media: Option<InputMediaData>,
+    members_only: Option<bool>,
+    message_effect_id: Option<String>,
+    message_thread_id: Option<Integer>,
+    open_period: Option<Integer>,
+    options: Option<Vec<InputPollOptionData>>,
+    protect_content: Option<bool>,
+    question: Option<String>,
+    question_entities: Option<TextEntities>,
+    question_parse_mode: Option<ParseMode>,
+    reply_markup: Option<ReplyMarkup>,
+    reply_parameters: Option<ReplyParameters>,
+    shuffle_options: Option<bool>,
 }
 
 impl PollParameters {
-    fn new<A, B>(chat_id: ChatId, question: String, poll_type: PollType, options: A) -> Result<Self, PollError>
-    where
-        A: IntoIterator<Item = B>,
-        B: Into<InputPollOption>,
-    {
-        let mut form = Form::from([
-            ("chat_id", chat_id.into()),
-            ("question", question.into()),
-            ("type", poll_type.into()),
-        ]);
-        let mut options_data = Vec::with_capacity(20);
-        for (idx, option) in options.into_iter().map(Into::into).enumerate() {
-            let (option_form, option_data) = option.into_parts(&[idx]);
-            form.extend(option_form);
-            options_data.push(option_data);
-        }
-        form.insert_field(
-            "options",
-            serde_json::to_string(&options_data).map_err(PollError::SerializeOptions)?,
-        );
-        Ok(Self {
-            form,
-            allow_adding_options: false,
-            is_anonymous: false,
-        })
-    }
-
     fn set_allow_adding_options(&mut self, value: bool) {
-        self.form.insert_field("allow_adding_options", value);
-        self.allow_adding_options = value;
-        if value && self.is_anonymous {
-            self.form.remove_field("is_anonymous");
-            self.is_anonymous = false;
+        self.allow_adding_options = Some(value);
+        if value {
+            self.is_anonymous = None;
         }
     }
 
-    fn set_description_entities<T>(&mut self, value: T) -> Result<(), SerializeError>
+    fn set_description_entities<T>(&mut self, value: T)
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        let value: TextEntities = value.into_iter().collect();
-        self.form.insert_field("description_entities", value.serialize()?);
-        self.form.remove_field("description_parse_mode");
-        Ok(())
+        self.description_entities = Some(value.into_iter().collect());
+        self.description_parse_mode = None;
     }
 
     fn set_description_parse_mode(&mut self, value: ParseMode) {
-        self.form.insert_field("description_parse_mode", value);
-        self.form.remove_field("description_entities");
+        self.description_parse_mode = Some(value);
+        self.description_entities = None;
     }
 
     fn set_is_anonymous(&mut self, value: bool) {
-        self.is_anonymous = value;
-        self.form.insert_field("is_anonymous", value);
-        if value && self.allow_adding_options {
-            self.allow_adding_options = false;
-            self.form.remove_field("allow_adding_options")
+        self.is_anonymous = Some(value);
+        if value {
+            self.allow_adding_options = None;
         }
     }
 }
@@ -1008,6 +1039,7 @@ impl PollParameters {
 /// On success, the sent [`Message`] is returned.
 #[derive(Debug)]
 pub struct SendQuiz {
+    inputs: PollInputs,
     inner: PollParameters,
 }
 
@@ -1020,7 +1052,7 @@ impl SendQuiz {
     /// * `question` - Question; 1-300 characters.
     /// * `correct_option_ids` - 0-based identifiers of the correct answer options.
     /// * `options` - Answer options; 1-12.
-    pub fn new<A, B, C, D, DI>(chat_id: A, question: B, correct_option_ids: C, options: D) -> Result<Self, PollError>
+    pub fn new<A, B, C, D, DI>(chat_id: A, question: B, correct_option_ids: C, options: D) -> Self
     where
         A: Into<ChatId>,
         B: Into<String>,
@@ -1028,14 +1060,19 @@ impl SendQuiz {
         D: IntoIterator<Item = DI>,
         DI: Into<InputPollOption>,
     {
-        let mut parameters = PollParameters::new(chat_id.into(), question.into(), PollType::Quiz, options)?;
-        let correct_option_ids: Vec<Integer> = correct_option_ids.into_iter().collect();
-        let correct_option_ids_data =
-            serde_json::to_string(&correct_option_ids).map_err(PollError::SerializeCorrectOptionIds)?;
-        parameters
-            .form
-            .insert_field("correct_option_ids", correct_option_ids_data);
-        Ok(Self { inner: parameters })
+        Self {
+            inputs: PollInputs {
+                chat_id: chat_id.into(),
+                question: question.into(),
+                options: options.into_iter().map(Into::into).collect(),
+                media: None,
+                poll_type: PollType::Quiz,
+            },
+            inner: PollParameters {
+                correct_option_ids: Some(correct_option_ids.into_iter().collect()),
+                ..Default::default()
+            },
+        }
     }
 
     /// Sets a new value for the `allow_adding_options` flag.
@@ -1058,7 +1095,7 @@ impl SendQuiz {
     ///   for a fee of 0.1 Telegram Stars per message.
     ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("allow_paid_broadcast", value);
+        self.inner.allow_paid_broadcast = Some(value);
         self
     }
 
@@ -1068,7 +1105,7 @@ impl SendQuiz {
     ///
     /// * `value` - Indicates whether the poll allows multiple answers; default - `false`.
     pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("allows_multiple_answers", value);
+        self.inner.allows_multiple_answers = Some(value);
         self
     }
 
@@ -1079,7 +1116,7 @@ impl SendQuiz {
     /// * `value` - Whether if the poll allows to change chosen answer options,
     ///   defaults to false.
     pub fn with_allows_revoting(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("allows_revoting", value);
+        self.inner.allows_revoting = Some(value);
         self
     }
 
@@ -1092,7 +1129,7 @@ impl SendQuiz {
     where
         T: Into<String>,
     {
-        self.inner.form.insert_field("business_connection_id", value.into());
+        self.inner.business_connection_id = Some(value.into());
         self
     }
 
@@ -1105,8 +1142,8 @@ impl SendQuiz {
     /// Must be at least 5 and no more than 600 seconds in the future.
     /// Can't be used together with [`Self::with_open_period`] (open period will be set to [`None`]).
     pub fn with_close_date(mut self, value: Integer) -> Self {
-        self.inner.form.insert_field("close_date", value);
-        self.inner.form.remove_field("open_period");
+        self.inner.close_date = Some(value);
+        self.inner.open_period = None;
         self
     }
 
@@ -1121,17 +1158,13 @@ impl SendQuiz {
     /// Use “FT” as a country code to allow users with anonymous numbers to vote.
     ///
     /// If omitted or empty, then users from any country can participate in the poll.
-    pub fn with_country_codes<A, B>(mut self, value: A) -> Result<Self, PollError>
+    pub fn with_country_codes<A, B>(mut self, value: A) -> Self
     where
         A: IntoIterator<Item = B>,
         B: Into<String>,
     {
-        let value: Vec<String> = value.into_iter().map(Into::into).collect();
-        self.inner.form.insert_field(
-            "country_codes",
-            serde_json::to_string(&value).map_err(PollError::SerializeCountryCodes)?,
-        );
-        Ok(self)
+        self.inner.country_codes = Some(value.into_iter().map(Into::into).collect());
+        self
     }
 
     /// Sets a new description.
@@ -1143,7 +1176,7 @@ impl SendQuiz {
     where
         T: Into<String>,
     {
-        self.inner.form.insert_field("description", value.into());
+        self.inner.description = Some(value.into());
         self
     }
 
@@ -1154,12 +1187,12 @@ impl SendQuiz {
     /// * `value` - A list of special entities that appear in the description.
     ///
     /// Parse mode will be set to [`None`].
-    pub fn with_description_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_description_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.inner.set_description_entities(value)?;
-        Ok(self)
+        self.inner.set_description_entities(value);
+        self
     }
 
     /// Sets a new description parse mode.
@@ -1181,7 +1214,7 @@ impl SendQuiz {
     /// * `value` - Indicates whether to send the message silently or not;
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("disable_notification", value);
+        self.inner.disable_notification = Some(value);
         self
     }
 
@@ -1196,7 +1229,7 @@ impl SendQuiz {
     where
         T: Into<String>,
     {
-        self.inner.form.insert_field("explanation", value.into());
+        self.inner.explanation = Some(value.into());
         self
     }
 
@@ -1205,15 +1238,12 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * `value` - Media added to the quiz explanation.
-    pub fn with_explanation_media<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_explanation_media<T>(mut self, value: T) -> Self
     where
         T: Into<InputMedia>,
     {
-        let (form, data) = value.into().into_parts(&[0]);
-
-        self.inner.form.extend(form);
-        self.inner.form.insert_field("explanation_media", data.serialize()?);
-        Ok(self)
+        self.inputs.media = Some(value.into());
+        self
     }
 
     /// Sets a new list of explanation entities.
@@ -1223,14 +1253,13 @@ impl SendQuiz {
     /// * `value` - List of special entities that appear in the quiz explanation.
     ///
     /// Explanation parse mode will be removed when this method is called.
-    pub fn with_explanation_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_explanation_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        let value: TextEntities = value.into_iter().collect();
-        self.inner.form.insert_field("explanation_entities", value.serialize()?);
-        self.inner.form.remove_field("explanation_parse_mode");
-        Ok(self)
+        self.inner.explanation_entities = Some(value.into_iter().collect());
+        self.inner.explanation_parse_mode = None;
+        self
     }
 
     /// Sets a new explanation parse mode.
@@ -1241,8 +1270,8 @@ impl SendQuiz {
     ///
     /// Explanation entities will be removed when this method is called.
     pub fn with_explanation_parse_mode(mut self, value: ParseMode) -> Self {
-        self.inner.form.insert_field("explanation_parse_mode", value);
-        self.inner.form.remove_field("explanation_entities");
+        self.inner.explanation_parse_mode = Some(value);
+        self.inner.explanation_entities = None;
         self
     }
 
@@ -1252,7 +1281,7 @@ impl SendQuiz {
     ///
     /// * `value` - Whether the poll results must be shown only after the poll closes.
     pub fn with_hide_results_until_closes(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("hide_results_until_closes", value);
+        self.inner.hide_results_until_closes = Some(value);
         self
     }
 
@@ -1274,7 +1303,7 @@ impl SendQuiz {
     ///
     /// * `value` - Indicates whether the quiz needs to be immediately closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("is_closed", value);
+        self.inner.is_closed = Some(value);
         self
     }
 
@@ -1286,7 +1315,7 @@ impl SendQuiz {
     ///   who have been members of the chat where the poll
     ///   is being sent for more than 24 hours; for channel chats only
     pub fn with_members_only(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("members_only", value);
+        self.inner.members_only = Some(value);
         self
     }
 
@@ -1299,7 +1328,7 @@ impl SendQuiz {
     where
         T: Into<String>,
     {
-        self.inner.form.insert_field("message_effect_id", value.into());
+        self.inner.message_effect_id = Some(value.into());
         self
     }
 
@@ -1310,7 +1339,7 @@ impl SendQuiz {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.inner.form.insert_field("message_thread_id", value);
+        self.inner.message_thread_id = Some(value);
         self
     }
 
@@ -1322,8 +1351,8 @@ impl SendQuiz {
     ///
     /// Can't be used together with [`Self::with_close_date`] (close date will be set to [`None`]).
     pub fn with_open_period(mut self, value: Integer) -> Self {
-        self.inner.form.insert_field("open_period", value);
-        self.inner.form.remove_field("close_date");
+        self.inner.open_period = Some(value);
+        self.inner.close_date = None;
         self
     }
 
@@ -1334,7 +1363,7 @@ impl SendQuiz {
     /// * `value` - Indicates whether to protect the contents
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("protect_content", value);
+        self.inner.protect_content = Some(value);
         self
     }
 
@@ -1345,14 +1374,13 @@ impl SendQuiz {
     /// * `value` - A list of special entities that appear in the poll question.
     ///
     /// Question parse mode will be removed when this method is called.
-    pub fn with_question_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_question_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        let value: TextEntities = value.into_iter().collect();
-        self.inner.form.insert_field("question_entities", value.serialize()?);
-        self.inner.form.remove_field("question_parse_mode");
-        Ok(self)
+        self.inner.question_entities = Some(value.into_iter().collect());
+        self.inner.question_parse_mode = None;
+        self
     }
 
     /// Sets a new question parse mode.
@@ -1363,8 +1391,8 @@ impl SendQuiz {
     ///
     /// Question entities will be removed when this method is called.
     pub fn with_question_parse_mode(mut self, value: ParseMode) -> Self {
-        self.inner.form.insert_field("question_parse_mode", value);
-        self.inner.form.remove_field("question_entities");
+        self.inner.question_parse_mode = Some(value);
+        self.inner.question_entities = None;
         self
     }
 
@@ -1373,12 +1401,12 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * `value` - Reply markup.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
     {
-        self.inner.form.insert_field("reply_markup", value.into().serialize()?);
-        Ok(self)
+        self.inner.reply_markup = Some(value.into());
+        self
     }
 
     /// Sets new reply parameters.
@@ -1386,9 +1414,9 @@ impl SendQuiz {
     /// # Arguments
     ///
     /// * `value` - Description of the message to reply to.
-    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
-        self.inner.form.insert_field("reply_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.inner.reply_parameters = Some(value);
+        self
     }
 
     /// Sets a new value for the `shuffle_options` flag.
@@ -1397,7 +1425,7 @@ impl SendQuiz {
     ///
     /// * `value` - Whether the poll options must be shown in random order.
     pub fn with_shuffle_options(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("shuffle_options", value);
+        self.inner.shuffle_options = Some(value);
         self
     }
 }
@@ -1406,7 +1434,8 @@ impl Method for SendQuiz {
     type Response = Message;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("sendPoll", self.inner.form)
+        let form = self.inputs.try_into_form(self.inner)?;
+        Payload::form("sendPoll", form)
     }
 }
 
@@ -1415,6 +1444,7 @@ impl Method for SendQuiz {
 /// On success, the sent [`Message`] is returned.
 #[derive(Debug)]
 pub struct SendPoll {
+    inputs: PollInputs,
     inner: PollParameters,
 }
 
@@ -1426,16 +1456,23 @@ impl SendPoll {
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `question` - Question; 1-300 characters.
     /// * `options` - Answer options; 1-12.
-    pub fn new<A, B, C, D>(chat_id: A, question: B, options: C) -> Result<Self, PollError>
+    pub fn new<A, B, C, D>(chat_id: A, question: B, options: C) -> Self
     where
         A: Into<ChatId>,
         B: Into<String>,
         C: IntoIterator<Item = D>,
         D: Into<InputPollOption>,
     {
-        Ok(Self {
-            inner: PollParameters::new(chat_id.into(), question.into(), PollType::Regular, options)?,
-        })
+        Self {
+            inputs: PollInputs {
+                chat_id: chat_id.into(),
+                question: question.into(),
+                options: options.into_iter().map(Into::into).collect(),
+                media: None,
+                poll_type: PollType::Regular,
+            },
+            inner: Default::default(),
+        }
     }
 
     /// Sets a new value for the `allow_adding_options` flag.
@@ -1458,7 +1495,7 @@ impl SendPoll {
     ///   for a fee of 0.1 Telegram Stars per message.
     ///   The relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("allow_paid_broadcast", value);
+        self.inner.allow_paid_broadcast = Some(value);
         self
     }
 
@@ -1468,7 +1505,7 @@ impl SendPoll {
     ///
     /// * `value` - Indicates whether the poll allows multiple answers; default - `false`.
     pub fn with_allows_multiple_answers(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("allows_multiple_answers", value);
+        self.inner.allows_multiple_answers = Some(value);
         self
     }
 
@@ -1479,7 +1516,7 @@ impl SendPoll {
     /// * `value` - Whether if the poll allows to change chosen answer options,
     ///   defaults to True.
     pub fn with_allows_revoting(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("allows_revoting", value);
+        self.inner.allows_revoting = Some(value);
         self
     }
 
@@ -1492,7 +1529,7 @@ impl SendPoll {
     where
         T: Into<String>,
     {
-        self.inner.form.insert_field("business_connection_id", value.into());
+        self.inner.business_connection_id = Some(value.into());
         self
     }
 
@@ -1505,8 +1542,8 @@ impl SendPoll {
     /// Must be at least 5 and no more than 600 seconds in the future.
     /// Can't be used together with [`Self::with_open_period`] (open period will be set to [`None`])
     pub fn with_close_date(mut self, value: Integer) -> Self {
-        self.inner.form.insert_field("close_date", value);
-        self.inner.form.remove_field("open_period");
+        self.inner.close_date = Some(value);
+        self.inner.open_period = None;
         self
     }
 
@@ -1521,17 +1558,13 @@ impl SendPoll {
     /// Use “FT” as a country code to allow users with anonymous numbers to vote.
     ///
     /// If omitted or empty, then users from any country can participate in the poll.
-    pub fn with_country_codes<A, B>(mut self, value: A) -> Result<Self, PollError>
+    pub fn with_country_codes<A, B>(mut self, value: A) -> Self
     where
         A: IntoIterator<Item = B>,
         B: Into<String>,
     {
-        let value: Vec<String> = value.into_iter().map(Into::into).collect();
-        self.inner.form.insert_field(
-            "country_codes",
-            serde_json::to_string(&value).map_err(PollError::SerializeCountryCodes)?,
-        );
-        Ok(self)
+        self.inner.country_codes = Some(value.into_iter().map(Into::into).collect());
+        self
     }
 
     /// Sets a new description.
@@ -1543,7 +1576,7 @@ impl SendPoll {
     where
         T: Into<String>,
     {
-        self.inner.form.insert_field("description", value.into());
+        self.inner.description = Some(value.into());
         self
     }
 
@@ -1554,12 +1587,12 @@ impl SendPoll {
     /// * `value` - A list of special entities that appear in the description.
     ///
     /// Parse mode will be set to [`None`].
-    pub fn with_description_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_description_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.inner.set_description_entities(value)?;
-        Ok(self)
+        self.inner.set_description_entities(value);
+        self
     }
 
     /// Sets a new description parse mode.
@@ -1581,7 +1614,7 @@ impl SendPoll {
     /// * `value` - Indicates whether to send the message silently or not;
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("disable_notification", value);
+        self.inner.disable_notification = Some(value);
         self
     }
 
@@ -1591,7 +1624,7 @@ impl SendPoll {
     ///
     /// * `value` - Whether the poll results must be shown only after the poll closes.
     pub fn with_hide_results_until_closes(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("hide_results_until_closes", value);
+        self.inner.hide_results_until_closes = Some(value);
         self
     }
 
@@ -1613,7 +1646,7 @@ impl SendPoll {
     ///
     /// * `value` - Indicates whether the poll needs to be immediately closed.
     pub fn with_is_closed(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("is_closed", value);
+        self.inner.is_closed = Some(value);
         self
     }
 
@@ -1622,14 +1655,12 @@ impl SendPoll {
     /// # Arguments
     ///
     /// * `value` - Media added to the poll description.
-    pub fn with_media<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_media<T>(mut self, value: T) -> Self
     where
         T: Into<InputMedia>,
     {
-        let (form, data) = value.into().into_parts(&[0]);
-        self.inner.form.extend(form);
-        self.inner.form.insert_field("media", data.serialize()?);
-        Ok(self)
+        self.inputs.media = Some(value.into());
+        self
     }
 
     /// Sets a new value for the `members_only` flag.
@@ -1640,7 +1671,7 @@ impl SendPoll {
     ///   who have been members of the chat where the poll
     ///   is being sent for more than 24 hours; for channel chats only
     pub fn with_members_only(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("members_only", value);
+        self.inner.members_only = Some(value);
         self
     }
 
@@ -1653,7 +1684,7 @@ impl SendPoll {
     where
         T: Into<String>,
     {
-        self.inner.form.insert_field("message_effect_id", value.into());
+        self.inner.message_effect_id = Some(value.into());
         self
     }
 
@@ -1664,7 +1695,7 @@ impl SendPoll {
     /// * `value` - Unique identifier of the target message thread;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.inner.form.insert_field("message_thread_id", value);
+        self.inner.message_thread_id = Some(value);
         self
     }
 
@@ -1676,8 +1707,8 @@ impl SendPoll {
     ///
     /// Can't be used together with `close_date` (`close_date` will be set to [`None`]).
     pub fn with_open_period(mut self, value: Integer) -> Self {
-        self.inner.form.insert_field("open_period", value);
-        self.inner.form.remove_field("close_date");
+        self.inner.open_period = Some(value);
+        self.inner.close_date = None;
         self
     }
 
@@ -1688,7 +1719,7 @@ impl SendPoll {
     /// * `value` - Indicates whether to protect the contents
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("protect_content", value);
+        self.inner.protect_content = Some(value);
         self
     }
 
@@ -1699,14 +1730,13 @@ impl SendPoll {
     /// * `value` - A list of special entities that appear in the poll question.
     ///
     /// Question parse mode will be set to [`None`] when this method is called.
-    pub fn with_question_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_question_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        let value: TextEntities = value.into_iter().collect();
-        self.inner.form.insert_field("question_entities", value.serialize()?);
-        self.inner.form.remove_field("question_parse_mode");
-        Ok(self)
+        self.inner.question_entities = Some(value.into_iter().collect());
+        self.inner.question_parse_mode = None;
+        self
     }
 
     /// Sets a new question parse mode.
@@ -1717,8 +1747,8 @@ impl SendPoll {
     ///
     /// Question entities will be set to [`None`] when this method is called.
     pub fn with_question_parse_mode(mut self, value: ParseMode) -> Self {
-        self.inner.form.insert_field("question_parse_mode", value);
-        self.inner.form.remove_field("question_entities");
+        self.inner.question_parse_mode = Some(value);
+        self.inner.question_entities = None;
         self
     }
 
@@ -1727,12 +1757,12 @@ impl SendPoll {
     /// # Arguments
     ///
     /// * `value` - Reply markup.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
     {
-        self.inner.form.insert_field("reply_markup", value.into().serialize()?);
-        Ok(self)
+        self.inner.reply_markup = Some(value.into());
+        self
     }
 
     /// Sets new reply parameters.
@@ -1740,9 +1770,9 @@ impl SendPoll {
     /// # Arguments
     ///
     /// * `value` - Description of the message to reply to.
-    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
-        self.inner.form.insert_field("reply_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.inner.reply_parameters = Some(value);
+        self
     }
 
     /// Sets a new value for the `shuffle_options` flag.
@@ -1751,7 +1781,7 @@ impl SendPoll {
     ///
     /// * `value` - Whether the poll options must be shown in random order.
     pub fn with_shuffle_options(mut self, value: bool) -> Self {
-        self.inner.form.insert_field("shuffle_options", value);
+        self.inner.shuffle_options = Some(value);
         self
     }
 }
@@ -1760,7 +1790,8 @@ impl Method for SendPoll {
     type Response = Message;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("sendPoll", self.inner.form)
+        let form = self.inputs.try_into_form(self.inner)?;
+        Payload::form("sendPoll", form)
     }
 }
 
@@ -1832,36 +1863,5 @@ impl Method for StopPoll {
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("stopPoll", self)
-    }
-}
-
-/// A poll error.
-#[derive(Debug)]
-pub enum PollError {
-    /// Failed to serialize correct option IDs.
-    SerializeCorrectOptionIds(serde_json::Error),
-    /// Failed to serialize country codes.
-    SerializeCountryCodes(serde_json::Error),
-    /// Failed to serialize options.
-    SerializeOptions(serde_json::Error),
-}
-
-impl Error for PollError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        Some(match self {
-            Self::SerializeCorrectOptionIds(err) => err,
-            Self::SerializeCountryCodes(err) => err,
-            Self::SerializeOptions(err) => err,
-        })
-    }
-}
-
-impl fmt::Display for PollError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Self::SerializeCorrectOptionIds(err) => write!(out, "can not serialize correct option ids: {}", err),
-            Self::SerializeCountryCodes(err) => write!(out, "can not serialize country codes: {}", err),
-            Self::SerializeOptions(err) => write!(out, "can not serialize options: {}", err),
-        }
     }
 }

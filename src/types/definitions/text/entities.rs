@@ -7,7 +7,7 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Integer, SerializeError, User};
+use crate::types::{Integer, User};
 
 /// Represents a collection of text entities.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -24,10 +24,6 @@ impl TextEntities {
     /// * `value` - The entity to push.
     pub fn push(&mut self, value: TextEntity) {
         self.items.push(value);
-    }
-
-    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
-        serde_json::to_string(self).map_err(SerializeError::text_entities)
     }
 }
 

@@ -1,5 +1,3 @@
-use serde::Serialize;
-
 use crate::types::*;
 
 #[test]
@@ -16,24 +14,13 @@ fn force_reply() {
     }
 }
 
-#[derive(Serialize)]
-struct CallbackData {
-    value: String,
-}
-
 #[test]
 fn inline_keyboard() {
-    let callback_data = CallbackData {
-        value: String::from("cd-struct"),
-    };
     insta::assert_json_snapshot!(ReplyMarkup::from(vec![vec![
         InlineKeyboardButton::for_url("url", "tg://user?id=1").with_icon_custom_emoji_id("test"),
         InlineKeyboardButton::for_web_app("web app", WebAppInfo::from("https://example.com"))
             .with_style(InlineKeyboardButtonStyle::Danger),
         InlineKeyboardButton::for_callback_data("cd", "cd").with_style(InlineKeyboardButtonStyle::Primary),
-        InlineKeyboardButton::for_callback_data_struct("cd", &callback_data)
-            .unwrap()
-            .with_style(InlineKeyboardButtonStyle::Success),
         InlineKeyboardButton::for_copy_text("cp", "val"),
         InlineKeyboardButton::for_switch_inline_query("siq", "siq"),
         InlineKeyboardButton::for_switch_inline_query_current_chat("siq_cc", "siq_cc"),

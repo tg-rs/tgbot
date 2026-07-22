@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
-    types::{InlineQueryResult, SerializeError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
+    types::{InlineQueryResult, InlineQueryResultData},
 };
 
 /// An inline message sent by a guest bot.
@@ -37,7 +37,8 @@ impl From<SentGuestMessage> for String {
 /// Reply to a received guest message.
 #[derive(Debug)]
 pub struct AnswerGuestQuery {
-    form: Form,
+    guest_query_id: String,
+    result: InlineQueryResult,
 }
 
 impl AnswerGuestQuery {
@@ -47,23 +48,35 @@ impl AnswerGuestQuery {
     ///
     /// * `guest_query_id` - Unique identifier for the query to be answered.
     /// * `result` - The message to be sent.
-    pub fn new<A, B>(guest_query_id: A, result: B) -> Result<Self, SerializeError>
+    pub fn new<A, B>(guest_query_id: A, result: B) -> Self
     where
         A: Into<String>,
         B: Into<InlineQueryResult>,
     {
-        let (form, data) = result.into().into_parts(&[0]);
-        let mut form = form.unwrap_or_default();
-        form.insert_field("guest_query_id", guest_query_id.into());
-        form.insert_field("result", data.serialize()?);
-        Ok(Self { form })
+        Self {
+            guest_query_id: guest_query_id.into(),
+            result: result.into(),
+        }
     }
+}
+
+#[derive(Debug, Serialize)]
+struct AnswerGuestQueryParameters {
+    guest_query_id: String,
+    result: InlineQueryResultData,
 }
 
 impl Method for AnswerGuestQuery {
     type Response = SentGuestMessage;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("answerGuestQuery", self.form)
+        let Self { guest_query_id, result } = self;
+        let mut form = Form::default();
+        let parameters = AnswerGuestQueryParameters {
+            guest_query_id,
+            result: result.write(&mut form),
+        };
+        parameters.serialize(&mut form)?;
+        Payload::form("answerGuestQuery", form)
     }
 }

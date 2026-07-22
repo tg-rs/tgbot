@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
         InputFile,
@@ -10,12 +10,8 @@ use crate::{
         ParseMode,
         PhotoSize,
         ReplyMarkup,
-        ReplyMarkupError,
         ReplyParameters,
-        ReplyParametersError,
-        SerializeError,
         SuggestedPostParameters,
-        SuggestedPostParametersError,
         TextEntities,
         TextEntity,
     },
@@ -112,7 +108,9 @@ impl LivePhoto {
 /// Sends live photos.
 #[derive(Debug)]
 pub struct SendLivePhoto {
-    form: Form,
+    live_photo: InputFile,
+    photo: InputFile,
+    parameters: SendLivePhotoParameters,
 }
 
 impl SendLivePhoto {
@@ -129,15 +127,13 @@ impl SendLivePhoto {
         B: Into<InputFile>,
         C: Into<InputFile>,
     {
-        let chat_id = chat_id.into();
-        let live_photo = live_photo.into();
-        let photo = photo.into();
         Self {
-            form: Form::from([
-                ("chat_id", chat_id.into()),
-                ("live_photo", live_photo.into()),
-                ("photo", photo.into()),
-            ]),
+            live_photo: live_photo.into(),
+            photo: photo.into(),
+            parameters: SendLivePhotoParameters {
+                chat_id: Some(chat_id.into()),
+                ..Default::default()
+            },
         }
     }
 
@@ -149,7 +145,7 @@ impl SendLivePhoto {
     ///   ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message;
     ///   the relevant Stars will be withdrawn from the bot's balance.
     pub fn with_allow_paid_broadcast(mut self, value: bool) -> Self {
-        self.form.insert_field("allow_paid_broadcast", value);
+        self.parameters.allow_paid_broadcast = Some(value);
         self
     }
 
@@ -162,7 +158,7 @@ impl SendLivePhoto {
     where
         T: Into<String>,
     {
-        self.form.insert_field("business_connection_id", value.into());
+        self.parameters.business_connection_id = Some(value.into());
         self
     }
 
@@ -177,7 +173,7 @@ impl SendLivePhoto {
     where
         T: Into<String>,
     {
-        self.form.insert_field("callback_query_id", value.into());
+        self.parameters.callback_query_id = Some(value.into());
         self
     }
 
@@ -191,7 +187,7 @@ impl SendLivePhoto {
     where
         T: Into<String>,
     {
-        self.form.insert_field("caption", value.into());
+        self.parameters.caption = Some(value.into());
         self
     }
 
@@ -201,14 +197,13 @@ impl SendLivePhoto {
     ///
     /// * `value` - A list of special entities that appear in the caption;
     ///   parse mode will be removed when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        let value = TextEntities::from_iter(value);
-        self.form.insert_field("caption_entities", value.serialize()?);
-        self.form.remove_field("parse_mode");
-        Ok(self)
+        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
+        self.parameters.parse_mode = None;
+        self
     }
 
     /// Sets a new direct messages topic ID.
@@ -218,7 +213,7 @@ impl SendLivePhoto {
     /// * `value` - Identifier of the direct messages topic to which the message will be sent;
     ///   required if the message is sent to a direct messages chat.
     pub fn with_direct_messages_topic_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("direct_messages_topic_id", value);
+        self.parameters.direct_messages_topic_id = Some(value);
         self
     }
 
@@ -229,7 +224,7 @@ impl SendLivePhoto {
     /// * `value` - Sends the message silently;
     ///   users will receive a notification with no sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
-        self.form.insert_field("disable_notification", value);
+        self.parameters.disable_notification = Some(value);
         self
     }
 
@@ -239,7 +234,7 @@ impl SendLivePhoto {
     ///
     /// * `value` - Pass True if the video needs to be covered with a spoiler animation
     pub fn with_has_spoiler(mut self, value: bool) -> Self {
-        self.form.insert_field("has_spoiler", value);
+        self.parameters.has_spoiler = Some(value);
         self
     }
 
@@ -253,7 +248,7 @@ impl SendLivePhoto {
     where
         T: Into<String>,
     {
-        self.form.insert_field("message_effect_id", value.into());
+        self.parameters.message_effect_id = Some(value.into());
         self
     }
 
@@ -264,7 +259,7 @@ impl SendLivePhoto {
     /// * `value` - Unique identifier for the target message thread (topic) of a forum;
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("message_thread_id", value);
+        self.parameters.message_thread_id = Some(value);
         self
     }
 
@@ -275,8 +270,8 @@ impl SendLivePhoto {
     /// * `value` - Mode for parsing entities in the video caption.
     ///   Caption entities will be removed when this method is called.
     pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.form.insert_field("parse_mode", value);
-        self.form.remove_field("caption_entities");
+        self.parameters.parse_mode = Some(value);
+        self.parameters.caption_entities = None;
         self
     }
 
@@ -286,7 +281,7 @@ impl SendLivePhoto {
     ///
     /// * `value` - Protects the contents of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.form.insert_field("protect_content", value);
+        self.parameters.protect_content = Some(value);
         self
     }
 
@@ -301,7 +296,7 @@ impl SendLivePhoto {
     /// It is not guaranteed that the user will receive the message,
     /// especially if they are offline.
     pub fn with_receiver_user_id(mut self, value: Integer) -> Self {
-        self.form.insert_field("receiver_user_id", value);
+        self.parameters.receiver_user_id = Some(value);
         self
     }
 
@@ -310,12 +305,12 @@ impl SendLivePhoto {
     /// # Arguments
     ///
     /// * `value` - Additional interface options.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, ReplyMarkupError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<ReplyMarkup>,
     {
-        self.form.insert_field("reply_markup", value.into().serialize()?);
-        Ok(self)
+        self.parameters.reply_markup = Some(value.into());
+        self
     }
 
     /// Sets a new reply parameters.
@@ -323,9 +318,9 @@ impl SendLivePhoto {
     /// # Arguments
     ///
     /// * `value` - Description of the message to reply to.
-    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Result<Self, ReplyParametersError> {
-        self.form.insert_field("reply_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_reply_parameters(mut self, value: ReplyParameters) -> Self {
+        self.parameters.reply_parameters = Some(value);
+        self
     }
 
     /// Sets a new value for the `show_caption_above_media` flag.
@@ -334,7 +329,7 @@ impl SendLivePhoto {
     ///
     /// * `value` - Whether the caption must be shown above the message media.
     pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
-        self.form.insert_field("show_caption_above_media", value);
+        self.parameters.show_caption_above_media = Some(value);
         self
     }
 
@@ -346,19 +341,50 @@ impl SendLivePhoto {
     ///   for direct messages chats only;
     ///   if the message is sent as a reply to another suggested post,
     ///   then that suggested post is automatically declined.
-    pub fn with_suggested_post_parameters(
-        mut self,
-        value: &SuggestedPostParameters,
-    ) -> Result<Self, SuggestedPostParametersError> {
-        self.form.insert_field("suggested_post_parameters", value.serialize()?);
-        Ok(self)
+    pub fn with_suggested_post_parameters(mut self, value: SuggestedPostParameters) -> Self {
+        self.parameters.suggested_post_parameters = Some(value);
+        self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SendLivePhotoParameters {
+    allow_paid_broadcast: Option<bool>,
+    business_connection_id: Option<String>,
+    callback_query_id: Option<String>,
+    caption: Option<String>,
+    caption_entities: Option<TextEntities>,
+    chat_id: Option<ChatId>,
+    direct_messages_topic_id: Option<Integer>,
+    disable_notification: Option<bool>,
+    has_spoiler: Option<bool>,
+    live_photo: Option<String>,
+    message_effect_id: Option<String>,
+    message_thread_id: Option<Integer>,
+    parse_mode: Option<ParseMode>,
+    photo: Option<String>,
+    protect_content: Option<bool>,
+    receiver_user_id: Option<Integer>,
+    reply_markup: Option<ReplyMarkup>,
+    reply_parameters: Option<ReplyParameters>,
+    show_caption_above_media: Option<bool>,
+    suggested_post_parameters: Option<SuggestedPostParameters>,
 }
 
 impl Method for SendLivePhoto {
     type Response = Message;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("sendLivePhoto", self.form)
+        let Self {
+            live_photo,
+            photo,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.live_photo = Some(live_photo.write(&mut form));
+        parameters.photo = Some(photo.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("sendLivePhoto", form)
     }
 }

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-use crate::types::{SerializeError, True, WebAppInfo};
+use crate::types::{True, WebAppInfo};
 
 /// Represents an inline keyboard that appears right next to the message it belongs to.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
@@ -20,10 +20,6 @@ impl InlineKeyboardMarkup {
     {
         self.inline_keyboard.push(value.into_iter().collect());
         self
-    }
-
-    pub(crate) fn serialize(&self) -> Result<String, SerializeError> {
-        serde_json::to_string(self).map_err(SerializeError::inline_keyboard_markup)
     }
 }
 
@@ -81,25 +77,6 @@ impl InlineKeyboardButton {
         B: Into<String>,
     {
         Self::new(text, InlineKeyboardButtonType::CallbackData(data.into()))
-    }
-
-    /// Creates a new `InlineKeyboardButton`.
-    ///
-    /// # Arguments
-    ///
-    /// * `text` - Text of the button.
-    /// * `data` - Data to be sent in a callback query.
-    ///
-    /// Same as [`Self::for_callback_data`], but takes a serializable type.
-    ///
-    /// Data will be serialized using [`serde_json`].
-    pub fn for_callback_data_struct<A, B>(text: A, data: &B) -> Result<Self, SerializeError>
-    where
-        A: Into<String>,
-        B: Serialize,
-    {
-        let data = serde_json::to_string(data).map_err(SerializeError::callback_data)?;
-        Ok(Self::new(text, InlineKeyboardButtonType::CallbackData(data)))
     }
 
     /// Creates a new `InlineKeyboardButton`.

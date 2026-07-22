@@ -1,11 +1,4 @@
-use serde::Deserialize;
-
 use crate::types::*;
-
-#[derive(Clone, Debug, Deserialize)]
-struct QueryData {
-    k: String,
-}
 
 #[test]
 fn callback_query() {
@@ -25,13 +18,8 @@ fn callback_query() {
 
     insta::assert_json_snapshot!(expected_struct.clone());
 
-    let parsed_query_data: QueryData = expected_struct.parse_data().unwrap().unwrap();
-    assert_eq!(parsed_query_data.k, "v");
-
     let expected_struct = CallbackQuery::new("test", User::new(1, "test", false));
     insta::assert_json_snapshot!(expected_struct.clone());
-
-    assert!(expected_struct.parse_data::<QueryData>().unwrap().is_none());
 }
 
 #[test]

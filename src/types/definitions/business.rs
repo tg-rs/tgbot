@@ -1,23 +1,21 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         AcceptedGiftTypes,
         Chat,
         InputProfilePhoto,
-        InputProfilePhotoError,
+        InputProfilePhotoData,
         InputStoryContent,
-        InputStoryContentError,
+        InputStoryContentData,
         Integer,
         Location,
         ParseMode,
-        SerializeError,
         StarAmount,
         Sticker,
         Story,
         StoryAreas,
-        StoryAreasError,
         TextEntities,
         TextEntity,
         User,
@@ -563,7 +561,8 @@ impl Method for DeleteStory {
 ///
 /// Requires the `can_manage_stories` business bot right.
 pub struct EditStory {
-    form: Form,
+    content: InputStoryContent,
+    parameters: EditStoryParameters,
 }
 
 impl EditStory {
@@ -574,15 +573,19 @@ impl EditStory {
     /// * `business_connection_id` - Unique identifier of the business connection.
     /// * `content` - Content of the story.
     /// * `story_id` - Unique identifier of the story to edit.
-    pub fn new<A, B>(business_connection_id: A, content: B, story_id: Integer) -> Result<Self, InputStoryContentError>
+    pub fn new<A, B>(business_connection_id: A, content: B, story_id: Integer) -> Self
     where
         A: Into<String>,
         B: Into<InputStoryContent>,
     {
-        let mut form: Form = content.into().try_into()?;
-        form.insert_field("business_connection_id", business_connection_id.into());
-        form.insert_field("story_id", story_id);
-        Ok(Self { form })
+        Self {
+            content: content.into(),
+            parameters: EditStoryParameters {
+                business_connection_id: Some(business_connection_id.into()),
+                story_id: Some(story_id),
+                ..Default::default()
+            },
+        }
     }
 
     /// Sets a new list of areas.
@@ -590,13 +593,12 @@ impl EditStory {
     /// # Arguments
     ///
     /// * `value` - A list of clickable areas to be shown on the story.
-    pub fn with_areas<T>(mut self, value: T) -> Result<Self, StoryAreasError>
+    pub fn with_areas<T>(mut self, value: T) -> Self
     where
         T: Into<StoryAreas>,
     {
-        let value = value.into().serialize()?;
-        self.form.insert_field("areas", value);
-        Ok(self)
+        self.parameters.areas = Some(value.into());
+        self
     }
 
     /// Sets a new caption.
@@ -608,7 +610,7 @@ impl EditStory {
     where
         T: Into<String>,
     {
-        self.form.insert_field("caption", value.into());
+        self.parameters.caption = Some(value.into());
         self
     }
 
@@ -617,15 +619,13 @@ impl EditStory {
     /// # Arguments
     ///
     /// * `value` - A list of special entities that appear in the caption.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        let value = TextEntities::from_iter(value);
-        let value = value.serialize()?;
-        self.form.remove_field("parse_mode");
-        self.form.insert_field("caption_entities", value);
-        Ok(self)
+        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
+        self.parameters.parse_mode = None;
+        self
     }
 
     /// Sets a new parse mode.
@@ -634,17 +634,36 @@ impl EditStory {
     ///
     /// * `value` - Mode for parsing entities in the story caption.
     pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.form.remove_field("caption_entities");
-        self.form.insert_field("parse_mode", value);
+        self.parameters.parse_mode = Some(value);
+        self.parameters.caption_entities = None;
         self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct EditStoryParameters {
+    areas: Option<StoryAreas>,
+    business_connection_id: Option<String>,
+    caption: Option<String>,
+    caption_entities: Option<TextEntities>,
+    content: Option<InputStoryContentData>,
+    parse_mode: Option<ParseMode>,
+    story_id: Option<Integer>,
 }
 
 impl Method for EditStory {
     type Response = Story;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("editStory", self.form)
+        let Self {
+            content,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.content = Some(content.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("editStory", form)
     }
 }
 
@@ -714,7 +733,8 @@ impl Method for GetBusinessConnection {
 ///
 /// Requires the `can_manage_stories` business bot right.
 pub struct PostStory {
-    form: Form,
+    content: InputStoryContent,
+    parameters: PostStoryParameters,
 }
 
 impl PostStory {
@@ -726,19 +746,19 @@ impl PostStory {
     ///   must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400.
     /// * `business_connection_id` - Unique identifier of the business connection.
     /// * `content` - Content of the story.
-    pub fn new<A, B>(
-        active_period: Integer,
-        business_connection_id: A,
-        content: B,
-    ) -> Result<Self, InputStoryContentError>
+    pub fn new<A, B>(active_period: Integer, business_connection_id: A, content: B) -> Self
     where
         A: Into<String>,
         B: Into<InputStoryContent>,
     {
-        let mut form: Form = content.into().try_into()?;
-        form.insert_field("active_period", active_period);
-        form.insert_field("business_connection_id", business_connection_id.into());
-        Ok(Self { form })
+        Self {
+            content: content.into(),
+            parameters: PostStoryParameters {
+                active_period: Some(active_period),
+                business_connection_id: Some(business_connection_id.into()),
+                ..Default::default()
+            },
+        }
     }
 
     /// Sets a new list of areas.
@@ -746,13 +766,12 @@ impl PostStory {
     /// # Arguments
     ///
     /// * `value` - A list of clickable areas to be shown on the story.
-    pub fn with_areas<T>(mut self, value: T) -> Result<Self, StoryAreasError>
+    pub fn with_areas<T>(mut self, value: T) -> Self
     where
         T: Into<StoryAreas>,
     {
-        let value = value.into().serialize()?;
-        self.form.insert_field("areas", value);
-        Ok(self)
+        self.parameters.areas = Some(value.into());
+        self
     }
 
     /// Sets a new caption.
@@ -764,7 +783,7 @@ impl PostStory {
     where
         T: Into<String>,
     {
-        self.form.insert_field("caption", value.into());
+        self.parameters.caption = Some(value.into());
         self
     }
 
@@ -773,15 +792,13 @@ impl PostStory {
     /// # Arguments
     ///
     /// * `value` - A list of special entities that appear in the caption.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_caption_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        let value = TextEntities::from_iter(value);
-        let value = value.serialize()?;
-        self.form.remove_field("parse_mode");
-        self.form.insert_field("caption_entities", value);
-        Ok(self)
+        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
+        self.parameters.parse_mode = None;
+        self
     }
 
     /// Sets a new parse mode.
@@ -790,8 +807,8 @@ impl PostStory {
     ///
     /// * `value` - Mode for parsing entities in the story caption.
     pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.form.remove_field("caption_entities");
-        self.form.insert_field("parse_mode", value);
+        self.parameters.parse_mode = Some(value);
+        self.parameters.caption_entities = None;
         self
     }
 
@@ -801,7 +818,7 @@ impl PostStory {
     ///
     /// * `value` - Whether to keep the story accessible after it expires.
     pub fn with_post_to_chat_page(mut self, value: bool) -> Self {
-        self.form.insert_field("post_to_chat_page", value);
+        self.parameters.post_to_chat_page = Some(value);
         self
     }
 
@@ -811,16 +828,37 @@ impl PostStory {
     ///
     /// * `value` Whether the content of the story must be protected from forwarding and screenshotting.
     pub fn with_protect_content(mut self, value: bool) -> Self {
-        self.form.insert_field("protect_content", value);
+        self.parameters.protect_content = Some(value);
         self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct PostStoryParameters {
+    active_period: Option<Integer>,
+    areas: Option<StoryAreas>,
+    business_connection_id: Option<String>,
+    caption: Option<String>,
+    caption_entities: Option<TextEntities>,
+    content: Option<InputStoryContentData>,
+    parse_mode: Option<ParseMode>,
+    post_to_chat_page: Option<bool>,
+    protect_content: Option<bool>,
 }
 
 impl Method for PostStory {
     type Response = Story;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("postStory", self.form)
+        let Self {
+            content,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.content = Some(content.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("postStory", form)
     }
 }
 
@@ -1055,7 +1093,8 @@ impl Method for SetBusinessAccountName {
 /// Requires the can_edit_profile_photo business bot right.
 #[derive(Debug)]
 pub struct SetBusinessAccountProfilePhoto {
-    form: Form,
+    photo: InputProfilePhoto,
+    parameters: SetBusinessAccountProfilePhotoParameters,
 }
 
 impl SetBusinessAccountProfilePhoto {
@@ -1065,14 +1104,18 @@ impl SetBusinessAccountProfilePhoto {
     ///
     /// * `business_connection_id` - Unique identifier of the business connection.
     /// * `photo` - The new profile photo to set.
-    pub fn new<A, B>(business_connection_id: A, photo: B) -> Result<Self, InputProfilePhotoError>
+    pub fn new<A, B>(business_connection_id: A, photo: B) -> Self
     where
         A: Into<String>,
         B: Into<InputProfilePhoto>,
     {
-        let mut form = Form::try_from(photo.into())?;
-        form.insert_field("business_connection_id", business_connection_id.into());
-        Ok(Self { form })
+        Self {
+            photo: photo.into(),
+            parameters: SetBusinessAccountProfilePhotoParameters {
+                business_connection_id: Some(business_connection_id.into()),
+                ..Default::default()
+            },
+        }
     }
 
     /// Sets a new value for the `is_public` flag.
@@ -1083,16 +1126,28 @@ impl SetBusinessAccountProfilePhoto {
     ///   which will be visible even if the main photo is hidden by the business account's privacy settings;
     ///   an account can have only one public photo.
     pub fn with_is_public(mut self, value: bool) -> Self {
-        self.form.insert_field("is_public", value);
+        self.parameters.is_public = Some(value);
         self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct SetBusinessAccountProfilePhotoParameters {
+    business_connection_id: Option<String>,
+    photo: Option<InputProfilePhotoData>,
+    is_public: Option<bool>,
 }
 
 impl Method for SetBusinessAccountProfilePhoto {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("setBusinessAccountProfilePhoto", self.form)
+        let Self { photo, mut parameters } = self;
+        let mut form = Form::default();
+        parameters.photo = Some(photo.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("setBusinessAccountProfilePhoto", form)
     }
 }
 

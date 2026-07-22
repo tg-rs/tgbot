@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
-    types::{InlineQueryResult, SerializeError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
+    types::{InlineQueryResult, InlineQueryResultData},
 };
 
 /// Represents an inline message sent by a Web App on behalf of a user
@@ -35,7 +35,8 @@ impl SentWebAppMessage {
 /// to the chat from which the query originated
 #[derive(Debug)]
 pub struct AnswerWebAppQuery {
-    form: Form,
+    result: InlineQueryResult,
+    web_app_query_id: String,
 }
 
 impl AnswerWebAppQuery {
@@ -45,23 +46,38 @@ impl AnswerWebAppQuery {
     ///
     /// * `web_app_query_id` - Unique identifier of the query to be answered
     /// * `result` - An object describing the message to be sent
-    pub fn new<A, B>(result: A, web_app_query_id: B) -> Result<Self, SerializeError>
+    pub fn new<A, B>(result: A, web_app_query_id: B) -> Self
     where
         A: Into<InlineQueryResult>,
         B: Into<String>,
     {
-        let (form, data) = result.into().into_parts(&[0]);
-        let mut form = form.unwrap_or_default();
-        form.insert_field("web_app_query_id", web_app_query_id.into());
-        form.insert_field("result", data.serialize()?);
-        Ok(Self { form })
+        Self {
+            result: result.into(),
+            web_app_query_id: web_app_query_id.into(),
+        }
     }
+}
+
+#[derive(Debug, Serialize)]
+struct AnswerWebAppQueryParameters {
+    result: InlineQueryResultData,
+    web_app_query_id: String,
 }
 
 impl Method for AnswerWebAppQuery {
     type Response = SentWebAppMessage;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("answerWebAppQuery", self.form)
+        let Self {
+            result,
+            web_app_query_id,
+        } = self;
+        let mut form = Form::default();
+        let parameters = AnswerWebAppQueryParameters {
+            result: result.write(&mut form),
+            web_app_query_id,
+        };
+        parameters.serialize(&mut form)?;
+        Payload::form("answerWebAppQuery", form)
     }
 }

@@ -1,10 +1,7 @@
-use std::{error::Error, fmt};
-
-use serde::{Deserialize, Serialize};
-use serde_json::Error as JsonError;
+use serde::Serialize;
 
 use crate::{
-    api::Form,
+    api::{Form, WriteForm},
     types::{Float, InputFile},
 };
 
@@ -17,13 +14,13 @@ pub enum InputProfilePhoto {
     Static(InputProfilePhotoStatic),
 }
 
-impl TryFrom<InputProfilePhoto> for Form {
-    type Error = InputProfilePhotoError;
+impl WriteForm for InputProfilePhoto {
+    type Output = InputProfilePhotoData;
 
-    fn try_from(value: InputProfilePhoto) -> Result<Self, Self::Error> {
-        match value {
-            InputProfilePhoto::Animated(value) => value.try_into(),
-            InputProfilePhoto::Static(value) => value.try_into(),
+    fn write(self, form: &mut Form) -> Self::Output {
+        match self {
+            Self::Animated(value) => value.write(form),
+            Self::Static(value) => value.write(form),
         }
     }
 }
@@ -85,9 +82,9 @@ impl InputProfilePhotoAnimated {
 }
 
 #[serde_with::skip_serializing_none]
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-enum RawInputProfilePhoto {
+pub(crate) enum InputProfilePhotoData {
     Animated {
         animation: String,
         main_frame_timestamp: Option<Float>,
@@ -97,70 +94,28 @@ enum RawInputProfilePhoto {
     },
 }
 
-impl TryFrom<InputProfilePhotoAnimated> for Form {
-    type Error = InputProfilePhotoError;
+impl WriteForm for InputProfilePhotoAnimated {
+    type Output = InputProfilePhotoData;
 
-    fn try_from(value: InputProfilePhotoAnimated) -> Result<Self, Self::Error> {
-        let mut result = Self::default();
-        let file = match value.animation {
-            InputFile::Url(value) | InputFile::Id(value) => value,
-            input_file => {
-                result.insert_field("tgbot_ipp_file", input_file);
-                String::from("attach://tgbot_ipp_file")
-            }
-        };
-        result.insert_field(
-            "photo",
-            serde_json::to_string(&RawInputProfilePhoto::Animated {
-                animation: file,
-                main_frame_timestamp: value.main_frame_timestamp,
-            })
-            .map_err(InputProfilePhotoError::Serialize)?,
-        );
-        Ok(result)
-    }
-}
-
-impl TryFrom<InputProfilePhotoStatic> for Form {
-    type Error = InputProfilePhotoError;
-
-    fn try_from(value: InputProfilePhotoStatic) -> Result<Self, Self::Error> {
-        let mut result = Self::default();
-        let file = match value.photo {
-            InputFile::Url(value) | InputFile::Id(value) => value,
-            input_file => {
-                result.insert_field("tgbot_ipp_file", input_file);
-                String::from("attach://tgbot_ipp_file")
-            }
-        };
-        result.insert_field(
-            "photo",
-            serde_json::to_string(&RawInputProfilePhoto::Static { photo: file })
-                .map_err(InputProfilePhotoError::Serialize)?,
-        );
-        Ok(result)
-    }
-}
-
-/// Represents an input profile photo error.
-#[derive(Debug)]
-pub enum InputProfilePhotoError {
-    /// Can not serialize data.
-    Serialize(JsonError),
-}
-
-impl fmt::Display for InputProfilePhotoError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Self::Serialize(err) => write!(out, "can not serialize input profile photo: {err}"),
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self {
+            animation,
+            main_frame_timestamp,
+        } = self;
+        let id = animation.write(form);
+        InputProfilePhotoData::Animated {
+            animation: id,
+            main_frame_timestamp,
         }
     }
 }
 
-impl Error for InputProfilePhotoError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        Some(match self {
-            Self::Serialize(err) => err,
-        })
+impl WriteForm for InputProfilePhotoStatic {
+    type Output = InputProfilePhotoData;
+
+    fn write(self, form: &mut Form) -> Self::Output {
+        let Self { photo } = self;
+        let id = photo.write(form);
+        InputProfilePhotoData::Static { photo: id }
     }
 }

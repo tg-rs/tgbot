@@ -1,14 +1,16 @@
 use serde::Serialize;
 
 use crate::{
-    api::{Form, Method, Payload, PayloadError},
+    api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
         EditMessageResult,
         Float,
         InlineKeyboardMarkup,
         InputMedia,
+        InputMediaData,
         InputRichMessage,
+        InputRichMessageData,
         Integer,
         LinkPreviewOptions,
         Message,
@@ -16,7 +18,6 @@ use crate::{
         ParseMode,
         ReplyMarkup,
         ReplyParameters,
-        SerializeError,
         SuggestedPostParameters,
         TextEntities,
         TextEntity,
@@ -773,7 +774,8 @@ impl Method for EditMessageLiveLocation {
 /// use a previously uploaded file via its file_id or specify a URL.
 #[derive(Debug)]
 pub struct EditMessageMedia {
-    form: Form,
+    media: InputMedia,
+    parameters: EditMessageMediaParameters,
 }
 
 impl EditMessageMedia {
@@ -784,16 +786,19 @@ impl EditMessageMedia {
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `message_id` - Identifier of the sent message.
     /// * `media` - New media content of the message.
-    pub fn for_chat_message<A, B>(chat_id: A, message_id: Integer, media: B) -> Result<Self, SerializeError>
+    pub fn for_chat_message<A, B>(chat_id: A, message_id: Integer, media: B) -> Self
     where
         A: Into<ChatId>,
         B: Into<InputMedia>,
     {
-        let (mut form, data) = media.into().into_parts(&[0]);
-        form.insert_field("media", data.serialize()?);
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("message_id", message_id);
-        Ok(Self { form })
+        Self {
+            media: media.into(),
+            parameters: EditMessageMediaParameters {
+                chat_id: Some(chat_id.into()),
+                message_id: Some(message_id),
+                ..Default::default()
+            },
+        }
     }
 
     /// Creates a new `EditMessageMedia` for an inline message.
@@ -802,15 +807,18 @@ impl EditMessageMedia {
     ///
     /// * `inline_message_id` - Identifier of the inline message.
     /// * `media` - New media content of the message.
-    pub fn for_inline_message<A, B>(inline_message_id: A, media: B) -> Result<Self, SerializeError>
+    pub fn for_inline_message<A, B>(inline_message_id: A, media: B) -> Self
     where
         A: Into<String>,
         B: Into<InputMedia>,
     {
-        let (mut form, data) = media.into().into_parts(&[0]);
-        form.insert_field("media", data.serialize()?);
-        form.insert_field("inline_message_id", inline_message_id.into());
-        Ok(EditMessageMedia { form })
+        Self {
+            media: media.into(),
+            parameters: EditMessageMediaParameters {
+                inline_message_id: Some(inline_message_id.into()),
+                ..Default::default()
+            },
+        }
     }
 
     /// Sets a new business connection ID.
@@ -822,7 +830,7 @@ impl EditMessageMedia {
     where
         T: Into<String>,
     {
-        self.form.insert_field("business_connection_id", value.into());
+        self.parameters.business_connection_id = Some(value.into());
         self
     }
 
@@ -831,21 +839,35 @@ impl EditMessageMedia {
     /// # Arguments
     ///
     /// * `value` - Reply markup.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
     {
-        let reply_markup = value.into().serialize()?;
-        self.form.insert_field("reply_markup", reply_markup);
-        Ok(self)
+        self.parameters.reply_markup = Some(value.into());
+        self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct EditMessageMediaParameters {
+    business_connection_id: Option<String>,
+    chat_id: Option<ChatId>,
+    inline_message_id: Option<String>,
+    media: Option<InputMediaData>,
+    message_id: Option<Integer>,
+    reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl Method for EditMessageMedia {
     type Response = EditMessageResult;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("editMessageMedia", self.form)
+        let Self { media, mut parameters } = self;
+        let mut form = Form::default();
+        parameters.media = Some(media.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("editMessageMedia", form)
     }
 }
 
@@ -936,7 +958,8 @@ impl Method for EditMessageReplyMarkup {
 /// Changes a text or a game message.
 #[derive(Debug)]
 pub struct EditMessageText {
-    form: Form,
+    parameters: EditMessageTextParameters,
+    rich_message: Option<InputRichMessage>,
 }
 
 impl EditMessageText {
@@ -953,11 +976,13 @@ impl EditMessageText {
         B: Into<String>,
     {
         Self {
-            form: Form::from([
-                ("chat_id", chat_id.into().into()),
-                ("message_id", message_id.into()),
-                ("text", text.into().into()),
-            ]),
+            parameters: EditMessageTextParameters {
+                chat_id: Some(chat_id.into()),
+                message_id: Some(message_id),
+                text: Some(text.into()),
+                ..Default::default()
+            },
+            rich_message: None,
         }
     }
 
@@ -968,19 +993,18 @@ impl EditMessageText {
     /// * `chat_id` - Unique identifier of the target chat.
     /// * `message_id` - Identifier of the sent message.
     /// * `rich_message` - New rich content of the message.
-    pub fn for_chat_message_rich<T>(
-        chat_id: T,
-        message_id: Integer,
-        rich_message: InputRichMessage,
-    ) -> Result<Self, SerializeError>
+    pub fn for_chat_message_rich<T>(chat_id: T, message_id: Integer, rich_message: InputRichMessage) -> Self
     where
         T: Into<ChatId>,
     {
-        let (mut form, data) = rich_message.into_parts(&[0]);
-        form.insert_field("chat_id", chat_id.into());
-        form.insert_field("message_id", message_id);
-        form.insert_field("rich_message", data.serialize()?);
-        Ok(Self { form })
+        Self {
+            parameters: EditMessageTextParameters {
+                chat_id: Some(chat_id.into()),
+                message_id: Some(message_id),
+                ..Default::default()
+            },
+            rich_message: Some(rich_message),
+        }
     }
 
     /// Creates a new `EditMessageText` for an inline message.
@@ -995,10 +1019,12 @@ impl EditMessageText {
         B: Into<String>,
     {
         Self {
-            form: Form::from([
-                ("inline_message_id", inline_message_id.into().into()),
-                ("text", text.into().into()),
-            ]),
+            parameters: EditMessageTextParameters {
+                inline_message_id: Some(inline_message_id.into()),
+                text: Some(text.into()),
+                ..Default::default()
+            },
+            rich_message: None,
         }
     }
 
@@ -1008,17 +1034,17 @@ impl EditMessageText {
     ///
     /// * `inline_message_id` - Identifier of the inline message.
     /// * `rich_message` - New rich content of the message.
-    pub fn for_inline_message_rich<T>(
-        inline_message_id: T,
-        rich_message: InputRichMessage,
-    ) -> Result<Self, SerializeError>
+    pub fn for_inline_message_rich<T>(inline_message_id: T, rich_message: InputRichMessage) -> Self
     where
         T: Into<String>,
     {
-        let (mut form, data) = rich_message.into_parts(&[0]);
-        form.insert_field("inline_message_id", inline_message_id.into());
-        form.insert_field("rich_message", data.serialize()?);
-        Ok(Self { form })
+        Self {
+            parameters: EditMessageTextParameters {
+                inline_message_id: Some(inline_message_id.into()),
+                ..Default::default()
+            },
+            rich_message: Some(rich_message),
+        }
     }
 
     /// Sets a new business connection ID.
@@ -1030,7 +1056,7 @@ impl EditMessageText {
     where
         T: Into<String>,
     {
-        self.form.insert_field("business_connection_id", value.into());
+        self.parameters.business_connection_id = Some(value.into());
         self
     }
 
@@ -1041,14 +1067,13 @@ impl EditMessageText {
     /// * `value` - List of special entities that appear in the text.
     ///
     /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_entities<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_entities<T>(mut self, value: T) -> Self
     where
         T: IntoIterator<Item = TextEntity>,
     {
-        self.form
-            .insert_field("entities", TextEntities::from_iter(value).serialize()?);
-        self.form.remove_field("parse_mode");
-        Ok(self)
+        self.parameters.entities = Some(TextEntities::from_iter(value));
+        self.parameters.parse_mode = None;
+        self
     }
 
     /// Sets a new link preview options.
@@ -1056,9 +1081,9 @@ impl EditMessageText {
     /// # Arguments
     ///
     /// * `value` - Link preview generation options for the message.
-    pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Result<Self, SerializeError> {
-        self.form.insert_field("link_preview_options", value.serialize()?);
-        Ok(self)
+    pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Self {
+        self.parameters.link_preview_options = Some(value);
+        self
     }
 
     /// Sets a new parse mode.
@@ -1069,8 +1094,8 @@ impl EditMessageText {
     ///
     /// Entities will be set to [`None`] when this method is called.
     pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.form.insert_field("parse_mode", value);
-        self.form.remove_field("entities");
+        self.parameters.parse_mode = Some(value);
+        self.parameters.entities = None;
         self
     }
 
@@ -1079,20 +1104,46 @@ impl EditMessageText {
     /// # Arguments
     ///
     /// * `value` - Reply markup.
-    pub fn with_reply_markup<T>(mut self, value: T) -> Result<Self, SerializeError>
+    pub fn with_reply_markup<T>(mut self, value: T) -> Self
     where
         T: Into<InlineKeyboardMarkup>,
     {
-        self.form.insert_field("reply_markup", value.into().serialize()?);
-        Ok(self)
+        self.parameters.reply_markup = Some(value.into());
+        self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct EditMessageTextParameters {
+    chat_id: Option<ChatId>,
+    message_id: Option<Integer>,
+    text: Option<String>,
+    rich_message: Option<InputRichMessageData>,
+    inline_message_id: Option<String>,
+    business_connection_id: Option<String>,
+    parse_mode: Option<ParseMode>,
+    link_preview_options: Option<LinkPreviewOptions>,
+    entities: Option<TextEntities>,
+    reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl Method for EditMessageText {
     type Response = EditMessageResult;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::form("editMessageText", self.form)
+        let Self {
+            mut parameters,
+            rich_message,
+        } = self;
+        if let Some(rich_message) = rich_message {
+            let mut form = Form::default();
+            parameters.rich_message = Some(rich_message.write(&mut form));
+            Serialize::serialize(&parameters, &mut form)?;
+            Payload::form("editMessageText", form)
+        } else {
+            Payload::json("editMessageText", parameters)
+        }
     }
 }
 

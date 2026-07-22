@@ -4,6 +4,6 @@ expression: actual_data
 ---
 {
   "animation": "url",
-  "main_frame_timestamp": "1",
+  "main_frame_timestamp": "1.0",
   "type": "animated"
 }

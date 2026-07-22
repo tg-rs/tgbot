@@ -22,6 +22,22 @@ pub(crate) enum FormValue {
     },
 }
 
+impl FormValue {
+    fn float<T>(value: T) -> Self
+    where
+        T: zmij::Float,
+    {
+        Self::Text(zmij::Buffer::new().format(value).to_owned())
+    }
+
+    fn integer<T>(value: T) -> Self
+    where
+        T: itoa::Integer,
+    {
+        Self::Text(itoa::Buffer::new().format(value).to_owned())
+    }
+}
+
 impl fmt::Debug for FormValue {
     fn fmt(&self, out: &mut Formatter<'_>) -> fmt::Result {
         match self {
@@ -64,15 +80,6 @@ impl PartialEq for FormValue {
             ) => a_name.eq(b_name) && a_mime_type.eq(b_mime_type),
             _ => false,
         }
-    }
-}
-
-impl<T> From<T> for FormValue
-where
-    T: ToString,
-{
-    fn from(value: T) -> Self {
-        FormValue::Text(value.to_string())
     }
 }
 
@@ -412,7 +419,7 @@ impl<'a> ser::Serializer for &'a mut Form {
         _variant_index: u32,
         variant: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
-        self.insert_field(name, FormValue::from(variant));
+        self.insert_field(name, FormValue::Text(String::from(variant)));
         Ok(self)
     }
 }
@@ -488,7 +495,7 @@ impl ser::Serializer for FormValueSerializer {
     type SerializeTupleVariant = ser::Impossible<Self::Ok, Self::Error>;
 
     fn serialize_bool(self, v: bool) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::Text(v.to_string()))
+        Ok(FormValue::Text(if v { "true" } else { "false" }.to_owned()))
     }
 
     fn serialize_bytes(self, v: &[u8]) -> Result<Self::Ok, Self::Error> {
@@ -496,31 +503,33 @@ impl ser::Serializer for FormValueSerializer {
     }
 
     fn serialize_char(self, v: char) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::Text(v.to_string()))
+        let mut s = String::new();
+        s.push(v);
+        Ok(FormValue::Text(s))
     }
 
     fn serialize_f32(self, v: f32) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::Text(v.to_string()))
+        Ok(FormValue::float(v))
     }
 
     fn serialize_f64(self, v: f64) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::Text(v.to_string()))
+        Ok(FormValue::float(v))
     }
 
     fn serialize_i16(self, v: i16) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::from(v))
+        Ok(FormValue::integer(v))
     }
 
     fn serialize_i32(self, v: i32) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::from(v))
+        Ok(FormValue::integer(v))
     }
 
     fn serialize_i64(self, v: i64) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::from(v))
+        Ok(FormValue::integer(v))
     }
 
     fn serialize_i8(self, v: i8) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::from(v))
+        Ok(FormValue::integer(v))
     }
 
     fn serialize_map(self, _len: Option<usize>) -> Result<Self::SerializeMap, Self::Error> {
@@ -603,19 +612,19 @@ impl ser::Serializer for FormValueSerializer {
     }
 
     fn serialize_u16(self, v: u16) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::from(v))
+        Ok(FormValue::integer(v))
     }
 
     fn serialize_u32(self, v: u32) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::from(v))
+        Ok(FormValue::integer(v))
     }
 
     fn serialize_u64(self, v: u64) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::from(v))
+        Ok(FormValue::integer(v))
     }
 
     fn serialize_u8(self, v: u8) -> Result<Self::Ok, Self::Error> {
-        Ok(FormValue::from(v))
+        Ok(FormValue::integer(v))
     }
 
     fn serialize_unit(self) -> Result<Self::Ok, Self::Error> {

@@ -8,14 +8,13 @@ use crate::{
         Float,
         InputRichMessage,
         InputRichMessageData,
+        InputText,
         Integer,
         LabeledPrice,
         LinkPreviewOptions,
         Location,
         ParseMode,
-        Text,
         TextEntities,
-        TextEntity,
         Venue,
     },
 };
@@ -106,15 +105,9 @@ impl From<Location> for InputMessageContent {
 
 impl<T> From<T> for InputMessageContent
 where
-    T: Into<String>,
+    T: Into<InputText>,
 {
     fn from(value: T) -> Self {
-        Self::new(InputMessageContentText::from(value).data)
-    }
-}
-
-impl From<Text> for InputMessageContent {
-    fn from(value: Text) -> Self {
         Self::new(InputMessageContentText::from(value).data)
     }
 }
@@ -475,30 +468,21 @@ impl InputMessageContentText {
     /// * `value` - Text; 1-4096 characters.
     pub fn new<T>(value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
+        let InputText {
+            data: message_text,
+            entities,
+            parse_mode,
+        } = value.into();
         Self {
             data: InputMessageContentData {
-                message_text: Some(value.into()),
+                message_text: Some(message_text),
+                entities,
+                parse_mode,
                 ..Default::default()
             },
         }
-    }
-
-    /// Sets a new list of entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - List of special entities that appear in the text.
-    ///
-    /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.entities = Some(value.into_iter().collect());
-        self.data.parse_mode = None;
-        self
     }
 
     /// Sets a new link preview options.
@@ -510,35 +494,19 @@ impl InputMessageContentText {
         self.data.link_preview_options = Some(value);
         self
     }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.parse_mode = Some(value);
-        self.data.entities = None;
-        self
-    }
 }
 
 impl<T> From<T> for InputMessageContentText
 where
-    T: Into<String>,
+    T: Into<InputText>,
 {
     fn from(value: T) -> Self {
-        Self::new(value)
-    }
-}
-
-impl From<Text> for InputMessageContentText {
-    fn from(value: Text) -> Self {
+        let value = value.into();
         let mut result = Self::new(value.data);
         if let Some(entities) = value.entities {
-            result = result.with_entities(entities);
+            result.data.entities = Some(entities);
+        } else if let Some(parse_mode) = value.parse_mode {
+            result.data.parse_mode = Some(parse_mode);
         }
         result
     }

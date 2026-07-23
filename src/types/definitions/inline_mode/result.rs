@@ -7,11 +7,9 @@ use crate::{
         InlineKeyboardMarkup,
         InputMessageContent,
         InputMessageContentData,
+        InputTextCaption,
         Integer,
         Location,
-        ParseMode,
-        TextEntities,
-        TextEntity,
         User,
         WebAppInfo,
     },
@@ -360,38 +358,9 @@ impl InlineQueryResultAudio {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -478,38 +447,9 @@ impl InlineQueryResultCachedAudio {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -586,38 +526,9 @@ impl InlineQueryResultCachedDocument {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -704,38 +615,9 @@ impl InlineQueryResultCachedGif {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -834,38 +716,9 @@ impl InlineQueryResultCachedMpeg4Gif {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -962,38 +815,9 @@ impl InlineQueryResultCachedPhoto {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -1169,38 +993,9 @@ impl InlineQueryResultCachedVideo {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -1300,38 +1095,9 @@ impl InlineQueryResultCachedVoice {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -1537,38 +1303,9 @@ impl InlineQueryResultDocument {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -1736,38 +1473,9 @@ impl InlineQueryResultGif {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -2055,38 +1763,9 @@ impl InlineQueryResultMpeg4Gif {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -2231,38 +1910,9 @@ impl InlineQueryResultPhoto {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -2563,38 +2213,9 @@ impl InlineQueryResultVideo {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -2727,38 +2348,9 @@ impl InlineQueryResultVoice {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.data.properties.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.properties.caption_entities = Some(value.into_iter().collect());
-        self.data.properties.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.properties.parse_mode = Some(value);
-        self.data.properties.caption_entities = None;
         self
     }
 
@@ -2833,8 +2425,8 @@ struct InlineQueryResultProperties {
     audio_duration: Option<Integer>,
     audio_file_id: Option<String>,
     audio_url: Option<String>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     description: Option<String>,
     document_file_id: Option<String>,
     document_url: Option<String>,
@@ -2862,7 +2454,6 @@ struct InlineQueryResultProperties {
     mpeg4_height: Option<Integer>,
     mpeg4_url: Option<String>,
     mpeg4_width: Option<Integer>,
-    parse_mode: Option<ParseMode>,
     performer: Option<String>,
     photo_file_id: Option<String>,
     photo_height: Option<Integer>,

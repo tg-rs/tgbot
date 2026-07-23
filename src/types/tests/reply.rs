@@ -145,7 +145,7 @@ fn reply_keyboard_remove() {
 fn reply_parameters() {
     insta::assert_json_snapshot!(ReplyParameters::default());
     insta::assert_json_snapshot!(ReplyParameters::new(1));
-    let mut quote = ReplyQuote::new(1, "test");
+    let quote = ReplyQuote::new(1, "test");
     insta::assert_json_snapshot!(
         ReplyParameters::new(1)
             .with_allow_sending_without_reply(true)
@@ -155,8 +155,9 @@ fn reply_parameters() {
             .with_quote(quote.clone())
             .with_poll_option_id("test")
     );
-    quote = quote.with_entities([TextEntity::bold(0..2)]);
+
+    let quote = ReplyQuote::new(1, ("test", [TextEntity::bold(0..2)]));
     insta::assert_json_snapshot!(ReplyParameters::new(1).with_quote(quote.clone()));
-    quote = quote.with_parse_mode(ParseMode::Markdown);
+    let quote = ReplyQuote::new(1, ("test", ParseMode::Markdown));
     insta::assert_json_snapshot!(ReplyParameters::new(1).with_quote(quote));
 }

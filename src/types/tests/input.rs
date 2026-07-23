@@ -69,27 +69,30 @@ fn input_media_animation() {
     let media = InputMedia::from(
         InputMediaAnimation::from(InputFileReader::from(Cursor::new("animation-file-data")))
             .with_thumbnail(InputFileReader::from(Cursor::new("animation-thumb-data")))
-            .with_caption("caption")
+            .with_caption(InputText::from("caption").with_format(ParseMode::Markdown))
             .with_duration(10)
             .with_has_spoiler(true)
             .with_height(200)
-            .with_caption_parse_mode(ParseMode::Markdown)
             .with_show_caption_above_media(true)
             .with_width(200),
     );
     assert_write_form_eq!(media; serialize);
 
     let media = InputMedia::from(
-        InputMediaAnimation::from(InputFile::url("test"))
-            .with_caption_entities(vec![TextEntity::bold(0..10)])
-            .with_caption_parse_mode(ParseMode::Markdown),
+        InputMediaAnimation::from(InputFile::url("test")).with_caption(
+            InputText::from("caption")
+                .with_format(vec![TextEntity::bold(0..10)])
+                .with_format(ParseMode::Markdown),
+        ),
     );
     assert_input_media_parse_mode(media);
 
     let media = InputMedia::from(
-        InputMediaAnimation::from(InputFile::url("test"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_caption_entities(vec![TextEntity::bold(0..10)]),
+        InputMediaAnimation::from(InputFile::url("test")).with_caption(
+            InputText::from("caption")
+                .with_format(ParseMode::Markdown)
+                .with_format([TextEntity::bold(0..10)]),
+        ),
     );
     assert_input_media_caption_entities(media);
 }
@@ -102,25 +105,28 @@ fn input_media_audio() {
     let media = InputMedia::from(
         InputMediaAudio::from(InputFileReader::from(Cursor::new("audio-file-data")))
             .with_thumbnail(InputFileReader::from(Cursor::new("audio-thumb-data")))
-            .with_caption("caption")
+            .with_caption(InputText::from("caption").with_format(ParseMode::Markdown))
             .with_duration(10)
-            .with_caption_parse_mode(ParseMode::Markdown)
             .with_performer("test performer")
             .with_title("test title"),
     );
     assert_write_form_eq!(media; serialize);
 
     let media = InputMedia::from(
-        InputMediaAudio::from(InputFile::file_id("parse-mode"))
-            .with_caption_entities(vec![TextEntity::bold(0..10)])
-            .with_caption_parse_mode(ParseMode::Markdown),
+        InputMediaAudio::from(InputFile::file_id("parse-mode")).with_caption(
+            InputText::from("caption")
+                .with_format([TextEntity::bold(0..10)])
+                .with_format(ParseMode::Markdown),
+        ),
     );
     assert_input_media_parse_mode(media);
 
     let media = InputMedia::from(
-        InputMediaAudio::from(InputFile::file_id("parse-mode"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_caption_entities(vec![TextEntity::bold(0..10)]),
+        InputMediaAudio::from(InputFile::file_id("parse-mode")).with_caption(
+            InputText::from("caption")
+                .with_format(ParseMode::Markdown)
+                .with_format([TextEntity::bold(0..10)]),
+        ),
     );
     assert_input_media_caption_entities(media);
 }
@@ -133,23 +139,26 @@ fn input_media_document() {
     let media = InputMedia::from(
         InputMediaDocument::from(InputFileReader::from(Cursor::new("document-file-data")))
             .with_thumbnail(InputFileReader::from(Cursor::new("document-thumb-data")))
-            .with_caption("caption")
-            .with_caption_parse_mode(ParseMode::Markdown)
+            .with_caption(InputText::from("caption").with_format(ParseMode::Markdown))
             .with_disable_content_type_detection(true),
     );
     assert_write_form_eq!(media; serialize);
 
     let media = InputMedia::from(
-        InputMediaDocument::from(InputFile::file_id("file-id"))
-            .with_caption_entities(vec![TextEntity::bold(0..10)])
-            .with_caption_parse_mode(ParseMode::Markdown),
+        InputMediaDocument::from(InputFile::file_id("file-id")).with_caption(
+            InputText::from("caption")
+                .with_format([TextEntity::bold(0..10)])
+                .with_format(ParseMode::Markdown),
+        ),
     );
     assert_input_media_parse_mode(media);
 
     let media = InputMedia::from(
-        InputMediaDocument::from(InputFile::file_id("file-id"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_caption_entities(vec![TextEntity::bold(0..10)]),
+        InputMediaDocument::from(InputFile::file_id("file-id")).with_caption(
+            InputText::from("caption")
+                .with_format(ParseMode::Markdown)
+                .with_format([TextEntity::bold(0..10)]),
+        ),
     );
     assert_input_media_caption_entities(media);
 }
@@ -167,8 +176,7 @@ fn input_media_live_photo() {
             InputFile::url("https://example.com/video.mp4"),
             InputFile::url("https://example.com/photo.png"),
         ))
-        .with_caption("test")
-        .with_parse_mode(ParseMode::Markdown)
+        .with_caption(InputText::from("test").with_format(ParseMode::Markdown))
         .with_show_caption_above_media(true)
         .with_has_spoiler(false),
     );
@@ -188,24 +196,27 @@ fn input_media_location() {
 fn input_media_photo() {
     let media = InputMedia::from(
         InputMediaPhoto::from(InputFile::file_id("photo-file-id"))
-            .with_caption("test")
+            .with_caption(InputText::from("test").with_format(ParseMode::Markdown))
             .with_has_spoiler(true)
-            .with_caption_parse_mode(ParseMode::Markdown)
             .with_show_caption_above_media(true),
     );
     assert_write_form_eq!(media; serialize);
 
     let media = InputMedia::from(
-        InputMediaPhoto::from(InputFile::file_id("photo-file-id"))
-            .with_caption_entities(vec![TextEntity::bold(0..10)])
-            .with_caption_parse_mode(ParseMode::Markdown),
+        InputMediaPhoto::from(InputFile::file_id("photo-file-id")).with_caption(
+            InputText::from("caption")
+                .with_format([TextEntity::bold(0..10)])
+                .with_format(ParseMode::Markdown),
+        ),
     );
     assert_input_media_parse_mode(media);
 
     let media = InputMedia::from(
-        InputMediaPhoto::from(InputFile::file_id("photo-file-id"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_caption_entities(vec![TextEntity::bold(0..10)]),
+        InputMediaPhoto::from(InputFile::file_id("photo-file-id")).with_caption(
+            InputText::from("caption")
+                .with_format(ParseMode::Markdown)
+                .with_format([TextEntity::bold(0..10)]),
+        ),
     );
     assert_input_media_caption_entities(media);
 }
@@ -243,9 +254,8 @@ fn input_media_video() {
         InputMediaVideo::from(InputFileReader::from(Cursor::new("video-file-data")))
             .with_thumbnail(InputFileReader::from(Cursor::new("video-thumb-data")))
             .with_cover(InputFile::file_id("cover-id"))
-            .with_caption("caption")
+            .with_caption(InputText::from("caption").with_format(ParseMode::Markdown))
             .with_duration(100)
-            .with_caption_parse_mode(ParseMode::Markdown)
             .with_has_spoiler(true)
             .with_height(200)
             .with_show_caption_above_media(true)
@@ -256,16 +266,20 @@ fn input_media_video() {
     assert_write_form_eq!(media; serialize);
 
     let media = InputMedia::from(
-        InputMediaVideo::from(InputFile::file_id("video-file-id"))
-            .with_caption_entities(vec![TextEntity::bold(0..10)])
-            .with_caption_parse_mode(ParseMode::Markdown),
+        InputMediaVideo::from(InputFile::file_id("video-file-id")).with_caption(
+            InputText::from("caption")
+                .with_format(vec![TextEntity::bold(0..10)])
+                .with_format(ParseMode::Markdown),
+        ),
     );
     assert_input_media_parse_mode(media);
 
     let media = InputMedia::from(
-        InputMediaVideo::from(InputFile::file_id("video-file-id"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_caption_entities(vec![TextEntity::bold(0..10)]),
+        InputMediaVideo::from(InputFile::file_id("video-file-id")).with_caption(
+            InputText::from("caption")
+                .with_format(ParseMode::Markdown)
+                .with_format(vec![TextEntity::bold(0..10)]),
+        ),
     );
     assert_input_media_caption_entities(media);
 }
@@ -277,23 +291,26 @@ fn input_media_voice_note() {
 
     let media = InputMedia::from(
         InputMediaVoiceNote::from(InputFile::url("test"))
-            .with_caption("test")
-            .with_caption_entities([TextEntity::bold(0..2)])
+            .with_caption(InputText::from("test").with_format([TextEntity::bold(0..2)]))
             .with_duration(1),
     );
     assert_write_form_eq!(media; serialize);
 
     let media = InputMedia::from(
-        InputMediaVoiceNote::from(InputFile::file_id("voice-note-file-id"))
-            .with_caption_entities(vec![TextEntity::bold(0..10)])
-            .with_caption_parse_mode(ParseMode::Markdown),
+        InputMediaVoiceNote::from(InputFile::file_id("voice-note-file-id")).with_caption(
+            InputText::from("caption")
+                .with_format(vec![TextEntity::bold(0..10)])
+                .with_format(ParseMode::Markdown),
+        ),
     );
     assert_input_media_parse_mode(media);
 
     let media = InputMedia::from(
-        InputMediaVoiceNote::from(InputFile::file_id("voice-note-file-id"))
-            .with_caption_parse_mode(ParseMode::Markdown)
-            .with_caption_entities(vec![TextEntity::bold(0..10)]),
+        InputMediaVoiceNote::from(InputFile::file_id("voice-note-file-id")).with_caption(
+            InputText::from("caption")
+                .with_format(ParseMode::Markdown)
+                .with_format(vec![TextEntity::bold(0..10)]),
+        ),
     );
     assert_input_media_caption_entities(media);
 }

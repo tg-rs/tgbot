@@ -37,8 +37,7 @@ fn send_animation() {
     let method = SendAnimation::new(InputFile::file_id("file-id"), 1)
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
-        .with_caption("Caption")
-        .with_caption_parse_mode(ParseMode::Markdown)
+        .with_caption(("Caption", ParseMode::Markdown))
         .with_callback_query_id("cqid")
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
@@ -63,14 +62,18 @@ fn send_animation() {
         .with_thumbnail_file(Cursor::new(b"file-data"));
     assert_payload_eq!(POST FORM "sendAnimation" => method);
 
-    let method = SendAnimation::new(InputFile::file_id("file-id"), 1)
-        .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)]);
+    let method = SendAnimation::new(InputFile::file_id("file-id"), 1).with_caption(
+        InputText::from("caption")
+            .with_format(ParseMode::Markdown)
+            .with_format([TextEntity::bold(0..10)]),
+    );
     assert_payload_eq!(POST FORM "sendAnimation" => method);
 
-    let method = SendAnimation::new(InputFile::file_id("file-id"), 1)
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .with_caption_parse_mode(ParseMode::Markdown);
+    let method = SendAnimation::new(InputFile::file_id("file-id"), 1).with_caption(
+        InputText::from("caption")
+            .with_format([TextEntity::bold(0..10)])
+            .with_format(ParseMode::Markdown),
+    );
     assert_payload_eq!(POST FORM "sendAnimation" => method);
 }
 
@@ -97,8 +100,7 @@ fn send_audio() {
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
         .with_callback_query_id("cqid")
-        .with_caption("Caption")
-        .with_caption_parse_mode(ParseMode::Markdown)
+        .with_caption(("Caption", ParseMode::Markdown))
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_duration(100)
@@ -120,14 +122,18 @@ fn send_audio() {
         .with_thumbnail_url("https://google.com/favicon.ico");
     assert_payload_eq!(POST FORM "sendAudio" => method);
 
-    let method = SendAudio::new(1, InputFile::file_id("file-id"))
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .with_caption_parse_mode(ParseMode::Markdown);
+    let method = SendAudio::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format(ParseMode::Markdown)
+            .with_format([TextEntity::bold(0..10)]),
+    );
     assert_payload_eq!(POST FORM "sendAudio" => method);
 
-    let method = SendAudio::new(1, InputFile::file_id("file-id"))
-        .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)]);
+    let method = SendAudio::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format([TextEntity::bold(0..10)])
+            .with_format(ParseMode::Markdown),
+    );
     assert_payload_eq!(POST FORM "sendAudio" => method);
 }
 
@@ -152,8 +158,7 @@ fn send_document() {
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
         .with_callback_query_id("cqid")
-        .with_caption("Caption")
-        .with_caption_parse_mode(ParseMode::Markdown)
+        .with_caption(("Caption", ParseMode::Markdown))
         .with_disable_content_type_detection(true)
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
@@ -173,14 +178,18 @@ fn send_document() {
         .with_thumbnail_file(Cursor::new(b"file-data"));
     assert_payload_eq!(POST FORM "sendDocument" => method);
 
-    let method = SendDocument::new(1, InputFile::file_id("file-id"))
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .with_caption_parse_mode(ParseMode::Markdown);
+    let method = SendDocument::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format(ParseMode::Markdown)
+            .with_format([TextEntity::bold(0..10)]),
+    );
     assert_payload_eq!(POST FORM "sendDocument" => method);
 
-    let method = SendDocument::new(1, InputFile::file_id("file-id"))
-        .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)]);
+    let method = SendDocument::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format([TextEntity::bold(0..10)])
+            .with_format(ParseMode::Markdown),
+    );
     assert_payload_eq!(POST FORM "sendDocument" => method);
 }
 
@@ -199,8 +208,7 @@ fn send_photo() {
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
         .with_callback_query_id("cqid")
-        .with_caption("Caption")
-        .with_caption_parse_mode(ParseMode::Markdown)
+        .with_caption(("Caption", ParseMode::Markdown))
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_has_spoiler(true)
@@ -214,14 +222,18 @@ fn send_photo() {
         .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST FORM "sendPhoto" => method);
 
-    let method = SendPhoto::new(1, InputFile::file_id("file-id"))
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .with_caption_parse_mode(ParseMode::Markdown);
+    let method = SendPhoto::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format(ParseMode::Markdown)
+            .with_format([TextEntity::bold(0..10)]),
+    );
     assert_payload_eq!(POST FORM "sendPhoto" => method);
 
-    let method = SendPhoto::new(1, InputFile::file_id("file-id"))
-        .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)]);
+    let method = SendPhoto::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format([TextEntity::bold(0..10)])
+            .with_format(ParseMode::Markdown),
+    );
     assert_payload_eq!(POST FORM "sendPhoto" => method);
 }
 
@@ -256,8 +268,7 @@ fn send_video() {
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
         .with_callback_query_id("cqid")
-        .with_caption("Caption")
-        .with_caption_parse_mode(ParseMode::Markdown)
+        .with_caption(("Caption", ParseMode::Markdown))
         .with_cover(InputFile::file_id("cover-id"))
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
@@ -284,14 +295,18 @@ fn send_video() {
         .with_thumbnail_file(Cursor::new(b"file-data"));
     assert_payload_eq!(POST FORM "sendVideo" => method);
 
-    let method = SendVideo::new(1, InputFile::file_id("file-id"))
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .with_caption_parse_mode(ParseMode::Markdown);
+    let method = SendVideo::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format(ParseMode::Markdown)
+            .with_format([TextEntity::bold(0..10)]),
+    );
     assert_payload_eq!(POST FORM "sendVideo" => method);
 
-    let method = SendVideo::new(1, InputFile::file_id("file-id"))
-        .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)]);
+    let method = SendVideo::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format([TextEntity::bold(0..10)])
+            .with_format(ParseMode::Markdown),
+    );
     assert_payload_eq!(POST FORM "sendVideo" => method);
 }
 
@@ -353,8 +368,7 @@ fn send_voice() {
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
         .with_callback_query_id("cqid")
-        .with_caption("Caption")
-        .with_caption_parse_mode(ParseMode::Markdown)
+        .with_caption(("Caption", ParseMode::Markdown))
         .with_direct_messages_topic_id(1)
         .with_disable_notification(true)
         .with_duration(100)
@@ -367,13 +381,17 @@ fn send_voice() {
         .with_suggested_post_parameters(SuggestedPostParameters::default());
     assert_payload_eq!(POST FORM "sendVoice" => method);
 
-    let method = SendVoice::new(1, InputFile::file_id("file-id"))
-        .with_caption_entities(vec![TextEntity::bold(0..10)])
-        .with_caption_parse_mode(ParseMode::Markdown);
+    let method = SendVoice::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format(ParseMode::Markdown)
+            .with_format([TextEntity::bold(0..10)]),
+    );
     assert_payload_eq!(POST FORM "sendVoice" => method);
 
-    let method = SendVoice::new(1, InputFile::file_id("file-id"))
-        .with_caption_parse_mode(ParseMode::Markdown)
-        .with_caption_entities(vec![TextEntity::bold(0..10)]);
+    let method = SendVoice::new(1, InputFile::file_id("file-id")).with_caption(
+        InputText::from("caption")
+            .with_format([TextEntity::bold(0..10)])
+            .with_format(ParseMode::Markdown),
+    );
     assert_payload_eq!(POST FORM "sendVoice" => method);
 }

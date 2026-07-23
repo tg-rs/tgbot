@@ -71,7 +71,6 @@ fn answer_inline_query() {
                 InlineQueryResultAudio::new("url", "id", "title")
                     .with_audio_duration(100)
                     .with_caption("caption")
-                    .with_caption_parse_mode(ParseMode::Html)
                     .with_input_message_content(InputMessageContent::from(
                         InputMessageContentContact::new("V", "+79001231212")
                             .with_last_name("P")
@@ -110,7 +109,6 @@ fn answer_inline_query() {
                         .with_send_phone_number_to_provider(true)
                         .with_suggested_tip_amounts([2]),
                     ))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
             ),
             InlineQueryResult::from(
@@ -134,7 +132,6 @@ fn answer_inline_query() {
                     .with_caption("caption")
                     .with_description("desc")
                     .with_input_message_content(InputMessageContent::from(InputRichMessage::html("test")))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
                     .with_thumbnail_height(200)
                     .with_thumbnail_url("thumb-url")
@@ -145,12 +142,13 @@ fn answer_inline_query() {
                     .with_caption("caption")
                     .with_description("desc")
                     .with_input_message_content(
-                        InputMessageContentText::new("text")
-                            .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
-                            .with_entities(vec![TextEntity::bold(0..10)])
-                            .with_parse_mode(ParseMode::Html),
+                        InputMessageContentText::new(
+                            InputText::from("text")
+                                .with_format(vec![TextEntity::bold(0..10)])
+                                .with_format(ParseMode::Html),
+                        )
+                        .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true)),
                     )
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
             ),
             InlineQueryResult::from(
@@ -164,12 +162,11 @@ fn answer_inline_query() {
                     .with_gif_width(200)
                     .with_gif_height(300)
                     .with_gif_duration(400)
-                    .with_input_message_content(
-                        InputMessageContentText::new("text")
-                            .with_parse_mode(ParseMode::Markdown)
-                            .with_entities(vec![TextEntity::bold(0..10)]),
-                    )
-                    .with_caption_parse_mode(ParseMode::Markdown)
+                    .with_input_message_content(InputMessageContentText::new(
+                        InputText::from("text")
+                            .with_format(ParseMode::Markdown)
+                            .with_format(vec![TextEntity::bold(0..10)]),
+                    ))
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
                     .with_show_caption_above_media(true)
                     .with_thumbnail_mime_type("video/mp4")
@@ -185,7 +182,6 @@ fn answer_inline_query() {
                             .with_google_place_id("g-id")
                             .with_google_place_type("g-type"),
                     ))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_title("title")
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
                     .with_show_caption_above_media(true),
@@ -206,7 +202,6 @@ fn answer_inline_query() {
                     .with_mpeg4_width(200)
                     .with_mpeg4_height(300)
                     .with_mpeg4_duration(400)
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_thumbnail_mime_type("video/mp4")
                     .with_title("title")
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
@@ -216,7 +211,6 @@ fn answer_inline_query() {
                 InlineQueryResultCachedMpeg4Gif::new("id", "file-id")
                     .with_caption("caption")
                     .with_input_message_content(InputMessageContentText::new("text"))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
                     .with_show_caption_above_media(true)
                     .with_title("title"),
@@ -226,7 +220,6 @@ fn answer_inline_query() {
                     .with_caption("caption")
                     .with_description("desc")
                     .with_input_message_content(InputMessageContentText::new("text"))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_photo_height(300)
                     .with_photo_width(200)
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
@@ -255,7 +248,6 @@ fn answer_inline_query() {
                     .with_caption("caption")
                     .with_description("desc")
                     .with_input_message_content(InputMessageContentText::new("text"))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
                     .with_show_caption_above_media(true)
                     .with_video_duration(400)
@@ -267,7 +259,6 @@ fn answer_inline_query() {
                     .with_caption("caption")
                     .with_description("desc")
                     .with_input_message_content(InputMessageContentText::new("text"))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
                     .with_show_caption_above_media(true),
             ),
@@ -275,7 +266,6 @@ fn answer_inline_query() {
                 InlineQueryResultVoice::new("voice-id", "voice-title", "voice-url")
                     .with_caption("voice-caption")
                     .with_input_message_content(InputMessageContentText::new("voice-content-text"))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_reply_markup([[InlineKeyboardButton::for_url("voice-kb-text", "voice-kb-url")]])
                     .with_voice_duration(100),
             ),
@@ -283,7 +273,6 @@ fn answer_inline_query() {
                 InlineQueryResultCachedVoice::new("id", "title", "file-id")
                     .with_caption("caption")
                     .with_input_message_content(InputMessageContentText::new("text"))
-                    .with_caption_parse_mode(ParseMode::Markdown)
                     .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
             ),
         ],
@@ -336,10 +325,9 @@ fn answer_guest_query() {
         "test",
         InlineQueryResult::from(
             InlineQueryResultCachedPhoto::new("id", "file-id")
-                .with_caption("caption")
+                .with_caption(("caption", ParseMode::Markdown))
                 .with_description("desc")
                 .with_input_message_content(InputMessageContentText::new("text"))
-                .with_caption_parse_mode(ParseMode::Markdown)
                 .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
                 .with_show_caption_above_media(true)
                 .with_title("title"),

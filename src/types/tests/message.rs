@@ -835,7 +835,6 @@ fn copy_message() {
         .with_disable_notification(true)
         .with_message_effect_id("test")
         .with_message_thread_id(1)
-        .with_caption_parse_mode(ParseMode::Markdown)
         .with_protect_content(true)
         .with_reply_markup(ForceReply::new(true))
         .with_reply_parameters(ReplyParameters::new(1))
@@ -843,8 +842,6 @@ fn copy_message() {
         .with_show_caption_above_media(true)
         .with_video_start_timestamp(200);
     assert_payload_eq!(POST JSON "copyMessage" => method.clone());
-    let method = method.with_caption_entities([TextEntity::bold(1..2)]);
-    assert_payload_eq!(POST JSON "copyMessage" => method);
 }
 
 #[test]
@@ -878,13 +875,10 @@ fn edit_message_caption() {
     let method = EditMessageCaption::for_chat_message(1, 2)
         .with_business_connection_id("c-id")
         .with_caption("caption")
-        .with_caption_parse_mode(ParseMode::Markdown)
         .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]])
         .with_show_caption_above_media(true);
     assert_payload_eq!(POST JSON "editMessageCaption" => method);
     let method = EditMessageCaption::for_inline_message("msg-id");
-    assert_payload_eq!(POST JSON "editMessageCaption" => method);
-    let method = EditMessageCaption::for_inline_message("msg-id").with_caption_entities([TextEntity::bold(0..10)]);
     assert_payload_eq!(POST JSON "editMessageCaption" => method);
 }
 
@@ -937,10 +931,9 @@ fn edit_message_text() {
     let method = EditMessageText::for_chat_message_rich(1, 2, InputRichMessage::html("text"));
     assert_payload_eq!(POST FORM "editMessageText" => method);
 
-    let method = EditMessageText::for_chat_message(1, 2, "text")
+    let method = EditMessageText::for_chat_message(1, 2, ("text", ParseMode::Markdown))
         .with_business_connection_id("c-id")
         .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
-        .with_parse_mode(ParseMode::Markdown)
         .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]);
     assert_payload_eq!(POST JSON "editMessageText" => method);
 
@@ -950,7 +943,7 @@ fn edit_message_text() {
     let method = EditMessageText::for_inline_message_rich("msg-id", InputRichMessage::markdown("text"));
     assert_payload_eq!(POST FORM "editMessageText" => method);
 
-    let method = EditMessageText::for_inline_message("msg-id", "text").with_entities([TextEntity::bold(0..4)]);
+    let method = EditMessageText::for_inline_message("msg-id", ("text", [TextEntity::bold(0..4)]));
     assert_payload_eq!(POST JSON "editMessageText" => method);
 }
 
@@ -985,7 +978,7 @@ fn forward_messages() {
 fn send_message() {
     let method = SendMessage::new(1, "text");
     assert_payload_eq!(POST JSON "sendMessage" => method);
-    let method = SendMessage::new(1, "text")
+    let method = SendMessage::new(1, ("text", [TextEntity::bold(0..2)]))
         .with_allow_paid_broadcast(true)
         .with_business_connection_id("id")
         .with_callback_query_id("cqid")
@@ -994,8 +987,6 @@ fn send_message() {
         .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
         .with_message_effect_id("effect-id")
         .with_message_thread_id(1)
-        .with_parse_mode(ParseMode::Markdown)
-        .with_entities(vec![TextEntity::bold(0..2)])
         .with_protect_content(true)
         .with_receiver_user_id(999)
         .with_reply_markup(ForceReply::new(true))
@@ -1008,15 +999,9 @@ fn send_message() {
 fn send_message_draft() {
     let method = SendMessageDraft::new(1, 1, "text");
     assert_payload_eq!(POST JSON "sendMessageDraft" => method);
-    let method = SendMessageDraft::new(1, 1, "text")
-        .with_entities(vec![TextEntity::bold(0..2)])
-        .with_message_thread_id(1)
-        .with_parse_mode(ParseMode::Markdown);
+    let method = SendMessageDraft::new(1, 1, ("text", [TextEntity::bold(0..2)])).with_message_thread_id(1);
     assert_payload_eq!(POST JSON "sendMessageDraft" => method);
-    let method = SendMessageDraft::new(1, 1, "text")
-        .with_message_thread_id(1)
-        .with_parse_mode(ParseMode::Markdown)
-        .with_entities(vec![TextEntity::bold(0..2)]);
+    let method = SendMessageDraft::new(1, 1, ("text", ParseMode::Markdown)).with_message_thread_id(1);
     assert_payload_eq!(POST JSON "sendMessageDraft" => method);
 }
 

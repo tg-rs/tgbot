@@ -11,16 +11,15 @@ use crate::{
         InputMediaData,
         InputRichMessage,
         InputRichMessageData,
+        InputText,
+        InputTextCaption,
         Integer,
         LinkPreviewOptions,
         Message,
         MessageId,
-        ParseMode,
         ReplyMarkup,
         ReplyParameters,
         SuggestedPostParameters,
-        TextEntities,
-        TextEntity,
     },
 };
 
@@ -38,13 +37,12 @@ pub struct CopyMessage {
     from_chat_id: ChatId,
     message_id: Integer,
     allow_paid_broadcast: Option<bool>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
-    parse_mode: Option<ParseMode>,
     protect_content: Option<bool>,
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
@@ -72,12 +70,10 @@ impl CopyMessage {
             message_id,
             allow_paid_broadcast: None,
             caption: None,
-            caption_entities: None,
             direct_messages_topic_id: None,
             disable_notification: None,
             message_effect_id: None,
             message_thread_id: None,
-            parse_mode: None,
             protect_content: None,
             reply_markup: None,
             reply_parameters: None,
@@ -108,38 +104,9 @@ impl CopyMessage {
     /// If not specified, the original caption is kept.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.caption_entities = Some(value.into_iter().collect());
-        self.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parse_mode = Some(value);
-        self.caption_entities = None;
         self
     }
 
@@ -466,12 +433,11 @@ impl Method for DeleteMessages {
 #[derive(Clone, Debug, Serialize)]
 pub struct EditMessageCaption {
     business_connection_id: Option<String>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     chat_id: Option<ChatId>,
     inline_message_id: Option<String>,
     message_id: Option<Integer>,
-    parse_mode: Option<ParseMode>,
     reply_markup: Option<InlineKeyboardMarkup>,
     show_caption_above_media: Option<bool>,
 }
@@ -490,11 +456,9 @@ impl EditMessageCaption {
         Self {
             business_connection_id: None,
             caption: None,
-            caption_entities: None,
             chat_id: Some(chat_id.into()),
             inline_message_id: None,
             message_id: Some(message_id),
-            parse_mode: None,
             reply_markup: None,
             show_caption_above_media: None,
         }
@@ -512,11 +476,9 @@ impl EditMessageCaption {
         Self {
             business_connection_id: None,
             caption: None,
-            caption_entities: None,
             chat_id: None,
             inline_message_id: Some(inline_message_id.into()),
             message_id: None,
-            parse_mode: None,
             reply_markup: None,
             show_caption_above_media: None,
         }
@@ -542,38 +504,9 @@ impl EditMessageCaption {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.caption_entities = Some(value.into_iter().collect());
-        self.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parse_mode = Some(value);
-        self.caption_entities = None;
         self
     }
 
@@ -973,7 +906,7 @@ impl EditMessageText {
     pub fn for_chat_message<A, B>(chat_id: A, message_id: Integer, text: B) -> Self
     where
         A: Into<ChatId>,
-        B: Into<String>,
+        B: Into<InputText>,
     {
         Self {
             parameters: EditMessageTextParameters {
@@ -1016,7 +949,7 @@ impl EditMessageText {
     pub fn for_inline_message<A, B>(inline_message_id: A, text: B) -> Self
     where
         A: Into<String>,
-        B: Into<String>,
+        B: Into<InputText>,
     {
         Self {
             parameters: EditMessageTextParameters {
@@ -1060,22 +993,6 @@ impl EditMessageText {
         self
     }
 
-    /// Sets a new list of entities
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - List of special entities that appear in the text.
-    ///
-    /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.entities = Some(TextEntities::from_iter(value));
-        self.parameters.parse_mode = None;
-        self
-    }
-
     /// Sets a new link preview options.
     ///
     /// # Arguments
@@ -1083,19 +1000,6 @@ impl EditMessageText {
     /// * `value` - Link preview generation options for the message.
     pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Self {
         self.parameters.link_preview_options = Some(value);
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.entities = None;
         self
     }
 
@@ -1116,16 +1020,15 @@ impl EditMessageText {
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Default, Serialize)]
 struct EditMessageTextParameters {
-    chat_id: Option<ChatId>,
-    message_id: Option<Integer>,
-    text: Option<String>,
-    rich_message: Option<InputRichMessageData>,
-    inline_message_id: Option<String>,
     business_connection_id: Option<String>,
-    parse_mode: Option<ParseMode>,
+    chat_id: Option<ChatId>,
+    inline_message_id: Option<String>,
     link_preview_options: Option<LinkPreviewOptions>,
-    entities: Option<TextEntities>,
+    message_id: Option<Integer>,
     reply_markup: Option<InlineKeyboardMarkup>,
+    rich_message: Option<InputRichMessageData>,
+    #[serde(flatten)]
+    text: Option<InputText>,
 }
 
 impl Method for EditMessageText {
@@ -1380,17 +1283,16 @@ impl Method for ForwardMessages {
 #[derive(Clone, Debug, Serialize)]
 pub struct SendMessage {
     chat_id: ChatId,
-    text: String,
+    #[serde(flatten)]
+    text: InputText,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
     callback_query_id: Option<String>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
-    entities: Option<TextEntities>,
     link_preview_options: Option<LinkPreviewOptions>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
-    parse_mode: Option<ParseMode>,
     protect_content: Option<bool>,
     receiver_user_id: Option<Integer>,
     reply_markup: Option<ReplyMarkup>,
@@ -1408,7 +1310,7 @@ impl SendMessage {
     pub fn new<A, B>(chat_id: A, text: B) -> Self
     where
         A: Into<ChatId>,
-        B: Into<String>,
+        B: Into<InputText>,
     {
         Self {
             chat_id: chat_id.into(),
@@ -1418,11 +1320,9 @@ impl SendMessage {
             callback_query_id: None,
             direct_messages_topic_id: None,
             disable_notification: None,
-            entities: None,
             link_preview_options: None,
             message_effect_id: None,
             message_thread_id: None,
-            parse_mode: None,
             protect_content: None,
             receiver_user_id: None,
             reply_markup: None,
@@ -1492,22 +1392,6 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new list of entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - List of special entities that appear in the text.
-    ///
-    /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.entities = Some(value.into_iter().collect());
-        self.parse_mode = None;
-        self
-    }
-
     /// Sets a new link preview options.
     ///
     /// # Arguments
@@ -1539,19 +1423,6 @@ impl SendMessage {
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parse_mode = Some(value);
-        self.entities = None;
         self
     }
 
@@ -1633,10 +1504,9 @@ impl Method for SendMessage {
 pub struct SendMessageDraft {
     chat_id: Integer,
     draft_id: Integer,
-    text: String,
-    entities: Option<TextEntities>,
+    #[serde(flatten)]
+    text: InputText,
     message_thread_id: Option<Integer>,
-    parse_mode: Option<ParseMode>,
 }
 
 impl SendMessageDraft {
@@ -1650,32 +1520,14 @@ impl SendMessageDraft {
     /// * `text` - Text of the message to be sent, 0-4096 characters after entities parsing.
     pub fn new<T>(chat_id: Integer, draft_id: Integer, text: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
         Self {
             chat_id,
             draft_id,
             text: text.into(),
-            entities: None,
             message_thread_id: None,
-            parse_mode: None,
         }
-    }
-
-    /// Sets a new list of entities
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - List of special entities that appear in the text.
-    ///
-    /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.entities = Some(value.into_iter().collect());
-        self.parse_mode = None;
-        self
     }
 
     /// Sets a new message thread ID.
@@ -1685,19 +1537,6 @@ impl SendMessageDraft {
     /// * `value` - Unique identifier for the target message thread.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.message_thread_id = Some(value);
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.entities = None;
-        self.parse_mode = Some(value);
         self
     }
 }

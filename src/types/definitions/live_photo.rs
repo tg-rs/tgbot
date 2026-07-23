@@ -5,15 +5,13 @@ use crate::{
     types::{
         ChatId,
         InputFile,
+        InputTextCaption,
         Integer,
         Message,
-        ParseMode,
         PhotoSize,
         ReplyMarkup,
         ReplyParameters,
         SuggestedPostParameters,
-        TextEntities,
-        TextEntity,
     },
 };
 
@@ -185,24 +183,9 @@ impl SendLivePhoto {
     ///   0-1024 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the caption;
-    ///   parse mode will be removed when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
-        self.parameters.parse_mode = None;
         self
     }
 
@@ -260,18 +243,6 @@ impl SendLivePhoto {
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.parameters.message_thread_id = Some(value);
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the video caption.
-    ///   Caption entities will be removed when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -353,8 +324,8 @@ struct SendLivePhotoParameters {
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
     callback_query_id: Option<String>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     chat_id: Option<ChatId>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
@@ -362,7 +333,6 @@ struct SendLivePhotoParameters {
     live_photo: Option<String>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
-    parse_mode: Option<ParseMode>,
     photo: Option<String>,
     protect_content: Option<bool>,
     receiver_user_id: Option<Integer>,

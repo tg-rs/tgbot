@@ -13,6 +13,7 @@ use crate::{
         InlineKeyboardMarkup,
         InputMedia,
         InputMediaData,
+        InputText,
         Integer,
         Link,
         LivePhoto,
@@ -25,7 +26,6 @@ use crate::{
         Sticker,
         Text,
         TextEntities,
-        TextEntity,
         User,
         Venue,
         Video,
@@ -835,33 +835,22 @@ impl InputPollOption {
     /// * `text` - Option text; 1-100 characters.
     pub fn new<T>(text: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
+        let InputText {
+            data: text,
+            entities: text_entities,
+            parse_mode: text_parse_mode,
+        } = text.into();
         Self {
             data: InputPollOptionData {
-                text: text.into(),
-                text_parse_mode: None,
-                text_entities: None,
+                text,
+                text_parse_mode,
+                text_entities,
                 media: None,
             },
             input_media: None,
         }
-    }
-
-    /// Sets a new list of text entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the poll option text.
-    ///
-    /// Text parse mode will be set to [`None`] when this method is called.
-    pub fn with_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.data.text_entities = Some(value.into_iter().collect());
-        self.data.text_parse_mode = None;
-        self
     }
 
     /// Sets a new media.
@@ -874,20 +863,6 @@ impl InputPollOption {
         T: Into<InputMedia>,
     {
         self.input_media = Some(value.into());
-        self
-    }
-
-    /// Sets a new text parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the text.
-    ///
-    /// Currently, only custom emoji entities are allowed.
-    /// Text entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.data.text_parse_mode = Some(value);
-        self.data.text_entities = None;
         self
     }
 }
@@ -1013,19 +988,6 @@ impl PollParameters {
         }
     }
 
-    fn set_description_entities<T>(&mut self, value: T)
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.description_entities = Some(value.into_iter().collect());
-        self.description_parse_mode = None;
-    }
-
-    fn set_description_parse_mode(&mut self, value: ParseMode) {
-        self.description_parse_mode = Some(value);
-        self.description_entities = None;
-    }
-
     fn set_is_anonymous(&mut self, value: bool) {
         self.is_anonymous = Some(value);
         if value {
@@ -1055,21 +1017,28 @@ impl SendQuiz {
     pub fn new<A, B, C, D, DI>(chat_id: A, question: B, correct_option_ids: C, options: D) -> Self
     where
         A: Into<ChatId>,
-        B: Into<String>,
+        B: Into<InputText>,
         C: IntoIterator<Item = Integer>,
         D: IntoIterator<Item = DI>,
         DI: Into<InputPollOption>,
     {
+        let InputText {
+            data: question,
+            entities,
+            parse_mode,
+        } = question.into();
         Self {
             inputs: PollInputs {
                 chat_id: chat_id.into(),
-                question: question.into(),
+                question,
                 options: options.into_iter().map(Into::into).collect(),
                 media: None,
                 poll_type: PollType::Quiz,
             },
             inner: PollParameters {
                 correct_option_ids: Some(correct_option_ids.into_iter().collect()),
+                question_entities: entities,
+                question_parse_mode: parse_mode,
                 ..Default::default()
             },
         }
@@ -1174,36 +1143,16 @@ impl SendQuiz {
     /// * `value` - Description; 0-1024 characters after entities parsing.
     pub fn with_description<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
-        self.inner.description = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of description entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the description.
-    ///
-    /// Parse mode will be set to [`None`].
-    pub fn with_description_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.inner.set_description_entities(value);
-        self
-    }
-
-    /// Sets a new description parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the description.
-    ///
-    /// Entities will be set to [`None`].
-    pub fn with_description_parse_mode(mut self, value: ParseMode) -> Self {
-        self.inner.set_description_parse_mode(value);
+        let InputText {
+            data,
+            entities,
+            parse_mode,
+        } = value.into();
+        self.inner.description = Some(data);
+        self.inner.description_entities = entities;
+        self.inner.description_parse_mode = parse_mode;
         self
     }
 
@@ -1227,9 +1176,16 @@ impl SendQuiz {
     ///   0-200 characters with at most 2 line feeds after entities parsing.
     pub fn with_explanation<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
-        self.inner.explanation = Some(value.into());
+        let InputText {
+            data,
+            entities,
+            parse_mode,
+        } = value.into();
+        self.inner.explanation = Some(data);
+        self.inner.explanation_entities = entities;
+        self.inner.explanation_parse_mode = parse_mode;
         self
     }
 
@@ -1243,35 +1199,6 @@ impl SendQuiz {
         T: Into<InputMedia>,
     {
         self.inputs.media = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of explanation entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - List of special entities that appear in the quiz explanation.
-    ///
-    /// Explanation parse mode will be removed when this method is called.
-    pub fn with_explanation_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.inner.explanation_entities = Some(value.into_iter().collect());
-        self.inner.explanation_parse_mode = None;
-        self
-    }
-
-    /// Sets a new explanation parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the explanation.
-    ///
-    /// Explanation entities will be removed when this method is called.
-    pub fn with_explanation_parse_mode(mut self, value: ParseMode) -> Self {
-        self.inner.explanation_parse_mode = Some(value);
-        self.inner.explanation_entities = None;
         self
     }
 
@@ -1367,35 +1294,6 @@ impl SendQuiz {
         self
     }
 
-    /// Sets a new list of question entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the poll question.
-    ///
-    /// Question parse mode will be removed when this method is called.
-    pub fn with_question_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.inner.question_entities = Some(value.into_iter().collect());
-        self.inner.question_parse_mode = None;
-        self
-    }
-
-    /// Sets a new question parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the question.
-    ///
-    /// Question entities will be removed when this method is called.
-    pub fn with_question_parse_mode(mut self, value: ParseMode) -> Self {
-        self.inner.question_parse_mode = Some(value);
-        self.inner.question_entities = None;
-        self
-    }
-
     /// Sets a new reply markup.
     ///
     /// # Arguments
@@ -1459,19 +1357,28 @@ impl SendPoll {
     pub fn new<A, B, C, D>(chat_id: A, question: B, options: C) -> Self
     where
         A: Into<ChatId>,
-        B: Into<String>,
+        B: Into<InputText>,
         C: IntoIterator<Item = D>,
         D: Into<InputPollOption>,
     {
+        let InputText {
+            data: question,
+            entities,
+            parse_mode,
+        } = question.into();
         Self {
             inputs: PollInputs {
                 chat_id: chat_id.into(),
-                question: question.into(),
+                question,
                 options: options.into_iter().map(Into::into).collect(),
                 media: None,
                 poll_type: PollType::Regular,
             },
-            inner: Default::default(),
+            inner: PollParameters {
+                question_entities: entities,
+                question_parse_mode: parse_mode,
+                ..Default::default()
+            },
         }
     }
 
@@ -1574,36 +1481,16 @@ impl SendPoll {
     /// * `value` - Description; 0-1024 characters after entities parsing.
     pub fn with_description<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
-        self.inner.description = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of description entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the description.
-    ///
-    /// Parse mode will be set to [`None`].
-    pub fn with_description_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.inner.set_description_entities(value);
-        self
-    }
-
-    /// Sets a new description parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the description.
-    ///
-    /// Entities will be set to [`None`].
-    pub fn with_description_parse_mode(mut self, value: ParseMode) -> Self {
-        self.inner.set_description_parse_mode(value);
+        let InputText {
+            data,
+            entities,
+            parse_mode,
+        } = value.into();
+        self.inner.description = Some(data);
+        self.inner.description_entities = entities;
+        self.inner.description_parse_mode = parse_mode;
         self
     }
 
@@ -1720,35 +1607,6 @@ impl SendPoll {
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.inner.protect_content = Some(value);
-        self
-    }
-
-    /// Sets a new list of question entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the poll question.
-    ///
-    /// Question parse mode will be set to [`None`] when this method is called.
-    pub fn with_question_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.inner.question_entities = Some(value.into_iter().collect());
-        self.inner.question_parse_mode = None;
-        self
-    }
-
-    /// Sets a new question parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the question.
-    ///
-    /// Question entities will be set to [`None`] when this method is called.
-    pub fn with_question_parse_mode(mut self, value: ParseMode) -> Self {
-        self.inner.question_parse_mode = Some(value);
-        self.inner.question_entities = None;
         self
     }
 

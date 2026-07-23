@@ -7,11 +7,10 @@ use crate::{
         InlineKeyboardMarkup,
         InputMedia,
         InputMediaData,
+        InputText,
+        InputTextCaption,
         Integer,
         LinkPreviewOptions,
-        ParseMode,
-        TextEntities,
-        TextEntity,
     },
 };
 
@@ -73,9 +72,8 @@ impl Method for DeleteEphemeralMessage {
 pub struct EditEphemeralMessageCaption {
     #[serde(flatten)]
     identity: EphemeralMessageIdentity,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
-    parse_mode: Option<ParseMode>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
@@ -87,8 +85,6 @@ where
         Self {
             identity: value.into(),
             caption: None,
-            caption_entities: None,
-            parse_mode: None,
             reply_markup: None,
         }
     }
@@ -102,38 +98,9 @@ impl EditEphemeralMessageCaption {
     /// * `value` - New caption of the message; 0-1024 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities.
-    ///
-    /// It can be specified instead of parse mode.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.caption_entities = Some(value.into_iter().collect());
-        self.parse_mode = None;
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities.
-    ///
-    /// It can be specified instead of entities.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parse_mode = Some(value);
-        self.caption_entities = None;
         self
     }
 
@@ -289,10 +256,9 @@ impl Method for EditEphemeralMessageReplyMarkup {
 pub struct EditEphemeralMessageText {
     #[serde(flatten)]
     identity: EphemeralMessageIdentity,
-    text: String,
-    entities: Option<TextEntities>,
+    #[serde(flatten)]
+    text: InputText,
     link_preview_options: Option<LinkPreviewOptions>,
-    parse_mode: Option<ParseMode>,
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
@@ -306,45 +272,14 @@ impl EditEphemeralMessageText {
     pub fn new<A, B>(identity: A, text: B) -> Self
     where
         A: Into<EphemeralMessageIdentity>,
-        B: Into<String>,
+        B: Into<InputText>,
     {
         Self {
             identity: identity.into(),
             text: text.into(),
-            entities: None,
             link_preview_options: None,
-            parse_mode: None,
             reply_markup: None,
         }
-    }
-
-    /// Sets a new list of entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the quote.
-    ///
-    /// It can be specified instead of parse mode.
-    pub fn with_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.entities = Some(value.into_iter().collect());
-        self.parse_mode = None;
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the quote.
-    ///
-    /// It can be specified instead of entities.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parse_mode = Some(value);
-        self.entities = None;
-        self
     }
 
     /// Sets a new link preview options.

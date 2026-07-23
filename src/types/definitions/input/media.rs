@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Form, WriteForm},
-    types::{Float, InputFile, Integer, ParseMode, TextEntities, TextEntity},
+    types::{Float, InputFile, InputTextCaption, Integer},
 };
 
 /// Represents a metadata of the input media.
@@ -187,38 +187,9 @@ impl InputMediaAnimation {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(value.into_iter().collect());
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -320,38 +291,9 @@ impl InputMediaAudio {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(value.into_iter().collect());
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -439,38 +381,9 @@ impl InputMediaDocument {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(value.into_iter().collect());
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -537,36 +450,9 @@ impl InputMediaLivePhoto {
     ///   0-1024 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the live photo caption.
-    ///   Caption entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - List of special entities that appear in the caption;
-    ///   Parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(value.into_iter().collect());
-        self.parameters.parse_mode = None;
         self
     }
 
@@ -652,38 +538,9 @@ impl InputMediaPhoto {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(value.into_iter().collect());
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -857,38 +714,9 @@ impl InputMediaVideo {
     /// * `value` - Caption; 0-1024 characters.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(value.into_iter().collect());
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -1021,38 +849,9 @@ impl InputMediaVoiceNote {
     /// * `value` - Caption; 0-1024 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(value.into_iter().collect());
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -1079,8 +878,8 @@ pub(crate) struct InputMediaData {
 #[derive(Debug, Default, Deserialize, Serialize)]
 struct InputMediaParameters {
     address: Option<String>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     cover: Option<String>,
     disable_content_type_detection: Option<bool>,
     duration: Option<Integer>,
@@ -1095,7 +894,6 @@ struct InputMediaParameters {
     latitude: Option<Float>,
     longitude: Option<Float>,
     media: Option<String>,
-    parse_mode: Option<ParseMode>,
     performer: Option<String>,
     photo: Option<String>,
     show_caption_above_media: Option<bool>,

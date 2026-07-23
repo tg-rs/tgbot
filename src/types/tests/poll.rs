@@ -68,11 +68,16 @@ fn poll_media() {
 fn send_quiz() {
     let method = SendQuiz::new(1, "Q", [0], ["X"]);
     assert_payload_eq!(POST FORM "sendPoll" => method);
-    let method = SendQuiz::new(1, "Q", [0], ["X"]).with_question_entities([TextEntity::bold(0..1)]);
+    let method = SendQuiz::new(1, ("Q", [TextEntity::bold(0..1)]), [0], ["X"]);
     assert_payload_eq!(POST FORM "sendPoll" => method);
-    let method = SendQuiz::new(1, "Q", [0], ["X"])
-        .with_question_entities([TextEntity::bold(0..1)])
-        .with_question_parse_mode(ParseMode::MarkdownV2);
+    let method = SendQuiz::new(
+        1,
+        InputText::from("Q")
+            .with_format([TextEntity::bold(0..1)])
+            .with_format(ParseMode::MarkdownV2),
+        [0],
+        ["X"],
+    );
     assert_payload_eq!(POST FORM "sendPoll" => method);
     let method = SendQuiz::new(1, "Q", [0], ["O1", "O2"])
         .with_allow_adding_options(true)
@@ -81,8 +86,7 @@ fn send_quiz() {
         .with_allows_revoting(false)
         .with_business_connection_id("id")
         .with_country_codes(["NL"])
-        .with_description("test")
-        .with_description_parse_mode(ParseMode::MarkdownV2)
+        .with_description(("test", ParseMode::MarkdownV2))
         .with_disable_notification(true)
         .with_explanation("test")
         .with_explanation_media(InputMediaLocation::new(1.0, 2.0))
@@ -103,11 +107,15 @@ fn send_quiz() {
 fn send_poll() {
     let method = SendPoll::new(1, "Q", ["X"]);
     assert_payload_eq!(POST FORM "sendPoll" => method);
-    let method = SendPoll::new(1, "Q", ["X"]).with_question_entities([TextEntity::bold(0..1)]);
+    let method = SendPoll::new(1, ("Q", [TextEntity::bold(0..1)]), ["X"]);
     assert_payload_eq!(POST FORM "sendPoll" => method);
-    let method = SendPoll::new(1, "Q", ["X"])
-        .with_question_entities([TextEntity::bold(0..1)])
-        .with_question_parse_mode(ParseMode::MarkdownV2);
+    let method = SendPoll::new(
+        1,
+        InputText::from("Q")
+            .with_format([TextEntity::bold(0..1)])
+            .with_format(ParseMode::MarkdownV2),
+        ["X"],
+    );
     assert_payload_eq!(POST FORM "sendPoll" => method);
     let method = SendPoll::new(1, "Q", ["X"])
         .with_allow_adding_options(true)
@@ -116,8 +124,7 @@ fn send_poll() {
         .with_allows_revoting(true)
         .with_business_connection_id("id")
         .with_country_codes(["US"])
-        .with_description("test")
-        .with_description_entities([TextEntity::bold(0..2)])
+        .with_description(("test", [TextEntity::bold(0..2)]))
         .with_disable_notification(true)
         .with_hide_results_until_closes(true)
         .with_is_anonymous(false)

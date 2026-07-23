@@ -9,15 +9,13 @@ use crate::{
         InputProfilePhotoData,
         InputStoryContent,
         InputStoryContentData,
+        InputTextCaption,
         Integer,
         Location,
-        ParseMode,
         StarAmount,
         Sticker,
         Story,
         StoryAreas,
-        TextEntities,
-        TextEntity,
         User,
     },
 };
@@ -608,34 +606,9 @@ impl EditStory {
     /// * `value` - Caption of the story, 0-2048 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the caption.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the story caption.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 }
@@ -645,10 +618,9 @@ impl EditStory {
 struct EditStoryParameters {
     areas: Option<StoryAreas>,
     business_connection_id: Option<String>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     content: Option<InputStoryContentData>,
-    parse_mode: Option<ParseMode>,
     story_id: Option<Integer>,
 }
 
@@ -781,34 +753,9 @@ impl PostStory {
     /// * `value` - Caption of the story, 0-2048 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the caption.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the story caption.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -839,10 +786,9 @@ struct PostStoryParameters {
     active_period: Option<Integer>,
     areas: Option<StoryAreas>,
     business_connection_id: Option<String>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     content: Option<InputStoryContentData>,
-    parse_mode: Option<ParseMode>,
     post_to_chat_page: Option<bool>,
     protect_content: Option<bool>,
 }

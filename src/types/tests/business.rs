@@ -98,9 +98,11 @@ fn edit_story() {
                 y_percentage: 6.0,
             },
         )])
-        .with_caption("test")
-        .with_parse_mode(ParseMode::Markdown)
-        .with_caption_entities([TextEntity::bold(0..2)]);
+        .with_caption(
+            InputText::from("test")
+                .with_format(ParseMode::Markdown)
+                .with_format([TextEntity::bold(0..2)]),
+        );
     assert_payload_eq!(POST FORM "editStory" => method);
 }
 
@@ -130,9 +132,11 @@ fn post_story() {
                 y_percentage: 6.0,
             },
         )])
-        .with_caption("test")
-        .with_parse_mode(ParseMode::Markdown)
-        .with_caption_entities([TextEntity::bold(0..2)])
+        .with_caption(
+            InputText::from("test")
+                .with_format(ParseMode::Markdown)
+                .with_format([TextEntity::bold(0..2)]),
+        )
         .with_post_to_chat_page(true)
         .with_protect_content(true);
     assert_payload_eq!(POST FORM "postStory" => method);

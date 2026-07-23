@@ -6,15 +6,13 @@ use crate::{
         ChatId,
         InputFile,
         InputFileReader,
+        InputTextCaption,
         Integer,
         Message,
-        ParseMode,
         PhotoSize,
         ReplyMarkup,
         ReplyParameters,
         SuggestedPostParameters,
-        TextEntities,
-        TextEntity,
     },
 };
 
@@ -192,38 +190,9 @@ impl SendDocument {
     /// May also be used when resending documents by `file_id`.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the caption.
-    ///
-    /// Caption parse mode will be set to [`None`] when this method is called.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
-        self.parameters.parse_mode = None;
-        self
-    }
-
-    /// Sets a new caption parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Parse mode.
-    ///
-    /// Caption entities will be set to [`None`] when this method is called.
-    pub fn with_caption_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -387,8 +356,8 @@ struct SendDocumentParameters {
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
     callback_query_id: Option<String>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     chat_id: Option<ChatId>,
     direct_messages_topic_id: Option<Integer>,
     disable_content_type_detection: Option<bool>,
@@ -396,7 +365,6 @@ struct SendDocumentParameters {
     document: Option<String>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
-    parse_mode: Option<ParseMode>,
     protect_content: Option<bool>,
     receiver_user_id: Option<Integer>,
     reply_markup: Option<ReplyMarkup>,

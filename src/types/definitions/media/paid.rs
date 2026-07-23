@@ -6,16 +6,14 @@ use crate::{
         ChatId,
         InputPaidMediaData,
         InputPaidMediaGroup,
+        InputTextCaption,
         Integer,
         LivePhoto,
         Message,
-        ParseMode,
         PhotoSize,
         ReplyMarkup,
         ReplyParameters,
         SuggestedPostParameters,
-        TextEntities,
-        TextEntity,
         User,
         Video,
     },
@@ -256,23 +254,9 @@ impl SendPaidMedia {
     /// `value` - Media caption, 0-1024 characters after entities parsing.
     pub fn with_caption<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputTextCaption>,
     {
         self.parameters.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of caption entities.
-    ///
-    /// # Arguments
-    ///
-    /// `value` - A list of special entities that appear in the caption, which can be specified instead of parse_mode.
-    pub fn with_caption_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parameters.caption_entities = Some(TextEntities::from_iter(value));
-        self.parameters.parse_mode = None;
         self
     }
 
@@ -306,17 +290,6 @@ impl SendPaidMedia {
     ///   for forum supergroups and private chats of bots with forum topic mode enabled only.
     pub fn with_message_thread_id(mut self, value: Integer) -> Self {
         self.parameters.message_thread_id = Some(value);
-        self
-    }
-
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// `value` - Mode for parsing entities in the media caption.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parameters.parse_mode = Some(value);
-        self.parameters.caption_entities = None;
         self
     }
 
@@ -400,13 +373,12 @@ struct SendPaidMediaParameters {
     star_count: Option<Integer>,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
-    caption: Option<String>,
-    caption_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    caption: Option<InputTextCaption>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     media: Vec<InputPaidMediaData>,
     message_thread_id: Option<Integer>,
-    parse_mode: Option<ParseMode>,
     payload: Option<String>,
     protect_content: Option<bool>,
     reply_parameters: Option<ReplyParameters>,

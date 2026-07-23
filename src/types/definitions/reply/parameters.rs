@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ChatId, Integer, ParseMode, TextEntities, TextEntity};
+use crate::types::{ChatId, InputText, Integer, ParseMode, TextEntities};
 
 /// Describes reply parameters for the message that is being sent.
 #[serde_with::skip_serializing_none]
@@ -120,12 +120,8 @@ impl ReplyParameters {
 pub struct ReplyQuote {
     #[serde(rename = "quote_position")]
     position: Integer,
-    #[serde(rename = "quote")]
-    text: String,
-    #[serde(rename = "quote_entities")]
-    entities: Option<TextEntities>,
-    #[serde(rename = "quote_parse_mode")]
-    parse_mode: Option<ParseMode>,
+    #[serde(flatten)]
+    text: ReplyQuoteText,
 }
 
 impl ReplyQuote {
@@ -137,42 +133,40 @@ impl ReplyQuote {
     /// * `text` - Quoted part of the message to be replied to.
     pub fn new<T>(position: Integer, text: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
         Self {
             position,
-            text: text.into(),
-            entities: None,
-            parse_mode: None,
+            text: ReplyQuoteText::from(text),
         }
     }
+}
 
-    /// Sets a new list of entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the quote.
-    ///
-    /// It can be specified instead of parse mode.
-    pub fn with_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.entities = Some(value.into_iter().collect());
-        self.parse_mode = None;
-        self
-    }
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
+struct ReplyQuoteText {
+    #[serde(rename = "quote")]
+    data: String,
+    #[serde(rename = "quote_entities")]
+    entities: Option<TextEntities>,
+    #[serde(rename = "quote_parse_mode")]
+    parse_mode: Option<ParseMode>,
+}
 
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the quote.
-    ///
-    /// It can be specified instead of entities.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.parse_mode = Some(value);
-        self.entities = None;
-        self
+impl<T> From<T> for ReplyQuoteText
+where
+    T: Into<InputText>,
+{
+    fn from(value: T) -> Self {
+        let InputText {
+            data,
+            entities,
+            parse_mode,
+        } = value.into();
+        Self {
+            data,
+            entities,
+            parse_mode,
+        }
     }
 }

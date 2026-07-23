@@ -4,6 +4,7 @@ expression: actual_data
 ---
 {
   "animation": "file-id",
-  "chat_id": "1",
+  "caption": "caption",
+  "chat_id": 1,
   "parse_mode": "Markdown"
 }

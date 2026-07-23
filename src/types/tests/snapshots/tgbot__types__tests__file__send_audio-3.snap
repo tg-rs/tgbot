@@ -4,6 +4,6 @@ expression: actual_data
 ---
 {
   "audio": "file-id",
-  "chat_id": "1",
+  "chat_id": 1,
   "thumbnail": "https://google.com/favicon.ico"
 }

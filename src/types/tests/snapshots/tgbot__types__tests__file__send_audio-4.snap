@@ -4,6 +4,13 @@ expression: actual_data
 ---
 {
   "audio": "file-id",
-  "chat_id": "1",
-  "parse_mode": "Markdown"
+  "caption": "caption",
+  "caption_entities": [
+    {
+      "length": 10,
+      "offset": 0,
+      "type": "bold"
+    }
+  ],
+  "chat_id": 1
 }

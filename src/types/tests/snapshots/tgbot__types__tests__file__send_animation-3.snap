@@ -11,6 +11,6 @@ expression: actual_data
     }
   ],
   "animation": "file-id",
-  "chat_id": "1",
+  "chat_id": 1,
   "thumbnail": "attach://tgbot_file_1"
 }

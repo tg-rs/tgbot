@@ -10,7 +10,7 @@ expression: actual_data
       "name": null
     }
   ],
-  "chat_id": "1",
+  "chat_id": 1,
   "thumbnail": "attach://tgbot_file_1",
   "video": "file-id"
 }

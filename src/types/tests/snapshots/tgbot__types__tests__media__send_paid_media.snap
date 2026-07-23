@@ -3,12 +3,12 @@ source: src/types/tests/media.rs
 expression: actual_data
 ---
 {
-  "chat_id": "1",
+  "chat_id": 1,
   "media": [
     {
       "media": "file-id",
       "type": "photo"
     }
   ],
-  "star_count": "100"
+  "star_count": 100
 }

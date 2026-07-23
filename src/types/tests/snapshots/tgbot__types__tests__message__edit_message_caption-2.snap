@@ -7,7 +7,6 @@ expression: actual_data
   "caption": "caption",
   "chat_id": 1,
   "message_id": 2,
-  "parse_mode": "Markdown",
   "reply_markup": {
     "inline_keyboard": [
       [

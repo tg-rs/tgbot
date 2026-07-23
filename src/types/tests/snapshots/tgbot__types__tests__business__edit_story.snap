@@ -8,5 +8,5 @@ expression: actual_data
     "photo": "url",
     "type": "photo"
   },
-  "story_id": "1"
+  "story_id": 1
 }

@@ -3,6 +3,6 @@ source: src/types/tests/file.rs
 expression: actual_data
 ---
 {
-  "chat_id": "1",
+  "chat_id": 1,
   "photo": "file-id"
 }

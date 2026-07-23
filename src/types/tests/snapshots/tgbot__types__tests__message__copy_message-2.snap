@@ -12,7 +12,6 @@ expression: actual_data
   "message_effect_id": "test",
   "message_id": 3,
   "message_thread_id": 1,
-  "parse_mode": "Markdown",
   "protect_content": true,
   "reply_markup": {
     "force_reply": true

@@ -6,7 +6,6 @@ expression: actual_data
   "caption": "test",
   "chat_id": 1,
   "ephemeral_message_id": 3,
-  "parse_mode": "Markdown",
   "receiver_user_id": 2,
   "reply_markup": {
     "inline_keyboard": [

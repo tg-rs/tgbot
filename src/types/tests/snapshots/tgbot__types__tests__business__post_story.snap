@@ -3,7 +3,7 @@ source: src/types/tests/business.rs
 expression: actual_data
 ---
 {
-  "active_period": "60",
+  "active_period": 60,
   "business_connection_id": "id",
   "content": {
     "photo": "url",

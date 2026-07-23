@@ -3,13 +3,8 @@ source: src/types/tests/file.rs
 expression: actual_data
 ---
 {
-  "caption_entities": [
-    {
-      "length": 10,
-      "offset": 0,
-      "type": "bold"
-    }
-  ],
-  "chat_id": "1",
+  "caption": "caption",
+  "chat_id": 1,
+  "parse_mode": "Markdown",
   "photo": "file-id"
 }

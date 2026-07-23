@@ -3,7 +3,7 @@ source: src/types/tests/business.rs
 expression: actual_data
 ---
 {
-  "active_period": "60",
+  "active_period": 60,
   "areas": [
     {
       "position": {
@@ -33,6 +33,6 @@ expression: actual_data
     "photo": "url",
     "type": "photo"
   },
-  "post_to_chat_page": "true",
-  "protect_content": "true"
+  "post_to_chat_page": true,
+  "protect_content": true
 }

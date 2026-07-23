@@ -3,7 +3,7 @@ source: src/types/tests/media.rs
 expression: actual_data
 ---
 {
-  "allow_paid_broadcast": "true",
+  "allow_paid_broadcast": true,
   "business_connection_id": "c-id",
   "caption": "caption",
   "caption_entities": [
@@ -13,25 +13,25 @@ expression: actual_data
       "type": "bold"
     }
   ],
-  "chat_id": "1",
-  "direct_messages_topic_id": "1",
-  "disable_notification": "true",
+  "chat_id": 1,
+  "direct_messages_topic_id": 1,
+  "disable_notification": true,
   "media": [
     {
       "media": "file-id",
       "type": "photo"
     }
   ],
-  "message_thread_id": "1",
+  "message_thread_id": 1,
   "payload": "payload",
-  "protect_content": "true",
+  "protect_content": true,
   "reply_markup": {
     "force_reply": true
   },
   "reply_parameters": {
     "message_id": 1
   },
-  "show_caption_above_media": "true",
-  "star_count": "100",
+  "show_caption_above_media": true,
+  "star_count": 100,
   "suggested_post_parameters": {}
 }

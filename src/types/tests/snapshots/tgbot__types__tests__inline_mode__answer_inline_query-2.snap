@@ -46,7 +46,6 @@ expression: actual_data
         "phone_number": "+79001231212",
         "vcard": "vcard"
       },
-      "parse_mode": "HTML",
       "performer": "performer",
       "reply_markup": {
         "inline_keyboard": [
@@ -94,7 +93,6 @@ expression: actual_data
         ],
         "title": "title"
       },
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -147,7 +145,6 @@ expression: actual_data
         }
       },
       "mime_type": "mime",
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -176,7 +173,6 @@ expression: actual_data
         "message_text": "text",
         "parse_mode": "HTML"
       },
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -227,7 +223,6 @@ expression: actual_data
         ],
         "message_text": "text"
       },
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -258,7 +253,6 @@ expression: actual_data
         "longitude": 2.0,
         "title": "title"
       },
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -307,7 +301,6 @@ expression: actual_data
       "mpeg4_height": 300,
       "mpeg4_url": "url",
       "mpeg4_width": 200,
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -331,7 +324,6 @@ expression: actual_data
         "message_text": "text"
       },
       "mpeg4_file_id": "file-id",
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -353,7 +345,6 @@ expression: actual_data
       "input_message_content": {
         "message_text": "text"
       },
-      "parse_mode": "Markdown",
       "photo_height": 300,
       "photo_url": "url",
       "photo_width": 200,
@@ -426,7 +417,6 @@ expression: actual_data
         "message_text": "text"
       },
       "mime_type": "mime",
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -453,7 +443,6 @@ expression: actual_data
       "input_message_content": {
         "message_text": "text"
       },
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -475,7 +464,6 @@ expression: actual_data
       "input_message_content": {
         "message_text": "voice-content-text"
       },
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [
@@ -497,7 +485,6 @@ expression: actual_data
       "input_message_content": {
         "message_text": "text"
       },
-      "parse_mode": "Markdown",
       "reply_markup": {
         "inline_keyboard": [
           [

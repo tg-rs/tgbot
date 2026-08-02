@@ -32,6 +32,8 @@ pub struct BusinessBotRights {
     pub can_delete_all_messages: Option<bool>,
     /// Whether the bot can delete messages sent by the bot.
     pub can_delete_outgoing_messages: Option<bool>,
+    /// Whether the bot can delete messages sent by the bot.
+    pub can_delete_sent_messages: Option<bool>,
     /// Whether the bot can edit the bio of the business account.
     pub can_edit_bio: Option<bool>,
     /// Whether the bot can edit the first and last name of the business account.

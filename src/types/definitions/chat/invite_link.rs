@@ -33,6 +33,12 @@ pub struct ChatInviteLink {
     pub name: Option<String>,
     /// The number of pending join requests created using this link.
     pub pending_join_request_count: Option<Integer>,
+    /// The number of seconds the subscription will be active for before the next payment.
+    pub subscription_period: Option<Integer>,
+    /// The amount of Telegram Stars a user must pay
+    /// initially and after each subsequent subscription period
+    /// to be a member of the chat using the link.
+    pub subscription_price: Option<Integer>,
 }
 
 impl ChatInviteLink {
@@ -56,6 +62,8 @@ impl ChatInviteLink {
             expire_date: None,
             member_limit: None,
             pending_join_request_count: None,
+            subscription_period: None,
+            subscription_price: None,
         }
     }
 
@@ -132,6 +140,26 @@ impl ChatInviteLink {
     /// * `value` - The number of pending join requests created using this link.
     pub fn with_pending_join_request_count(mut self, value: Integer) -> Self {
         self.pending_join_request_count = Some(value);
+        self
+    }
+
+    /// Sets a new subscription period
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The number of seconds the subscription will be active for.
+    pub fn with_subscription_period(mut self, value: Integer) -> Self {
+        self.subscription_period = Some(value);
+        self
+    }
+
+    /// Sets a new subscription price.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The amount of Telegram Stars a user must pay.
+    pub fn with_subscription_price(mut self, value: Integer) -> Self {
+        self.subscription_price = Some(value);
         self
     }
 }

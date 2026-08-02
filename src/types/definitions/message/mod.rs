@@ -32,8 +32,7 @@ pub struct InaccessibleMessage {
 }
 
 /// Describes a message that can be inaccessible to the bot.
-#[derive(Clone, Debug, derive_more::From, Serialize)]
-#[serde(untagged)]
+#[derive(Clone, Debug, derive_more::From)]
 pub enum MaybeInaccessibleMessage {
     /// Describes a message that was deleted or is otherwise inaccessible to the bot.
     InaccessibleMessage(InaccessibleMessage),
@@ -57,6 +56,32 @@ impl<'de> Deserialize<'de> for MaybeInaccessibleMessage {
             }
         })
     }
+}
+
+impl Serialize for MaybeInaccessibleMessage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            Self::InaccessibleMessage(value) => {
+                let value = RawInaccessibleMessage {
+                    message_id: value.message_id,
+                    chat: &value.chat,
+                    date: 0,
+                };
+                value.serialize(serializer)
+            }
+            Self::Message(value) => value.serialize(serializer),
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct RawInaccessibleMessage<'a> {
+    message_id: Integer,
+    chat: &'a Chat,
+    date: Integer,
 }
 
 /// Represents a message.

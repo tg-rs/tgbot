@@ -1,4 +1,4 @@
-use std::{collections::HashSet, time::Duration};
+use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value as JsonValue;
@@ -265,6 +265,7 @@ pub enum UpdateType {
 /// Conversion of an [`Update`] into `T` failed.
 ///
 /// Use [`Update::from`] to get the original update.
+#[derive(Debug)]
 pub struct UnexpectedUpdate(Update);
 
 impl From<UnexpectedUpdate> for Update {
@@ -273,13 +274,23 @@ impl From<UnexpectedUpdate> for Update {
     }
 }
 
+impl TryFrom<Update> for BotSubscriptionUpdated {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        match value.update_type {
+            UpdateType::Subscription(x) => Ok(x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
 impl TryFrom<Update> for BusinessConnection {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            BusinessConnection(x) => Ok(*x),
+            UpdateType::BusinessConnection(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -289,9 +300,30 @@ impl TryFrom<Update> for BusinessMessagesDeleted {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            DeletedBusinessMessages(x) => Ok(*x),
+            UpdateType::DeletedBusinessMessages(x) => Ok(*x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for ChatBoostRemoved {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        match value.update_type {
+            UpdateType::ChatBoostRemoved(x) => Ok(*x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for ChatBoostUpdated {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        match value.update_type {
+            UpdateType::ChatBoostUpdated(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -301,9 +333,8 @@ impl TryFrom<Update> for ChatMemberUpdated {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            BotStatus(x) | UserStatus(x) => Ok(*x),
+            UpdateType::BotStatus(x) | UpdateType::UserStatus(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -313,9 +344,8 @@ impl TryFrom<Update> for CallbackQuery {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            CallbackQuery(x) => Ok(*x),
+            UpdateType::CallbackQuery(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -325,9 +355,8 @@ impl TryFrom<Update> for ChatJoinRequest {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            ChatJoinRequest(x) => Ok(*x),
+            UpdateType::ChatJoinRequest(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -337,9 +366,8 @@ impl TryFrom<Update> for ChosenInlineResult {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            ChosenInlineResult(x) => Ok(*x),
+            UpdateType::ChosenInlineResult(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -349,9 +377,19 @@ impl TryFrom<Update> for InlineQuery {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            InlineQuery(x) => Ok(*x),
+            UpdateType::InlineQuery(x) => Ok(*x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for ManagedBotUpdated {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        match value.update_type {
+            UpdateType::ManagedBot(x) => Ok(x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -361,15 +399,36 @@ impl TryFrom<Update> for Message {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            BusinessMessage(x)
-            | EditedBusinessMessage(x)
-            | EditedChannelPost(x)
-            | EditedMessage(x)
-            | GuestMessage(x)
-            | ChannelPost(x)
-            | Message(x) => Ok(*x),
+            UpdateType::BusinessMessage(x)
+            | UpdateType::EditedBusinessMessage(x)
+            | UpdateType::EditedChannelPost(x)
+            | UpdateType::EditedMessage(x)
+            | UpdateType::GuestMessage(x)
+            | UpdateType::ChannelPost(x)
+            | UpdateType::Message(x) => Ok(*x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for MessageReactionUpdated {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        match value.update_type {
+            UpdateType::MessageReaction(x) => Ok(*x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for MessageReactionCountUpdated {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        match value.update_type {
+            UpdateType::MessageReactionCount(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -379,9 +438,8 @@ impl TryFrom<Update> for Poll {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            Poll(x) => Ok(*x),
+            UpdateType::Poll(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -391,9 +449,8 @@ impl TryFrom<Update> for PollAnswer {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            PollAnswer(x) => Ok(*x),
+            UpdateType::PollAnswer(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -403,9 +460,8 @@ impl TryFrom<Update> for PreCheckoutQuery {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            PreCheckoutQuery(x) => Ok(*x),
+            UpdateType::PreCheckoutQuery(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -415,9 +471,8 @@ impl TryFrom<Update> for PaidMediaPurchased {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            PurchasedPaidMedia(x) => Ok(*x),
+            UpdateType::PurchasedPaidMedia(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -427,21 +482,8 @@ impl TryFrom<Update> for ShippingQuery {
     type Error = UnexpectedUpdate;
 
     fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
         match value.update_type {
-            ShippingQuery(x) => Ok(*x),
-            _ => Err(UnexpectedUpdate(value)),
-        }
-    }
-}
-
-impl TryFrom<Update> for BotSubscriptionUpdated {
-    type Error = UnexpectedUpdate;
-
-    fn try_from(value: Update) -> Result<Self, Self::Error> {
-        use self::UpdateType::*;
-        match value.update_type {
-            Subscription(x) => Ok(x),
+            UpdateType::ShippingQuery(x) => Ok(*x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }
@@ -511,7 +553,7 @@ pub enum AllowedUpdate {
 /// Returns incoming updates using long polling.
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct GetUpdates {
-    allowed_updates: Option<HashSet<AllowedUpdate>>,
+    allowed_updates: Option<Vec<AllowedUpdate>>,
     limit: Option<Integer>,
     offset: Option<Integer>,
     timeout: Option<Integer>,
@@ -526,23 +568,14 @@ impl Method for GetUpdates {
 }
 
 impl GetUpdates {
-    /// Adds a type of an update you want your bot to receive.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The type to add.
-    pub fn add_allowed_update(mut self, value: AllowedUpdate) -> Self {
-        match self.allowed_updates {
-            Some(ref mut updates) => {
-                updates.insert(value);
-            }
-            None => {
-                let mut updates = HashSet::new();
-                updates.insert(value);
-                self.allowed_updates = Some(updates);
-            }
-        };
-        self
+    /// Creates a new `GetUpdates`.
+    pub const fn new() -> Self {
+        Self {
+            allowed_updates: None,
+            limit: None,
+            offset: None,
+            timeout: None,
+        }
     }
 
     /// Sets a new list of allowed updates.
@@ -571,7 +604,7 @@ impl GetUpdates {
     /// # Arguments
     ///
     /// * `value` - Limit of the number of updates to be retrieved; 1—100; default - 100.
-    pub fn with_limit(mut self, value: Integer) -> Self {
+    pub const fn with_limit(mut self, value: Integer) -> Self {
         self.limit = Some(value);
         self
     }
@@ -590,7 +623,7 @@ impl GetUpdates {
     /// The negative offset can be specified to retrieve updates starting
     /// from `-offset` update from the end of the updates queue.
     /// All previous updates will forgotten.
-    pub fn with_offset(mut self, value: Integer) -> Self {
+    pub const fn with_offset(mut self, value: Integer) -> Self {
         self.offset = Some(value);
         self
     }
@@ -601,7 +634,7 @@ impl GetUpdates {
     ///
     /// * `value` - Timeout for long polling; default - 0, i.e. usual short polling; should be positive;
     ///   short polling should be used for testing purposes only.
-    pub fn with_timeout(mut self, value: Duration) -> Self {
+    pub const fn with_timeout(mut self, value: Duration) -> Self {
         self.timeout = Some(value.as_secs() as i64);
         self
     }

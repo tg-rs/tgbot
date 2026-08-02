@@ -812,12 +812,43 @@ impl PollAnswer {
 
 /// Represents the chat or the user that changed answer to the poll.
 #[derive(Clone, Debug, derive_more::From, Deserialize, PartialEq, Serialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(try_from = "RawPollAnswerVoter", into = "RawPollAnswerVoter")]
 pub enum PollAnswerVoter {
     /// The chat that changed the answer to the poll, if the voter is anonymous.
     Chat(Chat),
     /// The user that changed the answer to the poll, if the voter isn't anonymous.
     User(User),
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Deserialize, Serialize)]
+struct RawPollAnswerVoter {
+    #[serde(rename = "voter_chat")]
+    chat: Option<Chat>,
+    user: Option<User>,
+}
+
+impl TryFrom<RawPollAnswerVoter> for PollAnswerVoter {
+    type Error = &'static str;
+
+    fn try_from(value: RawPollAnswerVoter) -> Result<Self, Self::Error> {
+        match (value.chat, value.user) {
+            (Some(chat), None) => Ok(Self::Chat(chat)),
+            (None, Some(user)) => Ok(Self::User(user)),
+            (None, None) => Err("voter is not specified"),
+            (Some(_), Some(_)) => Err("voter must be either chat or user"),
+        }
+    }
+}
+
+impl From<PollAnswerVoter> for RawPollAnswerVoter {
+    fn from(value: PollAnswerVoter) -> Self {
+        let (chat, user) = match value {
+            PollAnswerVoter::Chat(chat) => (Some(chat), None),
+            PollAnswerVoter::User(user) => (None, Some(user)),
+        };
+        Self { chat, user }
+    }
 }
 
 /// Contains information about one answer option in a poll to send.

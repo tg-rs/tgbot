@@ -3,7 +3,7 @@ source: src/types/tests/poll.rs
 expression: "PollAnswerVoter::from(Chat::Channel(ChannelChat::new(1,\n\"test-channel\").with_username(\"test_channel\"),))"
 ---
 {
-  "chat": {
+  "voter_chat": {
     "type": "channel",
     "id": 1,
     "title": "test-channel",

@@ -254,8 +254,8 @@ async fn send_request<T>(request: HttpRequestBuilder) -> Result<Response<T>, Exe
 where
     T: DeserializeOwned,
 {
-    let response = request.send().await?;
-    Ok(response.json::<Response<T>>().await?)
+    let response = request.send().await.map_err(HttpError::without_url)?;
+    Ok(response.json::<Response<T>>().await.map_err(HttpError::without_url)?)
 }
 
 impl fmt::Debug for Client {
@@ -317,7 +317,7 @@ pub enum DownloadFileError {
 
 impl From<HttpError> for DownloadFileError {
     fn from(err: HttpError) -> Self {
-        Self::Http(err)
+        Self::Http(err.without_url())
     }
 }
 

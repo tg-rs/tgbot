@@ -78,6 +78,13 @@ async fn execute() {
         err.to_string()
             .starts_with("failed to execute method: error decoding response body"),
     );
+    let ExecuteError::Http(err) = err else {
+        panic!("expected an HTTP error");
+    };
+    assert_eq!(
+        err.url().unwrap().as_str(),
+        format!("{}/bot[TOKEN]/close", cx.server.url())
+    );
 
     cx.set_close_response_retry(0);
     cx.execute_close().await.unwrap();

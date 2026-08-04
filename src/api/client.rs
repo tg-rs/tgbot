@@ -254,8 +254,27 @@ async fn send_request<T>(request: HttpRequestBuilder) -> Result<Response<T>, Exe
 where
     T: DeserializeOwned,
 {
-    let response = request.send().await.map_err(HttpError::without_url)?;
-    Ok(response.json::<Response<T>>().await.map_err(HttpError::without_url)?)
+    let response = request.send().await?;
+    Ok(response.json::<Response<T>>().await?)
+}
+
+fn sanitize_http_err(mut err: HttpError) -> HttpError {
+    if let Some(url) = err.url_mut()
+        && let Some(segments) = url.path_segments()
+    {
+        let path = segments
+            .map(|segment| {
+                if segment.starts_with("bot") {
+                    "bot[TOKEN]"
+                } else {
+                    segment
+                }
+            })
+            .collect::<Vec<_>>()
+            .join("/");
+        url.set_path(&path);
+    }
+    err
 }
 
 impl fmt::Debug for Client {
@@ -317,7 +336,7 @@ pub enum DownloadFileError {
 
 impl From<HttpError> for DownloadFileError {
     fn from(err: HttpError) -> Self {
-        Self::Http(err.without_url())
+        Self::Http(sanitize_http_err(err))
     }
 }
 
@@ -346,11 +365,18 @@ impl fmt::Display for DownloadFileError {
 #[derive(Debug, derive_more::From)]
 pub enum ExecuteError {
     /// An error indicating a failure to send an HTTP request.
+    #[from(skip)]
     Http(HttpError),
     /// An error indicating a failure to build an HTTP request payload.
     Payload(PayloadError),
     /// An error received from the Telegram server in response to the execution request.
     Response(ResponseError),
+}
+
+impl From<HttpError> for ExecuteError {
+    fn from(err: HttpError) -> Self {
+        Self::Http(sanitize_http_err(err))
+    }
 }
 
 impl Error for ExecuteError {

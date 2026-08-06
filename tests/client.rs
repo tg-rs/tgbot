@@ -4,7 +4,7 @@ use std::{sync::Mutex, time::Instant};
 use futures_util::stream::StreamExt;
 use mockito::{Server, ServerGuard};
 use tgbot::{
-    api::{Client, ExecuteError},
+    api::{Client, DownloadFileError, ExecuteError},
     types::Close,
 };
 
@@ -115,6 +115,11 @@ async fn download_file() {
         .with_body("test-error")
         .with_status(400)
         .create();
+    server
+        .mock("GET", "/file/bot-token/file-http-err")
+        .with_status(500)
+        .with_chunked_body(|_| Err(std::io::Error::other("test error")))
+        .create();
     let client = Client::new("-token").unwrap().with_host(server.url());
     let mut stream = client.download_file("file-ok").await.unwrap();
     let mut buf = Vec::new();
@@ -128,4 +133,12 @@ async fn download_file() {
         Ok(_) => panic!("Got an unexpected stream"),
         Err(err) => assert_eq!(err.to_string(), "failed to download file: status=400 text=test-error"),
     };
+
+    let Err(DownloadFileError::Http(err)) = client.download_file("file-http-err").await else {
+        panic!("expected an HTTP error");
+    };
+    assert_eq!(
+        err.url().unwrap().as_str(),
+        format!("{}/file/bot[TOKEN]/file-http-err", server.url())
+    );
 }

@@ -262,16 +262,15 @@ fn sanitize_http_err(mut err: HttpError) -> HttpError {
     if let Some(url) = err.url_mut()
         && let Some(segments) = url.path_segments()
     {
-        let path = segments
-            .map(|segment| {
-                if segment.starts_with("bot") {
-                    "bot[TOKEN]"
-                } else {
-                    segment
-                }
-            })
-            .collect::<Vec<_>>()
-            .join("/");
+        let path = segments.fold(String::new(), |mut path, segment| {
+            path.push('/');
+            path.push_str(if segment.starts_with("bot") {
+                "bot[TOKEN]"
+            } else {
+                segment
+            });
+            path
+        });
         url.set_path(&path);
     }
     err
@@ -408,6 +407,15 @@ impl fmt::Display for ExecuteError {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn sanitize_http_err_without_url() {
+        let err = HttpClient::new().get("invalid url").build().unwrap_err();
+        assert!(err.url().is_none());
+
+        let err = sanitize_http_err(err);
+        assert!(err.url().is_none());
+    }
 
     #[test]
     fn api() {

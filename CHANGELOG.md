@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.47.0 (xx.07.2026)
+
+- Added Bot API 10.2 support.
+- Added `Client::with_max_retry_after` method.
+- `Client::download_file` now logs a file path only.
+- Changed serialization of integer form values from `ToString` to itoa.
+- Changed serialization of floating form values from `ToString` to zmij.
+- Changed the type of the `certificate` parameter in `SetWebhook` to `InputFileReader`-like.
+- Fixed corrupted `attach://%id%` form values in poll media.
+- Fixed the missing `can_delete_sent_messages` field in `BusinessBotRights`.
+- Fixed the missing `subscription_period` and `subscription_price` fields in `ChatInviteLink`.
+- Fixed inconsistent serialization of `MaybeInaccessibleMessage`.
+- Fixed `PollAnswerVoter` (de)serialization.
+- Fixed missing `TryFrom<Update>` implementations.
+- Fixed inaccessible `LivePhoto` struct fields.
+- Fixed inaccessible `Gifts.gifts` field.
+- Fixed inaccessible `PreparedKeyboardButton` fields.
+- Fixed inaccessible `StarTransaction` fields.
+- Moved form serialization to `Method::into_payload`:
+  The `Result<Self, %SerializationError%>` return type of methods in form-based structs changed to `Self`.
+- Converted `InputMessageContent` to a struct.
+- Converted `InlineQueryResult` to a struct.
+- Removed `InputMedia` factory methods; use `From`/`Into` instead.
+- Removed `InputMessageContentLocation`; use `Location::into` instead.
+- Removed `InputMessageContentRich`; use `InputRichMessage::into` instead.
+- Removed `InputPaidMediaGroupItem`; use corresponding `InputPaidMedia` types instead.
+- Removed `MediaGroupItem` factory methods; use `From`/`Into` instead.
+- Removed `GetUpdates::add_allowed_update`.
+- Removed `with_*_entities` and `with_*parse_mode` methods in favor of `InputText` and `InputTextFormat`.
+- Removed constructors and setters from types with public fields.
+  These types are used in responses and rarely instantiated.
+
 ## 0.46.0 (13.06.2026)
 
 - Added Bot API 10.1 support.

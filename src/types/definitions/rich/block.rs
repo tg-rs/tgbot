@@ -1292,25 +1292,44 @@ where
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case", tag = "type")]
 enum RawRichBlock {
-    Anchor { name: String },
+    Anchor {
+        name: String,
+    },
     Animation(RichBlockAnimation),
     Audio(RichBlockAudio),
+    #[serde(rename = "blockquote")]
     BlockQuotation(RichBlockBlockQuotation),
     Collage(RichBlockCollage),
     Details(RichBlockDetails),
     Divider,
-    Footer { text: RichText },
-    List { items: Vec<RichBlockListItem> },
+    Footer {
+        text: RichText,
+    },
+    List {
+        items: Vec<RichBlockListItem>,
+    },
     Map(RichBlockMap),
-    MathematicalExpression { expression: String },
-    Paragraph { text: RichText },
+    MathematicalExpression {
+        expression: String,
+    },
+    Paragraph {
+        text: RichText,
+    },
     Photo(RichBlockPhoto),
+    #[serde(rename = "pre")]
     Preformatted(RichBlockPreformatted),
+    #[serde(rename = "pullquote")]
     PullQuotation(RichBlockPullQuotation),
-    SectionHeading { text: RichText, size: Integer },
+    #[serde(rename = "heading")]
+    SectionHeading {
+        text: RichText,
+        size: Integer,
+    },
     Slideshow(RichBlockSlideshow),
     Table(RichBlockTable),
-    Thinking { text: RichText },
+    Thinking {
+        text: RichText,
+    },
     Video(RichBlockVideo),
     VoiceNote(RichBlockVoiceNote),
 }

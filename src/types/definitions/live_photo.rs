@@ -20,23 +20,23 @@ use crate::{
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct LivePhoto {
     /// Duration of the video in seconds as defined by the sender.
-    duration: Integer,
+    pub duration: Integer,
     /// Identifier for the video file which can be used to download or reuse the file.
-    file_id: String,
+    pub file_id: String,
     /// Unique identifier for the video file which is supposed to be the same over time and for different bots.
     ///
     /// Can't be used to download or reuse the file.
-    file_unique_id: String,
+    pub file_unique_id: String,
     /// Video height as defined by the sender.
-    height: Integer,
+    pub height: Integer,
     /// Video width as defined by the sender.
-    width: Integer,
+    pub width: Integer,
     /// File size in bytes.
-    file_size: Option<Integer>,
+    pub file_size: Option<Integer>,
     /// MIME type of the file as defined by the sender.
-    mime_type: Option<String>,
+    pub mime_type: Option<String>,
     /// Available sizes of the corresponding static photo.
-    photo: Option<Vec<PhotoSize>>,
+    pub photo: Option<Vec<PhotoSize>>,
 }
 
 impl LivePhoto {

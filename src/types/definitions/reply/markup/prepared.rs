@@ -8,7 +8,8 @@ use crate::{
 /// Describes a keyboard button to be used by a user of a Mini App.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PreparedKeyboardButton {
-    id: String,
+    /// Unique identifier of the keyboard button.
+    pub id: String,
 }
 
 impl<T> From<T> for PreparedKeyboardButton

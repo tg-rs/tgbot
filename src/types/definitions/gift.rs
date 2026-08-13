@@ -411,14 +411,9 @@ pub struct Gifts {
     gifts: Vec<Gift>,
 }
 
-impl<T> From<T> for Gifts
-where
-    T: IntoIterator<Item = Gift>,
-{
-    fn from(value: T) -> Self {
-        Self {
-            gifts: value.into_iter().collect(),
-        }
+impl From<Gifts> for Vec<Gift> {
+    fn from(value: Gifts) -> Self {
+        value.gifts
     }
 }
 

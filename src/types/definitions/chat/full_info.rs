@@ -12,6 +12,7 @@ use crate::types::{
     ChatLocation,
     ChatPermissions,
     ChatPhoto,
+    Community,
     Integer,
     Message,
     ProfileAccentColor,
@@ -171,4 +172,6 @@ pub struct ChatFullInfo {
     ///
     /// The field is only available to chat administrators.
     pub guard_bot: Option<User>,
+    /// The community to which the chat belongs.
+    pub community: Option<Community>,
 }

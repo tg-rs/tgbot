@@ -46,7 +46,6 @@ zmij = "1"
 [dev-dependencies]
 dotenvy = "0.15"
 env_logger = "0.11"
-insta = { version = "1", features = ["json"] }
 mockito = "1"
 regex = "1"
 serde-json-assert = "0.4"

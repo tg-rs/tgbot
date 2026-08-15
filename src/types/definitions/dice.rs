@@ -258,3 +258,42 @@ impl Method for SendDice {
         Payload::json("sendDice", self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dice() {
+        for value in [
+            serde_json::json!({
+                "emoji": DiceType::Basketball.to_string(),
+                "value": 1,
+            }),
+            serde_json::json!({
+                "emoji": DiceType::Bones.to_string(),
+                "value": 2,
+            }),
+            serde_json::json!({
+                "emoji": DiceType::Bowling.to_string(),
+                "value": 3,
+            }),
+            serde_json::json!({
+                "emoji": DiceType::Darts.to_string(),
+                "value": 4,
+            }),
+            serde_json::json!({
+                "emoji": DiceType::Football.to_string(),
+                "value": 5,
+            }),
+            serde_json::json!({
+                "emoji": DiceType::SlotMachine.to_string(),
+                "value": 6,
+            }),
+        ] {
+            let obj: Dice = serde_json::from_value(value.clone()).unwrap();
+            assert_eq!(obj.value(), value["value"].as_i64().unwrap());
+            assert_eq!(obj.dice_type().to_string(), value["emoji"]);
+        }
+    }
+}

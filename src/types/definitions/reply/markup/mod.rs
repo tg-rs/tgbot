@@ -44,3 +44,20 @@ impl From<Vec<Vec<KeyboardButton>>> for ReplyMarkup {
         ReplyMarkup::ReplyKeyboardMarkup(markup.into())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn from() {
+        let obj = ReplyMarkup::from([[InlineKeyboardButton::for_pay("test")]]);
+        assert!(matches!(obj, ReplyMarkup::InlineKeyboardMarkup(_)));
+        let obj = ReplyMarkup::from(vec![vec![InlineKeyboardButton::for_pay("test")]]);
+        assert!(matches!(obj, ReplyMarkup::InlineKeyboardMarkup(_)));
+        let obj = ReplyMarkup::from([[KeyboardButton::new("test")]]);
+        assert!(matches!(obj, ReplyMarkup::ReplyKeyboardMarkup(_)));
+        let obj = ReplyMarkup::from(vec![vec![KeyboardButton::new("test")]]);
+        assert!(matches!(obj, ReplyMarkup::ReplyKeyboardMarkup(_)));
+    }
+}

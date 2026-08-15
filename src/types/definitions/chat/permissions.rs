@@ -594,3 +594,103 @@ impl Method for SetChatPermissions {
         Payload::json("setChatPermissions", self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn chat_administrator_rights() {
+        let obj = ChatAdministratorRights::default()
+            .with_can_change_info(true)
+            .with_can_delete_messages(false)
+            .with_can_delete_stories(false)
+            .with_can_edit_messages(false)
+            .with_can_edit_stories(true)
+            .with_can_invite_users(false)
+            .with_can_manage_chat(true)
+            .with_can_manage_direct_messages(false)
+            .with_can_manage_tags(false)
+            .with_can_manage_topics(true)
+            .with_can_manage_video_chats(false)
+            .with_can_pin_messages(true)
+            .with_can_post_messages(true)
+            .with_can_post_stories(false)
+            .with_can_promote_members(true)
+            .with_can_restrict_members(false)
+            .with_is_anonymous(true);
+        assert!(obj.can_change_info);
+        assert!(!obj.can_delete_messages);
+        assert!(!obj.can_delete_stories.unwrap());
+        assert!(!obj.can_edit_messages.unwrap());
+        assert!(obj.can_edit_stories.unwrap());
+        assert!(!obj.can_invite_users);
+        assert!(obj.can_manage_chat);
+        assert!(!obj.can_manage_direct_messages.unwrap());
+        assert!(!obj.can_manage_tags.unwrap());
+        assert!(obj.can_manage_topics.unwrap());
+        assert!(!obj.can_manage_video_chats);
+        assert!(obj.can_pin_messages.unwrap());
+        assert!(obj.can_post_messages.unwrap());
+        assert!(!obj.can_post_stories.unwrap());
+        assert!(obj.can_promote_members);
+        assert!(!obj.can_restrict_members);
+        assert!(obj.is_anonymous);
+
+        let obj = ChatAdministratorRights::all();
+        assert!(obj.can_change_info);
+        assert!(obj.can_delete_messages);
+        assert!(obj.can_delete_stories.unwrap());
+        assert!(obj.can_edit_messages.unwrap());
+        assert!(obj.can_edit_stories.unwrap());
+        assert!(obj.can_invite_users);
+        assert!(obj.can_manage_chat);
+        assert!(obj.can_manage_direct_messages.unwrap());
+        assert!(obj.can_manage_tags.unwrap());
+        assert!(obj.can_manage_topics.unwrap());
+        assert!(obj.can_manage_video_chats);
+        assert!(obj.can_pin_messages.unwrap());
+        assert!(obj.can_post_messages.unwrap());
+        assert!(obj.can_post_stories.unwrap());
+        assert!(obj.can_promote_members);
+        assert!(obj.can_restrict_members);
+        assert!(obj.is_anonymous);
+    }
+
+    #[test]
+    fn chat_permissions() {
+        let obj = ChatPermissions::default()
+            .with_can_send_messages(true)
+            .with_can_send_audios(false)
+            .with_can_send_documents(true)
+            .with_can_send_photos(false)
+            .with_can_send_videos(true)
+            .with_can_send_video_notes(false)
+            .with_can_send_voice_notes(true)
+            .with_can_send_polls(true)
+            .with_can_send_other_messages(false)
+            .with_can_add_web_page_previews(true)
+            .with_can_change_info(false)
+            .with_can_edit_tag(true)
+            .with_can_invite_users(true)
+            .with_can_pin_messages(false)
+            .with_can_manage_topics(true)
+            .with_can_react_to_messages(false);
+        assert!(obj.can_send_messages.unwrap());
+        assert!(!obj.can_send_audios.unwrap());
+        assert!(obj.can_send_documents.unwrap());
+        assert!(!obj.can_send_photos.unwrap());
+        assert!(obj.can_send_videos.unwrap());
+        assert!(!obj.can_send_video_notes.unwrap());
+        assert!(obj.can_send_voice_notes.unwrap());
+        assert!(obj.can_send_polls.unwrap());
+        assert!(!obj.can_send_other_messages.unwrap());
+        assert!(obj.can_add_web_page_previews.unwrap());
+        assert!(!obj.can_change_info.unwrap());
+        assert!(obj.can_edit_tag.unwrap());
+        assert!(obj.can_invite_users.unwrap());
+        assert!(!obj.can_pin_messages.unwrap());
+        assert!(obj.can_manage_topics.unwrap());
+        assert!(!obj.can_react_to_messages.unwrap());
+    }
+}

@@ -70,8 +70,8 @@ impl Error for InputPaidMediaGroupError {
 impl fmt::Display for InputPaidMediaGroupError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::NotEnoughItems(number) => write!(out, "group must contain at least {number} items"),
-            Self::TooManyItems(number) => write!(out, "group must contain no more than {number} items"),
+            Self::NotEnoughItems(number) => write!(out, "group must contain at least {number} item(s)"),
+            Self::TooManyItems(number) => write!(out, "group must contain no more than {number} item(s)"),
         }
     }
 }
@@ -333,4 +333,35 @@ pub(crate) struct InputPaidMediaVideoParameters {
     start_timestamp: Option<Integer>,
     supports_streaming: Option<bool>,
     width: Option<Integer>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn input_paid_media_group_error() {
+        let empty: Vec<InputPaidMediaPhoto> = vec![];
+        let err = InputPaidMediaGroup::new(empty).unwrap_err();
+        assert!(err.source().is_none());
+        assert_eq!(err.to_string(), "group must contain at least 1 item(s)");
+        assert!(matches!(err, InputPaidMediaGroupError::NotEnoughItems(1)));
+        let err = InputPaidMediaGroup::new(vec![
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+            InputPaidMediaPhoto::from(InputFile::file_id("file-id")),
+        ])
+        .unwrap_err();
+        assert!(err.source().is_none());
+        assert_eq!(err.to_string(), "group must contain no more than 10 item(s)");
+        assert!(matches!(err, InputPaidMediaGroupError::TooManyItems(10)));
+    }
 }

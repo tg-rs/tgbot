@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use crate::types::{Integer, User};
 
 /// Represents a collection of text entities.
-#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(into = "Vec<TextEntity>", try_from = "Vec<RawTextEntity>")]
 pub struct TextEntities {
     items: Vec<TextEntity>,
@@ -364,7 +364,7 @@ impl fmt::Display for TextEntityError {
             out,
             "{}",
             match self {
-                Self::NoCustomEmoji => "Custom emoji is required for custom_emoji entity",
+                Self::NoCustomEmoji => "custom emoji is required for custom_emoji entity",
                 Self::NoUrl => "URL is required for text_link entity",
                 Self::NoUser => "user is required for text_mention entity",
             }
@@ -490,6 +490,355 @@ impl From<Range<u32>> for TextEntityPosition {
         Self {
             offset: range.start,
             length: range.end - range.start,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::error::Error;
+
+    use crate::types::*;
+
+    #[test]
+    fn collection() {
+        let mut obj = TextEntities::default();
+        obj.push(TextEntity::pre(0..2, Some("test")));
+        obj.push(TextEntity::text_link(0..2, "test"));
+        obj.push(TextEntity::text_mention(0..2, User::new(1, "John", false)));
+        assert!(matches!(obj[0], TextEntity::Pre { .. }));
+        assert!(matches!(obj[1], TextEntity::TextLink { .. }));
+        assert!(matches!(obj[2], TextEntity::TextMention { .. }));
+        obj[0] = TextEntity::underline(0..3);
+        let i = obj.into_iter();
+        assert_eq!(i.count(), 3);
+    }
+
+    #[test]
+    fn deserialize() {
+        let input = serde_json::json!({
+            "message_id": 1, "date": 0,
+            "from": {"id": 1, "first_name": "firstname", "is_bot": false},
+            "chat": {"id": 1, "type": "supergroup", "title": "super-group-title"},
+            "text": "b /c $c cd u@h.z #h i @m p pre l tm url u s sx pre 🤡 bq ebq 20:20 0",
+            "entities": [
+                {"type": "bold", "offset": 0, "length": 1},
+                {"type": "bot_command", "offset": 3, "length": 2},
+                {"type": "cashtag", "offset": 6, "length": 2},
+                {"type": "code", "offset": 9, "length": 2},
+                {"type": "email", "offset": 12, "length": 5},
+                {"type": "hashtag", "offset": 18, "length": 2},
+                {"type": "italic", "offset": 21, "length": 1},
+                {"type": "mention", "offset": 23, "length": 2},
+                {"type": "phone_number", "offset": 26, "length": 1},
+                {"type": "pre", "offset": 28, "length": 3},
+                {"type": "text_link", "offset": 32, "length": 1, "url": "https://example.com"},
+                {
+                    "type": "text_mention",
+                    "offset": 34,
+                    "length": 2,
+                    "user": {
+                        "id": 1,
+                        "first_name": "test",
+                        "is_bot": false
+                    }
+                },
+                {"type": "url", "offset": 37, "length": 3},
+                {"type": "underline", "offset": 41, "length": 1},
+                {"type": "spoiler", "offset": 43, "length": 1},
+                {"type": "strikethrough", "offset": 45, "length": 2},
+                {"type": "pre", "offset": 48, "length": 3, "language": "rust"},
+                {"type": "custom_emoji", "offset": 52, "length": 2, "custom_emoji_id": "emoji-id"},
+                {"type": "blockquote", "offset": 55, "length": 2},
+                {"type": "expandable_blockquote", "offset": 58, "length": 3},
+                {"type": "date_time", "offset": 62, "length": 5},
+                {"type": "date_time", "offset": 68, "length": 1, "unix_time": 0, "date_time_format": "r"},
+            ]
+        });
+        let msg: Message = serde_json::from_value(input).unwrap();
+        if let MessageData::Text(text) = msg.data {
+            let entities: Vec<TextEntity> = text.entities.unwrap().into();
+            assert_eq!(
+                vec![
+                    TextEntity::Bold(TextEntityPosition { offset: 0, length: 1 }),
+                    TextEntity::bot_command(TextEntityPosition { offset: 3, length: 2 }),
+                    TextEntity::Cashtag(TextEntityPosition { offset: 6, length: 2 }),
+                    TextEntity::Code(TextEntityPosition { offset: 9, length: 2 }),
+                    TextEntity::Email(TextEntityPosition { offset: 12, length: 5 }),
+                    TextEntity::Hashtag(TextEntityPosition { offset: 18, length: 2 }),
+                    TextEntity::Italic(TextEntityPosition { offset: 21, length: 1 }),
+                    TextEntity::Mention(TextEntityPosition { offset: 23, length: 2 }),
+                    TextEntity::PhoneNumber(TextEntityPosition { offset: 26, length: 1 }),
+                    TextEntity::Pre {
+                        position: TextEntityPosition { offset: 28, length: 3 },
+                        language: None,
+                    },
+                    TextEntity::TextLink {
+                        position: TextEntityPosition { offset: 32, length: 1 },
+                        url: String::from("https://example.com"),
+                    },
+                    TextEntity::TextMention {
+                        position: TextEntityPosition { offset: 34, length: 2 },
+                        user: User::new(1, "test", false),
+                    },
+                    TextEntity::Url(TextEntityPosition { offset: 37, length: 3 }),
+                    TextEntity::Underline(TextEntityPosition { offset: 41, length: 1 }),
+                    TextEntity::Spoiler(TextEntityPosition { offset: 43, length: 1 }),
+                    TextEntity::Strikethrough(TextEntityPosition { offset: 45, length: 2 }),
+                    TextEntity::Pre {
+                        position: TextEntityPosition { offset: 48, length: 3 },
+                        language: Some(String::from("rust")),
+                    },
+                    TextEntity::CustomEmoji {
+                        custom_emoji_id: String::from("emoji-id"),
+                        position: TextEntityPosition { offset: 52, length: 2 },
+                    },
+                    TextEntity::Blockquote(TextEntityPosition { offset: 55, length: 2 }),
+                    TextEntity::ExpandableBlockquote(TextEntityPosition { offset: 58, length: 3 }),
+                    TextEntity::DateTime {
+                        position: TextEntityPosition { offset: 62, length: 5 },
+                        unix_time: None,
+                        format: None
+                    },
+                    TextEntity::DateTime {
+                        position: TextEntityPosition { offset: 68, length: 1 },
+                        unix_time: Some(0),
+                        format: Some(String::from("r"))
+                    },
+                ],
+                entities
+            );
+        } else {
+            panic!("Unexpected message data: {:?}", msg.data);
+        }
+    }
+
+    #[test]
+    fn deserialize_failed() {
+        for (input, error) in [
+            (
+                serde_json::json!([{"type": "text_link", "offset": 0, "length": 2}]),
+                "URL is required for text_link entity",
+            ),
+            (
+                serde_json::json!([{"type": "text_mention", "offset": 0, "length": 2}]),
+                "user is required for text_mention entity",
+            ),
+            (
+                serde_json::json!([{"type": "custom_emoji", "offset": 0, "length": 2}]),
+                "custom emoji is required for custom_emoji entity",
+            ),
+        ] {
+            let err = serde_json::from_value::<TextEntities>(input).unwrap_err();
+            assert_eq!(err.to_string(), error);
+            assert!(err.source().is_none());
+        }
+    }
+
+    #[test]
+    fn serialize() {
+        for (entity, expected) in vec![
+            (
+                TextEntity::Blockquote(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "blockquote",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Bold(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "bold",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::bot_command(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "bot_command",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Cashtag(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "cashtag",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Code(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "code",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::custom_emoji(0..2, "emoji-id"),
+                serde_json::json!({
+                    "type": "custom_emoji",
+                    "offset": 0,
+                    "length": 2,
+                    "custom_emoji_id": "emoji-id"
+                }),
+            ),
+            (
+                TextEntity::date_time(0..2, None, None::<String>),
+                serde_json::json!({
+                    "type": "date_time",
+                    "offset": 0,
+                    "length": 2,
+                }),
+            ),
+            (
+                TextEntity::date_time(0..2, Some(0), Some("r")),
+                serde_json::json!({
+                    "type": "date_time",
+                    "offset": 0,
+                    "length": 2,
+                    "unix_time": 0,
+                    "date_time_format": "r",
+                }),
+            ),
+            (
+                TextEntity::Email(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "email",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::ExpandableBlockquote(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "expandable_blockquote",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Hashtag(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "hashtag",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Italic(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "italic",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Mention(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "mention",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::PhoneNumber(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "phone_number",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Pre {
+                    position: TextEntityPosition { offset: 0, length: 10 },
+                    language: None,
+                },
+                serde_json::json!({
+                    "type": "pre",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Pre {
+                    position: TextEntityPosition { offset: 0, length: 10 },
+                    language: Some(String::from("rust")),
+                },
+                serde_json::json!({
+                    "type": "pre",
+                    "offset": 0,
+                    "length": 10,
+                    "language": "rust"
+                }),
+            ),
+            (
+                TextEntity::Spoiler(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "spoiler",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Strikethrough(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "strikethrough",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::TextLink {
+                    position: TextEntityPosition { offset: 0, length: 21 },
+                    url: String::from("https://rust-lang.org"),
+                },
+                serde_json::json!({
+                    "type": "text_link",
+                    "offset": 0,
+                    "length": 21,
+                    "url": "https://rust-lang.org"
+                }),
+            ),
+            (
+                TextEntity::TextMention {
+                    position: TextEntityPosition { offset: 0, length: 4 },
+                    user: User::new(1, "test", false),
+                },
+                serde_json::json!({
+                    "type": "text_mention",
+                    "offset": 0,
+                    "length": 4,
+                    "user": {
+                        "id": 1,
+                        "first_name": "test",
+                        "is_bot": false
+                    }
+                }),
+            ),
+            (
+                TextEntity::Underline(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "underline",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+            (
+                TextEntity::Url(TextEntityPosition { offset: 0, length: 10 }),
+                serde_json::json!({
+                    "type": "url",
+                    "offset": 0,
+                    "length": 10
+                }),
+            ),
+        ] {
+            let value: serde_json::Value = serde_json::from_str(&serde_json::to_string(&entity).unwrap()).unwrap();
+            assert_eq!(value, expected);
         }
     }
 }

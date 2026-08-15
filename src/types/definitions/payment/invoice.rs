@@ -589,3 +589,15 @@ impl Method for SendInvoice {
         Payload::json("sendInvoice", self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn labeled_price() {
+        let obj = LabeledPrice::new(10, "test-label");
+        assert_eq!(obj.amount(), 10);
+        assert_eq!(obj.label(), "test-label");
+    }
+}

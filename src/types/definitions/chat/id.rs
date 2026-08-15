@@ -122,3 +122,73 @@ impl From<Integer> for ChatId {
         ChatId::Id(id.into())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+
+    use super::*;
+
+    #[test]
+    fn chat_peer_id() {
+        let a = ChatPeerId::from(1);
+        let b = ChatPeerId::from(1);
+        assert_eq!(a, b);
+        assert_eq!(Integer::from(a), 1);
+        assert_eq!(b.to_string(), "1");
+    }
+
+    #[test]
+    fn chat_username() {
+        let a = ChatUsername::from("@test");
+        let b = ChatUsername::from(String::from("@test"));
+        assert_eq!(a, b);
+        assert_eq!(a, *"@test");
+        assert_eq!(a, String::from("@test"));
+        assert_eq!(a.to_string(), "@test");
+    }
+
+    #[test]
+    fn chat_id() {
+        let chat_id = ChatId::from(1);
+        if let ChatId::Id(chat_id) = chat_id {
+            assert_eq!(chat_id, 1);
+        } else {
+            panic!("Unexpected chat id: {chat_id:?}");
+        }
+        assert_eq!(serde_json::to_string(&chat_id).unwrap(), r#"1"#);
+        assert_eq!(chat_id.to_string(), "1");
+
+        let chat_id = ChatId::from("username");
+        if let ChatId::Username(ref username) = chat_id {
+            assert_eq!(username, "username");
+        } else {
+            panic!("Unexpected chat id: {chat_id:?}");
+        }
+        assert_eq!(serde_json::to_string(&chat_id).unwrap(), r#""username""#);
+        assert_eq!(chat_id.to_string(), "username");
+
+        let chat_id = ChatId::from(String::from("username"));
+        if let ChatId::Username(ref username) = chat_id {
+            assert_eq!(username, "username");
+        } else {
+            panic!("Unexpected chat id: {chat_id:?}");
+        }
+        assert_eq!(serde_json::to_string(&chat_id).unwrap(), r#""username""#);
+        assert_eq!(chat_id.to_string(), "username");
+
+        let mut map = HashMap::new();
+        let chat_id_1 = ChatId::from(1);
+        let chat_id_2 = ChatId::from("username");
+        map.insert(chat_id_1.clone(), "1".to_string());
+        map.insert(chat_id_2.clone(), "2".to_string());
+        assert_eq!(map.get(&chat_id_1).unwrap(), "1");
+        assert_eq!(map.get(&chat_id_2).unwrap(), "2");
+
+        let chat_id = ChatId::from(ChatPeerId::from(1));
+        assert!(matches!(chat_id, ChatId::Id(_)));
+
+        let chat_id = ChatId::from(ChatUsername::from("@test"));
+        assert!(matches!(chat_id, ChatId::Username(_)));
+    }
+}

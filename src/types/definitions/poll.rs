@@ -1310,3 +1310,36 @@ impl Method for StopPoll {
         Payload::json("stopPoll", self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn poll_type() {
+        assert_eq!(PollType::Quiz.to_string(), "quiz");
+        assert_eq!(PollType::Regular.to_string(), "regular");
+    }
+
+    #[test]
+    fn poll_answer_voter() {
+        let value = serde_json::json!({
+            "voter_chat": {
+                "type": "channel",
+                "id": 1,
+                "title": "test"
+            },
+            "user": {
+                "id": 1,
+                "first_name": "John",
+                "is_bot": false
+            }
+        });
+        let err = serde_json::from_value::<PollAnswerVoter>(value).unwrap_err();
+        assert_eq!(err.to_string(), "voter must be either chat or user");
+
+        let value = serde_json::json!({});
+        let err = serde_json::from_value::<PollAnswerVoter>(value).unwrap_err();
+        assert_eq!(err.to_string(), "voter is not specified");
+    }
+}

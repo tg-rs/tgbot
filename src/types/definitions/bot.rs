@@ -984,3 +984,38 @@ impl Method for RemoveBotProfilePhoto {
         Payload::empty("removeMyProfilePhoto")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bot_command() {
+        let err = BotCommand::new("", "description").unwrap_err().to_string();
+        assert_eq!(err, "command name can have a length of 1 up to 32 characters, got 0");
+        let err = BotCommand::new("2".repeat(33), "description").unwrap_err().to_string();
+        assert_eq!(err, "command name can have a length of 1 up to 32 characters, got 33");
+        let err = BotCommand::new("name", "d").unwrap_err().to_string();
+        assert_eq!(
+            err,
+            "command description can have a length of 3 up to 256 characters, got 1"
+        );
+        let err = BotCommand::new("name", "d".repeat(257)).unwrap_err().to_string();
+        assert_eq!(
+            err,
+            "command description can have a length of 3 up to 256 characters, got 257"
+        );
+
+        let bot_command = BotCommand::new("name", "description").unwrap();
+        assert_eq!(bot_command.name(), "name");
+        assert_eq!(bot_command.description(), "description");
+
+        let bot_command = bot_command
+            .with_name("test-override-name")
+            .with_description("test-override-description")
+            .with_is_ephemeral(true);
+        assert_eq!(bot_command.name(), "test-override-name");
+        assert_eq!(bot_command.description(), "test-override-description");
+        assert!(bot_command.is_ephemeral().unwrap());
+    }
+}

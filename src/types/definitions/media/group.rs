@@ -123,10 +123,10 @@ impl fmt::Display for MediaGroupError {
     fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::NotEnoughAttachments(number) => {
-                write!(out, "media group must contain at least {number} attachments")
+                write!(out, "media group must contain at least {number} attachment(s)")
             }
             Self::TooManyAttachments(number) => {
-                write!(out, "media group must contain no more than {number} attachments")
+                write!(out, "media group must contain no more than {number} attachment(s)")
             }
         }
     }
@@ -273,5 +273,38 @@ impl Method for SendMediaGroup {
         parameters.media = Some(media.write(&mut form));
         parameters.serialize(&mut form)?;
         Payload::form("sendMediaGroup", form)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::types::InputFile;
+
+    #[test]
+    fn media_group_err() {
+        let err = MediaGroup::new([InputMediaDocument::from(InputFile::file_id("test-err"))]).unwrap_err();
+        assert!(err.source().is_none());
+        assert_eq!(err.to_string(), "media group must contain at least 2 attachment(s)");
+
+        let err = MediaGroup::new([
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+            InputMediaDocument::from(InputFile::file_id("test-err")),
+        ])
+        .unwrap_err();
+        assert!(err.source().is_none());
+        assert_eq!(
+            err.to_string(),
+            "media group must contain no more than 10 attachment(s)"
+        );
     }
 }

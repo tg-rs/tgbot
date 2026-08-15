@@ -124,3 +124,79 @@ struct RawResponseParameters {
     migrate_to_chat_id: Option<Integer>,
     retry_after: Option<Integer>,
 }
+
+#[cfg(test)]
+mod tests {
+    use serde::Deserialize;
+
+    use super::*;
+
+    #[derive(Clone, Debug, Deserialize)]
+    struct Object {
+        name: String,
+    }
+
+    #[test]
+    fn deserialize() {
+        let success: Response<Object> = serde_json::from_value(serde_json::json!({
+            "ok": true,
+            "result": {"name": "test" }
+        }))
+        .unwrap();
+
+        if let Response::Success(ref obj) = success {
+            assert_eq!(obj.name, String::from("test"));
+        } else {
+            panic!("Unexpected response: {success:?}");
+        }
+
+        let error: Response<Object> = serde_json::from_value(serde_json::json!({
+            "ok": false,
+            "description": "test err",
+            "error_code": 1,
+            "parameters": {
+                "migrate_to_chat_id": 2,
+                "retry_after": 3
+            }
+        }))
+        .unwrap();
+        if let Response::Error(err) = error {
+            assert_eq!(
+                err.to_string(),
+                "a telegram error has occurred: description=test err; error_code=1; migrate_to_chat_id=2; retry_after=3"
+            );
+            assert_eq!(err.description(), "test err");
+            assert_eq!(err.error_code(), Some(1));
+            assert!(err.can_retry());
+            assert_eq!(err.retry_after(), Some(3));
+            assert_eq!(err.migrate_to_chat_id(), Some(2));
+        } else {
+            panic!("Unexpected response: {success:?}");
+        }
+
+        let error: Response<Object> = serde_json::from_value(serde_json::json!({
+            "ok": false,
+            "description": "test err"
+        }))
+        .unwrap();
+        if let Response::Error(err) = error {
+            assert_eq!(err.to_string(), "a telegram error has occurred: description=test err");
+            assert_eq!(err.description(), "test err");
+            assert!(!err.can_retry());
+            assert!(err.retry_after().is_none());
+            assert!(err.error_code().is_none());
+            assert!(err.migrate_to_chat_id().is_none());
+        } else {
+            panic!("Unexpected response: {success:?}");
+        }
+
+        let rep: RawResponse<Object> = serde_json::from_value(serde_json::json!({
+            "ok": true
+        }))
+        .unwrap();
+        let Response::Error(err) = Response::from(rep) else {
+            panic!("got an unexpected response")
+        };
+        assert_eq!(err.description(), "response is ok, but result is not provided");
+    }
+}

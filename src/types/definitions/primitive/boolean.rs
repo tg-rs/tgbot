@@ -45,3 +45,23 @@ macro_rules! impl_bool_type {
 }
 
 impl_bool_type!(True = true);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ok() {
+        let ok = serde_json::from_value::<True>(serde_json::json!(true)).unwrap();
+        assert_eq!(ok, True);
+        assert_eq!(format!("{:?}", ok), "true");
+    }
+
+    #[test]
+    fn err() {
+        let err = serde_json::from_value::<True>(serde_json::json!(false))
+            .unwrap_err()
+            .to_string();
+        assert_eq!(err, "invalid value: boolean `false`, expected true");
+    }
+}

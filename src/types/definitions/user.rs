@@ -551,3 +551,76 @@ impl Method for SetUserEmojiStatus {
         Payload::json("setUserEmojiStatus", self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+
+    use super::*;
+
+    #[test]
+    fn user_get_full_name() {
+        let mut full = User::new(1, "John", false);
+        full.last_name = Some("Doe".to_owned());
+        assert_eq!(full.get_full_name(), "John Doe");
+
+        let partial = User::new(1, "John", false);
+        assert_eq!(partial.get_full_name(), "John");
+    }
+
+    #[test]
+    fn user_get_link() {
+        let user = User::new(1, "John", false);
+        assert_eq!(user.get_link(), "tg://user?id=1")
+    }
+
+    #[test]
+    fn user_get_mention() {
+        let user: User = User::new(1, r#"_*[]()~`>#+-=|{}.!<&"#, false);
+        assert_eq!(
+            user.get_link_mention(ParseMode::Html).unwrap(),
+            r#"<a href="tg://user?id=1">_*[]()~`&gt;#+-=|{}.!&lt;&amp;</a>"#
+        );
+        assert_eq!(
+            user.get_link_mention(ParseMode::MarkdownV2).unwrap(),
+            r"[\_\*\[\]\(\)\~\`\>\#\+\-\=\|\{\}\.\!<&](tg://user?id=1)"
+        );
+        assert!(user.get_link_mention(ParseMode::Markdown).is_err());
+    }
+
+    #[test]
+    fn user_id() {
+        let username = UserId::from("username");
+        if let UserId::Username(ref username) = username {
+            assert_eq!(username, "username");
+        } else {
+            panic!("Unexpected username: {username:?}");
+        }
+
+        let username = UserId::from(String::from("username"));
+        if let UserId::Username(ref username) = username {
+            assert_eq!(username, "username");
+        } else {
+            panic!("Unexpected username: {username:?}");
+        }
+        assert_eq!(serde_json::to_string(&username).unwrap(), r#""username""#);
+        assert_eq!(username.to_string(), "username");
+
+        let user_id = UserId::from(1);
+        if let UserId::Id(user_id) = user_id {
+            assert_eq!(user_id, 1);
+        } else {
+            panic!("Unexpected user_id: {user_id:?}");
+        }
+        assert_eq!(serde_json::to_string(&user_id).unwrap(), r#"1"#);
+        assert_eq!(user_id.to_string(), "1");
+
+        let mut map = HashMap::new();
+        let chat_id_1 = UserId::from(1);
+        let chat_id_2 = UserId::from("username");
+        map.insert(chat_id_1.clone(), "1".to_string());
+        map.insert(chat_id_2.clone(), "2".to_string());
+        assert_eq!(map.get(&chat_id_1).unwrap(), "1");
+        assert_eq!(map.get(&chat_id_2).unwrap(), "2");
+    }
+}

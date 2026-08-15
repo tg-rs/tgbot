@@ -141,3 +141,16 @@ impl Method for AnswerShippingQuery {
         Payload::json("answerShippingQuery", self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn shipping_option() {
+        let obj = ShippingOption::new("id", "title", [LabeledPrice::new(10, "label")]);
+        assert_eq!(obj.id(), "id");
+        assert_eq!(obj.title(), "title");
+        assert_eq!(obj.prices().len(), 1);
+    }
+}

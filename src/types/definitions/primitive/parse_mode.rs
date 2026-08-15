@@ -87,3 +87,25 @@ impl fmt::Display for ParseMode {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn to_string() {
+        assert_eq!(ParseMode::Html.to_string(), "HTML");
+        assert_eq!(ParseMode::Markdown.to_string(), "Markdown");
+        assert_eq!(ParseMode::MarkdownV2.to_string(), "MarkdownV2");
+    }
+
+    #[test]
+    fn escape() {
+        assert_eq!(ParseMode::Html.escape("<>&"), "&lt;&gt;&amp;");
+        assert_eq!(ParseMode::Markdown.escape(r#"_*`["#), r"\_\*\`\[");
+        assert_eq!(
+            ParseMode::MarkdownV2.escape(r#"_*[]()~`>#+-=|{}.!"#),
+            r"\_\*\[\]\(\)\~\`\>\#\+\-\=\|\{\}\.\!"
+        );
+    }
+}

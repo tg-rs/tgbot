@@ -538,3 +538,22 @@ impl Method for UploadStickerFile {
         Payload::form("uploadStickerFile", form)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sticker_format() {
+        assert_eq!(StickerFormat::Animated.as_ref(), "animated");
+        assert_eq!(StickerFormat::Static.as_ref(), "static");
+        assert_eq!(StickerFormat::Video.as_ref(), "video");
+    }
+
+    #[test]
+    fn sticker_type() {
+        assert_eq!(StickerType::CustomEmoji.as_ref(), "custom_emoji");
+        assert_eq!(StickerType::Mask.as_ref(), "mask");
+        assert_eq!(StickerType::Regular.as_ref(), "regular");
+    }
+}

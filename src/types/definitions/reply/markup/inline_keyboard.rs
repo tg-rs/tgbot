@@ -606,3 +606,18 @@ impl SwitchInlineQueryChosenChat {
         self
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn inline_keyboard_markup() {
+        let a = vec![vec![InlineKeyboardButton::for_url("url", "tg://user?id=1")]];
+        let b = InlineKeyboardMarkup::from(a.clone()).add_row([InlineKeyboardButton::for_copy_text("test", "test")]);
+        let c: Vec<Vec<InlineKeyboardButton>> = b.into();
+        assert_eq!(c[0][0].text(), "url");
+        assert!(matches!(c[1][0].button_type(), InlineKeyboardButtonType::CopyText(_)));
+        assert_eq!(c.len(), 2);
+    }
+}

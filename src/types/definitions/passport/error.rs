@@ -515,3 +515,175 @@ impl Method for SetPassportDataErrors {
         Payload::json("setPassportDataErrors", self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn create_error_accepts_type() {
+        use self::EncryptedPassportElementType::*;
+        for (element_type, flag) in &[
+            (Address, true),
+            (BankStatement, false),
+            (DriverLicense, true),
+            (Email, false),
+            (IdentityCard, true),
+            (InternalPassport, true),
+            (Passport, true),
+            (PassportRegistration, false),
+            (PersonalDetails, true),
+            (PhoneNumber, false),
+            (RentalAgreement, false),
+            (TemporaryRegistration, false),
+            (UtilityBill, false),
+        ] {
+            let result = PassportElementError::data_field(*element_type, "address", "data_hash", "bad address");
+            check_err(*flag, result);
+        }
+
+        for (element_type, flag) in &[
+            (Address, false),
+            (BankStatement, false),
+            (DriverLicense, true),
+            (Email, false),
+            (IdentityCard, true),
+            (InternalPassport, true),
+            (Passport, true),
+            (PassportRegistration, false),
+            (PersonalDetails, false),
+            (PhoneNumber, false),
+            (RentalAgreement, false),
+            (TemporaryRegistration, false),
+            (UtilityBill, false),
+        ] {
+            let result = PassportElementError::front_side(*element_type, "file_hash", "bad file");
+            check_err(*flag, result);
+        }
+
+        for (element_type, flag) in &[
+            (Address, false),
+            (BankStatement, false),
+            (DriverLicense, true),
+            (Email, false),
+            (IdentityCard, true),
+            (InternalPassport, false),
+            (Passport, false),
+            (PassportRegistration, false),
+            (PersonalDetails, false),
+            (PhoneNumber, false),
+            (RentalAgreement, false),
+            (TemporaryRegistration, false),
+            (UtilityBill, false),
+        ] {
+            let result = PassportElementError::reverse_side(*element_type, "file_hash", "bad file");
+            check_err(*flag, result);
+        }
+
+        for (element_type, flag) in &[
+            (Address, false),
+            (BankStatement, false),
+            (DriverLicense, true),
+            (Email, false),
+            (IdentityCard, true),
+            (InternalPassport, true),
+            (Passport, true),
+            (PassportRegistration, false),
+            (PersonalDetails, false),
+            (PhoneNumber, false),
+            (RentalAgreement, false),
+            (TemporaryRegistration, false),
+            (UtilityBill, false),
+        ] {
+            let result = PassportElementError::selfie(*element_type, "file_hash", "bad file");
+            check_err(*flag, result);
+        }
+
+        for (element_type, flag) in &[
+            (Address, false),
+            (BankStatement, true),
+            (DriverLicense, false),
+            (Email, false),
+            (IdentityCard, false),
+            (InternalPassport, false),
+            (Passport, false),
+            (PassportRegistration, true),
+            (PersonalDetails, false),
+            (PhoneNumber, false),
+            (RentalAgreement, true),
+            (TemporaryRegistration, true),
+            (UtilityBill, true),
+        ] {
+            let result = PassportElementError::file(*element_type, "file_hash", "bad file");
+            check_err(*flag, result);
+        }
+
+        for (element_type, flag) in &[
+            (Address, false),
+            (BankStatement, true),
+            (DriverLicense, false),
+            (Email, false),
+            (IdentityCard, false),
+            (InternalPassport, false),
+            (Passport, false),
+            (PassportRegistration, true),
+            (PersonalDetails, false),
+            (PhoneNumber, false),
+            (RentalAgreement, true),
+            (TemporaryRegistration, true),
+            (UtilityBill, true),
+        ] {
+            let result = PassportElementError::files(*element_type, vec![String::from("file_hash")], "bad file");
+            check_err(*flag, result);
+        }
+
+        for (element_type, flag) in &[
+            (Address, false),
+            (BankStatement, true),
+            (DriverLicense, true),
+            (Email, false),
+            (IdentityCard, true),
+            (InternalPassport, true),
+            (Passport, true),
+            (PassportRegistration, true),
+            (PersonalDetails, false),
+            (PhoneNumber, false),
+            (RentalAgreement, true),
+            (TemporaryRegistration, true),
+            (UtilityBill, true),
+        ] {
+            let result = PassportElementError::translation_file(*element_type, "file_hash", "bad file");
+            check_err(*flag, result);
+        }
+
+        for (element_type, flag) in &[
+            (Address, false),
+            (BankStatement, true),
+            (DriverLicense, true),
+            (Email, false),
+            (IdentityCard, true),
+            (InternalPassport, true),
+            (Passport, true),
+            (PassportRegistration, true),
+            (PersonalDetails, false),
+            (PhoneNumber, false),
+            (RentalAgreement, true),
+            (TemporaryRegistration, true),
+            (UtilityBill, true),
+        ] {
+            let result =
+                PassportElementError::translation_files(*element_type, vec![String::from("file_hash")], "bad file");
+            check_err(*flag, result);
+        }
+    }
+
+    fn check_err(flag: bool, result: Result<PassportElementError, UnexpectedEncryptedPassportElementType>) {
+        if flag {
+            assert!(result.is_ok());
+        } else {
+            assert!(result.is_err());
+            let err = result.unwrap_err();
+            assert!(err.to_string().starts_with("unexpected element type"));
+        }
+    }
+}

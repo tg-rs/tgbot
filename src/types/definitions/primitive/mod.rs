@@ -13,6 +13,7 @@ pub type Integer = i64;
 pub type Float = f32;
 
 /// Describes an amount of Telegram Stars.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct StarAmount {
     /// Integer amount of Telegram Stars, rounded to 0; can be negative.

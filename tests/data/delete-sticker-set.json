@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "deleteStickerSet",
+  "req_body": {
+    "json": {
+      "name": "test"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

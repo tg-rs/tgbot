@@ -1,0 +1,18 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "media": "attach://tgbot_file_1",
+        "type": "sticker"
+      },
+      "tgbot_file_1": "test-sticker"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

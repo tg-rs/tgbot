@@ -1,0 +1,46 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "message_reaction_count": {
+          "chat": {
+            "type": "group",
+            "id": 1,
+            "title": "Test"
+          },
+          "message_id": 1,
+          "date": 0,
+          "reactions": [
+            {
+              "type": {
+                "type": "emoji",
+                "emoji": "🤡"
+              },
+              "total_count": 1
+            },
+            {
+              "type": {
+                "type": "custom_emoji",
+                "custom_emoji_id": "test-id"
+              },
+              "total_count": 2
+            },
+            {
+              "type": {
+                "type": "paid"
+              },
+              "total_count": 3
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

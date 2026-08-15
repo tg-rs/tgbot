@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "setGameScore",
+  "req_body": {
+    "json": {
+      "inline_message_id": "inline-message-id",
+      "score": 100,
+      "user_id": 3
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

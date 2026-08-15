@@ -1,0 +1,34 @@
+{
+  "http_method": "POST",
+  "url_path": "getStickerSet",
+  "req_body": {
+    "json": {
+      "name": "name"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "name": "name",
+      "title": "test",
+      "sticker_type": "custom_emoji",
+      "stickers": [
+        {
+          "file_id": "fid",
+          "file_unique_id": "fuid",
+          "type": "custom_emoji",
+          "width": 512,
+          "height": 512,
+          "is_animated": false,
+          "is_video": false
+        }
+      ],
+      "thumbnail": {
+        "file_id": "fid",
+        "file_unique_id": "fuid",
+        "width": 100,
+        "height": 100
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "caption": "test",
+        "has_spoiler": false,
+        "media": "https://example.com/video.mp4",
+        "parse_mode": "Markdown",
+        "photo": "https://example.com/photo.png",
+        "show_caption_above_media": true,
+        "type": "live_photo"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

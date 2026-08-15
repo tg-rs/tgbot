@@ -1,0 +1,20 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "address": "addr",
+        "latitude": 1.0,
+        "longitude": 2.0,
+        "title": "test",
+        "type": "venue"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "http_method": "GET",
+  "url_path": "getMyStarBalance",
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "amount": 10
+    }
+  }
+}

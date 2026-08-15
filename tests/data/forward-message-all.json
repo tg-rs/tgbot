@@ -1,0 +1,38 @@
+{
+  "http_method": "POST",
+  "url_path": "forwardMessage",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "direct_messages_topic_id": 1,
+      "disable_notification": true,
+      "from_chat_id": 2,
+      "message_effect_id": "test",
+      "message_id": 3,
+      "message_thread_id": 1,
+      "protect_content": true,
+      "suggested_post_parameters": {},
+      "video_start_timestamp": 200
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "text": "test",
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

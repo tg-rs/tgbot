@@ -1,0 +1,21 @@
+{
+  "http_method": "POST",
+  "url_path": "setMessageReaction",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "is_big": true,
+      "message_id": 2,
+      "reaction": [
+        {
+          "emoji": "🤡",
+          "type": "emoji"
+        }
+      ]
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

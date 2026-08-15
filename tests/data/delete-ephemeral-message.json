@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "deleteEphemeralMessage",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "ephemeral_message_id": 3,
+      "receiver_user_id": 2
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

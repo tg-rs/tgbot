@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "editUserStarSubscription",
+  "req_body": {
+    "json": {
+      "is_canceled": false,
+      "telegram_payment_charge_id": "id",
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

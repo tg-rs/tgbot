@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setChatMemberTag",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

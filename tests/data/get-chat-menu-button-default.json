@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "getChatMenuButton",
+  "req_body": {
+    "json": {
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "type": "default"
+    }
+  }
+}

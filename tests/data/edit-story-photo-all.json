@@ -1,0 +1,169 @@
+{
+  "http_method": "POST",
+  "url_path": "editStory",
+  "req_body": {
+    "multipart": {
+      "areas": [
+        {
+          "position": {
+            "corner_radius_percentage": 1.0,
+            "height_percentage": 2.0,
+            "rotation_angle": 3.0,
+            "width_percentage": 4.0,
+            "x_percentage": 5.0,
+            "y_percentage": 6.0
+          },
+          "type": {
+            "type": "link",
+            "url": "url"
+          }
+        },
+        {
+          "position": {
+            "corner_radius_percentage": 1.0,
+            "height_percentage": 2.0,
+            "rotation_angle": 3.0,
+            "width_percentage": 4.0,
+            "x_percentage": 5.0,
+            "y_percentage": 6.0
+          },
+          "type": {
+            "type": "location",
+            "latitude": 1.0,
+            "longitude": 2.0
+          }
+        },
+        {
+          "position": {
+            "corner_radius_percentage": 1.0,
+            "height_percentage": 2.0,
+            "rotation_angle": 3.0,
+            "width_percentage": 4.0,
+            "x_percentage": 5.0,
+            "y_percentage": 6.0
+          },
+          "type": {
+            "type": "suggested_reaction",
+            "reaction_type": {
+              "type": "custom_emoji",
+              "custom_emoji_id": "test"
+            }
+          }
+        },
+        {
+          "position": {
+            "corner_radius_percentage": 1.0,
+            "height_percentage": 2.0,
+            "rotation_angle": 3.0,
+            "width_percentage": 4.0,
+            "x_percentage": 5.0,
+            "y_percentage": 6.0
+          },
+          "type": {
+            "type": "unique_gift",
+            "name": "test"
+          }
+        },
+        {
+          "position": {
+            "corner_radius_percentage": 1.0,
+            "height_percentage": 2.0,
+            "rotation_angle": 3.0,
+            "width_percentage": 4.0,
+            "x_percentage": 5.0,
+            "y_percentage": 6.0
+          },
+          "type": {
+            "type": "weather",
+            "background_color": 0,
+            "temperature": 1.0,
+            "emoji": "test"
+          }
+        },
+        {
+          "position": {
+            "corner_radius_percentage": 1.0,
+            "height_percentage": 2.0,
+            "rotation_angle": 3.0,
+            "width_percentage": 4.0,
+            "x_percentage": 5.0,
+            "y_percentage": 6.0
+          },
+          "type": {
+            "type": "suggested_reaction",
+            "reaction_type": {
+              "type": "custom_emoji",
+              "custom_emoji_id": "test"
+            },
+            "is_dark": true,
+            "is_flipped": true
+          }
+        },
+        {
+          "position": {
+            "corner_radius_percentage": 1.0,
+            "height_percentage": 2.0,
+            "rotation_angle": 3.0,
+            "width_percentage": 4.0,
+            "x_percentage": 5.0,
+            "y_percentage": 6.0
+          },
+          "type": {
+            "type": "location",
+            "latitude": 1.0,
+            "longitude": 2.0,
+            "address": {
+              "country_code": "IL"
+            }
+          }
+        },
+        {
+          "position": {
+            "corner_radius_percentage": 1.0,
+            "height_percentage": 2.0,
+            "rotation_angle": 3.0,
+            "width_percentage": 4.0,
+            "x_percentage": 5.0,
+            "y_percentage": 6.0
+          },
+          "type": {
+            "type": "location",
+            "latitude": 1.0,
+            "longitude": 2.0,
+            "address": {
+              "country_code": "IL",
+              "state": "test",
+              "city": "test",
+              "street": "test"
+            }
+          }
+        }
+      ],
+      "business_connection_id": "id",
+      "caption": "test",
+      "caption_entities": [
+        {
+          "length": 2,
+          "offset": 0,
+          "type": "bold"
+        }
+      ],
+      "content": {
+        "photo": "url",
+        "type": "photo"
+      },
+      "story_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": 1,
+      "chat": {
+        "type": "private",
+        "id": 1,
+        "first_name": "John"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "banChatMember",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "revoke_messages": true,
+      "until_date": 3,
+      "user_id": 2
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

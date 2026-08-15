@@ -1,0 +1,94 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "message_reaction": {
+          "chat": {
+            "type": "private",
+            "id": 1,
+            "first_name": "John"
+          },
+          "message_id": 1,
+          "date": 0,
+          "old_reaction": [
+            {
+              "type": "emoji",
+              "emoji": "🤡"
+            }
+          ],
+          "new_reaction": [
+            {
+              "type": "emoji",
+              "emoji": "🤮"
+            }
+          ]
+        }
+      },
+      {
+        "update_id": 2,
+        "message_reaction": {
+          "chat": {
+            "type": "private",
+            "id": 1,
+            "first_name": "John"
+          },
+          "user": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "message_id": 1,
+          "date": 0,
+          "old_reaction": [
+            {
+              "type": "emoji",
+              "emoji": "🤡"
+            }
+          ],
+          "new_reaction": [
+            {
+              "type": "emoji",
+              "emoji": "🤮"
+            }
+          ]
+        }
+      },
+      {
+        "update_id": 3,
+        "message_reaction": {
+          "chat": {
+            "type": "private",
+            "id": 1,
+            "first_name": "John"
+          },
+          "actor_chat": {
+            "type": "private",
+            "id": 1,
+            "first_name": "John"
+          },
+          "message_id": 1,
+          "date": 0,
+          "old_reaction": [
+            {
+              "type": "emoji",
+              "emoji": "🤡"
+            }
+          ],
+          "new_reaction": [
+            {
+              "type": "emoji",
+              "emoji": "🤮"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

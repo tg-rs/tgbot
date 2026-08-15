@@ -1,0 +1,30 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "caption": "caption",
+        "cover": "cover-id",
+        "duration": 100,
+        "has_spoiler": true,
+        "height": 200,
+        "media": "attach://tgbot_file_1",
+        "parse_mode": "Markdown",
+        "show_caption_above_media": true,
+        "start_timestamp": 450,
+        "supports_streaming": true,
+        "thumbnail": "attach://tgbot_file_2",
+        "type": "video",
+        "width": 200
+      },
+      "tgbot_file_1": "video-file-data",
+      "tgbot_file_2": "video-thumb-data"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

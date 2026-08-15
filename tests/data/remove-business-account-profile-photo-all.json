@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "removeBusinessAccountProfilePhoto",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id",
+      "is_public": true
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

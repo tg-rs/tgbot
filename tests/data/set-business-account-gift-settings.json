@@ -1,0 +1,21 @@
+{
+  "http_method": "POST",
+  "url_path": "setBusinessAccountGiftSettings",
+  "req_body": {
+    "json": {
+      "accepted_gift_types": {
+        "gifts_from_channels": false,
+        "limited_gifts": false,
+        "premium_subscription": false,
+        "unique_gifts": false,
+        "unlimited_gifts": false
+      },
+      "business_connection_id": "id",
+      "show_gift_button": true
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

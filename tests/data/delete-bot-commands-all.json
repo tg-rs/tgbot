@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "deleteMyCommands",
+  "req_body": {
+    "json": {
+      "language_code": "ru",
+      "scope": {
+        "type": "default"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

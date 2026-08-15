@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageLiveLocation",
+  "req_body": {
+    "json": {
+      "inline_message_id": "msg-id",
+      "latitude": 3.0,
+      "longitude": 4.0
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "setStickerEmojiList",
+  "req_body": {
+    "json": {
+      "emoji_list": [
+        "✌️"
+      ],
+      "sticker": "file-id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

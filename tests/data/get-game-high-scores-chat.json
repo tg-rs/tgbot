@@ -1,0 +1,25 @@
+{
+  "http_method": "POST",
+  "url_path": "getGameHighScores",
+  "req_body": {
+    "json": {
+      "chat_id": 2,
+      "message_id": 3,
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "position": 1,
+        "user": {
+          "id": 1,
+          "first_name": "John",
+          "is_bot": false
+        },
+        "score": 1000
+      }
+    ]
+  }
+}

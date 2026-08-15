@@ -1,0 +1,20 @@
+{
+  "http_method": "POST",
+  "url_path": "uploadStickerFile",
+  "req_body": {
+    "multipart": {
+      "sticker": "sticker-id",
+      "sticker_format": "static",
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "file_id": "fid",
+      "file_unique_id": "fuid",
+      "file_size": 10000,
+      "file_path": "fpath"
+    }
+  }
+}

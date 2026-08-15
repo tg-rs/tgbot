@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "setStickerKeywords",
+  "req_body": {
+    "json": {
+      "keywords": [
+        "kw"
+      ],
+      "sticker": "file-id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

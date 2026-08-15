@@ -1,0 +1,42 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "poll_answer": {
+          "poll_id": "poll-id-1",
+          "voter_chat": {
+            "id": 1,
+            "type": "group",
+            "title": "Test"
+          },
+          "option_ids": [
+            0
+          ],
+          "option_persistent_ids": [
+            "option-id"
+          ]
+        }
+      },
+      {
+        "update_id": 2,
+        "poll_answer": {
+          "poll_id": "poll-id-2",
+          "option_ids": [],
+          "option_persistent_ids": [],
+          "user": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          }
+        }
+      }
+    ]
+  }
+}

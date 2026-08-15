@@ -1,0 +1,47 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageLiveLocation",
+  "req_body": {
+    "json": {
+      "business_connection_id": "c-id",
+      "chat_id": 1,
+      "heading": 100,
+      "horizontal_accuracy": 5.0,
+      "latitude": 3.0,
+      "live_period": 10,
+      "longitude": 4.0,
+      "message_id": 2,
+      "proximity_alert_radius": 200,
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            {
+              "text": "text",
+              "url": "url"
+            }
+          ]
+        ]
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "text": "test",
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

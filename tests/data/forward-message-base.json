@@ -1,0 +1,31 @@
+{
+  "http_method": "POST",
+  "url_path": "forwardMessage",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "from_chat_id": 2,
+      "message_id": 3
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "text": "test",
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

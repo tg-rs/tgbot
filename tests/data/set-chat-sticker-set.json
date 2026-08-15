@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setChatStickerSet",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "sticker_set_name": "Sticker Set"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "refundStarPayment",
+  "req_body": {
+    "json": {
+      "telegram_payment_charge_id": "test",
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

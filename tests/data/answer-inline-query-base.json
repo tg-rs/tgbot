@@ -1,0 +1,23 @@
+{
+  "http_method": "POST",
+  "url_path": "answerInlineQuery",
+  "req_body": {
+    "multipart": {
+      "inline_query_id": "id",
+      "results": [
+        {
+          "id": "id",
+          "input_message_content": {
+            "message_text": "text"
+          },
+          "title": "title",
+          "type": "article"
+        }
+      ]
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

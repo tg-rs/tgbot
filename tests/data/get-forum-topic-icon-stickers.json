@@ -1,0 +1,8 @@
+{
+  "http_method": "GET",
+  "url_path": "getForumTopicIconStickers",
+  "rep_body": {
+    "ok": true,
+    "result": []
+  }
+}

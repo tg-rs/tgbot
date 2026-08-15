@@ -1,0 +1,42 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {
+      "offset": 0,
+      "limit": 10,
+      "timeout": 10,
+      "allowed_updates": [
+        "my_chat_member",
+        "business_connection",
+        "business_message",
+        "callback_query",
+        "channel_post",
+        "removed_chat_boost",
+        "chat_boost",
+        "chat_join_request",
+        "chosen_inline_result",
+        "deleted_business_messages",
+        "edited_business_message",
+        "edited_channel_post",
+        "edited_message",
+        "guest_message",
+        "inline_query",
+        "message",
+        "message_reaction",
+        "message_reaction_count",
+        "poll",
+        "poll_answer",
+        "pre_checkout_query",
+        "purchased_paid_media",
+        "shipping_query",
+        "subscription",
+        "chat_member"
+      ]
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": []
+  }
+}

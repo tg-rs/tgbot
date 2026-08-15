@@ -1,0 +1,32 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "removed_chat_boost": {
+          "chat": {
+            "type": "group",
+            "id": 1,
+            "title": "Test"
+          },
+          "boost_id": "boost-id",
+          "remove_date": 0,
+          "source": {
+            "source": "premium",
+            "user": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            }
+          }
+        }
+      }
+    ]
+  }
+}

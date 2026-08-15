@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "setStickerMaskPosition",
+  "req_body": {
+    "json": {
+      "sticker": "file-id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

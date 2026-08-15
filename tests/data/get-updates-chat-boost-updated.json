@@ -1,0 +1,35 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "chat_boost": {
+          "chat": {
+            "type": "group",
+            "id": 1,
+            "title": "Test"
+          },
+          "boost": {
+            "boost_id": "boost-id",
+            "add_date": 0,
+            "expiration_date": 1,
+            "source": {
+              "source": "premium",
+              "user": {
+                "id": 1,
+                "first_name": "John",
+                "is_bot": false
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

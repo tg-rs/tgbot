@@ -1,0 +1,132 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "poll": {
+          "id": "poll-id",
+          "question": "Question",
+          "options": [
+            {
+              "persistent_id": "option-1",
+              "text": "Option 1",
+              "voter_count": 0
+            },
+            {
+              "persistent_id": "option-2",
+              "text": "Option 2",
+              "text_entities": [
+                {
+                  "type": "bold",
+                  "offset": 0,
+                  "length": 2
+                }
+              ],
+              "media": {
+                "animation": {
+                  "file_id": "animation-file-id",
+                  "file_unique_id": "unique-id",
+                  "width": 200,
+                  "height": 200,
+                  "duration": 30
+                }
+              },
+              "voter_count": 0,
+              "added_by_user": {
+                "id": 1,
+                "first_name": "John",
+                "is_bot": false
+              },
+              "addition_date": 0
+            },
+            {
+              "persistent_id": "option-1",
+              "text": "Option 1",
+              "voter_count": 0,
+              "added_by_chat": {
+                "type": "group",
+                "id": 1,
+                "title": "Test"
+              }
+            }
+          ],
+          "total_voter_count": 0,
+          "is_closed": true,
+          "is_anonymous": true,
+          "type": "regular",
+          "allows_multiple_answers": true,
+          "allows_revoting": true,
+          "members_only": true
+        }
+      },
+      {
+        "update_id": 1,
+        "poll": {
+          "id": "poll-id",
+          "question": "Question",
+          "question_entities": [
+            {
+              "type": "bold",
+              "offset": 0,
+              "length": 2
+            }
+          ],
+          "options": [
+            {
+              "persistent_id": "option-1",
+              "text": "Option 1",
+              "voter_count": 0
+            },
+            {
+              "persistent_id": "option-2",
+              "text": "Option 2",
+              "voter_count": 0
+            }
+          ],
+          "total_voter_count": 0,
+          "is_closed": true,
+          "is_anonymous": true,
+          "type": "quiz",
+          "allows_revoting": false,
+          "members_only": true,
+          "country_codes": [
+            "IL"
+          ],
+          "correct_option_ids": [
+            0
+          ],
+          "explanation": "Explanation",
+          "explanation_entities": [
+            {
+              "type": "bold",
+              "offset": 0,
+              "length": 1
+            }
+          ],
+          "explanation_media": {
+            "document": {
+              "file_id": "document-file-id",
+              "file_unique_id": "unique-id"
+            }
+          },
+          "open_period": 86400,
+          "close_date": 0,
+          "description": "Description",
+          "description_entities": [
+            {
+              "type": "bold",
+              "offset": 0,
+              "length": 2
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

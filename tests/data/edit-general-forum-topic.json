@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "editGeneralForumTopic",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "name": "new-name"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

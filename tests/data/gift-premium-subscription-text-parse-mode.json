@@ -1,0 +1,17 @@
+{
+  "http_method": "POST",
+  "url_path": "giftPremiumSubscription",
+  "req_body": {
+    "json": {
+      "month_count": 1,
+      "star_count": 2,
+      "text": "text",
+      "text_parse_mode": "Markdown",
+      "user_id": 3
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

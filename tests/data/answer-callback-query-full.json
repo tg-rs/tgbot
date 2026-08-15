@@ -1,0 +1,17 @@
+{
+  "http_method": "POST",
+  "url_path": "answerCallbackQuery",
+  "req_body": {
+    "json": {
+      "callback_query_id": "query-id",
+      "text": "text",
+      "show_alert": true,
+      "url": "https://example.com",
+      "cache_time": 86400
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

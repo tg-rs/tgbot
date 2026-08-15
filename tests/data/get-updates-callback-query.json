@@ -1,0 +1,74 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "callback_query": {
+          "id": "query-id",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "chat_instance": "test-chat-instance"
+        }
+      },
+      {
+        "update_id": 2,
+        "callback_query": {
+          "id": "query-id",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "message": {
+            "chat": {
+              "type": "private",
+              "id": 1,
+              "first_name": "John"
+            },
+            "message_id": 1,
+            "date": 0
+          },
+          "inline_message_id": "inline-message-id",
+          "chat_instance": "test-chat-instance",
+          "data": "query-data",
+          "game_short_name": "Game"
+        }
+      },
+      {
+        "update_id": 2,
+        "callback_query": {
+          "id": "query-id",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "message": {
+            "chat": {
+              "type": "private",
+              "id": 1,
+              "first_name": "John"
+            },
+            "message_id": 1,
+            "date": 1,
+            "is_automatic_forward": false,
+            "has_protected_content": false
+          },
+          "inline_message_id": "inline-message-id",
+          "chat_instance": "test-chat-instance",
+          "data": "query-data",
+          "game_short_name": "Game"
+        }
+      }
+    ]
+  }
+}

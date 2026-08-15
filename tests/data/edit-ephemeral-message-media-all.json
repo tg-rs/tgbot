@@ -1,0 +1,30 @@
+{
+  "http_method": "POST",
+  "url_path": "editEphemeralMessageMedia",
+  "req_body": {
+    "multipart": {
+      "chat_id": 1,
+      "ephemeral_message_id": 3,
+      "media": {
+        "media": "attach://tgbot_file_1",
+        "type": "animation"
+      },
+      "receiver_user_id": 2,
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            {
+              "text": "test",
+              "url": "example.com"
+            }
+          ]
+        ]
+      },
+      "tgbot_file_1": "animation-file"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

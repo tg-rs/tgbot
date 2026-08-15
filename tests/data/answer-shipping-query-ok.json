@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "answerShippingQuery",
+  "req_body": {
+    "json": {
+      "ok": true,
+      "shipping_options": [],
+      "shipping_query_id": "id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

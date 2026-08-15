@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setChatTitle",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "title": "Chat"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

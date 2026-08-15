@@ -1,0 +1,21 @@
+{
+  "http_method": "POST",
+  "url_path": "restrictChatMember",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "permissions": {
+        "can_add_web_page_previews": false,
+        "can_send_messages": true,
+        "can_send_other_messages": true
+      },
+      "until_date": 100,
+      "use_independent_chat_permissions": true,
+      "user_id": 2
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

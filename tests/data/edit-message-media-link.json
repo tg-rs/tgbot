@@ -1,0 +1,17 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "type": "link",
+        "url": "https://example.com"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

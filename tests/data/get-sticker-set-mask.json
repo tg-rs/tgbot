@@ -1,0 +1,18 @@
+{
+  "http_method": "POST",
+  "url_path": "getStickerSet",
+  "req_body": {
+    "json": {
+      "name": "name"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "name": "name",
+      "title": "test",
+      "sticker_type": "mask",
+      "stickers": []
+    }
+  }
+}

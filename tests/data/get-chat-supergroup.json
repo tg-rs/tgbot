@@ -1,0 +1,111 @@
+{
+  "http_method": "POST",
+  "url_path": "getChat",
+  "req_body": {
+    "json": {
+      "chat_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": 1,
+      "type": "supergroup",
+      "title": "Title",
+      "is_direct_messages": true,
+      "is_forum": true,
+      "parent_chat": {
+        "id": 1,
+        "type": "channel",
+        "title": "Test"
+      },
+      "accent_color_id": 0,
+      "max_reaction_count": 3,
+      "slow_mode_delay": 5,
+      "unrestrict_boost_count": 10,
+      "photo": {
+        "small_file_id": "sfid",
+        "small_file_unique_id": "sfuid",
+        "big_file_id": "bfid",
+        "big_file_unique_id": "bfuid"
+      },
+      "join_to_send_messages": true,
+      "join_by_request": true,
+      "description": "Test",
+      "available_reactions": [
+        {
+          "type": "emoji",
+          "emoji": "👍"
+        },
+        {
+          "type": "custom_emoji",
+          "custom_emoji_id": "test"
+        },
+        {
+          "type": "paid"
+        }
+      ],
+      "background_custom_emoji_id": "test",
+      "profile_accent_color_id": 7,
+      "profile_background_custom_emoji_id": "test",
+      "permissions": {
+        "can_send_messages": true,
+        "can_send_audios": true,
+        "can_send_documents": true,
+        "can_send_photos": true,
+        "can_send_videos": true,
+        "can_send_video_notes": true,
+        "can_send_voice_notes": true,
+        "can_send_polls": true,
+        "can_send_other_messages": true,
+        "can_add_web_page_previews": true,
+        "can_react_to_messages": true,
+        "can_edit_tag": true,
+        "can_change_info": true,
+        "can_invite_users": true,
+        "can_pin_messages": true,
+        "can_manage_topics": true
+      },
+      "accepted_gift_types": {
+        "unlimited_gifts": true,
+        "limited_gifts": true,
+        "unique_gifts": true,
+        "premium_subscription": true,
+        "gifts_from_channels": true
+      },
+      "message_auto_delete_time": 86400,
+      "has_hidden_members": false,
+      "has_protected_content": true,
+      "has_visible_history": false,
+      "sticker_set_name": "test",
+      "can_set_sticker_set": true,
+      "custom_emoji_sticker_set_name": "test",
+      "unique_gift_colors": {
+        "model_custom_emoji_id": "test",
+        "symbol_custom_emoji_id": "test",
+        "light_theme_main_color": 7,
+        "light_theme_other_colors": [8, 9],
+        "dark_theme_main_color": 7,
+        "dark_theme_other_colors": [8, 9]
+      },
+      "paid_message_star_count": 1,
+      "has_aggressive_anti_spam_enabled": true,
+      "location": {
+        "address": "test",
+        "location": {
+          "latitude": 1.0,
+          "longitude": 2.0
+        }
+      },
+      "guard_bot": {
+        "id": 1,
+        "first_name": "Bot",
+        "is_bot": true
+      },
+      "community": {
+        "id": 1,
+        "name": "Test"
+      }
+    }
+  }
+}

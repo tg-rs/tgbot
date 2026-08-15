@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setMyDescription",
+  "req_body": {
+    "json": {
+      "description": "test-description",
+      "language_code": "RU"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "http_method": "POST",
+  "url_path": "createForumTopic",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "name": "topic-name"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_thread_id": 1,
+      "name": "topic-name",
+      "icon_color": 16749490
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "http_method": "POST",
+  "url_path": "setBusinessAccountProfilePhoto",
+  "req_body": {
+    "multipart": {
+      "business_connection_id": "id",
+      "photo": {
+        "animation": "test",
+        "type": "animated"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

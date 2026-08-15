@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setMyName",
+  "req_body": {
+    "json": {
+      "language_code": "RU",
+      "name": "test_bot_name"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

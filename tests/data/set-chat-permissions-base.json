@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "setChatPermissions",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "permissions": {
+        "can_send_messages": true
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

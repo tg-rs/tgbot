@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "getChatMemberCount",
+  "rep_body": {
+    "ok": true,
+    "result": 2
+  },
+  "req_body": {
+    "json": {
+      "chat_id": 1
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "upgradeGift",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id",
+      "keep_original_details": true,
+      "owned_gift_id": "id",
+      "star_count": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

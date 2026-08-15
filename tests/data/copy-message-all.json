@@ -1,0 +1,33 @@
+{
+  "http_method": "POST",
+  "url_path": "copyMessage",
+  "req_body": {
+    "json": {
+      "allow_paid_broadcast": true,
+      "caption": "caption",
+      "chat_id": 1,
+      "direct_messages_topic_id": 1,
+      "disable_notification": true,
+      "from_chat_id": 2,
+      "message_effect_id": "test",
+      "message_id": 3,
+      "message_thread_id": 1,
+      "protect_content": true,
+      "reply_markup": {
+        "force_reply": true
+      },
+      "reply_parameters": {
+        "message_id": 1
+      },
+      "show_caption_above_media": true,
+      "suggested_post_parameters": {},
+      "video_start_timestamp": 200
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 4
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "http_method": "POST",
+  "url_path": "setChatMenuButton",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "menu_button": {
+        "type": "web_app",
+        "text": "test",
+        "web_app": {
+          "url": "https://example.com"
+        }
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

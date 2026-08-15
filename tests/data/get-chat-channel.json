@@ -1,0 +1,40 @@
+{
+  "http_method": "POST",
+  "url_path": "getChat",
+  "req_body": {
+    "json": {
+      "chat_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": 1,
+      "type": "channel",
+      "title": "Title",
+      "username": "test",
+      "accent_color_id": 0,
+      "max_reaction_count": 3,
+      "invite_link": "test",
+      "pinned_message": {
+        "message_id": 1,
+        "date": 0,
+        "chat": {
+          "type": "group",
+          "id": 1,
+          "title": "Test"
+        },
+        "from": {
+          "id": 1,
+          "first_name": "John",
+          "is_bot": false
+        },
+        "text": "test",
+        "is_automatic_forward": false,
+        "has_protected_content": false
+      },
+      "has_aggressive_anti_spam_enabled": true,
+      "linked_chat_id": 2
+    }
+  }
+}

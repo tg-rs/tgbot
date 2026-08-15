@@ -1,0 +1,45 @@
+{
+  "http_method": "POST",
+  "url_path": "sendInvoice",
+  "req_body": {
+    "json": {
+      "chat_id": "@username",
+      "currency": "RUB",
+      "description": "description",
+      "payload": "payload",
+      "prices": [
+        {
+          "amount": 100,
+          "label": "item"
+        }
+      ],
+      "title": "title"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "is_automatic_forward": false,
+      "has_protected_content": false,
+      "invoice": {
+        "title": "title",
+        "description": "description",
+        "start_parameter": "unique-parameter",
+        "currency": "RUB",
+        "total_amount": 100
+      }
+    }
+  }
+}

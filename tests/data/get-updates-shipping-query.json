@@ -1,0 +1,32 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "shipping_query": {
+          "id": "query-id",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "invoice_payload": "payload",
+          "shipping_address": {
+            "country_code": "IL",
+            "state": "test-state",
+            "city": "test-city",
+            "street_line1": "test-street-1",
+            "street_line2": "test-street-2",
+            "post_code": "test-code"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "deleteStory",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id",
+      "story_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

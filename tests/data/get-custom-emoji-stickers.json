@@ -1,0 +1,25 @@
+{
+  "http_method": "POST",
+  "url_path": "getCustomEmojiStickers",
+  "req_body": {
+    "json": {
+      "custom_emoji_ids": [
+        "emoji-id"
+      ]
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "file_id": "fid",
+        "file_unique_id": "fuid",
+        "type": "custom_emoji",
+        "width": 512,
+        "height": 512,
+        "is_animated": false,
+        "is_video": false
+      }
+    ]
+  }
+}

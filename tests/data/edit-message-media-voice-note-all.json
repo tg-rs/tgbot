@@ -1,0 +1,26 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "caption": "test",
+        "caption_entities": [
+          {
+            "length": 2,
+            "offset": 0,
+            "type": "bold"
+          }
+        ],
+        "duration": 1,
+        "media": "test",
+        "type": "voice_note"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

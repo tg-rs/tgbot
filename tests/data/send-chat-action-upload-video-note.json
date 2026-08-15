@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "sendChatAction",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "action": "upload_video_note"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

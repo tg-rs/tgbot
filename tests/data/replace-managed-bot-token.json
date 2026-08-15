@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "replaceManagedBotToken",
+  "req_body": {
+    "json": {
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": "test"
+  }
+}

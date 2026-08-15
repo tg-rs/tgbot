@@ -1,0 +1,22 @@
+{
+  "http_method": "POST",
+  "url_path": "getChatMember",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "user_id": 2
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "status": "kicked",
+      "user": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "until_date": 0
+    }
+  }
+}

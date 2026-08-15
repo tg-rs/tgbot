@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "deleteWebhook",
+  "req_body": {
+    "json": {
+      "drop_pending_updates": true
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

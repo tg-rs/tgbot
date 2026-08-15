@@ -1,0 +1,18 @@
+{
+  "http_method": "POST",
+  "url_path": "savePreparedKeyboardButton",
+  "req_body": {
+    "json": {
+      "button": {
+        "text": "test"
+      },
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": "button-id"
+    }
+  }
+}

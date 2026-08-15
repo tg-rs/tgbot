@@ -1,0 +1,55 @@
+{
+  "http_method": "GET",
+  "url_path": "getAvailableGifts",
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "gifts": [
+        {
+          "id": "gift-1",
+          "sticker": {
+            "file_id": "fid",
+            "file_unique_id": "fuid",
+            "type": "regular",
+            "width": 512,
+            "height": 512,
+            "is_animated": false,
+            "is_video": false
+          },
+          "star_count": 10
+        },
+        {
+          "id": "gift-2",
+          "sticker": {
+            "file_id": "fid",
+            "file_unique_id": "fuid",
+            "type": "regular",
+            "width": 512,
+            "height": 512,
+            "is_animated": false,
+            "is_video": false
+          },
+          "star_count": 10,
+          "upgrade_star_count": 10,
+          "is_premium": true,
+          "has_colors": true,
+          "total_count": 4,
+          "remaining_count": 2,
+          "personal_total_count": 1,
+          "personal_remaining_count": 1,
+          "background": {
+            "center_color": 0,
+            "edge_color": 1,
+            "text_color": 2
+          },
+          "unique_gift_variant_count": 0,
+          "publisher_chat": {
+            "id": 1,
+            "type": "channel",
+            "title": "Test"
+          }
+        }
+      ]
+    }
+  }
+}

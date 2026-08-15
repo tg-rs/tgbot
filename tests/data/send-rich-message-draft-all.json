@@ -1,0 +1,18 @@
+{
+  "http_method": "POST",
+  "url_path": "sendRichMessageDraft",
+  "req_body": {
+    "multipart": {
+      "chat_id": 1,
+      "draft_id": 2,
+      "message_thread_id": 1,
+      "rich_message": {
+        "markdown": "test"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

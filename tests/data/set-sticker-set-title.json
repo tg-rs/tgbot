@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setStickerSetTitle",
+  "req_body": {
+    "json": {
+      "name": "test-name",
+      "title": "test-title"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

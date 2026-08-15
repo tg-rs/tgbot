@@ -1,0 +1,18 @@
+{
+  "http_method": "GET",
+  "url_path": "getWebhookInfo",
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "url": "https://example.com",
+      "has_custom_certificate": false,
+      "pending_update_count": 0,
+      "ip_address": "127.0.0.1",
+      "last_error_date": 0,
+      "last_error_message": "test",
+      "last_synchronization_error_date": 0,
+      "max_connections": 10,
+      "allowed_updates": ["message"]
+    }
+  }
+}

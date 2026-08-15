@@ -1,0 +1,32 @@
+{
+  "http_method": "POST",
+  "url_path": "getUserPersonalChatMessages",
+  "req_body": {
+    "json": {
+      "limit": 2,
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "message_id": 1,
+        "date": 0,
+        "chat": {
+          "type": "group",
+          "id": 1,
+          "title": "Test"
+        },
+        "from": {
+          "id": 1,
+          "first_name": "John",
+          "is_bot": false
+        },
+        "text": "test",
+        "is_automatic_forward": false,
+        "has_protected_content": false
+      }
+    ]
+  }
+}

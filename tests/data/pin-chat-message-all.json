@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "pinChatMessage",
+  "req_body": {
+    "json": {
+      "business_connection_id": "c-id",
+      "chat_id": 1,
+      "disable_notification": true,
+      "message_id": 2
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

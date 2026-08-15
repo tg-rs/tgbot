@@ -1,0 +1,121 @@
+{
+  "http_method": "POST",
+  "url_path": "sendChecklist",
+  "req_body": {
+    "json": {
+      "business_connection_id": "c-id",
+      "chat_id": 1,
+      "checklist": {
+        "title": "test",
+        "tasks": [
+          {
+            "id": 1,
+            "text": "test 1",
+            "text_entities": [
+              {
+                "type": "bold",
+                "offset": 0,
+                "length": 2
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "text": "test 2",
+            "parse_mode": "HTML"
+          }
+        ],
+        "title_entities": [
+          {
+            "type": "bold",
+            "offset": 0,
+            "length": 2
+          }
+        ],
+        "others_can_add_tasks": true,
+        "others_can_mark_tasks_as_done": true
+      },
+      "disable_notification": true,
+      "protect_content": true,
+      "reply_markup": {
+        "inline_keyboard": [[
+          {
+            "text": "text",
+            "url": "url"
+          }
+        ]]
+      },
+      "reply_parameters": {
+        "message_id": 1
+      },
+      "message_effect_id": "effect-id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "checklist": {
+        "title": "test",
+        "title_entities": [
+          {
+            "type": "bold",
+            "offset": 0,
+            "length": 2
+          }
+        ],
+        "tasks": [
+          {
+            "id": 1,
+            "text": "test 1",
+            "text_entities": [
+              {
+                "type": "bold",
+                "offset": 0,
+                "length": 2
+              }
+            ],
+            "completed_by_user": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            },
+            "completion_date": 0
+          },
+          {
+            "id": 2,
+            "text": "test 2",
+            "text_entities": [
+              {
+                "type": "bold",
+                "offset": 0,
+                "length": 2
+              }
+            ],
+            "completed_by_chat": {
+              "id": 1,
+              "type": "group",
+              "title": "test"
+            },
+            "completion_date": 0
+          }
+        ],
+        "others_can_add_tasks": true,
+        "others_can_mark_tasks_as_done": true
+      },
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

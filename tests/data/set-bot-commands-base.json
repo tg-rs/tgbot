@@ -1,0 +1,18 @@
+{
+  "http_method": "POST",
+  "url_path": "setMyCommands",
+  "req_body": {
+    "json": {
+      "commands": [
+        {
+          "command": "name",
+          "description": "description"
+        }
+      ]
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

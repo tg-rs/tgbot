@@ -1,0 +1,115 @@
+{
+  "http_method": "POST",
+  "url_path": "sendPoll",
+  "req_body": {
+    "multipart": {
+      "allow_adding_options": true,
+      "allow_paid_broadcast": true,
+      "allows_multiple_answers": true,
+      "allows_revoting": true,
+      "business_connection_id": "id",
+      "chat_id": 1,
+      "country_codes": [
+        "US"
+      ],
+      "description": "test",
+      "description_entities": [
+        {
+          "length": 2,
+          "offset": 0,
+          "type": "bold"
+        }
+      ],
+      "disable_notification": true,
+      "hide_results_until_closes": true,
+      "is_anonymous": false,
+      "is_closed": false,
+      "media": {
+        "latitude": 1.0,
+        "longitude": 2.0,
+        "type": "location"
+      },
+      "members_only": true,
+      "message_effect_id": "effect-id",
+      "message_thread_id": 1,
+      "open_period": 20,
+      "options": [
+        {
+          "text": "X"
+        }
+      ],
+      "protect_content": true,
+      "question": "Q",
+      "reply_markup": {
+        "force_reply": true
+      },
+      "reply_parameters": {
+        "message_id": 1,
+        "quote": "test",
+        "quote_position": 0,
+        "quote_entities": [
+          {
+            "type": "bold",
+            "offset": 0,
+            "length": 2
+          }
+        ]
+      },
+      "shuffle_options": true
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "poll": {
+        "id": "poll-id",
+        "question": "question",
+        "options": [
+          {
+            "persistent_id": "opt-1",
+            "text": "test 1",
+            "voter_count": 1
+          },
+          {
+            "persistent_id": "opt-2",
+            "text": "test 2",
+            "voter_count": 0
+          }
+        ],
+        "total_voter_count": 1,
+        "is_closed": true,
+        "is_anonymous": true,
+        "type": "regular",
+        "allows_multiple_answers": false,
+        "allows_revoting": false,
+        "members_only": false,
+        "country_codes": [
+          "US"
+        ],
+        "open_period": 3600,
+        "description": "description",
+        "description_entities": [
+          {
+            "type": "bold",
+            "offset": 0,
+            "length": 2
+          }
+        ]
+      },
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

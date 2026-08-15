@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setStickerPositionInSet",
+  "req_body": {
+    "json": {
+      "position": 1,
+      "sticker": "sticker"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

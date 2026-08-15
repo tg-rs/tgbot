@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "getManagedBotAccessSettings",
+  "req_body": {
+    "json": {
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "is_access_restricted": true
+    }
+  }
+}

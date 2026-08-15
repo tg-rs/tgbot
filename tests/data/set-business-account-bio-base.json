@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "setBusinessAccountBio",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

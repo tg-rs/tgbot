@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "editForumTopic",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "icon_custom_emoji_id": "emoji-id",
+      "message_thread_id": 1,
+      "name": "topic-name"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

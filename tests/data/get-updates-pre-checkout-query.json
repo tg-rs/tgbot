@@ -1,0 +1,70 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "pre_checkout_query": {
+          "id": "test-1",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "currency": "XTR",
+          "total_amount": 145,
+          "invoice_payload": "payload"
+        }
+      },
+      {
+        "update_id": 2,
+        "pre_checkout_query": {
+          "id": "test-2",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "currency": "XTR",
+          "total_amount": 145,
+          "invoice_payload": "payload",
+          "shipping_option_id": "option-id",
+          "order_info": {}
+        }
+      },
+      {
+        "update_id": 3,
+        "pre_checkout_query": {
+          "id": "test-3",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "currency": "XTR",
+          "total_amount": 145,
+          "invoice_payload": "payload",
+          "shipping_option_id": "option-id",
+          "order_info": {
+            "name": "John",
+            "phone_number": "+123123123123",
+            "email": "john@example.com",
+            "shipping_address": {
+              "country_code": "IL",
+              "state": "test-state",
+              "city": "test-city",
+              "street_line1": "test-street-1",
+              "street_line2": "test street-2",
+              "post_code": "test-code"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

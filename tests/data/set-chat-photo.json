@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setChatPhoto",
+  "req_body": {
+    "multipart": {
+      "chat_id": 1,
+      "photo": "photo-id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "http_method": "POST",
+  "url_path": "answerInlineQuery",
+  "req_body": {
+    "multipart": {
+      "button": {
+        "text": "test-text",
+        "web_app": {
+          "url": "test-url"
+        }
+      },
+      "inline_query_id": "id",
+      "results": [
+        {
+          "document_url": "url",
+          "id": "id",
+          "input_message_content": {
+            "message_text": "test-text",
+            "parse_mode": "Markdown"
+          },
+          "mime_type": "mime",
+          "title": "title",
+          "type": "document"
+        }
+      ]
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

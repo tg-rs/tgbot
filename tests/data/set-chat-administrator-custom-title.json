@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "setChatAdministratorCustomTitle",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "custom_title": "Alpha",
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

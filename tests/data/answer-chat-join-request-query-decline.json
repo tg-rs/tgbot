@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "answerChatJoinRequestQuery",
+  "req_body": {
+    "json": {
+      "chat_join_request_query_id": "id",
+      "result": "decline"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

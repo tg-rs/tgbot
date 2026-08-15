@@ -1,0 +1,56 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "business_connection": {
+          "id": "bcid",
+          "user": {
+            "id": 3,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "user_chat_id": 2,
+          "date": 0,
+          "rights": {
+            "can_reply": true,
+            "can_read_messages": true,
+            "can_delete_sent_messages": true,
+            "can_delete_all_messages": true,
+            "can_edit_name": true,
+            "can_edit_bio": true,
+            "can_edit_profile_photo": true,
+            "can_edit_username": true,
+            "can_change_gift_settings": true,
+            "can_view_gifts_and_stars": true,
+            "can_convert_gifts_to_stars": true,
+            "can_transfer_and_upgrade_gifts": true,
+            "can_transfer_stars": true,
+            "can_manage_stories": true
+          },
+          "is_enabled": true
+        }
+      },
+      {
+        "update_id": 2,
+        "business_connection": {
+          "id": "bcid",
+          "user": {
+            "id": 3,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "user_chat_id": 2,
+          "date": 0,
+          "is_enabled": true
+        }
+      }
+    ]
+  }
+}

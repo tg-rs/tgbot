@@ -1,0 +1,111 @@
+{
+  "http_method": "POST",
+  "url_path": "getStarTransactions",
+  "req_body": {
+    "json": {
+      "limit": 5,
+      "offset": 0
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "transactions": [
+        {
+          "id": "tx-1",
+          "amount": 200,
+          "date": 0
+        },
+        {
+          "id": "tx-2",
+          "amount": 200,
+          "date": 0,
+          "nanostar_amount": 100,
+          "source": {
+            "type": "user",
+            "transaction_type": "invoice_payment",
+            "user": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            }
+          },
+          "receiver": {
+            "type": "chat",
+            "chat": {
+              "type": "channel",
+              "id": 1,
+              "title": "test"
+            }
+          }
+        },
+        {
+          "id": "tx-3",
+          "amount": 200,
+          "date": 0,
+          "nanostar_amount": 100,
+          "source": {
+            "type": "affiliate_program",
+            "sponsor_user": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            },
+            "commission_per_mille": 10
+          },
+          "receiver": {
+            "type": "fragment",
+            "withdrawal_state": {
+              "type": "pending"
+            }
+          }
+        },
+        {
+          "id": "tx-4",
+          "amount": 200,
+          "date": 0,
+          "nanostar_amount": 100,
+          "source": {
+            "type": "telegram_ads"
+          },
+          "receiver": {
+            "type": "telegram_api",
+            "request_count": 10
+          }
+        },
+        {
+          "id": "tx-5",
+          "amount": 200,
+          "date": 0,
+          "nanostar_amount": 100,
+          "source": {
+            "type": "fragment",
+            "withdrawal_state": {
+              "type": "succeeded",
+              "date": 0,
+              "url": "test"
+            }
+          },
+          "receiver": {
+            "type": "other"
+          }
+        },
+        {
+          "id": "tx-6",
+          "amount": 200,
+          "date": 0,
+          "nanostar_amount": 100,
+          "source": {
+            "type": "fragment",
+            "withdrawal_state": {
+              "type": "failed"
+            }
+          },
+          "receiver": {
+            "type": "other"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "caption": "test-caption",
+        "duration": 10,
+        "media": "attach://tgbot_file_1",
+        "performer": "test-performer",
+        "thumbnail": "test-thumbnail",
+        "title": "test-title",
+        "type": "audio"
+      },
+      "tgbot_file_1": "test-audio"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "http_method": "POST",
+  "url_path": "copyMessage",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "from_chat_id": 2,
+      "message_id": 3
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 4
+    }
+  }
+}

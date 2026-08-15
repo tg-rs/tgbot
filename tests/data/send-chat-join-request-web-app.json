@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "sendChatJoinRequestWebApp",
+  "req_body": {
+    "json": {
+      "chat_join_request_query_id": "query-id",
+      "web_app_url": "https://example.com/"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

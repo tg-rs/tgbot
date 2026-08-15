@@ -1,0 +1,32 @@
+{
+  "http_method": "POST",
+  "url_path": "createChatSubscriptionInviteLink",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "name": "test",
+      "subscription_period": 2592000,
+      "subscription_price": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "invite_link": "test",
+      "creator": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "creates_join_request": true,
+      "is_primary": true,
+      "is_revoked": false,
+      "name": "test",
+      "expire_date": 0,
+      "member_limit": 1,
+      "pending_join_request_count": 0,
+      "subscription_period": 600,
+      "subscription_price": 100
+    }
+  }
+}

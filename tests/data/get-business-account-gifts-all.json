@@ -1,0 +1,117 @@
+{
+  "http_method": "POST",
+  "url_path": "getBusinessAccountGifts",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id",
+      "exclude_from_blockchain": false,
+      "exclude_limited_non_upgradable": true,
+      "exclude_limited_upgradable": false,
+      "exclude_saved": true,
+      "exclude_unique": false,
+      "exclude_unlimited": true,
+      "exclude_unsaved": false,
+      "limit": 10,
+      "offset": "test",
+      "sort_by_price": true
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "total_count": 2,
+      "next_offset": "test",
+      "gifts": [
+        {
+          "type": "regular",
+          "gift": {
+            "id": "gift-1",
+            "sticker": {
+              "file_id": "fid",
+              "file_unique_id": "fuid",
+              "type": "regular",
+              "width": 512,
+              "height": 512,
+              "is_animated": false,
+              "is_video": false
+            },
+            "star_count": 10
+          },
+          "owned_gift_id": "test",
+          "sender_user": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "send_date": 0,
+          "text": "test",
+          "entities": [],
+          "is_private": true,
+          "is_saved": true,
+          "can_be_upgraded": true,
+          "was_refunded": true,
+          "convert_star_count": 10,
+          "prepaid_upgrade_star_count": 10,
+          "is_upgrade_separate": true,
+          "unique_gift_number": 1
+        },
+        {
+          "type": "unique",
+          "send_date": 0,
+          "gift": {
+            "gift_id": "gift-2",
+            "base_name": "test",
+            "name": "test",
+            "number": 1,
+            "model": {
+              "name": "test",
+              "sticker": {
+                "file_id": "fid",
+                "file_unique_id": "fuid",
+                "type": "regular",
+                "width": 512,
+                "height": 512,
+                "is_animated": false,
+                "is_video": false
+              },
+              "rarity_per_mille": 1
+            },
+            "symbol": {
+              "name": "test",
+              "sticker": {
+                "file_id": "fid",
+                "file_unique_id": "fuid",
+                "type": "regular",
+                "width": 512,
+                "height": 512,
+                "is_animated": false,
+                "is_video": false
+              },
+              "rarity_per_mille": 2
+            },
+            "backdrop": {
+              "name": "test",
+              "colors": {
+                "center_color": 0,
+                "edge_color": 1,
+                "symbol_color": 2,
+                "text_color": 3
+              },
+              "rarity_per_mille": 3
+            }
+          },
+          "owned_gift_id": "test",
+          "sender_user": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "is_saved": true,
+          "can_be_transferred": true,
+          "transfer_star_count": 10,
+          "next_transfer_date": 0
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "deleteStickerFromSet",
+  "req_body": {
+    "json": {
+      "sticker": "sticker"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

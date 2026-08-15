@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "getMyShortDescription",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "short_description": "test"
+    }
+  }
+}

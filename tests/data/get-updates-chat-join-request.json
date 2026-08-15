@@ -1,0 +1,95 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "chat_join_request": {
+          "chat": {
+            "type": "group",
+            "id": 1,
+            "title": "Test"
+          },
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "user_chat_id": 1,
+          "date": 0
+        }
+      },
+      {
+        "update_id": 2,
+        "chat_join_request": {
+          "chat": {
+            "type": "group",
+            "id": 1,
+            "title": "Test"
+          },
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "user_chat_id": 1,
+          "date": 0,
+          "bio": "Bio",
+          "invite_link": {
+            "invite_link": "link",
+            "creator": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            },
+            "creates_join_request": true,
+            "is_primary": true,
+            "is_revoked": false
+          },
+          "query_id": "query-id"
+        }
+      },
+      {
+        "update_id": 3,
+        "chat_join_request": {
+          "chat": {
+            "type": "group",
+            "id": 1,
+            "title": "Test"
+          },
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "user_chat_id": 1,
+          "date": 0,
+          "bio": "Bio",
+          "invite_link": {
+            "invite_link": "link",
+            "creator": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            },
+            "creates_join_request": true,
+            "is_primary": true,
+            "is_revoked": false,
+            "name": "Link",
+            "expire_date": 0,
+            "member_limit": 100,
+            "pending_join_request_count": 1,
+            "subscription_period": 86400,
+            "subscription_price": 100
+          },
+          "query_id": "query-id"
+        }
+      }
+    ]
+  }
+}

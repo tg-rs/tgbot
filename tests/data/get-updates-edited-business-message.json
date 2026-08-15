@@ -1,0 +1,35 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "edited_business_message": {
+          "message_id": 1,
+          "date": 0,
+          "edit_date": 1,
+          "chat": {
+            "type": "private",
+            "id": 1,
+            "first_name": "John",
+            "username": "john_doe"
+          },
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "username": "john_doe",
+            "is_bot": false
+          },
+          "text": "Test",
+          "is_automatic_forward": false,
+          "has_protected_content": false
+        }
+      }
+    ]
+  }
+}

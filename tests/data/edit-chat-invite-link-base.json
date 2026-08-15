@@ -1,0 +1,24 @@
+{
+  "http_method": "POST",
+  "url_path": "editChatInviteLink",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "invite_link": "example.com/join/chat"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "invite_link": "example.com/join/chat",
+      "creator": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "creates_join_request": true,
+      "is_primary": true,
+      "is_revoked": false
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "getBusinessAccountStarBalance",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "amount": 10,
+      "nanostar_amount": 1
+    }
+  }
+}

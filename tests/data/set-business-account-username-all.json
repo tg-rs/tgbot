@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setBusinessAccountUsername",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id",
+      "username": "johndoe"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "caption": "test-caption",
+        "duration": 10,
+        "has_spoiler": true,
+        "height": 200,
+        "media": "attach://tgbot_file_1",
+        "show_caption_above_media": true,
+        "thumbnail": "test-thumbnail",
+        "type": "animation",
+        "width": 200
+      },
+      "tgbot_file_1": "test-animation"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

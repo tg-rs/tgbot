@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageText",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "rich_message": {
+        "markdown": "text"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

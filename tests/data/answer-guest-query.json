@@ -1,0 +1,38 @@
+{
+  "http_method": "POST",
+  "url_path": "answerGuestQuery",
+  "req_body": {
+    "multipart": {
+      "guest_query_id": "test",
+      "result": {
+        "caption": "caption",
+        "description": "desc",
+        "id": "id",
+        "input_message_content": {
+          "message_text": "text"
+        },
+        "parse_mode": "Markdown",
+        "photo_file_id": "file-id",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "text",
+                "url": "url"
+              }
+            ]
+          ]
+        },
+        "show_caption_above_media": true,
+        "title": "title",
+        "type": "photo"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "inline_message_id": "test"
+    }
+  }
+}

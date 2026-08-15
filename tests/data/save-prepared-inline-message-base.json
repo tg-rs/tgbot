@@ -1,0 +1,22 @@
+{
+  "http_method": "POST",
+  "req_body": {
+    "multipart": {
+      "result": {
+        "first_name": "test",
+        "id": "result-id",
+        "phone_number": "+1000",
+        "type": "contact"
+      },
+      "user_id": 1
+    }
+  },
+  "url_path": "savePreparedInlineMessage",
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": "test",
+      "expiration_date": 0
+    }
+  }
+}

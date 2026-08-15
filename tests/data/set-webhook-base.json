@@ -1,0 +1,13 @@
+{
+  "http_method": "POST",
+  "url_path": "setWebhook",
+  "req_body": {
+    "multipart": {
+      "url": "https://example.com"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

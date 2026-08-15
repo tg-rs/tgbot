@@ -1,0 +1,21 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "caption": "test",
+        "has_spoiler": true,
+        "media": "photo-file-id",
+        "parse_mode": "Markdown",
+        "show_caption_above_media": true,
+        "type": "photo"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

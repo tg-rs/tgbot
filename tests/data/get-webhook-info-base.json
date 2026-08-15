@@ -1,0 +1,12 @@
+{
+  "http_method": "GET",
+  "url_path": "getWebhookInfo",
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "url": "https://example.com",
+      "has_custom_certificate": false,
+      "pending_update_count": 0
+    }
+  }
+}

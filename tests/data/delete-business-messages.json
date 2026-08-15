@@ -1,0 +1,18 @@
+{
+  "http_method": "POST",
+  "url_path": "deleteBusinessMessages",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id",
+      "message_ids": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

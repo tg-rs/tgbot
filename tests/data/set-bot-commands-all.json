@@ -1,0 +1,22 @@
+{
+  "http_method": "POST",
+  "url_path": "setMyCommands",
+  "req_body": {
+    "json": {
+      "commands": [
+        {
+          "command": "name",
+          "description": "description"
+        }
+      ],
+      "language_code": "ru",
+      "scope": {
+        "type": "all_private_chats"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

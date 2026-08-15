@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "unbanChatMember",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "only_if_banned": true,
+      "user_id": 2
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

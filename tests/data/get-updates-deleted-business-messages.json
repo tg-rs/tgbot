@@ -1,0 +1,29 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "deleted_business_messages": {
+          "business_connection_id": "connection-id",
+          "chat": {
+            "type": "private",
+            "id": 1,
+            "first_name": "Test",
+            "username": "john_doe"
+          },
+          "message_ids": [
+            1,
+            2,
+            3
+          ]
+        }
+      }
+    ]
+  }
+}

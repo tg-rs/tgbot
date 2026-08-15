@@ -1,0 +1,22 @@
+{
+  "http_method": "POST",
+  "url_path": "createInvoiceLink",
+  "req_body": {
+    "json": {
+      "currency": "GEL",
+      "description": "product-description",
+      "payload": "payload",
+      "prices": [
+        {
+          "amount": 100,
+          "label": "price-label"
+        }
+      ],
+      "title": "product-name"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": "test"
+  }
+}

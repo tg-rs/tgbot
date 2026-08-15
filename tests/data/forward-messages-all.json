@@ -1,0 +1,25 @@
+{
+  "http_method": "POST",
+  "url_path": "forwardMessages",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "direct_messages_topic_id": 1,
+      "disable_notification": true,
+      "from_chat_id": 2,
+      "message_ids": [
+        3
+      ],
+      "message_thread_id": 1,
+      "protect_content": true
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "message_id": 4
+      }
+    ]
+  }
+}

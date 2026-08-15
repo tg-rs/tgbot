@@ -1,0 +1,20 @@
+{
+  "http_method": "POST",
+  "url_path": "getMyCommands",
+  "req_body": {
+    "json": {
+      "scope": {
+        "type": "all_chat_administrators"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "command": "test",
+        "description": "test"
+      }
+    ]
+  }
+}

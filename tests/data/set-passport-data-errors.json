@@ -1,0 +1,74 @@
+{
+  "http_method": "POST",
+  "url_path": "setPassportDataErrors",
+  "req_body": {
+    "json": {
+      "errors": [
+        {
+          "data_hash": "data_hash",
+          "field_name": "address",
+          "message": "bad address",
+          "source": "data",
+          "type": "address"
+        },
+        {
+          "file_hash": "file_hash",
+          "message": "bad file",
+          "source": "front_side",
+          "type": "driver_license"
+        },
+        {
+          "file_hash": "file_hash",
+          "message": "bad file",
+          "source": "reverse_side",
+          "type": "driver_license"
+        },
+        {
+          "file_hash": "file_hash",
+          "message": "bad file",
+          "source": "selfie",
+          "type": "driver_license"
+        },
+        {
+          "file_hash": "file_hash",
+          "message": "bad file",
+          "source": "file",
+          "type": "bank_statement"
+        },
+        {
+          "file_hashes": [
+            "file_hash"
+          ],
+          "message": "bad file",
+          "source": "files",
+          "type": "bank_statement"
+        },
+        {
+          "file_hash": "file_hash",
+          "message": "bad file",
+          "source": "translation_file",
+          "type": "bank_statement"
+        },
+        {
+          "file_hashes": [
+            "file_hash"
+          ],
+          "message": "bad file",
+          "source": "translation_files",
+          "type": "bank_statement"
+        },
+        {
+          "element_hash": "test-hash",
+          "message": "test-message",
+          "source": "unspecified",
+          "type": "passport"
+        }
+      ],
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

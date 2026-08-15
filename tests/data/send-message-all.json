@@ -1,0 +1,63 @@
+{
+  "http_method": "POST",
+  "url_path": "sendMessage",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "text": "text",
+      "entities": [
+        {
+          "type": "bold",
+          "offset": 0,
+          "length": 2
+        }
+      ],
+      "allow_paid_broadcast": true,
+      "business_connection_id": "id",
+      "callback_query_id": "cqid",
+      "direct_messages_topic_id": 1,
+      "disable_notification": true,
+      "link_preview_options": {
+        "is_disabled": true
+      },
+      "message_effect_id": "effect-id",
+      "message_thread_id": 1,
+      "protect_content": true,
+      "receiver_user_id": 999,
+      "reply_markup": {
+        "force_reply": true
+      },
+      "reply_parameters": {
+        "message_id": 1
+      },
+      "suggested_post_parameters": {}
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "text": "text",
+      "entities": [
+        {
+          "type": "bold",
+          "offset": 0,
+          "length": 2
+        }
+      ],
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

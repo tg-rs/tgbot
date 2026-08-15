@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setCustomEmojiStickerSetThumbnail",
+  "req_body": {
+    "json": {
+      "custom_emoji_id": "emoji-id",
+      "name": "test"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

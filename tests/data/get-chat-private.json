@@ -1,0 +1,76 @@
+{
+  "http_method": "POST",
+  "url_path": "getChat",
+  "req_body": {
+    "json": {
+      "chat_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": 1,
+      "type": "private",
+      "first_name": "John",
+      "last_name": "Doe",
+      "username": "test",
+      "active_usernames": [
+        "test1"
+      ],
+      "accent_color_id": 0,
+      "max_reaction_count": 3,
+      "bio": "test",
+      "birthdate": {
+        "day": 20,
+        "month": 4,
+        "year": 1990
+      },
+      "business_intro": {
+        "title": "test",
+        "message": "test",
+        "sticker": {
+          "file_id": "fid",
+          "file_unique_id": "fuid",
+          "type": "regular",
+          "width": 512,
+          "height": 512,
+          "is_animated": false,
+          "is_video": false
+        }
+      },
+      "business_location": {
+        "address": "test",
+        "location": {
+          "latitude": 1.0,
+          "longitude": 2.0
+        }
+      },
+      "business_opening_hours": {
+        "time_zone_name": "UTC",
+        "opening_hours": [
+          {
+            "opening_minute": 0,
+            "closing_minute": 1
+          }
+        ]
+      },
+      "personal_chat": {
+        "id": 2,
+        "type": "channel",
+        "title": "Test"
+      },
+      "has_restricted_voice_and_video_messages": true,
+      "rating": {
+        "level": 1,
+        "rating": 2,
+        "current_level_rating": 3,
+        "next_level_rating": 4
+      },
+      "first_profile_audio": {
+        "file_id": "fid",
+        "file_unique_id": "uid",
+        "duration": 60
+      }
+    }
+  }
+}

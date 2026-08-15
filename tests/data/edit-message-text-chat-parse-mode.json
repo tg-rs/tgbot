@@ -1,0 +1,46 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageText",
+  "req_body": {
+    "json": {
+      "business_connection_id": "c-id",
+      "chat_id": 1,
+      "link_preview_options": {
+        "is_disabled": true
+      },
+      "message_id": 2,
+      "parse_mode": "Markdown",
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            {
+              "text": "text",
+              "url": "url"
+            }
+          ]
+        ]
+      },
+      "text": "text"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "text": "test",
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

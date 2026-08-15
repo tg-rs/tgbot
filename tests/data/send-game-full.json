@@ -1,0 +1,73 @@
+{
+  "http_method": "POST",
+  "url_path": "sendGame",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "game_short_name": "Game",
+      "allow_paid_broadcast": true,
+      "business_connection_id": "id",
+      "disable_notification": true,
+      "message_effect_id": "effect-id",
+      "message_thread_id": 1,
+      "protect_content": true,
+      "reply_markup": {
+        "inline_keyboard": [[
+          {
+            "text": "text",
+            "url": "example.com"
+          }
+        ]]
+      },
+      "reply_parameters": {
+        "message_id": 1
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "game": {
+        "title": "Title",
+        "description": "Description",
+        "photo": [
+          {
+            "file_id": "pfid",
+            "file_unique_id": "pfuid",
+            "width": 200,
+            "height": 200
+          }
+        ],
+        "text": "test",
+        "text_entities": [
+          {
+            "type": "bold",
+            "offset": 0,
+            "length": 2
+          }
+        ],
+        "animation": {
+          "file_id": "afid",
+          "file_unique_id": "afuid",
+          "width": 200,
+          "height": 200,
+          "duration": 100
+        }
+      },
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

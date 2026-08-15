@@ -1,0 +1,55 @@
+{
+  "http_method": "POST",
+  "url_path": "sendPoll",
+  "req_body": {
+    "multipart": {
+      "chat_id": 1,
+      "correct_option_ids": [
+        0
+      ],
+      "options": [
+        {
+          "text": "X"
+        }
+      ],
+      "question": "Q"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "poll": {
+        "id": "poll-id",
+        "question": "Q",
+        "options": [
+          {
+            "persistent_id": "opt-1",
+            "text": "X",
+            "voter_count": 1
+          }
+        ],
+        "correct_option_ids": [0],
+        "total_voter_count": 1,
+        "is_closed": true,
+        "is_anonymous": true,
+        "type": "quiz",
+        "allows_revoting": false,
+        "members_only": false
+      },
+      "is_automatic_forward": false,
+      "has_protected_content": false
+    }
+  }
+}

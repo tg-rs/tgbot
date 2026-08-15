@@ -1,0 +1,23 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "purchased_paid_media": {
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "paid_media_payload": "payload"
+        }
+      }
+    ]
+  }
+}

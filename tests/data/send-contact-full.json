@@ -1,0 +1,197 @@
+{
+  "http_method": "POST",
+  "url_path": "sendContact",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "first_name": "John",
+      "phone_number": "+79001231212",
+      "allow_paid_broadcast": true,
+      "business_connection_id": "id",
+      "callback_query_id": "cqid",
+      "direct_messages_topic_id": 1,
+      "disable_notification": true,
+      "last_name": "Doe",
+      "message_effect_id": "effect-id",
+      "message_thread_id": 1,
+      "protect_content": true,
+      "receiver_user_id": 999,
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            {
+              "text": "url",
+              "icon_custom_emoji_id": "test",
+              "url": "tg://user?id=1"
+            },
+            {
+              "text": "web app",
+              "style": "danger",
+              "web_app": {
+                "url": "https://example.com"
+              }
+            },
+            {
+              "text": "cd",
+              "style": "primary",
+              "callback_data": "cd"
+            },
+            {
+              "text": "cp",
+              "copy_text": {
+                "text": "val"
+              }
+            },
+            {
+              "text": "siq",
+              "switch_inline_query": "siq"
+            },
+            {
+              "text": "siq_cc",
+              "switch_inline_query_current_chat": "siq_cc"
+            },
+            {
+              "text": "siq_chc",
+              "switch_inline_query_chosen_chat": {
+                "query": "query"
+              }
+            },
+            {
+              "text": "siq_chc_flags",
+              "switch_inline_query_chosen_chat": {
+                "query": "query",
+                "allow_bot_chats": true,
+                "allow_channel_chats": true,
+                "allow_group_chats": true,
+                "allow_user_chats": true
+              }
+            },
+            {
+              "text": "cg",
+              "callback_game": {}
+            },
+            {
+              "text": "pay",
+              "pay": true
+            },
+            {
+              "text": "login url",
+              "login_url": {
+                "url": "http://example.com"
+              }
+            },
+            {
+              "text": "login url with params",
+              "login_url": {
+                "url": "http://example.com",
+                "bot_username": "test",
+                "forward_text": "test",
+                "request_write_access": true
+              }
+            }
+          ]
+        ]
+      },
+      "reply_parameters": {
+        "message_id": 1
+      },
+      "suggested_post_parameters": {},
+      "vcard": "BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "message_id": 1,
+      "date": 0,
+      "chat": {
+        "type": "group",
+        "id": 1,
+        "title": "Test"
+      },
+      "from": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "contact": {
+        "phone_number": "+79001231212",
+        "first_name": "John",
+        "last_name": "Doe",
+        "user_id": 1,
+        "vcard": "BEGIN:VCARD\nVERSION:4.0\nFN:John Doe\n\nEND:VCARD"
+      },
+      "is_automatic_forward": false,
+      "has_protected_content": false,
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            {
+              "text": "url",
+              "icon_custom_emoji_id": "test",
+              "url": "tg://user?id=1"
+            },
+            {
+              "text": "web app",
+              "style": "danger",
+              "web_app": {
+                "url": "https://example.com"
+              }
+            },
+            {
+              "text": "cd",
+              "style": "primary",
+              "callback_data": "cd"
+            },
+            {
+              "text": "cp",
+              "copy_text": {
+                "text": "val"
+              }
+            },
+            {
+              "text": "siq",
+              "switch_inline_query": "siq"
+            },
+            {
+              "text": "siq_cc",
+              "switch_inline_query_current_chat": "siq_cc"
+            },
+            {
+              "text": "siq_chc",
+              "switch_inline_query_chosen_chat": {
+                "query": "query"
+              }
+            },
+            {
+              "text": "siq_chc_flags",
+              "switch_inline_query_chosen_chat": {
+                "query": "query",
+                "allow_bot_chats": true,
+                "allow_channel_chats": true,
+                "allow_group_chats": true,
+                "allow_user_chats": true
+              }
+            },
+            {
+              "text": "cg",
+              "callback_game": {}
+            },
+            {
+              "text": "pay",
+              "pay": true
+            },
+            {
+              "text": "login url",
+              "url": "http://example.com"
+            },
+            {
+              "text": "login url with params",
+              "url": "http://example.com"
+            }
+          ]
+        ]
+      }
+    }
+  }
+}

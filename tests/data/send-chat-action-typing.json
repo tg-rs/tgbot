@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "sendChatAction",
+  "req_body": {
+    "json": {
+      "chat_id": "@test_chat",
+      "action": "typing",
+      "business_connection_id": "id",
+      "message_thread_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

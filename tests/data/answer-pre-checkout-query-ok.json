@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "answerPreCheckoutQuery",
+  "req_body": {
+    "json": {
+      "ok": true,
+      "pre_checkout_query_id": "query-id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

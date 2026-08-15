@@ -1,0 +1,61 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "inline_query": {
+          "id": "query-1",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "query": "Text",
+          "offset": "offset"
+        }
+      },
+      {
+        "update_id": 1,
+        "inline_query": {
+          "id": "query-1",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "query": "Text",
+          "offset": "offset",
+          "chat_type": "sender",
+          "location": {
+            "latitude": 1.0,
+            "longitude": 2.0
+          }
+        }
+      },
+      {
+        "update_id": 1,
+        "inline_query": {
+          "id": "query-1",
+          "from": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "query": "Text",
+          "offset": "offset",
+          "chat_type": "private",
+          "location": {
+            "latitude": 1.0,
+            "longitude": 2.0
+          }
+        }
+      }
+    ]
+  }
+}

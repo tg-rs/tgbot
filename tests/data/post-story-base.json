@@ -1,0 +1,26 @@
+{
+  "http_method": "POST",
+  "url_path": "postStory",
+  "req_body": {
+    "multipart": {
+      "active_period": 60,
+      "business_connection_id": "id",
+      "content": {
+        "photo": "url",
+        "type": "photo"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": 1,
+      "chat": {
+        "type": "supergroup",
+        "id": 1,
+        "title": "Test",
+        "username": "test"
+      }
+    }
+  }
+}

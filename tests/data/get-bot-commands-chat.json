@@ -1,0 +1,21 @@
+{
+  "http_method": "POST",
+  "url_path": "getMyCommands",
+  "req_body": {
+    "json": {
+      "scope": {
+        "chat_id": 1,
+        "type": "chat"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "command": "test",
+        "description": "test"
+      }
+    ]
+  }
+}

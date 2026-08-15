@@ -1,0 +1,24 @@
+{
+  "http_method": "POST",
+  "url_path": "createNewStickerSet",
+  "req_body": {
+    "multipart": {
+      "name": "name",
+      "stickers": [
+        {
+          "emoji_list": [
+            "😻"
+          ],
+          "format": "static",
+          "sticker": "sticker-file-id"
+        }
+      ],
+      "title": "title",
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

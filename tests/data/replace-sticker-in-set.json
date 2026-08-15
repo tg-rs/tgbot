@@ -1,0 +1,22 @@
+{
+  "http_method": "POST",
+  "url_path": "replaceStickerInSet",
+  "req_body": {
+    "multipart": {
+      "name": "test",
+      "old_sticker": "old-sticker",
+      "sticker": {
+        "emoji_list": [
+          "😻"
+        ],
+        "format": "static",
+        "sticker": "test"
+      },
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

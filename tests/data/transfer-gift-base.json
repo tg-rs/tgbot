@@ -1,0 +1,15 @@
+{
+  "http_method": "POST",
+  "url_path": "transferGift",
+  "req_body": {
+    "json": {
+      "business_connection_id": "id",
+      "new_owner_chat_id": 1,
+      "owned_gift_id": "id"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

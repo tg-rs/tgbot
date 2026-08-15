@@ -1,0 +1,24 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "address": "addr",
+        "foursquare_id": "f-id",
+        "foursquare_type": "f-type",
+        "google_place_id": "g-id",
+        "google_place_type": "g-type",
+        "latitude": 1.0,
+        "longitude": 2.0,
+        "title": "test",
+        "type": "venue"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

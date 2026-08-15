@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "setMyShortDescription",
+  "req_body": {
+    "json": {
+      "language_code": "RU",
+      "short_description": "test-short-description"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

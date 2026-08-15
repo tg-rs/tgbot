@@ -1,0 +1,14 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageText",
+  "req_body": {
+    "json": {
+      "inline_message_id": "msg-id",
+      "text": "text"
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

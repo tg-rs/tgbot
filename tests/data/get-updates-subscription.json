@@ -1,0 +1,48 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "subscription": {
+          "user": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "invoice_payload": "test-canceled",
+          "state": "canceled"
+        }
+      },
+      {
+        "update_id": 2,
+        "subscription": {
+          "user": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "invoice_payload": "test-active",
+          "state": "active"
+        }
+      },
+      {
+        "update_id": 3,
+        "subscription": {
+          "user": {
+            "id": 1,
+            "first_name": "John",
+            "is_bot": false
+          },
+          "invoice_payload": "test-failed",
+          "state": "failed"
+        }
+      }
+    ]
+  }
+}

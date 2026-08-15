@@ -1,0 +1,22 @@
+{
+  "http_method": "GET",
+  "url_path": "getMe",
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": 1,
+      "first_name": "Test",
+      "username": "test",
+      "can_join_groups": true,
+      "can_read_all_group_messages": true,
+      "supports_guest_queries": true,
+      "supports_inline_queries": true,
+      "can_connect_to_business": true,
+      "has_main_web_app": true,
+      "has_topics_enabled": true,
+      "allows_users_to_create_topics": true,
+      "can_manage_bots": true,
+      "supports_join_request_queries": true
+    }
+  }
+}

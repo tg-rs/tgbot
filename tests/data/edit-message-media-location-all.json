@@ -1,0 +1,19 @@
+{
+  "http_method": "POST",
+  "url_path": "editMessageMedia",
+  "req_body": {
+    "multipart": {
+      "inline_message_id": "msg-id",
+      "media": {
+        "horizontal_accuracy": 3.0,
+        "latitude": 1.0,
+        "longitude": 2.0,
+        "type": "location"
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

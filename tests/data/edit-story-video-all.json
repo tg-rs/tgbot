@@ -1,0 +1,28 @@
+{
+  "http_method": "POST",
+  "url_path": "editStory",
+  "req_body": {
+    "multipart": {
+      "business_connection_id": "id",
+      "content": {
+        "cover_frame_timestamp": 0.0,
+        "duration": 20.0,
+        "is_animation": true,
+        "type": "video",
+        "video": "video-file-id"
+      },
+      "story_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "id": 1,
+      "chat": {
+        "type": "private",
+        "id": 1,
+        "first_name": "John"
+      }
+    }
+  }
+}

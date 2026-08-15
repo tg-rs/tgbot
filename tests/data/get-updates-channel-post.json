@@ -1,0 +1,28 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "channel_post": {
+          "message_id": 1,
+          "date": 0,
+          "chat": {
+            "type": "channel",
+            "id": 1,
+            "title": "Test",
+            "username": "channel_username"
+          },
+          "text": "Test",
+          "is_automatic_forward": false,
+          "has_protected_content": false
+        }
+      }
+    ]
+  }
+}

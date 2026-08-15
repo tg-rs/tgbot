@@ -1,0 +1,26 @@
+{
+  "http_method": "POST",
+  "url_path": "editEphemeralMessageCaption",
+  "req_body": {
+    "json": {
+      "caption": "test",
+      "chat_id": 1,
+      "ephemeral_message_id": 3,
+      "receiver_user_id": 2,
+      "reply_markup": {
+        "inline_keyboard": [
+          [
+            {
+              "text": "test",
+              "url": "example.com"
+            }
+          ]
+        ]
+      }
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

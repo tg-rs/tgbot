@@ -1,0 +1,33 @@
+{
+  "http_method": "POST",
+  "url_path": "getChatMember",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "user_id": 2
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "status": "administrator",
+      "user": {
+        "id": 1,
+        "first_name": "John",
+        "is_bot": false
+      },
+      "can_be_edited": true,
+      "is_anonymous": true,
+      "can_manage_chat": true,
+      "can_delete_messages": true,
+      "can_manage_video_chats": true,
+      "can_restrict_members": true,
+      "can_promote_members": true,
+      "can_change_info": true,
+      "can_invite_users": true,
+      "can_post_stories": true,
+      "can_edit_stories": true,
+      "can_delete_stories": true
+    }
+  }
+}

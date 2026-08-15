@@ -1,0 +1,68 @@
+{
+  "http_method": "POST",
+  "url_path": "getUserChatBoosts",
+  "req_body": {
+    "json": {
+      "chat_id": 1,
+      "user_id": 2
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": {
+      "boosts": [
+        {
+          "boost_id": "boost-1",
+          "add_date": 0,
+          "expiration_date": 1,
+          "source": {
+            "source": "premium",
+            "user": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            }
+          }
+        },
+        {
+          "boost_id": "boost-2",
+          "add_date": 0,
+          "expiration_date": 1,
+          "source": {
+            "source": "gift_code",
+            "user": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            }
+          }
+        },
+        {
+          "boost_id": "boost-3",
+          "add_date": 0,
+          "expiration_date": 1,
+          "source": {
+            "source": "giveaway",
+            "giveaway_message_id": 1
+          }
+        },
+        {
+          "boost_id": "boost-4",
+          "add_date": 0,
+          "expiration_date": 1,
+          "source": {
+            "source": "giveaway",
+            "giveaway_message_id": 2,
+            "user": {
+              "id": 1,
+              "first_name": "John",
+              "is_bot": false
+            },
+            "prize_star_count": 10,
+            "is_unclaimed": true
+          }
+        }
+      ]
+    }
+  }
+}

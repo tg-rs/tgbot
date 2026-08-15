@@ -1,0 +1,24 @@
+{
+  "http_method": "POST",
+  "url_path": "getGameHighScores",
+  "req_body": {
+    "json": {
+      "inline_message_id": "inline-message-id",
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "position": 1,
+        "user": {
+          "id": 1,
+          "first_name": "John",
+          "is_bot": false
+        },
+        "score": 1000
+      }
+    ]
+  }
+}

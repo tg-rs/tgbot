@@ -1,0 +1,16 @@
+{
+  "http_method": "POST",
+  "url_path": "setStickerSetThumbnail",
+  "req_body": {
+    "multipart": {
+      "format": "static",
+      "name": "name",
+      "thumbnail": "file-id",
+      "user_id": 1
+    }
+  },
+  "rep_body": {
+    "ok": true,
+    "result": true
+  }
+}

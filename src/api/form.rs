@@ -127,13 +127,6 @@ impl Form {
     pub(crate) fn len(&self) -> usize {
         self.fields.len()
     }
-
-    #[cfg(test)]
-    pub(crate) fn into_fields(self) -> Vec<(String, FormValue)> {
-        let mut result: Vec<(String, FormValue)> = self.fields.into_iter().collect();
-        result.sort_by(|a, b| a.0.cmp(&b.0));
-        result
-    }
 }
 
 impl<I, K> From<I> for Form

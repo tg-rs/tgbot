@@ -126,7 +126,7 @@ impl SetChatMenuButton {
     /// * `value` - Unique identifier of the target private chat.
     ///
     /// If not specified, default bot menu button will be changed.
-    pub fn chat_id(mut self, chat_id: Integer) -> Self {
+    pub fn with_chat_id(mut self, chat_id: Integer) -> Self {
         self.chat_id = Some(chat_id);
         self
     }
@@ -136,7 +136,7 @@ impl SetChatMenuButton {
     /// # Arguments
     ///
     /// * `value` - An object for the new bot menu button; default - [`MenuButton::Default`].
-    pub fn menu_button(mut self, value: MenuButton) -> Self {
+    pub fn with_menu_button(mut self, value: MenuButton) -> Self {
         self.menu_button = Some(value);
         self
     }

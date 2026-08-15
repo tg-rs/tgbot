@@ -1,8 +1,0 @@
----
-source: src/types/tests/background.rs
-expression: "BackgroundFill::Solid { color: 1 }"
----
-{
-  "type": "solid",
-  "color": 1
-}

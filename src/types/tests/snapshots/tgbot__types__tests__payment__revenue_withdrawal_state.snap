@@ -1,7 +1,0 @@
----
-source: src/types/tests/payment.rs
-expression: "RevenueWithdrawalState::Failed"
----
-{
-  "type": "failed"
-}

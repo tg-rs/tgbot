@@ -1,8 +1,0 @@
----
-source: src/types/tests/bot.rs
-expression: bot_command
----
-{
-  "command": "name",
-  "description": "description"
-}

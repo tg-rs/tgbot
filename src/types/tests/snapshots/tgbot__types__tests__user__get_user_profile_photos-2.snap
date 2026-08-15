@@ -1,9 +1,0 @@
----
-source: src/types/tests/user.rs
-expression: actual_data
----
-{
-  "limit": 10,
-  "offset": 5,
-  "user_id": 1
-}

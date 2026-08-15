@@ -1,8 +1,0 @@
----
-source: src/types/tests/gift.rs
-expression: actual_data
----
-{
-  "gift_id": "test",
-  "user_id": 1
-}

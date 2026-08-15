@@ -1,8 +1,0 @@
----
-source: src/types/tests/story.rs
-expression: expected_struct
----
-{
-  "type": "link",
-  "url": "url"
-}

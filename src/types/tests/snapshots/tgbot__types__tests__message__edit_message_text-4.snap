@@ -1,8 +1,0 @@
----
-source: src/types/tests/message.rs
-expression: actual_data
----
-{
-  "inline_message_id": "msg-id",
-  "text": "text"
-}

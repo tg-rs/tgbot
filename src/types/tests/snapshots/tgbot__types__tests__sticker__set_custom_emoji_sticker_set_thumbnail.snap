@@ -1,7 +1,0 @@
----
-source: src/types/tests/sticker.rs
-expression: actual_data
----
-{
-  "name": "test"
-}

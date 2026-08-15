@@ -1,9 +1,0 @@
----
-source: src/types/tests/suggested_post.rs
-expression: actual_data
----
-{
-  "chat_id": 1,
-  "comment": "test",
-  "message_id": 2
-}

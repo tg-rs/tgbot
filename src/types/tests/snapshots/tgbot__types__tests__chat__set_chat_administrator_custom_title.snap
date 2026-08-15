@@ -1,9 +1,0 @@
----
-source: src/types/tests/chat.rs
-expression: actual_data
----
-{
-  "chat_id": 1,
-  "custom_title": "Alpha",
-  "user_id": 1
-}

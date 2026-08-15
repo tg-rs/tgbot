@@ -1,7 +1,0 @@
----
-source: src/types/tests/reaction.rs
-expression: "ReactionType::Paid"
----
-{
-  "type": "paid"
-}

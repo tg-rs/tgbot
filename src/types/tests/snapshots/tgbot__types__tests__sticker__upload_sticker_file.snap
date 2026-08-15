@@ -1,9 +1,0 @@
----
-source: src/types/tests/sticker.rs
-expression: actual_data
----
-{
-  "sticker": "sticker-id",
-  "sticker_format": "static",
-  "user_id": "1"
-}

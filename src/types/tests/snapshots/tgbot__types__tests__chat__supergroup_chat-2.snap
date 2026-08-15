@@ -1,9 +1,0 @@
----
-source: src/types/tests/chat.rs
-expression: expected_struct
----
-{
-  "type": "supergroup",
-  "id": 1,
-  "title": "Supergroup Chat"
-}

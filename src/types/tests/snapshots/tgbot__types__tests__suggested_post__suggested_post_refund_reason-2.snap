@@ -1,5 +1,0 @@
----
-source: src/types/tests/suggested_post.rs
-expression: "SuggestedPostRefundReason::PostDeleted"
----
-"post_deleted"

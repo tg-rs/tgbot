@@ -1,5 +1,0 @@
----
-source: src/types/tests/business.rs
-expression: expected_struct
----
-{}

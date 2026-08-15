@@ -1,7 +1,0 @@
----
-source: src/types/tests/media.rs
-expression: "PaidMedia::Preview(PaidMediaPreview::default())"
----
-{
-  "type": "preview"
-}

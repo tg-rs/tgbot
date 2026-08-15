@@ -1,9 +1,0 @@
----
-source: src/types/tests/checklist.rs
-expression: expected_struct.clone()
----
-{
-  "id": 1,
-  "text": "test",
-  "parse_mode": "HTML"
-}

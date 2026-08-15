@@ -1,9 +1,0 @@
----
-source: src/types/tests/chat.rs
-expression: actual_data
----
-{
-  "chat_id": 1,
-  "only_if_banned": true,
-  "user_id": 2
-}

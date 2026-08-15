@@ -1,7 +1,0 @@
----
-source: src/types/tests/location.rs
-expression: expected_struct.clone()
----
-{
-  "country_code": "RU"
-}

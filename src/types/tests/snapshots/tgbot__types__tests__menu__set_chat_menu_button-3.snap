@@ -1,9 +1,0 @@
----
-source: src/types/tests/menu.rs
-expression: actual_data
----
-{
-  "menu_button": {
-    "type": "default"
-  }
-}

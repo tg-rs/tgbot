@@ -304,6 +304,12 @@ impl BotCommand {
         self
     }
 
+    /// Whether the command sends an ephemeral message,
+    /// which can be seen only by the sender of the message and the bot.
+    pub fn is_ephemeral(&self) -> Option<bool> {
+        self.is_ephemeral
+    }
+
     /// Sets a new value for the `is_ephemeral` flag.
     ///
     /// # Arguments

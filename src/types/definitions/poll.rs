@@ -1075,18 +1075,6 @@ impl SendQuiz {
         }
     }
 
-    /// Sets a new value for the `allow_adding_options` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether answer options can be added to the poll after creation.
-    ///
-    /// `is_anonymous` will be set to [`None`] when it is set to `true` and the value is `true`.
-    pub fn with_allow_adding_options(mut self, value: bool) -> Self {
-        self.inner.set_allow_adding_options(value);
-        self
-    }
-
     /// Sets a new value for the `allow_paid_broadcast` flag.
     ///
     /// # Arguments

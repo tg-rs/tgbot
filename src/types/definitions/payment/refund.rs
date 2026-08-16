@@ -27,44 +27,6 @@ pub struct RefundedPayment {
     pub provider_payment_charge_id: Option<String>,
 }
 
-impl RefundedPayment {
-    /// Creates a new `RefundedPayment`.
-    ///
-    /// # Arguments
-    ///
-    /// * `currency` - Three-letter ISO 4217 currency code.
-    /// * `invoice_payload` - Bot-specified invoice payload.
-    /// * `telegram_payment_charge_id` - Telegram payment identifier.
-    /// * `total_amount` - Total refunded price in the smallest units of the currency.
-    pub fn new<A, B, C>(currency: A, invoice_payload: B, telegram_payment_charge_id: C, total_amount: Integer) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-        C: Into<String>,
-    {
-        Self {
-            currency: currency.into(),
-            invoice_payload: invoice_payload.into(),
-            telegram_payment_charge_id: telegram_payment_charge_id.into(),
-            total_amount,
-            provider_payment_charge_id: None,
-        }
-    }
-
-    /// Sets a new provider payment identifier.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Provider payment identifier.
-    pub fn with_provider_payment_charge_id<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.provider_payment_charge_id = Some(value.into());
-        self
-    }
-}
-
 /// Refunds a successful payment in Telegram Stars.
 #[derive(Clone, Debug, Serialize)]
 pub struct RefundStarPayment {

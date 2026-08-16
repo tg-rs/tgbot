@@ -28,31 +28,6 @@ pub struct ChatPhoto {
     pub small_file_unique_id: String,
 }
 
-impl ChatPhoto {
-    /// Creates a new `ChatPhoto`.
-    ///
-    /// # Arguments
-    ///
-    /// * `big_file_id` - File identifier of a big (640x640) chat photo.
-    /// * `big_file_unique_id` - Unique file identifier of a big (640x640) chat photo.
-    /// * `small_file_id` - File identifier of a small (160x160) chat photo.
-    /// * `small_file_unique_id` - Unique file identifier of a small (160x160) chat photo.
-    pub fn new<A, B, C, D>(big_file_id: A, big_file_unique_id: B, small_file_id: C, small_file_unique_id: D) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-        C: Into<String>,
-        D: Into<String>,
-    {
-        Self {
-            big_file_id: big_file_id.into(),
-            big_file_unique_id: big_file_unique_id.into(),
-            small_file_id: small_file_id.into(),
-            small_file_unique_id: small_file_unique_id.into(),
-        }
-    }
-}
-
 /// Deletes a chat photo.
 ///
 /// Photos can't be changed for private chats.

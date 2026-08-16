@@ -41,151 +41,6 @@ pub struct Bot {
     pub supports_join_request_queries: bool,
 }
 
-impl Bot {
-    /// Creates a new `Bot`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - The unique identifier for the bot.
-    /// * `username` - The username of the bot.
-    /// * `first_name` - The first name of the bot.
-    pub fn new<A, B>(id: Integer, username: A, first_name: B) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-    {
-        Self {
-            first_name: first_name.into(),
-            id,
-            username: username.into(),
-            allows_users_to_create_topics: false,
-            can_connect_to_business: false,
-            can_join_groups: false,
-            can_manage_bots: false,
-            can_read_all_group_messages: false,
-            has_main_web_app: false,
-            has_topics_enabled: false,
-            last_name: None,
-            supports_guest_queries: false,
-            supports_inline_queries: false,
-            supports_join_request_queries: false,
-        }
-    }
-
-    /// Sets a new value for the `allows_users_to_create_topics` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the bot allows users to create and delete topics in private chats.
-    pub fn with_allows_users_to_create_topics(mut self, value: bool) -> Self {
-        self.allows_users_to_create_topics = value;
-        self
-    }
-
-    /// Sets a new value for the `can_connect_to_business` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the bot can be connected to a Telegram Business account.
-    pub fn with_can_connect_to_business(mut self, value: bool) -> Self {
-        self.can_connect_to_business = value;
-        self
-    }
-
-    /// Sets a new value for the `can_join_groups` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the bot can be invited to groups.
-    pub fn with_can_join_groups(mut self, value: bool) -> Self {
-        self.can_join_groups = value;
-        self
-    }
-
-    /// Sets a new value for the `can_manage_bots` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether other bots can be created to be controlled by the bot.
-    pub fn with_can_manage_bots(mut self, value: bool) -> Self {
-        self.can_manage_bots = value;
-        self
-    }
-
-    /// Sets a new value for the `can_read_all_group_messages` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether privacy mode is disabled.
-    pub fn with_can_read_all_group_messages(mut self, value: bool) -> Self {
-        self.can_read_all_group_messages = value;
-        self
-    }
-
-    /// Sets a new value for the `has_main_web_app` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the bot has a main Web App.
-    pub fn with_has_main_web_app(mut self, value: bool) -> Self {
-        self.has_main_web_app = value;
-        self
-    }
-
-    /// Sets a new value for the `has_topics_enabled` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the bot has forum topic mode enabled in private chats.
-    pub fn with_has_topics_enabled(mut self, value: bool) -> Self {
-        self.has_topics_enabled = value;
-        self
-    }
-
-    /// Sets a new value for the last name of the bot.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The last name of the bot.
-    pub fn with_last_name<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.last_name = Some(value.into());
-        self
-    }
-
-    /// Sets a new value for the `supports_guest_queries` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the bot supports guest queries.
-    pub fn with_supports_guest_queries(mut self, value: bool) -> Self {
-        self.supports_guest_queries = value;
-        self
-    }
-
-    /// Sets a new value for the `supports_inline_queries` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the bot supports inline queries.
-    pub fn with_supports_inline_queries(mut self, value: bool) -> Self {
-        self.supports_inline_queries = value;
-        self
-    }
-
-    /// Sets a new value for the `supports_join_request_queries` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Indicates whether the bot supports join request queries.
-    pub fn with_supports_join_request_queries(mut self, value: bool) -> Self {
-        self.supports_join_request_queries = value;
-        self
-    }
-}
-
 /// Represents the access settings of a bot.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -196,31 +51,6 @@ pub struct BotAccessSettings {
     pub is_access_restricted: bool,
     /// The list of other users who have access to the bot if the access is restricted.
     pub added_users: Option<Vec<User>>,
-}
-
-impl BotAccessSettings {
-    /// Sets a new list of added users
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of other users who have access to the bot.
-    pub fn with_added_users<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = User>,
-    {
-        self.added_users = Some(value.into_iter().collect());
-        self
-    }
-
-    /// Sets a new value for the `is_access_restricted_flag`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the only selected users can access the bot.
-    pub fn with_is_access_restricted(mut self, value: bool) -> Self {
-        self.is_access_restricted = value;
-        self
-    }
 }
 
 /// Represents a command of a bot.
@@ -439,22 +269,6 @@ pub struct BotDescription {
     pub description: String,
 }
 
-impl BotDescription {
-    /// Creates a new `BotDescription`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The description of the bot.
-    pub fn new<T>(value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            description: value.into(),
-        }
-    }
-}
-
 /// Represents a name of a bot.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BotName {
@@ -462,41 +276,11 @@ pub struct BotName {
     pub name: String,
 }
 
-impl BotName {
-    /// Creates a new `BotName`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The name of the bot.
-    pub fn new<T>(value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self { name: value.into() }
-    }
-}
-
 /// Represents a short description of a bot.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct BotShortDescription {
     /// The short description of the bot.
     pub short_description: String,
-}
-
-impl BotShortDescription {
-    /// Creates a new `BotShortDescription`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The short description of the bot.
-    pub fn new<T>(value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            short_description: value.into(),
-        }
-    }
 }
 
 /// Represents a state of a user payment subscription toward the current bot.

@@ -21,41 +21,6 @@ pub struct StickerSet {
     pub thumbnail: Option<PhotoSize>,
 }
 
-impl StickerSet {
-    /// Creates a new `StickerSet`.
-    ///
-    /// # Arguments
-    ///
-    /// * `name` - Name of the sticker set.
-    /// * `sticker_type` - Type of stickers.
-    /// * `stickers` - List of stickers.
-    /// * `title` - Title of the sticker set.
-    pub fn new<A, B, C>(name: A, sticker_type: StickerType, stickers: C, title: B) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-        C: IntoIterator<Item = Sticker>,
-    {
-        Self {
-            name: name.into(),
-            sticker_type,
-            stickers: stickers.into_iter().collect(),
-            title: title.into(),
-            thumbnail: None,
-        }
-    }
-
-    /// Sets a new thumbnail.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Thumbnail.
-    pub fn with_thumbnail(mut self, value: PhotoSize) -> Self {
-        self.thumbnail = Some(value);
-        self
-    }
-}
-
 /// Adds a new sticker to a set created by the bot.
 ///
 /// The format of the added sticker must match the format of the other stickers in the set.

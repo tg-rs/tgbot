@@ -18,18 +18,6 @@ pub enum MessageSender {
     Unknown,
 }
 
-impl From<Chat> for MessageSender {
-    fn from(value: Chat) -> Self {
-        Self::Chat(value)
-    }
-}
-
-impl From<User> for MessageSender {
-    fn from(value: User) -> Self {
-        Self::User(value)
-    }
-}
-
 impl MessageSender {
     /// Returns the sender user.
     pub fn get_user(&self) -> Option<&User> {

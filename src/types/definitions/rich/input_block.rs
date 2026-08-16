@@ -423,10 +423,13 @@ impl InputRichBlock {
     /// * `value` - Content of the table.
     ///
     /// A table, corresponding to the HTML tag `<table>`.
-    pub fn table(table: InputRichBlockTable) -> Self {
+    pub fn table<T>(table: T) -> Self
+    where
+        T: Into<InputRichBlockTable>,
+    {
         Self::new(InputRichBlockData {
             data_type: InputRichBlockDataType::Table,
-            parameters: table.parameters,
+            parameters: table.into().parameters,
         })
     }
 
@@ -601,18 +604,33 @@ pub struct InputRichBlockTable {
     parameters: InputRichBlockParameters,
 }
 
-impl<I> FromIterator<I> for InputRichBlockTable
+impl<A, B> FromIterator<A> for InputRichBlockTable
 where
-    I: IntoIterator<Item = RichBlockTableCell>,
+    A: IntoIterator<Item = B>,
+    B: Into<RichBlockTableCell>,
 {
-    fn from_iter<T: IntoIterator<Item = I>>(value: T) -> Self {
-        let cells = value.into_iter().map(Vec::from_iter).collect();
+    fn from_iter<T: IntoIterator<Item = A>>(value: T) -> Self {
+        let cells = value
+            .into_iter()
+            .map(|x| x.into_iter().map(Into::into).collect())
+            .collect();
         Self {
             parameters: InputRichBlockParameters {
                 cells: Some(cells),
                 ..Default::default()
             },
         }
+    }
+}
+
+impl<A, B, C> From<A> for InputRichBlockTable
+where
+    A: IntoIterator<Item = B>,
+    B: IntoIterator<Item = C>,
+    C: Into<RichBlockTableCell>,
+{
+    fn from(value: A) -> Self {
+        Self::from_iter(value)
     }
 }
 

@@ -31,52 +31,6 @@ pub struct InlineQuery {
     pub location: Option<Location>,
 }
 
-impl InlineQuery {
-    /// Creates a new `InlineQuery`.
-    ///
-    /// # Arguments
-    ///
-    /// * `from` - Sender of the query.
-    /// * `id` - Unique identifier of the query.
-    /// * `offset` - Offset of the results.
-    /// * `query` - Text of the query; up to 256 characters.
-    pub fn new<A, B, C>(from: User, id: A, offset: B, query: C) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-        C: Into<String>,
-    {
-        Self {
-            from,
-            id: id.into(),
-            offset: offset.into(),
-            query: query.into(),
-            chat_type: None,
-            location: None,
-        }
-    }
-
-    /// Sets a new chat type.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Type of the chat, from which the inline query was sent.
-    pub fn with_chat_type(mut self, value: InlineQueryChatType) -> Self {
-        self.chat_type = Some(value);
-        self
-    }
-
-    /// Sets a new location.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Sender location.
-    pub fn with_location(mut self, value: Location) -> Self {
-        self.location = Some(value);
-        self
-    }
-}
-
 /// Represents a type of the chat, from which the inline query was sent.
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 #[serde(rename_all = "snake_case")]

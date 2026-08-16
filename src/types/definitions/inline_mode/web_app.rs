@@ -15,21 +15,6 @@ pub struct SentWebAppMessage {
     pub inline_message_id: Option<String>,
 }
 
-impl SentWebAppMessage {
-    /// Sets a new inline message ID
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Inline message ID
-    pub fn with_inline_message_id<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.inline_message_id = Some(value.into());
-        self
-    }
-}
-
 /// Sets a result of an interaction with a Web App and
 /// send a corresponding message on behalf of the user
 /// to the chat from which the query originated

@@ -15,21 +15,6 @@ pub struct ReactionCount {
     pub total_count: Integer,
 }
 
-impl ReactionCount {
-    /// Creates a new `ReactionCount`.
-    ///
-    /// # Arguments
-    ///
-    /// * `reaction_type` - Type of the reaction.
-    /// * `total_count` - Number of times the reaction was added.
-    pub fn new(reaction_type: ReactionType, total_count: Integer) -> Self {
-        Self {
-            reaction_type,
-            total_count,
-        }
-    }
-}
-
 /// Represents reaction changes on a message with anonymous reactions.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageReactionCountUpdated {
@@ -41,29 +26,6 @@ pub struct MessageReactionCountUpdated {
     pub message_id: Integer,
     /// List of reactions that are present on the message.
     pub reactions: Vec<ReactionCount>,
-}
-
-impl MessageReactionCountUpdated {
-    /// Creates a new `MessageReactionCountUpdated`.
-    ///
-    /// # Arguments
-    ///
-    /// * `chat` - The chat containing the message.
-    /// * `date` - Date of the change in Unix time.
-    /// * `message_id` - Unique message identifier inside the chat.
-    /// * `reactions` - List of reactions that are present on the message.
-    pub fn new<A, B>(chat: A, date: Integer, message_id: Integer, reactions: B) -> Self
-    where
-        A: Into<Chat>,
-        B: IntoIterator<Item = ReactionCount>,
-    {
-        Self {
-            chat: chat.into(),
-            date,
-            message_id,
-            reactions: reactions.into_iter().collect(),
-        }
-    }
 }
 
 /// Represents a reaction type.
@@ -150,57 +112,6 @@ pub struct MessageReactionUpdated {
     pub actor_chat: Option<Chat>,
     /// The user that changed the reaction, if the user isn't anonymous.
     pub user: Option<User>,
-}
-
-impl MessageReactionUpdated {
-    /// Creates a new `MessageReactionUpdated`.
-    ///
-    ///  # Arguments
-    ///
-    /// * `chat` - The chat containing the message the user reacted to.
-    /// * `date` - Date of the change in Unix time.
-    /// * `message_id` - Unique identifier of the message inside the chat.
-    /// * `new_reaction` - New list of reaction types that have been set by the user.
-    /// * `old_reaction` - Previous list of reaction types that were set by the user.
-    pub fn new<A, B, C>(chat: A, date: Integer, message_id: Integer, new_reaction: B, old_reaction: C) -> Self
-    where
-        A: Into<Chat>,
-        B: IntoIterator<Item = ReactionType>,
-        C: IntoIterator<Item = ReactionType>,
-    {
-        Self {
-            chat: chat.into(),
-            date,
-            message_id,
-            new_reaction: new_reaction.into_iter().collect(),
-            old_reaction: old_reaction.into_iter().collect(),
-            actor_chat: None,
-            user: None,
-        }
-    }
-
-    /// Sets a new actor chat.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The chat on behalf of which the reaction was changed, if the user is anonymous.
-    pub fn with_actor_chat<T>(mut self, value: T) -> Self
-    where
-        T: Into<Chat>,
-    {
-        self.actor_chat = Some(value.into());
-        self
-    }
-
-    /// Sets a new user.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The user that changed the reaction, if the user isn't anonymous.
-    pub fn with_user(mut self, value: User) -> Self {
-        self.user = Some(value);
-        self
-    }
 }
 
 /// Remove up to 10000 recent reactions in a group

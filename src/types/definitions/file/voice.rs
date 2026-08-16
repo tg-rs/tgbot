@@ -35,52 +35,6 @@ pub struct Voice {
     pub mime_type: Option<String>,
 }
 
-impl Voice {
-    /// Creates a new `Voice`.
-    ///
-    /// # Arguments
-    ///
-    /// * `duration` - Duration in seconds.
-    /// * `file_id` - Identifier of the file.
-    /// * `file_unique_id` - Unique identifier of the file.
-    pub fn new<A, B>(duration: Integer, file_id: A, file_unique_id: B) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-    {
-        Self {
-            duration,
-            file_id: file_id.into(),
-            file_unique_id: file_unique_id.into(),
-            file_size: None,
-            mime_type: None,
-        }
-    }
-
-    /// Sets a new size of the file.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The size of the file in bytes.
-    pub fn with_file_size(mut self, value: Integer) -> Self {
-        self.file_size = Some(value);
-        self
-    }
-
-    /// Sets a new MIME type.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - MIME type.
-    pub fn with_mime_type<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.mime_type = Some(value.into());
-        self
-    }
-}
-
 /// Sends a voice message.
 ///
 /// Audio must be in an .ogg file encoded with OPUS, or in .MP3 format, or in .M4A format.

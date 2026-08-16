@@ -8,33 +8,8 @@ use crate::types::{Chat, User};
 pub struct MessageGuestBot {
     /// The chat whose original message triggered the bot's response.
     #[serde(rename = "guest_bot_caller_chat")]
-    caller_chat: Option<Chat>,
+    pub caller_chat: Option<Chat>,
     /// The user whose original message triggered the bot's response.
     #[serde(rename = "guest_bot_caller_user")]
-    caller_user: Option<User>,
-}
-
-impl MessageGuestBot {
-    /// Sets a new caller chat.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The chat whose original message triggered the bot's response.
-    pub fn with_caller_chat<T>(mut self, value: T) -> Self
-    where
-        T: Into<Chat>,
-    {
-        self.caller_chat = Some(value.into());
-        self
-    }
-
-    /// Sets a new caller user.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The user whose original message triggered the bot's response.
-    pub fn with_caller_user(mut self, value: User) -> Self {
-        self.caller_user = Some(value);
-        self
-    }
+    pub caller_user: Option<User>,
 }

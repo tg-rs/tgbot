@@ -23,74 +23,6 @@ pub struct ChecklistTask {
     pub text_entities: Option<TextEntities>,
 }
 
-impl ChecklistTask {
-    /// Creates a new `ChecklistTask`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - Unique identifier of the task.
-    /// * `text` - Text of the task.
-    pub fn new<T>(id: Integer, text: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            id,
-            text: text.into(),
-            completed_by_chat: None,
-            completed_by_user: None,
-            completion_date: None,
-            text_entities: None,
-        }
-    }
-
-    /// Sets a new chat that completed the task.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Chat that completed the task; omitted if the task wasn't completed by a chat.
-    pub fn with_completed_by_chat<T>(mut self, value: T) -> Self
-    where
-        T: Into<Chat>,
-    {
-        self.completed_by_chat = Some(value.into());
-        self
-    }
-
-    /// Sets a new user that completed the task.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - User that completed the task; omitted if the task wasn't completed.
-    pub fn with_completed_by_user(mut self, value: User) -> Self {
-        self.completed_by_user = Some(value);
-        self
-    }
-
-    /// Sets a new completion date
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed.
-    pub fn with_completion_date(mut self, value: Integer) -> Self {
-        self.completion_date = Some(value);
-        self
-    }
-
-    /// Sets a new list of text entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Special entities that appear in the task text.
-    pub fn with_text_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.text_entities = Some(TextEntities::from_iter(value));
-        self
-    }
-}
-
 /// Describes a checklist.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -105,61 +37,6 @@ pub struct Checklist {
     pub others_can_mark_tasks_as_done: Option<bool>,
     /// Special entities that appear in the checklist title.
     pub title_entities: Option<TextEntities>,
-}
-
-impl Checklist {
-    /// Creates a new `Checklist`.
-    ///
-    /// # Arguments
-    ///
-    /// * `tasks` - List of tasks in the checklist.
-    /// * `title` - Title of the checklist.
-    pub fn new<A, B>(tasks: A, title: B) -> Self
-    where
-        A: IntoIterator<Item = ChecklistTask>,
-        B: Into<String>,
-    {
-        Self {
-            tasks: tasks.into_iter().collect(),
-            title: title.into(),
-            others_can_add_tasks: None,
-            others_can_mark_tasks_as_done: None,
-            title_entities: None,
-        }
-    }
-
-    /// Sets a new value for the `others_can_add_tasks` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether users other than the creator of the list can add tasks to the list.
-    pub fn with_others_can_add_tasks(mut self, value: bool) -> Self {
-        self.others_can_add_tasks = Some(value);
-        self
-    }
-
-    /// Sets a new value for the `others_can_mark_tasks_as_done` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether users other than the creator of the list can mark tasks as done or not done.
-    pub fn with_others_can_mark_tasks_as_done(mut self, value: bool) -> Self {
-        self.others_can_mark_tasks_as_done = Some(value);
-        self
-    }
-
-    /// Sets a new list of title entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Special entities that appear in the checklist title
-    pub fn with_title_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.title_entities = Some(TextEntities::from_iter(value));
-        self
-    }
 }
 
 /// Describes a task to add to a checklist.
@@ -343,44 +220,6 @@ pub struct ChecklistTasksDone {
     pub marked_as_not_done_task_ids: Option<Vec<Integer>>,
 }
 
-impl ChecklistTasksDone {
-    /// Sets a new checklist message.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Message containing the checklist whose tasks were marked as done or not done.
-    pub fn with_checklist_message(mut self, value: Message) -> Self {
-        self.checklist_message = Some(Box::new(value));
-        self
-    }
-
-    /// Sets a new list of task identifiers.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Identifiers of the tasks that were marked as done.
-    pub fn with_marked_as_done_task_ids<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = Integer>,
-    {
-        self.marked_as_done_task_ids = Some(value.into_iter().collect());
-        self
-    }
-
-    /// Sets a new list of task identifiers.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Identifiers of the tasks that were marked as not done.
-    pub fn with_marked_as_not_done_task_ids<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = Integer>,
-    {
-        self.marked_as_not_done_task_ids = Some(value.into_iter().collect());
-        self
-    }
-}
-
 /// Describes a service message about tasks added to a checklist.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -392,33 +231,6 @@ pub struct ChecklistTasksAdded {
     /// Note that the Message object in this field will not contain
     /// the reply_to_message field even if it itself is a reply.
     pub checklist_message: Option<Box<Message>>,
-}
-
-impl ChecklistTasksAdded {
-    /// Creates a new `ChecklistTasksAdded`.
-    ///
-    /// # Arguments
-    ///
-    /// * `tasks` - List of tasks added to the checklist.
-    pub fn new<T>(tasks: T) -> Self
-    where
-        T: IntoIterator<Item = ChecklistTask>,
-    {
-        Self {
-            tasks: tasks.into_iter().collect(),
-            checklist_message: None,
-        }
-    }
-
-    /// Sets a new checklist message.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Message containing the checklist to which the tasks were added.
-    pub fn with_checklist_message(mut self, value: Message) -> Self {
-        self.checklist_message = Some(Box::new(value));
-        self
-    }
 }
 
 /// Sends a checklist on behalf of a connected business account.

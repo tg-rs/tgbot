@@ -30,40 +30,6 @@ pub struct MessageOriginChannel {
     pub author_signature: Option<String>,
 }
 
-impl MessageOriginChannel {
-    /// Creates a new `MessageOriginChannel`.
-    ///
-    /// # Arguments
-    ///
-    /// * `chat` - Chat that sent the message originally.
-    /// * `date` - Date the message was sent originally in Unix time.
-    /// * `message_id` - Unique message identifier inside the chat.
-    pub fn new<T>(chat: T, date: Integer, message_id: Integer) -> Self
-    where
-        T: Into<Chat>,
-    {
-        Self {
-            chat: chat.into(),
-            date,
-            message_id,
-            author_signature: None,
-        }
-    }
-
-    /// Sets a new author signature
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Signature of the original post author.
-    pub fn with_author_signature<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.author_signature = Some(value.into());
-        self
-    }
-}
-
 /// The message was originally sent on behalf of a chat to a group chat.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -76,38 +42,6 @@ pub struct MessageOriginChat {
     pub author_signature: Option<String>,
 }
 
-impl MessageOriginChat {
-    /// Creates a new `MessageOriginChat`.
-    ///
-    /// # Arguments
-    ///
-    /// * `date` - Date the message was sent originally in Unix time.
-    /// * `sender_chat` - Chat that sent the message originally.
-    pub fn new<T>(date: Integer, sender_chat: T) -> Self
-    where
-        T: Into<Chat>,
-    {
-        Self {
-            date,
-            sender_chat: sender_chat.into(),
-            author_signature: None,
-        }
-    }
-
-    /// Sets a new author signature
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Signature of the original post author.
-    pub fn with_author_signature<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.author_signature = Some(value.into());
-        self
-    }
-}
-
 /// The message was originally sent by an unknown user.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MessageOriginHiddenUser {
@@ -117,24 +51,6 @@ pub struct MessageOriginHiddenUser {
     pub sender_user_name: String,
 }
 
-impl MessageOriginHiddenUser {
-    /// Creates a new `MessageOriginHiddenUser`.
-    ///
-    /// # Arguments
-    ///
-    /// * `date` - Date the message was sent originally in Unix time.
-    /// * `sender_user_name` - Name of the user that sent the message originally.
-    pub fn new<T>(date: Integer, sender_user_name: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            date,
-            sender_user_name: sender_user_name.into(),
-        }
-    }
-}
-
 /// The message was originally sent by a known user.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct MessageOriginUser {
@@ -142,16 +58,4 @@ pub struct MessageOriginUser {
     pub date: Integer,
     /// User that sent the message originally.
     pub sender_user: User,
-}
-
-impl MessageOriginUser {
-    /// Creates a new `MessageOriginUser`.
-    ///
-    /// # Arguments
-    ///
-    /// * `date` - Date the message was sent originally in Unix time.
-    /// * `sender_user` - User that sent the message originally.
-    pub fn new(date: Integer, sender_user: User) -> Self {
-        Self { date, sender_user }
-    }
 }

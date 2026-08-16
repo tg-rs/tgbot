@@ -40,50 +40,6 @@ pub struct File {
     pub file_path: Option<String>,
 }
 
-impl File {
-    /// Creates a new `File`.
-    ///
-    /// # Arguments
-    ///
-    /// * `file_id` - Identifier of the file.
-    /// * `file_unique_id` - Unique identifier of the file.
-    pub fn new<A, B>(file_id: A, file_unique_id: B) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-    {
-        Self {
-            file_id: file_id.into(),
-            file_unique_id: file_unique_id.into(),
-            file_size: None,
-            file_path: None,
-        }
-    }
-
-    /// Sets a new size of the file.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The size of the file in bytes.
-    pub fn with_file_size(mut self, value: Integer) -> Self {
-        self.file_size = Some(value);
-        self
-    }
-
-    /// Sets a new path of the file.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The path of the file.
-    pub fn with_file_path<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.file_path = Some(value.into());
-        self
-    }
-}
-
 /// Returns basic information about a file and prepares it for downloading.
 ///
 /// For the moment, bots can download files of up to 20MB in size.

@@ -12,15 +12,6 @@ pub struct PreparedKeyboardButton {
     pub id: String,
 }
 
-impl<T> From<T> for PreparedKeyboardButton
-where
-    T: Into<String>,
-{
-    fn from(value: T) -> Self {
-        Self { id: value.into() }
-    }
-}
-
 /// Stores a keyboard button that can be used by a user within a Mini App.
 #[derive(Clone, Debug, Serialize)]
 pub struct SavePreparedKeyboardButton {

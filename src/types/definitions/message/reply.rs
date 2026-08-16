@@ -44,18 +44,6 @@ pub enum ReplyTo {
     Story(Story),
 }
 
-impl From<Message> for ReplyTo {
-    fn from(value: Message) -> Self {
-        Self::Message(Box::new(value))
-    }
-}
-
-impl From<Story> for ReplyTo {
-    fn from(value: Story) -> Self {
-        Self::Story(value)
-    }
-}
-
 /// Contains information about a message that is being replied to, which may come from another chat or forum topic.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -80,74 +68,8 @@ pub struct ExternalReplyInfo {
     pub data: ExternalReplyData,
 }
 
-impl ExternalReplyInfo {
-    /// Creates a new `ExternalReplyInfo`.
-    ///
-    /// # Arguments
-    ///
-    /// * `data` - Data of the message.
-    /// * `origin` - Origin of the message.
-    pub fn new<A, B>(data: A, origin: B) -> Self
-    where
-        A: Into<ExternalReplyData>,
-        B: Into<MessageOrigin>,
-    {
-        Self {
-            origin: origin.into(),
-            chat: None,
-            has_media_spoiler: None,
-            link_preview_options: None,
-            message_id: None,
-            data: data.into(),
-        }
-    }
-
-    /// Sets a new chat.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Chat the original message belongs to.
-    pub fn with_chat<T>(mut self, value: T) -> Self
-    where
-        T: Into<Chat>,
-    {
-        self.chat = Some(value.into());
-        self
-    }
-
-    /// Sets a new value for the `has_media_spoiler` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the message media is covered by a spoiler animation.
-    pub fn with_has_media_spoiler(mut self, value: bool) -> Self {
-        self.has_media_spoiler = Some(value);
-        self
-    }
-
-    /// Sets new link preview options.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Options used for link preview generation for the original message, if it is a text message.
-    pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Self {
-        self.link_preview_options = Some(value);
-        self
-    }
-
-    /// Sets a new message ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Unique message identifier inside the original chat.
-    pub fn with_message_id(mut self, value: Integer) -> Self {
-        self.message_id = Some(value);
-        self
-    }
-}
-
 /// Contains data of an external reply info.
-#[derive(Clone, Debug, Deserialize, derive_more::From, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ExternalReplyData {
     /// Message is an animation, information about the animation.
@@ -195,10 +117,4 @@ pub enum ExternalReplyData {
     /// Contains arbitrary data for future variants.
     #[serde(untagged)]
     Unknown(Value),
-}
-
-impl From<Poll> for ExternalReplyData {
-    fn from(value: Poll) -> Self {
-        Self::Poll(Box::new(value))
-    }
 }

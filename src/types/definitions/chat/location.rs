@@ -12,21 +12,3 @@ pub struct ChatLocation {
     /// Can't be a live location.
     pub location: Location,
 }
-
-impl ChatLocation {
-    /// Creates a new `ChatLocation`.
-    ///
-    /// # Arguments
-    ///
-    /// * `address` - Location address.
-    /// * `location` - The location to which the chat is connected.
-    pub fn new<T>(address: T, location: Location) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            address: address.into(),
-            location,
-        }
-    }
-}

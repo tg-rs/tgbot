@@ -12,17 +12,6 @@ pub struct StarTransactions {
     pub transactions: Vec<StarTransaction>,
 }
 
-impl<T> From<T> for StarTransactions
-where
-    T: IntoIterator<Item = StarTransaction>,
-{
-    fn from(value: T) -> Self {
-        Self {
-            transactions: value.into_iter().collect(),
-        }
-    }
-}
-
 /// Describes a Telegram Star transaction.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -49,67 +38,6 @@ pub struct StarTransaction {
     pub receiver: Option<TransactionPartner>,
 }
 
-impl StarTransaction {
-    /// Creates a new `StarTransaction`.
-    ///
-    /// # Arguments
-    ///
-    /// * `amount` - Number of Telegram Stars transferred by the transaction.
-    /// * `date` - Date the transaction was created in Unix time.
-    /// * `id` - Unique identifier of the transaction;
-    ///   coincides with the identifer of the original transaction for refund transactions;
-    ///   coincides with `telegram_payment_charge_id` of [`crate::types::SuccessfulPayment`]
-    ///   for successful incoming payments from users.
-    pub fn new<T>(amount: Integer, date: Integer, id: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            amount,
-            date,
-            id: id.into(),
-            nanostar_amount: None,
-            source: None,
-            receiver: None,
-        }
-    }
-
-    /// Sets a new nanostar amount.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The number of 1/1000000000 shares of Telegram Stars transferred by the transaction;
-    ///   from 0 to 999999999.
-    pub fn with_nanostar_amount(mut self, value: Integer) -> Self {
-        self.nanostar_amount = Some(value);
-        self
-    }
-
-    /// Sets a new source.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Source of an incoming transaction.
-    ///   E.g., a user purchasing goods or services, Fragment refunding a failed withdrawal.
-    ///   Only for incoming transactions.
-    pub fn with_source(mut self, value: TransactionPartner) -> Self {
-        self.source = Some(value);
-        self
-    }
-
-    /// Sets a new receiver.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Receiver of an outgoing transaction.
-    ///   E.g., a user for a purchase refund, Fragment for a withdrawal.
-    ///   Only for outgoing transactions.
-    pub fn with_receiver(mut self, value: TransactionPartner) -> Self {
-        self.receiver = Some(value);
-        self
-    }
-}
-
 /// Describes the affiliate program that issued the affiliate commission received via this transaction.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -119,30 +47,6 @@ pub struct TransactionPartnerAffiliateProgramParameters {
     pub commission_per_mille: Integer,
     /// Information about the bot that sponsored the affiliate program
     pub sponsor_user: Option<User>,
-}
-
-impl TransactionPartnerAffiliateProgramParameters {
-    /// Creates a new `TransactionPartnerAffiliateProgramParameters`.
-    ///
-    /// # Arguments
-    ///
-    /// * `commission_per_mille` - The number of Telegram Stars received by the bot.
-    pub fn new(commission_per_mille: Integer) -> Self {
-        Self {
-            commission_per_mille,
-            sponsor_user: None,
-        }
-    }
-
-    /// Sets a new sponsor user.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Information about the bot that sponsored the affiliate program.
-    pub fn with_sponsor_user(mut self, value: User) -> Self {
-        self.sponsor_user = Some(value);
-        self
-    }
 }
 
 /// Contains information about the affiliate that received a commission via this transaction.
@@ -164,57 +68,6 @@ pub struct AffiliateInfo {
     pub nanostar_amount: Option<Integer>,
 }
 
-impl AffiliateInfo {
-    /// Creates a new `AffiliateInfo`.
-    ///
-    /// # Arguments
-    ///
-    /// * `amount` - Integer amount of Telegram Stars received by the affiliate from the transaction
-    /// * `comission_per_mille` - The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars
-    pub fn new(amount: Integer, commission_per_mille: Integer) -> Self {
-        Self {
-            amount,
-            commission_per_mille,
-            affiliate_chat: None,
-            affiliate_user: None,
-            nanostar_amount: None,
-        }
-    }
-
-    /// Sets a new affiliate chat.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The chat that received an affiliate commission if it was received by a chat.
-    pub fn with_affiliate_chat<T>(mut self, value: T) -> Self
-    where
-        T: Into<Chat>,
-    {
-        self.affiliate_chat = Some(value.into());
-        self
-    }
-
-    /// Sets a new affiliate user.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The bot or the user that received an affiliate commission if it was received by a bot or a user.
-    pub fn with_affiliate_user(mut self, value: User) -> Self {
-        self.affiliate_user = Some(value);
-        self
-    }
-
-    /// Sets a new nanostar amount.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The number of 1/1000000000 shares of Telegram Stars received by the affiliate.
-    pub fn with_nanostar_amount(mut self, value: Integer) -> Self {
-        self.nanostar_amount = Some(value);
-        self
-    }
-}
-
 /// Describes a transaction with a chat.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -223,33 +76,6 @@ pub struct TransactionPartnerChatParameters {
     pub chat: Chat,
     /// The gift sent to the chat by the bot.
     pub gift: Option<Gift>,
-}
-
-impl TransactionPartnerChatParameters {
-    /// Creates a new `TransactionPartnerChatParameters`.
-    ///
-    /// # Arguments
-    ///
-    /// * `chat` - Information about the chat.
-    pub fn new<T>(chat: T) -> Self
-    where
-        T: Into<Chat>,
-    {
-        Self {
-            chat: chat.into(),
-            gift: None,
-        }
-    }
-
-    /// Sets a new gift
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The gift sent to the chat by the bot.
-    pub fn with_gift(mut self, value: Gift) -> Self {
-        self.gift = Some(value);
-        self
-    }
 }
 
 /// Type of the partner user transaction.
@@ -291,111 +117,6 @@ pub struct TransactionPartnerUserParameters {
     pub premium_subscription_duration: Option<Integer>,
     /// The duration of the paid subscription.
     pub subscription_period: Option<Integer>,
-}
-
-impl TransactionPartnerUserParameters {
-    /// Creates a new `TransactionPartnerUserParameters`.
-    ///
-    /// # Arguments
-    ///
-    /// * `transaction_type` - Type of the transaction.
-    /// * `user` - Information about the user.
-    pub fn new(transaction_type: TransactionPartnerUserType, user: User) -> Self {
-        Self {
-            transaction_type,
-            user,
-            affiliate: None,
-            gift: None,
-            invoice_payload: None,
-            paid_media: None,
-            paid_media_payload: None,
-            premium_subscription_duration: None,
-            subscription_period: None,
-        }
-    }
-
-    /// Sets a new affiliate.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Information about the affiliate that received a commission via this transaction.
-    pub fn with_affiliate(mut self, value: AffiliateInfo) -> Self {
-        self.affiliate = Some(value);
-        self
-    }
-
-    /// Sets a new gift.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The gift sent to the user by the bot.
-    pub fn with_gift<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.gift = Some(value.into());
-        self
-    }
-
-    /// Sets a new invoice payload.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Bot-specified invoice payload.
-    pub fn with_invoice_payload<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.invoice_payload = Some(value.into());
-        self
-    }
-
-    /// Sets a new paid media.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Information about the paid media bought by the user.
-    pub fn with_paid_media<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = PaidMedia>,
-    {
-        self.paid_media = Some(value.into_iter().collect());
-        self
-    }
-
-    /// Sets a new paid media payload.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Bot-specified paid media payload.
-    pub fn with_paid_media_payload<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.paid_media_payload = Some(value.into());
-        self
-    }
-
-    /// Sets a new premium subscription duration.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Number of months the gifted Telegram Premium subscription will be active for;
-    ///   for “premium_purchase” transactions only.
-    pub fn with_premium_subscription_duration(mut self, value: Integer) -> Self {
-        self.premium_subscription_duration = Some(value);
-        self
-    }
-
-    /// Sets a new subscription period.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The duration of the paid subscription.
-    pub fn with_subscription_period(mut self, value: Integer) -> Self {
-        self.subscription_period = Some(value);
-        self
-    }
 }
 
 /// Describes the source of a transaction, or its recipient for outgoing transactions.

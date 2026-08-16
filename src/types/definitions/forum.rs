@@ -22,52 +22,6 @@ pub struct ForumTopic {
     pub is_name_implicit: Option<bool>,
 }
 
-impl ForumTopic {
-    /// Creates a new `ForumTopic`.
-    ///
-    /// # Arguments
-    ///
-    /// * `icon_color` - Color of the icon.
-    /// * `message_thread_id` - Unique identifier of the topic.
-    /// * `name` - Name of the topic.
-    pub fn new<A, B>(icon_color: A, message_thread_id: Integer, name: B) -> Self
-    where
-        A: Into<ForumTopicIconColor>,
-        B: Into<String>,
-    {
-        Self {
-            icon_color: icon_color.into(),
-            message_thread_id,
-            name: name.into(),
-            icon_custom_emoji_id: None,
-            is_name_implicit: None,
-        }
-    }
-
-    /// Sets a new icon custom emoji ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Emoji ID.
-    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.icon_custom_emoji_id = Some(value.into());
-        self
-    }
-
-    /// Sets a new value for the `is_name_implicit` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the name of the topic wasn't specified explicitly by its creator.
-    pub fn with_is_name_implicit(mut self, value: bool) -> Self {
-        self.is_name_implicit = Some(value);
-        self
-    }
-}
-
 /// Closes an open topic in a forum supergroup chat.
 ///
 /// The bot must be an administrator in the chat for this to work

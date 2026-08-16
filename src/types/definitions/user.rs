@@ -19,28 +19,6 @@ pub struct Birthdate {
     pub year: Option<Integer>,
 }
 
-impl Birthdate {
-    /// Creates a new `Birthdate`.
-    ///
-    /// # Arguments
-    ///
-    /// * `day` - Day.
-    /// * `month` - Month.
-    pub fn new(day: Integer, month: Integer) -> Self {
-        Self { day, month, year: None }
-    }
-
-    /// Sets a new year.
-    ///
-    /// # Arguments
-    ///
-    /// * `year` - Year.
-    pub fn with_year(mut self, value: Integer) -> Self {
-        self.year = Some(value);
-        self
-    }
-}
-
 /// Contains information about a user that
 /// was shared with the bot using a [`crate::types::KeyboardButtonRequestUsers`] button.
 #[serde_with::skip_serializing_none]
@@ -59,75 +37,6 @@ pub struct SharedUser {
     pub photo: Option<Vec<PhotoSize>>,
     /// Username of the user, if the username was requested by the bot.
     pub username: Option<String>,
-}
-
-impl SharedUser {
-    /// Creates a new `SharedUser`.
-    ///
-    /// # Arguments
-    ///
-    /// * `user_id` - Identifier of the shared user.
-    pub fn new(user_id: Integer) -> Self {
-        Self {
-            user_id,
-            first_name: None,
-            last_name: None,
-            photo: None,
-            username: None,
-        }
-    }
-
-    /// Sets a new first name.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - First name.
-    pub fn with_first_name<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.first_name = Some(value.into());
-        self
-    }
-
-    /// Sets a new last name.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Last name.
-    pub fn with_last_name<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.last_name = Some(value.into());
-        self
-    }
-
-    /// Sets new photo sizes.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Available sizes of photo.
-    pub fn with_photo<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = PhotoSize>,
-    {
-        self.photo = Some(value.into_iter().collect());
-        self
-    }
-
-    /// Sets a new username.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Username.
-    pub fn with_username<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.username = Some(value.into());
-        self
-    }
 }
 
 /// Represents a user.
@@ -305,24 +214,6 @@ pub struct UserProfileAudios {
     pub total_count: Integer,
 }
 
-impl UserProfileAudios {
-    /// Creates a new `UserProfileAudios`.
-    ///
-    /// # Arguments
-    ///
-    /// * `audios` - A list of audios.
-    /// * `total_count` - Total number of audios.
-    pub fn new<T>(audios: T, total_count: Integer) -> Self
-    where
-        T: IntoIterator<Item = Audio>,
-    {
-        Self {
-            audios: audios.into_iter().collect(),
-            total_count,
-        }
-    }
-}
-
 /// Represents a list of profile pictures of a user.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct UserProfilePhotos {
@@ -330,25 +221,6 @@ pub struct UserProfilePhotos {
     pub photos: Vec<Vec<PhotoSize>>,
     /// Total number of profile pictures the target user has.
     pub total_count: Integer,
-}
-
-impl UserProfilePhotos {
-    /// Creates a new `UserProfilePhotos`.
-    ///
-    /// # Arguments
-    ///
-    /// * `photos` - A list of photos.
-    /// * `total_count` - Total number of photos.
-    pub fn new<A, B>(photos: A, total_count: Integer) -> Self
-    where
-        A: IntoIterator<Item = B>,
-        B: IntoIterator<Item = PhotoSize>,
-    {
-        Self {
-            photos: photos.into_iter().map(|x| x.into_iter().collect()).collect(),
-            total_count,
-        }
-    }
 }
 
 /// ID of a user.

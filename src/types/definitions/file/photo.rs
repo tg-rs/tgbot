@@ -35,40 +35,6 @@ pub struct PhotoSize {
     pub file_size: Option<Integer>,
 }
 
-impl PhotoSize {
-    /// Creates a new `PhotoSize`.
-    ///
-    /// # Arguments
-    ///
-    /// * `file_id` - Identifier of the file.
-    /// * `file_unique_id` - Unique identifier of the file.
-    /// * `height` - Height of the photo.
-    /// * `width` - Width of the photo.
-    pub fn new<A, B>(file_id: A, file_unique_id: B, height: Integer, width: Integer) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-    {
-        Self {
-            file_id: file_id.into(),
-            file_unique_id: file_unique_id.into(),
-            height,
-            width,
-            file_size: None,
-        }
-    }
-
-    /// Sets a new size of the file.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The size of the file in bytes.
-    pub fn with_file_size(mut self, value: Integer) -> Self {
-        self.file_size = Some(value);
-        self
-    }
-}
-
 /// Sends a photo.
 #[derive(Debug)]
 pub struct SendPhoto {

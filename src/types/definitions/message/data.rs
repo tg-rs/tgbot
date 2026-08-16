@@ -241,347 +241,12 @@ pub enum MessageData {
     Unknown(JsonValue),
 }
 
-impl From<Animation> for MessageData {
-    fn from(value: Animation) -> Self {
-        Self::Animation(value)
-    }
-}
-
-impl From<MessageDataAutoDeleteTimer> for MessageData {
-    fn from(value: MessageDataAutoDeleteTimer) -> Self {
-        Self::AutoDeleteTimerChanged(value)
-    }
-}
-
-impl From<ChatBackground> for MessageData {
-    fn from(value: ChatBackground) -> Self {
-        Self::ChatBackgroundSet(value)
-    }
-}
-
-impl From<MessageDataChatShared> for MessageData {
-    fn from(value: MessageDataChatShared) -> Self {
-        Self::ChatShared(value)
-    }
-}
-
-impl From<Checklist> for MessageData {
-    fn from(value: Checklist) -> Self {
-        Self::Checklist(value)
-    }
-}
-
-impl From<ChecklistTasksAdded> for MessageData {
-    fn from(value: ChecklistTasksAdded) -> Self {
-        Self::ChecklistTasksAdded(value)
-    }
-}
-
-impl From<ChecklistTasksDone> for MessageData {
-    fn from(value: ChecklistTasksDone) -> Self {
-        Self::ChecklistTasksDone(value)
-    }
-}
-
-impl From<Contact> for MessageData {
-    fn from(value: Contact) -> Self {
-        Self::Contact(value)
-    }
-}
-
-impl From<CommunityChatAdded> for MessageData {
-    fn from(value: CommunityChatAdded) -> Self {
-        Self::CommunityChatAdded(value)
-    }
-}
-
-impl From<CommunityChatRemoved> for MessageData {
-    fn from(value: CommunityChatRemoved) -> Self {
-        Self::CommunityChatRemoved(value)
-    }
-}
-
-impl From<Dice> for MessageData {
-    fn from(value: Dice) -> Self {
-        Self::Dice(value)
-    }
-}
-
-impl From<MessageDataDirectMessagePriceChanged> for MessageData {
-    fn from(value: MessageDataDirectMessagePriceChanged) -> Self {
-        Self::DirectMessagePriceChanged(value)
-    }
-}
-
-impl From<MessageDataForumTopicCreated> for MessageData {
-    fn from(value: MessageDataForumTopicCreated) -> Self {
-        Self::ForumTopicCreated(value)
-    }
-}
-
-impl From<MessageDataForumTopicEdited> for MessageData {
-    fn from(value: MessageDataForumTopicEdited) -> Self {
-        Self::ForumTopicEdited(value)
-    }
-}
-
-impl From<Game> for MessageData {
-    fn from(value: Game) -> Self {
-        Self::Game(value)
-    }
-}
-
-impl From<Giveaway> for MessageData {
-    fn from(value: Giveaway) -> Self {
-        Self::Giveaway(value)
-    }
-}
-
-impl From<GiveawayCreated> for MessageData {
-    fn from(value: GiveawayCreated) -> Self {
-        Self::GiveawayCreated(value)
-    }
-}
-
-impl From<GiveawayCompleted> for MessageData {
-    fn from(value: GiveawayCompleted) -> Self {
-        Self::GiveawayCompleted(value)
-    }
-}
-
-impl From<GiveawayWinners> for MessageData {
-    fn from(value: GiveawayWinners) -> Self {
-        Self::GiveawayWinners(value)
-    }
-}
-
-impl From<Invoice> for MessageData {
-    fn from(value: Invoice) -> Self {
-        Self::Invoice(value)
-    }
-}
-
-impl From<LivePhoto> for MessageData {
-    fn from(value: LivePhoto) -> Self {
-        Self::LivePhoto(value)
-    }
-}
-
-impl From<Location> for MessageData {
-    fn from(value: Location) -> Self {
-        Self::Location(value)
-    }
-}
-
-impl From<MessageDataManagedBotCreated> for MessageData {
-    fn from(value: MessageDataManagedBotCreated) -> Self {
-        Self::ManagedBotCreated(value)
-    }
-}
-
-impl From<PaidMediaInfo> for MessageData {
-    fn from(value: PaidMediaInfo) -> Self {
-        Self::PaidMedia(value)
-    }
-}
-
-impl From<MessageDataPaidMessagePriceChanged> for MessageData {
-    fn from(value: MessageDataPaidMessagePriceChanged) -> Self {
-        Self::PaidMessagePriceChanged(value)
-    }
-}
-
-impl From<PassportData> for MessageData {
-    fn from(value: PassportData) -> Self {
-        Self::PassportData(value)
-    }
-}
-
-impl From<Poll> for MessageData {
-    fn from(value: Poll) -> Self {
-        Self::Poll(value)
-    }
-}
-
-impl From<MessageDataPollOptionAdded> for MessageData {
-    fn from(value: MessageDataPollOptionAdded) -> Self {
-        Self::PollOptionAdded(value)
-    }
-}
-
-impl From<MessageDataPollOptionDeleted> for MessageData {
-    fn from(value: MessageDataPollOptionDeleted) -> Self {
-        Self::PollOptionDeleted(value)
-    }
-}
-
-impl From<MessageDataProximityAlert> for MessageData {
-    fn from(value: MessageDataProximityAlert) -> Self {
-        Self::ProximityAlertTriggered(value)
-    }
-}
-
-impl From<RefundedPayment> for MessageData {
-    fn from(value: RefundedPayment) -> Self {
-        Self::RefundedPayment(value)
-    }
-}
-
-impl From<Sticker> for MessageData {
-    fn from(value: Sticker) -> Self {
-        Self::Sticker(value)
-    }
-}
-
-impl From<Story> for MessageData {
-    fn from(value: Story) -> Self {
-        Self::Story(value)
-    }
-}
-
-impl From<SuggestedPostApproved> for MessageData {
-    fn from(value: SuggestedPostApproved) -> Self {
-        Self::SuggestedPostApproved(value)
-    }
-}
-
-impl From<SuggestedPostApprovalFailed> for MessageData {
-    fn from(value: SuggestedPostApprovalFailed) -> Self {
-        Self::SuggestedPostApprovalFailed(value)
-    }
-}
-
-impl From<SuggestedPostDeclined> for MessageData {
-    fn from(value: SuggestedPostDeclined) -> Self {
-        Self::SuggestedPostDeclined(value)
-    }
-}
-
-impl From<SuggestedPostPaid> for MessageData {
-    fn from(value: SuggestedPostPaid) -> Self {
-        Self::SuggestedPostPaid(value)
-    }
-}
-
-impl From<SuggestedPostRefunded> for MessageData {
-    fn from(value: SuggestedPostRefunded) -> Self {
-        Self::SuggestedPostRefunded(value)
-    }
-}
-
-impl From<SuccessfulPayment> for MessageData {
-    fn from(value: SuccessfulPayment) -> Self {
-        Self::SuccessfulPayment(value)
-    }
-}
-
-impl From<UniqueGiftInfo> for MessageData {
-    fn from(value: UniqueGiftInfo) -> Self {
-        Self::UniqueGift(Box::new(value))
-    }
-}
-
-impl From<MessageDataUsersShared> for MessageData {
-    fn from(value: MessageDataUsersShared) -> Self {
-        Self::UsersShared(value)
-    }
-}
-
-impl From<Venue> for MessageData {
-    fn from(value: Venue) -> Self {
-        Self::Venue(value)
-    }
-}
-
-impl From<VideoNote> for MessageData {
-    fn from(value: VideoNote) -> Self {
-        Self::VideoNote(value)
-    }
-}
-
-impl From<MessageDataVideoChatEnded> for MessageData {
-    fn from(value: MessageDataVideoChatEnded) -> Self {
-        Self::VideoChatEnded(value)
-    }
-}
-
-impl From<MessageDataVideoChatParticipantsInvited> for MessageData {
-    fn from(value: MessageDataVideoChatParticipantsInvited) -> Self {
-        Self::VideoChatParticipantsInvited(value)
-    }
-}
-
-impl From<MessageDataVideoChatScheduled> for MessageData {
-    fn from(value: MessageDataVideoChatScheduled) -> Self {
-        Self::VideoChatScheduled(value)
-    }
-}
-
-impl From<WebAppData> for MessageData {
-    fn from(value: WebAppData) -> Self {
-        Self::WebAppData(value)
-    }
-}
-
-impl From<MessageDataWriteAccess> for MessageData {
-    fn from(value: MessageDataWriteAccess) -> Self {
-        Self::WriteAccessAllowed(value)
-    }
-}
-
-impl From<MessageDataAudio> for MessageData {
-    fn from(value: MessageDataAudio) -> Self {
-        Self::Audio(value)
-    }
-}
-
-impl From<MessageDataDocument> for MessageData {
-    fn from(value: MessageDataDocument) -> Self {
-        Self::Document(value)
-    }
-}
-
-impl From<MessageDataPhoto> for MessageData {
-    fn from(value: MessageDataPhoto) -> Self {
-        Self::Photo(value)
-    }
-}
-
-impl From<Text> for MessageData {
-    fn from(value: Text) -> Self {
-        Self::Text(value)
-    }
-}
-
-impl From<MessageDataVideo> for MessageData {
-    fn from(value: MessageDataVideo) -> Self {
-        Self::Video(value)
-    }
-}
-
-impl From<MessageDataVoice> for MessageData {
-    fn from(value: MessageDataVoice) -> Self {
-        Self::Voice(value)
-    }
-}
-
 /// Represents a service message about a change in auto-delete timer settings.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageDataAutoDeleteTimer {
     /// New auto-delete time for messages in the chat; in seconds.
     #[serde(rename = "message_auto_delete_time")]
     pub time: Integer,
-}
-
-impl MessageDataAutoDeleteTimer {
-    /// Creates a new `MessageDataAutoDeleteTimer`.
-    ///
-    /// # Arguments
-    ///
-    /// * `time` - Time in seconds.
-    pub fn new(time: Integer) -> Self {
-        Self { time }
-    }
 }
 
 /// Represents an audio message data.
@@ -591,30 +256,6 @@ pub struct MessageDataAudio {
     pub data: Audio,
     /// Audio caption.
     pub caption: Option<Text>,
-}
-
-impl From<Audio> for MessageDataAudio {
-    fn from(value: Audio) -> Self {
-        Self {
-            data: value,
-            caption: None,
-        }
-    }
-}
-
-impl MessageDataAudio {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption; 0-1024 characters.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<Text>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
 }
 
 /// Represents information about the chat
@@ -638,63 +279,6 @@ pub struct MessageDataChatShared {
     pub username: Option<String>,
 }
 
-impl MessageDataChatShared {
-    /// Creates a new `MessageDataChatShared`.
-    ///
-    /// # Arguments
-    ///
-    /// * `chat_id` - Identifier of the shared chat.
-    /// * `request_id` - Identifier of the request.
-    pub fn new(chat_id: Integer, request_id: Integer) -> Self {
-        Self {
-            chat_id,
-            request_id,
-            title: None,
-            username: None,
-            photo: None,
-        }
-    }
-
-    /// Sets a new photo.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Available sizes of the chat photo.
-    pub fn with_photo<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = PhotoSize>,
-    {
-        self.photo = Some(value.into_iter().collect());
-        self
-    }
-
-    /// Sets a new title.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Title.
-    pub fn with_title<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.title = Some(value.into());
-        self
-    }
-
-    /// Sets a new username.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Username.
-    pub fn with_username<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.username = Some(value.into());
-        self
-    }
-}
-
 /// Represents an document message data.
 #[derive(Clone, Debug, PartialEq)]
 pub struct MessageDataDocument {
@@ -702,30 +286,6 @@ pub struct MessageDataDocument {
     pub data: Document,
     /// Document caption.
     pub caption: Option<Text>,
-}
-
-impl From<Document> for MessageDataDocument {
-    fn from(value: Document) -> Self {
-        Self {
-            data: value,
-            caption: None,
-        }
-    }
-}
-
-impl MessageDataDocument {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption; 0-1024 characters.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<Text>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
 }
 
 /// Represents a service message about a new forum topic created in the chat.
@@ -743,50 +303,6 @@ pub struct MessageDataForumTopicCreated {
     pub is_name_implicit: Option<bool>,
 }
 
-impl MessageDataForumTopicCreated {
-    /// Creates a new `MessageDataForumTopicCreated`.
-    ///
-    /// # Arguments
-    ///
-    /// * `icon_color` - Color of the icon.
-    /// * `name` - Name of the topic.
-    pub fn new<A, B>(icon_color: A, name: B) -> Self
-    where
-        A: Into<ForumTopicIconColor>,
-        B: Into<String>,
-    {
-        Self {
-            icon_color: icon_color.into(),
-            name: name.into(),
-            icon_custom_emoji_id: None,
-            is_name_implicit: None,
-        }
-    }
-
-    /// Sets a new icon custom emoji ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Emoji ID.
-    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.icon_custom_emoji_id = Some(value.into());
-        self
-    }
-
-    /// Sets a new value for the `is_name_implicit` flag.
-    ///
-    /// # Arguments
-    ///
-    /// `value` - Whether the name of the topic wasn't specified explicitly by its creator.
-    pub fn with_is_name_implicit(mut self, value: bool) -> Self {
-        self.is_name_implicit = Some(value);
-        self
-    }
-}
-
 /// Represents a service message about an edited forum topic.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -796,34 +312,6 @@ pub struct MessageDataForumTopicEdited {
     /// New identifier of the custom emoji shown as the topic icon,
     /// if it was edited; an empty string if the icon was removed.
     pub icon_custom_emoji_id: Option<String>,
-}
-
-impl MessageDataForumTopicEdited {
-    /// Sets a new name.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The name of the topic.
-    pub fn with_name<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.name = Some(value.into());
-        self
-    }
-
-    /// Sets a new icon custom emoji ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Emoji ID.
-    pub fn with_icon_custom_emoji_id<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.icon_custom_emoji_id = Some(value.into());
-        self
-    }
 }
 
 /// Contains information about the bot that was created to be managed by the current bot.
@@ -854,30 +342,6 @@ pub struct MessageDataDirectMessagePriceChanged {
     pub direct_message_star_count: Option<Integer>,
 }
 
-impl MessageDataDirectMessagePriceChanged {
-    /// Creates a new `MessageDataDirectMessagePriceChanged`.
-    ///
-    /// # Arguments
-    ///
-    /// * `are_direct_messages_enabled` - Whether the direct messages are enabled for the channel chat.
-    pub fn new(are_direct_messages_enabled: bool) -> Self {
-        Self {
-            are_direct_messages_enabled,
-            direct_message_star_count: None,
-        }
-    }
-
-    /// Sets a new direct message star count.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The new number of Telegram Stars.
-    pub fn with_direct_message_star_count(mut self, value: Integer) -> Self {
-        self.direct_message_star_count = Some(value);
-        self
-    }
-}
-
 /// Represents a list of available sizes of the photo.
 #[derive(Clone, Debug, PartialEq)]
 pub struct MessageDataPhoto {
@@ -885,33 +349,6 @@ pub struct MessageDataPhoto {
     pub data: Vec<PhotoSize>,
     /// Photo caption.
     pub caption: Option<Text>,
-}
-
-impl<T> From<T> for MessageDataPhoto
-where
-    T: IntoIterator<Item = PhotoSize>,
-{
-    fn from(value: T) -> Self {
-        Self {
-            data: value.into_iter().collect(),
-            caption: None,
-        }
-    }
-}
-
-impl MessageDataPhoto {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption; 0-1024 characters.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<Text>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
 }
 
 /// Describes a service message about an option added to a poll.
@@ -949,23 +386,6 @@ pub struct MessageDataProximityAlert {
     pub watcher: User,
 }
 
-impl MessageDataProximityAlert {
-    /// Creates a new `MessageDataProximityAlert`.
-    ///
-    /// # Arguments
-    ///
-    /// * `distance` - Distance between users.
-    /// * `traveler` - User that triggered the alert.
-    /// * `watcher` - User that set the alert.
-    pub fn new(distance: Integer, traveler: User, watcher: User) -> Self {
-        Self {
-            distance,
-            traveler,
-            watcher,
-        }
-    }
-}
-
 /// Contains information about the users
 /// whose identifiers were shared with the bot
 /// using a [`crate::types::KeyboardButton::with_request_users`] button.
@@ -977,24 +397,6 @@ pub struct MessageDataUsersShared {
     pub users: Vec<SharedUser>,
 }
 
-impl MessageDataUsersShared {
-    /// Creates a new `MessageDataUsersShared`.
-    ///
-    /// # Arguments
-    ///
-    /// * `request_id` - Identifier of the request.
-    /// * `users` - Information about users shared with the bot.
-    pub fn new<T>(request_id: Integer, users: T) -> Self
-    where
-        T: IntoIterator<Item = SharedUser>,
-    {
-        Self {
-            request_id,
-            users: users.into_iter().collect(),
-        }
-    }
-}
-
 /// Represents a video message data.
 #[derive(Clone, Debug, PartialEq)]
 pub struct MessageDataVideo {
@@ -1004,46 +406,11 @@ pub struct MessageDataVideo {
     pub caption: Option<Text>,
 }
 
-impl From<Video> for MessageDataVideo {
-    fn from(value: Video) -> Self {
-        Self {
-            data: value,
-            caption: None,
-        }
-    }
-}
-
-impl MessageDataVideo {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption; 0-1024 characters.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<Text>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
-}
-
 /// Represents a service message about a video chat ended in the chat.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageDataVideoChatEnded {
     /// Video chat duration; in seconds.
     pub duration: Integer,
-}
-
-impl MessageDataVideoChatEnded {
-    /// Creates a new `MessageDataVideoChatEnded`.
-    ///
-    /// # Arguments
-    ///
-    /// * `duration` - Video chat duration; in seconds.
-    pub fn new(duration: Integer) -> Self {
-        Self { duration }
-    }
 }
 
 /// A service message about new members invited to a video chat.
@@ -1054,47 +421,12 @@ pub struct MessageDataVideoChatParticipantsInvited {
     pub users: Option<Vec<User>>,
 }
 
-impl<T> From<T> for MessageDataVideoChatParticipantsInvited
-where
-    T: IntoIterator<Item = User>,
-{
-    fn from(value: T) -> Self {
-        Self::default().with_users(value)
-    }
-}
-
-impl MessageDataVideoChatParticipantsInvited {
-    /// Sets a new list of users.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - New members that were invited to the voice chat.
-    pub fn with_users<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = User>,
-    {
-        self.users = Some(value.into_iter().collect());
-        self
-    }
-}
-
 /// A service message about a video chat scheduled in the chat.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct MessageDataVideoChatScheduled {
     /// Point in time (Unix timestamp) when the video chat
     /// is supposed to be started by a chat administrator.
     pub start_date: Integer,
-}
-
-impl MessageDataVideoChatScheduled {
-    /// Creates a new `MessageDataVideoChatScheduled`
-    ///
-    /// # Arguments
-    ///
-    /// * `start_date` - Point in time (Unix timestamp).
-    pub fn new(start_date: Integer) -> Self {
-        Self { start_date }
-    }
 }
 
 /// Message is a voice message, information about the file.
@@ -1104,30 +436,6 @@ pub struct MessageDataVoice {
     pub data: Voice,
     /// Voice caption.
     pub caption: Option<Text>,
-}
-
-impl From<Voice> for MessageDataVoice {
-    fn from(value: Voice) -> Self {
-        Self {
-            data: value,
-            caption: None,
-        }
-    }
-}
-
-impl MessageDataVoice {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption; 0-1024 characters.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<Text>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
 }
 
 /// Represents a service message about a user allowing a bot to write messages
@@ -1146,40 +454,6 @@ pub struct MessageDataWriteAccess {
     /// Name of the Web App,
     /// if the access was granted when the Web App was launched from a link.
     pub web_app_name: Option<String>,
-}
-
-impl MessageDataWriteAccess {
-    /// Sets a new value of the `from_attachment_menu` flag.
-    ///
-    /// * `value` - Indicates whether access was granted
-    ///   when the bot was added to the attachment
-    ///   or side menu.
-    pub fn with_from_attachment_menu(mut self, value: bool) -> Self {
-        self.from_attachment_menu = Some(value);
-        self
-    }
-
-    /// Sets a new value of the `from_request` flag.
-    ///
-    /// * `value` - Indicates whether access was granted after the user accepted an explicit request
-    ///   from a Web App sent by the method `requestWriteAccess`.
-    pub fn with_from_request(mut self, value: bool) -> Self {
-        self.from_request = Some(value);
-        self
-    }
-
-    /// Sets a new name of the Web App.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Name of the Web App.
-    pub fn with_web_app_name<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.web_app_name = Some(value.into());
-        self
-    }
 }
 
 /// Represents a message data.

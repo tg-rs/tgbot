@@ -27,33 +27,6 @@ pub struct Invoice {
     pub total_amount: Integer,
 }
 
-impl Invoice {
-    /// Creates a new `Invoice`.
-    ///
-    /// # Arguments
-    ///
-    /// * `currency` - ISO 4217 currency code.
-    /// * `description` - Product description.
-    /// * `start_parameter` - Unique bot deep-linking parameter.
-    /// * `title` - Product name.
-    /// * `total_amount` - Total price.
-    pub fn new<A, B, C, D>(currency: A, description: B, start_parameter: C, title: D, total_amount: Integer) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-        C: Into<String>,
-        D: Into<String>,
-    {
-        Self {
-            currency: currency.into(),
-            description: description.into(),
-            start_parameter: start_parameter.into(),
-            title: title.into(),
-            total_amount,
-        }
-    }
-}
-
 /// Represents a portion of the price for goods or services.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct LabeledPrice {

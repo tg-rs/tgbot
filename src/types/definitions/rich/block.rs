@@ -53,262 +53,6 @@ pub enum RichBlock {
     VoiceNote(RichBlockVoiceNote),
 }
 
-impl RichBlock {
-    /// Creates an anchor `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The name of the anchor.
-    pub fn anchor<T>(value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self::Anchor(value.into())
-    }
-
-    /// Creates an animation `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The animation.
-    pub fn animation<T>(value: T) -> Self
-    where
-        T: Into<RichBlockAnimation>,
-    {
-        Self::Animation(value.into())
-    }
-
-    /// Creates an audio `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The audio.
-    pub fn audio<T>(value: T) -> Self
-    where
-        T: Into<RichBlockAudio>,
-    {
-        Self::Audio(value.into())
-    }
-
-    /// Creates a block quotation `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The block quotation.
-    pub fn block_quotation<T>(value: T) -> Self
-    where
-        T: Into<RichBlockBlockQuotation>,
-    {
-        Self::BlockQuotation(value.into())
-    }
-
-    /// Creates a collage `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The collage.
-    pub fn collage<T>(value: T) -> Self
-    where
-        T: Into<RichBlockCollage>,
-    {
-        Self::Collage(value.into())
-    }
-
-    /// Creates a details `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The details.
-    pub fn details<T>(value: T) -> Self
-    where
-        T: Into<RichBlockDetails>,
-    {
-        Self::Details(value.into())
-    }
-
-    /// Creates a footer `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The footer.
-    pub fn footer<T>(value: T) -> Self
-    where
-        T: Into<RichText>,
-    {
-        Self::Footer(value.into())
-    }
-
-    /// Creates a list `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list items.
-    pub fn list<A, B>(value: A) -> Self
-    where
-        A: IntoIterator<Item = B>,
-        B: Into<RichBlockListItem>,
-    {
-        Self::List(value.into_iter().map(Into::into).collect())
-    }
-
-    /// Creates a map `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The map.
-    pub fn map<T>(value: T) -> Self
-    where
-        T: Into<RichBlockMap>,
-    {
-        Self::Map(value.into())
-    }
-
-    /// Creates a mathematical expression `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The expression.
-    pub fn mathematical_expression<T>(value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self::MathematicalExpression(value.into())
-    }
-
-    /// Creates a paragraph `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The paragraph.
-    pub fn paragraph<T>(value: T) -> Self
-    where
-        T: Into<RichText>,
-    {
-        Self::Paragraph(value.into())
-    }
-
-    /// Creates a photo `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The photo.
-    pub fn photo<T>(value: T) -> Self
-    where
-        T: Into<RichBlockPhoto>,
-    {
-        Self::Photo(value.into())
-    }
-
-    /// Creates a preformatted `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The text.
-    pub fn preformatted<T>(value: T) -> Self
-    where
-        T: Into<RichBlockPreformatted>,
-    {
-        Self::Preformatted(value.into())
-    }
-
-    /// Creates a pull quotation `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The quotation.
-    pub fn pull_quotation<T>(value: T) -> Self
-    where
-        T: Into<RichBlockPullQuotation>,
-    {
-        Self::PullQuotation(value.into())
-    }
-
-    /// Creates a section heading `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `text` - The heading.
-    /// * `size` - Size of the heading.
-    pub fn section_heading<T>(text: T, size: Integer) -> Self
-    where
-        T: Into<RichText>,
-    {
-        Self::SectionHeading(text.into(), size)
-    }
-
-    /// Creates a slideshow `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Thge slideshow.
-    pub fn slideshow<T>(value: T) -> Self
-    where
-        T: Into<RichBlockSlideshow>,
-    {
-        Self::Slideshow(value.into())
-    }
-
-    /// Creates a table `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The table.
-    pub fn table<T>(value: T) -> Self
-    where
-        T: Into<RichBlockTable>,
-    {
-        Self::Table(value.into())
-    }
-
-    /// Creates a thinking `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The content.
-    pub fn thinking<T>(value: T) -> Self
-    where
-        T: Into<RichText>,
-    {
-        Self::Thinking(value.into())
-    }
-
-    /// Creates a video `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The video.
-    pub fn video<T>(value: T) -> Self
-    where
-        T: Into<RichBlockVideo>,
-    {
-        Self::Video(value.into())
-    }
-
-    /// Creates a voice note `RichBlock`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The voice note.
-    pub fn voice_note<T>(value: T) -> Self
-    where
-        T: Into<RichBlockVoiceNote>,
-    {
-        Self::VoiceNote(value.into())
-    }
-}
-
-impl From<&str> for RichBlock {
-    fn from(value: &str) -> Self {
-        Self::paragraph(value)
-    }
-}
-
-impl From<String> for RichBlock {
-    fn from(value: String) -> Self {
-        Self::paragraph(value)
-    }
-}
-
 /// A block with an animation (`<video>`).
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -321,61 +65,6 @@ pub struct RichBlockAnimation {
     pub has_spoiler: Option<bool>,
 }
 
-impl From<Animation> for RichBlockAnimation {
-    fn from(value: Animation) -> Self {
-        Self {
-            animation: value,
-            has_spoiler: None,
-            caption: None,
-        }
-    }
-}
-
-impl<T> From<(Animation, T)> for RichBlockAnimation
-where
-    T: Into<RichBlockCaption>,
-{
-    fn from((animation, caption): (Animation, T)) -> Self {
-        Self::from(animation).with_caption(caption)
-    }
-}
-
-impl<T> From<(Animation, T, bool)> for RichBlockAnimation
-where
-    T: Into<RichBlockCaption>,
-{
-    fn from((animation, caption, has_spoiler): (Animation, T, bool)) -> Self {
-        Self::from(animation)
-            .with_caption(caption)
-            .with_has_spoiler(has_spoiler)
-    }
-}
-
-impl RichBlockAnimation {
-    /// Sets a new caption
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption of the block.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<RichBlockCaption>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new value for the `has_spoiler` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the media preview is covered by a spoiler animation.
-    pub fn with_has_spoiler(mut self, value: bool) -> Self {
-        self.has_spoiler = Some(value);
-        self
-    }
-}
-
 /// A block with a music file (`<audio>`)
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -386,39 +75,6 @@ pub struct RichBlockAudio {
     pub caption: Option<RichBlockCaption>,
 }
 
-impl From<Audio> for RichBlockAudio {
-    fn from(value: Audio) -> Self {
-        Self {
-            audio: value,
-            caption: None,
-        }
-    }
-}
-
-impl<T> From<(Audio, T)> for RichBlockAudio
-where
-    T: Into<RichBlockCaption>,
-{
-    fn from((audio, caption): (Audio, T)) -> Self {
-        Self::from(audio).with_caption(caption)
-    }
-}
-
-impl RichBlockAudio {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption of the block.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<RichBlockCaption>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
-}
-
 /// A block quotation (`<blockquote>`).
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -427,57 +83,6 @@ pub struct RichBlockBlockQuotation {
     pub blocks: Vec<RichBlock>,
     /// Credit of the block.
     pub credit: Option<RichText>,
-}
-
-impl From<RichBlock> for RichBlockBlockQuotation {
-    fn from(value: RichBlock) -> Self {
-        Self {
-            blocks: vec![value],
-            credit: None,
-        }
-    }
-}
-
-impl<T> From<(RichBlock, T)> for RichBlockBlockQuotation
-where
-    T: Into<RichText>,
-{
-    fn from((block, credit): (RichBlock, T)) -> Self {
-        Self {
-            blocks: vec![block],
-            credit: Some(credit.into()),
-        }
-    }
-}
-
-impl<I> FromIterator<I> for RichBlockBlockQuotation
-where
-    I: Into<RichBlock>,
-{
-    fn from_iter<T>(value: T) -> Self
-    where
-        T: IntoIterator<Item = I>,
-    {
-        Self {
-            blocks: value.into_iter().map(Into::into).collect(),
-            credit: None,
-        }
-    }
-}
-
-impl RichBlockBlockQuotation {
-    /// Sets a new credit.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Credit of the block.
-    pub fn with_credit<T>(mut self, value: T) -> Self
-    where
-        T: Into<RichText>,
-    {
-        self.credit = Some(value.into());
-        self
-    }
 }
 
 /// Caption of a rich formatted block.
@@ -537,46 +142,6 @@ pub struct RichBlockCollage {
     pub caption: Option<RichBlockCaption>,
 }
 
-impl<A, B> From<A> for RichBlockCollage
-where
-    A: IntoIterator<Item = B>,
-    B: Into<RichBlock>,
-{
-    fn from(value: A) -> Self {
-        value.into_iter().collect()
-    }
-}
-
-impl<I> FromIterator<I> for RichBlockCollage
-where
-    I: Into<RichBlock>,
-{
-    fn from_iter<T>(value: T) -> Self
-    where
-        T: IntoIterator<Item = I>,
-    {
-        Self {
-            blocks: value.into_iter().map(Into::into).collect(),
-            caption: None,
-        }
-    }
-}
-
-impl RichBlockCollage {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption of the block.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<RichBlockCaption>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
-}
-
 /// An expandable block for details disclosure (`<details>`).
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -587,59 +152,6 @@ pub struct RichBlockDetails {
     pub summary: RichText,
     /// Whether the content of the block is visible by default.
     pub is_open: Option<bool>,
-}
-
-impl<A, B, C> From<(A, C)> for RichBlockDetails
-where
-    A: IntoIterator<Item = B>,
-    B: Into<RichBlock>,
-    C: Into<RichText>,
-{
-    fn from((blocks, summary): (A, C)) -> Self {
-        Self::new(blocks, summary)
-    }
-}
-
-impl<A, B, C> From<(A, C, bool)> for RichBlockDetails
-where
-    A: IntoIterator<Item = B>,
-    B: Into<RichBlock>,
-    C: Into<RichText>,
-{
-    fn from((blocks, summary, is_open): (A, C, bool)) -> Self {
-        Self::new(blocks, summary).with_is_open(is_open)
-    }
-}
-
-impl RichBlockDetails {
-    /// Creates a new `RichBlockDetails`.
-    ///
-    /// # Arguments
-    ///
-    /// * `blocks` - Content of the block.
-    /// * `summary` - Always shown summary of the block.
-    pub fn new<A, B, C>(blocks: A, summary: C) -> Self
-    where
-        A: IntoIterator<Item = B>,
-        B: Into<RichBlock>,
-        C: Into<RichText>,
-    {
-        Self {
-            blocks: blocks.into_iter().map(Into::into).collect(),
-            summary: summary.into(),
-            is_open: None,
-        }
-    }
-
-    /// Sets a new value for the `is_open` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the content of the block is visible by default.
-    pub fn with_is_open(mut self, value: bool) -> Self {
-        self.is_open = Some(value);
-        self
-    }
 }
 
 /// An item of a list.
@@ -659,81 +171,6 @@ pub struct RichBlockListItem {
     pub item_type: Option<RichBlockListItemType>,
     /// For ordered lists, the numberic value of the item label.
     pub value: Option<Integer>,
-}
-
-impl<A, B, C> From<(A, B)> for RichBlockListItem
-where
-    A: Into<String>,
-    B: IntoIterator<Item = C>,
-    C: Into<RichBlock>,
-{
-    fn from((label, blocks): (A, B)) -> Self {
-        Self::new(label, blocks)
-    }
-}
-
-impl RichBlockListItem {
-    /// Creates a new `RichBlockListItem`.
-    ///
-    /// # Arguments
-    ///
-    /// * `label` - Label of the item.
-    /// * `blocks` - The content of the item.
-    pub fn new<A, B, C>(label: A, blocks: B) -> Self
-    where
-        A: Into<String>,
-        B: IntoIterator<Item = C>,
-        C: Into<RichBlock>,
-    {
-        Self {
-            blocks: blocks.into_iter().map(Into::into).collect(),
-            label: label.into(),
-            has_checkbox: None,
-            is_checked: None,
-            item_type: None,
-            value: None,
-        }
-    }
-
-    /// Sets a new value for the `has_checkbox` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the item has a checkbox.
-    pub fn with_has_checkbox(mut self, value: bool) -> Self {
-        self.has_checkbox = Some(value);
-        self
-    }
-
-    /// Sets a new value for the `is_checked` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the item has a checked checkbox.
-    pub fn with_is_checked(mut self, value: bool) -> Self {
-        self.is_checked = Some(value);
-        self
-    }
-
-    /// Sets a new item type.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The type of the item label.
-    pub fn with_item_type(mut self, value: RichBlockListItemType) -> Self {
-        self.item_type = Some(value);
-        self
-    }
-
-    /// Sets a new value.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The numeric value of the item label.
-    pub fn with_value(mut self, value: Integer) -> Self {
-        self.value = Some(value);
-        self
-    }
 }
 
 /// Represents the type of the item label.
@@ -772,63 +209,6 @@ pub struct RichBlockMap {
     pub caption: Option<RichBlockCaption>,
 }
 
-impl From<Location> for RichBlockMap {
-    fn from(value: Location) -> Self {
-        Self {
-            location: value,
-            zoom: 13,
-            width: 200,
-            height: 200,
-            caption: None,
-        }
-    }
-}
-
-impl RichBlockMap {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption of the block.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<RichBlockCaption>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new expected height of the map.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The expected height.
-    pub fn with_height(mut self, value: Integer) -> Self {
-        self.height = value;
-        self
-    }
-
-    /// Sets a new expected width of the map.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The expected width.
-    pub fn with_width(mut self, value: Integer) -> Self {
-        self.width = value;
-        self
-    }
-
-    /// Sets a new zoom level.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Map zoom level; 13-20.
-    pub fn with_zoom(mut self, value: Integer) -> Self {
-        self.zoom = value;
-        self
-    }
-}
-
 /// A block with a photo (`<photo>`).
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -841,53 +221,6 @@ pub struct RichBlockPhoto {
     pub has_spoiler: Option<bool>,
 }
 
-impl<T> From<T> for RichBlockPhoto
-where
-    T: IntoIterator<Item = PhotoSize>,
-{
-    fn from(value: T) -> Self {
-        Self::from_iter(value)
-    }
-}
-
-impl FromIterator<PhotoSize> for RichBlockPhoto {
-    fn from_iter<T>(value: T) -> Self
-    where
-        T: IntoIterator<Item = PhotoSize>,
-    {
-        Self {
-            photo: value.into_iter().collect(),
-            caption: None,
-            has_spoiler: None,
-        }
-    }
-}
-
-impl RichBlockPhoto {
-    /// Sets a new caption.
-    ///
-    ///  # Arguments
-    ///
-    /// * `value` - Caption of the block.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<RichBlockCaption>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new value for the `has_spoiler` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the media preview is covered by a spoiler animation.
-    pub fn with_has_spoiler(mut self, value: bool) -> Self {
-        self.has_spoiler = Some(value);
-        self
-    }
-}
-
 /// A preformatted text block (`<pre>` or `<code>`).
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -896,31 +229,6 @@ pub struct RichBlockPreformatted {
     pub text: RichText,
     /// The programming language of the text.
     pub language: Option<String>,
-}
-
-impl<T> From<T> for RichBlockPreformatted
-where
-    T: Into<RichText>,
-{
-    fn from(value: T) -> Self {
-        Self {
-            text: value.into(),
-            language: None,
-        }
-    }
-}
-
-impl<A, B> From<(A, B)> for RichBlockPreformatted
-where
-    A: Into<String>,
-    B: Into<RichText>,
-{
-    fn from((language, text): (A, B)) -> Self {
-        Self {
-            text: text.into(),
-            language: Some(language.into()),
-        }
-    }
 }
 
 /// A quotation with centered text (`<aside>`).
@@ -933,31 +241,6 @@ pub struct RichBlockPullQuotation {
     pub credit: Option<RichText>,
 }
 
-impl<T> From<T> for RichBlockPullQuotation
-where
-    T: Into<RichText>,
-{
-    fn from(value: T) -> Self {
-        Self {
-            text: value.into(),
-            credit: None,
-        }
-    }
-}
-
-impl<A, B> From<(A, B)> for RichBlockPullQuotation
-where
-    A: Into<RichText>,
-    B: Into<RichText>,
-{
-    fn from((text, credit): (A, B)) -> Self {
-        Self {
-            text: text.into(),
-            credit: Some(credit.into()),
-        }
-    }
-}
-
 /// A slideshow (`<tg-slideshow>`).
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -966,46 +249,6 @@ pub struct RichBlockSlideshow {
     pub blocks: Vec<RichBlock>,
     /// Caption of the block.
     pub caption: Option<RichBlockCaption>,
-}
-
-impl<A, B> From<A> for RichBlockSlideshow
-where
-    A: IntoIterator<Item = B>,
-    B: Into<RichBlock>,
-{
-    fn from(value: A) -> Self {
-        value.into_iter().collect()
-    }
-}
-
-impl<I> FromIterator<I> for RichBlockSlideshow
-where
-    I: Into<RichBlock>,
-{
-    fn from_iter<T>(value: T) -> Self
-    where
-        T: IntoIterator<Item = I>,
-    {
-        Self {
-            blocks: value.into_iter().map(Into::into).collect(),
-            caption: None,
-        }
-    }
-}
-
-impl RichBlockSlideshow {
-    /// Sets a new caption
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption of the block.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<RichBlockCaption>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
 }
 
 /// A table (`<table>`).
@@ -1020,73 +263,6 @@ pub struct RichBlockTable {
     pub is_bordered: Option<bool>,
     /// Whether the table is striped.
     pub is_striped: Option<bool>,
-}
-
-impl<A, B, C> From<A> for RichBlockTable
-where
-    A: IntoIterator<Item = B>,
-    B: IntoIterator<Item = C>,
-    C: Into<RichBlockTableCell>,
-{
-    fn from(value: A) -> Self {
-        value.into_iter().collect()
-    }
-}
-
-impl<A, B> FromIterator<A> for RichBlockTable
-where
-    A: IntoIterator<Item = B>,
-    B: Into<RichBlockTableCell>,
-{
-    fn from_iter<T>(value: T) -> Self
-    where
-        T: IntoIterator<Item = A>,
-    {
-        Self {
-            cells: value
-                .into_iter()
-                .map(|x| x.into_iter().map(Into::into).collect())
-                .collect(),
-            caption: None,
-            is_bordered: None,
-            is_striped: None,
-        }
-    }
-}
-
-impl RichBlockTable {
-    /// Sets a new caption.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Caption of the table.
-    pub fn with_caption<T>(mut self, value: T) -> Self
-    where
-        T: Into<RichText>,
-    {
-        self.caption = Some(value.into());
-        self
-    }
-
-    /// Sets a new value for the `is_bordered` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the table has borders.
-    pub fn with_is_bordered(mut self, value: bool) -> Self {
-        self.is_bordered = Some(value);
-        self
-    }
-
-    /// Sets a new value for the `is_striped` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the table is striped.
-    pub fn with_is_striped(mut self, value: bool) -> Self {
-        self.is_striped = Some(value);
-        self
-    }
 }
 
 /// Cell in a table.
@@ -1221,42 +397,6 @@ pub struct RichBlockVideo {
     pub has_spoiler: Option<bool>,
 }
 
-impl From<Video> for RichBlockVideo {
-    fn from(value: Video) -> Self {
-        Self {
-            video: value,
-            caption: None,
-            has_spoiler: None,
-        }
-    }
-}
-
-impl<T> From<(Video, T)> for RichBlockVideo
-where
-    T: Into<RichBlockCaption>,
-{
-    fn from((video, caption): (Video, T)) -> Self {
-        Self {
-            video,
-            caption: Some(caption.into()),
-            has_spoiler: None,
-        }
-    }
-}
-
-impl<T> From<(Video, T, bool)> for RichBlockVideo
-where
-    T: Into<RichBlockCaption>,
-{
-    fn from((video, caption, has_spoiler): (Video, T, bool)) -> Self {
-        Self {
-            video,
-            caption: Some(caption.into()),
-            has_spoiler: Some(has_spoiler),
-        }
-    }
-}
-
 /// A block with a voice note (`<audio>`).
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -1265,27 +405,6 @@ pub struct RichBlockVoiceNote {
     pub voice_note: Voice,
     /// Caption of the block.
     pub caption: Option<RichBlockCaption>,
-}
-
-impl From<Voice> for RichBlockVoiceNote {
-    fn from(value: Voice) -> Self {
-        Self {
-            voice_note: value,
-            caption: None,
-        }
-    }
-}
-
-impl<T> From<(Voice, T)> for RichBlockVoiceNote
-where
-    T: Into<RichBlockCaption>,
-{
-    fn from((voice_note, caption): (Voice, T)) -> Self {
-        Self {
-            voice_note,
-            caption: Some(caption.into()),
-        }
-    }
 }
 
 #[serde_with::skip_serializing_none]

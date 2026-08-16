@@ -83,39 +83,6 @@ pub struct ChannelChat {
     pub username: Option<ChatUsername>,
 }
 
-impl ChannelChat {
-    /// Creates a new `ChannelChat`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - Unique identifier of the channel.
-    /// * `title` - Title of the channel.
-    pub fn new<A, B>(id: A, title: B) -> Self
-    where
-        A: Into<ChatPeerId>,
-        B: Into<String>,
-    {
-        Self {
-            id: id.into(),
-            title: title.into(),
-            username: None,
-        }
-    }
-
-    /// Sets a new username.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Username of the channel.
-    pub fn with_username<T>(mut self, value: T) -> Self
-    where
-        T: Into<ChatUsername>,
-    {
-        self.username = Some(value.into());
-        self
-    }
-}
-
 /// Represents a group chat.
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 pub struct GroupChat {
@@ -123,25 +90,6 @@ pub struct GroupChat {
     pub id: ChatPeerId,
     /// Title of the group.
     pub title: String,
-}
-
-impl GroupChat {
-    /// Creates a new `GroupChat`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - Unique identifier of the group.
-    /// * `title` - Title of the group.
-    pub fn new<A, B>(id: A, title: B) -> Self
-    where
-        A: Into<ChatPeerId>,
-        B: Into<String>,
-    {
-        Self {
-            id: id.into(),
-            title: title.into(),
-        }
-    }
 }
 
 /// Represents a private chat.
@@ -158,53 +106,6 @@ pub struct PrivateChat {
     pub username: Option<ChatUsername>,
 }
 
-impl PrivateChat {
-    /// Creates a new `PrivateChat`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - Unique identifier of the target chat.
-    /// * `first_name` - First name of the other party.
-    pub fn new<A, B>(id: A, first_name: B) -> Self
-    where
-        A: Into<ChatPeerId>,
-        B: Into<String>,
-    {
-        Self {
-            id: id.into(),
-            first_name: first_name.into(),
-            last_name: None,
-            username: None,
-        }
-    }
-
-    /// Sets a new last name.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Last name.
-    pub fn with_last_name<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.last_name = Some(value.into());
-        self
-    }
-
-    /// Sets a new username.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Username.
-    pub fn with_username<T>(mut self, value: T) -> Self
-    where
-        T: Into<ChatUsername>,
-    {
-        self.username = Some(value.into());
-        self
-    }
-}
-
 /// Represents a supergroup chat.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -219,61 +120,6 @@ pub struct SupergroupChat {
     pub is_forum: Option<bool>,
     /// Username of the supergroup.
     pub username: Option<ChatUsername>,
-}
-
-impl SupergroupChat {
-    /// Creates a new `SupergroupChat`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - Unique identifier of the supergroup.
-    /// * `title` - Title of the supergroup.
-    pub fn new<A, B>(id: A, title: B) -> Self
-    where
-        A: Into<ChatPeerId>,
-        B: Into<String>,
-    {
-        Self {
-            id: id.into(),
-            title: title.into(),
-            is_direct_messages: None,
-            is_forum: None,
-            username: None,
-        }
-    }
-
-    /// Sets a new value for the `is_direct_messages` flag.
-    ///
-    /// # Arguments
-    ///
-    /// `value` - Whether the chat is the direct messages chat of a channel.
-    pub fn with_is_direct_messages(mut self, value: bool) -> Self {
-        self.is_direct_messages = Some(value);
-        self
-    }
-
-    /// Sets a new value for the `is_forum` flag.
-    ///
-    /// # Arguments
-    ///
-    /// `value` - Whether the supergroup has topics enabled.
-    pub fn with_is_forum(mut self, value: bool) -> Self {
-        self.is_forum = Some(value);
-        self
-    }
-
-    /// Sets a new username.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Username of the supergroup.
-    pub fn with_username<T>(mut self, value: T) -> Self
-    where
-        T: Into<ChatUsername>,
-    {
-        self.username = Some(value.into());
-        self
-    }
 }
 
 /// Represents a chat background.

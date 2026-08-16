@@ -22,44 +22,6 @@ pub struct ShippingAddress {
     pub street_line2: String,
 }
 
-impl ShippingAddress {
-    /// Creates a new `ShippingAddress`.
-    ///
-    /// # Arguments
-    ///
-    /// * `city` - City.
-    /// * `country_code` - ISO 3166-1 alpha-2 country code.
-    /// * `post_code` - Post code.
-    /// * `state` - State.
-    /// * `street_line1` - First line for the address.
-    /// * `street_line2` - Second line for the address.
-    pub fn new<A, B, C, D, E, F>(
-        city: A,
-        country_code: B,
-        post_code: C,
-        state: D,
-        street_line1: E,
-        street_line2: F,
-    ) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-        C: Into<String>,
-        D: Into<String>,
-        E: Into<String>,
-        F: Into<String>,
-    {
-        Self {
-            city: city.into(),
-            country_code: country_code.into(),
-            post_code: post_code.into(),
-            state: state.into(),
-            street_line1: street_line1.into(),
-            street_line2: street_line2.into(),
-        }
-    }
-}
-
 /// Represents a shipping option.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct ShippingOption {
@@ -116,29 +78,6 @@ pub struct ShippingQuery {
     pub invoice_payload: String,
     /// User specified shipping address.
     pub shipping_address: ShippingAddress,
-}
-
-impl ShippingQuery {
-    /// Creates a new `ShippingQuery`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - Query ID.
-    /// * `from` - Query sender.
-    /// * `invoice_payload` - Bot specified payload.
-    /// * `shipping_address` - User specified address.
-    pub fn new<A, B>(id: A, from: User, invoice_payload: B, shipping_address: ShippingAddress) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-    {
-        Self {
-            id: id.into(),
-            from,
-            invoice_payload: invoice_payload.into(),
-            shipping_address,
-        }
-    }
 }
 
 /// Replies to a shipping query.

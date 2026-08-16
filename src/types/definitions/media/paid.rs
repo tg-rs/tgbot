@@ -29,24 +29,6 @@ pub struct PaidMediaPurchased {
     pub payload: String,
 }
 
-impl PaidMediaPurchased {
-    /// Creates a new `PaidMediaPurchased`.
-    ///
-    /// # Arguments
-    ///
-    /// * `from` - User who purchased the media.
-    /// * `payload` - Bot-specified paid media payload.
-    pub fn new<T>(from: User, payload: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            from,
-            payload: payload.into(),
-        }
-    }
-}
-
 /// Describes the paid media added to a message.
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct PaidMediaInfo {
@@ -54,25 +36,6 @@ pub struct PaidMediaInfo {
     pub star_count: Integer,
     /// Information about the paid media.
     pub paid_media: Vec<PaidMedia>,
-}
-
-impl PaidMediaInfo {
-    /// Creates a new `PaidMediaInfo`.
-    ///
-    /// # Arguments
-    ///
-    /// * `star_count` - The number of Telegram Stars that must be paid to buy access to the media.
-    /// * `paid_media` - Information about the paid media.
-    pub fn new<A, B>(star_count: Integer, paid_media: A) -> Self
-    where
-        A: IntoIterator<Item = B>,
-        B: Into<PaidMedia>,
-    {
-        Self {
-            star_count,
-            paid_media: paid_media.into_iter().map(Into::into).collect(),
-        }
-    }
 }
 
 /// Describes paid media.
@@ -100,38 +63,6 @@ pub struct PaidMediaPreview {
     pub height: Option<Integer>,
     /// Media width as defined by the sender.
     pub width: Option<Integer>,
-}
-
-impl PaidMediaPreview {
-    /// Sets a new duration.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Duration of the media in seconds as defined by the sender.
-    pub fn with_duration(mut self, value: Integer) -> Self {
-        self.duration = Some(value);
-        self
-    }
-
-    /// Sets a new height.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Height of the media in seconds as defined by the sender.
-    pub fn with_height(mut self, value: Integer) -> Self {
-        self.height = Some(value);
-        self
-    }
-
-    /// Sets a new width.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Width of the media in seconds as defined by the sender.
-    pub fn with_width(mut self, value: Integer) -> Self {
-        self.width = Some(value);
-        self
-    }
 }
 
 #[serde_with::skip_serializing_none]

@@ -15,24 +15,6 @@ pub struct PreparedInlineMessage {
     pub expiration_date: Integer,
 }
 
-impl PreparedInlineMessage {
-    /// Creates a new `PreparedInlineMessage`.
-    ///
-    /// # Arguments
-    ///
-    /// * `id` - Unique identifier of the prepared message.
-    /// * `expiration_date` - Expiration date of the prepared message, in Unix time.
-    pub fn new<T>(id: T, expiration_date: Integer) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            id: id.into(),
-            expiration_date,
-        }
-    }
-}
-
 /// Stores a message that can be sent by a user of a Mini App.
 #[derive(Debug)]
 pub struct SavePreparedInlineMessage {

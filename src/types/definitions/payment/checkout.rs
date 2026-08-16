@@ -31,56 +31,6 @@ pub struct PreCheckoutQuery {
     pub shipping_option_id: Option<String>,
 }
 
-impl PreCheckoutQuery {
-    /// Creates a new `PreCheckoutQuery`.
-    ///
-    /// # Arguments
-    ///
-    /// * `currency` - Three-letter ISO 4217 currency code.
-    /// * `from` - User who sent the query.
-    /// * `id` - Unique query identifier.
-    /// * `invoice_payload` - Bot specified invoice payload.
-    /// * `total_amount` - Total price in the smallest units of the currency.
-    pub fn new<A, B, C>(currency: A, from: User, id: B, invoice_payload: C, total_amount: Integer) -> Self
-    where
-        A: Into<String>,
-        B: Into<String>,
-        C: Into<String>,
-    {
-        Self {
-            currency: currency.into(),
-            from,
-            id: id.into(),
-            invoice_payload: invoice_payload.into(),
-            total_amount,
-            order_info: None,
-            shipping_option_id: None,
-        }
-    }
-
-    /// Sets a new order info.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Order info.
-    pub fn with_order_info(mut self, value: OrderInfo) -> Self {
-        self.order_info = Some(value);
-        self
-    }
-    /// Sets a new shipping option ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Shipping option ID.
-    pub fn with_shipping_option_id<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.shipping_option_id = Some(value.into());
-        self
-    }
-}
-
 /// Responds to a pre-checkout query.
 ///
 /// Once the user has confirmed their payment and shipping details,

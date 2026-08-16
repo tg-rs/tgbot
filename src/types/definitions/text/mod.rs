@@ -16,16 +16,6 @@ pub struct Text {
 }
 
 impl Text {
-    /// Sets a new list of entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The list of special entities that appear in the text.
-    pub fn with_entities(mut self, value: TextEntities) -> Self {
-        self.entities = Some(value);
-        self
-    }
-
     /// Returns the list of bot commands found in text.
     pub fn get_bot_commands(&self) -> Option<Vec<TextEntityBotCommand>> {
         self.entities

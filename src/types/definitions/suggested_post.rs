@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -119,41 +117,6 @@ pub struct SuggestedPostApproved {
     pub suggested_post_message: Option<Box<Message>>,
 }
 
-impl SuggestedPostApproved {
-    /// Creates a new `SuggestedPostApproved`.
-    ///
-    /// # Arguments
-    ///
-    /// * `send_date` - Date when the post will be published.
-    pub fn new(send_date: Integer) -> Self {
-        Self {
-            send_date,
-            price: None,
-            suggested_post_message: None,
-        }
-    }
-
-    /// Sets a new price.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Amount paid for the post.
-    pub fn with_price(mut self, value: SuggestedPostPrice) -> Self {
-        self.price = Some(value);
-        self
-    }
-
-    /// Sets a new suggested post message.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Message containing the suggested post.
-    pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(Box::new(value));
-        self
-    }
-}
-
 /// Describes a service message about the failed approval of a suggested post.
 ///
 /// Currently, only caused by insufficient user funds at the time of approval.
@@ -169,30 +132,6 @@ pub struct SuggestedPostApprovalFailed {
     pub suggested_post_message: Option<Box<Message>>,
 }
 
-impl SuggestedPostApprovalFailed {
-    /// Creates a new `SuggestedPostApprovalFailed`.
-    ///
-    /// # Arguments
-    ///
-    /// * `price` - Expected price of the post.
-    pub fn new(price: SuggestedPostPrice) -> Self {
-        Self {
-            price,
-            suggested_post_message: None,
-        }
-    }
-
-    /// Sets a new suggested post message.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Message containing the suggested post.
-    pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(Box::new(value));
-        self
-    }
-}
-
 /// Describes a service message about the rejection of a suggested post.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -204,31 +143,6 @@ pub struct SuggestedPostDeclined {
     /// Note that the Message object in this field will not contain the reply_to_message field
     /// even if it itself is a reply.
     pub suggested_post_message: Option<Box<Message>>,
-}
-
-impl SuggestedPostDeclined {
-    /// Sets a new comment.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Comment with which the post was declined.
-    pub fn with_comment<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.comment = Some(value.into());
-        self
-    }
-
-    /// Sets a new suggested post message.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Message containing the suggested post.
-    pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(Box::new(value));
-        self
-    }
 }
 
 /// Contains information about a suggested post.
@@ -248,41 +162,6 @@ pub struct SuggestedPostInfo {
     pub send_date: Option<Integer>,
 }
 
-impl SuggestedPostInfo {
-    /// Creates a new `SuggestedPostInfo`.
-    ///
-    /// # Arguments
-    ///
-    /// * `state` - State of the suggested post.
-    pub fn new(state: SuggestedPostState) -> Self {
-        Self {
-            state,
-            price: None,
-            send_date: None,
-        }
-    }
-
-    /// Sets a new price.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Proposed price of the post.
-    pub fn with_price(mut self, value: SuggestedPostPrice) -> Self {
-        self.price = Some(value);
-        self
-    }
-
-    /// Sets a new send date.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Proposed send date of the post.
-    pub fn with_send_date(mut self, value: Integer) -> Self {
-        self.send_date = Some(value);
-        self
-    }
-}
-
 /// Describes a service message about a successful payment for a suggested post.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -299,58 +178,6 @@ pub struct SuggestedPostPaid {
     ///
     /// Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
     pub suggested_post_message: Option<Box<Message>>,
-}
-
-impl SuggestedPostPaid {
-    /// Creates a new `SuggestedPostPaid`.
-    ///
-    /// # Arguments
-    ///
-    /// * `currency` - Currency in which the payment was made.
-    pub fn new<T>(currency: T) -> Self
-    where
-        T: Into<String>,
-    {
-        Self {
-            currency: currency.into(),
-            amount: None,
-            star_amount: None,
-            suggested_post_message: None,
-        }
-    }
-
-    /// Sets a new amount.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The amount of the currency that was received by the channel in nanotoncoins.
-    pub fn with_amount(mut self, value: Integer) -> Self {
-        self.amount = Some(value);
-        self
-    }
-
-    /// Sets a new star amount.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The amount of Telegram Stars that was received by the channel.
-    pub fn with_star_amount<T>(mut self, value: T) -> Self
-    where
-        T: Into<StarAmount>,
-    {
-        self.star_amount = Some(value.into());
-        self
-    }
-
-    /// Sets a new suggested post message.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Message containing the suggested post.
-    pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(Box::new(value));
-        self
-    }
 }
 
 /// Contains parameters of a post that is being suggested by the bot.
@@ -389,29 +216,6 @@ impl SuggestedPostParameters {
     pub fn with_send_date(mut self, value: Integer) -> Self {
         self.send_date = Some(value);
         self
-    }
-}
-
-/// An error for suggested post parameters.
-#[derive(Debug)]
-pub enum SuggestedPostParametersError {
-    /// Can not serialize the parameters.
-    Serialize(serde_json::Error),
-}
-
-impl fmt::Display for SuggestedPostParametersError {
-    fn fmt(&self, out: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Self::Serialize(err) => write!(out, "can not serialize parameters: {err}"),
-        }
-    }
-}
-
-impl error::Error for SuggestedPostParametersError {
-    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
-        Some(match self {
-            Self::Serialize(err) => err,
-        })
     }
 }
 
@@ -459,30 +263,6 @@ pub struct SuggestedPostRefunded {
     /// Note that the Message object in this field will not contain the reply_to_message field
     /// even if it itself is a reply.
     pub suggested_post_message: Option<Box<Message>>,
-}
-
-impl SuggestedPostRefunded {
-    /// Creates a new `SuggestedPostRefunded`.
-    ///
-    /// # Arguments
-    ///
-    /// * `reason` - Reason for the refund.
-    pub fn new(reason: SuggestedPostRefundReason) -> Self {
-        Self {
-            reason,
-            suggested_post_message: None,
-        }
-    }
-
-    /// Sets a new suggested post message.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Message containing the suggested post.
-    pub fn with_suggested_post_message(mut self, value: Message) -> Self {
-        self.suggested_post_message = Some(Box::new(value));
-        self
-    }
 }
 
 /// Reason for the refund.

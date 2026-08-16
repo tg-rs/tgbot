@@ -27,43 +27,6 @@ pub struct RichMessage {
     pub is_rtl: Option<bool>,
 }
 
-impl<A, B> From<A> for RichMessage
-where
-    A: IntoIterator<Item = B>,
-    B: Into<RichBlock>,
-{
-    fn from(value: A) -> Self {
-        Self::from_iter(value)
-    }
-}
-
-impl<I> FromIterator<I> for RichMessage
-where
-    I: Into<RichBlock>,
-{
-    fn from_iter<T>(value: T) -> Self
-    where
-        T: IntoIterator<Item = I>,
-    {
-        Self {
-            blocks: value.into_iter().map(Into::into).collect(),
-            is_rtl: None,
-        }
-    }
-}
-
-impl RichMessage {
-    /// Sets a new value for the `is_rtl` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the message must be shown right-to-left.
-    pub fn with_is_rtl(mut self, value: bool) -> Self {
-        self.is_rtl = Some(value);
-        self
-    }
-}
-
 /// Describes a rich message to be sent.
 #[derive(Debug)]
 pub struct InputRichMessage {

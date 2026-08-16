@@ -7,15 +7,6 @@ pub struct Link {
     pub url: String,
 }
 
-impl<T> From<T> for Link
-where
-    T: Into<String>,
-{
-    fn from(value: T) -> Self {
-        Self { url: value.into() }
-    }
-}
-
 /// Represents the options used for link preview generation.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]

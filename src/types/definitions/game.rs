@@ -46,54 +46,6 @@ pub struct Game {
     pub text: Option<Text>,
 }
 
-impl Game {
-    /// Creates a new `Game`.
-    ///
-    /// # Arguments
-    ///
-    /// * `description` - Description of the game.
-    /// * `photo` - Photo of the game.
-    /// * `title` - Title of the game.
-    pub fn new<A, B, C>(description: A, photo: B, title: C) -> Self
-    where
-        A: Into<String>,
-        B: IntoIterator<Item = PhotoSize>,
-        C: Into<String>,
-    {
-        Self {
-            description: description.into(),
-            photo: photo.into_iter().collect(),
-            title: title.into(),
-            animation: None,
-            text: None,
-        }
-    }
-
-    /// Sets a new animation.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Animation that will be displayed in the game message in chats.
-    pub fn with_animation(mut self, value: Animation) -> Self {
-        self.animation = Some(value);
-        self
-    }
-
-    /// Sets a new text.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Brief description or high scores included in the game message;
-    ///   0-4096 characters.
-    pub fn with_text<T>(mut self, value: T) -> Self
-    where
-        T: Into<Text>,
-    {
-        self.text = Some(value.into());
-        self
-    }
-}
-
 #[derive(Deserialize, Serialize)]
 struct GameText {
     text: String,
@@ -136,19 +88,6 @@ pub struct GameHighScore {
     pub score: Integer,
     /// User associated with the high score.
     pub user: User,
-}
-
-impl GameHighScore {
-    /// Creates a new `GameHighScore`.
-    ///
-    /// # Arguments
-    ///
-    /// * `position` - Position in the high score table.
-    /// * `score` - Score achieved by the user.
-    /// * `user` - User associated with the high score.
-    pub fn new(position: Integer, score: Integer, user: User) -> Self {
-        Self { position, score, user }
-    }
 }
 
 /// Returns data for high score tables.

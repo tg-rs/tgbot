@@ -12,28 +12,6 @@ pub struct SentGuestMessage {
     pub inline_message_id: String,
 }
 
-impl From<&str> for SentGuestMessage {
-    fn from(value: &str) -> Self {
-        Self {
-            inline_message_id: String::from(value),
-        }
-    }
-}
-
-impl From<String> for SentGuestMessage {
-    fn from(value: String) -> Self {
-        Self {
-            inline_message_id: value,
-        }
-    }
-}
-
-impl From<SentGuestMessage> for String {
-    fn from(value: SentGuestMessage) -> Self {
-        value.inline_message_id
-    }
-}
-
 /// Reply to a received guest message.
 #[derive(Debug)]
 pub struct AnswerGuestQuery {

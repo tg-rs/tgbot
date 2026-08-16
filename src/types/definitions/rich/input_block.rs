@@ -651,6 +651,7 @@ impl InputRichBlockTable {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub(crate) struct InputRichBlockListItemData {
     blocks: Vec<InputRichBlockData>,
@@ -661,6 +662,7 @@ pub(crate) struct InputRichBlockListItemData {
     value: Option<Integer>,
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Deserialize, Serialize)]
 pub(crate) struct InputRichBlockData {
     #[serde(rename = "type")]

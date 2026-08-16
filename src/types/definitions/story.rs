@@ -311,6 +311,7 @@ impl StoryAreaTypeWeather {
 /// and the story on the source account must have been posted (or reposted) by the bot.
 ///
 /// Requires the `can_manage_stories` business bot right for both business accounts.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Serialize)]
 pub struct RepostStory {
     active_period: Integer,

@@ -171,6 +171,7 @@ impl EditEphemeralMessageMedia {
     }
 }
 
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Serialize)]
 struct EditEphemeralMessageMediaParameters {
     #[serde(flatten)]

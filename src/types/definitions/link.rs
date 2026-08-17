@@ -7,6 +7,15 @@ pub struct Link {
     pub url: String,
 }
 
+/// Link preview media size
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum LinkPreviewMediaSize {
+    /// The media in the link preview is suppposed to be enlarged.
+    Large,
+    /// The media in the link preview is suppposed to be shrunk.
+    Small,
+}
+
 /// Represents the options used for link preview generation.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, PartialOrd, Serialize)]
@@ -24,35 +33,31 @@ pub struct LinkPreviewOptions {
 }
 
 impl LinkPreviewOptions {
-    /// Sets a new value for the `is_disabled` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the link preview is disabled.
-    pub fn with_is_disabled(mut self, value: bool) -> Self {
-        self.is_disabled = Some(value);
-        self
+    /// Creates a new `LinkPreviewOptions` with `is_disabled` flag set to `true`.
+    pub fn disabled() -> Self {
+        Self {
+            is_disabled: Some(true),
+            ..Default::default()
+        }
     }
 
-    /// Sets a new value for the `prefer_large_media` flag.
+    /// Sets the media size.
     ///
     /// # Arguments
     ///
-    /// * `value` - Whether the media in the link preview is suppposed to be enlarged;
+    /// * `value` - Size of the media in the link preview;
     ///   ignored if the URL isn't explicitly specified or media size change isn't supported for the preview.
-    pub fn with_prefer_large_media(mut self, value: bool) -> Self {
-        self.prefer_large_media = Some(value);
-        self
-    }
-
-    /// Sets a new value for the `prefer_small_media` flag.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Whether the media in the link preview is suppposed to be shrunk;
-    ///   ignored if the URL isn't explicitly specified or media size change isn't supported for the preview.
-    pub fn with_prefer_small_media(mut self, value: bool) -> Self {
-        self.prefer_small_media = Some(value);
+    pub fn with_media_size(mut self, value: LinkPreviewMediaSize) -> Self {
+        match value {
+            LinkPreviewMediaSize::Large => {
+                self.prefer_large_media = Some(true);
+                self.prefer_small_media = None;
+            }
+            LinkPreviewMediaSize::Small => {
+                self.prefer_large_media = None;
+                self.prefer_small_media = Some(true);
+            }
+        }
         self
     }
 

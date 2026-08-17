@@ -6,7 +6,7 @@
       "business_connection_id": "c-id",
       "chat_id": 1,
       "link_preview_options": {
-        "is_disabled": true
+        "prefer_small_media": true
       },
       "message_id": 2,
       "parse_mode": "Markdown",

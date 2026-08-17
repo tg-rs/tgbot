@@ -151,9 +151,7 @@ async fn execute() {
                                 )
                                 .with_link_preview_options(
                                     LinkPreviewOptions::default()
-                                        .with_is_disabled(true)
-                                        .with_prefer_large_media(true)
-                                        .with_prefer_small_media(false)
+                                        .with_media_size(LinkPreviewMediaSize::Large)
                                         .with_show_above_text(true)
                                         .with_url("test-url"),
                                 ),

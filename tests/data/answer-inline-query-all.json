@@ -168,9 +168,7 @@
           "id": "id",
           "input_message_content": {
             "link_preview_options": {
-              "is_disabled": true,
               "prefer_large_media": true,
-              "prefer_small_media": false,
               "show_above_text": true,
               "url": "test-url"
             },

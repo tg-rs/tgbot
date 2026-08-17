@@ -24,7 +24,7 @@ async fn execute() {
                 .with_callback_query_id("cqid")
                 .with_direct_messages_topic_id(1)
                 .with_disable_notification(true)
-                .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
+                .with_link_preview_options(LinkPreviewOptions::disabled())
                 .with_message_effect_id("effect-id")
                 .with_message_thread_id(1)
                 .with_protect_content(true)
@@ -401,7 +401,7 @@ async fn execute() {
             "edit-message-text-chat-parse-mode",
             EditMessageText::for_chat_message(1, 2, ("text", ParseMode::Markdown))
                 .with_business_connection_id("c-id")
-                .with_link_preview_options(LinkPreviewOptions::default().with_is_disabled(true))
+                .with_link_preview_options(LinkPreviewOptions::default().with_media_size(LinkPreviewMediaSize::Small))
                 .with_reply_markup([[InlineKeyboardButton::for_url("text", "url")]]),
             |x| assert!(matches!(x, EditMessageResult::Message(_))),
         ),

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.47.0 (xx.07.2026)
+## 0.47.0 (17.08.2026)
 
 - Added Bot API 10.2 support.
 - Added `Client::with_max_retry_after` method.

@@ -25,22 +25,19 @@ async fn execute() {
             "send-gift-full",
             SendGift::for_user_id(1, "test")
                 .with_pay_for_upgrade(true)
-                .with_text("test")
-                .with_text_parse_mode(ParseMode::Markdown),
+                .with_text(("test", ParseMode::Markdown)),
             |x| assert!(x),
         ),
         (
             "send-gift-text-entities",
             SendGift::for_user_id(1, "test")
-                .with_text_parse_mode(ParseMode::Markdown)
-                .with_text_entities([TextEntity::bold(0..2)]),
+                .with_text(InputText::from(("test", ParseMode::Markdown)).with_format([TextEntity::bold(0..2)])),
             |x| assert!(x),
         ),
         (
             "send-gift-text-parse-mode",
             SendGift::for_user_id(1, "test")
-                .with_text_entities([TextEntity::bold(0..2)])
-                .with_text_parse_mode(ParseMode::Markdown),
+                .with_text(InputText::from(("test", [TextEntity::bold(0..2)])).with_format(ParseMode::Markdown)),
             |x| assert!(x),
         ),
     ])
@@ -189,18 +186,12 @@ async fn execute() {
         ),
         (
             "gift-premium-subscription-text-entities",
-            GiftPremiumSubscription::new(1, 2, 3)
-                .with_text("text")
-                .with_text_parse_mode(ParseMode::Markdown)
-                .with_text_entities([TextEntity::bold(0..2)]),
+            GiftPremiumSubscription::new(1, 2, 3).with_text(("text", [TextEntity::bold(0..2)])),
             |x| assert!(x),
         ),
         (
             "gift-premium-subscription-text-parse-mode",
-            GiftPremiumSubscription::new(1, 2, 3)
-                .with_text("text")
-                .with_text_entities([TextEntity::bold(0..2)])
-                .with_text_parse_mode(ParseMode::Markdown),
+            GiftPremiumSubscription::new(1, 2, 3).with_text(("text", ParseMode::Markdown)),
             |x| assert!(x),
         ),
     ])

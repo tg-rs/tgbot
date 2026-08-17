@@ -37,17 +37,11 @@ async fn execute() {
                 1,
                 InputChecklist::new(
                     [
-                        InputChecklistTask::new(1, "test 1")
-                            .with_parse_mode(ParseMode::Html)
-                            .with_text_entities([TextEntity::bold(0..2)]),
-                        InputChecklistTask::new(2, "test 2")
-                            .with_text_entities([TextEntity::bold(0..2)])
-                            .with_parse_mode(ParseMode::Html),
+                        InputChecklistTask::new(1, ("test 1", [TextEntity::bold(0..2)])),
+                        InputChecklistTask::new(2, ("test 2", ParseMode::Html)),
                     ],
-                    "test",
+                    ("test", [TextEntity::bold(0..2)]),
                 )
-                .with_parse_mode(ParseMode::Markdown)
-                .with_title_entities([TextEntity::bold(0..2)])
                 .with_others_can_add_tasks(true)
                 .with_others_can_mark_tasks_as_done(true),
             )

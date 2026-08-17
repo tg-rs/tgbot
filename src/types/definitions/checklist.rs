@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload, PayloadError},
-    types::{Chat, InlineKeyboardMarkup, Integer, Message, ParseMode, ReplyParameters, TextEntities, TextEntity, User},
+    types::{Chat, InlineKeyboardMarkup, InputText, Integer, Message, ParseMode, ReplyParameters, TextEntities, User},
 };
 
 /// Describes a task in a checklist.
@@ -43,22 +43,9 @@ pub struct Checklist {
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputChecklistTask {
-    /// Unique identifier of the task.
-    ///
-    /// Must be positive and unique among all task identifiers currently present in the checklist.
-    pub id: Integer,
-    /// Text of the task.
-    ///
-    /// 1-100 characters after entities parsing.
-    pub text: String,
-    /// Mode for parsing entities in the text.
-    pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the text.
-    ///
-    /// Can be specified instead of `parse_mode`.
-    /// Currently, only bold, italic, underline, strikethrough, spoiler, custom_emoji,
-    /// and date_time entities are allowed.
-    pub text_entities: Option<TextEntities>,
+    id: Integer,
+    #[serde(flatten)]
+    text: RawInputChecklistTaskText,
 }
 
 impl InputChecklistTask {
@@ -70,67 +57,37 @@ impl InputChecklistTask {
     /// * `text` - Text of the task
     pub fn new<T>(id: Integer, text: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
+        let text = text.into();
         Self {
             id,
-            text: text.into(),
-            parse_mode: None,
-            text_entities: None,
+            text: RawInputChecklistTaskText {
+                text: text.data,
+                parse_mode: text.parse_mode,
+                text_entities: text.entities,
+            },
         }
     }
+}
 
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the text.
-    ///
-    /// Text entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.text_entities = None;
-        self.parse_mode = Some(value);
-        self
-    }
-
-    /// Sets a new list of text entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - List of special entities that appear in the text.
-    ///
-    /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_text_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parse_mode = None;
-        self.text_entities = Some(TextEntities::from_iter(value));
-        self
-    }
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+struct RawInputChecklistTaskText {
+    text: String,
+    parse_mode: Option<ParseMode>,
+    text_entities: Option<TextEntities>,
 }
 
 /// Describes a checklist to create.
 #[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
 pub struct InputChecklist {
-    /// List of 1-30 tasks in the checklist.
-    pub tasks: Vec<InputChecklistTask>,
-    /// Title of the checklist.
-    ///
-    /// 1-255 characters after entities parsing.
-    pub title: String,
-    /// Whether other users can add tasks to the checklist.
-    pub others_can_add_tasks: Option<bool>,
-    /// Whether other users can mark tasks as done or not done in the checklist.
-    pub others_can_mark_tasks_as_done: Option<bool>,
-    /// Mode for parsing entities in the title.
-    pub parse_mode: Option<ParseMode>,
-    /// List of special entities that appear in the title.
-    ///
-    /// Can be specified instead of parse_mode.
-    /// Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
-    pub title_entities: Option<TextEntities>,
+    tasks: Vec<InputChecklistTask>,
+    #[serde(flatten)]
+    title: RawInputChecklistTitle,
+    others_can_add_tasks: Option<bool>,
+    others_can_mark_tasks_as_done: Option<bool>,
 }
 
 impl InputChecklist {
@@ -143,15 +100,18 @@ impl InputChecklist {
     pub fn new<A, B>(tasks: A, title: B) -> Self
     where
         A: IntoIterator<Item = InputChecklistTask>,
-        B: Into<String>,
+        B: Into<InputText>,
     {
+        let title = title.into();
         Self {
             tasks: tasks.into_iter().collect(),
-            title: title.into(),
+            title: RawInputChecklistTitle {
+                title: title.data,
+                parse_mode: title.parse_mode,
+                title_entities: title.entities,
+            },
             others_can_add_tasks: None,
             others_can_mark_tasks_as_done: None,
-            parse_mode: None,
-            title_entities: None,
         }
     }
 
@@ -174,35 +134,14 @@ impl InputChecklist {
         self.others_can_mark_tasks_as_done = Some(value);
         self
     }
+}
 
-    /// Sets a new parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the title.
-    ///
-    /// Title entities will be set to [`None`] when this method is called.
-    pub fn with_parse_mode(mut self, value: ParseMode) -> Self {
-        self.title_entities = None;
-        self.parse_mode = Some(value);
-        self
-    }
-
-    /// Sets a new list of text entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - List of special entities that appear in the title.
-    ///
-    /// Parse mode will be set to [`None`] when this method is called.
-    pub fn with_title_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.parse_mode = None;
-        self.title_entities = Some(TextEntities::from_iter(value));
-        self
-    }
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+struct RawInputChecklistTitle {
+    title: String,
+    parse_mode: Option<ParseMode>,
+    title_entities: Option<TextEntities>,
 }
 
 /// Describes a service message about checklist tasks marked as done or not done.

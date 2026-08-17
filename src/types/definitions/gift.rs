@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Method, Payload, PayloadError},
-    types::{Chat, ChatId, Integer, ParseMode, Sticker, TextEntities, TextEntity, User},
+    types::{Chat, ChatId, InputText, Integer, ParseMode, Sticker, TextEntities, User},
 };
 
 /// Describes the types of gifts that can be gifted to a user or a chat.
@@ -827,9 +827,8 @@ pub struct GiftPremiumSubscription {
     month_count: Integer,
     star_count: Integer,
     user_id: Integer,
-    text: Option<String>,
-    text_entities: Option<TextEntities>,
-    text_parse_mode: Option<ParseMode>,
+    #[serde(flatten)]
+    text: Option<RawGiftText>,
 }
 
 impl GiftPremiumSubscription {
@@ -848,8 +847,6 @@ impl GiftPremiumSubscription {
             star_count,
             user_id,
             text: None,
-            text_entities: None,
-            text_parse_mode: None,
         }
     }
 
@@ -860,38 +857,9 @@ impl GiftPremiumSubscription {
     /// * `value` - Text that will be shown along with the service message about the subscription; 0-128 characters
     pub fn with_text<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
-        self.text = Some(value.into());
-        self
-    }
-
-    /// Sets a new list of text entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the gift text.
-    ///   Entities other than “bold”, “italic”, “underline”,
-    ///   “strikethrough”, “spoiler”, “custom_emoji” and "date_time" are ignored.
-    pub fn with_text_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.text_parse_mode = None;
-        self.text_entities = Some(TextEntities::from_iter(value));
-        self
-    }
-
-    /// Sets a new text parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the text.
-    ///   Entities other than “bold”, “italic”, “underline”,
-    ///   “strikethrough”, “spoiler”, “custom_emoji” and "date_time" are ignored.
-    pub fn with_text_parse_mode(mut self, value: ParseMode) -> Self {
-        self.text_entities = None;
-        self.text_parse_mode = Some(value);
+        self.text = Some(RawGiftText::from(value));
         self
     }
 }
@@ -913,9 +881,8 @@ pub struct SendGift {
     gift_id: String,
     chat_id: Option<ChatId>,
     pay_for_upgrade: Option<bool>,
-    text: Option<String>,
-    text_parse_mode: Option<ParseMode>,
-    text_entities: Option<TextEntities>,
+    #[serde(flatten)]
+    text: Option<RawGiftText>,
     user_id: Option<Integer>,
 }
 
@@ -936,8 +903,6 @@ impl SendGift {
             chat_id: Some(chat_id.into()),
             pay_for_upgrade: None,
             text: None,
-            text_parse_mode: None,
-            text_entities: None,
             user_id: None,
         }
     }
@@ -957,8 +922,6 @@ impl SendGift {
             chat_id: None,
             pay_for_upgrade: None,
             text: None,
-            text_parse_mode: None,
-            text_entities: None,
             user_id: Some(user_id),
         }
     }
@@ -981,44 +944,9 @@ impl SendGift {
     /// * `value` - Text that will be shown along with the gift; 0-255 characters.
     pub fn with_text<T>(mut self, value: T) -> Self
     where
-        T: Into<String>,
+        T: Into<InputText>,
     {
-        self.text = Some(value.into());
-        self
-    }
-
-    /// Sets a new text parse mode.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - Mode for parsing entities in the text.
-    ///
-    /// Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”,
-    /// “custom_emoji” and "date_time" are ignored.
-    ///
-    /// Text entities will be set to [`None`] when this method is called.
-    pub fn with_text_parse_mode(mut self, value: ParseMode) -> Self {
-        self.text_parse_mode = Some(value);
-        self.text_entities = None;
-        self
-    }
-
-    /// Sets a new text entities.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - A list of special entities that appear in the gift text.
-    ///
-    /// Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”,
-    /// “custom_emoji” and "date_time" are ignored.
-    ///
-    /// Text parse mode will be set to [`None`] when this method is called.
-    pub fn with_text_entities<T>(mut self, value: T) -> Self
-    where
-        T: IntoIterator<Item = TextEntity>,
-    {
-        self.text_entities = Some(value.into_iter().collect());
-        self.text_parse_mode = None;
+        self.text = Some(RawGiftText::from(value));
         self
     }
 }
@@ -1028,5 +956,27 @@ impl Method for SendGift {
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
         Payload::json("sendGift", self)
+    }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Serialize)]
+struct RawGiftText {
+    text: Option<String>,
+    text_entities: Option<TextEntities>,
+    text_parse_mode: Option<ParseMode>,
+}
+
+impl<T> From<T> for RawGiftText
+where
+    T: Into<InputText>,
+{
+    fn from(value: T) -> Self {
+        let value = value.into();
+        Self {
+            text: Some(value.data),
+            text_entities: value.entities,
+            text_parse_mode: value.parse_mode,
+        }
     }
 }

@@ -5,6 +5,7 @@
     "json": {
       "user_id": 1,
       "gift_id": "test",
+      "text": "test",
       "text_parse_mode": "Markdown"
     }
   },

@@ -258,6 +258,24 @@ where
     Ok(response.json::<Response<T>>().await?)
 }
 
+fn sanitize_http_err(mut err: HttpError) -> HttpError {
+    if let Some(url) = err.url_mut()
+        && let Some(segments) = url.path_segments()
+    {
+        let path = segments.fold(String::new(), |mut path, segment| {
+            path.push('/');
+            path.push_str(if segment.starts_with("bot") {
+                "bot[TOKEN]"
+            } else {
+                segment
+            });
+            path
+        });
+        url.set_path(&path);
+    }
+    err
+}
+
 impl fmt::Debug for Client {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("Client")
@@ -319,7 +337,7 @@ pub enum DownloadFileError {
 
 impl From<HttpError> for DownloadFileError {
     fn from(err: HttpError) -> Self {
-        Self::Http(err)
+        Self::Http(sanitize_http_err(err))
     }
 }
 
@@ -355,11 +373,18 @@ impl fmt::Display for DownloadFileError {
 #[derive(Debug, derive_more::From)]
 pub enum ExecuteError {
     /// An error indicating a failure to send an HTTP request.
+    #[from(skip)]
     Http(HttpError),
     /// An error indicating a failure to build an HTTP request payload.
     Payload(PayloadError),
     /// An error received from the Telegram server in response to the execution request.
     Response(ResponseError),
+}
+
+impl From<HttpError> for ExecuteError {
+    fn from(err: HttpError) -> Self {
+        Self::Http(sanitize_http_err(err))
+    }
 }
 
 impl Error for ExecuteError {
@@ -391,6 +416,15 @@ impl fmt::Display for ExecuteError {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn sanitize_http_err_without_url() {
+        let err = HttpClient::new().get("invalid url").build().unwrap_err();
+        assert!(err.url().is_none());
+
+        let err = sanitize_http_err(err);
+        assert!(err.url().is_none());
+    }
 
     #[test]
     fn api() {

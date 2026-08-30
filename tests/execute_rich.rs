@@ -175,6 +175,56 @@ async fn execute() {
                     ])),
                     InputRichBlock::video(Cursor::new("video-file")),
                     InputRichBlock::voice_note(Cursor::new("voice-note-file")),
+                    InputRichBlock::buttons(
+                        [
+                            RichMessageButton::from((
+                                "callback-data",
+                                RichMessageButtonType::CallbackData(String::from("test")),
+                            ))
+                            .with_style(RichMessageButtonStyle::Danger),
+                            RichMessageButton::from((
+                                "copy-text",
+                                RichMessageButtonType::CopyText {
+                                    text: String::from("test"),
+                                },
+                            ))
+                            .with_style(RichMessageButtonStyle::Success),
+                            RichMessageButton::from(("disabled", RichMessageButtonType::Disabled {}))
+                                .with_style(RichMessageButtonStyle::Primary),
+                            RichMessageButton::from((
+                                "login-url",
+                                RichMessageButtonType::LoginUrl(LoginUrl::new("test")),
+                            ))
+                            .with_style(RichMessageButtonStyle::Link),
+                            RichMessageButton::from((
+                                "switch-inline-query",
+                                RichMessageButtonType::SwitchInlineQuery(String::from("test")),
+                            )),
+                            RichMessageButton::from((
+                                "switch-inline-query-current-chat",
+                                RichMessageButtonType::SwitchInlineQueryCurrentChat(String::from("test")),
+                            )),
+                            RichMessageButton::from((
+                                "switch-inline-query-chosen-chat",
+                                RichMessageButtonType::SwitchInlineQueryChosenChat(SwitchInlineQueryChosenChat::new(
+                                    "test",
+                                )),
+                            )),
+                            RichMessageButton::from(("url", RichMessageButtonType::Url(String::from("test")))),
+                            RichMessageButton::from((
+                                "web-app",
+                                RichMessageButtonType::WebApp(WebAppInfo::from("test")),
+                            )),
+                        ],
+                        None,
+                    ),
+                    InputRichBlock::buttons(
+                        [RichMessageButton::from((
+                            "callback-data",
+                            RichMessageButtonType::CallbackData(String::from("test")),
+                        ))],
+                        Some(RichBlockButtonsAlignment::Left),
+                    ),
                 ]),
             ),
             |x| {
@@ -310,6 +360,11 @@ async fn execute() {
                         panic!("not a voice note")
                     };
                     assert_eq!(voice_note.voice_note.file_id, "file-id");
+                    let RichBlock::Buttons(buttons) = &data.blocks[27] else {
+                        panic!("not a buttons list")
+                    };
+                    assert_eq!(buttons.buttons.len(), 9);
+                    assert!(buttons.align.is_none());
                 } else {
                     panic!("Got an unexpected message data: {:?}", x.data);
                 }

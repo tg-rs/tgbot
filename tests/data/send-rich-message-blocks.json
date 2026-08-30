@@ -396,6 +396,69 @@
               "media": "attach://tgbot_file_9",
               "type": "voice_note"
             }
+          },
+          {
+            "type": "buttons",
+            "buttons": [
+              {
+                "text": "callback-data",
+                "callback_data": "test",
+                "style": "danger"
+              },
+              {
+                "text": "copy-text",
+                "copy_text": {
+                  "text": "test"
+                },
+                "style": "success"
+              },
+              {
+                "text": "disabled",
+                "disabled": {},
+                "style": "primary"
+              },
+              {
+                "text": "login-url",
+                "login_url": {
+                  "url": "test"
+                },
+                "style": "link"
+              },
+              {
+                "text": "switch-inline-query",
+                "switch_inline_query": "test"
+              },
+              {
+                "text": "switch-inline-query-current-chat",
+                "switch_inline_query_current_chat": "test"
+              },
+              {
+                "text": "switch-inline-query-chosen-chat",
+                "switch_inline_query_chosen_chat": {
+                  "query": "test"
+                }
+              },
+              {
+                "text": "url",
+                "url": "test"
+              },
+              {
+                "text": "web-app",
+                "web_app": {
+                  "url": "test"
+                }
+              }
+            ]
+          },
+          {
+            "type": "buttons",
+            "buttons": [
+              {
+                "text": "callback-data",
+                "callback_data": "test"
+              }
+            ],
+            "align": "left"
           }
         ]
       },
@@ -836,6 +899,59 @@
               "file_unique_id": "file-unique-id",
               "duration": 60
             }
+          },
+          {
+            "type": "buttons",
+            "buttons": [
+              {
+                "text": "callback-data",
+                "callback_data": "test",
+                "style": "danger"
+              },
+              {
+                "text": "copy-text",
+                "copy_text": {
+                  "text": "test"
+                },
+                "style": "success"
+              },
+              {
+                "text": "disabled",
+                "disabled": {},
+                "style": "primary"
+              },
+              {
+                "text": "login-url",
+                "login_url": {
+                  "url": "test"
+                },
+                "style": "link"
+              },
+              {
+                "text": "switch-inline-query",
+                "switch_inline_query": "test"
+              },
+              {
+                "text": "switch-inline-query-current-chat",
+                "switch_inline_query_current_chat": "test"
+              },
+              {
+                "text": "switch-inline-query-chosen-chat",
+                "switch_inline_query_chosen_chat": {
+                  "query": "test"
+                }
+              },
+              {
+                "text": "url",
+                "url": "test"
+              },
+              {
+                "text": "web-app",
+                "web_app": {
+                  "url": "test"
+                }
+              }
+            ]
           }
         ]
       },

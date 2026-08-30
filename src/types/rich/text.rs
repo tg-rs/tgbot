@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Integer, User};
+use crate::types::{Integer, RichMessageButton, User};
 
 /// Represents a rich formatted text.
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -18,6 +18,8 @@ pub enum RichText {
     Bold(Box<RichText>),
     /// A bot command.
     BotCommand(RichTextValue),
+    /// A button.
+    Button(RichTextButton),
     /// A cashtag.
     Cashtag(RichTextValue),
     /// A monowidth text.
@@ -140,6 +142,18 @@ impl RichText {
         B: Into<String>,
     {
         Self::BotCommand(RichTextValue::new(text, value))
+    }
+
+    /// Creates a new button `RichText`.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - The button.
+    pub fn button<T>(value: T) -> Self
+    where
+        T: Into<RichTextButton>,
+    {
+        Self::Button(value.into())
     }
 
     /// Creates a new cashtag `RichText`.
@@ -427,6 +441,21 @@ impl From<&str> for RichText {
     }
 }
 
+/// Represents a button in a rich text.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct RichTextButton {
+    /// The button.
+    pub button: Box<RichMessageButton>,
+}
+
+impl From<RichMessageButton> for RichTextButton {
+    fn from(value: RichMessageButton) -> Self {
+        Self {
+            button: Box::new(value),
+        }
+    }
+}
+
 /// Represents a custom emoji in a rich text.
 #[derive(Clone, Debug)]
 pub struct RichTextCustomEmoji {
@@ -569,6 +598,9 @@ impl From<RawRichText> for RichText {
                 text: Box::new(Self::from(*text)),
                 value,
             }),
+            RawRichText::Button { button } => Self::Button(RichTextButton {
+                button: Box::new(button),
+            }),
             RawRichText::Cashtag { text, cashtag: value } => Self::Cashtag(RichTextValue {
                 text: Box::new(Self::from(*text)),
                 value,
@@ -658,6 +690,9 @@ enum RawRichText {
     BotCommand {
         text: Box<RawRichText>,
         bot_command: String,
+    },
+    Button {
+        button: RichMessageButton,
     },
     Cashtag {
         text: Box<RawRichText>,
@@ -764,6 +799,7 @@ impl From<RichText> for RawRichText {
                 text: Box::new(Self::from(*text)),
                 bot_command,
             },
+            RichText::Button(value) => Self::Button { button: *value.button },
             RichText::Cashtag(RichTextValue { text, value: cashtag }) => Self::Cashtag {
                 text: Box::new(Self::from(*text)),
                 cashtag,

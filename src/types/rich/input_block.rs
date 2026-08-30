@@ -12,9 +12,11 @@ use crate::{
         InputMediaVoiceNote,
         Integer,
         Location,
+        RichBlockButtonsAlignment,
         RichBlockCaption,
         RichBlockListItemType,
         RichBlockTableCell,
+        RichMessageButton,
         RichText,
     },
 };
@@ -147,6 +149,26 @@ impl InputRichBlock {
         let mut result = Self::from_blocks(InputRichBlockDataType::Blockquote, blocks);
         result.data.parameters.credit = credit.map(Into::into);
         result
+    }
+
+    /// Creates a new `InputRichBlock`.
+    ///
+    /// # Arguments
+    ///
+    /// * `buttons` - List of buttons; 1-8.
+    /// * `align` - Horizontal alignment.
+    pub fn buttons<T>(buttons: T, align: Option<RichBlockButtonsAlignment>) -> Self
+    where
+        T: IntoIterator<Item = RichMessageButton>,
+    {
+        Self::new(InputRichBlockData {
+            data_type: InputRichBlockDataType::Buttons,
+            parameters: InputRichBlockParameters {
+                align,
+                buttons: Some(buttons.into_iter().collect()),
+                ..Default::default()
+            },
+        })
     }
 
     /// Creates a new `InputRichBlock`.
@@ -692,9 +714,11 @@ pub(crate) struct InputRichBlockData {
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Default, Deserialize, Serialize)]
 struct InputRichBlockParameters {
+    align: Option<RichBlockButtonsAlignment>,
     animation: Option<InputMediaData>,
     audio: Option<InputMediaData>,
     blocks: Option<Vec<InputRichBlockData>>,
+    buttons: Option<Vec<RichMessageButton>>,
     caption: Option<InputRichBlockCaption>,
     cells: Option<Vec<Vec<RichBlockTableCell>>>,
     credit: Option<RichText>,
@@ -731,6 +755,7 @@ enum InputRichBlockDataType {
     Animation,
     Audio,
     Blockquote,
+    Buttons,
     Collage,
     Details,
     Divider,

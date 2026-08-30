@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::text::RichText;
+use super::{button::RichMessageButton, text::RichText};
 use crate::types::{Animation, Audio, Integer, Location, PhotoSize, Video, Voice};
 
 /// Represents a block in a rich formatted message.
@@ -15,6 +15,9 @@ pub enum RichBlock {
     Audio(RichBlockAudio),
     /// A block quotation (`<blockquote>`).
     BlockQuotation(RichBlockBlockQuotation),
+    /// A block containing a list of buttons that are show in one row,
+    /// corresponding to the custom HTML tag `<tg-button-row>`.
+    Buttons(RichBlockButtons),
     /// A collage (`<tg-collage>`).
     Collage(RichBlockCollage),
     /// An expandable block for details disclosure (`<details>`).
@@ -83,6 +86,28 @@ pub struct RichBlockBlockQuotation {
     pub blocks: Vec<RichBlock>,
     /// Credit of the block.
     pub credit: Option<RichText>,
+}
+
+/// Horizontal alignment of the buttons.
+#[derive(Clone, Copy, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RichBlockButtonsAlignment {
+    /// Left.
+    Left,
+    /// Center.
+    Center,
+    /// Right.
+    Right,
+}
+
+/// A block containing a list of buttons.
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct RichBlockButtons {
+    /// The buttons.
+    pub buttons: Vec<RichMessageButton>,
+    /// Horizontal alignment of the buttons.
+    pub align: Option<RichBlockButtonsAlignment>,
 }
 
 /// Caption of a rich formatted block.
@@ -418,6 +443,7 @@ enum RawRichBlock {
     Audio(RichBlockAudio),
     #[serde(rename = "blockquote")]
     BlockQuotation(RichBlockBlockQuotation),
+    Buttons(RichBlockButtons),
     Collage(RichBlockCollage),
     Details(RichBlockDetails),
     Divider,
@@ -460,6 +486,7 @@ impl From<RichBlock> for RawRichBlock {
             RichBlock::Animation(value) => Self::Animation(value),
             RichBlock::Audio(value) => Self::Audio(value),
             RichBlock::BlockQuotation(value) => Self::BlockQuotation(value),
+            RichBlock::Buttons(value) => Self::Buttons(value),
             RichBlock::Collage(value) => Self::Collage(value),
             RichBlock::Details(value) => Self::Details(value),
             RichBlock::Divider => Self::Divider,
@@ -488,6 +515,7 @@ impl From<RawRichBlock> for RichBlock {
             RawRichBlock::Animation(value) => Self::Animation(value),
             RawRichBlock::Audio(value) => Self::Audio(value),
             RawRichBlock::BlockQuotation(value) => Self::BlockQuotation(value),
+            RawRichBlock::Buttons(value) => Self::Buttons(value),
             RawRichBlock::Collage(value) => Self::Collage(value),
             RawRichBlock::Details(value) => Self::Details(value),
             RawRichBlock::Divider => Self::Divider,

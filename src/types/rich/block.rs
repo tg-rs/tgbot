@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::{button::RichMessageButton, text::RichText};
-use crate::types::{Animation, Audio, Integer, Location, PhotoSize, Video, Voice};
+use crate::types::{Animation, Audio, Document, Integer, Location, PhotoSize, Video, Voice};
 
 /// Represents a block in a rich formatted message.
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -24,6 +24,8 @@ pub enum RichBlock {
     Details(RichBlockDetails),
     /// A divider (`<hr />`).
     Divider,
+    /// A block with general file (`<tg-document>`).
+    Document(RichBlockDocument),
     /// A block quotation with custom expandable attribute.
     ExpandableBlockQuotation(RichBlockExpandableBlockQuotation),
     /// A footer (`<footer>`).
@@ -179,6 +181,16 @@ pub struct RichBlockDetails {
     pub summary: RichText,
     /// Whether the content of the block is visible by default.
     pub is_open: Option<bool>,
+}
+
+/// A block with a general file (`<tg-document>`).
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct RichBlockDocument {
+    /// The document.
+    pub document: Document,
+    /// Caption of the block.
+    pub caption: Option<RichBlockCaption>,
 }
 
 /// A block quotation (`<blockquote expandable>`).
@@ -461,6 +473,7 @@ enum RawRichBlock {
     Collage(RichBlockCollage),
     Details(RichBlockDetails),
     Divider,
+    Document(RichBlockDocument),
     #[serde(rename = "expandable_blockquote")]
     ExpandableBlockQuotation(RichBlockExpandableBlockQuotation),
     Footer {
@@ -506,6 +519,7 @@ impl From<RichBlock> for RawRichBlock {
             RichBlock::Collage(value) => Self::Collage(value),
             RichBlock::Details(value) => Self::Details(value),
             RichBlock::Divider => Self::Divider,
+            RichBlock::Document(value) => Self::Document(value),
             RichBlock::ExpandableBlockQuotation(value) => Self::ExpandableBlockQuotation(value),
             RichBlock::Footer(text) => Self::Footer { text },
             RichBlock::List(items) => Self::List { items },
@@ -536,6 +550,7 @@ impl From<RawRichBlock> for RichBlock {
             RawRichBlock::Collage(value) => Self::Collage(value),
             RawRichBlock::Details(value) => Self::Details(value),
             RawRichBlock::Divider => Self::Divider,
+            RawRichBlock::Document(value) => Self::Document(value),
             RawRichBlock::ExpandableBlockQuotation(value) => Self::ExpandableBlockQuotation(value),
             RawRichBlock::Footer { text } => Self::Footer(text),
             RawRichBlock::List { items } => Self::List(items),

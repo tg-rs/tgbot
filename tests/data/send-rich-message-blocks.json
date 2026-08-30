@@ -469,6 +469,13 @@
             "type": "expandable_blockquote",
             "text": "test",
             "credit": "credit"
+          },
+          {
+            "type": "document",
+            "document": {
+              "type": "document",
+              "media": "test"
+            }
           }
         ]
       },
@@ -972,6 +979,13 @@
             "type": "expandable_blockquote",
             "text": "test",
             "credit": "credit"
+          },
+          {
+            "type": "document",
+            "document": {
+              "file_id": "file-id",
+              "file_unique_id": "file-unique-id"
+            }
           }
         ]
       },

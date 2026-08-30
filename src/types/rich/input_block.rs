@@ -7,6 +7,7 @@ use crate::{
         InputMediaAnimation,
         InputMediaAudio,
         InputMediaData,
+        InputMediaDocument,
         InputMediaPhoto,
         InputMediaVideo,
         InputMediaVoiceNote,
@@ -220,6 +221,27 @@ impl InputRichBlock {
             data_type: InputRichBlockDataType::Divider,
             parameters: InputRichBlockParameters { ..Default::default() },
         })
+    }
+
+    /// Creates a new `InputRichBlock`.
+    ///
+    /// # Arguments
+    ///
+    /// * `document` - The document; caption is ignored.
+    /// * `caption` - Caption of the block.
+    pub fn document<A, B>(document: A, caption: Option<B>) -> Self
+    where
+        A: Into<InputMediaDocument>,
+        B: Into<RichBlockCaption>,
+    {
+        Self::new(InputRichBlockData {
+            data_type: InputRichBlockDataType::Document,
+            parameters: InputRichBlockParameters {
+                caption: caption.map(|x| x.into().into()),
+                ..Default::default()
+            },
+        })
+        .with_input_media(document.into())
     }
 
     /// Creates a new `InputRichBlock`.
@@ -555,6 +577,9 @@ impl WriteForm for InputRichBlock {
                 InputRichBlockDataType::Audio => {
                     data.parameters.audio = Some(media_data);
                 }
+                InputRichBlockDataType::Document => {
+                    data.parameters.document = Some(media_data);
+                }
                 InputRichBlockDataType::Photo => {
                     data.parameters.photo = Some(media_data);
                 }
@@ -753,6 +778,7 @@ struct InputRichBlockParameters {
     caption: Option<InputRichBlockCaption>,
     cells: Option<Vec<Vec<RichBlockTableCell>>>,
     credit: Option<RichText>,
+    document: Option<InputMediaData>,
     expression: Option<String>,
     height: Option<Integer>,
     is_bordered: Option<bool>,
@@ -790,6 +816,7 @@ enum InputRichBlockDataType {
     Buttons,
     Collage,
     Details,
+    Document,
     Divider,
     ExpandableBlockquote,
     Footer,

@@ -228,6 +228,7 @@ async fn execute() {
                     ),
                     InputRichBlock::expandable_block_quotation("test", None::<&str>),
                     InputRichBlock::expandable_block_quotation("test", Some("credit")),
+                    InputRichBlock::document(InputFile::file_id("test"), None::<&str>),
                 ]),
             ),
             |x| {
@@ -378,6 +379,11 @@ async fn execute() {
                     };
                     assert!(matches!(ebq.text, RichText::PlainText(_)));
                     assert!(ebq.credit.is_some());
+                    let RichBlock::Document(document) = &data.blocks[30] else {
+                        panic!("not a document")
+                    };
+                    assert_eq!(document.document.file_id, "file-id");
+                    assert!(document.caption.is_none());
                 } else {
                     panic!("Got an unexpected message data: {:?}", x.data);
                 }

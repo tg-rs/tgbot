@@ -680,6 +680,16 @@ impl InputRichBlockTable {
         self
     }
 
+    /// Sets a new value for the `is_compact` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether table cells must have smaller indents.
+    pub fn with_is_compact(mut self, value: bool) -> Self {
+        self.parameters.is_compact = Some(value);
+        self
+    }
+
     /// Sets a new value for the `is_striped` flag.
     ///
     /// # Arguments
@@ -725,6 +735,7 @@ struct InputRichBlockParameters {
     expression: Option<String>,
     height: Option<Integer>,
     is_bordered: Option<bool>,
+    is_compact: Option<bool>,
     is_open: Option<bool>,
     is_striped: Option<bool>,
     items: Option<Vec<InputRichBlockListItemData>>,

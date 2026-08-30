@@ -240,6 +240,7 @@
             ],
             "caption": "test",
             "is_bordered": true,
+            "is_compact": true,
             "is_striped": true,
             "type": "table"
           },
@@ -739,6 +740,7 @@
             ],
             "caption": "test",
             "is_bordered": true,
+            "is_compact": true,
             "is_striped": true,
             "type": "table"
           },

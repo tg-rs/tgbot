@@ -286,6 +286,8 @@ pub struct RichBlockTable {
     pub caption: Option<RichText>,
     /// Whether the table has borders.
     pub is_bordered: Option<bool>,
+    /// Whether table cells have smaller indents.
+    pub is_compact: Option<bool>,
     /// Whether the table is striped.
     pub is_striped: Option<bool>,
 }

@@ -134,6 +134,7 @@ async fn execute() {
                         ]])
                         .with_caption("test")
                         .with_is_bordered(true)
+                        .with_is_compact(true)
                         .with_is_striped(true),
                     ),
                     InputRichBlock::thinking("thinking"),

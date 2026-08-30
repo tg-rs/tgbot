@@ -226,6 +226,8 @@ async fn execute() {
                         ))],
                         Some(RichBlockButtonsAlignment::Left),
                     ),
+                    InputRichBlock::expandable_block_quotation("test", None::<&str>),
+                    InputRichBlock::expandable_block_quotation("test", Some("credit")),
                 ]),
             ),
             |x| {
@@ -366,6 +368,16 @@ async fn execute() {
                     };
                     assert_eq!(buttons.buttons.len(), 9);
                     assert!(buttons.align.is_none());
+                    let RichBlock::ExpandableBlockQuotation(ebq) = &data.blocks[28] else {
+                        panic!("not an expandable block quotation")
+                    };
+                    assert!(matches!(ebq.text, RichText::PlainText(_)));
+                    assert!(ebq.credit.is_none());
+                    let RichBlock::ExpandableBlockQuotation(ebq) = &data.blocks[29] else {
+                        panic!("not an expandable block quotation")
+                    };
+                    assert!(matches!(ebq.text, RichText::PlainText(_)));
+                    assert!(ebq.credit.is_some());
                 } else {
                     panic!("Got an unexpected message data: {:?}", x.data);
                 }

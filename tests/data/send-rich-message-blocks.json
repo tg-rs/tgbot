@@ -460,6 +460,15 @@
               }
             ],
             "align": "left"
+          },
+          {
+            "type": "expandable_blockquote",
+            "text": "test"
+          },
+          {
+            "type": "expandable_blockquote",
+            "text": "test",
+            "credit": "credit"
           }
         ]
       },
@@ -954,6 +963,15 @@
                 }
               }
             ]
+          },
+          {
+            "type": "expandable_blockquote",
+            "text": "test"
+          },
+          {
+            "type": "expandable_blockquote",
+            "text": "test",
+            "credit": "credit"
           }
         ]
       },

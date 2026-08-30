@@ -226,6 +226,27 @@ impl InputRichBlock {
     ///
     /// # Arguments
     ///
+    /// * `text` - Content of the block.
+    /// * `credit` - Credit of the block.
+    pub fn expandable_block_quotation<A, B>(text: A, credit: Option<B>) -> Self
+    where
+        A: Into<RichText>,
+        B: Into<RichText>,
+    {
+        Self::new(InputRichBlockData {
+            data_type: InputRichBlockDataType::ExpandableBlockquote,
+            parameters: InputRichBlockParameters {
+                text: Some(text.into()),
+                credit: credit.map(Into::into),
+                ..Default::default()
+            },
+        })
+    }
+
+    /// Creates a new `InputRichBlock`.
+    ///
+    /// # Arguments
+    ///
     /// * `text` - Text of the block.
     ///
     /// A footer, corresponding to the HTML tag `<footer>`.
@@ -770,6 +791,7 @@ enum InputRichBlockDataType {
     Collage,
     Details,
     Divider,
+    ExpandableBlockquote,
     Footer,
     Heading,
     List,

@@ -24,6 +24,8 @@ pub enum RichBlock {
     Details(RichBlockDetails),
     /// A divider (`<hr />`).
     Divider,
+    /// A block quotation with custom expandable attribute.
+    ExpandableBlockQuotation(RichBlockExpandableBlockQuotation),
     /// A footer (`<footer>`).
     Footer(RichText),
     /// A list (`<ul>` or `<ol>`).
@@ -177,6 +179,16 @@ pub struct RichBlockDetails {
     pub summary: RichText,
     /// Whether the content of the block is visible by default.
     pub is_open: Option<bool>,
+}
+
+/// A block quotation (`<blockquote expandable>`).
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct RichBlockExpandableBlockQuotation {
+    /// Content of the block.
+    pub text: RichText,
+    /// Credit of the block.
+    pub credit: Option<RichText>,
 }
 
 /// An item of a list.
@@ -449,6 +461,8 @@ enum RawRichBlock {
     Collage(RichBlockCollage),
     Details(RichBlockDetails),
     Divider,
+    #[serde(rename = "expandable_blockquote")]
+    ExpandableBlockQuotation(RichBlockExpandableBlockQuotation),
     Footer {
         text: RichText,
     },
@@ -492,6 +506,7 @@ impl From<RichBlock> for RawRichBlock {
             RichBlock::Collage(value) => Self::Collage(value),
             RichBlock::Details(value) => Self::Details(value),
             RichBlock::Divider => Self::Divider,
+            RichBlock::ExpandableBlockQuotation(value) => Self::ExpandableBlockQuotation(value),
             RichBlock::Footer(text) => Self::Footer { text },
             RichBlock::List(items) => Self::List { items },
             RichBlock::Map(value) => Self::Map(value),
@@ -521,6 +536,7 @@ impl From<RawRichBlock> for RichBlock {
             RawRichBlock::Collage(value) => Self::Collage(value),
             RawRichBlock::Details(value) => Self::Details(value),
             RawRichBlock::Divider => Self::Divider,
+            RawRichBlock::ExpandableBlockQuotation(value) => Self::ExpandableBlockQuotation(value),
             RawRichBlock::Footer { text } => Self::Footer(text),
             RawRichBlock::List { items } => Self::List(items),
             RawRichBlock::Map(value) => Self::Map(value),

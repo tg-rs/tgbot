@@ -18,6 +18,13 @@ pub struct CommunityChatAdded {
     pub community: Community,
 }
 
+/// Describes a service message about a chat being joined by a user from a community.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CommunityChatJoined {
+    /// The community from which the chat was joined.
+    pub community: Community,
+}
+
 /// Describes a service message about a chat being removed from a community.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CommunityChatRemoved {}

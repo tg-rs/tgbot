@@ -604,7 +604,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 29] = 
         }
     }),
     ("get-updates-message", GetUpdates::new(), |items| {
-        assert_eq!(items.len(), 103);
+        assert_eq!(items.len(), 104);
         for update in items {
             assert_eq!(update.id, 1);
             assert!(matches!(update.update_type, UpdateType::Message(_)));

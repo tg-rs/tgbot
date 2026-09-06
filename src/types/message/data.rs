@@ -9,6 +9,7 @@ use crate::types::{
     ChecklistTasksAdded,
     ChecklistTasksDone,
     CommunityChatAdded,
+    CommunityChatJoined,
     CommunityChatRemoved,
     Contact,
     Dice,
@@ -90,6 +91,8 @@ pub enum MessageData {
     ChecklistTasksDone(ChecklistTasksDone),
     /// Service message: chat added to a Community.
     CommunityChatAdded(CommunityChatAdded),
+    /// Service message: chat joined by a user from a community.
+    CommunityChatJoined(CommunityChatJoined),
     /// Service message: chat removed from a Community
     CommunityChatRemoved(CommunityChatRemoved),
     /// The domain name of the website on which the user has logged in.
@@ -480,6 +483,7 @@ enum RawMessageData {
     ChecklistTasksAdded(ChecklistTasksAdded),
     ChecklistTasksDone(ChecklistTasksDone),
     CommunityChatAdded(CommunityChatAdded),
+    CommunityChatJoined(CommunityChatJoined),
     CommunityChatRemoved(CommunityChatRemoved),
     ConnectedWebsite(String),
     Contact(Contact),
@@ -608,6 +612,7 @@ impl From<RawMessageData> for MessageData {
             RawMessageData::ChecklistTasksAdded(value) => Self::ChecklistTasksAdded(value),
             RawMessageData::ChecklistTasksDone(value) => Self::ChecklistTasksDone(value),
             RawMessageData::CommunityChatAdded(value) => Self::CommunityChatAdded(value),
+            RawMessageData::CommunityChatJoined(value) => Self::CommunityChatJoined(value),
             RawMessageData::CommunityChatRemoved(value) => Self::CommunityChatRemoved(value),
             RawMessageData::ConnectedWebsite(value) => Self::ConnectedWebsite(value),
             RawMessageData::Contact(value) => Self::Contact(value),
@@ -770,6 +775,7 @@ impl From<MessageData> for RawMessageData {
             MessageData::ChecklistTasksAdded(value) => Self::ChecklistTasksAdded(value),
             MessageData::ChecklistTasksDone(value) => Self::ChecklistTasksDone(value),
             MessageData::CommunityChatAdded(value) => Self::CommunityChatAdded(value),
+            MessageData::CommunityChatJoined(value) => Self::CommunityChatJoined(value),
             MessageData::CommunityChatRemoved(value) => Self::CommunityChatRemoved(value),
             MessageData::ConnectedWebsite(value) => Self::ConnectedWebsite(value),
             MessageData::Contact(value) => Self::Contact(value),

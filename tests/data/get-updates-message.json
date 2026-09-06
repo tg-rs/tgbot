@@ -2586,6 +2586,31 @@
             "data": []
           }
         }
+      },
+      {
+        "update_id": 1,
+        "message": {
+          "chat": {
+            "type": "supergroup",
+            "id": 1,
+            "title": "Chat"
+          },
+          "date": 1,
+          "has_protected_content": false,
+          "message_id": 1,
+          "is_automatic_forward": false,
+          "from": {
+            "first_name": "User",
+            "id": 1,
+            "is_bot": false
+          },
+          "community_chat_joined": {
+            "community": {
+              "id": 1,
+              "name": "test"
+            }
+          }
+        }
       }
     ]
   }

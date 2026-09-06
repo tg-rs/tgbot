@@ -121,6 +121,7 @@ pub struct EditEphemeralMessageCaption {
     identity: EphemeralMessageIdentity,
     #[serde(flatten)]
     caption: Option<InputTextCaption>,
+    show_caption_above_media: Option<bool>,
     reply_markup: Option<InlineKeyboardMarkup>,
 }
 
@@ -132,6 +133,7 @@ where
         Self {
             identity: value.into(),
             caption: None,
+            show_caption_above_media: None,
             reply_markup: None,
         }
     }
@@ -148,6 +150,18 @@ impl EditEphemeralMessageCaption {
         T: Into<InputTextCaption>,
     {
         self.caption = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `show_caption_above_media` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the caption must be shown above the message media.
+    ///
+    /// Supported only for animation, photo and video messages.
+    pub fn with_show_caption_above_media(mut self, value: bool) -> Self {
+        self.show_caption_above_media = Some(value);
         self
     }
 

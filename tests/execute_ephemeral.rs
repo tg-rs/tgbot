@@ -29,6 +29,7 @@ async fn execute() {
             "edit-ephemeral-message-caption-all",
             EditEphemeralMessageCaption::from((1, 2, 3))
                 .with_caption("test")
+                .with_show_caption_above_media(true)
                 .with_reply_markup([[InlineKeyboardButton::for_url("test", "example.com")]]),
             |x| assert!(x),
         ),

@@ -6,6 +6,7 @@
       "caption": "test",
       "chat_id": 1,
       "ephemeral_message_id": 3,
+      "show_caption_above_media": true,
       "receiver_user_id": 2,
       "reply_markup": {
         "inline_keyboard": [

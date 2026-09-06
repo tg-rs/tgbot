@@ -7,6 +7,8 @@ use crate::{
         InlineKeyboardMarkup,
         InputMedia,
         InputMediaData,
+        InputRichMessage,
+        InputRichMessageData,
         InputText,
         InputTextCaption,
         Integer,
@@ -313,15 +315,11 @@ impl Method for EditEphemeralMessageReplyMarkup {
 ///
 /// Note that it is not guaranteed that the user will receive the message edit event,
 /// especially if they are offline.
-#[serde_with::skip_serializing_none]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Debug)]
 pub struct EditEphemeralMessageText {
-    #[serde(flatten)]
     identity: EphemeralMessageIdentity,
-    #[serde(flatten)]
-    text: InputText,
-    link_preview_options: Option<LinkPreviewOptions>,
-    reply_markup: Option<InlineKeyboardMarkup>,
+    rich_message: Option<InputRichMessage>,
+    parameters: EditEphemeralMessageTextParameters,
 }
 
 impl EditEphemeralMessageText {
@@ -331,16 +329,35 @@ impl EditEphemeralMessageText {
     ///
     /// * `identity` - Identity of the ephemeral message.
     /// * `text` - New text of the message; 1-4096 characters after entity parsing.
-    pub fn new<A, B>(identity: A, text: B) -> Self
+    pub fn rich_message<T>(identity: T, rich_message: InputRichMessage) -> Self
+    where
+        T: Into<EphemeralMessageIdentity>,
+    {
+        Self {
+            identity: identity.into(),
+            rich_message: Some(rich_message),
+            parameters: Default::default(),
+        }
+    }
+
+    /// Creates a new `EditEpehemeralMessageText`.
+    ///
+    /// # Arguments
+    ///
+    /// * `identity` - Identity of the ephemeral message.
+    /// * `text` - New text of the message; 1-4096 characters after entity parsing.
+    pub fn text<A, B>(identity: A, text: B) -> Self
     where
         A: Into<EphemeralMessageIdentity>,
         B: Into<InputText>,
     {
         Self {
             identity: identity.into(),
-            text: text.into(),
-            link_preview_options: None,
-            reply_markup: None,
+            rich_message: None,
+            parameters: EditEphemeralMessageTextParameters {
+                text: Some(text.into()),
+                ..Default::default()
+            },
         }
     }
 
@@ -350,7 +367,7 @@ impl EditEphemeralMessageText {
     ///
     /// * `value` - Link preview generation options for the message.
     pub fn with_link_preview_options(mut self, value: LinkPreviewOptions) -> Self {
-        self.link_preview_options = Some(value);
+        self.parameters.link_preview_options = Some(value);
         self
     }
 
@@ -363,15 +380,36 @@ impl EditEphemeralMessageText {
     where
         T: Into<InlineKeyboardMarkup>,
     {
-        self.reply_markup = Some(value.into());
+        self.parameters.reply_markup = Some(value.into());
         self
     }
+}
+
+#[serde_with::skip_serializing_none]
+#[derive(Debug, Default, Serialize)]
+struct EditEphemeralMessageTextParameters {
+    #[serde(flatten)]
+    identity: Option<EphemeralMessageIdentity>,
+    #[serde(flatten)]
+    text: Option<InputText>,
+    link_preview_options: Option<LinkPreviewOptions>,
+    reply_markup: Option<InlineKeyboardMarkup>,
+    rich_message: Option<InputRichMessageData>,
 }
 
 impl Method for EditEphemeralMessageText {
     type Response = bool;
 
     fn into_payload(self) -> Result<Payload, PayloadError> {
-        Payload::json("editEphemeralMessageText", self)
+        let Self {
+            identity,
+            rich_message,
+            mut parameters,
+        } = self;
+        let mut form = Form::default();
+        parameters.identity = Some(identity);
+        parameters.rich_message = rich_message.map(|x| x.write(&mut form));
+        parameters.serialize(&mut form)?;
+        Payload::form("editEphemeralMessageText", form)
     }
 }

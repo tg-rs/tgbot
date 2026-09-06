@@ -2,7 +2,7 @@
   "http_method": "POST",
   "url_path": "editEphemeralMessageText",
   "req_body": {
-    "json": {
+    "multipart": {
       "chat_id": 1,
       "entities": [
         {

@@ -68,13 +68,18 @@ async fn execute() {
 
     cx.execute_batch([
         (
+            "edit-ephemeral-message-text-rich",
+            EditEphemeralMessageText::rich_message((1, 2, 3), InputRichMessage::markdown("test")),
+            |x| assert!(x),
+        ),
+        (
             "edit-ephemeral-message-text-base",
-            EditEphemeralMessageText::new((1, 2, 3), "test"),
+            EditEphemeralMessageText::text((1, 2, 3), "test"),
             |x| assert!(x),
         ),
         (
             "edit-ephemeral-message-text-parse-mode",
-            EditEphemeralMessageText::new(
+            EditEphemeralMessageText::text(
                 (1, 2, 3),
                 InputText::from("test")
                     .with_format([TextEntity::bold(0..2)])
@@ -86,7 +91,7 @@ async fn execute() {
         ),
         (
             "edit-ephemeral-message-text-entities",
-            EditEphemeralMessageText::new(
+            EditEphemeralMessageText::text(
                 (1, 2, 3),
                 InputText::from("test")
                     .with_format(ParseMode::Markdown)

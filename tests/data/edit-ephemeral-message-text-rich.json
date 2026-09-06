@@ -6,7 +6,9 @@
       "chat_id": 1,
       "ephemeral_message_id": 3,
       "receiver_user_id": 2,
-      "text": "test"
+      "rich_message": {
+        "markdown": "test"
+      }
     }
   },
   "rep_body": {

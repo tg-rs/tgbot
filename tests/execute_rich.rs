@@ -401,7 +401,10 @@ async fn execute() {
         ),
         (
             "send-rich-message-draft-all",
-            SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test")).with_message_thread_id(1),
+            SendRichMessageDraft::new(1, 2, InputRichMessage::markdown("test"))
+                .with_can_stop(true)
+                .with_keep_on_stop(true)
+                .with_message_thread_id(1),
             |x| assert!(x),
         ),
     ])

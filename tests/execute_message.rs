@@ -50,7 +50,10 @@ async fn execute() {
         }),
         (
             "send-message-draft-entities",
-            SendMessageDraft::new(1, 1, ("text", [TextEntity::bold(0..2)])).with_message_thread_id(1),
+            SendMessageDraft::new(1, 1, ("text", [TextEntity::bold(0..2)]))
+                .with_message_thread_id(1)
+                .with_can_stop(true)
+                .with_keep_on_stop(true),
             |x| {
                 assert!(x);
             },

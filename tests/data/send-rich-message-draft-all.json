@@ -6,6 +6,8 @@
       "chat_id": 1,
       "draft_id": 2,
       "message_thread_id": 1,
+      "can_stop": true,
+      "keep_on_stop": true,
       "rich_message": {
         "markdown": "test"
       }

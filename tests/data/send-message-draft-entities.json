@@ -5,6 +5,8 @@
     "json": {
       "chat_id": 1,
       "draft_id": 1,
+      "can_stop": true,
+      "keep_on_stop": true,
       "text": "text",
       "entities": [
         {

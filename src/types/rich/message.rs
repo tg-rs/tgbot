@@ -401,6 +401,8 @@ pub struct SendRichMessageDraft {
     chat_id: Integer,
     draft_id: Integer,
     rich_message: InputRichMessage,
+    can_stop: Option<bool>,
+    keep_on_stop: Option<bool>,
     message_thread_id: Option<Integer>,
 }
 
@@ -418,8 +420,36 @@ impl SendRichMessageDraft {
             chat_id,
             draft_id,
             rich_message,
+            can_stop: None,
+            keep_on_stop: None,
             message_thread_id: None,
         }
+    }
+
+    /// Sets a new value for the `can_stop` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to show the user a button to stop further drafts.
+    ///
+    /// The bot will receive an update "stopped_message_generation" if the user
+    /// presses the button.
+    pub fn with_can_stop(mut self, value: bool) -> Self {
+        self.can_stop = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `keep_on_stop` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether to keep the draft in the chat when the button is pressed.
+    ///
+    /// The draft will still disappear after a short time or if the bot sends a message.
+    /// To fully preserve the partial draft, the bot should send it as a new message.
+    pub fn with_keep_on_stop(mut self, value: bool) -> Self {
+        self.keep_on_stop = Some(value);
+        self
     }
 
     /// Sets a new message thread ID.
@@ -440,6 +470,8 @@ struct SendRichMessageDraftParameters {
     chat_id: Integer,
     draft_id: Integer,
     rich_message: InputRichMessageData,
+    can_stop: Option<bool>,
+    keep_on_stop: Option<bool>,
     message_thread_id: Option<Integer>,
 }
 
@@ -451,12 +483,16 @@ impl Method for SendRichMessageDraft {
             chat_id,
             draft_id,
             rich_message,
+            can_stop,
+            keep_on_stop,
             message_thread_id,
         } = self;
         let mut form = Form::default();
         let parameters = SendRichMessageDraftParameters {
             chat_id,
             draft_id,
+            can_stop,
+            keep_on_stop,
             rich_message: rich_message.write(&mut form),
             message_thread_id,
         };

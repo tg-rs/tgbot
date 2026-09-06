@@ -169,10 +169,13 @@ async fn execute() {
             "stop-poll-all",
             StopPoll::new(1, 2)
                 .with_business_connection_id("c-id")
-                .with_reply_markup([[
-                    InlineKeyboardButton::for_url("text", "url"),
-                    InlineKeyboardButton::disabled("disabled"),
-                ]]),
+                .with_reply_markup(
+                    InlineKeyboardMarkup::from([[
+                        InlineKeyboardButton::for_url("text", "url"),
+                        InlineKeyboardButton::disabled("disabled"),
+                    ]])
+                    .with_force_reply(true),
+                ),
             |x| {
                 let Poll::Regular(poll) = x else {
                     panic!("Got an unexpected poll")

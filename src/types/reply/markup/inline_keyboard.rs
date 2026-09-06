@@ -3,9 +3,11 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use crate::types::{True, WebAppInfo};
 
 /// Represents an inline keyboard that appears right next to the message it belongs to.
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct InlineKeyboardMarkup {
     inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
+    force_reply: Option<bool>,
 }
 
 impl InlineKeyboardMarkup {
@@ -21,6 +23,19 @@ impl InlineKeyboardMarkup {
         self.inline_keyboard.push(value.into_iter().collect());
         self
     }
+
+    /// Sets a new value for the `force_reply` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the reply interface must be shown to the user,
+    ///   as they had manually selected the bot's message and tapped "Reply".
+    ///
+    /// The value of the field can't be changed when the inline keyboard is edited.
+    pub fn with_force_reply(mut self, value: bool) -> Self {
+        self.force_reply = Some(value);
+        self
+    }
 }
 
 impl<A, B> From<A> for InlineKeyboardMarkup
@@ -31,6 +46,7 @@ where
     fn from(value: A) -> InlineKeyboardMarkup {
         Self {
             inline_keyboard: value.into_iter().map(|x| x.into_iter().collect()).collect(),
+            force_reply: None,
         }
     }
 }

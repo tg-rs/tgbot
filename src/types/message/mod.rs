@@ -234,3 +234,15 @@ pub struct MessageId {
     /// The unique message identifier.
     pub message_id: Integer,
 }
+
+/// Describes an update about a user stopping message generation.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MessageGenerationStopped {
+    /// Chat in which the message is generated.
+    pub chat: Chat,
+    /// Unique identifier of the message draft which was stopped.
+    pub draft_id: Integer,
+    /// Unique identifier of the message thread in which the message is generated.
+    pub message_thread_id: Option<Integer>,
+}

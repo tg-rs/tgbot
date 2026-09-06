@@ -61,7 +61,7 @@ macro_rules! try_from_update {
     }};
 }
 
-const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = [
+const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 29] = [
     ("get-updates-base-empty", GetUpdates::new(), |items| {
         assert!(items.is_empty());
     }),
@@ -86,6 +86,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -118,6 +119,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -151,6 +153,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChosenInlineResult,
                 InlineQuery,
                 ManagedBotUpdated,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -200,6 +203,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -231,6 +235,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChosenInlineResult,
                 InlineQuery,
                 ManagedBotUpdated,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -262,6 +267,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -293,6 +299,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -325,6 +332,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -357,6 +365,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -388,6 +397,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -420,6 +430,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChosenInlineResult,
                 InlineQuery,
                 ManagedBotUpdated,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -452,6 +463,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChosenInlineResult,
                 InlineQuery,
                 ManagedBotUpdated,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -484,6 +496,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChosenInlineResult,
                 InlineQuery,
                 ManagedBotUpdated,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -513,6 +526,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChatJoinRequest,
                 ChosenInlineResult,
                 InlineQuery,
+                MessageGenerationStopped,
                 ManagedBotUpdated,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
@@ -545,6 +559,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChosenInlineResult,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -576,6 +591,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChosenInlineResult,
                 InlineQuery,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -630,6 +646,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 ChosenInlineResult,
                 InlineQuery,
                 ManagedBotUpdated,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -673,6 +690,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionCountUpdated,
                 Poll,
                 PollAnswer,
@@ -706,6 +724,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 Poll,
                 PollAnswer,
@@ -737,6 +756,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 PollAnswer,
@@ -773,6 +793,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -805,6 +826,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -837,6 +859,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -869,6 +892,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -877,6 +901,39 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 PaidMediaPurchased
             ]);
             assert!(ShippingQuery::try_from(update).is_ok());
+        }
+    }),
+    ("get-updates-stopped-message-generation", GetUpdates::new(), |items| {
+        assert_eq!(items.len(), 2);
+        for update in items {
+            assert!(matches!(update.update_type, UpdateType::StoppedMessageGeneration(_)));
+            assert!(update.get_chat_id().is_some());
+            assert!(update.get_chat_username().is_none());
+            assert!(update.get_user_id().is_none());
+            assert!(update.get_user_username().is_none());
+            assert!(update.get_message().is_none());
+            let update = try_from_update!(update; [
+                BotSubscriptionUpdated,
+                BusinessConnection,
+                BusinessMessagesDeleted,
+                ChatBoostRemoved,
+                ChatBoostUpdated,
+                ChatMemberUpdated,
+                CallbackQuery,
+                ChatJoinRequest,
+                ChosenInlineResult,
+                InlineQuery,
+                ManagedBotUpdated,
+                Message,
+                MessageReactionUpdated,
+                MessageReactionCountUpdated,
+                Poll,
+                PollAnswer,
+                PreCheckoutQuery,
+                PaidMediaPurchased,
+                ShippingQuery
+            ]);
+            assert!(MessageGenerationStopped::try_from(update).is_ok());
         }
     }),
     ("get-updates-subscription", GetUpdates::new(), |items| {
@@ -900,6 +957,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -934,6 +992,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,
@@ -966,6 +1025,7 @@ const GET_UPDATES: [(SpecBasename, GetUpdates, CheckResult<Vec<Update>>); 28] = 
                 InlineQuery,
                 ManagedBotUpdated,
                 Message,
+                MessageGenerationStopped,
                 MessageReactionUpdated,
                 MessageReactionCountUpdated,
                 Poll,

@@ -23,6 +23,7 @@ use crate::{
         ManagedBotUpdated,
         MaybeInaccessibleMessage,
         Message,
+        MessageGenerationStopped,
         MessageReactionCountUpdated,
         MessageReactionUpdated,
         PaidMediaPurchased,
@@ -76,6 +77,7 @@ impl Update {
             UpdateType::ChatJoinRequest(x) => Some(&x.chat),
             UpdateType::MessageReaction(x) => Some(&x.chat),
             UpdateType::MessageReactionCount(x) => Some(&x.chat),
+            UpdateType::StoppedMessageGeneration(x) => Some(&x.chat),
             _ => None,
         })
     }
@@ -121,6 +123,7 @@ impl Update {
             UpdateType::PurchasedPaidMedia(x) => &x.from,
             UpdateType::Subscription(x) => &x.user,
             UpdateType::ShippingQuery(x) => &x.from,
+            UpdateType::StoppedMessageGeneration(_) => return None,
             UpdateType::Unknown(_) => return None,
         })
     }
@@ -245,6 +248,8 @@ pub enum UpdateType {
     ///
     /// Only for invoices with flexible price.
     ShippingQuery(Box<ShippingQuery>),
+    /// A user asked the bot to stop the generation of a message.
+    StoppedMessageGeneration(MessageGenerationStopped),
     /// User payment subscription has changed.
     Subscription(BotSubscriptionUpdated),
     /// A chat member's status was updated in a chat.
@@ -407,6 +412,17 @@ impl TryFrom<Update> for Message {
             | UpdateType::GuestMessage(x)
             | UpdateType::ChannelPost(x)
             | UpdateType::Message(x) => Ok(*x),
+            _ => Err(UnexpectedUpdate(value)),
+        }
+    }
+}
+
+impl TryFrom<Update> for MessageGenerationStopped {
+    type Error = UnexpectedUpdate;
+
+    fn try_from(value: Update) -> Result<Self, Self::Error> {
+        match value.update_type {
+            UpdateType::StoppedMessageGeneration(x) => Ok(x),
             _ => Err(UnexpectedUpdate(value)),
         }
     }

@@ -1,0 +1,35 @@
+{
+  "http_method": "POST",
+  "url_path": "getUpdates",
+  "req_body": {
+    "json": {}
+  },
+  "rep_body": {
+    "ok": true,
+    "result": [
+      {
+        "update_id": 1,
+        "stopped_message_generation": {
+          "chat": {
+            "type": "group",
+            "id": 1,
+            "title": "Test"
+          },
+          "draft_id": 1
+        }
+      },
+      {
+        "update_id": 1,
+        "stopped_message_generation": {
+          "chat": {
+            "type": "group",
+            "id": 1,
+            "title": "Test"
+          },
+          "message_thread_id": 1,
+          "draft_id": 1
+        }
+      }
+    ]
+  }
+}

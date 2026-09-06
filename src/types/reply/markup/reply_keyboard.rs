@@ -15,6 +15,7 @@ pub struct ReplyKeyboardMarkup {
     resize_keyboard: bool,
     #[serde(default, skip_serializing_if = "Not::not")]
     selective: bool,
+    force_reply: Option<bool>,
     input_field_placeholder: Option<String>,
     is_persistent: Option<bool>,
 }
@@ -30,6 +31,17 @@ impl ReplyKeyboardMarkup {
         T: IntoIterator<Item = KeyboardButton>,
     {
         self.keyboard.push(value.into_iter().collect());
+        self
+    }
+
+    /// Sets a new value for the `force_reply` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the reply interface must be shown to the user,
+    ///   as they had manually selected the bot's message and tapped "Reply".
+    pub fn with_force_reply(mut self, value: bool) -> Self {
+        self.force_reply = Some(value);
         self
     }
 
@@ -124,6 +136,7 @@ where
             one_time_keyboard: false,
             resize_keyboard: false,
             selective: false,
+            force_reply: None,
             input_field_placeholder: None,
             is_persistent: None,
         }

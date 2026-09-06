@@ -74,6 +74,7 @@ async fn execute() {
                             ),
                             KeyboardButton::new("web app").with_web_app(WebAppInfo::from("https://example.com")),
                         ])
+                        .with_force_reply(true)
                         .with_is_persistent(true)
                         .with_one_time_keyboard(true)
                         .with_selective(true)

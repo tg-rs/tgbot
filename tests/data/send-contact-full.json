@@ -8,14 +8,17 @@
       "phone_number": "+79001231212",
       "allow_paid_broadcast": true,
       "business_connection_id": "id",
-      "callback_query_id": "cqid",
       "direct_messages_topic_id": 1,
       "disable_notification": true,
+      "ephemeral_message_parameters": {
+        "receiver_user_id": 999,
+        "callback_query_id": "cqid",
+        "replace_callback_query_message": true
+      },
       "last_name": "Doe",
       "message_effect_id": "effect-id",
       "message_thread_id": 1,
       "protect_content": true,
-      "receiver_user_id": 999,
       "reply_markup": {
         "inline_keyboard": [
           [

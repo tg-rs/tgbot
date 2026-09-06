@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     api::{Form, Method, Payload, PayloadError, WriteForm},
@@ -13,6 +13,53 @@ use crate::{
         LinkPreviewOptions,
     },
 };
+
+/// Ephemeral message edit parameters.
+#[serde_with::skip_serializing_none]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct EphemeralMessageParameters {
+    receiver_user_id: Integer,
+    callback_query_id: Option<String>,
+    replace_callback_query_message: Option<bool>,
+}
+
+impl From<Integer> for EphemeralMessageParameters {
+    fn from(value: Integer) -> Self {
+        Self {
+            receiver_user_id: value,
+            callback_query_id: None,
+            replace_callback_query_message: None,
+        }
+    }
+}
+
+impl EphemeralMessageParameters {
+    /// Sets a new callback query ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Identifier of the callback query which triggered the message.
+    pub fn with_callback_query_id<T>(mut self, value: T) -> Self
+    where
+        T: Into<String>,
+    {
+        self.callback_query_id = Some(value.into());
+        self
+    }
+
+    /// Sets a new value for the `replace_callback_query_message` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Whether the ephemeral message must be shown in place of the original message.
+    ///
+    /// Must be false for callback queries from ephemeral messages,
+    /// which must be edited using regular editEphemeralMessage methods.
+    pub fn with_replace_callback_query_message(mut self, value: bool) -> Self {
+        self.replace_callback_query_message = Some(value);
+        self
+    }
+}
 
 /// Ephemeral message identity.
 ///

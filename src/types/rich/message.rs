@@ -5,6 +5,7 @@ use crate::{
     api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
+        EphemeralMessageParameters,
         InputMedia,
         InputMediaData,
         InputRichBlock,
@@ -267,6 +268,19 @@ impl SendRichMessage {
         self
     }
 
+    /// Sets the new ephemeral message parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the ephemeral message to send.
+    pub fn with_ephemeral_message_parameters<T>(mut self, value: T) -> Self
+    where
+        T: Into<EphemeralMessageParameters>,
+    {
+        self.parameters.ephemeral_message_parameters = Some(value.into());
+        self
+    }
+
     /// Sets a new message effect ID.
     ///
     /// # Arguments
@@ -349,6 +363,7 @@ struct SendRichMessageParameters {
     business_connection_id: Option<String>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
+    ephemeral_message_parameters: Option<EphemeralMessageParameters>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
     protect_content: Option<bool>,

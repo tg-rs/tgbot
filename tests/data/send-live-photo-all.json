@@ -8,16 +8,17 @@
       "photo": "photo-id",
       "allow_paid_broadcast": true,
       "business_connection_id": "bc-id",
-      "callback_query_id": "cqid",
       "caption": "test",
       "parse_mode": "Markdown",
       "direct_messages_topic_id": 1,
       "disable_notification": false,
+      "ephemeral_message_parameters": {
+        "receiver_user_id": 999
+      },
       "has_spoiler": false,
       "message_effect_id": "eid",
       "message_thread_id": 10,
       "protect_content": true,
-      "receiver_user_id": 999,
       "reply_markup": {
         "remove_keyboard": true
       },

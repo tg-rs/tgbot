@@ -5,18 +5,19 @@
     "multipart": {
       "allow_paid_broadcast": true,
       "business_connection_id": "id",
-      "callback_query_id": "cqid",
       "caption": "Caption",
       "chat_id": 1,
       "direct_messages_topic_id": 1,
       "disable_notification": true,
+      "ephemeral_message_parameters": {
+        "receiver_user_id": 999
+      },
       "has_spoiler": true,
       "message_effect_id": "effect-id",
       "message_thread_id": 1,
       "parse_mode": "Markdown",
       "photo": "file-id",
       "protect_content": true,
-      "receiver_user_id": 999,
       "reply_markup": {
         "force_reply": true
       },

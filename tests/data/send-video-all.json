@@ -5,20 +5,21 @@
     "multipart": {
       "allow_paid_broadcast": true,
       "business_connection_id": "id",
-      "callback_query_id": "cqid",
       "caption": "Caption",
       "chat_id": 1,
       "cover": "cover-id",
       "direct_messages_topic_id": 1,
       "disable_notification": true,
       "duration": 100,
+      "ephemeral_message_parameters": {
+        "receiver_user_id": 999
+      },
       "has_spoiler": true,
       "height": 300,
       "message_effect_id": "effect-id",
       "message_thread_id": 1,
       "parse_mode": "Markdown",
       "protect_content": true,
-      "receiver_user_id": 999,
       "reply_markup": {
         "force_reply": true,
         "input_field_placeholder": "test",

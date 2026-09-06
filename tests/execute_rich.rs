@@ -45,6 +45,7 @@ async fn execute() {
             .with_business_connection_id("test")
             .with_direct_messages_topic_id(1)
             .with_disable_notification(true)
+            .with_ephemeral_message_parameters(999)
             .with_message_effect_id("test")
             .with_message_thread_id(1)
             .with_protect_content(true)

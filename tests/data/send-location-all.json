@@ -8,9 +8,12 @@
       "longitude": 3.0,
       "allow_paid_broadcast": true,
       "business_connection_id": "id",
-      "callback_query_id": "cqid",
       "direct_messages_topic_id": 1,
       "disable_notification": true,
+      "ephemeral_message_parameters": {
+        "callback_query_id": "cqid",
+        "receiver_user_id": 999
+      },
       "heading": 120,
       "horizontal_accuracy": 1.5,
       "live_period": 100,
@@ -18,7 +21,6 @@
       "message_thread_id": 1,
       "protect_content": true,
       "proximity_alert_radius": 100,
-      "receiver_user_id": 999,
       "reply_markup": {
         "force_reply": true
       },

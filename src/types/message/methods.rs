@@ -5,6 +5,7 @@ use crate::{
     types::{
         ChatId,
         EditMessageResult,
+        EphemeralMessageParameters,
         Float,
         InlineKeyboardMarkup,
         InputMedia,
@@ -1287,14 +1288,13 @@ pub struct SendMessage {
     text: InputText,
     allow_paid_broadcast: Option<bool>,
     business_connection_id: Option<String>,
-    callback_query_id: Option<String>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
+    ephemeral_message_parameters: Option<EphemeralMessageParameters>,
     link_preview_options: Option<LinkPreviewOptions>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
     protect_content: Option<bool>,
-    receiver_user_id: Option<Integer>,
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
     suggested_post_parameters: Option<SuggestedPostParameters>,
@@ -1317,14 +1317,13 @@ impl SendMessage {
             text: text.into(),
             allow_paid_broadcast: None,
             business_connection_id: None,
-            callback_query_id: None,
             direct_messages_topic_id: None,
             disable_notification: None,
+            ephemeral_message_parameters: None,
             link_preview_options: None,
             message_effect_id: None,
             message_thread_id: None,
             protect_content: None,
-            receiver_user_id: None,
             reply_markup: None,
             reply_parameters: None,
             suggested_post_parameters: None,
@@ -1356,21 +1355,6 @@ impl SendMessage {
         self
     }
 
-    /// Sets a new callback query ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - For outgoing ephemeral messages,
-    ///   identifier of the callback query
-    ///   which triggered the message if any.
-    pub fn with_callback_query_id<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.callback_query_id = Some(value.into());
-        self
-    }
-
     /// Sets a new direct messages topic ID
     ///
     /// * `value` - Identifier of the direct messages topic to which the message will be sent.
@@ -1389,6 +1373,19 @@ impl SendMessage {
     ///   a user will receive a notification without sound.
     pub fn with_disable_notification(mut self, value: bool) -> Self {
         self.disable_notification = Some(value);
+        self
+    }
+
+    /// Sets the new ephemeral message parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the ephemeral message to send.
+    pub fn with_ephemeral_message_parameters<T>(mut self, value: T) -> Self
+    where
+        T: Into<EphemeralMessageParameters>,
+    {
+        self.ephemeral_message_parameters = Some(value.into());
         self
     }
 
@@ -1434,21 +1431,6 @@ impl SendMessage {
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.protect_content = Some(value);
-        self
-    }
-
-    /// Sets a new receiver user ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - For outgoing ephemeral messages,
-    ///   unique identifier of the user who will receive the message;
-    ///   for group and supergroup chats only.
-    ///
-    /// It is not guaranteed that the user will receive the message,
-    /// especially if they are offline.
-    pub fn with_receiver_user_id(mut self, value: Integer) -> Self {
-        self.receiver_user_id = Some(value);
         self
     }
 

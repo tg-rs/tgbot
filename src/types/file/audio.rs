@@ -4,6 +4,7 @@ use crate::{
     api::{Form, Method, Payload, PayloadError, WriteForm},
     types::{
         ChatId,
+        EphemeralMessageParameters,
         InputFile,
         InputFileReader,
         InputTextCaption,
@@ -104,21 +105,6 @@ impl SendAudio {
         self
     }
 
-    /// Sets a new callback query ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - For outgoing ephemeral messages,
-    ///   identifier of the callback query
-    ///   which triggered the message if any.
-    pub fn with_callback_query_id<T>(mut self, value: T) -> Self
-    where
-        T: Into<String>,
-    {
-        self.parameters.callback_query_id = Some(value.into());
-        self
-    }
-
     /// Sets a new caption.
     ///
     /// # Arguments
@@ -160,6 +146,19 @@ impl SendAudio {
     /// * `value` - Duration in seconds.
     pub fn with_duration(mut self, value: Integer) -> Self {
         self.parameters.duration = Some(value);
+        self
+    }
+
+    /// Sets the new ephemeral message parameters.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - An object containing the parameters of the ephemeral message to send.
+    pub fn with_ephemeral_message_parameters<T>(mut self, value: T) -> Self
+    where
+        T: Into<EphemeralMessageParameters>,
+    {
+        self.parameters.ephemeral_message_parameters = Some(value.into());
         self
     }
 
@@ -208,21 +207,6 @@ impl SendAudio {
     ///   of the sent message from forwarding and saving.
     pub fn with_protect_content(mut self, value: bool) -> Self {
         self.parameters.protect_content = Some(value);
-        self
-    }
-
-    /// Sets a new receiver user ID.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - For outgoing ephemeral messages,
-    ///   unique identifier of the user who will receive the message;
-    ///   for group and supergroup chats only.
-    ///
-    /// It is not guaranteed that the user will receive the message,
-    /// especially if they are offline.
-    pub fn with_receiver_user_id(mut self, value: Integer) -> Self {
-        self.parameters.receiver_user_id = Some(value);
         self
     }
 
@@ -317,18 +301,17 @@ struct SendAudioParameters {
     allow_paid_broadcast: Option<bool>,
     audio: Option<String>,
     business_connection_id: Option<String>,
-    callback_query_id: Option<String>,
     #[serde(flatten)]
     caption: Option<InputTextCaption>,
     chat_id: Option<ChatId>,
     direct_messages_topic_id: Option<Integer>,
     disable_notification: Option<bool>,
     duration: Option<Integer>,
+    ephemeral_message_parameters: Option<EphemeralMessageParameters>,
     message_effect_id: Option<String>,
     message_thread_id: Option<Integer>,
     performer: Option<String>,
     protect_content: Option<bool>,
-    receiver_user_id: Option<Integer>,
     reply_markup: Option<ReplyMarkup>,
     reply_parameters: Option<ReplyParameters>,
     suggested_post_parameters: Option<SuggestedPostParameters>,

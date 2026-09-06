@@ -25,14 +25,17 @@ async fn execute() {
             SendContact::new(1, "John", "+79001231212")
                 .with_allow_paid_broadcast(true)
                 .with_business_connection_id("id")
-                .with_callback_query_id("cqid")
                 .with_direct_messages_topic_id(1)
                 .with_disable_notification(true)
+                .with_ephemeral_message_parameters(
+                    EphemeralMessageParameters::from(999)
+                        .with_callback_query_id("cqid")
+                        .with_replace_callback_query_message(true),
+                )
                 .with_last_name("Doe")
                 .with_message_effect_id("effect-id")
                 .with_message_thread_id(1)
                 .with_protect_content(true)
-                .with_receiver_user_id(999)
                 .with_reply_markup([[
                     InlineKeyboardButton::for_url("url", "tg://user?id=1").with_icon_custom_emoji_id("test"),
                     InlineKeyboardButton::for_web_app("web app", WebAppInfo::from("https://example.com"))

@@ -806,6 +806,12 @@ pub struct UniqueGiftInfo {
     pub gift: UniqueGift,
     /// Origin of the gift.
     pub origin: UniqueGiftOrigin,
+    /// Special entities that appear in the text.
+    pub entities: Option<TextEntities>,
+    /// Whether the sender and gift text are shown only to the gift receiver.
+    ///
+    /// Otherwise, everyone will be able to see them.
+    pub is_private: Option<bool>,
     /// For gifts bought from other users, the price paid for the gift.
     pub last_resale_star_count: Option<Integer>,
     /// Point in time (Unix timestamp) when the gift can be transferred.
@@ -815,6 +821,8 @@ pub struct UniqueGiftInfo {
     /// Unique identifier of the received gift for the bot;
     /// only present for gifts received on behalf of business accounts.
     pub owned_gift_id: Option<String>,
+    /// Text of the message that was added to the gift.
+    pub text: Option<String>,
     /// Number of Telegram Stars that must be paid to transfer the gift;
     /// omitted if the bot cannot transfer the gift.
     pub transfer_star_count: Option<Integer>,

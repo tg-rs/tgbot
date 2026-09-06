@@ -133,6 +133,9 @@ pub struct ChatMemberAdministrator {
     pub can_promote_members: bool,
     /// Indicates whether the administrator can restrict, ban or unban chat members.
     pub can_restrict_members: bool,
+    /// Indicates whether the administrator can manage chat welcome messages
+    /// or directly send them in the case of bots.
+    pub can_send_welcome_messages: bool,
     /// Custom title for the administrator.
     pub custom_title: Option<String>,
     /// Indicates whether the administrator's presence in the chat is hidden.
@@ -438,6 +441,7 @@ pub struct PromoteChatMember {
     can_post_messages: Option<bool>,
     can_post_stories: Option<bool>,
     can_promote_members: Option<bool>,
+    can_send_welcome_messages: Option<bool>,
     can_restrict_members: Option<bool>,
     is_anonymous: Option<bool>,
 }
@@ -472,6 +476,7 @@ impl PromoteChatMember {
             can_post_stories: None,
             can_promote_members: None,
             can_restrict_members: None,
+            can_send_welcome_messages: None,
             is_anonymous: None,
         }
     }
@@ -495,6 +500,7 @@ impl PromoteChatMember {
         self.can_post_stories = Some(true);
         self.can_promote_members = Some(true);
         self.can_restrict_members = Some(true);
+        self.can_send_welcome_messages = Some(true);
         self
     }
 
@@ -517,6 +523,7 @@ impl PromoteChatMember {
         self.can_post_stories = Some(false);
         self.can_promote_members = Some(false);
         self.can_restrict_members = Some(false);
+        self.can_send_welcome_messages = Some(false);
         self
     }
 
@@ -687,6 +694,17 @@ impl PromoteChatMember {
     /// * `value` - Indicates whether the administrator can restrict, ban or unban chat members.
     pub fn with_can_restrict_members(mut self, value: bool) -> Self {
         self.can_restrict_members = Some(value);
+        self
+    }
+
+    /// Sets a new value for the `can_send_welcome_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the administrator can manage chat welcome messages
+    ///   or diretly send them in case of bots.
+    pub fn with_can_send_welcome_messages(mut self, value: bool) -> Self {
+        self.can_send_welcome_messages = Some(value);
         self
     }
 

@@ -146,6 +146,7 @@ async fn execute() {
                 assert!(x.can_manage_topics.is_none());
                 assert!(x.can_manage_direct_messages.is_none());
                 assert!(x.can_manage_tags.is_none());
+                assert!(x.can_send_welcome_messages);
             },
         ),
         (
@@ -169,6 +170,7 @@ async fn execute() {
                 assert!(x.can_manage_topics.unwrap());
                 assert!(x.can_manage_direct_messages.unwrap());
                 assert!(x.can_manage_tags.unwrap());
+                assert!(x.can_send_welcome_messages);
             },
         ),
     ])

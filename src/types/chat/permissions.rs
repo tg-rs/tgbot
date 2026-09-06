@@ -54,6 +54,9 @@ pub struct ChatAdministratorRights {
     /// or demote administrators that they have promoted,
     /// directly or indirectly (promoted by administrators that were appointed by the user).
     pub can_promote_members: bool,
+    /// Indicates whether the administrator can manage chat welcome messages
+    /// or directly send them in the case of bots.
+    pub can_send_welcome_messages: bool,
     /// Indicates whether the administrator can restrict, ban or unban chat members,
     /// or access supergroup statistics.
     pub can_restrict_members: bool,
@@ -83,6 +86,7 @@ impl ChatAdministratorRights {
             can_post_stories: Some(true),
             can_promote_members: true,
             can_restrict_members: true,
+            can_send_welcome_messages: true,
             is_anonymous: true,
         }
     }
@@ -274,6 +278,18 @@ impl ChatAdministratorRights {
     ///   or access supergroup statistics.
     pub fn with_can_restrict_members(mut self, value: bool) -> Self {
         self.can_restrict_members = value;
+        self
+    }
+
+    /// Sets a new value for the `can_send_welcome_messages` flag.
+    ///
+    /// # Arguments
+    ///
+    /// * `value` - Indicates whether the administrator can
+    ///   manage chat welcome messages or directly send them
+    ///   in the case of bots.
+    pub fn with_can_send_welcome_messages(mut self, value: bool) -> Self {
+        self.can_send_welcome_messages = value;
         self
     }
 

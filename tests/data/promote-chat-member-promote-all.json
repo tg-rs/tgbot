@@ -19,6 +19,7 @@
       "can_post_stories": true,
       "can_promote_members": true,
       "can_restrict_members": true,
+      "can_send_welcome_messages": true,
       "chat_id": 1,
       "is_anonymous": true,
       "user_id": 2
@@ -27,4 +28,5 @@
   "rep_body": {
     "ok": true,
     "result": true
-  }}
+  }
+}

@@ -44,6 +44,7 @@
         "can_manage_topics": true,
         "can_manage_direct_messages": true,
         "can_manage_tags": true,
+        "can_send_welcome_messages": false,
         "custom_title": "test"
       }
     ]

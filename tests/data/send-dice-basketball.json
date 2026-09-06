@@ -55,6 +55,7 @@
                   "can_post_stories": true,
                   "can_promote_members": true,
                   "can_restrict_members": true,
+                  "can_send_welcome_messages": true,
                   "is_anonymous": true
                 },
                 "bot_is_member": true,
@@ -81,6 +82,7 @@
                   "can_post_stories": true,
                   "can_promote_members": true,
                   "can_restrict_members": true,
+                  "can_send_welcome_messages": true,
                   "is_anonymous": true
                 }
               }

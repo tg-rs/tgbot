@@ -19,6 +19,7 @@
       "can_post_stories": false,
       "can_promote_members": false,
       "can_restrict_members": false,
+      "can_send_welcome_messages": false,
       "chat_id": 1,
       "is_anonymous": false,
       "user_id": 2

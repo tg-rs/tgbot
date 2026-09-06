@@ -769,6 +769,7 @@ async fn execute() {
                 .with_can_post_stories(true)
                 .with_can_promote_members(false)
                 .with_can_restrict_members(false)
+                .with_can_send_welcome_messages(true)
                 .with_is_anonymous(false),
             |x| assert!(x),
         ),

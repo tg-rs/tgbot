@@ -12,6 +12,7 @@
         "can_manage_video_chats": false,
         "can_promote_members": false,
         "can_restrict_members": false,
+        "can_send_welcome_messages": false,
         "is_anonymous": false
       }
     }

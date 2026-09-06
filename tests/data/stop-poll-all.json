@@ -12,6 +12,10 @@
             {
               "text": "text",
               "url": "url"
+            },
+            {
+              "text": "disabled",
+              "disabled": {}
             }
           ]
         ]

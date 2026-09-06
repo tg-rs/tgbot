@@ -70,6 +70,18 @@ impl InlineKeyboardButton {
     /// # Arguments
     ///
     /// * `text` - Text of the button.
+    pub fn disabled<T>(text: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self::new(text, InlineKeyboardButtonType::Disabled {})
+    }
+
+    /// Creates a new `InlineKeyboardButton`.
+    ///
+    /// # Arguments
+    ///
+    /// * `text` - Text of the button.
     /// * `data` - Data to be sent in a callback query to the bot when button is pressed; 1-64 bytes.
     pub fn for_callback_data<A, B>(text: A, data: B) -> Self
     where
@@ -321,6 +333,8 @@ pub enum InlineKeyboardButtonType {
         serialize_with = "RawButtonText::serialize_value"
     )]
     CopyText(String),
+    /// The button is disabled and does nothing.
+    Disabled {},
     /// An HTTP URL used to automatically authorize the user.
     ///
     /// Can be used as a replacement for the [Telegram Login Widget][1].

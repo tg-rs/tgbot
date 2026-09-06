@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.48.0 (06.09.2026)
+
+- Added Bot API 10.3 support.
+
 ## 0.47.0 (17.08.2026)
 
 - Added Bot API 10.2 support.

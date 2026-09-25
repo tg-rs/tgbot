@@ -38,6 +38,20 @@ impl FormValue {
     }
 }
 
+impl TryFrom<serde_json::Value> for FormValue {
+    type Error = FormSerializeError;
+
+    fn try_from(value: serde_json::Value) -> Result<Self, Self::Error> {
+        Ok(match value {
+            serde_json::Value::Null => FormValue::Text(String::from("null")),
+            serde_json::Value::Bool(value) => FormValue::Text(String::from(if value { "true" } else { "false" })),
+            serde_json::Value::Number(value) => FormValue::Text(format!("{value}")),
+            serde_json::Value::String(value) => FormValue::Text(value),
+            value => FormValue::Json(serde_json::to_vec(&value)?),
+        })
+    }
+}
+
 impl fmt::Debug for FormValue {
     fn fmt(&self, out: &mut Formatter<'_>) -> fmt::Result {
         match self {
@@ -442,8 +456,9 @@ impl<'a> ser::SerializeMap for &'a mut Form {
     {
         let key = serde_json::to_value(key)?;
         if let serde_json::Value::String(key) = key {
-            let value = serde_json::to_vec(value)?;
-            self.insert_field(key, FormValue::Json(value));
+            let value = serde_json::to_value(value)?;
+            let value = FormValue::try_from(value)?;
+            self.insert_field(key, value);
             Ok(())
         } else {
             Err(FormSerializeError::InvalidKey)

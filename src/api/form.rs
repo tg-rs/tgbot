@@ -442,8 +442,8 @@ impl<'a> ser::SerializeMap for &'a mut Form {
     {
         let key = serde_json::to_value(key)?;
         if let serde_json::Value::String(key) = key {
-            let value = serde_json::to_vec(value)?;
-            self.insert_field(key, FormValue::Json(value));
+            let value = value.serialize(FormValueSerializer)?;
+            self.insert_field(key, value);
             Ok(())
         } else {
             Err(FormSerializeError::InvalidKey)

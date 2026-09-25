@@ -8,19 +8,25 @@ use tgbot::{
     types::{InputFile, SendDocument, Update},
 };
 
+enum FileSource {
+    Path(String),
+    Url(String),
+}
+
 struct Handler {
     client: Client,
-    file_url: String,
+    file_source: FileSource,
 }
 
 impl UpdateHandler for Handler {
     async fn handle(&self, update: Update) {
         log::info!("Got an update: {update:?}");
         let chat_id = update.get_chat_id().unwrap();
-        self.client
-            .execute(SendDocument::new(chat_id, InputFile::url(&self.file_url)))
-            .await
-            .unwrap();
+        let f = match &self.file_source {
+            FileSource::Path(path) => InputFile::path(path).await.unwrap(),
+            FileSource::Url(url) => InputFile::url(url),
+        };
+        self.client.execute(SendDocument::new(chat_id, f)).await.unwrap();
     }
 }
 
@@ -30,7 +36,15 @@ async fn main() {
     env_logger::init();
 
     let token = env::var("TGBOT_TOKEN").expect("TGBOT_TOKEN is not set");
-    let file_url = env::var("TGBOT_FILE_URL").expect("TGBOT_FILE_URL is not set");
+    let file_source = match env::var("TGBOT_FILE_URL") {
+        Ok(value) => FileSource::Url(value),
+        Err(_) => {
+            let value = env::var("TGBOT_FILE_PATH").expect("TGBOT_FILE_URL or TGBOT_FILE_PATH must be set");
+            FileSource::Path(value)
+        }
+    };
     let client = Client::new(token).expect("Failed to create API");
-    LongPoll::new(client.clone(), Handler { client, file_url }).run().await;
+    LongPoll::new(client.clone(), Handler { client, file_source })
+        .run()
+        .await;
 }

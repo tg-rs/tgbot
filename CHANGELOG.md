@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.48.1 (25.09.2026)
+
+- Fixed multipart file uploading.
+
 ## 0.48.0 (06.09.2026)
 
 - Added Bot API 10.3 support.
